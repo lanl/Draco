@@ -202,12 +202,13 @@ quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &local_
   // Use one sided MPI Put commands to fill up the ghost cell location data
   std::vector<double> local_ghost_buffer(local_ghost_buffer_size);
   MPI_Win win;
-  MPI_Win_create(&local_ghost_buffer[0], local_ghost_buffer_size * sizeof(double), sizeof(double),
-                 MPI_INFO_NULL, MPI_COMM_WORLD, &win);
+  MPI_Win_create(local_ghost_buffer.data(), local_ghost_buffer_size * sizeof(double),
+                 sizeof(double), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
 
   // working from my local data put the ghost data on the other ranks
   for (size_t d = 0; d < dim; d++) {
-    MPI_Win_fence(0, win);
+    int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win);
+    Check(errorcode == MPI_SUCCESS);
     for (auto putItr = put_window_map.begin(); putItr != put_window_map.end(); putItr++) {
       // use map.at() to allow const access
       const auto &index_vector = coarse_index_map.at(putItr->first);
@@ -224,11 +225,13 @@ quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &local_
         int put_rank = putv[0];
         int put_rank_buffer_size = putv[1];
         int put_offset = putv[2];
-        MPI_Put(&put_buffer[0], static_cast<int>(put_buffer.size()), MPI_DOUBLE, put_rank,
+        MPI_Put(put_buffer.data(), static_cast<int>(put_buffer.size()), MPI_DOUBLE, put_rank,
                 put_offset, put_rank_buffer_size, MPI_DOUBLE, win);
       }
     }
-    MPI_Win_fence(0, win);
+    errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+    Check(errorcode == MPI_SUCCESS);
+
     // alright move the position buffer to the final correct array positions
     int posIndex = 0;
     for (auto posItr = local_ghost_buffer.begin(); posItr != local_ghost_buffer.end(); posItr++) {
@@ -266,13 +269,14 @@ quick_index::collect_ghost_data(const std::vector<std::vector<double>> &local_da
   // Use one sided MPI Put commands to fill up the ghost cell location data
   std::vector<double> local_ghost_buffer(local_ghost_buffer_size);
   MPI_Win win;
-  MPI_Win_create(&local_ghost_buffer[0], local_ghost_buffer_size * sizeof(double), sizeof(double),
-                 MPI_INFO_NULL, MPI_COMM_WORLD, &win);
+  MPI_Win_create(local_ghost_buffer.data(), local_ghost_buffer_size * sizeof(double),
+                 sizeof(double), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
 
   // working from my local data put the ghost data on the other ranks
   for (size_t d = 0; d < data_dim; d++) {
     Check(local_data[d].size() == n_locations);
-    MPI_Win_fence(0, win);
+    int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win);
+    Check(errorcode == MPI_SUCCESS);
     for (auto putItr = put_window_map.begin(); putItr != put_window_map.end(); putItr++) {
       // use map.at() to allow const access
       const auto &index_vector = coarse_index_map.at(putItr->first);
@@ -289,11 +293,12 @@ quick_index::collect_ghost_data(const std::vector<std::vector<double>> &local_da
         int put_rank = putv[0];
         int put_rank_buffer_size = putv[1];
         int put_offset = putv[2];
-        MPI_Put(&put_buffer[0], static_cast<int>(put_buffer.size()), MPI_DOUBLE, put_rank,
+        MPI_Put(put_buffer.data(), static_cast<int>(put_buffer.size()), MPI_DOUBLE, put_rank,
                 put_offset, put_rank_buffer_size, MPI_DOUBLE, win);
       }
     }
-    MPI_Win_fence(0, win);
+    errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+    Check(errorcode == MPI_SUCCESS);
     // alright move the position buffer to the final correct vector positions
     int posIndex = 0;
     for (auto posItr = local_ghost_buffer.begin(); posItr != local_ghost_buffer.end(); posItr++) {
@@ -327,11 +332,12 @@ std::vector<double> quick_index::collect_ghost_data(const std::vector<double> &l
   std::vector<double> local_ghost_data(local_ghost_buffer_size, 0.0);
 #ifdef C4_MPI // temporary work around until RMA is available in c4
   MPI_Win win;
-  MPI_Win_create(&local_ghost_data[0], local_ghost_buffer_size * sizeof(double), sizeof(double),
+  MPI_Win_create(local_ghost_data.data(), local_ghost_buffer_size * sizeof(double), sizeof(double),
                  MPI_INFO_NULL, MPI_COMM_WORLD, &win);
 
   // working from my local data put the ghost data on the other ranks
-  MPI_Win_fence(0, win);
+  int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win);
+  Check(errorcode == MPI_SUCCESS);
   for (auto putItr = put_window_map.begin(); putItr != put_window_map.end(); putItr++) {
     // use map.at() to allow const access
     const auto &index_vector = coarse_index_map.at(putItr->first);
@@ -348,11 +354,12 @@ std::vector<double> quick_index::collect_ghost_data(const std::vector<double> &l
       int put_rank = putv[0];
       int put_rank_buffer_size = putv[1];
       int put_offset = putv[2];
-      MPI_Put(&put_buffer[0], static_cast<int>(put_buffer.size()), MPI_DOUBLE, put_rank, put_offset,
-              put_rank_buffer_size, MPI_DOUBLE, win);
+      MPI_Put(put_buffer.data(), static_cast<int>(put_buffer.size()), MPI_DOUBLE, put_rank,
+              put_offset, put_rank_buffer_size, MPI_DOUBLE, win);
     }
   }
-  MPI_Win_fence(0, win);
+  errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+  Check(errorcode == MPI_SUCCESS);
   MPI_Win_free(&win);
 #endif
   return local_ghost_data;
@@ -511,7 +518,7 @@ std::vector<double> quick_index::map_data_to_grid_window(
           const double bin_value = static_cast<double>(grid_bins[d]) *
                                    (locations[*iItr][d] - window_min[d]) /
                                    (window_max[d] - window_min[d]);
-          if (bin_value < 0.0 or bin_value > static_cast<double>(grid_bins[d])) {
+          if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
             valid = false;
             break;
           } else {
@@ -563,7 +570,7 @@ std::vector<double> quick_index::map_data_to_grid_window(
             const double bin_value = static_cast<double>(grid_bins[d]) *
                                      (local_ghost_locations[*gItr][d] - window_min[d]) /
                                      (window_max[d] - window_min[d]);
-            if (bin_value < 0.0 or bin_value > static_cast<double>(grid_bins[d])) {
+            if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
               valid = false;
               break;
             } else {
@@ -740,7 +747,7 @@ std::vector<std::vector<double>> quick_index::map_data_to_grid_window(
           const double bin_value = static_cast<double>(grid_bins[d]) *
                                    (locations[*iItr][d] - window_min[d]) /
                                    (window_max[d] - window_min[d]);
-          if (bin_value < 0.0 or bin_value > static_cast<double>(grid_bins[d])) {
+          if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
             valid = false;
             break;
           } else {
@@ -794,7 +801,7 @@ std::vector<std::vector<double>> quick_index::map_data_to_grid_window(
             const double bin_value = static_cast<double>(grid_bins[d]) *
                                      (local_ghost_locations[*gItr][d] - window_min[d]) /
                                      (window_max[d] - window_min[d]);
-            if (bin_value < 0.0 or bin_value > static_cast<double>(grid_bins[d])) {
+            if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
               valid = false;
               break;
             } else {

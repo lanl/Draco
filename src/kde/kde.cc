@@ -192,7 +192,6 @@ kde::reconstruction(const std::vector<double> &distribution,
  * for strongly peaked data and should be exact for exponential distributions.
  *
  * \param[in] distribution original data to be reconstructed
- * \param[in] position local of the original data 
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
  * \param[in] discontinuity_cutoff size of value discrepancies to exclude from the reconstruction

@@ -929,7 +929,7 @@ void test_decomposition(ParallelUnitTest &ut) {
     } else if (rtt_c4::node() == 1) {
       gold_map[96] = {0}; // 3.0 0.5
       gold_map[98] = {1}; // 4.0 0.5
-      gold_map[1] = {2}; // 0.5 -0.5
+      gold_map[1] = {2};  // 0.5 -0.5
     } else {
       gold_map[3] = {0}; // 1.5 -0.5
       gold_map[5] = {1}; // 2.5 -0.5
@@ -1015,10 +1015,10 @@ void test_decomposition(ParallelUnitTest &ut) {
       gold_ghost_index_map[90] = {0}; // 0.0, 0.5 from rank 0
       gold_ghost_index_map[92] = {1}; // 1.0, 0.5 from rank 0
       gold_ghost_index_map[94] = {2}; // 2.0, 0.5 from rank 0
-      gold_ghost_index_map[3] = {3}; // 1.5, -0.5 from rank 2
-      gold_ghost_index_map[5] = {4}; // 2.5, -0.5 from rank 2
-      gold_ghost_index_map[7] = {5}; // 3.5, -0.5 from rank 2
-      gold_ghost_index_map[9] = {6}; // 4.5, -0.5 from rank 2
+      gold_ghost_index_map[3] = {3};  // 1.5, -0.5 from rank 2
+      gold_ghost_index_map[5] = {4};  // 2.5, -0.5 from rank 2
+      gold_ghost_index_map[7] = {5};  // 3.5, -0.5 from rank 2
+      gold_ghost_index_map[9] = {6};  // 4.5, -0.5 from rank 2
     }
 
     if (gold_ghost_index_map.size() != qindex.local_ghost_index_map.size())
