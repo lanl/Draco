@@ -281,8 +281,11 @@ void test_decomposition(ParallelUnitTest &ut) {
     }
 
     // Check collect_ghost_data vector call
-    std::vector<double> ghost_data = qindex.collect_ghost_data(dd_data);
-    std::vector<std::vector<double>> ghost_3x_data = qindex.collect_ghost_data(dd_3x_data);
+    std::vector<double> ghost_data(qindex.local_ghost_buffer_size, 0.0);
+    qindex.collect_ghost_data(dd_data, ghost_data);
+    std::vector<std::vector<double>> ghost_3x_data(
+        3, std::vector<double>(qindex.local_ghost_buffer_size, 0.0));
+    qindex.collect_ghost_data(dd_3x_data, ghost_3x_data);
 
     std::vector<double> gold_ghost_data;
     std::vector<std::vector<double>> gold_3x_ghost_data(3);
@@ -324,10 +327,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "max";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(5, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -365,10 +370,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "min";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(5, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -406,10 +413,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "min_fill";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(5, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -447,10 +456,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "ave";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(5, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -488,10 +499,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "ave_fill";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(5, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -529,10 +542,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = true;
       const bool bias = false;
       const std::string map_type = "ave";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(5, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -570,10 +585,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = true;
       const bool bias = false;
       const std::string map_type = "ave_fill";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(5, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -611,10 +628,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = true;
       const std::string map_type = "ave";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(5, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -654,10 +673,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = true;
       const bool bias = true;
       const std::string map_type = "ave";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(5, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -698,10 +719,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "max";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(2, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(2, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -742,10 +765,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "min";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(2, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(2, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -787,10 +812,13 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool bias = false;
       const std::string map_type = "ave";
       // use the negative data for the single array operations this time
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_3x_data[2], ghost_3x_data[2], min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(2, 0.0);
+      qindex.map_data_to_grid_window(dd_3x_data[2], ghost_3x_data[2], window_data, min, max,
+                                     bin_sizes, map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(2, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -830,10 +858,13 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = true;
       const bool bias = true;
       const std::string map_type = "max";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(2, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(2, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -1049,8 +1080,11 @@ void test_decomposition(ParallelUnitTest &ut) {
     }
 
     // Check collect_ghost_data vector call
-    std::vector<double> ghost_data = qindex.collect_ghost_data(dd_data);
-    std::vector<std::vector<double>> ghost_3x_data = qindex.collect_ghost_data(dd_3x_data);
+    std::vector<double> ghost_data(qindex.local_ghost_buffer_size, 0.0);
+    qindex.collect_ghost_data(dd_data, ghost_data);
+    std::vector<std::vector<double>> ghost_3x_data(
+        3, std::vector<double>(qindex.local_ghost_buffer_size, 0.0));
+    qindex.collect_ghost_data(dd_3x_data, ghost_3x_data);
 
     std::vector<double> gold_ghost_data;
     std::vector<std::vector<double>> gold_3x_ghost_data(3);
@@ -1085,10 +1119,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "max";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(5, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       // different result then 1D because the 1.0 y offset of the data
@@ -1129,10 +1165,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "max_fill";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(5, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       // different result then 1D because the 1.0 y offset of the data
@@ -1171,10 +1209,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "min";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(2, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(2, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       gold_window_data = {8.0, 4.0};
@@ -1200,10 +1240,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "ave";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(2, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(2, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       gold_window_data = {8.5, 4.0};
@@ -1229,10 +1271,13 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "ave";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(2, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(2, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       gold_window_data = {8.0, 0.0};
@@ -1258,10 +1303,12 @@ void test_decomposition(ParallelUnitTest &ut) {
       const bool normalize = false;
       const bool bias = false;
       const std::string map_type = "max";
-      std::vector<double> window_data = qindex.map_data_to_grid_window(
-          dd_data, ghost_data, min, max, bin_sizes, map_type, normalize, bias);
-      std::vector<std::vector<double>> window_3x_data = qindex.map_data_to_grid_window(
-          dd_3x_data, ghost_3x_data, min, max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> window_data(2, 0.0);
+      qindex.map_data_to_grid_window(dd_data, ghost_data, window_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(2, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       gold_window_data = {9.0, 4.0};

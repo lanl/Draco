@@ -26,8 +26,10 @@ namespace rtt_kde {
  * local domain will have access to all points that should fall into the
  * spatial window centered on any given local point.
  *
- * \tparam dim integer specifying the data dimensionality 
- * \param[in] data locations
+ * \param[in] dim specifying the data dimensionality 
+ * \param[in] locations data locations.
+ * \param[in] max_window_size maximum supported window size
+ * \param[in] bins_per_dimension number of bins in each dimension
  * \param[in] domain_decomposed
  */
 quick_index::quick_index(const size_t dim_, const std::vector<std::array<double, 3>> &locations_,
@@ -139,13 +141,14 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
 
     // Build a global list of buffer sizes
     std::vector<int> proc_ghost_buffer_size(nodes, 0);
-    proc_ghost_buffer_size[node] = local_ghost_buffer_size;
+    proc_ghost_buffer_size[node] = static_cast<int>(local_ghost_buffer_size);
     rtt_c4::global_sum(&proc_ghost_buffer_size[0], nodes);
 
     // calculate the put map so each node knows which processor to send data
     // and where to index that data
     // PERFORMANCE NOTE: This would be more efficient to use a MPI_SCAN and
     // std::partial_sum but I need to think how this would actually look.
+    max_put_buffer_size = 0;
     for (int rec_proc = 0; rec_proc < rtt_c4::nodes(); rec_proc++) {
       // calculating the offset SUCKS!!! If anyone can find a better way please help.
       int offset = 0;
@@ -162,6 +165,9 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
         if (rtt_c4::node() != rec_proc) {
           size_t gipbpp_index = mapItr->first + nbins * rec_proc;
           if (global_need_bins_per_proc[gipbpp_index] > 0) {
+            // capture the largest put buffer on this rank
+            if (mapItr->second.size() > max_put_buffer_size)
+              max_put_buffer_size = mapItr->second.size();
 
             // build up map data
             put_window_map[mapItr->first].push_back(
@@ -172,11 +178,41 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
       }
     }
 
+    // allocate ghost locations
+    local_ghost_locations =
+        std::vector<std::array<double, 3>>(local_ghost_buffer_size, {0.0, 0.0, 0.0});
     // collect the local ghost locations
-    local_ghost_locations = collect_ghost_data(locations);
+    collect_ghost_data(locations, local_ghost_locations);
 
   } // End domain decomposed data construction
 }
+
+#ifdef C4_MPI
+// call MPI_put using a chunk style write to avoid error in MPI_put with large local buffers.
+auto put_lambda = [](auto &putItr, auto &put_buffer, auto &put_size, auto &win) {
+  // temporary work around until RMA is available in c4
+  // loop over all ranks we need to send this buffer too.
+  for (auto rankItr = putItr->second.begin(); rankItr != putItr->second.end(); rankItr++) {
+    const std::array<int, 3> &putv = *rankItr;
+    int put_rank = putv[0];
+    int put_rank_buffer_size = putv[1];
+    int put_offset = putv[2];
+    // This is dumb, but we need to write in chunks because MPI_Put writes
+    // junk with large (>10,000) buffer sizes.
+    int chunk_size = 1000;
+    int nchunks = static_cast<int>(
+        std::ceil(static_cast<double>(put_size) / static_cast<double>(chunk_size)));
+    int nput = 0;
+    for (int c = 0; c < nchunks; c++) {
+      chunk_size = std::min(chunk_size, static_cast<int>(put_size) - nput);
+      Check(chunk_size > 0);
+      MPI_Put(&put_buffer[nput], chunk_size, MPI_DOUBLE, put_rank, put_offset, put_rank_buffer_size,
+              MPI_DOUBLE, win);
+      nput += chunk_size;
+    }
+  }
+};
+#endif
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -189,18 +225,20 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
  * \tparam dim integer specifying the data dimensionality 
  * \param[in] local_data the local 3 dimensional data that is required to be
  * available as ghost cell data on other processors.
- * \return local_ghost_data the resulting local ghost data provided by other ranks.
+ * \param[in] local_ghost_data the resulting 3 dimensional ghost data data. 
  */
-std::vector<std::array<double, 3>>
-quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &local_data) const {
+void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &local_data,
+                                     std::vector<std::array<double, 3>> &local_ghost_data) const {
   Require(local_data.size() == n_locations);
   Insist(domain_decomposed, "Calling collect_ghost_data with a quick_index object that specified "
                             "domain_decomposed=.false.");
-  // allocate the ghost data
-  std::vector<std::array<double, 3>> local_ghost_data(local_ghost_buffer_size, {0.0, 0.0, 0.0});
+
+  Insist(local_ghost_data.size() == local_ghost_buffer_size,
+         "ghost_data input must be sized via quick_index.local_ghost_buffer_size");
 #ifdef C4_MPI // temporary work around until RMA is available in c4
   // Use one sided MPI Put commands to fill up the ghost cell location data
-  std::vector<double> local_ghost_buffer(local_ghost_buffer_size);
+  std::vector<double> local_ghost_buffer(local_ghost_buffer_size, 0.0);
+  std::vector<double> put_buffer(max_put_buffer_size, 0.0);
   MPI_Win win;
   MPI_Win_create(local_ghost_buffer.data(), local_ghost_buffer_size * sizeof(double),
                  sizeof(double), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
@@ -212,22 +250,15 @@ quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &local_
     for (auto putItr = put_window_map.begin(); putItr != put_window_map.end(); putItr++) {
       // use map.at() to allow const access
       const auto &index_vector = coarse_index_map.at(putItr->first);
+      const auto put_size = index_vector.size();
+      Check(put_size <= max_put_buffer_size);
       // fill up the current ghost cell data for this dimension
-      std::vector<double> put_buffer(index_vector.size());
       int putIndex = 0;
       for (auto indexItr = index_vector.begin(); indexItr != index_vector.end(); indexItr++) {
         put_buffer[putIndex] = local_data[*indexItr][d];
         putIndex++;
       }
-      // loop over all ranks we need to send this buffer too.
-      for (auto rankItr = putItr->second.begin(); rankItr != putItr->second.end(); rankItr++) {
-        const std::array<int, 3> &putv = *rankItr;
-        int put_rank = putv[0];
-        int put_rank_buffer_size = putv[1];
-        int put_offset = putv[2];
-        MPI_Put(put_buffer.data(), static_cast<int>(put_buffer.size()), MPI_DOUBLE, put_rank,
-                put_offset, put_rank_buffer_size, MPI_DOUBLE, win);
-      }
+      put_lambda(putItr, put_buffer, put_size, win);
     }
     errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
     Check(errorcode == MPI_SUCCESS);
@@ -241,7 +272,6 @@ quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &local_
   }
   MPI_Win_free(&win);
 #endif
-  return local_ghost_data;
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -253,21 +283,26 @@ quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &local_
  * its data to ghost cells of other ranks.
  *
  * \tparam dim integer specifying the data dimensionality 
- * \param[in] local_data the local 3 dimensional data that is required to be
+ * \param[in] local_data the local multi-dimensional data that is required to be
  * available as ghost cell data on other processors.
- * \return local_ghost_data the resulting local ghost data provided by other ranks.
+ * \param[in|out] local_ghost_data the resulting multi-dimensional ghost data
  */
-std::vector<std::vector<double>>
-quick_index::collect_ghost_data(const std::vector<std::vector<double>> &local_data) const {
+void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &local_data,
+                                     std::vector<std::vector<double>> &local_ghost_data) const {
   Insist(domain_decomposed, "Calling collect_ghost_data with a quick_index object that specified "
                             "domain_decomposed=.false.");
   size_t data_dim = local_data.size();
-  // allocate the ghost data
-  std::vector<std::vector<double>> local_ghost_data(
-      data_dim, std::vector<double>(local_ghost_buffer_size, 0.0));
+  size_t ghost_data_dim = local_ghost_data.size();
+  // Check ghost data
+  for (size_t d = 0; d < ghost_data_dim; d++) {
+    Insist(local_ghost_data[d].size() == local_ghost_buffer_size,
+           "ghost_data[" + std::to_string(d) +
+               "] input must be sized via quick_index.local_ghost_buffer_size");
+  }
 #ifdef C4_MPI // temporary work around until RMA is available in c4
   // Use one sided MPI Put commands to fill up the ghost cell location data
-  std::vector<double> local_ghost_buffer(local_ghost_buffer_size);
+  std::vector<double> local_ghost_buffer(local_ghost_buffer_size, 0.0);
+  std::vector<double> put_buffer(max_put_buffer_size, 0.0);
   MPI_Win win;
   MPI_Win_create(local_ghost_buffer.data(), local_ghost_buffer_size * sizeof(double),
                  sizeof(double), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
@@ -280,22 +315,16 @@ quick_index::collect_ghost_data(const std::vector<std::vector<double>> &local_da
     for (auto putItr = put_window_map.begin(); putItr != put_window_map.end(); putItr++) {
       // use map.at() to allow const access
       const auto &index_vector = coarse_index_map.at(putItr->first);
+      const auto put_size = index_vector.size();
+      Check(put_size <= max_put_buffer_size);
+
       // fill up the current ghost cell data for this dimension
-      std::vector<double> put_buffer(index_vector.size());
       int putIndex = 0;
       for (auto indexItr = index_vector.begin(); indexItr != index_vector.end(); indexItr++) {
         put_buffer[putIndex] = local_data[d][*indexItr];
         putIndex++;
       }
-      // loop over all ranks we need to send this buffer too.
-      for (auto rankItr = putItr->second.begin(); rankItr != putItr->second.end(); rankItr++) {
-        const std::array<int, 3> &putv = *rankItr;
-        int put_rank = putv[0];
-        int put_rank_buffer_size = putv[1];
-        int put_offset = putv[2];
-        MPI_Put(put_buffer.data(), static_cast<int>(put_buffer.size()), MPI_DOUBLE, put_rank,
-                put_offset, put_rank_buffer_size, MPI_DOUBLE, win);
-      }
+      put_lambda(putItr, put_buffer, put_size, win);
     }
     errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
     Check(errorcode == MPI_SUCCESS);
@@ -308,7 +337,6 @@ quick_index::collect_ghost_data(const std::vector<std::vector<double>> &local_da
   }
   MPI_Win_free(&win);
 #endif
-  return local_ghost_data;
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -322,15 +350,18 @@ quick_index::collect_ghost_data(const std::vector<std::vector<double>> &local_da
  * \tparam dim integer specifying the data dimensionality 
  * \param[in] local_data the local vector data that is required to be
  * available as ghost cell data on other processors.
- * \return local_ghost_data the resulting local ghost data provided by other ranks.
+ * \param[in|out] ghost_data the resulting ghost data
  */
-std::vector<double> quick_index::collect_ghost_data(const std::vector<double> &local_data) const {
+void quick_index::collect_ghost_data(const std::vector<double> &local_data,
+                                     std::vector<double> &local_ghost_data) const {
   Require(local_data.size() == n_locations);
   Insist(domain_decomposed, "Calling collect_ghost_data with a quick_index object that specified "
                             "domain_decomposed=.false.");
-  // allocate the ghost data
-  std::vector<double> local_ghost_data(local_ghost_buffer_size, 0.0);
+  Insist(local_ghost_data.size() == local_ghost_buffer_size,
+         "ghost_data input must be sized via quick_index.local_ghost_buffer_size");
 #ifdef C4_MPI // temporary work around until RMA is available in c4
+  std::vector<double> local_ghost_buffer(local_ghost_buffer_size, 0.0);
+  std::vector<double> put_buffer(max_put_buffer_size, 0.0);
   MPI_Win win;
   MPI_Win_create(local_ghost_data.data(), local_ghost_buffer_size * sizeof(double), sizeof(double),
                  MPI_INFO_NULL, MPI_COMM_WORLD, &win);
@@ -341,28 +372,21 @@ std::vector<double> quick_index::collect_ghost_data(const std::vector<double> &l
   for (auto putItr = put_window_map.begin(); putItr != put_window_map.end(); putItr++) {
     // use map.at() to allow const access
     const auto &index_vector = coarse_index_map.at(putItr->first);
+    const auto put_size = index_vector.size();
+    Check(put_size <= max_put_buffer_size);
+
     // fill up the current ghost cell data for this dimension
-    std::vector<double> put_buffer(index_vector.size());
     int putIndex = 0;
     for (auto indexItr = index_vector.begin(); indexItr != index_vector.end(); indexItr++) {
       put_buffer[putIndex] = local_data[*indexItr];
       putIndex++;
     }
-    // loop over all ranks we need to send this buffer too.
-    for (auto rankItr = putItr->second.begin(); rankItr != putItr->second.end(); rankItr++) {
-      const std::array<int, 3> &putv = *rankItr;
-      int put_rank = putv[0];
-      int put_rank_buffer_size = putv[1];
-      int put_offset = putv[2];
-      MPI_Put(put_buffer.data(), static_cast<int>(put_buffer.size()), MPI_DOUBLE, put_rank,
-              put_offset, put_rank_buffer_size, MPI_DOUBLE, win);
-    }
+    put_lambda(putItr, put_buffer, put_size, win);
   }
   errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
   Check(errorcode == MPI_SUCCESS);
   MPI_Win_free(&win);
 #endif
-  return local_ghost_data;
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -437,25 +461,24 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
  * \tparam dim integer specifying the data dimensionality 
  * \param[in] local_data the local data on the processor to be mapped to the window
  * \param[in] ghost_data the ghost data on the processor to be mapped to the window
+ * \param[in|out] grid_data the resulting data map
  * \param[in] whindow_min the smallest corner point for every dimension
  * \param[in] whindow_min the largest corner point for every dimension
  * \param[in] grid_bins number of equally spaced bins in each dir
  * \param[in] map_type string indicating the mapping (max, min, ave)
  * \param[in] normalize bool operator to specify if the data should be normalized to a pdf
  * \param[in] bias bool operator to specify if the data should be moved to the positive domain space
- * \return bin_list list of global bins requested for the current window.
  */
-std::vector<double> quick_index::map_data_to_grid_window(
+void quick_index::map_data_to_grid_window(
     const std::vector<double> &local_data, const std::vector<double> &ghost_data,
-    const std::array<double, 3> &window_min, const std::array<double, 3> &window_max,
-    const std::array<size_t, 3> &grid_bins, const std::string &map_type_in, const bool normalize,
-    const bool bias) const {
+    std::vector<double> &grid_data, const std::array<double, 3> &window_min,
+    const std::array<double, 3> &window_max, const std::array<size_t, 3> &grid_bins,
+    const std::string &map_type_in, const bool normalize, const bool bias) const {
   Require(local_data.size() == n_locations);
   Require(!(window_max[0] < window_min[0]));
   Require(!(window_max[1] < window_min[1]));
   Require(!(window_max[2] < window_min[2]));
-  Require(domain_decomposed ? ghost_data.size() == static_cast<size_t>(local_ghost_buffer_size)
-                            : true);
+  Require(domain_decomposed ? ghost_data.size() == local_ghost_buffer_size : true);
   Require(domain_decomposed
               ? (fabs(window_max[0] - window_min[0]) - max_window_size) / max_window_size < 1e-6
               : true);
@@ -494,13 +517,19 @@ std::vector<double> quick_index::map_data_to_grid_window(
   for (size_t d = 0; d < dim; d++)
     Insist(grid_bins[d] > 0, "Bin size must be greater then zero for each active dimension");
 
-  // Grab the global bins that lie in this window
-  std::vector<size_t> global_bins = window_coarse_index_list(window_min, window_max);
   size_t n_map_bins = 1;
   for (size_t d = 0; d < dim; d++)
     n_map_bins *= grid_bins[d];
 
-  std::vector<double> grid_data(n_map_bins, 0.0);
+  Insist(grid_data.size() == n_map_bins,
+         "grid_data must match the flatten grid_bin size for the active dimensions (in 3d "
+         "grid_data.size()==grib_bins[0]*grid_bins[1]*grid_bins[2])");
+
+  std::fill(grid_data.begin(), grid_data.end(), 0.0);
+
+  // Grab the global bins that lie in this window
+  std::vector<size_t> global_bins = window_coarse_index_list(window_min, window_max);
+
   std::vector<int> data_count(n_map_bins, 0);
   double bias_cell_count = 0.0;
   // Loop over all possible bins
@@ -662,7 +691,6 @@ std::vector<double> quick_index::map_data_to_grid_window(
     for (size_t i = 0; i < n_map_bins; i++)
       grid_data[i] *= scale;
   }
-  return grid_data;
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -677,6 +705,7 @@ std::vector<double> quick_index::map_data_to_grid_window(
  * \tparam dim integer specifying the data dimensionality 
  * \param[in] local_data the local data on the processor to be mapped to the window
  * \param[in] ghost_data the ghost data on the processor to be mapped to the window
+ * \param[in|out] grid_data the resulting data map
  * \param[in] whindow_min the smallest corner point for every dimension
  * \param[in] whindow_min the largest corner point for every dimension
  * \param[in] grid_bins number of equally spaced bins in each dir
@@ -685,11 +714,14 @@ std::vector<double> quick_index::map_data_to_grid_window(
  * \param[in] bias bool operator to specify if the data should be moved to the positive domain space (independent of each data vector)
  * \return bin_list list of global bins requested for the current window.
  */
-std::vector<std::vector<double>> quick_index::map_data_to_grid_window(
-    const std::vector<std::vector<double>> &local_data,
-    const std::vector<std::vector<double>> &ghost_data, const std::array<double, 3> &window_min,
-    const std::array<double, 3> &window_max, const std::array<size_t, 3> &grid_bins,
-    const std::string &map_type_in, const bool normalize, const bool bias) const {
+void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>> &local_data,
+                                          const std::vector<std::vector<double>> &ghost_data,
+                                          std::vector<std::vector<double>> &grid_data,
+                                          const std::array<double, 3> &window_min,
+                                          const std::array<double, 3> &window_max,
+                                          const std::array<size_t, 3> &grid_bins,
+                                          const std::string &map_type_in, const bool normalize,
+                                          const bool bias) const {
   Require(domain_decomposed ? local_data.size() == ghost_data.size() : true);
   Require(!(window_max[0] < window_min[0]));
   Require(!(window_max[1] < window_min[1]));
@@ -728,8 +760,15 @@ std::vector<std::vector<double>> quick_index::map_data_to_grid_window(
     n_map_bins *= grid_bins[d];
   }
 
+  for (size_t v = 0; v < vsize; v++) {
+    Insist(grid_data[v].size() == n_map_bins,
+           "grid_data[" + std::to_string(v) +
+               "] must match the flatten grid_bin size for the active dimensions (in 3d "
+               "grid_data.size()==grib_bins[0]*grid_bins[1]*grid_bins[2])");
+    std::fill(grid_data[v].begin(), grid_data[v].end(), 0.0);
+  }
+
   // initialize grid data
-  std::vector<std::vector<double>> grid_data(vsize, std::vector<double>(n_map_bins, 0.0));
   std::vector<int> data_count(n_map_bins, 0);
   double bias_cell_count = 0.0;
   // Loop over all possible bins
@@ -912,7 +951,6 @@ std::vector<std::vector<double>> quick_index::map_data_to_grid_window(
           grid_data[v][i] *= scale;
     }
   }
-  return grid_data;
 }
 
 } // namespace rtt_kde

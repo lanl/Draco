@@ -64,9 +64,11 @@ kde::reconstruction(const std::vector<double> &distribution,
 
     rtt_c4::global_sum(global_conservation);
 
-    std::vector<double> ghost_distribution = qindex.collect_ghost_data(distribution);
-    std::vector<std::array<double, 3>> ghost_one_over_bandwidth =
-        qindex.collect_ghost_data(one_over_bandwidth);
+    std::vector<double> ghost_distribution(qindex.local_ghost_buffer_size);
+    qindex.collect_ghost_data(distribution, ghost_distribution);
+    std::vector<std::array<double, 3>> ghost_one_over_bandwidth(qindex.local_ghost_buffer_size,
+                                                                {0.0, 0.0, 0.0});
+    qindex.collect_ghost_data(one_over_bandwidth, ghost_one_over_bandwidth);
 
     // now apply the kernel to the local ranks
     for (size_t i = 0; i < local_size; i++) {
@@ -81,38 +83,37 @@ kde::reconstruction(const std::vector<double> &distribution,
       }
       const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
       // fetch local contribution
-      for (auto cbItr = coarse_bins.begin(); cbItr < coarse_bins.end(); cbItr++) {
+      for (auto &cb : coarse_bins) {
         // skip bins that aren't present in the map (for constness)
-        auto mapItr = qindex.coarse_index_map.find(*cbItr);
+        auto mapItr = qindex.coarse_index_map.find(cb);
         if (mapItr != qindex.coarse_index_map.end()) {
           // loop over local data
-          for (auto iItr = mapItr->second.begin(); iItr != mapItr->second.end(); iItr++) {
+          for (auto &l : mapItr->second) {
             double weight = 1.0;
             for (size_t d = 0; d < dim; d++) {
-              const double r = qindex.locations[*iItr][d];
+              const double r = qindex.locations[l][d];
               const double u = (r0[d] - r) * one_over_h[d];
               const double scale =
-                  one_over_h[d] / one_over_bandwidth[*iItr][d] < discontinuity_cutoff ? 0.0 : 1.0;
+                  one_over_h[d] / one_over_bandwidth[l][d] < discontinuity_cutoff ? 0.0 : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
-            result[i] += distribution[*iItr] * weight;
+            result[i] += distribution[l] * weight;
             normal[i] += weight;
           }
         }
-        auto gmapItr = qindex.local_ghost_index_map.find(*cbItr);
+        auto gmapItr = qindex.local_ghost_index_map.find(cb);
         if (gmapItr != qindex.local_ghost_index_map.end()) {
           // loop over ghost data
-          for (auto gItr = gmapItr->second.begin(); gItr != gmapItr->second.end(); gItr++) {
+          for (auto &g : gmapItr->second) {
             double weight = 1.0;
             for (size_t d = 0; d < dim; d++) {
-              const double r = qindex.local_ghost_locations[*gItr][d];
+              const double r = qindex.local_ghost_locations[g][d];
               const double u = (r0[d] - r) * one_over_h[d];
               const double scale =
-                  one_over_h[d] / ghost_one_over_bandwidth[*gItr][d] < discontinuity_cutoff ? 0.0
-                                                                                            : 1.0;
+                  one_over_h[d] / ghost_one_over_bandwidth[g][d] < discontinuity_cutoff ? 0.0 : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
-            result[i] += ghost_distribution[*gItr] * weight;
+            result[i] += ghost_distribution[g] * weight;
             normal[i] += weight;
           }
         }
@@ -132,21 +133,21 @@ kde::reconstruction(const std::vector<double> &distribution,
         win_max[d] = r0[d] + 1.0 / one_over_h[d];
       }
       const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
-      for (auto cbItr = coarse_bins.begin(); cbItr < coarse_bins.end(); cbItr++) {
+      for (auto &cb : coarse_bins) {
         // skip bins that aren't present in the map (can't use [] operator with constness)
-        auto mapItr = qindex.coarse_index_map.find(*cbItr);
+        auto mapItr = qindex.coarse_index_map.find(cb);
         if (mapItr != qindex.coarse_index_map.end()) {
           // loop over local data
-          for (auto iItr = mapItr->second.begin(); iItr != mapItr->second.end(); iItr++) {
+          for (auto &l : mapItr->second) {
             double weight = 1.0;
             for (size_t d = 0; d < dim; d++) {
-              const double r = qindex.locations[*iItr][d];
+              const double r = qindex.locations[l][d];
               const double u = (r0[d] - r) * one_over_h[d];
               const double scale =
-                  one_over_h[d] / one_over_bandwidth[*iItr][d] < discontinuity_cutoff ? 0.0 : 1.0;
+                  one_over_h[d] / one_over_bandwidth[l][d] < discontinuity_cutoff ? 0.0 : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
-            result[i] += distribution[*iItr] * weight;
+            result[i] += distribution[l] * weight;
             normal[i] += weight;
           }
         }
@@ -221,9 +222,11 @@ kde::log_reconstruction(const std::vector<double> &distribution,
     rtt_c4::global_sum(global_conservation);
     rtt_c4::global_min(min_value);
 
-    std::vector<double> ghost_distribution = qindex.collect_ghost_data(distribution);
-    std::vector<std::array<double, 3>> ghost_one_over_bandwidth =
-        qindex.collect_ghost_data(one_over_bandwidth);
+    std::vector<double> ghost_distribution(qindex.local_ghost_buffer_size);
+    qindex.collect_ghost_data(distribution, ghost_distribution);
+    std::vector<std::array<double, 3>> ghost_one_over_bandwidth(qindex.local_ghost_buffer_size,
+                                                                {0.0, 0.0, 0.0});
+    qindex.collect_ghost_data(one_over_bandwidth, ghost_one_over_bandwidth);
 
     log_bias = fabs(min_value) * (1.0 + 1e-12);
     log_bias = std::max(log_bias, 1e-12);
@@ -240,38 +243,37 @@ kde::log_reconstruction(const std::vector<double> &distribution,
       }
       const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
       // fetch local contribution
-      for (auto cbItr = coarse_bins.begin(); cbItr < coarse_bins.end(); cbItr++) {
+      for (auto &cb : coarse_bins) {
         // skip bins that aren't present in the map (can't use [] operator with constness)
-        auto mapItr = qindex.coarse_index_map.find(*cbItr);
+        auto mapItr = qindex.coarse_index_map.find(cb);
         if (mapItr != qindex.coarse_index_map.end()) {
           // loop over local data
-          for (auto iItr = mapItr->second.begin(); iItr != mapItr->second.end(); iItr++) {
+          for (auto &l : mapItr->second) {
             double weight = 1.0;
             for (size_t d = 0; d < dim; d++) {
-              const double r = qindex.locations[*iItr][d];
+              const double r = qindex.locations[l][d];
               const double u = (r0[d] - r) * one_over_h[d];
               const double scale =
-                  one_over_h[d] / one_over_bandwidth[*iItr][d] < discontinuity_cutoff ? 0.0 : 1.0;
+                  one_over_h[d] / one_over_bandwidth[l][d] < discontinuity_cutoff ? 0.0 : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
-            result[i] += log_transform(distribution[*iItr], log_bias) * weight;
+            result[i] += log_transform(distribution[l], log_bias) * weight;
             normal[i] += weight;
           }
         }
-        auto gmapItr = qindex.local_ghost_index_map.find(*cbItr);
+        auto gmapItr = qindex.local_ghost_index_map.find(cb);
         if (gmapItr != qindex.local_ghost_index_map.end()) {
           // loop over ghost data
-          for (auto gItr = gmapItr->second.begin(); gItr != gmapItr->second.end(); gItr++) {
+          for (auto &g : gmapItr->second) {
             double weight = 1.0;
             for (size_t d = 0; d < dim; d++) {
-              const double r = qindex.local_ghost_locations[*gItr][d];
+              const double r = qindex.local_ghost_locations[g][d];
               const double u = (r0[d] - r) * one_over_h[d];
               const double scale =
-                  one_over_h[d] / ghost_one_over_bandwidth[*gItr][d] < discontinuity_cutoff ? 0.0
-                                                                                            : 1.0;
+                  one_over_h[d] / ghost_one_over_bandwidth[g][d] < discontinuity_cutoff ? 0.0 : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
-            result[i] += log_transform(ghost_distribution[*gItr], log_bias) * weight;
+            result[i] += log_transform(ghost_distribution[g], log_bias) * weight;
             normal[i] += weight;
           }
         }
@@ -293,21 +295,21 @@ kde::log_reconstruction(const std::vector<double> &distribution,
       }
       const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
       // fetch local contribution
-      for (auto cbItr = coarse_bins.begin(); cbItr < coarse_bins.end(); cbItr++) {
+      for (auto &cb : coarse_bins) {
         // skip bins that aren't present in the map (can't use [] operator with constness)
-        auto mapItr = qindex.coarse_index_map.find(*cbItr);
+        auto mapItr = qindex.coarse_index_map.find(cb);
         if (mapItr != qindex.coarse_index_map.end()) {
           // loop over local data
-          for (auto iItr = mapItr->second.begin(); iItr != mapItr->second.end(); iItr++) {
+          for (auto &l : mapItr->second) {
             double weight = 1.0;
             for (size_t d = 0; d < dim; d++) {
-              const double r = qindex.locations[*iItr][d];
+              const double r = qindex.locations[l][d];
               const double u = (r0[d] - r) * one_over_h[d];
               const double scale =
-                  one_over_h[d] / one_over_bandwidth[*iItr][d] < discontinuity_cutoff ? 0.0 : 1.0;
+                  one_over_h[d] / one_over_bandwidth[l][d] < discontinuity_cutoff ? 0.0 : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
-            result[i] += log_transform(distribution[*iItr], log_bias) * weight;
+            result[i] += log_transform(distribution[l], log_bias) * weight;
             normal[i] += weight;
           }
         }

@@ -38,35 +38,38 @@ public:
               const bool domain_decomposed);
 
   //! Collect Ghost Data
-  std::vector<double> collect_ghost_data(const std::vector<double> &local_data) const;
+  void collect_ghost_data(const std::vector<double> &local_data,
+                          std::vector<double> &local_ghost_data) const;
 
   //! Override function of 3D array ghost data.
-  std::vector<std::array<double, 3>>
-  collect_ghost_data(const std::vector<std::array<double, 3>> &local_data) const;
+  void collect_ghost_data(const std::vector<std::array<double, 3>> &local_data,
+                          std::vector<std::array<double, 3>> &local_ghost_data) const;
 
   //! Override function for vector<vector<double> array ghost data.
-  std::vector<std::vector<double>>
-  collect_ghost_data(const std::vector<std::vector<double>> &local_data) const;
+  void collect_ghost_data(const std::vector<std::vector<double>> &local_data,
+                          std::vector<std::vector<double>> &local_ghost_data) const;
 
   //! Fetch list of coarse index values bound by the window
   std::vector<size_t> window_coarse_index_list(const std::array<double, 3> &window_min,
                                                const std::array<double, 3> &window_max) const;
 
   //! Map local+ghost data to grid window
-  std::vector<double> map_data_to_grid_window(const std::vector<double> &local_data,
-                                              const std::vector<double> &ghost_data,
-                                              const std::array<double, 3> &window_min,
-                                              const std::array<double, 3> &window_max,
-                                              const std::array<size_t, 3> &grid_bins,
-                                              const std::string &map_type, const bool normalize,
-                                              const bool bias) const;
+  void map_data_to_grid_window(const std::vector<double> &local_data,
+                               const std::vector<double> &ghost_data,
+                               std::vector<double> &grid_dataaa,
+                               const std::array<double, 3> &window_min,
+                               const std::array<double, 3> &window_max,
+                               const std::array<size_t, 3> &grid_bins, const std::string &map_type,
+                               const bool normalize, const bool bias) const;
 
   //! Map local+ghost data to grid window for multi-dimensional data
-  std::vector<std::vector<double>> map_data_to_grid_window(
-      const std::vector<std::vector<double>> &local_data,
-      const std::vector<std::vector<double>> &ghost_data, const std::array<double, 3> &window_min,
-      const std::array<double, 3> &window_max, const std::array<size_t, 3> &grid_bins,
-      const std::string &map_type, const bool normalize, const bool bias) const;
+  void map_data_to_grid_window(const std::vector<std::vector<double>> &local_data,
+                               const std::vector<std::vector<double>> &ghost_data,
+                               std::vector<std::vector<double>> &grid_data,
+                               const std::array<double, 3> &window_min,
+                               const std::array<double, 3> &window_max,
+                               const std::array<size_t, 3> &grid_bins, const std::string &map_type,
+                               const bool normalize, const bool bias) const;
 
   // PUBLIC DATA
   // Quick index initialization data
@@ -91,7 +94,7 @@ public:
   // Ordered list of local bins (indexes values are based on the global bin structure)
   std::vector<size_t> local_bins;
   // Size of ghost data buffer
-  int local_ghost_buffer_size;
+  size_t local_ghost_buffer_size;
   // Map used to index into a local ghost buffer
   std::map<size_t, std::vector<size_t>> local_ghost_index_map;
   // Local ghost locations (build at construction time)
@@ -103,6 +106,8 @@ private:
   // put_window_map[global_id] = [put_rank, ghost_proc_buffer_size, ghost_proc_put_offset]
   // array is integers to accommodate mpi data types
   std::map<size_t, std::vector<std::array<int, 3>>> put_window_map;
+  // max put buffer size;
+  size_t max_put_buffer_size;
 };
 
 } // end namespace  rtt_kde
