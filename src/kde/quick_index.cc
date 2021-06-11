@@ -110,22 +110,22 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
       nbins *= coarse_bin_resolution;
 
     std::vector<int> global_index_per_bin_per_proc(nbins * nodes, 0UL);
-    for (auto mapItr = coarse_index_map.begin(); mapItr != coarse_index_map.end(); mapItr++) {
-      size_t gipbpp_index = mapItr->first + nbins * node;
+    for (auto &map : coarse_index_map) {
+      size_t gipbpp_index = map.first + nbins * node;
       // must cast to an int to accomidate mpi int types.
-      global_index_per_bin_per_proc[gipbpp_index] = static_cast<int>(mapItr->second.size());
+      global_index_per_bin_per_proc[gipbpp_index] = static_cast<int>(map.second.size());
     }
     rtt_c4::global_sum(&global_index_per_bin_per_proc[0], nbins * nodes);
 
     // calculate local ghost buffer size
     local_ghost_buffer_size = 0;
     for (size_t proc = 0; proc < nodes; proc++) {
-      for (auto binItr = local_bins.begin(); binItr != local_bins.end(); binItr++) {
+      for (auto &bin : local_bins) {
         if (node != proc) {
-          size_t gipbpp_index = *binItr + nbins * proc;
+          size_t gipbpp_index = bin + nbins * proc;
           // build up the local ghost index map
           for (int i = 0; i < global_index_per_bin_per_proc[gipbpp_index]; i++)
-            local_ghost_index_map[*binItr].push_back(local_ghost_buffer_size + i);
+            local_ghost_index_map[bin].push_back(local_ghost_buffer_size + i);
           // accumulate the total ghost points
           local_ghost_buffer_size += global_index_per_bin_per_proc[gipbpp_index];
         }
@@ -134,8 +134,8 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
 
     std::vector<int> global_need_bins_per_proc(nbins * nodes, 0UL);
     // global need bins
-    for (auto binItr = local_bins.begin(); binItr != local_bins.end(); binItr++) {
-      global_need_bins_per_proc[*binItr + nbins * node] += 1;
+    for (auto &bin : local_bins) {
+      global_need_bins_per_proc[bin + nbins * node] += 1;
     }
     rtt_c4::global_sum(&global_need_bins_per_proc[0], nbins * nodes);
 
@@ -161,18 +161,18 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
           }
         }
       }
-      for (auto mapItr = coarse_index_map.begin(); mapItr != coarse_index_map.end(); mapItr++) {
+      for (auto &map : coarse_index_map) {
         if (rtt_c4::node() != rec_proc) {
-          size_t gipbpp_index = mapItr->first + nbins * rec_proc;
+          size_t gipbpp_index = map.first + nbins * rec_proc;
           if (global_need_bins_per_proc[gipbpp_index] > 0) {
             // capture the largest put buffer on this rank
-            if (mapItr->second.size() > max_put_buffer_size)
-              max_put_buffer_size = mapItr->second.size();
+            if (map.second.size() > max_put_buffer_size)
+              max_put_buffer_size = map.second.size();
 
             // build up map data
-            put_window_map[mapItr->first].push_back(
+            put_window_map[map.first].push_back(
                 std::array<int, 3>{rec_proc, proc_ghost_buffer_size[rec_proc], offset});
-            offset += static_cast<int>(mapItr->second.size());
+            offset += static_cast<int>(map.second.size());
           }
         }
       }
@@ -189,11 +189,10 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
 
 #ifdef C4_MPI
 // call MPI_put using a chunk style write to avoid error in MPI_put with large local buffers.
-auto put_lambda = [](auto &putItr, auto &put_buffer, auto &put_size, auto &win) {
+auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win) {
   // temporary work around until RMA is available in c4
   // loop over all ranks we need to send this buffer too.
-  for (auto rankItr = putItr->second.begin(); rankItr != putItr->second.end(); rankItr++) {
-    const std::array<int, 3> &putv = *rankItr;
+  for (auto &putv : put.second) {
     int put_rank = putv[0];
     int put_rank_buffer_size = putv[1];
     int put_offset = putv[2];
@@ -247,26 +246,24 @@ void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &l
   for (size_t d = 0; d < dim; d++) {
     int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win);
     Check(errorcode == MPI_SUCCESS);
-    for (auto putItr = put_window_map.begin(); putItr != put_window_map.end(); putItr++) {
+    for (auto &put : put_window_map) {
       // use map.at() to allow const access
-      const auto &index_vector = coarse_index_map.at(putItr->first);
-      const auto put_size = index_vector.size();
-      Check(put_size <= max_put_buffer_size);
+      Check((coarse_index_map.at(put.first)).size() <= max_put_buffer_size);
       // fill up the current ghost cell data for this dimension
       int putIndex = 0;
-      for (auto indexItr = index_vector.begin(); indexItr != index_vector.end(); indexItr++) {
-        put_buffer[putIndex] = local_data[*indexItr][d];
+      for (auto &l : coarse_index_map.at(put.first)) {
+        put_buffer[putIndex] = local_data[l][d];
         putIndex++;
       }
-      put_lambda(putItr, put_buffer, put_size, win);
+      put_lambda(put, put_buffer, putIndex, win);
     }
     errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
     Check(errorcode == MPI_SUCCESS);
 
     // alright move the position buffer to the final correct array positions
     int posIndex = 0;
-    for (auto posItr = local_ghost_buffer.begin(); posItr != local_ghost_buffer.end(); posItr++) {
-      local_ghost_data[posIndex][d] = *posItr;
+    for (auto &pos : local_ghost_buffer) {
+      local_ghost_data[posIndex][d] = pos;
       posIndex++;
     }
   }
@@ -312,26 +309,23 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
     Check(local_data[d].size() == n_locations);
     int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win);
     Check(errorcode == MPI_SUCCESS);
-    for (auto putItr = put_window_map.begin(); putItr != put_window_map.end(); putItr++) {
+    for (auto &put : put_window_map) {
       // use map.at() to allow const access
-      const auto &index_vector = coarse_index_map.at(putItr->first);
-      const auto put_size = index_vector.size();
-      Check(put_size <= max_put_buffer_size);
-
+      Check((coarse_index_map.at(put.first)).size() <= max_put_buffer_size);
       // fill up the current ghost cell data for this dimension
       int putIndex = 0;
-      for (auto indexItr = index_vector.begin(); indexItr != index_vector.end(); indexItr++) {
-        put_buffer[putIndex] = local_data[d][*indexItr];
+      for (auto &l : coarse_index_map.at(put.first)) {
+        put_buffer[putIndex] = local_data[d][l];
         putIndex++;
       }
-      put_lambda(putItr, put_buffer, put_size, win);
+      put_lambda(put, put_buffer, putIndex, win);
     }
     errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
     Check(errorcode == MPI_SUCCESS);
     // alright move the position buffer to the final correct vector positions
     int posIndex = 0;
-    for (auto posItr = local_ghost_buffer.begin(); posItr != local_ghost_buffer.end(); posItr++) {
-      local_ghost_data[d][posIndex] = *posItr;
+    for (auto &pos : local_ghost_buffer) {
+      local_ghost_data[d][posIndex] = pos;
       posIndex++;
     }
   }
@@ -369,19 +363,16 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
   // working from my local data put the ghost data on the other ranks
   int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win);
   Check(errorcode == MPI_SUCCESS);
-  for (auto putItr = put_window_map.begin(); putItr != put_window_map.end(); putItr++) {
+  for (auto put : put_window_map) {
     // use map.at() to allow const access
-    const auto &index_vector = coarse_index_map.at(putItr->first);
-    const auto put_size = index_vector.size();
-    Check(put_size <= max_put_buffer_size);
-
+    Check((coarse_index_map.at(put.first)).size() <= max_put_buffer_size);
     // fill up the current ghost cell data for this dimension
     int putIndex = 0;
-    for (auto indexItr = index_vector.begin(); indexItr != index_vector.end(); indexItr++) {
-      put_buffer[putIndex] = local_data[*indexItr];
+    for (auto &l : coarse_index_map.at(put.first)) {
+      put_buffer[putIndex] = local_data[l];
       putIndex++;
     }
-    put_lambda(putItr, put_buffer, put_size, win);
+    put_lambda(put, put_buffer, putIndex, win);
   }
   errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
   Check(errorcode == MPI_SUCCESS);
@@ -533,19 +524,19 @@ void quick_index::map_data_to_grid_window(
   std::vector<int> data_count(n_map_bins, 0);
   double bias_cell_count = 0.0;
   // Loop over all possible bins
-  for (auto cbItr = global_bins.begin(); cbItr < global_bins.end(); cbItr++) {
+  for (auto &cb : global_bins) {
     // skip bins that aren't present in the map (can't use [] operator with constness)
     // loop over the local data
-    auto mapItr = coarse_index_map.find(*cbItr);
+    auto mapItr = coarse_index_map.find(cb);
     if (mapItr != coarse_index_map.end()) {
-      for (auto iItr = mapItr->second.begin(); iItr != mapItr->second.end(); iItr++) {
+      for (auto &l : mapItr->second) {
         // calculate local bin index
         bool valid = true;
         std::array<size_t, 3> bin_id{0, 0, 0};
         for (size_t d = 0; d < dim; d++) {
           Check((window_max[d] - window_min[d]) > 0.0);
           const double bin_value = static_cast<double>(grid_bins[d]) *
-                                   (locations[*iItr][d] - window_min[d]) /
+                                   (locations[l][d] - window_min[d]) /
                                    (window_max[d] - window_min[d]);
           if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
             valid = false;
@@ -570,16 +561,16 @@ void quick_index::map_data_to_grid_window(
         // regardless of map type if it is the first value to enter the bin it
         // gets set to that value
         if (data_count[local_window_bin] == 1) {
-          grid_data[local_window_bin] = local_data[*iItr];
+          grid_data[local_window_bin] = local_data[l];
           bias_cell_count += 1.0;
         } else if (map_type == "max") {
-          if (local_data[*iItr] > grid_data[local_window_bin])
-            grid_data[local_window_bin] = local_data[*iItr];
+          if (local_data[l] > grid_data[local_window_bin])
+            grid_data[local_window_bin] = local_data[l];
         } else if (map_type == "min") {
-          if (local_data[*iItr] < grid_data[local_window_bin])
-            grid_data[local_window_bin] = local_data[*iItr];
+          if (local_data[l] < grid_data[local_window_bin])
+            grid_data[local_window_bin] = local_data[l];
         } else if (map_type == "ave") {
-          grid_data[local_window_bin] += local_data[*iItr];
+          grid_data[local_window_bin] += local_data[l];
         } else {
           Insist(false, "Error: map_type=" + map_type + " is invalid. Must be max, min, or ave.");
         }
@@ -587,17 +578,17 @@ void quick_index::map_data_to_grid_window(
     }   // if valid local bin loop
     if (domain_decomposed) {
       // loop over the ghost data
-      auto gmapItr = local_ghost_index_map.find(*cbItr);
+      auto gmapItr = local_ghost_index_map.find(cb);
       if (gmapItr != local_ghost_index_map.end()) {
         // loop over ghost data
-        for (auto gItr = gmapItr->second.begin(); gItr != gmapItr->second.end(); gItr++) {
+        for (auto &g : gmapItr->second) {
           // calculate local bin index
           bool valid = true;
           std::array<size_t, 3> bin_id{0, 0, 0};
           for (size_t d = 0; d < dim; d++) {
             Check((window_max[d] - window_min[d]) > 0.0);
             const double bin_value = static_cast<double>(grid_bins[d]) *
-                                     (local_ghost_locations[*gItr][d] - window_min[d]) /
+                                     (local_ghost_locations[g][d] - window_min[d]) /
                                      (window_max[d] - window_min[d]);
             if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
               valid = false;
@@ -622,16 +613,16 @@ void quick_index::map_data_to_grid_window(
           // regardless of map type if it is the first value to enter the bin it
           // gets set to that value
           if (data_count[local_window_bin] == 1) {
-            grid_data[local_window_bin] = ghost_data[*gItr];
+            grid_data[local_window_bin] = ghost_data[g];
             bias_cell_count += 1.0;
           } else if (map_type == "max") {
-            if (ghost_data[*gItr] > grid_data[local_window_bin])
-              grid_data[local_window_bin] = ghost_data[*gItr];
+            if (ghost_data[g] > grid_data[local_window_bin])
+              grid_data[local_window_bin] = ghost_data[g];
           } else if (map_type == "min") {
-            if (ghost_data[*gItr] < grid_data[local_window_bin])
-              grid_data[local_window_bin] = ghost_data[*gItr];
+            if (ghost_data[g] < grid_data[local_window_bin])
+              grid_data[local_window_bin] = ghost_data[g];
           } else if (map_type == "ave") {
-            grid_data[local_window_bin] += ghost_data[*gItr];
+            grid_data[local_window_bin] += ghost_data[g];
           } else {
             Insist(false, "Error: map_type=" + map_type + " is invalid. Must be max, min, or ave.");
           }
@@ -641,19 +632,13 @@ void quick_index::map_data_to_grid_window(
   }       // end coarse bin loop
 
   if (map_type == "ave") {
-    double last_val = 0.0;
-    int last_data_count = 0;
     for (size_t i = 0; i < n_map_bins; i++) {
       if (data_count[i] > 0) {
         grid_data[i] /= data_count[i];
-        last_val = grid_data[i];
-        last_data_count = data_count[i];
-      } else if (fill) {
-        grid_data[i] = last_val;
-        data_count[i] = last_data_count;
       }
     }
-  } else if (fill) {
+  }
+  if (fill) {
     double last_val = 0.0;
     int last_data_count = 0;
     for (size_t i = 0; i < n_map_bins; i++) {
@@ -772,19 +757,19 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
   std::vector<int> data_count(n_map_bins, 0);
   double bias_cell_count = 0.0;
   // Loop over all possible bins
-  for (auto cbItr = global_bins.begin(); cbItr < global_bins.end(); cbItr++) {
+  for (auto &cb : global_bins) {
     // skip bins that aren't present in the map (can't use [] operator with constness)
     // loop over the local data
-    auto mapItr = coarse_index_map.find(*cbItr);
+    auto mapItr = coarse_index_map.find(cb);
     if (mapItr != coarse_index_map.end()) {
-      for (auto iItr = mapItr->second.begin(); iItr != mapItr->second.end(); iItr++) {
+      for (auto &l : mapItr->second) {
         // calculate local bin index
         bool valid = true;
         std::array<size_t, 3> bin_id{0, 0, 0};
         for (size_t d = 0; d < dim; d++) {
           Check((window_max[d] - window_min[d]) > 0.0);
           const double bin_value = static_cast<double>(grid_bins[d]) *
-                                   (locations[*iItr][d] - window_min[d]) /
+                                   (locations[l][d] - window_min[d]) /
                                    (window_max[d] - window_min[d]);
           if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
             valid = false;
@@ -809,17 +794,17 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
           // regardless of map type if it is the first value to enter the bin it
           // gets set to that value
           if (data_count[local_window_bin] == 1) {
-            grid_data[v][local_window_bin] = local_data[v][*iItr];
+            grid_data[v][local_window_bin] = local_data[v][l];
             if (v == 0)
               bias_cell_count += 1.0;
           } else if (map_type == "max") {
-            if (local_data[v][*iItr] > grid_data[v][local_window_bin])
-              grid_data[v][local_window_bin] = local_data[v][*iItr];
+            if (local_data[v][l] > grid_data[v][local_window_bin])
+              grid_data[v][local_window_bin] = local_data[v][l];
           } else if (map_type == "min") {
-            if (local_data[v][*iItr] < grid_data[v][local_window_bin])
-              grid_data[v][local_window_bin] = local_data[v][*iItr];
+            if (local_data[v][l] < grid_data[v][local_window_bin])
+              grid_data[v][local_window_bin] = local_data[v][l];
           } else if (map_type == "ave") {
-            grid_data[v][local_window_bin] += local_data[v][*iItr];
+            grid_data[v][local_window_bin] += local_data[v][l];
           } else {
             Insist(false, "Error: map_type=" + map_type + " is invalid. Must be max, min, or ave.");
           }
@@ -828,17 +813,17 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
     }   // if valid local bin loop
     if (domain_decomposed) {
       // loop over the ghost data
-      auto gmapItr = local_ghost_index_map.find(*cbItr);
+      auto gmapItr = local_ghost_index_map.find(cb);
       if (gmapItr != local_ghost_index_map.end()) {
         // loop over ghost data
-        for (auto gItr = gmapItr->second.begin(); gItr != gmapItr->second.end(); gItr++) {
+        for (auto &g : gmapItr->second) {
           // calculate local bin index
           bool valid = true;
           std::array<size_t, 3> bin_id{0, 0, 0};
           for (size_t d = 0; d < dim; d++) {
             Check((window_max[d] - window_min[d]) > 0.0);
             const double bin_value = static_cast<double>(grid_bins[d]) *
-                                     (local_ghost_locations[*gItr][d] - window_min[d]) /
+                                     (local_ghost_locations[g][d] - window_min[d]) /
                                      (window_max[d] - window_min[d]);
             if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
               valid = false;
@@ -864,17 +849,17 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
             // regardless of map type if it is the first value to enter the bin it
             // gets set to that value
             if (data_count[local_window_bin] == 1) {
-              grid_data[v][local_window_bin] = ghost_data[v][*gItr];
+              grid_data[v][local_window_bin] = ghost_data[v][g];
               if (v == 0)
                 bias_cell_count += 1.0;
             } else if (map_type == "max") {
-              if (ghost_data[v][*gItr] > grid_data[v][local_window_bin])
-                grid_data[v][local_window_bin] = ghost_data[v][*gItr];
+              if (ghost_data[v][g] > grid_data[v][local_window_bin])
+                grid_data[v][local_window_bin] = ghost_data[v][g];
             } else if (map_type == "min") {
-              if (ghost_data[v][*gItr] < grid_data[v][local_window_bin])
-                grid_data[v][local_window_bin] = ghost_data[v][*gItr];
+              if (ghost_data[v][g] < grid_data[v][local_window_bin])
+                grid_data[v][local_window_bin] = ghost_data[v][g];
             } else if (map_type == "ave") {
-              grid_data[v][local_window_bin] += ghost_data[v][*gItr];
+              grid_data[v][local_window_bin] += ghost_data[v][g];
             } else {
               Insist(false,
                      "Error: map_type=" + map_type + " is invalid. Must be max, min, or ave.");
@@ -886,31 +871,24 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
   }       // end coarse bin loop
 
   if (map_type == "ave") {
-    for (size_t v = 0; v < vsize; v++) {
-      double last_val = 0.0;
-      int last_data_count = 0;
-      for (size_t i = 0; i < n_map_bins; i++) {
+    for (size_t i = 0; i < n_map_bins; i++) {
+      for (size_t v = 0; v < vsize; v++) {
         if (data_count[i] > 0) {
           grid_data[v][i] /= data_count[i];
-          last_val = grid_data[v][i];
-          last_data_count = data_count[i];
-        } else if (fill) {
-          grid_data[v][i] = last_val;
-          if (v == vsize - 1)
-            data_count[i] = last_data_count;
         }
       }
     }
-  } else if (fill) {
-    for (size_t v = 0; v < vsize; v++) {
-      double last_val = 0.0;
-      int last_data_count = 0;
-      for (size_t i = 0; i < n_map_bins; i++) {
+  }
+  if (fill) {
+    std::vector<double> last_val(vsize, 0.0);
+    int last_data_count = 0;
+    for (size_t i = 0; i < n_map_bins; i++) {
+      for (size_t v = 0; v < vsize; v++) {
         if (data_count[i] > 0) {
-          last_val = grid_data[v][i];
+          last_val[v] = grid_data[v][i];
           last_data_count = data_count[i];
         } else {
-          grid_data[v][i] = last_val;
+          grid_data[v][i] = last_val[v];
           if (v == vsize - 1)
             data_count[i] = last_data_count;
         }
