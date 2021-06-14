@@ -244,7 +244,7 @@ void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &l
 
   // working from my local data put the ghost data on the other ranks
   for (size_t d = 0; d < dim; d++) {
-    int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win);
+    Remember(int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win));
     Check(errorcode == MPI_SUCCESS);
     for (auto &put : put_window_map) {
       // use map.at() to allow const access
@@ -257,7 +257,7 @@ void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &l
       }
       put_lambda(put, put_buffer, putIndex, win);
     }
-    errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+    Remember(errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win));
     Check(errorcode == MPI_SUCCESS);
 
     // alright move the position buffer to the final correct array positions
@@ -307,7 +307,7 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
   // working from my local data put the ghost data on the other ranks
   for (size_t d = 0; d < data_dim; d++) {
     Check(local_data[d].size() == n_locations);
-    int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win);
+    Remember(int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win));
     Check(errorcode == MPI_SUCCESS);
     for (auto &put : put_window_map) {
       // use map.at() to allow const access
@@ -320,7 +320,7 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
       }
       put_lambda(put, put_buffer, putIndex, win);
     }
-    errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+    Remember(errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win));
     Check(errorcode == MPI_SUCCESS);
     // alright move the position buffer to the final correct vector positions
     int posIndex = 0;
@@ -361,7 +361,7 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
                  MPI_INFO_NULL, MPI_COMM_WORLD, &win);
 
   // working from my local data put the ghost data on the other ranks
-  int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win);
+  Remember(int errorcode = MPI_Win_fence(MPI_MODE_NOSTORE, win));
   Check(errorcode == MPI_SUCCESS);
   for (auto put : put_window_map) {
     // use map.at() to allow const access
@@ -374,7 +374,7 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
     }
     put_lambda(put, put_buffer, putIndex, win);
   }
-  errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+  Remember(errorcode = MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win));
   Check(errorcode == MPI_SUCCESS);
   MPI_Win_free(&win);
 #endif
