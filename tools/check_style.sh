@@ -161,7 +161,7 @@ else
     cat "${patchfile_c}"
   else
     echo -ne "      run clang-formt -i < file> to fix files, or"
-    echo -e  "      run ${0##*/} with option -f to automatically apply this patch.\n"
+    echo -e  " run ${0##*/} with option -f to automatically apply this patch.\n"
     cat "${patchfile_c}"
   fi
 fi
@@ -323,7 +323,7 @@ fi
 if [[ -x "$EMACS" ]]; then
 
   echo -ne "\n--------------------------------------------------------------------------------\n"
-  echo -e "Checking modified F90 code for style conformance (indentation)..\n"
+  echo -e "Checking modified F90 code for style conformance (indentation).\n"
 
   patchfile_f90=$(mktemp /tmp/emf90.patch.XXXXXXXX)
 
@@ -376,7 +376,7 @@ fi
 #--------------------------------------------------------------------------------------------------#
 
 echo -ne "\n--------------------------------------------------------------------------------"
-echo -e "Checking modified F90 code for style conformance (line length)..\n"
+echo -e "\nChecking modified F90 code for style conformance (line length)..\n"
 
 tmpfile2=$(mktemp /tmp/f90-format-line-len.XXXXXXXX)
 

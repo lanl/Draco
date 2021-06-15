@@ -72,10 +72,9 @@ void test_replication(ParallelUnitTest &ut) {
     gold_map[9] = {9};
     if (gold_map.size() != qindex.coarse_index_map.size())
       ITFAILS;
-    for (auto mapItr = qindex.coarse_index_map.begin(); mapItr != qindex.coarse_index_map.end();
-         mapItr++)
-      for (size_t i = 0; i < mapItr->second.size(); i++)
-        if (gold_map[mapItr->first][i] != mapItr->second[i])
+    for (auto &map : qindex.coarse_index_map)
+      for (size_t i = 0; i < map.second.size(); i++)
+        if (gold_map[map.first][i] != map.second[i])
           ITFAILS;
   }
 
@@ -165,10 +164,9 @@ void test_decomposition(ParallelUnitTest &ut) {
     }
     if (gold_map.size() != qindex.coarse_index_map.size())
       ITFAILS;
-    for (auto mapItr = qindex.coarse_index_map.begin(); mapItr != qindex.coarse_index_map.end();
-         mapItr++)
-      for (size_t i = 0; i < mapItr->second.size(); i++)
-        if (gold_map[mapItr->first][i] != mapItr->second[i])
+    for (auto &map : qindex.coarse_index_map)
+      for (size_t i = 0; i < map.second.size(); i++)
+        if (gold_map[map.first][i] != map.second[i])
           ITFAILS;
 
     // Check Domain Decomposed Data
@@ -251,12 +249,11 @@ void test_decomposition(ParallelUnitTest &ut) {
     }
     if (gold_ghost_index_map.size() != qindex.local_ghost_index_map.size())
       ITFAILS;
-    for (auto mapItr = qindex.local_ghost_index_map.begin();
-         mapItr != qindex.local_ghost_index_map.end(); mapItr++) {
-      if (gold_ghost_index_map[mapItr->first].size() != mapItr->second.size())
+    for (auto &map : qindex.local_ghost_index_map) {
+      if (gold_ghost_index_map[map.first].size() != map.second.size())
         ITFAILS;
-      for (size_t i = 0; i < mapItr->second.size(); i++) {
-        if (mapItr->second[i] != gold_ghost_index_map[mapItr->first][i])
+      for (size_t i = 0; i < map.second.size(); i++) {
+        if (map.second[i] != gold_ghost_index_map[map.first][i])
           ITFAILS;
       }
     }
@@ -969,10 +966,9 @@ void test_decomposition(ParallelUnitTest &ut) {
     }
     if (gold_map.size() != qindex.coarse_index_map.size())
       ITFAILS;
-    for (auto mapItr = qindex.coarse_index_map.begin(); mapItr != qindex.coarse_index_map.end();
-         mapItr++)
-      for (size_t i = 0; i < mapItr->second.size(); i++)
-        if (gold_map[mapItr->first][i] != mapItr->second[i])
+    for (auto &map : qindex.coarse_index_map)
+      for (size_t i = 0; i < map.second.size(); i++)
+        if (gold_map[map.first][i] != map.second[i])
           ITFAILS;
 
     // Check Domain Decomposed Data
@@ -1054,12 +1050,11 @@ void test_decomposition(ParallelUnitTest &ut) {
 
     if (gold_ghost_index_map.size() != qindex.local_ghost_index_map.size())
       ITFAILS;
-    for (auto mapItr = qindex.local_ghost_index_map.begin();
-         mapItr != qindex.local_ghost_index_map.end(); mapItr++) {
-      if (gold_ghost_index_map[mapItr->first].size() != mapItr->second.size())
+    for (auto &map : qindex.local_ghost_index_map) {
+      if (gold_ghost_index_map[map.first].size() != map.second.size())
         ITFAILS;
-      for (size_t i = 0; i < mapItr->second.size(); i++) {
-        if (mapItr->second[i] != gold_ghost_index_map[mapItr->first][i])
+      for (size_t i = 0; i < map.second.size(); i++) {
+        if (map.second[i] != gold_ghost_index_map[map.first][i])
           ITFAILS;
       }
     }

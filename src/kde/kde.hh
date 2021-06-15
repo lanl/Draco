@@ -50,6 +50,9 @@ public:
                      const std::vector<std::array<double, 3>> &one_over_band_width,
                      const quick_index &qindex, const double discontinuity_cutoff = 0.0) const;
 
+  //! Apply conservation to reconstructed distribution
+  void apply_conservation(const std::vector<double> &original_distribution,
+                          std::vector<double> &new_distribution, const bool domain_decompsed) const;
   // STATICS
 
   //! Epanechikov Kernel

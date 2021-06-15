@@ -20,11 +20,13 @@ source tools/common.sh
 if [[ ${STYLE} ]]; then
   echo "checking style conformance..."
 
+  run "git branch -a"
+
   # Return integer > 0 if 'develop' branch is found.
   function find_dev_branch
   {
     set -f
-    git branch -a | grep -c develop
+    git branch -a | grep -v origin | grep -c develop
     set +f
   }
 

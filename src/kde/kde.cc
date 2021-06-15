@@ -56,13 +56,9 @@ kde::reconstruction(const std::vector<double> &distribution,
   Require(one_over_bandwidth.size() == local_size);
 
   // used for the zero accumulation conservation
-  double global_conservation = std::accumulate(distribution.begin(), distribution.end(), 0.0);
   std::vector<double> result(local_size, 0.0);
-  std::vector<double> abs_result(local_size, 0.0);
   std::vector<double> normal(local_size, 0.0);
   if (qindex.domain_decomposed) {
-
-    rtt_c4::global_sum(global_conservation);
 
     std::vector<double> ghost_distribution(qindex.local_ghost_buffer_size);
     qindex.collect_ghost_data(distribution, ghost_distribution);
@@ -159,24 +155,6 @@ kde::reconstruction(const std::vector<double> &distribution,
   for (size_t i = 0; i < local_size; i++) {
     Check(normal[i] > 0.0);
     result[i] /= normal[i];
-    if (!rtt_dsxx::soft_equiv(result[i], distribution[i], 1e-12))
-      abs_result[i] = fabs(result[i]);
-  }
-
-  double reconstruction_conservation = std::accumulate(result.begin(), result.end(), 0.0);
-  double abs_reconstruction_conservation =
-      std::accumulate(abs_result.begin(), abs_result.end(), 0.0);
-
-  if (qindex.domain_decomposed) {
-    // accumulate global contribution
-    rtt_c4::global_sum(reconstruction_conservation);
-    rtt_c4::global_sum(abs_reconstruction_conservation);
-  }
-
-  if (abs_reconstruction_conservation > 0.0) {
-    const double res = global_conservation - reconstruction_conservation;
-    for (size_t i = 0; i < local_size; i++)
-      result[i] += res * abs_result[i] / abs_reconstruction_conservation;
   }
 
   return result;
@@ -211,15 +189,12 @@ kde::log_reconstruction(const std::vector<double> &distribution,
   Require(one_over_bandwidth.size() == local_size);
 
   // used for the zero accumulation conservation
-  double global_conservation = std::accumulate(distribution.begin(), distribution.end(), 0.0);
   std::vector<double> result(local_size, 0.0);
-  std::vector<double> abs_result(local_size, 0.0);
   std::vector<double> normal(local_size, 0.0);
   double min_value = *std::min_element(distribution.begin(), distribution.end());
   double log_bias = fabs(min_value) * (1.0 + 1e-12);
   if (qindex.domain_decomposed) {
 
-    rtt_c4::global_sum(global_conservation);
     rtt_c4::global_min(min_value);
 
     std::vector<double> ghost_distribution(qindex.local_ghost_buffer_size);
@@ -325,28 +300,61 @@ kde::log_reconstruction(const std::vector<double> &distribution,
     // ZERO IS ZERO AND THE LOG TRANSFORM CAN MAKE THE ZEROS NOT MATCH... SO FIX IT LIKE THIS
     if (rtt_dsxx::soft_equiv(result[i], 0.0) && rtt_dsxx::soft_equiv(distribution[i], 0.0))
       result[i] = distribution[i];
-    if (!rtt_dsxx::soft_equiv(result[i], distribution[i], 1e-12))
-      abs_result[i] = fabs(result[i]);
-  }
-
-  double reconstruction_conservation = std::accumulate(result.begin(), result.end(), 0.0);
-  double abs_reconstruction_conservation =
-      std::accumulate(abs_result.begin(), abs_result.end(), 0.0);
-
-  if (qindex.domain_decomposed) {
-    // accumulate global contribution
-    rtt_c4::global_sum(reconstruction_conservation);
-    rtt_c4::global_sum(abs_reconstruction_conservation);
-  }
-
-  if (abs_reconstruction_conservation > 0.0) {
-    const double res = global_conservation - reconstruction_conservation;
-    for (size_t i = 0; i < local_size; i++)
-      result[i] += res * abs_result[i] / abs_reconstruction_conservation;
   }
 
   return result;
 }
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief KDE apply conservation
+ * 
+ * \pre Apply conservation fix to the new distribution so
+ * sum(original_distribution) == sum(new_distribution)
+ *
+ * \param[in] original_distribution original data to be reconstructed
+ * \param[in,out] new_distribution original data to be reconstructed
+ * \param[in] domain_decomposed bool
+ *
+ */
+void kde::apply_conservation(const std::vector<double> &original_distribution,
+                             std::vector<double> &new_distribution,
+                             const bool domain_decomposed) const {
+
+  const size_t local_size = original_distribution.size();
+  Insist(new_distribution.size() == local_size,
+         "Original and new distributions must be the same size");
+
+  // compute absolute solution
+  std::vector<double> abs_distribution(local_size, 0.0);
+  for (size_t i = 0; i < local_size; i++) {
+    if (!rtt_dsxx::soft_equiv(new_distribution[i], original_distribution[i], 1e-12))
+      abs_distribution[i] = fabs(new_distribution[i]);
+  }
+
+  // compute totals to be used in residual calculation
+  double original_conservation =
+      std::accumulate(original_distribution.begin(), original_distribution.end(), 0.0);
+  double reconstruction_conservation =
+      std::accumulate(new_distribution.begin(), new_distribution.end(), 0.0);
+  double abs_distribution_conservation =
+      std::accumulate(abs_distribution.begin(), abs_distribution.end(), 0.0);
+
+  if (domain_decomposed) {
+    // accumulate global contribution
+    rtt_c4::global_sum(original_conservation);
+    rtt_c4::global_sum(reconstruction_conservation);
+    rtt_c4::global_sum(abs_distribution_conservation);
+  }
+
+  // Apply residual
+  if (abs_distribution_conservation > 0.0) {
+    const double res = original_conservation - reconstruction_conservation;
+    for (size_t i = 0; i < local_size; i++)
+      new_distribution[i] += res * abs_distribution[i] / abs_distribution_conservation;
+  }
+}
+
 } // end namespace rtt_kde
 
 //------------------------------------------------------------------------------------------------//

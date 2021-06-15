@@ -1,0 +1,57 @@
+name: CI gcc scalar
+
+#
+# Documentation:
+# - https://help.github.com/en/articles/workflow-syntax-for-github-actions
+# - https://github.com/lanl/Draco/new/develop?filename=.github%2Fworkflows%2Fmain.yml&workflow_template=blank
+#
+
+#############################
+# Start the job on all push #
+#############################
+on:
+  # Triggers the workflow on push or pull request events but only for the develop branch
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  PYTHONPATH: /home/runner/work/Draco/Draco/config
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+          # submodules: true
+
+      - name: Fetch Docker image for CI
+        uses: docker://kinetictheory/draco-ci-2020nov:style-checks
+#        entrypoint: '/home/runner/work/Draco/Draco/tools/travis-run-tests.sh'
+
+      - name: Gcc-scalar
+        env:
+          DOCKER_TAG: spack-gcc
+          COMPILER: GCC
+          COVERAGE: ON
+          DRACO_C4: SCALAR
+          WERROR: ON
+        run: |
+          if [[ ${COVERAGE:-OFF} == "ON" ]]; then ci_env=`/bin/bash <(curl -s https://codecov.io/env)`; fi
+          echo "docker run ${ci_env} -v ${GITHUB_WORKSPACE}:/home/travis/Draco -e COMPILER=${COMPILER} -e VENDOR_DIR=/vendors  -e BUILD_DIR=/home/travis/Draco/build -e SOURCE_DIR=/home/travis/Draco -e STYLE=${STYLE} -e COVERAGE=${COVERAGE} -e WERROR=${WERROR} -e DRACO_C4=${DRACO_C4} -e AUTODOC=${AUTODOC} -e CLANGTIDY=${CLANGTIDY} -e CI=${CI} kinetictheory/draco-ci-2020nov:${DOCKER_TAG} /bin/bash -l -c /home/travis/Draco/tools/travis-run-tests.sh"
+          docker run ${ci_env} -v ${GITHUB_WORKSPACE}:/home/travis/Draco -e COMPILER=${COMPILER} -e VENDOR_DIR=/vendors -e BUILD_DIR=/home/travis/Draco/build -e SOURCE_DIR=/home/travis/Draco -e STYLE=${STYLE} -e COVERAGE=${COVERAGE} -e WERROR=${WERROR} -e DRACO_C4=${DRACO_C4} -e AUTODOC=${AUTODOC} -e CLANGTIDY=${CLANGTIDY} -e CI=${CI} kinetictheory/draco-ci-2020nov:${DOCKER_TAG} /bin/bash -l -c '/home/travis/Draco/tools/travis-run-tests.sh'
+
+# cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+# cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+# ctest -C ${{env.BUILD_TYPE}}

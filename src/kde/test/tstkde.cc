@@ -51,6 +51,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -91,6 +94,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -130,6 +136,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -169,6 +178,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -208,6 +220,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -247,6 +262,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -289,6 +307,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -328,6 +349,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -379,6 +403,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     std::vector<double> bench{0.122267, 0.181788, 0.118212, 0.181788, 0.118212,
                               0.181788, 0.118212, 0.181788, 0.118212, 0.177733};
@@ -423,6 +450,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -463,6 +493,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -502,6 +535,8 @@ void test_replication(ParallelUnitTest &ut) {
 
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
 
     std::vector<double> bench{0.01446,   0.0172074, 0.10425,  0.172074, 0.131586,
                               0.0172074, 0.040488,  0.172074, 0.131586, 0.15906};
@@ -538,6 +573,8 @@ void test_replication(ParallelUnitTest &ut) {
 
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
 
     std::vector<double> bench{0.0142901, 0.0172733, 0.104099, 0.172733, 0.130699,
                               0.0172733, 0.0396694, 0.172733, 0.130699, 0.160531};
@@ -579,6 +616,8 @@ void test_replication(ParallelUnitTest &ut) {
 
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
 
     std::vector<double> bench{0.0131256, 0.0158657, 0.1,      0.2,      0.1,
                               0.0158657, 0.0364369, 0.158657, 0.120049, 0.2};
@@ -627,6 +666,8 @@ void test_replication(ParallelUnitTest &ut) {
 
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
 
     std::vector<double> bench{0.0159208, 0.0177581, 0.1,      0.157576, 0.15506,
                               0.0164128, 0.01,      0.177581, 0.154304, 0.155386};
@@ -666,6 +707,9 @@ void test_replication(ParallelUnitTest &ut) {
         test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
 
     for (int i = 0; i < 10; i++) {
       if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2))
@@ -743,6 +787,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -801,6 +848,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -859,6 +909,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -917,6 +970,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -975,6 +1031,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1033,6 +1092,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1094,6 +1156,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1152,6 +1217,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     // Check smooth result
@@ -1231,6 +1299,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1290,6 +1361,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1349,6 +1423,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1407,6 +1484,8 @@ void test_decomposition(ParallelUnitTest &ut) {
 
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1457,6 +1536,8 @@ void test_decomposition(ParallelUnitTest &ut) {
 
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1515,6 +1596,8 @@ void test_decomposition(ParallelUnitTest &ut) {
 
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1573,6 +1656,8 @@ void test_decomposition(ParallelUnitTest &ut) {
 
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1623,6 +1708,9 @@ void test_decomposition(ParallelUnitTest &ut) {
         test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
         test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
 
     for (int i = 0; i < local_size; i++) {
       if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2))

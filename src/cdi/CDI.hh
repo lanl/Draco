@@ -124,7 +124,7 @@ static inline double taylor_series_planck(double x) {
  */
 static double polylog_series_minus_one_planck(double const x, double const eix) {
   Require(x >= 0.0);
-  Require(x < rtt_dsxx::ce_sqrt(std::numeric_limits<double>::max()));
+  Require(x < 1.0e154); // value will be squared, make sure it's less than sqrt of max double
   Require(rtt_dsxx::soft_equiv(std::exp(-x), eix));
 
   double const xsqrd = x * x;
