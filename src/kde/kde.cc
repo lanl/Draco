@@ -39,7 +39,7 @@ namespace rtt_kde {
  * \param[in] distribution original data to be reconstructed
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
- * \param[in] discontinuity_cutoff size of value discrepancies to exclude from the reconstruction
+ * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the reconstruction
  * \return final local KDE function distribution reconstruction
  *
  * \post the local reconstruction of the original data is returned.
@@ -89,8 +89,11 @@ kde::reconstruction(const std::vector<double> &distribution,
             for (size_t d = 0; d < dim; d++) {
               const double r = qindex.locations[l][d];
               const double u = (r0[d] - r) * one_over_h[d];
-              const double scale =
-                  one_over_h[d] / one_over_bandwidth[l][d] < discontinuity_cutoff ? 0.0 : 1.0;
+              const double scale = fabs(one_over_h[d] - one_over_bandwidth[l][d]) /
+                                               std::max(one_over_h[d], one_over_bandwidth[l][d]) >
+                                           discontinuity_cutoff
+                                       ? 0.0
+                                       : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
             result[i] += distribution[l] * weight;
@@ -106,7 +109,11 @@ kde::reconstruction(const std::vector<double> &distribution,
               const double r = qindex.local_ghost_locations[g][d];
               const double u = (r0[d] - r) * one_over_h[d];
               const double scale =
-                  one_over_h[d] / ghost_one_over_bandwidth[g][d] < discontinuity_cutoff ? 0.0 : 1.0;
+                  fabs(one_over_h[d] - ghost_one_over_bandwidth[g][d]) /
+                              std::max(one_over_h[d], ghost_one_over_bandwidth[g][d]) >
+                          discontinuity_cutoff
+                      ? 0.0
+                      : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
             result[i] += ghost_distribution[g] * weight;
@@ -139,8 +146,11 @@ kde::reconstruction(const std::vector<double> &distribution,
             for (size_t d = 0; d < dim; d++) {
               const double r = qindex.locations[l][d];
               const double u = (r0[d] - r) * one_over_h[d];
-              const double scale =
-                  one_over_h[d] / one_over_bandwidth[l][d] < discontinuity_cutoff ? 0.0 : 1.0;
+              const double scale = fabs(one_over_h[d] - one_over_bandwidth[l][d]) /
+                                               std::max(one_over_h[d], one_over_bandwidth[l][d]) >
+                                           discontinuity_cutoff
+                                       ? 0.0
+                                       : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
             result[i] += distribution[l] * weight;
@@ -173,7 +183,7 @@ kde::reconstruction(const std::vector<double> &distribution,
  * \param[in] distribution original data to be reconstructed
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
- * \param[in] discontinuity_cutoff size of value discrepancies to exclude from the reconstruction
+ * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the reconstruction
  * \return final local KDE function distribution reconstruction
  *
  * \post the local reconstruction of the original data is returned.
@@ -228,8 +238,11 @@ kde::log_reconstruction(const std::vector<double> &distribution,
             for (size_t d = 0; d < dim; d++) {
               const double r = qindex.locations[l][d];
               const double u = (r0[d] - r) * one_over_h[d];
-              const double scale =
-                  one_over_h[d] / one_over_bandwidth[l][d] < discontinuity_cutoff ? 0.0 : 1.0;
+              const double scale = fabs(one_over_h[d] - one_over_bandwidth[l][d]) /
+                                               std::max(one_over_h[d], one_over_bandwidth[l][d]) >
+                                           discontinuity_cutoff
+                                       ? 0.0
+                                       : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
             result[i] += log_transform(distribution[l], log_bias) * weight;
@@ -245,7 +258,11 @@ kde::log_reconstruction(const std::vector<double> &distribution,
               const double r = qindex.local_ghost_locations[g][d];
               const double u = (r0[d] - r) * one_over_h[d];
               const double scale =
-                  one_over_h[d] / ghost_one_over_bandwidth[g][d] < discontinuity_cutoff ? 0.0 : 1.0;
+                  fabs(one_over_h[d] - ghost_one_over_bandwidth[g][d]) /
+                              std::max(one_over_h[d], ghost_one_over_bandwidth[g][d]) >
+                          discontinuity_cutoff
+                      ? 0.0
+                      : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
             result[i] += log_transform(ghost_distribution[g], log_bias) * weight;
@@ -280,8 +297,11 @@ kde::log_reconstruction(const std::vector<double> &distribution,
             for (size_t d = 0; d < dim; d++) {
               const double r = qindex.locations[l][d];
               const double u = (r0[d] - r) * one_over_h[d];
-              const double scale =
-                  one_over_h[d] / one_over_bandwidth[l][d] < discontinuity_cutoff ? 0.0 : 1.0;
+              const double scale = fabs(one_over_h[d] - one_over_bandwidth[l][d]) /
+                                               std::max(one_over_h[d], one_over_bandwidth[l][d]) >
+                                           discontinuity_cutoff
+                                       ? 0.0
+                                       : 1.0;
               weight *= scale * epan_kernel(u) * one_over_h[d];
             }
             result[i] += log_transform(distribution[l], log_bias) * weight;

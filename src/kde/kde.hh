@@ -42,13 +42,13 @@ public:
   std::vector<double> reconstruction(const std::vector<double> &distribution,
                                      const std::vector<std::array<double, 3>> &one_over_band_width,
                                      const quick_index &qindex,
-                                     const double discontinuity_cutoff = 0.0) const;
+                                     const double discontinuity_cutoff = 1.0) const;
 
   //! Reconstruct distribution in logarithmic space
   std::vector<double>
   log_reconstruction(const std::vector<double> &distribution,
                      const std::vector<std::array<double, 3>> &one_over_band_width,
-                     const quick_index &qindex, const double discontinuity_cutoff = 0.0) const;
+                     const quick_index &qindex, const double discontinuity_cutoff = 1.0) const;
 
   //! Apply conservation to reconstructed distribution
   void apply_conservation(const std::vector<double> &original_distribution,
