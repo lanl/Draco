@@ -1733,6 +1733,68 @@ void test_decomposition(ParallelUnitTest &ut) {
       ITFAILS;
   }
 
+  // what if half of it is negative and the mean is zero for a reconstruction
+  // what if we also reflect the bc
+  {
+    kde refl_kde({true, true, true, true, true, true});
+    std::vector<double> data{-0.2, 0.2, -0.2, 0.2, -0.2, 0.2, -0.2, 0.2, -0.2, 0.2};
+    std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
+    for (int i = 0; i < 10; i++) {
+      position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
+      position_array[i][1] = i < 5 ? 0.5 : -0.5;
+    }
+    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+        10, std::array<double, 3>{1.0 / 4.0, 1.0 / 4.0, 0.0});
+
+    // map to dd arrays with simple stride
+    std::vector<double> dd_data(local_size, 0.0);
+    std::vector<std::array<double, 3>> dd_position_array(local_size,
+                                                         std::array<double, 3>{0.0, 0.0, 0.0});
+    std::vector<std::array<double, 3>> dd_one_over_bandwidth_array(
+        local_size, std::array<double, 3>{0.0, 0., 0.0});
+
+    for (int i = 0; i < local_size; i++) {
+      dd_data[i] = data[i + rtt_c4::node() * 3];
+      dd_position_array[i] = position_array[i + rtt_c4::node() * 3];
+      dd_one_over_bandwidth_array[i] = one_over_bandwidth_array[i + rtt_c4::node() * 3];
+    }
+
+    const bool dd = true;
+    // 1x bin per point
+    const size_t n_coarse_bins = 10;
+    const double max_window_size = 4.0;
+    const size_t dim = 2;
+    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+
+    std::vector<double> smooth_result =
+        refl_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result =
+        refl_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+    // Apply Conservation
+    refl_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    refl_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+
+    for (int i = 0; i < local_size; i++) {
+      if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2))
+        ITFAILS;
+      if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.0, 1e-2))
+        ITFAILS;
+    }
+
+    double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
+    rtt_c4::global_sum(smooth_conservation);
+    double log_smooth_conservation =
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0);
+    rtt_c4::global_sum(log_smooth_conservation);
+
+    // Energy conservation
+    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation))
+      ITFAILS;
+    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                              log_smooth_conservation))
+      ITFAILS;
+  }
+
   if (ut.numFails == 0) {
     PASSMSG("KDE DD checks pass");
   } else {

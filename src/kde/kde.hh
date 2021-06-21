@@ -30,13 +30,9 @@ namespace rtt_kde {
 //================================================================================================//
 class kde {
 public:
-  // NESTED CLASSES AND TYPEDEFS
-
-  // CREATORS
-
-  // ACCESSORS
-
-  // SERVICES
+  //! Constructor
+  kde(const std::array<bool, 6> reflect_boundary_ = {false, false, false, false, false, false})
+      : reflect_boundary(reflect_boundary_) {}
 
   //! Reconstruct distribution
   std::vector<double> reconstruction(const std::vector<double> &distribution,
@@ -68,11 +64,13 @@ protected:
   // IMPLEMENTATION
 
 private:
-  // NESTED CLASSES AND TYPEDEFS
-
-  // IMPLEMENTATION
-
+  //! Private function to calculate kernel weight
+  double calc_weight(const std::array<double, 3> &r0, const std::array<double, 3> &one_over_h0,
+                     const std::array<double, 3> &r, const std::array<double, 3> &one_over_h,
+                     const quick_index &qindex, const double &discontinuity_cutoff) const;
   // DATA
+  //! reflecting boundary conditions [lower_x, upper_x, lower_y, upper_y, lower_z, upper_z]
+  const std::array<bool, 6> reflect_boundary;
 };
 
 } // end namespace rtt_kde
