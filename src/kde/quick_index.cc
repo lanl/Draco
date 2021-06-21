@@ -11,6 +11,7 @@
 #include "ds++/dbc.hh"
 #include <cmath>
 #include <numeric>
+#include <tuple>
 
 namespace rtt_kde {
 //------------------------------------------------------------------------------------------------//
@@ -188,6 +189,7 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
 }
 
 #ifdef C4_MPI
+//------------------------------------------------------------------------------------------------//
 // call MPI_put using a chunk style write to avoid error in MPI_put with large local buffers.
 auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win) {
   // temporary work around until RMA is available in c4
@@ -439,6 +441,84 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
 }
 
 //------------------------------------------------------------------------------------------------//
+// Lambda for getting the mapped window bin
+auto get_window_bin = [](const auto dim, const auto &grid_bins, const auto &location,
+                         const auto &window_min, const auto &window_max,
+                         const auto &Remember(n_map_bins)) {
+  // calculate local bin index
+  bool valid = true;
+  std::array<size_t, 3> bin_id{0, 0, 0};
+  std::array<double, 3> bin_center{0, 0, 0};
+  for (size_t d = 0; d < dim; d++) {
+    Check((window_max[d] - window_min[d]) > 0.0);
+    const double bin_value = static_cast<double>(grid_bins[d]) * (location[d] - window_min[d]) /
+                             (window_max[d] - window_min[d]);
+    if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
+      valid = false;
+      break;
+    } else {
+      bin_id[d] = static_cast<size_t>(bin_value);
+      // catch any values exactly on the edge of the top bin
+      bin_id[d] = std::min(grid_bins[d] - 1, bin_id[d]);
+      bin_center[d] =
+          window_min[d] + (static_cast<double>(bin_id[d]) / static_cast<double>(grid_bins[d]) +
+                           0.5 / static_cast<double>(grid_bins[d])) *
+                              (window_max[d] - window_min[d]);
+    }
+  }
+  const size_t local_window_bin =
+      bin_id[0] + bin_id[1] * grid_bins[0] + bin_id[2] * grid_bins[0] * grid_bins[1];
+
+  Check(valid ? local_window_bin < n_map_bins : true);
+
+  return std::tuple<bool, size_t, std::array<double, 3>>{valid, local_window_bin, bin_center};
+};
+
+//------------------------------------------------------------------------------------------------//
+// Lambda for mapping the data
+auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, auto &min_distance,
+                   const auto &dim, const auto &map_type, const auto &data, const auto &bin_center,
+                   const auto &location, const auto &local_window_bin, const auto &data_bin) {
+  // regardless of map type if it is the first value to enter the bin it
+  // gets set to that value
+  if (data_count[local_window_bin] == 0) {
+    bias_cell_count += 1.0;
+    data_count[local_window_bin]++;
+    double distance = 0.0;
+    for (size_t d = 0; d < dim; d++) {
+      distance += (location[d] - bin_center[d]) * (location[d] - bin_center[d]);
+    }
+    min_distance[local_window_bin] = sqrt(distance);
+    grid_data[local_window_bin] = data[data_bin];
+  } else if (map_type == "max") {
+    if (data[data_bin] > grid_data[local_window_bin])
+      grid_data[local_window_bin] = data[data_bin];
+  } else if (map_type == "min") {
+    if (data[data_bin] < grid_data[local_window_bin])
+      grid_data[local_window_bin] = data[data_bin];
+  } else if (map_type == "ave") {
+    data_count[local_window_bin] += 1;
+    grid_data[local_window_bin] += data[data_bin];
+  } else if (map_type == "nearest") {
+    double distance = 0.0;
+    for (size_t d = 0; d < dim; d++) {
+      distance += (location[d] - bin_center[d]) * (location[d] - bin_center[d]);
+    }
+    distance = sqrt(distance);
+    if (rtt_dsxx::soft_equiv(distance, min_distance[local_window_bin])) {
+      data_count[local_window_bin] += 1;
+      grid_data[local_window_bin] += data[data_bin];
+    } else if (distance < min_distance[local_window_bin]) {
+      min_distance[local_window_bin] = distance;
+      data_count[local_window_bin] = 1;
+      grid_data[local_window_bin] = data[data_bin];
+    } // else exclude the far points.
+  } else {
+    Insist(false, "Error: map_type=" + map_type + " is invalid. Must be max, min, or ave.");
+  }
+};
+
+//------------------------------------------------------------------------------------------------//
 /*!
  * \brief
  * 
@@ -500,6 +580,13 @@ void quick_index::map_data_to_grid_window(
            "one of grid bins must be == 1, Grid must be 1D to use ave_fill option");
     fill = true;
     map_type = "ave";
+  } else if (map_type_in == "nearest_fill") {
+    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
+           "one of grid bins must be == 1, Grid must be 1D to use ave_fill option");
+    fill = true;
+    map_type = "nearest";
   }
 
   for (size_t d = 0; d < dim; d++)
@@ -519,6 +606,7 @@ void quick_index::map_data_to_grid_window(
   std::vector<size_t> global_bins = window_coarse_index_list(window_min, window_max);
 
   std::vector<int> data_count(n_map_bins, 0);
+  std::vector<double> min_distance(n_map_bins, 0);
   double bias_cell_count = 0.0;
   // Loop over all possible bins
   for (auto &cb : global_bins) {
@@ -527,50 +615,20 @@ void quick_index::map_data_to_grid_window(
     auto mapItr = coarse_index_map.find(cb);
     if (mapItr != coarse_index_map.end()) {
       for (auto &l : mapItr->second) {
-        // calculate local bin index
-        bool valid = true;
-        std::array<size_t, 3> bin_id{0, 0, 0};
-        for (size_t d = 0; d < dim; d++) {
-          Check((window_max[d] - window_min[d]) > 0.0);
-          const double bin_value = static_cast<double>(grid_bins[d]) *
-                                   (locations[l][d] - window_min[d]) /
-                                   (window_max[d] - window_min[d]);
-          if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
-            valid = false;
-            break;
-          } else {
-            bin_id[d] = static_cast<size_t>(std::floor(bin_value));
-            // catch any values exactly on the edge of the top bin
-            bin_id[d] = std::min(grid_bins[d] - 1, bin_id[d]);
-          }
-        }
+        bool valid;
+        size_t local_window_bin;
+        std::array<double, 3> bin_center;
+        std::tie(valid, local_window_bin, bin_center) =
+            get_window_bin(dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
 
         // If the bin is outside the window continue to the next poin
         if (!valid)
           continue;
 
-        size_t local_window_bin =
-            bin_id[0] + bin_id[1] * grid_bins[0] + bin_id[2] * grid_bins[0] * grid_bins[1];
-        Check(local_window_bin < n_map_bins);
-        // increment the data count
-        data_count[local_window_bin]++;
+        // lambda for mapping the data
+        map_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type, local_data,
+                 bin_center, locations[l], local_window_bin, l);
 
-        // regardless of map type if it is the first value to enter the bin it
-        // gets set to that value
-        if (data_count[local_window_bin] == 1) {
-          grid_data[local_window_bin] = local_data[l];
-          bias_cell_count += 1.0;
-        } else if (map_type == "max") {
-          if (local_data[l] > grid_data[local_window_bin])
-            grid_data[local_window_bin] = local_data[l];
-        } else if (map_type == "min") {
-          if (local_data[l] < grid_data[local_window_bin])
-            grid_data[local_window_bin] = local_data[l];
-        } else if (map_type == "ave") {
-          grid_data[local_window_bin] += local_data[l];
-        } else {
-          Insist(false, "Error: map_type=" + map_type + " is invalid. Must be max, min, or ave.");
-        }
       } // end local point loop
     }   // if valid local bin loop
     if (domain_decomposed) {
@@ -579,56 +637,25 @@ void quick_index::map_data_to_grid_window(
       if (gmapItr != local_ghost_index_map.end()) {
         // loop over ghost data
         for (auto &g : gmapItr->second) {
-          // calculate local bin index
-          bool valid = true;
-          std::array<size_t, 3> bin_id{0, 0, 0};
-          for (size_t d = 0; d < dim; d++) {
-            Check((window_max[d] - window_min[d]) > 0.0);
-            const double bin_value = static_cast<double>(grid_bins[d]) *
-                                     (local_ghost_locations[g][d] - window_min[d]) /
-                                     (window_max[d] - window_min[d]);
-            if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
-              valid = false;
-              break;
-            } else {
-              bin_id[d] = static_cast<size_t>(bin_value);
-              // catch any values exactly on the edge of the top bin
-              bin_id[d] = std::min(grid_bins[d] - 1, bin_id[d]);
-            }
-          }
+          bool valid;
+          size_t local_window_bin;
+          std::array<double, 3> bin_center;
+          std::tie(valid, local_window_bin, bin_center) = get_window_bin(
+              dim, grid_bins, local_ghost_locations[g], window_min, window_max, n_map_bins);
 
-          // If the bin is outside the window continue to the next point
+          // If the bin is outside the window continue to the next poin
           if (!valid)
             continue;
 
-          size_t local_window_bin =
-              bin_id[0] + bin_id[1] * grid_bins[0] + bin_id[2] * grid_bins[0] * grid_bins[1];
-          Check(local_window_bin < n_map_bins);
-          // increment the data count
-          data_count[local_window_bin]++;
-
-          // regardless of map type if it is the first value to enter the bin it
-          // gets set to that value
-          if (data_count[local_window_bin] == 1) {
-            grid_data[local_window_bin] = ghost_data[g];
-            bias_cell_count += 1.0;
-          } else if (map_type == "max") {
-            if (ghost_data[g] > grid_data[local_window_bin])
-              grid_data[local_window_bin] = ghost_data[g];
-          } else if (map_type == "min") {
-            if (ghost_data[g] < grid_data[local_window_bin])
-              grid_data[local_window_bin] = ghost_data[g];
-          } else if (map_type == "ave") {
-            grid_data[local_window_bin] += ghost_data[g];
-          } else {
-            Insist(false, "Error: map_type=" + map_type + " is invalid. Must be max, min, or ave.");
-          }
+          // lambda for mapping the data
+          map_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type, ghost_data,
+                   bin_center, local_ghost_locations[g], local_window_bin, g);
         } // end ghost point loop
       }   // if valid ghost bin
     }     // if dd
   }       // end coarse bin loop
 
-  if (map_type == "ave") {
+  if (map_type == "ave" || map_type == "nearest") {
     for (size_t i = 0; i < n_map_bins; i++) {
       if (data_count[i] > 0) {
         grid_data[i] /= data_count[i];
@@ -676,6 +703,57 @@ void quick_index::map_data_to_grid_window(
 }
 
 //------------------------------------------------------------------------------------------------//
+// Lambda for mapping the vector data
+auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data,
+                          auto &min_distance, const auto &dim, const auto &map_type,
+                          const auto &data, const auto &bin_center, const auto &location,
+                          const auto &local_window_bin, const auto &data_bin, const auto &vsize) {
+  // regardless of map type if it is the first value to enter the bin it
+  // gets set to that value
+  if (data_count[local_window_bin] == 0) {
+    bias_cell_count += 1.0;
+    data_count[local_window_bin]++;
+    double distance = 0.0;
+    for (size_t d = 0; d < dim; d++) {
+      distance += (location[d] - bin_center[d]) * (location[d] - bin_center[d]);
+    }
+    min_distance[local_window_bin] = sqrt(distance);
+    for (size_t v = 0; v < vsize; v++)
+      grid_data[v][local_window_bin] = data[v][data_bin];
+  } else if (map_type == "max") {
+    for (size_t v = 0; v < vsize; v++)
+      if (data[v][data_bin] > grid_data[v][local_window_bin])
+        grid_data[v][local_window_bin] = data[v][data_bin];
+  } else if (map_type == "min") {
+    for (size_t v = 0; v < vsize; v++)
+      if (data[v][data_bin] < grid_data[v][local_window_bin])
+        grid_data[v][local_window_bin] = data[v][data_bin];
+  } else if (map_type == "ave") {
+    data_count[local_window_bin] += 1;
+    for (size_t v = 0; v < vsize; v++)
+      grid_data[v][local_window_bin] += data[v][data_bin];
+  } else if (map_type == "nearest") {
+    double distance = 0.0;
+    for (size_t d = 0; d < dim; d++) {
+      distance += (location[d] - bin_center[d]) * (location[d] - bin_center[d]);
+    }
+    distance = sqrt(distance);
+    if (rtt_dsxx::soft_equiv(distance, min_distance[local_window_bin])) {
+      data_count[local_window_bin] += 1;
+      for (size_t v = 0; v < vsize; v++)
+        grid_data[v][local_window_bin] += data[v][data_bin];
+    } else if (distance < min_distance[local_window_bin]) {
+      min_distance[local_window_bin] = distance;
+      data_count[local_window_bin] = 1;
+      for (size_t v = 0; v < vsize; v++)
+        grid_data[v][local_window_bin] = data[v][data_bin];
+    } // else exclude the far points.
+  } else {
+    Insist(false, "Error: map_type=" + map_type + " is invalid. Must be max, min, or ave.");
+  }
+};
+
+//------------------------------------------------------------------------------------------------//
 /*!
  * \brief
  * 
@@ -720,14 +798,33 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
   bool fill = false;
   std::string map_type = map_type_in;
   if (map_type_in == "max_fill") {
+    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
+           "one of grid bins must be == 1, Grid must be 1D to use max_fill option");
     fill = true;
     map_type = "max";
   } else if (map_type_in == "min_fill") {
+    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
+           "one of grid bins must be == 1, Grid must be 1D to use min_fill option");
     fill = true;
     map_type = "min";
   } else if (map_type_in == "ave_fill") {
+    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
+           "one of grid bins must be == 1, Grid must be 1D to use ave_fill option");
     fill = true;
     map_type = "ave";
+  } else if (map_type_in == "nearest_fill") {
+    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
+           "one of grid bins must be == 1, Grid must be 1D to use ave_fill option");
+    fill = true;
+    map_type = "nearest";
   }
 
   for (size_t d = 0; d < dim; d++)
@@ -751,6 +848,7 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
 
   // initialize grid data
   std::vector<int> data_count(n_map_bins, 0);
+  std::vector<double> min_distance(n_map_bins, 0);
   double bias_cell_count = 0.0;
   // Loop over all possible bins
   for (auto &cb : global_bins) {
@@ -759,52 +857,17 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
     auto mapItr = coarse_index_map.find(cb);
     if (mapItr != coarse_index_map.end()) {
       for (auto &l : mapItr->second) {
-        // calculate local bin index
-        bool valid = true;
-        std::array<size_t, 3> bin_id{0, 0, 0};
-        for (size_t d = 0; d < dim; d++) {
-          Check((window_max[d] - window_min[d]) > 0.0);
-          const double bin_value = static_cast<double>(grid_bins[d]) *
-                                   (locations[l][d] - window_min[d]) /
-                                   (window_max[d] - window_min[d]);
-          if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
-            valid = false;
-            break;
-          } else {
-            bin_id[d] = static_cast<size_t>(bin_value);
-            // catch any values exactly on the edge of the top bin
-            bin_id[d] = std::min(grid_bins[d] - 1, bin_id[d]);
-          }
-        }
-
+        bool valid;
+        size_t local_window_bin;
+        std::array<double, 3> bin_center;
+        std::tie(valid, local_window_bin, bin_center) =
+            get_window_bin(dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
         // If the bin is outside the window continue to the next poin
         if (!valid)
           continue;
-
-        size_t local_window_bin =
-            bin_id[0] + bin_id[1] * grid_bins[0] + bin_id[2] * grid_bins[0] * grid_bins[1];
         Check(local_window_bin < n_map_bins);
-        // increment the data count
-        data_count[local_window_bin]++;
-        for (size_t v = 0; v < vsize; v++) {
-          // regardless of map type if it is the first value to enter the bin it
-          // gets set to that value
-          if (data_count[local_window_bin] == 1) {
-            grid_data[v][local_window_bin] = local_data[v][l];
-            if (v == 0)
-              bias_cell_count += 1.0;
-          } else if (map_type == "max") {
-            if (local_data[v][l] > grid_data[v][local_window_bin])
-              grid_data[v][local_window_bin] = local_data[v][l];
-          } else if (map_type == "min") {
-            if (local_data[v][l] < grid_data[v][local_window_bin])
-              grid_data[v][local_window_bin] = local_data[v][l];
-          } else if (map_type == "ave") {
-            grid_data[v][local_window_bin] += local_data[v][l];
-          } else {
-            Insist(false, "Error: map_type=" + map_type + " is invalid. Must be max, min, or ave.");
-          }
-        }
+        map_vector_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type,
+                        local_data, bin_center, locations[l], local_window_bin, l, vsize);
       } // end local point loop
     }   // if valid local bin loop
     if (domain_decomposed) {
@@ -813,60 +876,24 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
       if (gmapItr != local_ghost_index_map.end()) {
         // loop over ghost data
         for (auto &g : gmapItr->second) {
-          // calculate local bin index
-          bool valid = true;
-          std::array<size_t, 3> bin_id{0, 0, 0};
-          for (size_t d = 0; d < dim; d++) {
-            Check((window_max[d] - window_min[d]) > 0.0);
-            const double bin_value = static_cast<double>(grid_bins[d]) *
-                                     (local_ghost_locations[g][d] - window_min[d]) /
-                                     (window_max[d] - window_min[d]);
-            if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
-              valid = false;
-              break;
-            } else {
-              bin_id[d] = static_cast<size_t>(bin_value);
-              // catch any values exactly on the edge of the top bin
-              bin_id[d] = std::min(grid_bins[d] - 1, bin_id[d]);
-            }
-          }
+          bool valid;
+          size_t local_window_bin;
+          std::array<double, 3> bin_center;
+          std::tie(valid, local_window_bin, bin_center) = get_window_bin(
+              dim, grid_bins, local_ghost_locations[g], window_min, window_max, n_map_bins);
 
-          // If the bin is outside the window continue to the next point
+          // If the bin is outside the window continue to the next poin
           if (!valid)
             continue;
-
-          size_t local_window_bin =
-              bin_id[0] + bin_id[1] * grid_bins[0] + bin_id[2] * grid_bins[0] * grid_bins[1];
-          Check(local_window_bin < n_map_bins);
-          // increment the data count
-          data_count[local_window_bin]++;
-          for (size_t v = 0; v < vsize; v++) {
-
-            // regardless of map type if it is the first value to enter the bin it
-            // gets set to that value
-            if (data_count[local_window_bin] == 1) {
-              grid_data[v][local_window_bin] = ghost_data[v][g];
-              if (v == 0)
-                bias_cell_count += 1.0;
-            } else if (map_type == "max") {
-              if (ghost_data[v][g] > grid_data[v][local_window_bin])
-                grid_data[v][local_window_bin] = ghost_data[v][g];
-            } else if (map_type == "min") {
-              if (ghost_data[v][g] < grid_data[v][local_window_bin])
-                grid_data[v][local_window_bin] = ghost_data[v][g];
-            } else if (map_type == "ave") {
-              grid_data[v][local_window_bin] += ghost_data[v][g];
-            } else {
-              Insist(false,
-                     "Error: map_type=" + map_type + " is invalid. Must be max, min, or ave.");
-            }
-          }
+          map_vector_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type,
+                          ghost_data, bin_center, local_ghost_locations[g], local_window_bin, g,
+                          vsize);
         } // end ghost point loop
       }   // if valid ghost bin
     }     // if dd
   }       // end coarse bin loop
 
-  if (map_type == "ave") {
+  if (map_type == "ave" || map_type == "nearest") {
     for (size_t i = 0; i < n_map_bins; i++) {
       for (size_t v = 0; v < vsize; v++) {
         if (data_count[i] > 0) {

@@ -846,6 +846,103 @@ void test_decomposition(ParallelUnitTest &ut) {
           ITFAILS;
     }
 
+    // check nearest mapping (fewer bins then data) functions
+    // this is the same as average because the simple spacing
+    {
+      // put two particles in the topmost bin
+      // build a length=1.0 window around the first point on each node
+      const std::array<double, 3> min{dd_position_array[0][0] - 0.5, 0.0, 0.0};
+      const std::array<double, 3> max{dd_position_array[0][0] + 0.5, 0.0, 0.0};
+      const std::array<size_t, 3> bin_sizes{2, 0, 0};
+      const bool normalize = false;
+      const bool bias = false;
+      const std::string map_type = "nearest";
+      // use the negative data for the single array operations this time
+      std::vector<double> window_data(2, 0.0);
+      qindex.map_data_to_grid_window(dd_3x_data[2], ghost_3x_data[2], window_data, min, max,
+                                     bin_sizes, map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(2, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+
+      std::vector<double> gold_window_data;
+      std::vector<std::vector<double>> gold_window_3x_data(3);
+      if (rtt_c4::node() == 0) {
+        gold_window_data = {0.0, -5.5};
+        gold_window_3x_data[0] = {0.0, 5.5};
+        gold_window_3x_data[1] = {0.0, 6.5};
+        gold_window_3x_data[2] = {0.0, -5.5};
+      } else if (rtt_c4::node() == 1) {
+        gold_window_data = {-10.0, -8.5};
+        gold_window_3x_data[0] = {10.0, 8.5};
+        gold_window_3x_data[1] = {11.0, 9.5};
+        gold_window_3x_data[2] = {-10.0, -8.5};
+      } else {
+        gold_window_data = {-4.0, -7.0};
+        gold_window_3x_data[0] = {4.0, 7.0};
+        gold_window_3x_data[1] = {5.0, 8.0};
+        gold_window_3x_data[2] = {-4.0, -7.0};
+      }
+
+      for (size_t v = 0; v < 3; v++) {
+        for (size_t i = 0; i < bin_sizes[0]; i++) {
+          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
+            ITFAILS;
+        }
+      }
+      for (size_t i = 0; i < bin_sizes[0]; i++)
+        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
+          ITFAILS;
+    }
+
+    // check nearest mapping (fewer bins then data) functions
+    // not the same as average because the window is on the center point
+    {
+      // put two particles in the topmost bin
+      // build a length=1.0 window around the first point on each node
+      const std::array<double, 3> min{dd_position_array[0][0] - 0.5, 0.0, 0.0};
+      const std::array<double, 3> max{dd_position_array[0][0] + 0.5, 0.0, 0.0};
+      const std::array<size_t, 3> bin_sizes{1, 0, 0};
+      const bool normalize = false;
+      const bool bias = false;
+      const std::string map_type = "nearest";
+      // use the negative data for the single array operations this time
+      std::vector<double> window_data(1, 0.0);
+      qindex.map_data_to_grid_window(dd_3x_data[2], ghost_3x_data[2], window_data, min, max,
+                                     bin_sizes, map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(1, 0.0));
+      qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
+                                     map_type, normalize, bias);
+      std::vector<double> gold_window_data;
+      std::vector<std::vector<double>> gold_window_3x_data(3);
+      if (rtt_c4::node() == 0) {
+        gold_window_data = {-3.0};
+        gold_window_3x_data[0] = {3.0};
+        gold_window_3x_data[1] = {4.0};
+        gold_window_3x_data[2] = {-3.0};
+      } else if (rtt_c4::node() == 1) {
+        gold_window_data = {-6};
+        gold_window_3x_data[0] = {6};
+        gold_window_3x_data[1] = {7};
+        gold_window_3x_data[2] = {-6};
+      } else {
+        gold_window_data = {-9.0};
+        gold_window_3x_data[0] = {9.0};
+        gold_window_3x_data[1] = {10.0};
+        gold_window_3x_data[2] = {-9.0};
+      }
+
+      for (size_t v = 0; v < 3; v++) {
+        for (size_t i = 0; i < bin_sizes[0]; i++) {
+          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
+            ITFAILS;
+        }
+      }
+      for (size_t i = 0; i < bin_sizes[0]; i++)
+        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
+          ITFAILS;
+    }
+
     // check bias and normal window mapping (fewer bins then data) functions
     {
       // build a length=1.0 window around the first point on each node
