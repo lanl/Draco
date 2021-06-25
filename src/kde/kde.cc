@@ -282,10 +282,12 @@ kde::log_reconstruction(const std::vector<double> &distribution,
   std::vector<double> result(local_size, 0.0);
   std::vector<double> normal(local_size, 0.0);
   double min_value = *std::min_element(distribution.begin(), distribution.end());
-  double log_bias = fabs(min_value) * (1.0 + 1e-12);
+  double max_value = *std::max_element(distribution.begin(), distribution.end());
+  double log_bias = fabs(min_value) + (max_value - min_value);
   if (qindex.domain_decomposed) {
 
     rtt_c4::global_min(min_value);
+    rtt_c4::global_min(max_value);
 
     std::vector<double> ghost_distribution(qindex.local_ghost_buffer_size);
     qindex.collect_ghost_data(distribution, ghost_distribution);
@@ -293,8 +295,10 @@ kde::log_reconstruction(const std::vector<double> &distribution,
                                                                 {0.0, 0.0, 0.0});
     qindex.collect_ghost_data(one_over_bandwidth, ghost_one_over_bandwidth);
 
-    log_bias = fabs(min_value) * (1.0 + 1e-12);
-    log_bias = std::max(log_bias, 1e-12);
+    log_bias = fabs(min_value) + (max_value - min_value);
+    // if the log bias is zero the answer must be zero everywhere
+    if (!(log_bias > 0.0))
+      return result;
     // now apply the kernel to the local ranks
     std::array<double, 3> win_min{0.0, 0.0, 0.0};
     std::array<double, 3> win_max{0.0, 0.0, 0.0};
@@ -331,7 +335,10 @@ kde::log_reconstruction(const std::vector<double> &distribution,
     }
   } else { // local reconstruction only
 
-    log_bias = std::max(log_bias, 1e-12);
+    // if the log bias is zero the answer must be zero everywhere
+    if (!(log_bias > 0.0))
+      return result;
+
     // now apply the kernel to the local ranks
     std::array<double, 3> win_min{0.0, 0.0, 0.0};
     std::array<double, 3> win_max{0.0, 0.0, 0.0};
