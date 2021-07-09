@@ -99,16 +99,16 @@ const std::string author_list(bool const use_doxygen_formatting) {
 
   mmdevs current_developers;
   // not totally fair... KT got credit for LOC when svn repository was converted to git.
-  current_developers.insert(fomdev(173050, "Kelly G. Thompson"));
-  current_developers.insert(fomdev(23098, "Kent G. Budge"));
-  current_developers.insert(fomdev(7000, "Matt A. Cleveland"));
-  current_developers.insert(fomdev(4177, "Ryan T. Wollaeger"));
-  current_developers.insert(fomdev(3545, "Ben R. Ryan"));
-  current_developers.insert(fomdev(3047, "Alex R. Long"));
-  current_developers.insert(fomdev(1571, "Kendra P. Long"));
+  current_developers.insert(fomdev(174665, "Kelly G. Thompson"));
+  current_developers.insert(fomdev(23091, "Kent G. Budge"));
+  current_developers.insert(fomdev(6998, "Matt A. Cleveland"));
+  current_developers.insert(fomdev(4314, "Ryan T. Wollaeger"));
+  current_developers.insert(fomdev(3525, "Ben R. Ryan"));
+  current_developers.insert(fomdev(2927, "Alex R. Long"));
+  current_developers.insert(fomdev(1565, "Kendra P. Long"));
   current_developers.insert(fomdev(1270, "James S. Warsa"));
-  current_developers.insert(fomdev(905, "Tim Kelley"));
-  current_developers.insert(fomdev(360, "Jae H. Chang"));
+  current_developers.insert(fomdev(904, "Tim Kelley"));
+  current_developers.insert(fomdev(353, "Jae H. Chang"));
   current_developers.insert(fomdev(127, "Andrew T. Till"));
   current_developers.insert(fomdev(91, "Ondrej Certik"));
   current_developers.insert(fomdev(15, "David A. Dixon"));
@@ -116,8 +116,8 @@ const std::string author_list(bool const use_doxygen_formatting) {
 
   mmdevs prior_developers;
 
-  prior_developers.insert(fomdev(3631, "Gabriel M. Rockefeller"));
-  prior_developers.insert(fomdev(1753, "Allan B. Wollaber"));
+  prior_developers.insert(fomdev(3628, "Gabriel M. Rockefeller"));
+  prior_developers.insert(fomdev(1738, "Allan B. Wollaber"));
   prior_developers.insert(fomdev(407, "Rob B. Lowrie"));
   prior_developers.insert(fomdev(282, "Paul W. Talbot"));
   prior_developers.insert(fomdev(184, "Katherine J. Wang"));

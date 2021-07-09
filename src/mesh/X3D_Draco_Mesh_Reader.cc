@@ -389,7 +389,7 @@ void X3D_Draco_Mesh_Reader::read_bdy_files() {
     std::sort(flag_node_vec.begin(), flag_node_vec.end());
 
     // find the mesh faces that have nodes in this flags set
-    for (auto face_nodes : x3d_facenode_map) {
+    for (auto const &face_nodes : x3d_facenode_map) {
 
       // sort vector of nodes associated with this face
       std::vector<unsigned> fnode_vec = get_facenodes(face_nodes.first);
@@ -406,7 +406,8 @@ void X3D_Draco_Mesh_Reader::read_bdy_files() {
       if (nodes_in_common == fnode_vec) {
 
         // add to the side-node map
-        x3d_sidenode_map.insert(std::pair<int, std::vector<unsigned>>(num_side, fnode_vec));
+        x3d_sidenode_map.insert(
+            std::pair<int, std::vector<unsigned>>(num_side, get_facenodes(face_nodes.first)));
 
         // add to the side-flag map
         x3d_sideflag_map.insert(std::pair<int, unsigned>(num_side, flag_key));

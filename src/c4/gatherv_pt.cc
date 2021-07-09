@@ -51,6 +51,8 @@ template void indeterminate_allgatherv<unsigned>(std::vector<unsigned> &outgoing
 
 template void determinate_allgatherv<unsigned>(std::vector<unsigned> &outgoing_data,
                                                std::vector<std::vector<unsigned>> &incoming_data);
+template void determinate_allgatherv<double>(std::vector<double> &outgoing_data,
+                                             std::vector<std::vector<double>> &incoming_data);
 
 } // end namespace rtt_c4
 

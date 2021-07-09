@@ -99,6 +99,7 @@ void tstIndeterminateGatherScatterv(UnitTest &ut) {
       for (unsigned p = 0; p < number_of_processors; ++p) {
         if (receive[p].size() != p) {
           FAILMSG("NOT correct number of elements in gatherv");
+        } else {
           for (unsigned i = 0; i < p; ++i) {
             if (receive[p][i] != p)
               FAILMSG("NOT correct values in gatherv");
@@ -137,6 +138,7 @@ void tstIndeterminateGatherScatterv(UnitTest &ut) {
       for (unsigned p = 0; p < number_of_processors; ++p) {
         if (receive[p].size() != p) {
           FAILMSG("NOT correct number of elements in gatherv");
+        } else {
           for (unsigned i = 0; i < p; ++i) {
             if (!rtt_dsxx::soft_equiv(receive[p][i], static_cast<double>(p)))
               FAILMSG("NOT correct values in gatherv");
@@ -175,6 +177,7 @@ void tstIndeterminateGatherScatterv(UnitTest &ut) {
       for (unsigned p = 0; p < number_of_processors; ++p) {
         if (receive[p].size() != p) {
           FAILMSG("NOT correct number of elements in gatherv");
+        } else {
           for (unsigned i = 0; i < p; ++i) {
             if (receive[p][i] != static_cast<int>(p))
               FAILMSG("NOT correct values in gatherv");
@@ -206,21 +209,15 @@ void tstIndeterminateGatherScatterv(UnitTest &ut) {
     indeterminate_gatherv(emptysend, emptyreceive);
     PASSMSG("No exception thrown for indeterminate_gatherv with empty containers.");
 
-    if (emptysend.size() != 0)
-      ITFAILS;
-    if (emptyreceive.size() != number_of_processors)
-      ITFAILS;
-    if (emptyreceive[pid].size() != 0)
-      ITFAILS;
+    FAIL_IF(emptysend.size() != 0);
+    FAIL_IF(emptyreceive.size() != number_of_processors);
+    FAIL_IF(emptyreceive[pid].size() != 0);
 
     indeterminate_scatterv(emptyreceive, emptysend);
 
-    if (emptysend.size() != 0)
-      ITFAILS;
-    if (emptyreceive.size() != number_of_processors)
-      ITFAILS;
-    if (emptyreceive[pid].size() != 0)
-      ITFAILS;
+    FAIL_IF(emptysend.size() != 0);
+    FAIL_IF(emptyreceive.size() != number_of_processors);
+    FAIL_IF(emptyreceive[pid].size() != 0);
   }
 
   return;
@@ -249,6 +246,7 @@ void tstDeterminateGatherScatterv(UnitTest &ut) {
       for (unsigned p = 0; p < number_of_processors; ++p) {
         if (receive[p].size() != p) {
           FAILMSG("NOT correct number of elements in gatherv");
+        } else {
           for (unsigned i = 0; i < p; ++i) {
             if (receive[p][i] != p)
               FAILMSG("NOT correct values in gatherv");
@@ -292,6 +290,7 @@ void tstDeterminateGatherScatterv(UnitTest &ut) {
       for (unsigned p = 0; p < number_of_processors; ++p) {
         if (receive[p].size() != p) {
           FAILMSG("NOT correct number of elements in gatherv");
+        } else {
           for (unsigned i = 0; i < p; ++i) {
             if (!rtt_dsxx::soft_equiv(receive[p][i], static_cast<double>(p)))
               FAILMSG("NOT correct values in gatherv");
@@ -335,6 +334,7 @@ void tstDeterminateGatherScatterv(UnitTest &ut) {
       for (unsigned p = 0; p < number_of_processors; ++p) {
         if (receive[p].size() != p) {
           FAILMSG("NOT correct number of elements in gatherv");
+        } else {
           for (unsigned i = 0; i < p; ++i) {
             if (receive[p][i] != static_cast<int>(p))
               FAILMSG("NOT correct values in gatherv");
@@ -378,6 +378,7 @@ void tstDeterminateGatherScatterv(UnitTest &ut) {
       for (unsigned p = 0; p < number_of_processors; ++p) {
         if (receive[p].size() != p) {
           FAILMSG("NOT correct number of elements in gatherv");
+        } else {
           for (unsigned i = 0; i < p; ++i) {
             if (receive[p][i] != 'A')
               FAILMSG("NOT correct values in gatherv");
@@ -414,8 +415,7 @@ void topology_report(UnitTest &ut) {
   // Look at the data found on the IO proc.
   if (my_mpi_rank == 0) {
 
-    if (procnames[my_mpi_rank].size() != namelen)
-      ITFAILS;
+    FAIL_IF(procnames[my_mpi_rank].size() != namelen);
 
     // Count unique processors
     vector<string> unique_processor_names;
@@ -434,8 +434,7 @@ void topology_report(UnitTest &ut) {
 
     for (size_t i = 0; i < mpi_ranks; ++i) {
       std::cout << "\n  - MPI rank " << i << " is on " << procnames[i];
-      if (procnames[i].size() < 1)
-        ITFAILS;
+      FAIL_IF(procnames[i].size() < 1);
     }
     std::cout << std::endl;
 
@@ -465,6 +464,97 @@ void topology_report(UnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
+void tstDeterminateAllGatherv(UnitTest &ut) {
+  unsigned const pid = node();
+  unsigned const number_of_processors = nodes();
+
+  { // T=unsigned
+    vector<unsigned> send(pid, pid);
+
+    // determinate_allgatherv already has the data sizes from the other MPI/C4 ranks/nodes
+    vector<vector<unsigned>> receive(number_of_processors);
+    for (unsigned p = 0; p < number_of_processors; ++p)
+      receive[p].resize(p);
+
+    // gather data from all nodes to all nodes at rank index in receive vector
+    determinate_allgatherv(send, receive);
+    PASSMSG("No exception thrown");
+
+    // check values gathered from each rank (and check on each rank of course)
+    for (unsigned p = 0; p < number_of_processors; ++p) {
+      for (unsigned i = 0; i < p; ++i) {
+        if (receive[p][i] != p)
+          FAILMSG("NOT correct values in allgatherv");
+      }
+    }
+  }
+
+  { // T=double
+    vector<double> send(pid, static_cast<double>(pid));
+
+    // determinate_allgatherv already has the data sizes from the other MPI/C4 ranks/nodes
+    vector<vector<double>> receive(number_of_processors);
+    for (unsigned p = 0; p < number_of_processors; ++p)
+      receive[p].resize(p);
+
+    // gather data from all nodes to all nodes at rank index in receive vector
+    determinate_allgatherv(send, receive);
+    PASSMSG("No exception thrown");
+
+    // check values gathered from each rank (and check on each rank of course)
+    for (unsigned p = 0; p < number_of_processors; ++p) {
+      const auto p_dbl = static_cast<double>(p);
+      for (unsigned i = 0; i < p; ++i) {
+        if (!rtt_dsxx::soft_equiv(receive[p][i], p_dbl))
+          FAILMSG("NOT correct values in allgatherv");
+      }
+    }
+  }
+
+  // successful test output
+  if (ut.numFails == 0)
+    PASSMSG("tstDeterminateAllGatherv tests ok.");
+  return;
+}
+
+//------------------------------------------------------------------------------------------------//
+void tstIndeterminateAllGatherv(UnitTest &ut) {
+  unsigned const pid = node();
+  unsigned const number_of_processors = nodes();
+
+  // T=unsigned
+  vector<unsigned> send(pid, pid);
+  vector<vector<unsigned>> receive;
+
+  // gather data from all nodes to all nodes at rank index in receive vector
+  indeterminate_allgatherv(send, receive);
+  PASSMSG("No exception thrown");
+
+  // check the size of the receiving vector is now the number of MPI/C4 ranks/nodes
+  if (receive.size() == number_of_processors)
+    PASSMSG("correct number of processors in allgatherv");
+  else
+    FAILMSG("NOT correct number of processors in allgatherv");
+
+  // check values gathered from each rank (and check on each rank of course)
+  for (unsigned p = 0; p < number_of_processors; ++p) {
+    if (receive[p].size() != p) {
+      FAILMSG("NOT correct number of elements in allgatherv");
+    } else {
+      for (unsigned i = 0; i < p; ++i) {
+        if (receive[p][i] != p)
+          FAILMSG("NOT correct values in allgatherv");
+      }
+    }
+  }
+
+  // successful test output
+  if (ut.numFails == 0)
+    PASSMSG("tstIndeterminateAllGatherv tests ok.");
+  return;
+}
+
+//------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, release);
   try {
@@ -473,6 +563,8 @@ int main(int argc, char *argv[]) {
     tstIndeterminateGatherScatterv(ut);
     tstDeterminateGatherScatterv(ut);
     topology_report(ut);
+    tstDeterminateAllGatherv(ut);
+    tstIndeterminateAllGatherv(ut);
   }
   UT_EPILOG(ut);
 }
