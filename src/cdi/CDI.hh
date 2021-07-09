@@ -16,6 +16,7 @@
 #include "GrayOpacity.hh"
 #include "MultigroupOpacity.hh"
 #include "ds++/Constexpr_Functions.hh"
+#include "ds++/FMA.hh"
 #include "ds++/Soft_Equivalence.hh"
 #include <algorithm>
 #include <array>
@@ -80,36 +81,16 @@ static inline double taylor_series_planck(double x) {
 
   double const xsqrd = x * x;
 
-  double taylor(coeff_21 * xsqrd);
-
-  taylor += coeff_19;
-  taylor *= xsqrd;
-
-  taylor += coeff_17;
-  taylor *= xsqrd;
-
-  taylor += coeff_15;
-  taylor *= xsqrd;
-
-  taylor += coeff_13;
-  taylor *= xsqrd;
-
-  taylor += coeff_11;
-  taylor *= xsqrd;
-
-  taylor += coeff_9;
-  taylor *= xsqrd;
-
-  taylor += coeff_7;
-  taylor *= xsqrd;
-
-  taylor += coeff_5;
-  taylor *= x;
-
-  taylor += coeff_4;
-  taylor *= x;
-
-  taylor += coeff_3;
+  double taylor = FMA(xsqrd, coeff_21, coeff_19);
+  taylor = FMA(taylor, xsqrd, coeff_17);
+  taylor = FMA(taylor, xsqrd, coeff_15);
+  taylor = FMA(taylor, xsqrd, coeff_13);
+  taylor = FMA(taylor, xsqrd, coeff_11);
+  taylor = FMA(taylor, xsqrd, coeff_9);
+  taylor = FMA(taylor, xsqrd, coeff_7);
+  taylor = FMA(taylor, xsqrd, coeff_5);
+  taylor = FMA(taylor, x, coeff_4);
+  taylor = FMA(taylor, x, coeff_3);
   taylor *= x * xsqrd * coeff;
 
   Ensure(taylor >= 0.0);
