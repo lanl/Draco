@@ -55,9 +55,11 @@ jobs:
         uses: github/super-linter@v3
         env:
           DEFAULT_BRANCH: develop
+          LINTER_RULES_PATH: '.'
           ERROR_ON_MISSING_EXEC_BIT: true
           FILTER_REGEX_EXCLUDE: .*.cc
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MARKDOWN_CONFIG_FILE: .markdown-lint.json
           PYTHON_FLAKE8_CONFIG_FILE: .flake8
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_BASH: true

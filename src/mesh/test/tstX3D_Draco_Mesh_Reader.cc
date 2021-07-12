@@ -66,7 +66,7 @@ void read_x3d_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
 
   FAIL_IF_NOT(x3d_reader->get_numsides() == 4);
 
-  std::vector<std::vector<unsigned>> test_sidenodes = {{0, 1}, {1, 3}, {2, 3}, {0, 2}};
+  std::vector<std::vector<unsigned>> test_sidenodes = {{0, 1}, {1, 3}, {3, 2}, {2, 0}};
 
   // check each side's data
   for (int side = 0; side < 4; ++side) {

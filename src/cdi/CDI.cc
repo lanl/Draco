@@ -533,7 +533,7 @@ double CDI::collapseMultigroupOpacitiesPlanck(std::vector<double> const &groupBo
   for (size_t g = 1; g < groupBounds.size(); ++g) {
     Check(planckSpectrum[g - 1] >= 0.0);
     Check(opacity[g - 1] >= 0.0);
-    sig_planck_sum += planckSpectrum[g - 1] * opacity[g - 1];
+    sig_planck_sum = FMA(planckSpectrum[g - 1], opacity[g - 1], sig_planck_sum);
     // Also collect some CDF data.
     emission_group_cdf[g - 1] = sig_planck_sum;
   }
@@ -597,7 +597,7 @@ double CDI::collapseMultigroupOpacitiesPlanck(std::vector<double> const &groupBo
   for (size_t g = 1; g < groupBounds.size(); ++g) {
     Check(planckSpectrum[g - 1] >= 0.0);
     Check(opacity[g - 1] >= 0.0);
-    sig_planck_sum += planckSpectrum[g - 1] * opacity[g - 1];
+    sig_planck_sum = FMA(planckSpectrum[g - 1], opacity[g - 1], sig_planck_sum);
   }
 
   //                         int_{\nu_0}^{\nu_G}{d\nu sigma(\nu,T) * B(\nu,T)}

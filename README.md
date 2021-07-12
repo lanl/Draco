@@ -1,6 +1,7 @@
 # Draco
 
-[![Linux Build Status](https://travis-ci.org/lanl/Draco.svg?branch=develop)](https://travis-ci.org/lanl/Draco)
+[![GNU Build Status](https://github.com/lanl/Draco/actions/workflows/ci-gcc-mpi.yml/badge.svg)](https://github.com/lanl/Draco/actions/workflows/ci-gcc-mpi.yml)
+[![LLVM Build Status](https://github.com/lanl/Draco/actions/workflows/ci-llvm-mpi.yml/badge.svg)](https://github.com/lanl/Draco/actions/workflows/ci-llvm-mpi.yml)
 [![Windows Build Status](https://ci.appveyor.com/api/projects/status/yp8r9jxl2gc9n1fs/branch/develop?svg=true)](https://ci.appveyor.com/project/lanl/Draco)
 [![codecov.io](https://codecov.io/github/lanl/Draco/coverage.svg?branch=develop)](https://codecov.io/github/lanl/Draco/branch/develop)
 [![Latest Version](https://img.shields.io/github/release/lanl/draco.svg?style=flat-square)](https://github.com/lanl/Draco/releases)
@@ -74,7 +75,7 @@ Spack - Draco can be installed via the [spack package manager](https:://github.c
 * min - Optimization routines. Find the minimum of a function.
 * norms - Calculate norms for data sets.
 * ode - Ordinary differential equation solvers (e.g.: Runge-Kutta).
-* parser - Lexical file/input parser.
+* [parser](https://github.com/lanl/Draco/tree/develop/src/parser) - Lexical file/input parser.
 * quadrature - access to angular integration functions and related data.
 * rng - A random number generator component
   * The primary set of functions provided by this component were derived from

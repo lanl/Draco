@@ -321,7 +321,7 @@ function qrm ()
     fi
 
     # Identify the scratch system
-    trashdir="${fqd//${USER}*/${USER}\/trash}"
+    trashdir="${fqd//${USER}*/${USER}/trash}"
 
     # ensure trash folder exists.
     if ! [[ -d "$trashdir" ]]; then mkdir -p "$trashdir"; fi

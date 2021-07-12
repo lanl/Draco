@@ -51,7 +51,8 @@ if(NOT CXX_FLAGS_INITIALIZED)
     CONCAT CMAKE_C_FLAGS_DEBUG "-fno-inline -fno-eliminate-unused-debug-types -O0"
            " -Wundef -Wunreachable-code -fsanitize=bounds-strict -fdiagnostics-color=auto -DDEBUG")
   # GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
-  string(CONCAT CMAKE_C_FLAGS_RELEASE "-O3 -funroll-loops -D_FORTIFY_SOURCE=2 -DNDEBUG")
+  string(CONCAT CMAKE_C_FLAGS_RELEASE "-O3 -funroll-loops -D_FORTIFY_SOURCE=2"
+                " -fno-var-tracking-assignments -DNDEBUG")
   set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_RELEASE}")
   string(CONCAT CMAKE_C_FLAGS_RELWITHDEBINFO "-O3 -fno-eliminate-unused-debug-types"
                 " -funroll-loops")

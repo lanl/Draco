@@ -1,6 +1,38 @@
+2021-06-30  Kelly (KT) Thompson  <kgt@lanl.gov>
+
+	* Draco has been updated to version 7_10_0 and is tied to the release of Jayenne-8_9_0 and
+	  Capsaicin-1_9_0.
+	  - https://rtt.lanl.gov/redmine/versions/99
+	  - https://rtt.lanl.gov/redmine/versions/100
+	  - https://rtt.lanl.gov/redmine/projects/capsaicin
+
+	Draco-7_11_0, build date 2021 Jun 30, build type: RELEASE, DBC: 0, DRACO_DIAGNOSTICS: 0
+
+	CCS-2 Draco Team: Kelly G. Thompson, Kent G. Budge, Matt A. Cleveland, Ryan T. Wollaeger,
+	  Ben R. Ryan, Alex R. Long, Kendra P. Long, James S. Warsa, Tim Kelley, Jae H. Chang,
+	  Andrew T. Till, Ondrej Certik, David A. Dixon, and Howard Pritchard.
+
+	Prior Contributors: Gabriel M. Rockefeller, Allan B. Wollaber, Rob B. Lowrie, Paul W. Talbot,
+	  Katherine J. Wang, Seth D. Cook, Peter Ahrens, Massimiliano Rosa, Todd J. Urbatsch,
+	  Daniel Holladay, Jeff D. Densmore, Jeff Furnish, John McGhee, Kris C. Garrett, Mike Buksas,
+	  Nick Myers, Paul Henning, Randy Roberts, Seth Johnson, Todd Adams, Tom Evans,
+	  and Lori Pritchett-Sheats.
+
+	Copyright (C) 2016-2021 Triad National Security, LLC. (C19028, LA-CC-16-016),
+	Released under a 3-Clause BSD License.
+
+	* Summary of changes:
+
+	- 104 files changed, added or removed in 34 commits.
+	- Added system load diagnostic capability to @c4@ and @tstOMP@.
+	- Begin enforced use of @cmake-format@ and @cmake-lint@
+	- Add neighboring node indices to dual layouts in @Draco_Mesh@
+	- Add debug symbols for all builds (including @Release@ builds).
+	- Replace Travis CI with GitHub Actions.
+
 2021-04-06  Kelly (KT) Thompson  <kgt@lanl.gov>
 
-	* Draco has been updated to version 7_10_0 and is tied to theb
+	* Draco has been updated to version 7_10_0 and is tied to the
 	  release of Jayenne-8_8_0 and Capsaicin-1_8_0.
 	  - https://rtt.lanl.gov/redmine/versions/96
 	  - https://rtt.lanl.gov/redmine/versions/97
@@ -30,7 +62,6 @@
 	- Extend policy for CDI integrations
 	- Fix NDI DEDX wrapper bug
 	- Provide work arounds for cmake-3.19 on Cray PEs
-
 
 2021-01-06  Kelly (KT) Thompson  <kgt@lanl.gov>
 
