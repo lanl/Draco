@@ -1,14 +1,14 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   linear/qrdcmp.i.hh
+ * \file   linear/qrdcmp.t.hh
  * \author Kent Budge
  * \date   Mon Aug  9 13:17:31 2004
  * \brief  Calculate the Q-R decomposition of a square matrix.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef linear_qrdcmp_i_hh
-#define linear_qrdcmp_i_hh
+#ifndef linear_qrdcmp_t_hh
+#define linear_qrdcmp_t_hh
 
 #include "qrdcmp.hh"
 #include "ds++/Assert.hh"
@@ -27,7 +27,7 @@ namespace rtt_linear {
  * is about twice as expensive as the LU decomposition and so should be used only when the special
  * form of the decomposition is advantageous.
  *
- * \arg \a RandomContainer A random access container
+ * \tparam RandomContainer A random access container
  * \param a \f$N\times N\f$ matrix to be decomposed.  On exit, contains the Householder vectors
  *          \f$u\f$ in its lower triangular part and the strict upper triangular part of \f$R\f$ in
  *          its strict upper triangular part.
@@ -101,8 +101,8 @@ bool qrdcmp(RandomContainer &a, unsigned n, RandomContainer &c, RandomContainer 
 
 } // end namespace rtt_linear
 
-#endif // linear_qrdcmp_i_hh
+#endif // linear_qrdcmp_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of linear/qrdcmp.i.hh
+// end of linear/qrdcmp.t.hh
 //------------------------------------------------------------------------------------------------//

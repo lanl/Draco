@@ -4,10 +4,10 @@
  * \author Kent Budge
  * \date   Tue Aug 10 13:08:03 2004
  * \brief  Specializations of svbksb
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "svbksb.i.hh"
+#include "svbksb.t.hh"
 #include <vector>
 
 namespace rtt_linear {
