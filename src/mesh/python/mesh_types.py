@@ -5,8 +5,28 @@
 import numpy as np
 
 # ------------------------------------------------------------------------------------------------ #
+# base class (to show required member data)
+class base_mesh:
+    '''
+    Base class with data required by mesh file generators.
+    This contains no methods for creating the data members.
+    '''
+    def __init__(self):
+        #-- required data
+        self.ndim = 0  # number of dimensions
+        self.num_nodes = 0  # total number of nodes
+        self.coordinates_per_node = np.array([])  # coordinate array indexed by node
+        self.num_cells = 0  # total number of cells
+        self.num_faces = 0  # total number of oriented faces
+        self.num_faces_per_cell = np.array([], dtype = int)  # number of faces per cell
+        self.num_nodes_per_face = np.array([], dtype = int)  # number of nodes per face
+        self.faces_per_cell = np.array([[]], dtype = int)  # face indexes per cell
+        self.nodes_per_face = np.array([[]], dtype = int)  # node indexes per face
+        self.nodes_per_side = [np.array([[]], dtype = int)]  # list of arrays of node per bdy face
+
+# ------------------------------------------------------------------------------------------------ #
 # orthogonal 2D mesh type
-class orth_2d_mesh:
+class orth_2d_mesh(base_mesh):
     '''
     Class for orthogonally structured 2D mesh data.
     This class generates an orthogonally structured mesh in an unstructured
@@ -93,7 +113,7 @@ class orth_2d_mesh:
 
 # ------------------------------------------------------------------------------------------------ #
 # orthogonal 3D mesh type
-class orth_3d_mesh:
+class orth_3d_mesh(base_mesh):
     '''
     Class for orthogonally structured 2D mesh data.
     This class generates an orthogonally structured mesh in an unstructured
