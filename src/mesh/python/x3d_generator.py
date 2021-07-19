@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -------------------------------------------*-python-*------------------------------------------- #
-# file src/mesh/python/x3d_generator.py
+# file  src/mesh/python/x3d_generator.py
+# date  Monday, Jul 19, 2021, 12:14 pm
+# brief This script generates X3D mesh files from a mesh object (assumed to have certain data).
+# note  Copyright (C) 2021, Triad National Security, LLC.,  All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import mesh_types
 import numpy as np

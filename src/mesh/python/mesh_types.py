@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -------------------------------------------*-python-*------------------------------------------- #
-# file src/mesh/python/mesh_types.py
+# file  src/mesh/python/mesh_types.py
+# date  Monday, Jul 19, 2021, 12:14 pm
+# brief This script provides mesh classes that calculate and contain unstructred mesh data.
+# note  Copyright (C) 2021, Triad National Security, LLC.,  All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import numpy as np
 
