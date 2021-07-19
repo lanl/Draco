@@ -4,18 +4,14 @@
  * \author Kent Budge
  * \date   Tue Sep 18 08:22:09 2007
  * \brief  Member definitions of class L2norm
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved.
- *
- * This class is deprecated. New code should use Norm_Index instead.
- */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef norms_L2norm_i_hh
 #define norms_L2norm_i_hh
 
-#include "norm.hh"
 #include "c4/C4_Functions.hh"
+#include "norms/norm.hh"
 #include <cmath>
 #include <iostream>
 #include <numeric>
@@ -33,8 +29,8 @@ template <typename Field> double accumulate_norm_(double const init, Field const
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \arg \a In An input container type whose elements are real, such as
- *            <code>vector<double></code> or <code>list<float></code>.
+ * \arg \a In An input container type whose elements are real, such as \c vector<double> or \c
+ *            list<float>.
  *
  * \param x Container representing a real vector whose norm is desired.
  */
@@ -57,16 +53,15 @@ template <typename In> double L2norm(In const &x) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function computes the norm of the difference between two vectors. We
- * have found that this is a surprisingly common operation, and there is
- * advantage to not having to compute the difference vector if all we want is
- * its norm.
+ * This function computes the norm of the difference between two vectors. We have found that this is
+ * a surprisingly common operation, and there is advantage to not having to compute the difference
+ * vector if all we want is its norm.
  *
- * \arg \a In1 An input container type whose elements are real, such as
- * <code>vector<double></code> or <code>list<float></code>.
+ * \arg \a In1 An input container type whose elements are real, such as /c vector<double> or /c
+ *             list<float>.
  *
- * \arg \a In2 An input container type whose elements are real, such as
- * <code>vector<double></code> or <code>list<float></code>.
+ * \arg \a In2 An input container type whose elements are real, such as /c vector<double> or /c
+ *             list<float>.
  *
  * \param x Container representing a real vector.
  *

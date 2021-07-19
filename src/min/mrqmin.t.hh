@@ -1,21 +1,20 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   min/mrqmin.i.hh
+ * \file   min/mrqmin.t.hh
  * \author Kent Budge
  * \date   Fri Aug 7 11:11:31 MDT 2009
  * \brief  Implementation of mrqmin
- * \note   Copyright (C) 2009-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2009-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef min_mrqmin_i_hh
-#define min_mrqmin_i_hh
+#ifndef min_mrqmin_t_hh
+#define min_mrqmin_t_hh
 
-#include "mrqmin.hh"
 #include "ds++/Assert.hh"
 #include "ds++/DracoMath.hh"
 #include "ds++/dbc.hh"
 #include "linear/gaussj.hh"
+#include "min/mrqmin.hh"
 #include <cmath>
 
 namespace rtt_min {
@@ -104,9 +103,9 @@ void mrqcof(RandomContainer const &x, RandomContainer const &y, RandomContainer 
 /*!
  * \brief Perform a nonlinear least squares fit of data to a model function.
  *
- * \arg \a RandomContainer A random access container
- * \arg \a RandomBoolContainer A random access bool container
- * \arg \a ModelFunction A model function with effective signature:
+ * \tparam RandomContainer A random access container
+ * \tparam RandomBoolContainer A random access bool container
+ * \tparam ModelFunction A model function with effective signature:
  *
  * <code>
  *            void funcs(const double,
@@ -214,8 +213,8 @@ void mrqmin(RandomContainer const &x, RandomContainer const &y, RandomContainer 
 
 } // end namespace rtt_min
 
-#endif // min_mrqmin_i_hh
+#endif // min_mrqmin_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of min/mrqmin.i.hh
+// end of min/mrqmin.t.hh
 //------------------------------------------------------------------------------------------------//

@@ -4,10 +4,10 @@
  * \author Kent Budge
  * \date   Wed Aug 11 15:21:38 2004
  * \brief  Specializations of qrupdt
- * \note   Copyright (C) 2004-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2004-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "qrupdt.i.hh"
+#include "qrupdt.t.hh"
 #include <vector>
 
 namespace rtt_linear {
@@ -23,5 +23,5 @@ template void qrupdt(vector<double> &r, vector<double> &qt, const unsigned n, ve
 } // end namespace rtt_linear
 
 //------------------------------------------------------------------------------------------------//
-//  end of qrupdt.cc
+//  end of linear/qrupdt_pt.cc
 //------------------------------------------------------------------------------------------------//

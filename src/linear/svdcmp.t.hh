@@ -1,17 +1,17 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   linear/svdcmp.i.hh
+ * \file   linear/svdcmp.t.hh
  * \author Kent Budge
  * \date   Mon Aug  9 13:17:31 2004
  * \brief  Calculate the singular value decomposition of a matrix.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef linear_svdcmp_i_hh
-#define linear_svdcmp_i_hh
+#ifndef linear_svdcmp_t_hh
+#define linear_svdcmp_t_hh
 
-#include "svdcmp.hh"
 #include "ds++/DracoMath.hh"
+#include "linear/svdcmp.hh"
 #include <sstream>
 #include <vector>
 
@@ -27,7 +27,8 @@ namespace rtt_linear {
  * The singular value decomposition is tremendously useful for manipulation both nonsquare matrices
  * and nearly singular square matrices.  The following routine is very robust.
  *
- * \arg \a RandomContainer A random access container type
+ * \tparam RandomContainer A random access container type
+ * 
  * \param a Matrix to be decomposed.  On exit, contains \f$ U \f$.
  * \param m Number of rows in a
  * \param n Number of columns in a
@@ -291,8 +292,8 @@ void svdcmp(RandomContainer &a, const unsigned m, const unsigned n, RandomContai
 
 } // end namespace rtt_linear
 
-#endif // linear_svdcmp_i_hh
+#endif // linear_svdcmp_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of linear/svdcmp.i.hh
+// end of linear/svdcmp.t.hh
 //------------------------------------------------------------------------------------------------//

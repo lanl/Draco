@@ -1,14 +1,14 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   linear/qrupdt.i.hh
+ * \file   linear/qrupdt.t.hh
  * \author Kent Budge
  * \date   Tue Aug 10 11:59:48 2004
  * \brief  Update the QR decomposition of a square matrix
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef linear_qrupdt_i_hh
-#define linear_qrupdt_i_hh
+#ifndef linear_qrupdt_t_hh
+#define linear_qrupdt_t_hh
 
 #include "qrupdt.hh"
 #include "rotate.hh"
@@ -26,7 +26,7 @@ namespace rtt_linear {
  * decomposition takes of order \f$N^2\f$ operations rather than the \f$N^3\f$ operations of a full
  * matrix inversion.
  *
- * \arg \a RandomContainer A random access container.
+ * \tparam RandomContainer A random access container.
  *
  * \param r Upper triangular matrix of the QR decomposition.
  * \param qt Transpose of orthonormal matrix of the QR decomposition.
@@ -80,8 +80,8 @@ void qrupdt(RandomContainer &r, RandomContainer &qt, const unsigned n, RandomCon
 
 } // end namespace rtt_linear
 
-#endif // linear_qrupdt_i_hh
+#endif // linear_qrupdt_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of linear/qrupdt.i.hh
+// end of linear/qrupdt.t.hh
 //------------------------------------------------------------------------------------------------//

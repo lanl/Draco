@@ -1,14 +1,16 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   c4/global_containers.i.hh
+ * \file   c4/global_containers.t.hh
  * \author Kent Budge
  * \date   Mon Mar 24 09:26:31 2008
  * \brief  Member definitions of class global_containers
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef c4_global_containers_i_hh
-#define c4_global_containers_i_hh
+#ifndef c4_global_containers_t_hh
+#define c4_global_containers_t_hh
+
+#include "c4/config.h"
 
 #ifdef C4_MPI
 
@@ -235,8 +237,8 @@ template <typename IndexType> void global_merge(std::map<IndexType, bool> &local
 
 #endif // C4_MPI
 
-#endif // c4_global_containers_i_hh
+#endif // c4_global_containers_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of c4/global_containers.i.hh
+// end of c4/global_containers.t.hh
 //------------------------------------------------------------------------------------------------//

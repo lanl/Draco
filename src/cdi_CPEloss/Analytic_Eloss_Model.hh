@@ -4,8 +4,7 @@
  * \author Kendra P. Long, Ben R. Ryan
  * \date   Feb 21 2020
  * \brief  Analytic_Eloss_Model class definition.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPEloss_Analytic_Eloss_Model_hh
@@ -23,10 +22,9 @@ namespace rtt_cdi_cpeloss {
  * \class Analytic_Eloss_Model
  * \brief Analytic_Eloss_Model base class.
  *
- * This is a base class that defines the interface given to Analytic_Eloss_Model
- * constructors.  The user can define any derived model class that will work
- * with these analytic opacity generation classes as long as it implements the
- * functions required, namely:
+ * This is a base class that defines the interface given to Analytic_Eloss_Model constructors.  The
+ * user can define any derived model class that will work with these analytic opacity generation 
+ * classes as long as it implements the functions required, namely:
  *
  * \arg double calculate_eloss(double T, double rho)
  *

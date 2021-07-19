@@ -1,18 +1,18 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   linear/svbksb.i.hh
+ * \file   linear/svbksb.t.hh
  * \author Kent Budge
  * \date   Tue Aug 10 13:08:03 2004
  * \brief  Solve a linear system from its singular value decomposition.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef linear_svbksb_i_hh
-#define linear_svbksb_i_hh
+#ifndef linear_svbksb_t_hh
+#define linear_svbksb_t_hh
 
-#include "svbksb.hh"
 #include "ds++/Assert.hh"
 #include "ds++/Soft_Equivalence.hh"
+#include "linear/svbksb.hh"
 #include <limits>
 #include <vector>
 
@@ -27,7 +27,7 @@ namespace rtt_linear {
  * M\times N \f$ matrix.  \f$ b \f$ is a vector of length \f$ M \f$ containing the right-hand side
  * and \f$ x \f$ is a vector of length \f$ N \f$ into which the solution will be stored.
  *
- * \arg \a RandomContainer A random access container
+ * \tparam RandomContainer A random access container
  * \param u Injection matrix of singular-value decomposition of the linear system.
  * \param w Singular value matrix of singular-value decomposition of the linear system.
  * \param v Projection matrix of singular-value decomposition of the linear system.
@@ -87,8 +87,8 @@ void svbksb(const RandomContainer &u, const RandomContainer &w, const RandomCont
 
 } // end namespace rtt_linear
 
-#endif // linear_svbksb_i_hh
+#endif // linear_svbksb_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of linear/svbksb.i.hh
+// end of linear/svbksb.t.hh
 //------------------------------------------------------------------------------------------------//

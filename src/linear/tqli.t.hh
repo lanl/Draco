@@ -1,19 +1,19 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   linear/tqli.i.hh
+ * \file   linear/tqli.t.hh
  * \author Kent Budge
  * \date   Thu Sep  2 15:00:32 2004
  * \brief  Find eigenvectors and eigenvalues of a symmetric matrix that has been reduced to
  *         tridiagonal form via a call to tred2.
- * \note   Copyright (C) 2004-2020 Triad National Security, LLC.,  All rights reserved. */
+ * \note   Copyright (C) 2004-2021 Triad National Security, LLC.,  All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef linear_tqli_i_hh
-#define linear_tqli_i_hh
+#ifndef linear_tqli_t_hh
+#define linear_tqli_t_hh
 
-#include "tqli.hh"
 #include "ds++/Assert.hh"
 #include "ds++/DracoMath.hh"
+#include "linear/tqli.hh"
 #include <stdexcept>
 
 namespace rtt_linear {
@@ -23,9 +23,9 @@ namespace rtt_linear {
  * Find eigenvectors and eigenvalues of a symmetric matrix that has been reduced to tridiagonal form
  * via a call to rtt_linear::tred2.
  *
- * \arg \a FieldVector1 A random access container on a field type.
- * \arg \a FieldVector2 A random access container on a field type.
- * \arg \a FieldVector3 A random access container on a field type.
+ * \tparam FieldVector1 A random access container on a field type.
+ * \tparam FieldVector2 A random access container on a field type.
+ * \tparam FieldVector3 A random access container on a field type.
  *
  * \param[in,out] d Diagonal of the matrix.  On return, the eigenvalues of the matrix.
  * \param[in] e Superdiagonal of the matrix.
@@ -110,8 +110,8 @@ void tqli(FieldVector1 &d, FieldVector2 &e, const unsigned n, FieldVector3 &z) {
 
 } // end namespace rtt_linear
 
-#endif // linear_tqli_i_hh
+#endif // linear_tqli_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of linear/tqli.i.hh
+// end of linear/tqli.t.hh
 //------------------------------------------------------------------------------------------------//

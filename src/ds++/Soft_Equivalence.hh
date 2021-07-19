@@ -14,7 +14,7 @@
 // Soft_Equivalence
 //
 // Purpose : checks that two reals or fields of reals are within a tolerance of each other.
-// ================================================================================================//
+//================================================================================================//
 
 #include "Assert.hh"
 #include <cmath>

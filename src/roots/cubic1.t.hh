@@ -1,19 +1,18 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   roots/cubic1.i.hh
+ * \file   roots/cubic1.t.hh
  * \author Kent Budge
  * \date   Wed Sep 15 10:04:02 MDT 2010
  * \brief  Solve a cubic equation assumed to have one real root
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef roots_cubic1_i_hh
-#define roots_cubic1_i_hh
+#ifndef roots_cubic1_t_hh
+#define roots_cubic1_t_hh
 
-#include "cubic1.hh"
 #include "ds++/Assert.hh"
 #include "ds++/Field_Traits.hh"
+#include "roots/cubic1.hh"
 
 namespace rtt_roots {
 
@@ -39,8 +38,8 @@ template <class Field> Field cubic1(Field const &a, Field const &b, Field const 
 
 } // end namespace rtt_roots
 
-#endif // roots_cubic1_i_hh
+#endif // roots_cubic1_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of cubic1.i.hh
+// end of roots/cubic1.t.hh
 //------------------------------------------------------------------------------------------------//

@@ -4,11 +4,7 @@
  * \author Kent Budge
  * \date   Tue Sep 18 08:22:08 2007
  * \brief  Define template function L2norm
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved.
- */
-//------------------------------------------------------------------------------------------------//
-
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef norms_L2norm_hh
@@ -21,6 +17,8 @@ template <typename In> double L2norm(In const &x);
 //! Compute the L2-norm of the difference between two vectors.
 template <typename In1, typename In2> double L2norm_diff(In1 const &x, In2 const &y);
 } // end namespace rtt_norms
+
+#include <norms/L2norm.i.hh>
 
 #endif // norms_L2norm_hh
 

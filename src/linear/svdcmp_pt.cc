@@ -4,10 +4,10 @@
  * \author Kent Budge
  * \date   Wed Aug 11 15:21:38 2004
  * \brief  Specializations of svdcmp
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "svdcmp.i.hh"
+#include "svdcmp.t.hh"
 #include <vector>
 
 namespace rtt_linear {

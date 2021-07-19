@@ -4,8 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Aug 22 15:15:49 2000
  * \brief  Implementation file for IpcressFile class.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "IpcressFile.hh"
@@ -19,13 +18,12 @@ namespace rtt_cdi_ipcress {
 /*!
  * \brief The standard IpcressFile constructor.
  *
- * This is the standard IpcressFile constructor.  This object is typically
- * instantiated as a smart pointer.
+ * This is the standard IpcressFile constructor. This object is typically instantiated as a smart
+ * pointer.
  *
- * \param[in] ipcressDataFilename A string that contains the name of the Ipcress
- *     data file in IPCRESS format.  The f77 Ipcress vendor library expects a
- *     name with 80 characters or less. If the filename is longer than 80
- *     characters the library will not be able to open the file.
+ * \param[in] ipcressDataFilename A string that contains the name of the Ipcress data file in 
+ *     IPCRESS format.  The f77 Ipcress vendor library expects a name with 80 characters or less. If
+ *     the filename is longer than 80 characters the library will not be able to open the file.
  *
  * 1. Set some defaults (bytes per word, number of fields in the TOC).
  * 2. Try to open the file
@@ -37,8 +35,7 @@ IpcressFile::IpcressFile(const std::string &ipcressDataFilename)
       ipcress_word_size(8),            // bytes per entry in file.
       ipcressFileHandle(), toc(24, 0), // 24 records in the table of contents
       matIDs(), dfo(), ds(), materialData() {
-  //! \bug May need to determine if this machine uses IEEE floating point
-  // numbers or Cray floating point format.
+
   Require(rtt_dsxx::has_ieee_float_representation());
   Require(rtt_dsxx::fileExists(dataFilename));
 

@@ -4,10 +4,10 @@
  * \author Kent Budge
  * \date   Thu Sep  2 14:49:55 2004
  * \brief  Specializations of tred2
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-202t Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "tred2.i.hh"
+#include "tred2.t.hh"
 #include <cmath>
 #include <vector>
 
@@ -22,5 +22,5 @@ template void tred2(std::vector<double> &a, unsigned n, std::vector<double> &d,
 } // end namespace rtt_linear
 
 //------------------------------------------------------------------------------------------------//
-// end of tred2_pt.cc
+// end of linear/tred2_pt.cc
 //------------------------------------------------------------------------------------------------//
