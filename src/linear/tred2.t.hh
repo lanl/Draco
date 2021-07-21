@@ -1,18 +1,18 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   linear/tred2.i.hh
+ * \file   linear/tred2.t.hh
  * \author Kent Budge
  * \date   Thu Sep  2 14:49:55 2004
  * \brief  Householder reduce a symmetric matrix.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef linear_tred2_i_hh
-#define linear_tred2_i_hh
+#ifndef linear_tred2_t_hh
+#define linear_tred2_t_hh
 
-#include "tred2.hh"
 #include "ds++/Assert.hh"
 #include "ds++/DracoMath.hh"
+#include "linear/tred2.hh"
 
 namespace rtt_linear {
 
@@ -22,9 +22,9 @@ namespace rtt_linear {
 /*!
  * \brief Householder-reduce a symmetric matrix
  *
- * \arg \a FieldVector1 A random access container on a field type.
- * \arg \a FieldVector2 A random access container on a field type.
- * \arg \a FieldVector3 A random access container on a field type.
+ * \tparam FieldVector1 A random access container on a field type.
+ * \tparam FieldVector2 A random access container on a field type.
+ * \tparam FieldVector3 A random access container on a field type.
  *
  * \param[in,out] a Symmetric matrix stored in [r+n*c] form, that is, as a full matrix.  On return,
  *                  this is replaced by the rotation matrix used to effect the reduction.  This is
@@ -127,8 +127,8 @@ void tred2(FieldVector1 &a, unsigned n, FieldVector2 &d, FieldVector3 &e) {
 
 } // end namespace rtt_linear
 
-#endif // linear_tred2_i_hh
+#endif // linear_tred2_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of linear/tred2.i.hh
+// end of linear/tred2.t.hh
 //------------------------------------------------------------------------------------------------//

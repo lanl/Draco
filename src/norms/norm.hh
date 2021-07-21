@@ -4,11 +4,7 @@
  * \author Kent Budge
  * \date   Tue Sep 18 08:53:41 2007
  * \brief  Declare template class norm
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved.
- */
-//------------------------------------------------------------------------------------------------//
-
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef norms_norm_hh
