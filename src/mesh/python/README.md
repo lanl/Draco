@@ -13,10 +13,11 @@ Currently, there is a script called `x3d_generator.py`, which takes command-line
 input to instantiate a mesh object from one of the mesh_type classes and outputs
 a set of X3D files (main mesh file and boundary node files) of the mesh object.
 
-## Example Usage:
+## Example Usage
 
 To create X3D files for a 4x4x4 3D orthogonal structured mesh on domain (x,y,z)
 in [0,1]x[0,2]x[0,4]:
-```
-$ ./x3d_generator.py --mesh_type orth_3d_mesh --num_per_dim 4 4 4 --bnd_per_dim 0 1 0 2 0 4
+
+```bash
+./x3d_generator.py --mesh_type orth_3d_mesh --num_per_dim 4 4 4 --bnd_per_dim 0 1 0 2 0 4
 ```
