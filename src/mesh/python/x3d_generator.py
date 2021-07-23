@@ -10,7 +10,7 @@ import numpy as np
 import argparse
 
 # -- mesh class dictionary
-mesh_type_dict = {'orth_2d_mesh': mesh_types.orth_2d_mesh}
+mesh_type_dict = {'orth_2d_mesh': mesh_types.orth_2d_mesh, 'orth_3d_mesh': mesh_types.orth_3d_mesh}
 
 # ------------------------------------------------------------------------------------------------ #
 # -- create argument parser
@@ -22,6 +22,8 @@ parser.add_argument('-nd', '--num_per_dim', type=int, nargs='+', default=[1, 1],
                     help='Number of cells per dimension.')
 parser.add_argument('-bd', '--bnd_per_dim', type=float, nargs='+', default=[0.0, 1.0, 0.0, 1.0],
                     help='Length per dimension.')
+parser.add_argument('--name', type=str, default='mesh',
+                    help='Select file name (will be prefixed with x3d. and sufficed with .in).')
 
 # -- parse arguments from command line
 args = parser.parse_args()
@@ -47,7 +49,8 @@ mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim)
 # -- write out the main mesh file in x3d format
 
 # -- open writable file
-fo = open('x3d.mesh.in', 'w')
+fname = 'x3d.' + args.name
+fo = open(fname + '.in', 'w')
 
 # -- write header block
 # -- for x3d:
@@ -174,7 +177,7 @@ fo.close()
 # -- assume two boundaries per dimension
 # -- x3d only needs a unique node list
 for i in range(2 * mesh.ndim):
-    np.savetxt('x3d.mesh.bdy' + str(i + 1) + '.in', np.unique(mesh.nodes_per_side[i] + 1), fmt='%d')
+    np.savetxt(fname + '.bdy' + str(i + 1) + '.in', np.unique(mesh.nodes_per_side[i] + 1), fmt='%d')
 
 # ------------------------------------------------------------------------------------------------ #
 # end of x3d_generator.py
