@@ -1,18 +1,18 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   linear/gaussj.i.hh
+ * \file   linear/gaussj.t.hh
  * \author Kent Budge
  * \brief  Solve a linear system by Gaussian elimination.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef linear_gaussj_i_hh
-#define linear_gaussj_i_hh
+#ifndef linear_gaussj_t_hh
+#define linear_gaussj_t_hh
 
-#include "gaussj.hh"
 #include "ds++/Assert.hh"
 #include "ds++/DracoMath.hh"
 #include "ds++/Field_Traits.hh"
+#include "linear/gaussj.hh"
 #include <algorithm>
 #include <sstream>
 #include <vector>
@@ -36,7 +36,7 @@ template <class DoubleRandomContainer> bool is_square(DoubleRandomContainer cons
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \arg \a RandomContainer A random access container type
+ * \tparam RandomContainer A random access container type
  *
  * \param A Coefficient matrix of the system of equations. Destroyed on return.
  * \param n Rank of matrix A
@@ -121,8 +121,8 @@ void gaussj(RandomContainer &A, unsigned const n, RandomContainer &b, unsigned c
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \arg \a DoubleRandomContainer A double-subscript random access container type
- * \arg \a RandomContainer A random access container type
+ * \tparam DoubleRandomContainer A double-subscript random access container type
+ * \tparam RandomContainer A random access container type
  *
  * \param A Coefficient matrix of the system of equations. Destroyed on return.
  * \param b Right hand side of the system of equations. Replacec by the solution of the system on
@@ -206,8 +206,8 @@ void gaussj(DoubleRandomContainer &A, RandomContainer &b) {
 
 } // end namespace rtt_linear
 
-#endif // linear_gaussj_i_hh
+#endif // linear_gaussj_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of linear/gaussj.i.hh
+// end of linear/gaussj.t.hh
 //------------------------------------------------------------------------------------------------//

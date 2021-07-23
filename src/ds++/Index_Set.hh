@@ -105,7 +105,7 @@ protected:
 
 } // end namespace rtt_dsxx
 
-#include "Index_Set.t.hh"
+#include "Index_Set.i.hh"
 
 #endif // dsxx_Index_Set_hh
 

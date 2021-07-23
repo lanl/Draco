@@ -235,6 +235,90 @@ void read_voronoi_mesh(rtt_c4::ParallelUnitTest &ut) {
   return;
 }
 
+// Parse an X3D file format and compare to reference
+void read_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
+
+  // >>> PARSE MESH
+
+  const std::string inputpath = ut.getTestSourcePath();
+  const std::string filename = inputpath + "x3d.mesh3d_1cell.in";
+  const std::vector<std::string> bdy_filenames = {
+      inputpath + "x3d.mesh3d_1cell.bdy1.in", inputpath + "x3d.mesh3d_1cell.bdy2.in",
+      inputpath + "x3d.mesh3d_1cell.bdy3.in", inputpath + "x3d.mesh3d_1cell.bdy4.in",
+      inputpath + "x3d.mesh3d_1cell.bdy5.in", inputpath + "x3d.mesh3d_1cell.bdy6.in"};
+  const std::vector<unsigned> bdy_flags = {3, 1, 0, 2, 1, 5};
+
+  // construct reader
+  std::shared_ptr<X3D_Draco_Mesh_Reader> x3d_reader(
+      new X3D_Draco_Mesh_Reader(filename, bdy_filenames, bdy_flags));
+
+  // read mesh
+  x3d_reader->read_mesh();
+
+  // >>> CHECK HEADER DATA
+
+  FAIL_IF_NOT(x3d_reader->get_process() == 0);
+  FAIL_IF_NOT(x3d_reader->get_numdim() == 3);
+  FAIL_IF_NOT(x3d_reader->get_numcells() == 1);
+  FAIL_IF_NOT(x3d_reader->get_numnodes() == 8);
+
+  // >>> CHECK CELL-NODE DATA
+
+  FAIL_IF_NOT(x3d_reader->get_celltype(0) == 6);
+
+  std::vector<unsigned> test_cellnodes = {0, 2, 3, 1, 5, 7, 6, 4, 0, 1, 5, 4,
+                                          6, 7, 3, 2, 0, 4, 6, 2, 3, 7, 5, 1};
+  FAIL_IF_NOT(x3d_reader->get_cellnodes(0) == test_cellnodes);
+
+  // >>> CHECK NODE-COORD DATA
+
+  std::vector<std::vector<double>> test_coords = {{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0},
+                                                  {1.0, 1.0, 0.0}, {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0},
+                                                  {0.0, 1.0, 1.0}, {1.0, 1.0, 1.0}};
+  for (int node = 0; node < 8; ++node)
+    FAIL_IF_NOT(x3d_reader->get_nodecoord(node) == test_coords[node]);
+
+  // >>> CHECK SIDE DATA
+
+  FAIL_IF_NOT(x3d_reader->get_numsides() == 6);
+
+  // set test boundary nodes
+  std::vector<std::vector<unsigned>> test_sidenodes = {{0, 4, 6, 2}, {3, 7, 5, 1}, {0, 1, 5, 4},
+                                                       {6, 7, 3, 2}, {0, 2, 3, 1}, {5, 7, 6, 4}};
+
+  // check each side's data
+  for (int side = 0; side < 6; ++side) {
+
+    // sides must always give 2 nodes per face in X3D
+    FAIL_IF_NOT(x3d_reader->get_sidetype(side) == 4);
+
+    // boundary conditions are not supplied in X3D (note this check is specialized for the 1-cell
+    // mesh)
+    FAIL_IF_NOT(x3d_reader->get_sideflag(side) == bdy_flags[side]);
+
+    // check node indices
+    FAIL_IF_NOT(x3d_reader->get_sidenodes(side) == test_sidenodes[side]);
+  }
+
+  // >>> CHECK BC-NODE MAP
+
+  const std::map<size_t, std::vector<unsigned>> &bc_node_map = x3d_reader->get_bc_node_map();
+
+  FAIL_IF_NOT(bc_node_map.size() == 6);
+
+  std::vector<std::vector<unsigned>> test_bc_nodes = {{0, 2, 4, 6}, {1, 3, 5, 7}, {0, 1, 4, 5},
+                                                      {2, 3, 6, 7}, {0, 1, 2, 3}, {4, 5, 6, 7}};
+
+  for (size_t ibc = 0; ibc < 6; ++ibc) {
+    FAIL_IF_NOT(bc_node_map.at(ibc) == test_bc_nodes[ibc]);
+  }
+
+  // successful test output
+  if (ut.numFails == 0)
+    PASSMSG("3D X3D_Draco_Mesh_Reader parsing tests ok.");
+  return;
+}
+
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, rtt_dsxx::release);
@@ -243,6 +327,7 @@ int main(int argc, char *argv[]) {
     read_x3d_mesh_2d(ut);
     build_x3d_mesh_2d(ut);
     read_voronoi_mesh(ut);
+    read_x3d_mesh_3d(ut);
   }
   UT_EPILOG(ut);
 }

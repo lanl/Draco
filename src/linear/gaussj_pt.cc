@@ -4,10 +4,10 @@
  * \author Kent Budge
  * \date   Wed Aug 11 15:21:38 2004
  * \brief  Specializations of gaussj
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "gaussj.i.hh"
+#include "gaussj.t.hh"
 #include <vector>
 
 namespace rtt_linear {
@@ -19,5 +19,5 @@ template void gaussj(vector<vector<double>> &A, vector<double> &b);
 } // end namespace rtt_linear
 
 //------------------------------------------------------------------------------------------------//
-// end of gaussj.cc
+// end of linear/gaussj_pt.cc
 //------------------------------------------------------------------------------------------------//
