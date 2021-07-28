@@ -45,6 +45,7 @@ set( DRACO_TIMING "@DRACO_TIMING@")
 set( DRACO_DIAGNOSTICS "@DRACO_DIAGNOSTICS@")
 set( DRACO_STATIC_ANALYZER "@DRACO_STATIC_ANALYZER@")
 set( Draco_VERSION "@Draco_VERSION@")
+set( DRACO_ROUNDOFF_MODE "@DRACO_ROUNDOFF_MODE@")
 
 #--------------------------------------------------------------------------------------------------#
 # MPI specific variables

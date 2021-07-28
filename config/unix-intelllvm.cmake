@@ -20,6 +20,10 @@ if(NOT CXX_FLAGS_INITIALIZED)
     string(APPEND CMAKE_C_FLAGS " -ipo")
   endif()
   string(CONCAT CMAKE_C_FLAGS_DEBUG "-O0 -DDEBUG -Wno-potentially-evaluated-expression")
+  # Useful for profilers
+  #
+  # * -gline-tables-only
+  # * -fdebug-info-for-profiling
   string(CONCAT CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
   set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_RELEASE}")
   string(CONCAT CMAKE_C_FLAGS_RELWITHDEBINFO "-O3 ")
