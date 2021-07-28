@@ -1,16 +1,16 @@
-#--------------------------------------------*-cmake-*---------------------------------------------#
+#--------------------------------------------*-cmake-*-------------------------------------------- #
 # file   buildEnv.cmake
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 June 5
 # brief  Default CMake build parameters
 # note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
-#--------------------------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------------------------- #
 
 include_guard(GLOBAL)
 
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # Build Parameters
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 macro(dbsSetDefaults)
 
   # Work around for cmake-3.19+. Should be fixed in cmake-3.20+
@@ -81,9 +81,14 @@ macro(dbsSetDefaults)
   # Design-by-Contract
   if(NOT DEFINED DRACO_DBC_LEVEL)
 
-    # Default is on (7), except for Makefile based Release builds . Insist() assertions    : always
-    # on Require() preconditions: add +1 to DBC_LEVEL Check() assertions     : add +2 to DBC_LEVEL
-    # Ensure() postconditions: add +4 to DBC_LEVEL Do not throw on error  : add +8 to DBC_LEVEL
+    # Default is on (7), except for Makefile based Release builds.
+    #
+    # * Insist() assertions    : always on
+    # * Require() preconditions: add +1 to DBC_LEVEL
+    # * Check() assertions     : add +2 to DBC_LEVEL
+    # * Ensure() postconditions: add +4 to DBC_LEVEL
+    # * Do not throw on error  : add +8 to DBC_LEVEL
+    #
     set(DRACO_DBC_LEVEL "7")
     if(NOT CMAKE_CONFIGURATION_TYPES)
       if("${Draco_BUILD_TYPE}" MATCHES "RELEASE")
@@ -96,40 +101,10 @@ macro(dbsSetDefaults)
         "${DRACO_DBC_LEVEL}"
         CACHE STRING "Design-by-Contract (0-31)?")
     # provide a constrained drop down menu in cmake-gui
-    set_property(
-      CACHE DRACO_DBC_LEVEL
-      PROPERTY STRINGS
-               0
-               1
-               2
-               3
-               4
-               5
-               6
-               7
-               9
-               10
-               11
-               12
-               13
-               14
-               15
-               16
-               17
-               18
-               19
-               20
-               21
-               22
-               23
-               24
-               25
-               26
-               27
-               28
-               29
-               30
-               31)
+    # cmake-format: off
+    set_property( CACHE DRACO_DBC_LEVEL PROPERTY STRINGS 0 1 2 3 4 5 6 7 9 10 11 12 13 14 15 16 17
+      18 19 20 21 22 23 24 25 26 27 28 29 30 31)
+    # cmake-format: on
   endif()
 
   if(CMAKE_CONFIGURATION_TYPES)
@@ -163,9 +138,18 @@ macro(dbsSetDefaults)
   # STATIC or SHARED libraries?
   # ----------------------------------------
 
-  # Library type to build Linux: STATIC is a lib<XXX>.a SHARED is a lib<XXX>.so (requires rpath or
-  # .so found in $LD_LIBRARY_PATH) MSVC : STATIC is <XXX>.lib SHARED is <XXX>.dll (requires dll to
-  # be in $PATH or in same directory as exe).
+  # Library type to build
+  #
+  # * Linux:
+  #
+  #   * STATIC is a lib<XXX>.a
+  #   * SHARED is a lib<XXX>.so (requires rpath or .so found in $LD_LIBRARY_PATH)
+  #
+  # * MSVC:
+  #
+  #   * STATIC is <XXX>.lib
+  #   * SHARED is <XXX>.dll (requires dll to be in $PATH or in same directory as exe).
+  #
   if(NOT DEFINED DRACO_LIBRARY_TYPE)
     set(DRACO_LIBRARY_TYPE "SHARED")
   endif()
@@ -226,9 +210,9 @@ targets are installed." FORCE)
     set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
   endif()
 
-  # --------------------------------------------------------------------------------------------- #
+  # -------------------------------------------------------------------------------------------- #
   # Special FMA modes - roundoff controls
-  # --------------------------------------------------------------------------------------------- #
+  # -------------------------------------------------------------------------------------------- #
   if(NOT DEFINED DRACO_ROUNDOFF_MODE)
     set(DRACO_ROUNDOFF_MODE "ACCURATE") # default value
   endif()
@@ -244,12 +228,12 @@ targets are installed." FORCE)
 
 endmacro()
 
-# ---------------------------------------------------------------------------##
+# ------------------------------------------------------------------------------------------------ #
 # dbsInitExportTargets
 #
 # These fields are constructed during Draco configure and are saved/installed to
 # cmake/draco-config.cmake.
-# ---------------------------------------------------------------------------##
+# ------------------------------------------------------------------------------------------------ #
 macro(dbsInitExportTargets PREFIX)
   # Data for exporting during install
   set(${PREFIX}_LIBRARIES
@@ -269,9 +253,9 @@ macro(dbsInitExportTargets PREFIX)
       CACHE INTERNAL "List of third party libraries used by this package." FORCE)
 endmacro()
 
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # Save some build parameters for later use by --config options
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 macro(dbsConfigInfo)
 
   set(DBS_OPERATING_SYSTEM "${CMAKE_SYSTEM_NAME}")
@@ -338,6 +322,6 @@ macro(dbsConfigInfo)
 
 endmacro()
 
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # End
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
