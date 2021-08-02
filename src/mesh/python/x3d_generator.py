@@ -161,7 +161,8 @@ fo.write('\n')
 # -- unused data per cell
 fo.write('cell_data\n')
 fo.write('matid\n')
-fo.write('         0\n')
+for cell in range(mesh.num_cells):
+    fo.write(str(cell+1)+'         0\n')
 fo.write('end_matid\n')
 fo.write('partelm\n')
 fo.write('         1\n')
