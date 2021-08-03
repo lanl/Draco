@@ -71,6 +71,32 @@ public:
                                const std::array<size_t, 3> &grid_bins, const std::string &map_type,
                                const bool normalize, const bool bias) const;
 
+  //! Map local+ghost data to grid window
+  void map_data_to_sphere_grid_window(
+      const std::vector<double> &local_data, const std::vector<double> &ghost_data,
+      std::vector<double> &grid_dataaa, const std::array<double, 3> &sphere_center,
+      const std::array<double, 3> &window_min, const std::array<double, 3> &window_max,
+      const std::array<size_t, 3> &grid_bins, const std::string &map_type, const bool normalize,
+      const bool bias) const;
+
+  //! Map local+ghost data to grid window for multi-dimensional data
+  void map_data_to_sphere_grid_window(const std::vector<std::vector<double>> &local_data,
+                                      const std::vector<std::vector<double>> &ghost_data,
+                                      std::vector<std::vector<double>> &grid_data,
+                                      const std::array<double, 3> &sphere_center,
+                                      const std::array<double, 3> &window_min,
+                                      const std::array<double, 3> &window_max,
+                                      const std::array<size_t, 3> &grid_bins,
+                                      const std::string &map_type, const bool normalize,
+                                      const bool bias) const;
+
+  std::array<double, 3> transform_r_theta(const std::array<double, 3> &sphere_center,
+                                          const std::array<double, 3> &location) const;
+
+  void calc_wedge_xy_bounds(const std::array<double, 3> &wedge_xyz_center,
+                            const std::array<double, 3> &wedge_origin,
+                            const std::array<double, 3> &wedge_dr_dtheta,
+                            std::array<double, 3> &win_min, std::array<double, 3> &win_max) const;
   // PUBLIC DATA
   // Quick index initialization data
   const size_t dim;
@@ -108,6 +134,7 @@ private:
   std::map<size_t, std::vector<std::array<int, 3>>> put_window_map;
   // max put buffer size;
   size_t max_put_buffer_size;
+  const double pi = 3.14159265359;
 };
 
 } // end namespace  rtt_kde

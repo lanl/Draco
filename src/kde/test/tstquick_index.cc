@@ -330,6 +330,7 @@ void test_decomposition(ParallelUnitTest &ut) {
       std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
       qindex.map_data_to_grid_window(dd_3x_data, ghost_3x_data, window_3x_data, min, max, bin_sizes,
                                      map_type, normalize, bias);
+
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
@@ -1243,6 +1244,102 @@ void test_decomposition(ParallelUnitTest &ut) {
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
           if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
+            ITFAILS;
+    }
+
+    // check max sphere r window mapping (more bins then data) functions
+    {
+      // build a length=1.0 window around the first point on each node
+      const std::array<double, 3> center{dd_position_array[0][0], dd_position_array[0][1], 0.0};
+      // wedge location +- 1 degree theta and 0.5 radius
+      const std::array<double, 3> dr_dtheta{0.4, 0.0174533, 0.0};
+      const std::array<size_t, 3> bin_sizes{5, 1, 0};
+      const bool normalize = false;
+      const bool bias = false;
+      const std::string map_type = "max";
+      const std::array<double, 3> sphere_center{-1.0, 0.0, 0.0};
+      std::vector<double> sphere_window_data(5, 0.0);
+      qindex.map_data_to_sphere_grid_window(dd_data, ghost_data, sphere_window_data, sphere_center,
+                                            center, dr_dtheta, bin_sizes, map_type, normalize,
+                                            bias);
+      std::vector<std::vector<double>> sphere_window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_sphere_grid_window(dd_3x_data, ghost_3x_data, sphere_window_3x_data,
+                                            sphere_center, center, dr_dtheta, bin_sizes, map_type,
+                                            normalize, bias);
+      std::vector<double> gold_window_data;
+      std::vector<std::vector<double>> gold_window_3x_data(3);
+      // different result then 1D because the 1.0 y offset of the data
+      if (rtt_c4::node() == 0) {
+        gold_window_data = {0.0, 0.0, 3.0, 0.0, 0.0};
+        gold_window_3x_data[0] = {0.0, 0.0, 3.0, 0.0, 0.0};
+        gold_window_3x_data[1] = {0.0, 0.0, 4.0, 0.0, 0.0};
+        gold_window_3x_data[2] = {0.0, 0.0, -3.0, 0.0, 0.0};
+      } else if (rtt_c4::node() == 1) {
+        gold_window_data = {0.0, 0.0, 6.0, 0.0, 0.0};
+        gold_window_3x_data[0] = {0.0, 0.0, 6.0, 0.0, 0.0};
+        gold_window_3x_data[1] = {0.0, 0.0, 7.0, 0.0, 0.0};
+        gold_window_3x_data[2] = {0.0, 0.0, -6.0, 0.0, 0.0};
+      } else {
+        gold_window_data = {0.0, 0.0, 9.0, 0.0, 0.0};
+        gold_window_3x_data[0] = {0.0, 0.0, 9.0, 0.0, 0.0};
+        gold_window_3x_data[1] = {0.0, 0.0, 10.0, 0.0, 0.0};
+        gold_window_3x_data[2] = {0.0, 0.0, -9.0, 0.0, 0.0};
+      }
+
+      for (size_t i = 0; i < bin_sizes[0]; i++)
+        if (!rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]))
+          ITFAILS;
+      for (size_t v = 0; v < 3; v++)
+        for (size_t i = 0; i < bin_sizes[0]; i++)
+          if (!rtt_dsxx::soft_equiv(sphere_window_3x_data[v][i], gold_window_3x_data[v][i]))
+            ITFAILS;
+    }
+
+    // check max sphere r window mapping (more bins then data) functions
+    {
+      // build a length=1.0 window around the first point on each node
+      const std::array<double, 3> center{dd_position_array[0][0], dd_position_array[0][1], 0.0};
+      // wedge location +- 1 degree theta and 0.5 radius
+      const std::array<double, 3> dr_dtheta{0.4, 0.0174533, 0.0};
+      const std::array<size_t, 3> bin_sizes{1, 5, 0};
+      const bool normalize = false;
+      const bool bias = false;
+      const std::string map_type = "max";
+      const std::array<double, 3> sphere_center{-1.0, 0.0, 0.0};
+      std::vector<double> sphere_window_data(5, 0.0);
+      qindex.map_data_to_sphere_grid_window(dd_data, ghost_data, sphere_window_data, sphere_center,
+                                            center, dr_dtheta, bin_sizes, map_type, normalize,
+                                            bias);
+      std::vector<std::vector<double>> sphere_window_3x_data(3, std::vector<double>(5, 0.0));
+      qindex.map_data_to_sphere_grid_window(dd_3x_data, ghost_3x_data, sphere_window_3x_data,
+                                            sphere_center, center, dr_dtheta, bin_sizes, map_type,
+                                            normalize, bias);
+      std::vector<double> gold_window_data;
+      std::vector<std::vector<double>> gold_window_3x_data(3);
+      // different result then 1D because the 1.0 y offset of the data
+      if (rtt_c4::node() == 0) {
+        gold_window_data = {0.0, 0.0, 3.0, 0.0, 0.0};
+        gold_window_3x_data[0] = {0.0, 0.0, 3.0, 0.0, 0.0};
+        gold_window_3x_data[1] = {0.0, 0.0, 4.0, 0.0, 0.0};
+        gold_window_3x_data[2] = {0.0, 0.0, -3.0, 0.0, 0.0};
+      } else if (rtt_c4::node() == 1) {
+        gold_window_data = {0.0, 0.0, 6.0, 0.0, 0.0};
+        gold_window_3x_data[0] = {0.0, 0.0, 6.0, 0.0, 0.0};
+        gold_window_3x_data[1] = {0.0, 0.0, 7.0, 0.0, 0.0};
+        gold_window_3x_data[2] = {0.0, 0.0, -6.0, 0.0, 0.0};
+      } else {
+        gold_window_data = {0.0, 0.0, 9.0, 0.0, 0.0};
+        gold_window_3x_data[0] = {0.0, 0.0, 9.0, 0.0, 0.0};
+        gold_window_3x_data[1] = {0.0, 0.0, 10.0, 0.0, 0.0};
+        gold_window_3x_data[2] = {0.0, 0.0, -9.0, 0.0, 0.0};
+      }
+
+      for (size_t i = 0; i < bin_sizes[0]; i++)
+        if (!rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]))
+          ITFAILS;
+      for (size_t v = 0; v < 3; v++)
+        for (size_t i = 0; i < bin_sizes[0]; i++)
+          if (!rtt_dsxx::soft_equiv(sphere_window_3x_data[v][i], gold_window_3x_data[v][i]))
             ITFAILS;
     }
 
