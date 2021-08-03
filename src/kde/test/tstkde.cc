@@ -71,8 +71,8 @@ void test_replication(ParallelUnitTest &ut) {
     for (auto &r : radial_edges) {
       size_t mui = 0;
       for (auto &mu : cosine_edges) {
-        spoke_data[point_i] = mui + 1.0;
-        shell_data[point_i] = ri + 1.0;
+        spoke_data[point_i] = static_cast<double>(mui) + 1.0;
+        shell_data[point_i] = static_cast<double>(ri) + 1.0;
         spoke_smoothed_shells[point_i] = smoothed_shell_ref[ri];
         double rel_y = r * mu;
         position_array[point_i][0] =
@@ -104,7 +104,7 @@ void test_replication(ParallelUnitTest &ut) {
       sphere_kde.apply_conservation(spoke_data, log_smooth_result, qindex.domain_decomposed);
 
       // Check smooth result
-      for (int i = 0; i < data_size; i++) {
+      for (size_t i = 0; i < data_size; i++) {
         if (!rtt_dsxx::soft_equiv(smooth_result[i], spoke_data[i]))
           ITFAILS;
         if (!rtt_dsxx::soft_equiv(log_smooth_result[i], spoke_data[i]))
@@ -141,7 +141,7 @@ void test_replication(ParallelUnitTest &ut) {
       sphere_kde.apply_conservation(shell_data, log_smooth_result, qindex.domain_decomposed);
 
       // Check smooth result
-      for (int i = 0; i < data_size; i++) {
+      for (size_t i = 0; i < data_size; i++) {
         if (!rtt_dsxx::soft_equiv(smooth_result[i], shell_data[i]))
           ITFAILS;
         if (!rtt_dsxx::soft_equiv(log_smooth_result[i], shell_data[i]))
@@ -178,7 +178,7 @@ void test_replication(ParallelUnitTest &ut) {
       sphere_kde.apply_conservation(shell_data, log_smooth_result, qindex.domain_decomposed);
 
       // Check smooth result
-      for (int i = 0; i < data_size; i++) {
+      for (size_t i = 0; i < data_size; i++) {
         if (!rtt_dsxx::soft_equiv(smooth_result[i], spoke_smoothed_shells[i], 1e-3))
           ITFAILS;
         if (!rtt_dsxx::soft_equiv(log_smooth_result[i], spoke_smoothed_shells[i], 1e-3))
@@ -224,7 +224,7 @@ void test_replication(ParallelUnitTest &ut) {
       sphere_kde.apply_conservation(spoke_data, log_smooth_result, qindex.domain_decomposed);
 
       // Check smooth result
-      for (int i = 0; i < data_size; i++) {
+      for (size_t i = 0; i < data_size; i++) {
         if (!rtt_dsxx::soft_equiv(smooth_result[i], shell_smooth_spoke[i], 1e-3))
           ITFAILS;
         if (!rtt_dsxx::soft_equiv(log_smooth_result[i], shell_smooth_spoke[i], 1e-3))

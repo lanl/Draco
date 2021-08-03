@@ -32,8 +32,7 @@ class kde {
 public:
   //! Constructor
   kde(const std::array<bool, 6> reflect_boundary_ = {false, false, false, false, false, false})
-      : reflect_boundary(reflect_boundary_), sphere_center({0.0, 0.0, 0.0}), sphere_min_radius(0.0),
-        sphere_max_radius(0.0), use_spherical_reconstruction(false) {}
+      : reflect_boundary(reflect_boundary_) {}
 
   //! Reconstruct distribution
   std::vector<double> reconstruction(const std::vector<double> &distribution,
@@ -92,7 +91,7 @@ private:
                ? calc_spherical_weight(r0, one_over_h0, r, one_over_h, qindex, discontinuity_cutoff)
                : calc_cartesian_weight(r0, one_over_h0, r, one_over_h, qindex,
                                        discontinuity_cutoff);
-  };
+  }
 
   void calc_win_min_max(const quick_index &qindex, const std::array<double, 3> &position,
                         const std::array<double, 3> &one_over_bandwidth, std::array<double, 3> &min,
@@ -114,10 +113,10 @@ private:
   //! reflecting boundary conditions [lower_x, upper_x, lower_y, upper_y, lower_z, upper_z]
   const std::array<bool, 6> reflect_boundary;
   //! Spherical Mesh Reconstruction Data
-  std::array<double, 3> sphere_center;
-  double sphere_min_radius;
-  double sphere_max_radius;
-  bool use_spherical_reconstruction;
+  std::array<double, 3> sphere_center{0.0, 0.0, 0.0};
+  double sphere_min_radius{0.0};
+  double sphere_max_radius{0.0};
+  bool use_spherical_reconstruction{false};
 };
 
 } // end namespace rtt_kde
