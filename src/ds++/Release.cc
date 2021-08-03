@@ -99,20 +99,20 @@ const std::string author_list(bool const use_doxygen_formatting) {
 
   mmdevs current_developers;
   // not totally fair... KT got credit for LOC when svn repository was converted to git.
-  current_developers.insert(fomdev(173050, "Kelly G. Thompson"));
-  current_developers.insert(fomdev(23098, "Kent G. Budge"));
+  current_developers.insert(fomdev(174857, "Kelly G. Thompson"));
+  current_developers.insert(fomdev(22559, "Kent G. Budge"));
   current_developers.insert(fomdev(7000, "Matt A. Cleveland"));
-  current_developers.insert(fomdev(4177, "Ryan T. Wollaeger"));
-  current_developers.insert(fomdev(3545, "Ben R. Ryan"));
-  current_developers.insert(fomdev(3047, "Alex R. Long"));
-  current_developers.insert(fomdev(1571, "Kendra P. Long"));
+  current_developers.insert(fomdev(4150, "Ryan T. Wollaeger"));
+  current_developers.insert(fomdev(3547, "Ben R. Ryan"));
+  current_developers.insert(fomdev(3224, "Alex R. Long"));
+  current_developers.insert(fomdev(1577, "Kendra P. Long"));
   current_developers.insert(fomdev(1270, "James S. Warsa"));
   current_developers.insert(fomdev(905, "Tim Kelley"));
   current_developers.insert(fomdev(360, "Jae H. Chang"));
   current_developers.insert(fomdev(127, "Andrew T. Till"));
   current_developers.insert(fomdev(91, "Ondrej Certik"));
   current_developers.insert(fomdev(15, "David A. Dixon"));
-  current_developers.insert(fomdev(4, "Howard Pritchard"));
+  current_developers.insert(fomdev(5, "Howard Pritchard"));
 
   mmdevs prior_developers;
 
