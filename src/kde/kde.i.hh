@@ -101,7 +101,7 @@ inline double kde::calc_radius(const std::array<double, 3> &sphere_center,
   return calc_mag(calc_vec(sphere_center, location));
 }
 
-  //------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 /*!
  * \brief
  * Calculate the arch length between two points (infinitely extended from sphere center) at a specified radius.
@@ -125,7 +125,7 @@ inline double kde::calc_arch_length(const std::array<double, 3> &sphere_center, 
   const double cos_theta = v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
   return radius * acos(cos_theta);
 }
-  } // end namespace  rtt_kde
+} // end namespace  rtt_kde
 
 #endif // kde_kde_i_hh
 

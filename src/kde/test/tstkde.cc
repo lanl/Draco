@@ -240,7 +240,7 @@ void test_replication(ParallelUnitTest &ut) {
               std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
         ITFAILS;
     }
-}
+  }
 
   // No mean reconstruction because of small basis functions
   {
@@ -947,7 +947,7 @@ void test_replication(ParallelUnitTest &ut) {
   } else {
     FAILMSG("KDE checks failed");
   }
-  }
+}
 
 void test_decomposition(ParallelUnitTest &ut) {
   kde test_kde;

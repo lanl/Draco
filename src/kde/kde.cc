@@ -453,7 +453,7 @@ void kde::calc_win_min_max(const quick_index &qindex, const std::array<double, 3
                         dr;
     // dtheta = arch_length_max/rmax
     const double dtheta = std::min(1.0 / (one_over_bandwidth[1] * rmax), acos(0));
-    qindex.calc_wedge_xy_bounds(position,sphere_center,{dr,dtheta,0.0}, win_min, win_max);
+    qindex.calc_wedge_xy_bounds(position, sphere_center, {dr, dtheta, 0.0}, win_min, win_max);
   } else {
     for (size_t d = 0; d < dim; d++) {
       Check(one_over_bandwidth[d] > 0.0);

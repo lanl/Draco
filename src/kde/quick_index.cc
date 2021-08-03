@@ -474,7 +474,6 @@ auto get_window_bin = [](const auto dim, const auto &grid_bins, const auto &loca
   return std::tuple<bool, size_t, std::array<double, 3>>{valid, local_window_bin, bin_center};
 };
 
-
 //------------------------------------------------------------------------------------------------//
 // Lambda for mapping the data
 auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, auto &min_distance,
