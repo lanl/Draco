@@ -32,7 +32,7 @@ namespace rtt_kde {
 /*!
  * \brief calculate weight
  * 
- * \pre Calculate the effective weight from a given location to the current kernel 
+ * \pre Calculate the effective weight in Cartesian geometry from a given location to the current kernel 
  *
  * \param[in] r0 current kernel center location
  * \param[in] one_over_h0 current kernel width
@@ -45,9 +45,12 @@ namespace rtt_kde {
  *
  * \post the local reconstruction of the original data is returned.
  */
-double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double, 3> &one_over_h0,
-                        const std::array<double, 3> &r, const std::array<double, 3> &one_over_h,
-                        const quick_index &qindex, const double &discontinuity_cutoff) const {
+double kde::calc_cartesian_weight(const std::array<double, 3> &r0,
+                                  const std::array<double, 3> &one_over_h0,
+                                  const std::array<double, 3> &r,
+                                  const std::array<double, 3> &one_over_h,
+                                  const quick_index &qindex,
+                                  const double &discontinuity_cutoff) const {
   double weight = 1.0;
   for (size_t d = 0; d < qindex.dim; d++) {
     const double u = (r0[d] - r[d]) * one_over_h0[d];
@@ -72,6 +75,69 @@ double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double
           one_over_h0[d];
       bc_weight += epan_kernel(high_u);
     }
+    weight *= scale * bc_weight * epan_kernel(u) * one_over_h0[d];
+  }
+  return weight;
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief calculate spherical weight
+ * 
+ * \pre Calculate the effective weight from a given location to the current kernel 
+ *
+ * \param[in] r0 current kernel center location
+ * \param[in] one_over_h0 current kernel width
+ * \param[in] r data location
+ * \param[in] one_over_h kernel width at this data location
+ * \param[in] qindex quick indexing class
+ * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the reconstruction
+ *
+ * \return weight contribution to the current kernel
+ *
+ * \post the local reconstruction of the original data is returned.
+ */
+double kde::calc_spherical_weight(const std::array<double, 3> &r0,
+                                  const std::array<double, 3> &one_over_h0,
+                                  const std::array<double, 3> &r,
+                                  const std::array<double, 3> &one_over_h,
+                                  const quick_index &qindex,
+                                  const double &discontinuity_cutoff) const {
+  // largest active smoothing length
+  const auto r0_theta_phi = qindex.transform_r_theta(sphere_center, r0);
+  // if we are near the origin of the sphere, fall back to xyz reconstruction
+  if (r0_theta_phi[0] < sphere_min_radius || r0_theta_phi[0] > sphere_max_radius)
+    return calc_cartesian_weight(r0, one_over_h0, r, one_over_h, qindex, discontinuity_cutoff);
+
+  const auto r_theta_phi = qindex.transform_r_theta(sphere_center, r);
+  const double radius = r0_theta_phi[0];
+  double weight = 1.0;
+  for (size_t d = 0; d < qindex.dim; d++) {
+    const double arch_scale = d > 0 ? radius : 1.0;
+    const double u = (r0_theta_phi[d] - r_theta_phi[d]) * arch_scale * one_over_h0[d];
+    const double scale =
+        fabs(one_over_h0[d] - one_over_h[d]) / std::max(one_over_h0[d], one_over_h[d]) >
+                discontinuity_cutoff
+            ? 0.0
+            : 1.0;
+    // Apply Boundary Condition Weighting
+    double bc_weight = 1.0;
+    /* BC are a little tricky so I will implement them later
+    const bool low_reflect = reflect_boundary[d * 2];
+    const bool high_reflect = reflect_boundary[d * 2 + 1];
+    if (low_reflect) {
+      const double low_u =
+          ((r0_theta_phi[d] - qindex.bounding_box_min[d]) + (r[d] - qindex.bounding_box_min[d])) *
+          one_over_h0[d];
+      bc_weight += epan_kernel(low_u);
+    }
+    if (high_reflect) {
+      const double high_u =
+          ((qindex.bounding_box_max[d] - r0[d]) + (qindex.bounding_box_max[d] - r[d])) *
+          one_over_h0[d];
+      bc_weight += epan_kernel(high_u);
+    }
+    */
     weight *= scale * bc_weight * epan_kernel(u) * one_over_h0[d];
   }
   return weight;
@@ -115,17 +181,13 @@ kde::reconstruction(const std::vector<double> &distribution,
                                                                 {0.0, 0.0, 0.0});
     qindex.collect_ghost_data(one_over_bandwidth, ghost_one_over_bandwidth);
 
+    std::array<double, 3> win_min{0.0, 0.0, 0.0};
+    std::array<double, 3> win_max{0.0, 0.0, 0.0};
     // now apply the kernel to the local ranks
     for (size_t i = 0; i < local_size; i++) {
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
-      std::array<double, 3> win_min{0.0, 0.0, 0.0};
-      std::array<double, 3> win_max{0.0, 0.0, 0.0};
-      for (size_t d = 0; d < dim; d++) {
-        Check(one_over_h0[d] > 0.0);
-        win_min[d] = r0[d] - 1.0 / one_over_h0[d];
-        win_max[d] = r0[d] + 1.0 / one_over_h0[d];
-      }
+      calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
       const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
       // fetch local contribution
       for (auto &cb : coarse_bins) {
@@ -155,17 +217,13 @@ kde::reconstruction(const std::vector<double> &distribution,
     }
   } else { // local reconstruction only
 
+    std::array<double, 3> win_min{0.0, 0.0, 0.0};
+    std::array<double, 3> win_max{0.0, 0.0, 0.0};
     // now apply the kernel to the local ranks
     for (size_t i = 0; i < local_size; i++) {
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
-      std::array<double, 3> win_min{0.0, 0.0, 0.0};
-      std::array<double, 3> win_max{0.0, 0.0, 0.0};
-      for (size_t d = 0; d < dim; d++) {
-        Check(one_over_h0[d] > 0.0);
-        win_min[d] = r0[d] - 1.0 / one_over_h0[d];
-        win_max[d] = r0[d] + 1.0 / one_over_h0[d];
-      }
+      calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
       const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
       for (auto &cb : coarse_bins) {
         // skip bins that aren't present in the map (can't use [] operator with constness)
@@ -238,16 +296,12 @@ kde::log_reconstruction(const std::vector<double> &distribution,
     log_bias = fabs(min_value) * (1.0 + 1e-12);
     log_bias = std::max(log_bias, 1e-12);
     // now apply the kernel to the local ranks
+    std::array<double, 3> win_min{0.0, 0.0, 0.0};
+    std::array<double, 3> win_max{0.0, 0.0, 0.0};
     for (size_t i = 0; i < local_size; i++) {
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
-      std::array<double, 3> win_min{0.0, 0.0, 0.0};
-      std::array<double, 3> win_max{0.0, 0.0, 0.0};
-      for (size_t d = 0; d < dim; d++) {
-        Check(one_over_h0[d] > 0.0);
-        win_min[d] = r0[d] - 1.0 / one_over_h0[d];
-        win_max[d] = r0[d] + 1.0 / one_over_h0[d];
-      }
+      calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
       const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
       // fetch local contribution
       for (auto &cb : coarse_bins) {
@@ -279,16 +333,12 @@ kde::log_reconstruction(const std::vector<double> &distribution,
 
     log_bias = std::max(log_bias, 1e-12);
     // now apply the kernel to the local ranks
+    std::array<double, 3> win_min{0.0, 0.0, 0.0};
+    std::array<double, 3> win_max{0.0, 0.0, 0.0};
     for (size_t i = 0; i < local_size; i++) {
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
-      std::array<double, 3> win_min{0.0, 0.0, 0.0};
-      std::array<double, 3> win_max{0.0, 0.0, 0.0};
-      for (size_t d = 0; d < dim; d++) {
-        Check(one_over_h0[d] > 0.0);
-        win_min[d] = r0[d] - 1.0 / one_over_h0[d];
-        win_max[d] = r0[d] + 1.0 / one_over_h0[d];
-      }
+      calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
       const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
       // fetch local contribution
       for (auto &cb : coarse_bins) {
@@ -367,6 +417,42 @@ void kde::apply_conservation(const std::vector<double> &original_distribution,
     const double res = original_conservation - reconstruction_conservation;
     for (size_t i = 0; i < local_size; i++)
       new_distribution[i] += res * abs_distribution[i] / abs_distribution_conservation;
+  }
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief 
+ *
+ *  Calculate the bounding window (via win_min (x_min,y_min,z_min) and win_max
+ *  (x_max, y_max, z_max)) given a central location and the bandwidth size in
+ *  each dimension (dx,dy) for Cartesian or (dr,arc_length) for spherical.
+ * 
+ * \param[in] qindex quick index class for finding bounds xy bounds of a wedge shape
+ * \param[in] position is the central location of the bounds
+ * \param[in] one_over_bandwdith size of the reconstruction domain in each dimension. This is (dx,dy) for Caresian and (dr, arc_length) for spherical. 
+ * \param[in,out] win_min is the minimum corner of the bounding box (x_min, y_min, z_min)
+ * \param[in,out] win_max is the maximum corner of the bounding box (x_max, y_max, z_max)
+ *
+ */
+void kde::calc_win_min_max(const quick_index &qindex, const std::array<double, 3> &position,
+                           const std::array<double, 3> &one_over_bandwidth,
+                           std::array<double, 3> &win_min, std::array<double, 3> &win_max) const {
+  size_t dim = qindex.dim;
+  if (use_spherical_reconstruction) {
+    const double dr = 1.0 / one_over_bandwidth[0];
+    const double rmax = sqrt((sphere_center[0] - position[0]) * (sphere_center[0] - position[0]) +
+                             (sphere_center[1] - position[1]) * (sphere_center[1] - position[1])) +
+                        dr;
+    // dtheta = arch_length_max/rmax
+    const double dtheta = std::min(1.0 / (one_over_bandwidth[1] * rmax), acos(0));
+    qindex.calc_wedge_xy_bounds(position,sphere_center,{dr,dtheta,0.0}, win_min, win_max);
+  } else {
+    for (size_t d = 0; d < dim; d++) {
+      Check(one_over_bandwidth[d] > 0.0);
+      win_min[d] = position[d] - 1.0 / one_over_bandwidth[d];
+      win_max[d] = position[d] + 1.0 / one_over_bandwidth[d];
+    }
   }
 }
 

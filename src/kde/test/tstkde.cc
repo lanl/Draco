@@ -30,6 +30,218 @@ void test_replication(ParallelUnitTest &ut) {
   if (!rtt_dsxx::soft_equiv(value, 0.75))
     ITFAILS;
 
+  // test some public sphere calculations
+  {
+    const std::array<double, 3> sphere_center{0.0, 0.0, 0.0};
+    const std::array<double, 3> location{sqrt(2), sqrt(2), 0.0};
+    const std::array<double, 3> location2{0.0, 2.0, 0.0};
+    const double radius = 2.0;
+    const double small_radius = 1.0;
+    const double pi_over_4 = 0.78539816;
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(test_kde.calc_radius(sphere_center, location), 2.0));
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(test_kde.calc_arch_length(sphere_center, radius, location, location2),
+                             2.0 * pi_over_4, 1e-6));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        test_kde.calc_arch_length(sphere_center, small_radius, location, location2), pi_over_4,
+        1e-6));
+  }
+
+  // spherical reconstruction
+  {
+    const std::array<double, 3> sphere_center{0.0, -1.0, 0.0};
+    const double max_radius = 1.0;
+    const double min_radius = 0.0;
+    kde sphere_kde;
+    sphere_kde.set_sphere_center(sphere_center, min_radius, max_radius);
+    const std::array<double, 8> radial_edges{0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0};
+    const std::array<double, 9> cosine_edges{-1.0, -0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75, 1.0};
+    const size_t data_size = radial_edges.size() * cosine_edges.size();
+    std::vector<std::array<double, 3>> position_array(data_size,
+                                                      std::array<double, 3>{0.0, 0.0, 0.0});
+
+    const std::array<double, 8> smoothed_shell_ref{3.7717,  3.83452, 3.89388, 3.95025,
+                                                   4.24469, 4.67528, 5.21495, 6.41471};
+    std::vector<double> shell_data(data_size, 0.0);
+    std::vector<double> spoke_data(data_size, 0.0);
+    std::vector<double> const_data(data_size, 1.0);
+    std::vector<double> spoke_smoothed_shells(data_size, 1.0);
+    size_t point_i = 0;
+    size_t ri = 0;
+    for (auto &r : radial_edges) {
+      size_t mui = 0;
+      for (auto &mu : cosine_edges) {
+        spoke_data[point_i] = mui + 1.0;
+        shell_data[point_i] = ri + 1.0;
+        spoke_smoothed_shells[point_i] = smoothed_shell_ref[ri];
+        double rel_y = r * mu;
+        position_array[point_i][0] =
+            rtt_dsxx::soft_equiv(r, rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
+        position_array[point_i][1] = sphere_center[1] + rel_y;
+        point_i++;
+        mui++;
+      }
+      ri++;
+    }
+
+    // spoke reconstruction array
+    {
+      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+          data_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
+      const bool dd = false;
+      // two bins per point
+      const size_t n_coarse_bins = 5;
+      const double max_window_size = 1.0;
+      const size_t dim = 2;
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+
+      std::vector<double> smooth_result =
+          sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result =
+          sphere_kde.log_reconstruction(spoke_data, one_over_bandwidth_array, qindex);
+      // Apply Conservation
+      sphere_kde.apply_conservation(spoke_data, smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(spoke_data, log_smooth_result, qindex.domain_decomposed);
+
+      // Check smooth result
+      for (int i = 0; i < data_size; i++) {
+        if (!rtt_dsxx::soft_equiv(smooth_result[i], spoke_data[i]))
+          ITFAILS;
+        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], spoke_data[i]))
+          ITFAILS;
+      }
+
+      // Energy conservation
+      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
+        ITFAILS;
+      if (!rtt_dsxx::soft_equiv(
+              std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
+        ITFAILS;
+    }
+
+    // shell reconstruction array
+    {
+      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+          data_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
+      const bool dd = false;
+      // two bins per point
+      const size_t n_coarse_bins = 5;
+      const double max_window_size = 1.0;
+      const size_t dim = 2;
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+
+      std::vector<double> smooth_result =
+          sphere_kde.reconstruction(shell_data, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result =
+          sphere_kde.log_reconstruction(shell_data, one_over_bandwidth_array, qindex);
+      // Apply Conservation
+      sphere_kde.apply_conservation(shell_data, smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(shell_data, log_smooth_result, qindex.domain_decomposed);
+
+      // Check smooth result
+      for (int i = 0; i < data_size; i++) {
+        if (!rtt_dsxx::soft_equiv(smooth_result[i], shell_data[i]))
+          ITFAILS;
+        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], shell_data[i]))
+          ITFAILS;
+      }
+
+      // Energy conservation
+      if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
+        ITFAILS;
+      if (!rtt_dsxx::soft_equiv(
+              std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
+        ITFAILS;
+    }
+
+    // spoke smoothing on shell array
+    {
+      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+          data_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
+      const bool dd = false;
+      // two bins per point
+      const size_t n_coarse_bins = 5;
+      const double max_window_size = 1.0;
+      const size_t dim = 2;
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+
+      std::vector<double> smooth_result =
+          sphere_kde.reconstruction(shell_data, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result =
+          sphere_kde.reconstruction(shell_data, one_over_bandwidth_array, qindex);
+      // Apply Conservation
+      sphere_kde.apply_conservation(shell_data, smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(shell_data, log_smooth_result, qindex.domain_decomposed);
+
+      // Check smooth result
+      for (int i = 0; i < data_size; i++) {
+        if (!rtt_dsxx::soft_equiv(smooth_result[i], spoke_smoothed_shells[i], 1e-3))
+          ITFAILS;
+        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], spoke_smoothed_shells[i], 1e-3))
+          ITFAILS;
+      }
+
+      // Energy conservation
+      if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
+        ITFAILS;
+      if (!rtt_dsxx::soft_equiv(
+              std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
+        ITFAILS;
+    }
+
+    // shell smoothing on spoke array
+    {
+      std::vector<double> shell_smooth_spoke{
+          4.83303, 4.83501, 4.83589, 4.83663, 4.83732, 4.838,   4.83874, 4.83963, 4.8416,
+          4.82008, 4.82805, 4.8316,  4.83456, 4.83732, 4.84007, 4.84303, 4.84658, 4.85456,
+          4.79812, 4.81637, 4.82441, 4.8311,  4.83732, 4.84353, 4.85022, 4.85827, 4.87651,
+          4.76662, 4.79982, 4.81427, 4.82622, 4.83732, 4.84841, 4.86036, 4.87481, 4.90802,
+          4.0521,  4.2347,  4.68473, 4.7647,  5,       4.98777, 5.15372, 6.36747, 5.62253,
+          2.63366, 3.76559, 4.12929, 4.48833, 5,       6.92886, 6.67554, 7.37286, 7.04097,
+          1.67316, 3.02095, 3.73636, 4.4428,  5,       8.70717, 8.01969, 6.65368, 8.00148,
+          1.2802,  2.68295, 3.55866, 4.16109, 5,       5.51354, 6.11598, 6.99168, 8.39443};
+      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+          data_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
+      const bool dd = false;
+      // two bins per point
+      const size_t n_coarse_bins = 5;
+      const double max_window_size = 1.0;
+      const size_t dim = 2;
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+
+      std::vector<double> smooth_result =
+          sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result =
+          sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
+      // Apply Conservation
+      sphere_kde.apply_conservation(spoke_data, smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(spoke_data, log_smooth_result, qindex.domain_decomposed);
+
+      // Check smooth result
+      for (int i = 0; i < data_size; i++) {
+        if (!rtt_dsxx::soft_equiv(smooth_result[i], shell_smooth_spoke[i], 1e-3))
+          ITFAILS;
+        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], shell_smooth_spoke[i], 1e-3))
+          ITFAILS;
+      }
+
+      // Energy conservation
+      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
+        ITFAILS;
+      if (!rtt_dsxx::soft_equiv(
+              std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
+        ITFAILS;
+    }
+}
+
   // No mean reconstruction because of small basis functions
   {
     std::vector<double> data{0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
@@ -410,8 +622,9 @@ void test_replication(ParallelUnitTest &ut) {
     std::vector<double> bench{0.122267, 0.181788, 0.118212, 0.181788, 0.118212,
                               0.181788, 0.118212, 0.181788, 0.118212, 0.177733};
 
-    std::vector<double> log_bench{0.121416, 0.182429, 0.11777,  0.182429, 0.11777,
-                                  0.182429, 0.11777,  0.182429, 0.11777,  0.177788};
+    std::vector<double> log_bench{0.121638, 0.182268, 0.117873, 0.182268, 0.117873,
+                                  0.182268, 0.117873, 0.182268, 0.117873, 0.177799};
+
     // Check smooth result
     for (int i = 0; i < 10; i++) {
       if (!rtt_dsxx::soft_equiv(smooth_result[i], bench[i], 1e-4))
@@ -734,7 +947,7 @@ void test_replication(ParallelUnitTest &ut) {
   } else {
     FAILMSG("KDE checks failed");
   }
-}
+  }
 
 void test_decomposition(ParallelUnitTest &ut) {
   kde test_kde;
@@ -1268,8 +1481,8 @@ void test_decomposition(ParallelUnitTest &ut) {
 
     std::vector<double> bench{0.122267, 0.181788, 0.118212, 0.181788, 0.118212,
                               0.181788, 0.118212, 0.181788, 0.118212, 0.177733};
-    std::vector<double> log_bench{0.121416, 0.182429, 0.11777,  0.182429, 0.11777,
-                                  0.182429, 0.11777,  0.182429, 0.11777,  0.177788};
+    std::vector<double> log_bench{0.121638, 0.182268, 0.117873, 0.182268, 0.117873,
+                                  0.182268, 0.117873, 0.182268, 0.117873, 0.177799};
 
     // map to dd arrays with simple stride
     std::vector<double> dd_data(local_size, 0.0);
