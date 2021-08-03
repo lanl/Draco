@@ -68,7 +68,7 @@ public:
     std::tie(def_job_num_nodes_, job_num_nodes_) =
         rtt_dsxx::get_env_val<int>("SLURM_JOB_NUM_NODES", job_num_nodes_);
     std::tie(def_cpus_on_node_, cpus_on_node_) =
-        rtt_dsxx::get_env_val<int>("SLURM_CPUS_ON_NODE", job_num_nodes_);
+        rtt_dsxx::get_env_val<int>("SLURM_JOB_CPUS_PER_NODE", cpus_on_node_);
     std::tie(def_nodelist_, nodelist_) = rtt_dsxx::get_env_val<std::string>("SLURM_NODELIST");
   }
 
@@ -82,7 +82,7 @@ private:
   uint32_t job_num_nodes_{0xFFFFFFD}; //!< arg to -N
   //! whether SLURM_JOB_NUM_NODES was defined
   bool def_job_num_nodes_{false};
-  uint32_t cpus_on_node_{0xFFFFFFD}; //!< SLURM_CPUS_ON_NODE
+  uint32_t cpus_on_node_{0xFFFFFFD}; //!< SLURM_JOB_CPUS_PER_NODE
   bool def_cpus_on_node_{false};     //!< was SLURM_CPUS_ON_NODE defined?
   std::string nodelist_{"not set"};  //!< SLURM_NODELIST
   bool def_nodelist_{false};         //!< was SLURM_NODELIST defined?

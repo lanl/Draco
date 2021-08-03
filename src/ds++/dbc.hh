@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Extensions to the STL algorithm library
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved.
  *
  * This header defines several function templates that perform common numerical operations not
  * standardized in the STL algorithm header. It also defines some useful STL-style predicates. These

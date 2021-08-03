@@ -3,12 +3,11 @@
  * \file   c4/test/tstglobal_containers.cc
  * \author Kent Budge
  * \date   Mon Mar 24 09:41:04 2008
- * \note   Copyright (C) 2008-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2008-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"
-#include "c4/global_containers.i.hh"
+#include "c4/global_containers.hh"
 #include "ds++/Release.hh"
 #include "ds++/Soft_Equivalence.hh"
 #include <cmath>
@@ -25,7 +24,7 @@ using namespace rtt_c4;
 void tstglobal_containers(UnitTest &ut) {
   unsigned const pid = rtt_c4::node();
   unsigned const number_of_processors = rtt_c4::nodes();
-
+  size_t const two(2);
   {
     set<unsigned> local_set;
     local_set.insert(pid);
@@ -33,7 +32,7 @@ void tstglobal_containers(UnitTest &ut) {
 
     global_merge(local_set);
 
-    if (local_set.size() == 2 * number_of_processors)
+    if (local_set.size() == two * number_of_processors)
       PASSMSG("Correct number of global elements");
     else
       FAILMSG("NOT correct number of global elements");
@@ -48,11 +47,11 @@ void tstglobal_containers(UnitTest &ut) {
   {
     map<unsigned, double> local_map;
     local_map[pid] = pid;
-    local_map[number_of_processors + pid] = 2 * pid;
+    local_map[number_of_processors + pid] = 2.0 * pid;
 
     global_merge(local_map);
 
-    if (local_map.size() == 2 * number_of_processors)
+    if (local_map.size() == two * number_of_processors)
       PASSMSG("Correct number of global elements");
     else
       FAILMSG("NOT correct number of global elements");
@@ -62,7 +61,7 @@ void tstglobal_containers(UnitTest &ut) {
         FAILMSG("WRONG element in map");
       }
       if (!rtt_dsxx::soft_equiv(local_map[p], static_cast<double>(p)) ||
-          !rtt_dsxx::soft_equiv(local_map[number_of_processors + p], static_cast<double>(2 * p))) {
+          !rtt_dsxx::soft_equiv(local_map[number_of_processors + p], 2.0 * p)) {
         FAILMSG("WRONG element value in map");
       }
     }
@@ -75,7 +74,7 @@ void tstglobal_containers(UnitTest &ut) {
 
     global_merge(local_map);
 
-    if (local_map.size() == 2 * number_of_processors)
+    if (local_map.size() == two * number_of_processors)
       PASSMSG("Correct number of global elements");
     else
       FAILMSG("NOT correct number of global elements");
@@ -98,7 +97,7 @@ void tstglobal_containers(UnitTest &ut) {
 
     global_merge(local_map);
 
-    if (local_map.size() == 2 * number_of_processors)
+    if (local_map.size() == two * number_of_processors)
       PASSMSG("Correct number of global elements");
     else
       FAILMSG("NOT correct number of global elements");
@@ -120,7 +119,7 @@ void tstglobal_containers(UnitTest &ut) {
 
     global_merge(local_map);
 
-    if (local_map.size() == 2 * number_of_processors)
+    if (local_map.size() == two * number_of_processors)
       PASSMSG("Correct number of global elements");
     else
       FAILMSG("NOT correct number of global elements");

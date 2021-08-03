@@ -291,17 +291,34 @@ void cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
     FAIL_IF(nc_layout.at(node).size() == 3);
     FAIL_IF_NOT(nc_layout.at(node).size() <= 4);
 
-    // these check for an emergent orthogonal cell stride in the dual layout
+    // these check for emergent orthogonal strides in the dual layout
     if (nc_layout.at(node).size() == 4) {
-      FAIL_IF_NOT(nc_layout.at(node)[1] == nc_layout.at(node)[0] + 1);
-      FAIL_IF_NOT(nc_layout.at(node)[3] == nc_layout.at(node)[2] + 1);
-      FAIL_IF_NOT(nc_layout.at(node)[2] == nc_layout.at(node)[0] + num_xdir);
+
+      // check cell stride
+      FAIL_IF_NOT(nc_layout.at(node)[1].first == nc_layout.at(node)[0].first + 1);
+      FAIL_IF_NOT(nc_layout.at(node)[3].first == nc_layout.at(node)[2].first + 1);
+      FAIL_IF_NOT(nc_layout.at(node)[2].first == nc_layout.at(node)[0].first + num_xdir);
+
+      // check node stride
+      FAIL_IF_NOT(nc_layout.at(node)[1].second[0] == nc_layout.at(node)[0].second[1]);
+      FAIL_IF_NOT(nc_layout.at(node)[1].second[1] == nc_layout.at(node)[3].second[0]);
+      FAIL_IF_NOT(nc_layout.at(node)[2].second[0] == nc_layout.at(node)[3].second[1]);
+      FAIL_IF_NOT(nc_layout.at(node)[2].second[1] == nc_layout.at(node)[0].second[0]);
     }
 
     if (nc_layout.at(node).size() == 2) {
-      const bool has_xdir_stride = nc_layout.at(node)[1] == nc_layout.at(node)[0] + 1;
-      const bool has_ydir_stride = nc_layout.at(node)[1] == nc_layout.at(node)[0] + num_xdir;
+
+      // check cell stride
+      const bool has_xdir_stride = nc_layout.at(node)[1].first == nc_layout.at(node)[0].first + 1;
+      const bool has_ydir_stride =
+          nc_layout.at(node)[1].first == nc_layout.at(node)[0].first + num_xdir;
       FAIL_IF_NOT(has_xdir_stride || has_ydir_stride);
+
+      // check node stride
+      const bool has_node_stride =
+          nc_layout.at(node)[1].second[1] == nc_layout.at(node)[0].second[0] ||
+          nc_layout.at(node)[1].second[0] == nc_layout.at(node)[0].second[1];
+      FAIL_IF_NOT(has_node_stride);
     }
   }
 

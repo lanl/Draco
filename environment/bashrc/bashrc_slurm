@@ -90,15 +90,15 @@ case ${-} in
        echo -e "\n${boldface}RUNNING${normalface}":
        # echo " squeue ${squeue_args} -o \"%.7i %.10u %.10a %.8q %.9P %.16j %.6D %.6C %.12L %S\" -S \"L\" -t R"
        # shellcheck disable=SC2086
-       squeue ${squeue_args} -o "%.7i %.10u %.10a %.8q %.9P %.16j %.6D %.6C %.12L %S" -S "L" -t R | grep --color -E ".*${hluser}.*|$"
+       squeue ${squeue_args} -o "%.7i %.8u %.8a %.8q %.9P %.24j %.6D %.6C %.12L %S" -S "L" -t R | grep --color -E ".*${hluser}.*|$"
      fi
      # shellcheck disable=SC2086
      if ! [[ $(squeue ${squeue_args} -h -t PD | wc -l) == 0 ]]; then
        echo -e "\n${boldface}PENDING:${normalface}"
        # shellcheck disable=SC2086
-       squeue ${squeue_args} -o "%.7i %.8Q %.10u %.10a %.8q %.9P %.16j %.6C %.16S %.10L %.r" -t PD --sort=S,-p | grep -v "N/A" | grep --color -E ".*${hluser}.*|$"
+       squeue ${squeue_args} -o "%.7i %.8u %.8a %.8q %.9P %.24j %.6C %.16S %.10L %.8Q %.r" -t PD --sort=S,-p | grep -v "N/A" | grep --color -E ".*${hluser}.*|$"
        # shellcheck disable=SC2086
-       squeue ${squeue_args} -o "%.7i %.8Q %.10u %.10a %.8q %.9P %.16j %.6C %.16S %.10L %.r" -t PD --sort=S,-p | grep --color=never "N/A" | grep --color -E ".*${hluser}.*|$"
+       squeue ${squeue_args} -o "%.7i %.8u %.8a %.8q %.9P %.24j %.6C %.16S %.10L %.8Q %.r" -t PD --sort=S,-p | grep --color=never "N/A" | grep --color -E ".*${hluser}.*|$"
      fi
 #     if ! [[ `squeue ${squeue_args} -h -t S,CG,CF,F,TO,PR,NF | wc -l` == 0 ]]; then
 #       echo -e "\n${boldface}OTHER:${normalface}"

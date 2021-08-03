@@ -1,14 +1,13 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   ds++/Index_Set.hh
+ * \file   ds++/Index_Set.i.hh
  * \author Mike Buksas
  * \date   Thu Feb  2 10:01:46 2006
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef dsxx_Index_Set_t_hh
-#define dsxx_Index_Set_t_hh
+#ifndef dsxx_Index_Set_i_hh
+#define dsxx_Index_Set_i_hh
 
 #include <functional>
 #include <numeric>
@@ -92,8 +91,8 @@ template <unsigned D, int OFFSET> inline void Index_Set<D, OFFSET>::compute_size
 
 } // end namespace rtt_dsxx
 
-#endif // dsxx_Index_Set_t_hh
+#endif // dsxx_Index_Set_i_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of ds++/Index_Set.hh
+// end of ds++/Index_Set.i.hh
 //------------------------------------------------------------------------------------------------//

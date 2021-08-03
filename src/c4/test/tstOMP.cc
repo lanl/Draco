@@ -386,6 +386,15 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
+
+#ifndef MSVC
+    if (rtt_c4::node() == 0) {
+      // Machine load:
+      CPUinfo().report_load_average();
+      CPUinfo().report_cpu_utilization();
+    }
+#endif
+
     // One MPI rank per machine node?
     bool omrpn(false);
 

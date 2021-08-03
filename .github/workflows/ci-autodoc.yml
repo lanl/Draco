@@ -37,8 +37,7 @@ jobs:
           # submodules: true
 
       - name: Fetch Docker image for CI
-        uses: docker://kinetictheory/draco-ci-2020nov:style-checks
-#        entrypoint: '/home/runner/work/Draco/Draco/tools/travis-run-tests.sh'
+        uses: docker://kinetictheory/draco-ci-2020nov:autodoc
 
       - name: Autodoc
         env:

@@ -4,8 +4,7 @@
  * \author Kelly Thompson
  * \date   Friday, Nov 29, 2019, 19:48 pm
  * \brief  C4 QuoWrapper test.
- * \note   Copyright (C) 2019-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2019-2020 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"
@@ -20,8 +19,8 @@
 // Helper functions
 //------------------------------------------------------------------------------------------------//
 
-// Add barriers and sleep_for in an attempt to keep the output synchronized
-// between ranks and threads.
+// Add barriers and sleep_for in an attempt to keep the output synchronized between ranks and
+// threads.
 void sync_output() {
   std::cout.flush();
 #ifdef C4_MPI
@@ -54,10 +53,9 @@ void quo_hw_report(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(rtt_c4::QuoWrapper::num_nodes() > 0);
   FAIL_IF_NOT(rtt_c4::QuoWrapper::num_cores() > 0);
 
-  // Qup will give the available system resources in the num_hw_threads call
-  // and std::thread::hardware_concurency  will give the total system resources
-  // (not respecting what has been reserved for the OS). Use std::thread as an
-  // upper bound check
+  // Qup will give the available system resources in the num_hw_threads call and
+  // std::thread::hardware_concurency will give the total system resources (not respecting what has
+  // been reserved for the OS). Use std::thread as an upper bound check
   FAIL_IF_NOT(rtt_c4::QuoWrapper::num_hw_threads() <= thread::hardware_concurrency());
 
   FAIL_IF_NOT(rtt_c4::QuoWrapper::num_sockets_per_node() > 0);
@@ -69,8 +67,7 @@ void quo_hw_report(rtt_dsxx::UnitTest &ut) {
   bool using_hyperthreads =
       (rtt_c4::QuoWrapper::num_cores() != rtt_c4::QuoWrapper::num_hw_threads()) ? true : false;
   if (rtt_c4::rank() == 0) {
-    cout << "\nThe current application has access to the following "
-         << "resources:"
+    cout << "\nThe current application has access to the following resources:"
          << "\n - Nodes used by this process : " << rtt_c4::QuoWrapper::num_nodes()
          << "\n - Cores per node             : " << rtt_c4::QuoWrapper::num_cores()
          << "\n - Hardware threads per node  : " << rtt_c4::QuoWrapper::num_hw_threads();
@@ -90,8 +87,8 @@ void quo_hw_report(rtt_dsxx::UnitTest &ut) {
   if (rtt_c4::rank() == 0)
     cout << endl;
 
-  // If we have access to slurm, add checks to compare Libquo values to slurm
-  // values.  \c is_job_num_nodes_set will only be true if SLURM is available.
+  // If we have access to slurm, add checks to compare Libquo values to slurm values.  \c
+  // is_job_num_nodes_set will only be true if SLURM is available.
   {
     rtt_c4::SLURM_Task_Info sti;
     if (sti.is_job_num_nodes_set()) {
@@ -170,21 +167,20 @@ void quo_new_bindings(rtt_dsxx::UnitTest &ut) {
   // \sa https://github.com/lanl/libquo/blob/master/src/quo.h
   QUO_obj_type_t const QUO_resource = {QUO_OBJ_NUMANODE};
 
-  // maximum number of processes per resource (e.g.: processes per numanode).
-  // (32 cores / node ) * (1 node / 4 numanodes) = 8 processes/numanode
+  // maximum number of processes per resource (e.g.: processes per numanode).  (32 cores / node ) *
+  // (1 node / 4 numanodes) = 8 processes/numanode
   uint32_t const nmrpn = rtt_c4::QuoWrapper::num_mpi_ranks_per_node();
   uint32_t const nnnpn = rtt_c4::QuoWrapper::num_numanodes_per_node();
   uint32_t const nproc_per_res = rtt_dsxx::ceil_int_division(nmrpn, nnnpn);
 
-  // number of threads per MPI rank to fill all available cores (resource ==
-  // numanode)
+  // number of threads per MPI rank to fill all available cores (resource == numanode)
   //
   // To use all physical resources, total num threads /node = num cores / node.
   //
   // e.g.: (32 cores / node) * ( 1 node / 8 mpi ranks ) = 4 threads / mpi rank.
   uint32_t const nc = rtt_c4::QuoWrapper::num_cores();
-  // limit max num_workers to (num_cores/numa -1) to avoid threads talking
-  // across a numa boundary. Note: num_workers = threads/mpi-rank - 1;
+  // limit max num_workers to (num_cores/numa -1) to avoid threads talking across a numa
+  // boundary. Note: num_workers = threads/mpi-rank - 1;
   uint32_t const num_workers =
       std::min(rtt_dsxx::ceil_int_division(nc, nmrpn), rtt_dsxx::ceil_int_division(nc, nnnpn)) - 1;
 
@@ -209,9 +205,8 @@ void quo_new_bindings(rtt_dsxx::UnitTest &ut) {
     cout << "\n>> Call Quo_auto_distrib and push new Quo context...\n" << endl;
   sync_output();
 
-  // let quo distribute workers over the sockets, if res_assigned is 1 after
-  // this call then I have been chosen. (This isn't needed if MPI bindings are
-  // not changing.)
+  // let quo distribute workers over the sockets, if res_assigned is 1 after this call then I have
+  // been chosen. (This isn't needed if MPI bindings are not changing.)
   //
   // int res_assigned(0);
   // QUO_auto_distrib(quo, QUO_resource, nproc_per_res, &res_assigned);

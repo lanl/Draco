@@ -49,7 +49,27 @@ fi
 case "$ddir" in
 
   #------------------------------------------------------------------------------------------------#
-  draco-7_9*)
+  draco-7_9* | draco-7_10* | draco-7_11*)
+    function cce11env()
+    {
+      unset partition
+      unset jobnameext
+
+      sysname=$(/usr/projects/hpcsoft/utilities/bin/sys_name)
+      module use --append "/usr/projects/draco/Modules/${sysname}"
+
+      run "module unload draco"
+      run "module unload PrgEnv-intel"
+      run "module load PrgEnv-cray"
+      run "module load draco/cce1101"
+      run "module list"
+      CC=$(which cc)
+      CXX=$(which CC)
+      FC=$(which ftn)
+      # export LD_LIBRARY_PATH="$CRAY_LD_LIBRARY_PATH":"$LD_LIBRARY_PATH"
+      export CC CXX FC
+    }
+
     function intel1904env()
     {
       unset partition

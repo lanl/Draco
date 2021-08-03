@@ -1,0 +1,56 @@
+##-*- Mode: sh -*-
+# ------------------------------------------------------------------------------------------------ #
+#  .bashrc_ats4 - my bash configuration file upon bash login
+# ------------------------------------------------------------------------------------------------ #
+
+if test -n "$verbose"; then
+   echo "In draco/environment/bashrc/.bashrc_ats4"
+fi
+
+# ------------------------------------------------------------------------------------------------ #
+# ENVIRONMENTS
+# ------------------------------------------------------------------------------------------------ #
+
+# unlimit stack and core dump sizes.
+ulimit -s unlimited
+
+# Where is the vendor directory
+export PATH=${VENDOR_DIR:=/usr/gapps/jayenne/vendors}/bin:$PATH
+export VENDOR_DIR
+export JSM_JSRUN_NO_WARN_OVERSUBSCRIBE=1
+
+# Support building cassio with ccsrad shared deployment repository.
+# if [[ -d /usr/workspace/dacodes/eap/users/ccsrad/Cassio.deployment ]]; then
+#   export TF_DEPLOYMENT_CLONES=/usr/workspace/dacodes/eap/users/ccsrad/eap.deployment
+#   export TF_SPACK_INSTANCES=/usr/workspace/dacodes/eap/users/ccsrad/spack_instances
+# fi
+
+#
+# MODULES
+#
+
+# 1. Determine if the module command is available
+# modcmd=`declare -f module`
+# # If not found, look for it in /usr/share/Modules
+# if [[ ! ${modcmd} ]]; then
+#   source /usr/share/lmod/lmod/init/bash || die \
+#     "ERROR: The module command was not found. No modules will be loaded (ats-2 e01)."
+# fi
+# modcmd=`declare -f module`
+
+# 2. Use modules found in the draco directory
+# if [[ ! ${modcmd} ]]; then
+#   echo "ERROR: The module command was not found. No modules will be loaded (ats-2, e02)."
+# else
+#  module use --append /usr/gapps/jayenne/Modules
+#  module unuse /usr/share/lmod/lmod/modulefiles/Core
+#  module unuse /collab/usr/global/tools/modulefiles/blueos_3_ppc64le_ib_p9/Core
+#  module load draco/xl2021.03.11-cuda-11.0.2
+#fi
+
+# Do not escape $ for bash completion
+shopt -s direxpand
+
+# ------------------------------------------------------------------------------------------------ #
+# End
+# ------------------------------------------------------------------------------------------------ #

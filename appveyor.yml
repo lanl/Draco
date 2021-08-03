@@ -44,7 +44,7 @@ install:
   #   . numdiff is in the 'bin' directory,
   #   . The vs2019-toolchain.cmake file used by this script.
   - cd \projects
-  - curl -L -o win32-vs16-tools.zip https://github.com/KineticTheory/ci-demo/releases/download/vendors-201809/win32-vs16-tools.zip
+  - curl -L -o win32-vs16-tools.zip https://github.com/lanl/Draco/wiki/win32-vs16-tools.zip
   - dir win32-vs16-tools.zip
   - 7z.exe -y x win32-vs16-tools.zip
   - xcopy %VENDOR_DIR%\ports\* %VCPKGDIR%\ports /E /Y /I /Q

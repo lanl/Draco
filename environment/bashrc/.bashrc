@@ -177,9 +177,14 @@ if [[ ${INTERACTIVE} == true ]]; then
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_cray" ;;
 
     # LLNL ATS-2
-    rzmanta* | rzansel* | sierra* )
+    rzmanta* | rzansel* | sierra*)
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats2" ;;
+
+    # LLNL ATS-4
+    rznevada*)
+      # shellcheck source=/dev/null
+      source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats4" ;;
 
     # LAP Virtual Machine
     vc*)

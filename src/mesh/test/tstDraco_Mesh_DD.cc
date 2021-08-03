@@ -10,6 +10,7 @@
 #include "Test_Mesh_Interface.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "ds++/Release.hh"
+#include "ds++/Soft_Equivalence.hh"
 
 using rtt_mesh::Draco_Mesh;
 using rtt_mesh_test::Test_Mesh_Interface;
@@ -20,6 +21,18 @@ using rtt_mesh_test::Test_Mesh_Interface;
 
 // 2D Cartesian domain-decomposed mesh construction test
 void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
+  //----------------------------------------------------------------------------------------------//
+  // Two-rank mesh schematic for this test:
+  //    y
+  //    ^
+  //    |
+  //  1 -----------
+  //    |    |    |
+  //    | r0 | r1 |
+  //    |    |    |
+  //  0 ------------> x
+  //    0    1    2
+  //----------------------------------------------------------------------------------------------//
 
   Insist(rtt_c4::nodes() == 2, "This test only uses 2 PE.");
 
@@ -141,6 +154,7 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
   {
     // access the layout
     const Draco_Mesh::Dual_Ghost_Layout ngc_layout = mesh->get_ngc_linkage();
+    const Draco_Mesh::Dual_Ghost_Layout_Coords ngcoord_layout = mesh->get_ngcoord_linkage();
 
     // check size (should be number of nodes per rank on processor boundaries)
     FAIL_IF_NOT(ngc_layout.size() == 2);
@@ -153,12 +167,35 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(ngc_layout.at(3).size() == 1);
 
       // check that local cell index on other rank is 0 (there is only one)
-      FAIL_IF_NOT(ngc_layout.at(1)[0].first == 0);
-      FAIL_IF_NOT(ngc_layout.at(3)[0].first == 0);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.first == 0);
+
+      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // ... lower right node (index 1) to rank 1 cell
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 1);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[1] == 2);
+      // ... upper right node (index 3) to rank 1 cell
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 0);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 3);
 
       // check that the other rank is rank 1
       FAIL_IF_NOT(ngc_layout.at(1)[0].second == 1);
       FAIL_IF_NOT(ngc_layout.at(3)[0].second == 1);
+
+      // check coordinates ...
+      // ... number of coordinate pairs
+      FAIL_IF_NOT(ngcoord_layout.at(1).size() == 1);
+      FAIL_IF_NOT(ngcoord_layout.at(3).size() == 1);
+      // ... coordinate pair of lower right node (index 1)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].first[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].first[1], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].second[1], 1.0));
+      // ... coordinate pair of upper right node (index 3)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].first[1], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[1], 1.0));
 
     } else {
 
@@ -167,12 +204,35 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(ngc_layout.at(2).size() == 1);
 
       // check that local cell index on other rank is 0 (there is only one)
-      FAIL_IF_NOT(ngc_layout.at(0)[0].first == 0);
-      FAIL_IF_NOT(ngc_layout.at(2)[0].first == 0);
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.first == 0);
+
+      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // ... lower left node (index 0) to rank 0 cell
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[0] == 3);
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[1] == 0);
+      // ... upper left node (index 2) to rank 0 cell
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[1] == 1);
 
       // check that the other rank is rank 0
       FAIL_IF_NOT(ngc_layout.at(0)[0].second == 0);
       FAIL_IF_NOT(ngc_layout.at(2)[0].second == 0);
+
+      // check coordinates ...
+      // ... number of coordinate pairs
+      FAIL_IF_NOT(ngcoord_layout.at(0).size() == 1);
+      FAIL_IF_NOT(ngcoord_layout.at(2).size() == 1);
+      // ... coordinate pair of lower left node (index 0)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].second[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].second[1], 0.0));
+      // ... coordinate pair of upper left node (index 2)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].first[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[1], 0.0));
     }
   }
 
@@ -184,6 +244,22 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
 
 // test 2D dual layouts in 4 cell mesh decomposed on 4 ranks
 void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
+  //----------------------------------------------------------------------------------------------//
+  // Four-rank mesh schematic for this test:
+  //    y
+  //    ^
+  //    |
+  //  2 -----------
+  //    |    |    |
+  //    | r2 | r3 |
+  //    |    |    |
+  //  1 -----------
+  //    |    |    |
+  //    | r0 | r1 |
+  //    |    |    |
+  //  0 ------------> x
+  //    0    1    2
+  //----------------------------------------------------------------------------------------------//
 
   Insist(rtt_c4::nodes() == 4, "This test only uses 4 PE.");
 
@@ -319,6 +395,7 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
   {
     // access the layout
     const Draco_Mesh::Dual_Ghost_Layout ngc_layout = mesh->get_ngc_linkage();
+    const Draco_Mesh::Dual_Ghost_Layout_Coords ngcoord_layout = mesh->get_ngcoord_linkage();
 
     // check size (should be number of nodes per rank on processor boundaries)
     FAIL_IF_NOT(ngc_layout.size() == 3);
@@ -332,18 +409,64 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(ngc_layout.at(2).size() == 1);
 
       // check local cell index on other rank
-      FAIL_IF_NOT(ngc_layout.at(1)[0].first == 0);
-      FAIL_IF_NOT(ngc_layout.at(3)[0].first == 0);
-      FAIL_IF_NOT(ngc_layout.at(3)[1].first == 0);
-      FAIL_IF_NOT(ngc_layout.at(3)[2].first == 0);
-      FAIL_IF_NOT(ngc_layout.at(2)[0].first == 0);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(3)[1].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(3)[2].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.first == 0);
 
-      // check the other rank
+      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // ... lower right node (index 1) to rank 1 cell
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 1);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[1] == 2);
+      // ... upper right node (index 3) to rank 1 cell
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 0);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 3);
+      // ... upper right node (index 3) to rank 2 cell
+      FAIL_IF_NOT(ngc_layout.at(3)[1].first.second[0] == 3);
+      FAIL_IF_NOT(ngc_layout.at(3)[1].first.second[1] == 0);
+      // ... upper right node (index 3) to rank 3 cell
+      FAIL_IF_NOT(ngc_layout.at(3)[2].first.second[0] == 1);
+      FAIL_IF_NOT(ngc_layout.at(3)[2].first.second[1] == 2);
+      // ... upper left node (index 2) to rank 2 cell
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 1);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[1] == 2);
+
+      // check the other ranks
       FAIL_IF_NOT(ngc_layout.at(1)[0].second == 1);
       FAIL_IF_NOT(ngc_layout.at(3)[0].second == 1);
       FAIL_IF_NOT(ngc_layout.at(3)[1].second == 2);
       FAIL_IF_NOT(ngc_layout.at(3)[2].second == 3);
       FAIL_IF_NOT(ngc_layout.at(2)[0].second == 2);
+
+      // check coordinates ...
+      // ... number of coordinate pairs
+      FAIL_IF_NOT(ngcoord_layout.at(1).size() == 1);
+      FAIL_IF_NOT(ngcoord_layout.at(3).size() == 3);
+      FAIL_IF_NOT(ngcoord_layout.at(2).size() == 1);
+      // ... coordinate pair of lower right node (index 1)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].first[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].first[1], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].second[1], 1.0));
+      // ... coordinate pair of upper right node (index 3)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].first[1], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[1].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[1].first[1], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[1].second[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[1].second[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[2].first[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[2].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[2].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[2].second[1], 2.0));
+      // ... coordinate pair of upper left node (index 2)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[1], 2.0));
 
     } else if (rtt_c4::node() == 1) {
 
@@ -353,15 +476,191 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(ngc_layout.at(3).size() == 1);
 
       // check local cell index on other rank
-      FAIL_IF_NOT(ngc_layout.at(0)[0].first == 0);
-      FAIL_IF_NOT(ngc_layout.at(2)[0].first == 0);
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(2)[1].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(2)[2].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.first == 0);
 
-      // check that the other rank is rank 0
+      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // ... lower left node (index 0) to rank 0 cell
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[0] == 3);
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[1] == 0);
+      // ... upper left node (index 2) to rank 0 cell
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[1] == 1);
+      // ... upper left node (index 2) to rank 2 cell
+      FAIL_IF_NOT(ngc_layout.at(2)[1].first.second[0] == 3);
+      FAIL_IF_NOT(ngc_layout.at(2)[1].first.second[1] == 0);
+      // ... upper left node (index 2) to rank 3 cell
+      FAIL_IF_NOT(ngc_layout.at(2)[2].first.second[0] == 1);
+      FAIL_IF_NOT(ngc_layout.at(2)[2].first.second[1] == 2);
+      // ... upper right node (index 3) to rank 3 cell
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 3);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 0);
+
+      // check the other ranks
       FAIL_IF_NOT(ngc_layout.at(0)[0].second == 0);
       FAIL_IF_NOT(ngc_layout.at(2)[0].second == 0);
       FAIL_IF_NOT(ngc_layout.at(2)[1].second == 2);
       FAIL_IF_NOT(ngc_layout.at(2)[2].second == 3);
       FAIL_IF_NOT(ngc_layout.at(3)[0].second == 3);
+
+      // check coordinates ...
+      // ... number of coordinate pairs
+      FAIL_IF_NOT(ngcoord_layout.at(0).size() == 1);
+      FAIL_IF_NOT(ngcoord_layout.at(2).size() == 3);
+      FAIL_IF_NOT(ngcoord_layout.at(3).size() == 1);
+      // ... coordinate pair of lower left node (index 0)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].second[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].second[1], 0.0));
+      // ... coordinate pair of upper left node (index 2)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].first[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[1], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[1].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[1].first[1], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[1].second[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[1].second[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[2].first[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[2].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[2].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[2].second[1], 2.0));
+      // ... coordinate pair of upper right node (index 3)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].first[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].first[1], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[1], 1.0));
+
+    } else if (rtt_c4::node() == 2) {
+
+      // check sizes at local node indices
+      FAIL_IF_NOT(ngc_layout.at(0).size() == 1);
+      FAIL_IF_NOT(ngc_layout.at(1).size() == 3);
+      FAIL_IF_NOT(ngc_layout.at(3).size() == 1);
+
+      // check local cell index on other rank
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(1)[1].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(1)[2].first.first == 0);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.first == 0);
+
+      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // ... lower left node (index 0) to rank 0 cell
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[0] == 0);
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[1] == 3);
+      // ... lower right node (index 1) to rank 0 cell
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[1] == 1);
+      // ... lower right node (index 1) to rank 2 cell
+      FAIL_IF_NOT(ngc_layout.at(1)[1].first.second[0] == 0);
+      FAIL_IF_NOT(ngc_layout.at(1)[1].first.second[1] == 3);
+      // ... lower right node (index 1) to rank 3 cell
+      FAIL_IF_NOT(ngc_layout.at(1)[2].first.second[0] == 1);
+      FAIL_IF_NOT(ngc_layout.at(1)[2].first.second[1] == 2);
+      // ... upper right node (index 3) to rank 3 cell
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 0);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 3);
+
+      // check the other ranks
+      FAIL_IF_NOT(ngc_layout.at(0)[0].second == 0);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].second == 0);
+      FAIL_IF_NOT(ngc_layout.at(1)[1].second == 1);
+      FAIL_IF_NOT(ngc_layout.at(1)[2].second == 3);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].second == 3);
+
+      // check coordinates ...
+      // ... number of coordinate pairs
+      FAIL_IF_NOT(ngcoord_layout.at(0).size() == 1);
+      FAIL_IF_NOT(ngcoord_layout.at(1).size() == 3);
+      FAIL_IF_NOT(ngcoord_layout.at(3).size() == 1);
+      // ... coordinate pair of lower left node (index 0)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].first[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].first[1], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].second[1], 1.0));
+      // ... coordinate pair of lower right node (index 1)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].first[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].second[1], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[1].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[1].first[1], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[1].second[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[1].second[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[2].first[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[2].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[2].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[2].second[1], 2.0));
+      // ... coordinate pair of upper right node (index 3)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[1], 2.0));
+
+    } else if (rtt_c4::node() == 3) {
+
+      // check sizes at local node indices
+      FAIL_IF_NOT(ngc_layout.at(0).size() == 3);
+      FAIL_IF_NOT(ngc_layout.at(1).size() == 1);
+      FAIL_IF_NOT(ngc_layout.at(2).size() == 1);
+
+      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // ... lower left node (index 0) to rank 0 cell
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[1] == 1);
+      // ... lower left node (index 0) to rank 1 cell
+      FAIL_IF_NOT(ngc_layout.at(0)[1].first.second[0] == 0);
+      FAIL_IF_NOT(ngc_layout.at(0)[1].first.second[1] == 3);
+      // ... lower left node (index 0) to rank 2 cell
+      FAIL_IF_NOT(ngc_layout.at(0)[2].first.second[0] == 3);
+      FAIL_IF_NOT(ngc_layout.at(0)[2].first.second[1] == 0);
+      // ... lower right node (index 1) to rank 1 cell
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[1] == 1);
+      // ... upper right node (index 2) to rank 2 cell
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[1] == 1);
+
+      // check the other ranks
+      FAIL_IF_NOT(ngc_layout.at(0)[0].second == 0);
+      FAIL_IF_NOT(ngc_layout.at(0)[1].second == 1);
+      FAIL_IF_NOT(ngc_layout.at(0)[2].second == 2);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].second == 1);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].second == 2);
+
+      // check coordinates ...
+      // ... number of coordinate pairs
+      FAIL_IF_NOT(ngcoord_layout.at(0).size() == 3);
+      FAIL_IF_NOT(ngcoord_layout.at(1).size() == 1);
+      FAIL_IF_NOT(ngcoord_layout.at(2).size() == 1);
+      // ... coordinate pair of lower left node (index 0)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].first[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[0].second[1], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[1].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[1].first[1], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[1].second[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[1].second[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[2].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[2].first[1], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[2].second[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(0)[2].second[1], 1.0));
+      // ... coordinate pair of lower right node (index 1)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].first[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].first[1], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].second[0], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(1)[0].second[1], 0.0));
+      // ... coordinate pair of upper left node (index 2)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].first[0], 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].first[1], 2.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[0], 1.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[1], 1.0));
     }
   }
 

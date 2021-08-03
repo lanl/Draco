@@ -17,12 +17,12 @@ if(NOT Fortran_FLAGS_INITIALIZED)
       "yes"
       CACHE INTERNAL "using draco settings.")
 
-  string(APPEND CMAKE_Fortran_FLAGS " -ffree-line-length-none -cpp")
-  string(CONCAT CMAKE_Fortran_FLAGS_DEBUG "-g -fbounds-check -frange-check"
+  string(APPEND CMAKE_Fortran_FLAGS " -g -ffree-line-length-none -cpp")
+  string(CONCAT CMAKE_Fortran_FLAGS_DEBUG "-fbounds-check -frange-check"
                 " -ffpe-trap=invalid,zero,overflow -fbacktrace -finit-character=127 -DDEBUG")
   set(CMAKE_Fortran_FLAGS_RELEASE "-O3 -mtune=native -ftree-vectorize -funroll-loops -DNDEBUG")
   set(CMAKE_Fortran_FLAGS_MINSIZEREL "${CMAKE_Fortran_FLAGS_RELEASE}")
-  set(CMAKE_Fortran_FLAGS_RELWITHDEBINFO "-g ${CMAKE_Fortran_FLAGS_RELEASE}")
+  set(CMAKE_Fortran_FLAGS_RELWITHDEBINFO "${CMAKE_Fortran_FLAGS_RELEASE}")
 
   # Only add '-march=native' if -march and -mtune are not already requested. Spack will add -march=
   # options if spacific target is requested (ie. target Haswell CPU when building on Skylake).

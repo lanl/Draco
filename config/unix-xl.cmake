@@ -25,7 +25,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
       "yes"
       CACHE INTERNAL "using draco settings.")
 
-  string(APPEND CMAKE_C_FLAGS "-qflttrap -qmaxmem=-1")
+  string(APPEND CMAKE_C_FLAGS " -g -qflttrap -qmaxmem=-1")
   if(EXISTS /usr/gapps)
     # ATS-2
     string(APPEND CMAKE_C_FLAGS " --gcc-toolchain=/usr/tce/packages/gcc/gcc-8.3.1")
@@ -73,8 +73,8 @@ if(NOT CXX_FLAGS_INITIALIZED)
     unset(config_file)
   endif()
 
-  set(CMAKE_C_FLAGS_DEBUG "-g -O0 -qsmp=omp:noopt -qfullpath -DDEBUG")
-  set(CMAKE_C_FLAGS_RELWITHDEBINFO "-g -O2 -qsmp=omp -qstrict=nans:operationprecision")
+  set(CMAKE_C_FLAGS_DEBUG "-O0 -qsmp=omp:noopt -qfullpath -DDEBUG")
+  set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -qsmp=omp -qstrict=nans:operationprecision")
   set(CMAKE_C_FLAGS_RELEASE "-O2 -qsmp=omp -qstrict=nans:operationprecision -DNDEBUG")
   set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_RELEASE}")
 
