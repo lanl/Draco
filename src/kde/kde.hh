@@ -62,11 +62,11 @@ public:
   inline double log_inv_transform(const double log_value, const double bias) const;
 
   //! Calculate radius
-  inline double calc_radius(const std::array<double, 3> &sphere_center,
+  inline double calc_radius(const std::array<double, 3> &center,
                             const std::array<double, 3> &location) const;
 
   //! Calculate Arch Length between two locations at a specific radius
-  inline double calc_arch_length(const std::array<double, 3> &sphere_center, const double radius,
+  inline double calc_arch_length(const std::array<double, 3> &center, const double radius,
                                  const std::array<double, 3> &location_1,
                                  const std::array<double, 3> &location_2) const;
   //! Setup a spherical reconstruction with a
@@ -78,7 +78,7 @@ public:
     sphere_center = sph_center;
     sphere_min_radius = min_radius;
     sphere_max_radius = max_radius;
-  };
+  }
 
 protected:
   // IMPLEMENTATION

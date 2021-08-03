@@ -88,7 +88,7 @@ auto calc_unit_vec = [](const auto &v) {
  * Calculate the radius given a sphere center and the current location.
  *
  *
- * \param[in] sphere_center the center location (x,y,z) or (r,z) of the sphere
+ * \param[in] center the center location (x,y,z) or (r,z) of the sphere
  * \param[in] location data location (x,y,z) or (r,z)
  *
  * \return radius from cell center
@@ -96,9 +96,9 @@ auto calc_unit_vec = [](const auto &v) {
  * Test of kde.
  */
 
-inline double kde::calc_radius(const std::array<double, 3> &sphere_center,
+inline double kde::calc_radius(const std::array<double, 3> &center,
                                const std::array<double, 3> &location) const {
-  return calc_mag(calc_vec(sphere_center, location));
+  return calc_mag(calc_vec(center, location));
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -107,7 +107,7 @@ inline double kde::calc_radius(const std::array<double, 3> &sphere_center,
  * Calculate the arch length between two points (infinitely extended from sphere center) at a specified radius.
  *
  *
- * \param[in] sphere_center the center location (x,y,z) or (r,z) of the sphere
+ * \param[in] center the center location (x,y,z) or (r,z) of the sphere
  * \param[in] radius from sphere center to calculate the arch length
  * \param[in] location_1 data location (x,y,z) or (r,z)
  * \param[in] location_2 data location (x,y,z) or (r,z)
@@ -117,11 +117,11 @@ inline double kde::calc_radius(const std::array<double, 3> &sphere_center,
  * Test of kde.
  */
 
-inline double kde::calc_arch_length(const std::array<double, 3> &sphere_center, const double radius,
+inline double kde::calc_arch_length(const std::array<double, 3> &center, const double radius,
                                     const std::array<double, 3> &location_1,
                                     const std::array<double, 3> &location_2) const {
-  const std::array<double, 3> v1{calc_unit_vec(calc_vec(sphere_center, location_1))};
-  const std::array<double, 3> v2{calc_unit_vec(calc_vec(sphere_center, location_2))};
+  const std::array<double, 3> v1{calc_unit_vec(calc_vec(center, location_1))};
+  const std::array<double, 3> v2{calc_unit_vec(calc_vec(center, location_2))};
   const double cos_theta = v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
   return radius * acos(cos_theta);
 }

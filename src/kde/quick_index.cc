@@ -388,8 +388,8 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
  * window_coarse_index_list provides a list of global indecies that are
  * required by any given window range.
  *
- * \param[in] whindow_min the smallest corner point for every dimension
- * \param[in] whindow_min the largest corner point for every dimension
+ * \param[in] window_min the smallest corner point for every dimension
+ * \param[in] window_max the largest corner point for every dimension
  * \return bin_list list of global bins requested for the current window.
  */
 std::vector<size_t>
@@ -530,10 +530,10 @@ auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, aut
  * \param[in] local_data the local data on the processor to be mapped to the window
  * \param[in] ghost_data the ghost data on the processor to be mapped to the window
  * \param[in,out] grid_data the resulting data map
- * \param[in] whindow_min the smallest corner point for every dimension
- * \param[in] whindow_min the largest corner point for every dimension
+ * \param[in] window_min the smallest corner point for every dimension
+ * \param[in] window_max the largest corner point for every dimension
  * \param[in] grid_bins number of equally spaced bins in each dir
- * \param[in] map_type string indicating the mapping (max, min, ave)
+ * \param[in] map_type_in string indicating the mapping (max, min, ave)
  * \param[in] normalize bool operator to specify if the data should be normalized to a pdf
  * \param[in] bias bool operator to specify if the data should be moved to the positive domain space
  */
@@ -765,10 +765,10 @@ auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_da
  * \param[in] local_data the local data on the processor to be mapped to the window
  * \param[in] ghost_data the ghost data on the processor to be mapped to the window
  * \param[in,out] grid_data the resulting data map
- * \param[in] whindow_min the smallest corner point for every dimension
- * \param[in] whindow_min the largest corner point for every dimension
+ * \param[in] window_min the smallest corner point for every dimension
+ * \param[in] window_max the largest corner point for every dimension
  * \param[in] grid_bins number of equally spaced bins in each dir
- * \param[in] map_type string indicating the mapping (max, min, ave)
+ * \param[in] map_type_in string indicating the mapping (max, min, ave)
  * \param[in] normalize bool operator to specify if the data should be normalized to a pdf (independent of each data vector)
  * \param[in] bias bool operator to specify if the data should be moved to the positive domain space (independent of each data vector)
  * \return bin_list list of global bins requested for the current window.
@@ -1003,8 +1003,8 @@ std::array<double, 3> quick_index::transform_r_theta(const std::array<double, 3>
  * \param[in] wedge_xyz_center geometric center of the wedge in (x,y,z) or (r,z) coordinates
  * \param[in] wedge_origin axisymetric origin (x,y,z) or (r,z) of the wedge.
  * \param[in] wedge_dr_dtheta differential size of the wedge in each dimension. 
- * \param[in|out] win_min differential size of the wedge in each dimension. 
- * \param[in|out] win differential size of the wedge in each dimension. 
+ * \param[in,out] win_min differential size of the wedge in each dimension. 
+ * \param[in,out] win_max differential size of the wedge in each dimension. 
  * 
  */
 void quick_index::calc_wedge_xy_bounds(const std::array<double, 3> &wedge_xyz_center,
@@ -1076,7 +1076,7 @@ void quick_index::calc_wedge_xy_bounds(const std::array<double, 3> &wedge_xyz_ce
  * \param[in] wedge_window_center the geometric center (x,y,x) of the wedge window
  * \param[in] wedge_dr_dtheta the differential size in each direction (dr, dtheta, 0.0) used to form the wedge
  * \param[in] grid_bins number of equally spaced bins in each dir
- * \param[in] map_type string indicating the mapping (max, min, ave)
+ * \param[in] map_type_in string indicating the mapping (max, min, ave)
  * \param[in] normalize bool operator to specify if the data should be normalized to a pdf
  * \param[in] bias bool operator to specify if the data should be moved to the positive domain space
  */
@@ -1279,7 +1279,7 @@ void quick_index::map_data_to_sphere_grid_window(
  * \param[in] wedge_window_center the geometric center (x,y,x) of the wedge window
  * \param[in] wedge_dr_dtheta the differential size in each direction (dr, dtheta, 0.0) used to form the wedge
  * \param[in] grid_bins number of equally spaced bins in each dir
- * \param[in] map_type string indicating the mapping (max, min, ave)
+ * \param[in] map_type_in string indicating the mapping (max, min, ave)
  * \param[in] normalize bool operator to specify if the data should be normalized to a pdf (independent of each data vector)
  * \param[in] bias bool operator to specify if the data should be moved to the positive domain space (independent of each data vector)
  * \return bin_list list of global bins requested for the current window.
