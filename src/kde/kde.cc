@@ -437,7 +437,7 @@ void kde::apply_conservation(const std::vector<double> &original_distribution,
  * 
  * \param[in] qindex quick index class for finding bounds xy bounds of a wedge shape
  * \param[in] position is the central location of the bounds
- * \param[in] one_over_bandwdith size of the reconstruction domain in each dimension. This is (dx,dy) for Caresian and (dr, arc_length) for spherical. 
+ * \param[in] one_over_bandwidth size of the reconstruction domain in each dimension. This is (dx,dy) for Caresian and (dr, arc_length) for spherical. 
  * \param[in,out] win_min is the minimum corner of the bounding box (x_min, y_min, z_min)
  * \param[in,out] win_max is the maximum corner of the bounding box (x_max, y_max, z_max)
  *
@@ -453,7 +453,7 @@ void kde::calc_win_min_max(const quick_index &qindex, const std::array<double, 3
                         dr;
     // dtheta = arch_length_max/rmax
     const double dtheta = std::min(1.0 / (one_over_bandwidth[1] * rmax), acos(0));
-    qindex.calc_wedge_xy_bounds(position,sphere_center,{dr,dtheta,0.0}, win_min, win_max);
+    qindex.calc_wedge_xy_bounds(position, sphere_center, {dr, dtheta, 0.0}, win_min, win_max);
   } else {
     for (size_t d = 0; d < dim; d++) {
       Check(one_over_bandwidth[d] > 0.0);

@@ -6,17 +6,16 @@
 # note   Copyright (C) 2019-2021 Triad National Security, LLC., All rights reserved.
 #
 # Build notes:
-#
-# * https://rtt.lanl.gov/redmine/projects/draco/wiki/
-# * https://rtt.lanl.gov/redmine/projects/draco/wiki/Common_Configure_Options
-#--------------------------------------------------------------------------------------------------#
+#   https://rtt.lanl.gov/redmine/projects/draco/wiki/
+#   https://rtt.lanl.gov/redmine/projects/draco/wiki/Common_Configure_Options
+
 cmake_minimum_required(VERSION 3.18.0 FATAL_ERROR)
 string(CONCAT ddesc "An object-oriented component library supporting radiation transport "
               "applications.")
 project(
   Draco
   DESCRIPTION ${ddesc}
-  VERSION 7.10
+  VERSION 7.11
   LANGUAGES CXX C)
 
 # Export compile commands for compiler tools

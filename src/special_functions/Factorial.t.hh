@@ -1,17 +1,17 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   special_functions/Factorial.i.hh
+ * \file   special_functions/Factorial.t.hh
  * \author Kelly Thompson
  * \date   Mon Nov 8 11:17:12 2004
  * \brief  Provide implementation of templatized factorial function.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef sf_factorial_i_hh
 #define sf_factorial_i_hh
 
-#include "Factorial.hh"
 #include "ds++/Assert.hh"
+#include "special_functions/Factorial.hh"
 #include <array>
 
 namespace rtt_sf {
@@ -67,8 +67,8 @@ template <typename T> double factorial_fraction(T const k, T const l) {
 
 } // end namespace rtt_sf
 
-#endif // sf_factorial_i_hh
+#endif // sf_factorial_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of sf/factorial.i.hh
+// end of sf/factorial.t.hh
 //------------------------------------------------------------------------------------------------//

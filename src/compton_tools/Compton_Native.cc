@@ -197,6 +197,7 @@ int Compton_Native::read_binary(const std::string &filename) {
   try {
     fin.exceptions(std::ifstream::failbit | std::ifstream::badbit);
   } catch (std::fstream::failure & /*error*/) {
+    std::cout << "Error: Compton data file '" << filename << "' not found!\n";
     return 1;
   }
 

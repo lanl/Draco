@@ -15,14 +15,18 @@ if(NOT CXX_FLAGS_INITIALIZED)
       "yes"
       CACHE INTERNAL "using draco settings.")
 
-  string(APPEND CMAKE_C_FLAGS " ")
+  string(APPEND CMAKE_C_FLAGS " -g")
   if(DBS_GENERATE_OBJECT_LIBRARIES)
     string(APPEND CMAKE_C_FLAGS " -ipo")
   endif()
-  string(CONCAT CMAKE_C_FLAGS_DEBUG "-g -O0 -DDEBUG -Wno-potentially-evaluated-expression")
+  string(CONCAT CMAKE_C_FLAGS_DEBUG "-O0 -DDEBUG -Wno-potentially-evaluated-expression")
+  # Useful for profilers
+  #
+  # * -gline-tables-only
+  # * -fdebug-info-for-profiling
   string(CONCAT CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
   set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_RELEASE}")
-  string(CONCAT CMAKE_C_FLAGS_RELWITHDEBINFO "-g -O3 ")
+  string(CONCAT CMAKE_C_FLAGS_RELWITHDEBINFO "-O3 ")
 
   string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS}")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")

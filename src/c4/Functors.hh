@@ -4,10 +4,9 @@
  * \author Thomas M. Evans
  * \date   Fri Sep 30 12:54:09 2005
  * \brief  Functors used in rtt_c4.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved.
  *
- * Functors for use with TiggsTrace (scatter).
- */
+ * Functors for use with TiggsTrace (scatter). */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_Functors_hh
@@ -18,8 +17,8 @@ namespace rtt_c4 {
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief A binary functor to return the maximum of two items
- * \param x, the first operand
- * \param y, the second operand
+ * \param[in] x, the first operand
+ * \param[in] y, the second operand
  * \return the greater value of x or y
  */
 template <typename T> struct max {
@@ -29,8 +28,8 @@ template <typename T> struct max {
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief A binary functor to find the minimum of two items
- * \param x, the first operand
- * \param y, the second operand
+ * \param[in] x, the first operand
+ * \param[in] y, the second operand
  * \return the lesser value of x or y
  */
 template <typename T> struct min {

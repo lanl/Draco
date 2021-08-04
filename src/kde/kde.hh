@@ -62,11 +62,11 @@ public:
   inline double log_inv_transform(const double log_value, const double bias) const;
 
   //! Calculate radius
-  inline double calc_radius(const std::array<double, 3> &sphere_center,
+  inline double calc_radius(const std::array<double, 3> &center,
                             const std::array<double, 3> &location) const;
 
   //! Calculate Arch Length between two locations at a specific radius
-  inline double calc_arch_length(const std::array<double, 3> &sphere_center, const double radius,
+  inline double calc_arch_length(const std::array<double, 3> &center, const double radius,
                                  const std::array<double, 3> &location_1,
                                  const std::array<double, 3> &location_2) const;
   //! Setup a spherical reconstruction with a
@@ -78,7 +78,7 @@ public:
     sphere_center = sph_center;
     sphere_min_radius = min_radius;
     sphere_max_radius = max_radius;
-  };
+  }
 
 protected:
   // IMPLEMENTATION
@@ -92,7 +92,7 @@ private:
                ? calc_spherical_weight(r0, one_over_h0, r, one_over_h, qindex, discontinuity_cutoff)
                : calc_cartesian_weight(r0, one_over_h0, r, one_over_h, qindex,
                                        discontinuity_cutoff);
-  };
+  }
 
   void calc_win_min_max(const quick_index &qindex, const std::array<double, 3> &position,
                         const std::array<double, 3> &one_over_bandwidth, std::array<double, 3> &min,
@@ -114,10 +114,10 @@ private:
   //! reflecting boundary conditions [lower_x, upper_x, lower_y, upper_y, lower_z, upper_z]
   const std::array<bool, 6> reflect_boundary;
   //! Spherical Mesh Reconstruction Data
-  std::array<double, 3> sphere_center;
-  double sphere_min_radius;
-  double sphere_max_radius;
-  bool use_spherical_reconstruction;
+  std::array<double, 3> sphere_center{0.0, 0.0, 0.0};
+  double sphere_min_radius{0.0};
+  double sphere_max_radius{0.0};
+  bool use_spherical_reconstruction{false};
 };
 
 } // end namespace rtt_kde

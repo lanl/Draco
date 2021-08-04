@@ -1,14 +1,14 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   linear/qr_unpack.i.hh
+ * \file   linear/qr_unpack.t.hh
  * \author Kent Budge
  * \date   Mon Aug  9 13:17:31 2004
  * \brief  Compute an explicit representation of a packed QR decomposition.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef linear_qr_unpack_i_hh
-#define linear_qr_unpack_i_hh
+#ifndef linear_qr_unpack_t_hh
+#define linear_qr_unpack_t_hh
 
 #include "qr_unpack.hh"
 #include "ds++/Assert.hh"
@@ -26,7 +26,8 @@ namespace rtt_linear {
  * computes explicit \f$Q^T\f$ and \f$R\f$ matrices.  \f$Q^T\f$ rather than \f$Q\f$ is returned
  * because this is what is usually required for further computation (as with qrupdt).
  *
- * \arg \a RandomContainer A random access container
+ * \tparam RandomContainer A random access container
+ * 
  * \param r \f$N\times N\f$ matrix containing, in its lower triangular part, the Householder vectors
  *          \f$u\f$ of the QR decomposition, and, in its strict upper triangular part, the strict
  *          upper triangular part of \f$R\f$.  On exit, contains \f$R\f$.
@@ -39,7 +40,7 @@ namespace rtt_linear {
  * \pre \c n==c.size()
  * \pre \c n=d.size()
  * \pre The elements of <code>c</code> must be set to the correct normalization values for the
- *          \f$ u \f$ contained in \c r.
+ *      \f$ u \f$ contained in \c r.
  *
  * \post \c r[i][j]==0 for all \c j<i
  * \post \c r.size()==n*n
@@ -92,8 +93,8 @@ void qr_unpack(RandomContainer &r, const unsigned n, const RandomContainer &c,
 
 } // end namespace rtt_linear
 
-#endif // linear_qr_unpack_i_hh
+#endif // linear_qr_unpack_t_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of linear/qr_unpack.i.hh
+// end of linear/qr_unpack.t.hh
 //------------------------------------------------------------------------------------------------//

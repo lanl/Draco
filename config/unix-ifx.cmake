@@ -18,15 +18,15 @@ if(NOT Fortran_FLAGS_INITIALIZED)
       CACHE STRING "Fortran compiler version string" FORCE)
   mark_as_advanced(CMAKE_Fortran_COMPILER_VERSION)
 
-  string(APPEND CMAKE_Fortran_FLAGS " ")
-  string(CONCAT CMAKE_Fortran_FLAGS_DEBUG "-g -O0 -DDEBUG")
+  string(APPEND CMAKE_Fortran_FLAGS " -g")
+  string(CONCAT CMAKE_Fortran_FLAGS_DEBUG "-O0 -DDEBUG")
   if(NOT DEFINED CMAKE_CXX_COMPILER_WRAPPER AND NOT "${CMAKE_CXX_COMPILER_WRAPPER}" STREQUAL
                                                 "CrayPrgEnv")
     string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -traceback")
   endif()
   string(CONCAT CMAKE_Fortran_FLAGS_RELEASE "-O2 -DNDEBUG")
   set(CMAKE_Fortran_FLAGS_MINSIZEREL "${CMAKE_Fortran_FLAGS_RELEASE}")
-  set(CMAKE_Fortran_FLAGS_RELWITHDEBINFO "-g -O2 -DDEBUG")
+  set(CMAKE_Fortran_FLAGS_RELWITHDEBINFO "-O2 -DDEBUG")
 
 endif()
 
