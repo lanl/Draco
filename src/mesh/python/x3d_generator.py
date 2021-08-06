@@ -17,7 +17,7 @@ mesh_type_dict = {'orth_2d_mesh': mesh_types.orth_2d_mesh, 'orth_3d_mesh': mesh_
 
 parser = argparse.ArgumentParser(description='Generate X3D mesh file.')
 parser.add_argument('-mt',
- '--mesh_type', type=str, default='orth_2d_mesh',
+                    '--mesh_type', type=str, default='orth_2d_mesh',
                     help='Select mesh type.')
 parser.add_argument('-nd', '--num_per_dim', type=int, nargs='+', default=[1, 1],
                     help='Number of cells per dimension.')
