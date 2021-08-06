@@ -16,6 +16,8 @@
 # the order in which they are listed.
 HOOKS="pre-commit-clang-format"
 
+# only run autopep8 if the tool is available
+[[ $(which autopep8 2> /dev/null | wc -w) -gt 0 ]] && HOOKS+=" pre-commit-autopep8"
 # only run flake8 if the tool is available.
 [[ $(which flake8 2> /dev/null | wc -w) -gt 0 ]] && HOOKS+=" pre-commit-flake8"
 # only run cmake-format if the tool is available.
