@@ -76,16 +76,16 @@ void test_parmetis(rtt_c4::ParallelUnitTest &ut) {
   // Dependent on each processor
   if (MPI_PROC_ID == 0) {
     adjncy.resize(13);
-    xadj = {0, 2, 5, 8, 11, 13 };
+    xadj = {0, 2, 5, 8, 11, 13};
     adjncy = {1, 5, 0, 2, 6, 1, 3, 7, 2, 4, 8, 3, 9};
   } else if (MPI_PROC_ID == 1) {
     adjncy.resize(18);
     xadj = {0, 3, 7, 11, 15, 18};
-    adjncy = {0, 6, 10, 1, 5, 7, 11, 2, 6, 8,  12,  3,  7,  9,  13,  4,  8,  14};
+    adjncy = {0, 6, 10, 1, 5, 7, 11, 2, 6, 8, 12, 3, 7, 9, 13, 4, 8, 14};
   } else if (MPI_PROC_ID == 2) {
     adjncy.resize(13);
     xadj = {0, 2, 5, 8, 11, 13};
-    adjncy = {5, 11, 6, 10, 12, 7, 11, 13, 8, 12,  14,  9,  13};
+    adjncy = {5, 11, 6, 10, 12, 7, 11, 13, 8, 12, 14, 9, 13};
   }
   if (MPI_PROC_ID == 0)
     cout << "parmetis initialized." << '\n';
