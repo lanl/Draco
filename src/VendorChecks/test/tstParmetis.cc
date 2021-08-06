@@ -55,7 +55,11 @@ void test_parmetis(rtt_c4::ParallelUnitTest &ut) {
   // An array of size ncon that is used to specify the imbalance tolerance for each vertex weight,
   // with 1 being perfect balance and nparts being perfect imbalance. A value of 1.05 for each of
   // the ncon weights is recommended.
-  auto ubvec = static_cast<real_t>(1.05f);
+#if REALTYPEWIDTH == 64
+  real_t ubvec = 1.05;
+#else
+  real_t ubvec = 1.05f;
+#endif
   // This is an array of integers that is used to pass additional parameters for the routine.
   std::vector<idx_t> options(4, 0);
   // Upon successful completion, the number of edges that are cut by the partitioning is written to
