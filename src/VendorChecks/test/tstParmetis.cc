@@ -51,11 +51,11 @@ void test_parmetis(rtt_c4::ParallelUnitTest &ut) {
   // should be distributed to each sub-domain for each balance constraint. If all of the sub-domains
   // are to be of the same size for every vertex weight, then each of the ncon * elements
   // should be set to a value of 1/nparts.
-  std::vector<real_t> tpwgts(ncon * nparts, (one / nparts));
+  std::vector<real_t> tpwgts(ncon * nparts, (one / static_cast<real_t>(nparts)));
   // An array of size ncon that is used to specify the imbalance tolerance for each vertex weight,
   // with 1 being perfect balance and nparts being perfect imbalance. A value of 1.05 for each of
   // the ncon weights is recommended.
-  auto ubvec = one + 0.05;
+  auto ubvec = static_cast<real_t>(1.05f);
   // This is an array of integers that is used to pass additional parameters for the routine.
   std::vector<idx_t> options(4, 0);
   // Upon successful completion, the number of edges that are cut by the partitioning is written to
