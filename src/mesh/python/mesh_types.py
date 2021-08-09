@@ -582,16 +582,24 @@ class vor_2d_mesh(base_mesh):
         for n, vertex in enumerate(vertices):
             self.coordinates_per_node[n, 0] = vertex[0]
             self.coordinates_per_node[n, 1] = vertex[1]
-        self.num_faces = len(ridge_vertices)
+        #self.num_faces = len(ridge_vertices)
         self.num_faces_per_cell = np.zeros(self.num_cells, dtype=int)
         for n in range(self.num_cells):
             self.num_faces_per_cell[n] = len(cells[n])
+        self.num_faces = sum(self.num_faces_per_cell)
         self.num_nodes_per_face = np.zeros(self.num_faces, dtype=int)
         for n in range(self.num_faces):
             self.num_nodes_per_face[n] = 2
         self.faces_per_cell = cells
         self.nodes_per_face = ridge_vertices
         self.nodes_per_side = []
+        # print(self.num_faces)
+        # print(len(self.nodes_per_face))
+        # print(len(self.faces_per_cell))
+        # print(sum(self.num_faces_per_cell))
+        # print(self.num_faces_per_cell)
+        # print(self.faces_per_cell)
+        #import sys; sys.exit()
         for n in range(4):
             bdy_key = list(boundary_edges.keys())[n]
             bdy_nodes = []
@@ -601,19 +609,39 @@ class vor_2d_mesh(base_mesh):
                     if node not in bdy_nodes:
                         bdy_nodes.append(node)
             self.nodes_per_side.append(bdy_nodes)
+        # print(self.num_faces)
+        # print(len(self.nodes_per_face))
+        # print(len(self.faces_per_cell))
 
         # -- fix face logic and indices
-        print(self.nodes_per_side)
-        new_faces = []
-        for face_idx, face in enumerate(self.faces_per_cell):
-            face_num = face_idx + 1
-            # print(self.nodes_per_face[face_idx])
-            nodes = self.nodes_per_face[face_idx]
-            print(nodes)
-            if nodes[0] in self.nodes_per_side and nodes[1] in self.nodes_per_side:
-                print("BOUNDARY!")
-        import sys
-        sys.exit()
+        # print(self.nodes_per_side)
+        #new_faces = []
+        # for face_idx, face in enumerate(self.faces_per_cell):
+        #    face_num = face_idx + 1
+        #    # print(self.nodes_per_face[face_idx])
+        #    nodes = self.nodes_per_face[face_idx]
+        #    print(nodes)
+        #    if nodes[0] in self.nodes_per_side and nodes[1] in self.nodes_per_side:
+        #        print("BOUNDARY!")
+        # print(self.faces_per_cell)
+
+#        for cell_idx, cell in enumerate(self.faces_per_cell):
+#          for face_idx, face in enumerate(self.faces_per_cell[cell_idx]):
+#            self.faces_per_cell[cell_idx][face_idx] = face + 1
+#
+#        for face_idx, face in enumerate(self.nodes_per_face):
+#          for node_idx, node in enumerate(self.nodes_per_face[face_idx]):
+#            self.nodes_per_face[face_idx][node_idx] = node + 1
+#
+#        #print(self.nodes_per_side)
+#        #import sys; sys.exit()
+#        for side_idx, side in enumerate(self.nodes_per_side):
+#          for node_idx, node in enumerate(self.nodes_per_side[side_idx]):
+#            self.nodes_per_side[side_idx][node_idx] = node + 1
+
+  #      print(self.faces_per_cell)
+  #      import sys
+  #      sys.exit()
 
         # self.faces_per_cell = [np.array([], dtype=int)]  # face indexes per cell
         # self.nodes_per_face = [np.array([], dtype=int)]  # node indexes per face

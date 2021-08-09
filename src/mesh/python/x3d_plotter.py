@@ -29,10 +29,19 @@ with open(args.file_name) as f:
 
 print(lines)
 
+# Data to read in
+numdim = None
+numnodes = None
+numfaces = None
+numcells = None
+nodes = []
+faces = []
+cells = []
+
 blocks = ['header', 'nodes', 'faces', 'cells']
 current_block = None
 for line in lines:
-    print(line)
+    words = line.split()
     # If no current block, check if starting new block
     if current_block is None:
         for block in blocks:
@@ -45,5 +54,39 @@ for line in lines:
             current_block = None
 
     # Process data if currently on a block
-    if current_block is not None:
-        print(current_block)
+    if current_block == 'header':
+        if words[0] == 'numdim':
+            numdim = int(words[1])
+        elif words[0] == 'nodes':
+            numnodes = int(words[1])
+        elif words[0] == 'faces':
+            numfaces = int(words[1])
+        elif words[0] == 'elements':
+            numcells = int(words[1])
+    elif current_block == 'nodes':
+        if len(words) == 4:
+            nodes.append([float(words[1]), float(words[2]), float(words[3])])
+    elif current_block == 'faces':
+        if len(words) >= 3:
+            print(words)
+            face = []
+            for nface in range(int(words[1])):
+                face.append(words[nface + 2])
+            faces.append(face)
+
+    # if current_block is not None:
+            # print(current_block)
+
+# for n in range(
+
+assert (numdim is not None), "numdim not found!"
+assert (numnodes is not None), "numnodes not found!"
+assert (numfaces is not None), "numfaces not found!"
+assert (numcells is not None), "numcells not found!"
+assert (len(nodes) == numnodes), "numnodes does not match number of nodes!"
+print(numfaces)
+print(len(faces))
+# print(faces)
+assert (len(faces) == numfaces), "numfaces does not match number of faces!"
+
+print(nodes)
