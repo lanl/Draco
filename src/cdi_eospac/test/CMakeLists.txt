@@ -15,8 +15,10 @@ set(test_sources ${PROJECT_SOURCE_DIR}/tEospac.cc ${PROJECT_SOURCE_DIR}/tEospacW
 # ------------------------------------------------------------------------------------------------ #
 # Build Unit tests
 # ------------------------------------------------------------------------------------------------ #
-if((DEFINED ENV{SESAMEPATH} AND EXISTS "$ENV{SESAMEPATH}") OR (DEFINED ENV{SESPATHU}
-                                                               AND EXISTS "$ENV{SESPATHU}"))
+if((DEFINED ENV{SESAMEPATH} AND EXISTS "$ENV{SESAMEPATH}")
+   OR (DEFINED ENV{SESPATHU} AND EXISTS "$ENV{SESPATHU}")
+   OR IS_DIRECTORY "/usr/gapps/lanl-data/eos"
+   OR IS_DIRECTORY "/usr/projects/data/eos")
 
   # These tests require a datafile to be defined in the environment.
 

@@ -1,0 +1,170 @@
+#!/bin/bash
+
+# git pre-commit hook that runs a fprettify stylecheck.
+# Features:
+#  - abort commit when commit does not comply with the style guidelines
+
+#--------------------------------------------------------------------------------------------------#
+# SETTINGS
+#
+# set path to fprettify binary. If fprettify is not available, then don't run this hook. Style
+# issues will be caught during by the pull request process.
+#--------------------------------------------------------------------------------------------------#
+
+# make tmp file readable only by owner
+umask 0077
+
+debug=off
+function debugprint()
+{
+  if [[ "$debug" == "on" ]]; then echo "$@"; fi
+}
+
+# Allow developers to opt-out
+auto_apply=false
+if [[ ${DRACO_AUTO_CLANG_FORMAT:-YES} ]]; then
+  case $DRACO_AUTO_CLANG_FORMAT in
+    NO | OFF | FALSE | no | off | false ) exit 0 ;;
+    YES | ON | TRUE | yes | on | true) auto_apply=true ;;
+    DIFF | diff) auto_apply=false ;;
+  esac
+fi
+
+# remove any older patches from previous commits. Set to true or false.
+DELETE_OLD_PATCHES=true
+
+# file types to parse.
+FILE_EXTS=".f90 .F90 .f .F"
+#FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
+FILE_ENDINGS_EXCLUDE="_f.h _f77.h _f90.h"
+export FILE_EXTS FILE_ENDINGS_EXCLUDE
+
+##################################################################
+# There should be no need to change anything below this line.
+# shellcheck source=environment/git/canonicalize_filename.sh
+source "$(dirname -- "$0")/canonicalize_filename.sh"
+
+# shellcheck source=tools/common.sh
+source "$(dirname -- "$0")/common.sh"
+
+# exit on error
+# set -e
+
+FPY=$(which fprettify 2> /dev/null)
+if [[ -x "$FPY" ]]; then
+  FPYVER=$("$FPY" --version | tail -n 1 | sed -e 's/.*fprettify //')
+  if [[ $(version_gt "0.3.5" "${FPYVER}")  ]]; then
+    echo "ERROR: Your version of fpy is too old. Expecting v 0.3.6+. Pre-commit-hook"
+    echo "       for f90 indentation will be disabled."
+    unset FPY
+  fi
+else
+  unset FPY
+fi
+
+# necessary check for initial commit
+if git rev-parse --verify HEAD >/dev/null 2>&1 ; then
+  against=HEAD
+else
+  # Initial commit: diff against an empty tree object
+  against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+
+if [ ! -x "$FPY" ] ; then
+  printf "Error: fprettify executable not found.\n"
+  printf "       skipping f90 format check. To enable this check\n"
+  printf "       set the correct path in %s.\n" "$(canonicalize_filename "$0")"
+  exit 0
+fi
+
+# create a random filename to store our generated patch
+prefix="pre-commit-fprettify"
+suffix="$(date +%s)"
+
+# clean up any older fprettify patches
+$DELETE_OLD_PATCHES && rm -f /tmp/$prefix-*.patch.* &> /dev/null
+$DELETE_OLD_PATCHES && rm -f /tmp/$prefix-*.lint.* &> /dev/null
+$DELETE_OLD_PATCHES && rm -f /tmp/fprettify-* &> /dev/null
+
+patchfile=$(mktemp "/tmp/$USER/${prefix}-${suffix}.patch.XXXXXXXX")
+lintfile=$(mktemp "/tmp/$USER/${prefix}-${suffix}.lint.XXXXXXXX")
+
+# create one patch containing all changes to the files
+# shellcheck disable=SC2162
+git diff-index --cached --diff-filter=ACMR --name-only $against -- | while read file;
+do
+  # only process f90 files.
+  if ! matches_extension "$file"; then continue; fi
+
+  # If file is added to commit but still has local modifications, abort
+  if [[ $(git diff "${file}" | wc -l) != 0 ]]; then
+    echo -e "\nERROR: File ${file} has local edits that are not staged. Stash modifications or add "
+    echo -e "       changes to this commit.\n\n"
+    exit 1
+  fi
+
+  file_nameonly=$(basename "${file}")
+  tmpfile1="/tmp/fprettify-$file_nameonly"
+
+  # 1. These issues can be fixed automatically.
+  debugprint "$FPY -sS $file --> $tmpfile1"
+  "$FPY" -sS "${file}" &> "${tmpfile1}"
+  diff -u "${file}" "${tmpfile1}" | \
+    sed -e "1s|--- |--- a/|" -e "2s|+++ ${tmpfile1}|+++ b/${file}|" >> "$patchfile"
+  rm "${tmpfile1}"
+
+  # 2. These issues can not be fixed automatically.
+  debugprint "cp $file $tmpfile1"
+  cp "${file}" "${tmpfile1}"
+  debugprint "$FPY -S $tmpfile1"
+  "$FPY" -S "${tmpfile1}"
+  debugprint "$FPY $tmpfile1 --> $lintfile"
+  "$FPY" "${tmpfile1}" >> "${lintfile}" 2>&1
+  # Fix paths in the log file
+  sed -i "s%${tmpfile1}%${file}%" "${lintfile}"
+done
+
+# if no patch has been generated all is ok, clean up the file stub and exit
+if ! [[ -s "$patchfile" ]] && ! [[ -s "$lintfile" ]] ; then
+  printf "Files in this commit comply with the fpy-based fprettify rules.\n"
+  rm -f "$patchfile" "$lintfile"
+  exit 0
+fi
+
+# If we get here, there are files that don't comply...
+
+# If user wants to automatically apply these changes, then do it, otherwise, print the diffs and
+# reject the commit.
+if [[ -s "$patchfile" ]]; then
+  if [[ $auto_apply == true ]]; then
+    debugprint "git apply $patchfile"
+    git apply "$patchfile"
+    printf "\nFiles in this commit were updated to comply with the fprettify rules.\n"
+    printf "You must check and test these changes and then stage these updates to\n"
+    printf "be part of your current change set and retry the commit.\n\n"
+    git status
+    # printf "The following changes were applied:\n\n"
+    # cat "$patchfile"
+    rm -f "$patchfile"
+    exit 1
+  else
+    # a patch has been created, notify the user and exit
+    printf "\nThe following differences were found between the code to commit "
+    printf "and the fprettify rules:\n\n"
+    cat "$patchfile"
+    printf "\nYou can apply these changes with:\n git apply %s\n" "${patchfile}"
+    printf "(may need to be called from the root directory of your repository)\n"
+    printf "Aborting commit. Apply changes and commit again or skip checking with"
+    printf " --no-verify (not recommended).\n"
+    printf "\nYou can also manually update format by running fprettify <file>\n"
+    exit 1
+  fi
+fi
+
+if [[ -s "$lintfile" ]] ; then
+  printf "\nSome files in this commit do not conform to the Fortran coding standard.\n"
+  printf "You must fix these manually and add them to your commit.\n\n"
+  cat "$lintfile"
+  rm -f "$lintfile"
+  exit 1
+fi
