@@ -602,6 +602,23 @@ class vor_2d_mesh(base_mesh):
                         bdy_nodes.append(node)
             self.nodes_per_side.append(bdy_nodes)
 
+        # -- fix face logic and indices
+        print(self.nodes_per_side)
+        new_faces = []
+        for face_idx, face in enumerate(self.faces_per_cell):
+            face_num = face_idx + 1
+            # print(self.nodes_per_face[face_idx])
+            nodes = self.nodes_per_face[face_idx]
+            print(nodes)
+            if nodes[0] in self.nodes_per_side and nodes[1] in self.nodes_per_side:
+                print("BOUNDARY!")
+        import sys
+        sys.exit()
+
+        # self.faces_per_cell = [np.array([], dtype=int)]  # face indexes per cell
+        # self.nodes_per_face = [np.array([], dtype=int)]  # node indexes per face
+        # self.nodes_per_side = [[np.array([], dtype=int)]]  # list of arrays of node per bdy face
+
 
 # ------------------------------------------------------------------------------------------------ #
 # end of mesh_types.py
