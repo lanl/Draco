@@ -475,6 +475,64 @@ auto get_window_bin = [](const auto dim, const auto &grid_bins, const auto &loca
 };
 
 //------------------------------------------------------------------------------------------------//
+// Lambda for getting the mapped window bin
+auto get_sphere_window_bin = [](const auto &grid_bins, const auto &location, const auto &window_min,
+                                const auto &window_max, const auto &Remember(n_map_bins),
+                                const auto pi) {
+  // calculate local bin index
+  bool valid = true;
+  std::array<size_t, 3> bin_id{0, 0, 0};
+  std::array<double, 3> bin_center{0, 0, 0};
+  {
+    Check((window_max[0] - window_min[0]) > 0.0);
+    const double bin_value = static_cast<double>(grid_bins[0]) * (location[0] - window_min[0]) /
+                             (window_max[0] - window_min[0]);
+    if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[0])) {
+      valid = false;
+    } else {
+      bin_id[0] = static_cast<size_t>(bin_value);
+      // catch any values exactly on the edge of the top bin
+      bin_id[0] = std::min(grid_bins[0] - 1, bin_id[0]);
+      bin_center[0] =
+          window_min[0] + (static_cast<double>(bin_id[0]) / static_cast<double>(grid_bins[0]) +
+                           0.5 / static_cast<double>(grid_bins[0])) *
+                              (window_max[0] - window_min[0]);
+    }
+  }
+  if (valid) {
+    // catch the window that wraps around the zero theta location
+    const double theta_location =
+        (window_max[1] - window_min[1]) > 0.0
+            ? location[1]
+            : location[1] < window_max[1] ? location[1] + 2 * pi : location[1];
+    const double theta_max =
+        (window_max[1] - window_min[1]) > 0.0 ? window_max[1] : 2 * pi + window_max[1];
+    Check(!((theta_max - window_min[1]) < 0.0));
+    const double bin_value = static_cast<double>(grid_bins[1]) * (theta_location - window_min[1]) /
+                             (theta_max - window_min[1]);
+    if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[1])) {
+      valid = false;
+    } else {
+      bin_id[1] = static_cast<size_t>(bin_value);
+      // catch any values exactly on the edge of the top bin
+      bin_id[1] = std::min(grid_bins[1] - 1, bin_id[1]);
+      bin_center[1] =
+          window_min[1] + (static_cast<double>(bin_id[1]) / static_cast<double>(grid_bins[1]) +
+                           0.5 / static_cast<double>(grid_bins[1])) *
+                              (theta_max - window_min[1]);
+      bin_center[1] = bin_center[1] < 2.0 * pi ? bin_center[1] : bin_center[1] - 2.0 * pi;
+    }
+  }
+
+  const size_t local_window_bin =
+      bin_id[0] + bin_id[1] * grid_bins[0] + bin_id[2] * grid_bins[0] * grid_bins[1];
+
+  Check(valid ? local_window_bin < n_map_bins : true);
+
+  return std::tuple<bool, size_t, std::array<double, 3>>{valid, local_window_bin, bin_center};
+};
+
+//------------------------------------------------------------------------------------------------//
 // Lambda for mapping the data
 auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, auto &min_distance,
                    const auto &dim, const auto &map_type, const auto &data, const auto &bin_center,
@@ -973,9 +1031,9 @@ std::array<double, 3> quick_index::transform_r_theta(const std::array<double, 3>
                                 0.0};
   const double r = sqrt(v[0] * v[0] + v[1] * v[1]);
   const double mag = sqrt(v[0] * v[0] + v[1] * v[1]);
-  double cos_theta = std::max(std::min(v[1] / mag, 1.0), -1.0);
+  double cos_theta = mag > 0.0 ? std::max(std::min(v[1] / mag, 1.0), -1.0) : 0.0;
   return std::array<double, 3>{
-      r, location[0] < sphere_center[0] ? acos(cos_theta) + pi : acos(cos_theta), 0.0};
+      r, location[0] < sphere_center[0] ? 2.0 * pi - acos(cos_theta) : acos(cos_theta), 0.0};
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -1024,16 +1082,16 @@ void quick_index::calc_wedge_xy_bounds(const std::array<double, 3> &wedge_xyz_ce
       dtheta < r_theta[1] ? r_theta[1] - dtheta : 2.0 * pi + r_theta[1] - dtheta;
   const double theta_max = dtheta + r_theta[1];
   const double cos_theta = cos(r_theta[1]);
-  const double cos_theta_max = cos(theta_max);
-  const double cos_theta_min = cos(theta_min);
+  const double cos_theta_y_min = r_theta[1] < pi ? cos(theta_max) : cos(theta_min);
+  const double cos_theta_y_max = r_theta[1] < pi ? cos(theta_min) : cos(theta_max);
   const double ymin = theta_max > pi && theta_min < pi
                           ? wedge_origin[1] - rmax
-                          : cos_theta_max < 0.0 ? wedge_origin[1] + rmax * cos_theta_max
-                                                : wedge_origin[1] + rmin * cos_theta_max;
+                          : cos_theta_y_min < 0.0 ? wedge_origin[1] + rmax * cos_theta_y_min
+                                                  : wedge_origin[1] + rmin * cos_theta_y_min;
   const double ymax = theta_max > 2.0 * pi || theta_min > theta_max
                           ? wedge_origin[1] + rmax
-                          : cos_theta_min < 0.0 ? wedge_origin[1] + rmin * cos_theta_min
-                                                : wedge_origin[1] + rmax * cos_theta_min;
+                          : cos_theta_y_max < 0.0 ? wedge_origin[1] + rmin * cos_theta_y_max
+                                                  : wedge_origin[1] + rmax * cos_theta_y_max;
   const double xmin_theta = cos_theta < 0 ? theta_max : theta_min;
   const double xmin_r = xmin_theta < pi ? rmin : rmax;
   const double xmax_theta = cos_theta < 0 ? theta_min : theta_max;
@@ -1041,7 +1099,7 @@ void quick_index::calc_wedge_xy_bounds(const std::array<double, 3> &wedge_xyz_ce
   const double sign_min = xmin_theta < pi ? 1.0 : -1.0;
   const double sign_max = xmax_theta < pi ? 1.0 : -1.0;
   const double xmin =
-      theta_max > 4. / 3. * pi && theta_min < 4. / 3. * pi
+      theta_max > 3. / 2. * pi && theta_min < 3. / 2. * pi
           ? wedge_origin[0] - rmax
           : wedge_origin[0] +
                 sign_min * sqrt(xmin_r * xmin_r * (1.0 - cos(xmin_theta) * cos(xmin_theta)));
@@ -1094,8 +1152,9 @@ void quick_index::map_data_to_sphere_grid_window(
   const std::array<double, 3> r_theta_phi_min{std::max(r_theta[0] - wedge_dr_dtheta[0], 0.0),
                                               wedge_dr_dtheta[1] < r_theta[1]
                                                   ? r_theta[1] - wedge_dr_dtheta[1]
-                                                  : 2. * pi + wedge_dr_dtheta[1] - r_theta[1],
+                                                  : r_theta[1] - wedge_dr_dtheta[1] + 2. * pi,
                                               0.0};
+  Check(!(r_theta_phi_min[1] > 2. * pi));
   // setup the xy window_max_min
   std::array<double, 3> window_max{0.0, 0.0, 0.0};
   std::array<double, 3> window_min{0.0, 0.0, 0.0};
@@ -1178,8 +1237,8 @@ void quick_index::map_data_to_sphere_grid_window(
         size_t local_window_bin;
         std::array<double, 3> bin_center;
         std::tie(valid, local_window_bin, bin_center) =
-            get_window_bin(dim, grid_bins, transform_r_theta(sphere_center, locations[l]),
-                           r_theta_phi_min, r_theta_phi_max, n_map_bins);
+            get_sphere_window_bin(grid_bins, transform_r_theta(sphere_center, locations[l]),
+                                  r_theta_phi_min, r_theta_phi_max, n_map_bins, pi);
 
         // If the bin is outside the window continue to the next point
         if (!valid)
@@ -1200,9 +1259,9 @@ void quick_index::map_data_to_sphere_grid_window(
           bool valid;
           size_t local_window_bin;
           std::array<double, 3> bin_center;
-          std::tie(valid, local_window_bin, bin_center) = get_window_bin(
-              dim, grid_bins, transform_r_theta(sphere_center, local_ghost_locations[g]),
-              r_theta_phi_min, r_theta_phi_max, n_map_bins);
+          std::tie(valid, local_window_bin, bin_center) = get_sphere_window_bin(
+              grid_bins, transform_r_theta(sphere_center, local_ghost_locations[g]),
+              r_theta_phi_min, r_theta_phi_max, n_map_bins, pi);
 
           // If the bin is outside the window continue to the next poin
           if (!valid)
@@ -1298,8 +1357,9 @@ void quick_index::map_data_to_sphere_grid_window(
   const std::array<double, 3> r_theta_phi_min{std::max(r_theta[0] - wedge_dr_dtheta[0], 0.0),
                                               wedge_dr_dtheta[1] < r_theta[1]
                                                   ? r_theta[1] - wedge_dr_dtheta[1]
-                                                  : 2. * pi + wedge_dr_dtheta[1] - r_theta[1],
+                                                  : r_theta[1] - wedge_dr_dtheta[1] + 2. * pi,
                                               0.0};
+  Check(!(r_theta_phi_min[1] > 2. * pi));
   // setup the xy window_max_min
   std::array<double, 3> window_max{0.0, 0.0, 0.0};
   std::array<double, 3> window_min{0.0, 0.0, 0.0};
@@ -1385,8 +1445,8 @@ void quick_index::map_data_to_sphere_grid_window(
         size_t local_window_bin;
         std::array<double, 3> bin_center;
         std::tie(valid, local_window_bin, bin_center) =
-            get_window_bin(dim, grid_bins, transform_r_theta(sphere_center, locations[l]),
-                           r_theta_phi_min, r_theta_phi_max, n_map_bins);
+            get_sphere_window_bin(grid_bins, transform_r_theta(sphere_center, locations[l]),
+                                  r_theta_phi_min, r_theta_phi_max, n_map_bins, pi);
         // If the bin is outside the window continue to the next poin
         if (!valid)
           continue;
@@ -1404,9 +1464,9 @@ void quick_index::map_data_to_sphere_grid_window(
           bool valid;
           size_t local_window_bin;
           std::array<double, 3> bin_center;
-          std::tie(valid, local_window_bin, bin_center) = get_window_bin(
-              dim, grid_bins, transform_r_theta(sphere_center, local_ghost_locations[g]),
-              r_theta_phi_min, r_theta_phi_max, n_map_bins);
+          std::tie(valid, local_window_bin, bin_center) = get_sphere_window_bin(
+              grid_bins, transform_r_theta(sphere_center, local_ghost_locations[g]),
+              r_theta_phi_min, r_theta_phi_max, n_map_bins, pi);
 
           // If the bin is outside the window continue to the next poin
           if (!valid)

@@ -84,8 +84,8 @@ public:
                                       const std::vector<std::vector<double>> &ghost_data,
                                       std::vector<std::vector<double>> &grid_data,
                                       const std::array<double, 3> &sphere_center,
-                                      const std::array<double, 3> &window_min,
-                                      const std::array<double, 3> &window_max,
+                                      const std::array<double, 3> &wedge_window_center,
+                                      const std::array<double, 3> &wedge_dr_dtheta,
                                       const std::array<size_t, 3> &grid_bins,
                                       const std::string &map_type, const bool normalize,
                                       const bool bias) const;
