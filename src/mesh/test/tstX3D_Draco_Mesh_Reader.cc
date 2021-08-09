@@ -235,6 +235,7 @@ void read_voronoi_mesh(rtt_c4::ParallelUnitTest &ut) {
   return;
 }
 
+//------------------------------------------------------------------------------------------------//
 // Parse an X3D file format and compare to reference
 void read_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
 
@@ -320,6 +321,75 @@ void read_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
+// Parse and build an X3D file format and compare to reference mesh
+void build_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
+
+  // use Cartesian geometry
+  const Draco_Mesh::Geometry geometry = Draco_Mesh::Geometry::CARTESIAN;
+
+  // >>> PARSE MESH
+
+  const std::string inputpath = ut.getTestSourcePath();
+  const std::string filename = inputpath + "x3d.mesh3d_1cell.in";
+  const std::vector<std::string> bdy_filenames = {
+      inputpath + "x3d.mesh3d_1cell.bdy1.in", inputpath + "x3d.mesh3d_1cell.bdy2.in",
+      inputpath + "x3d.mesh3d_1cell.bdy3.in", inputpath + "x3d.mesh3d_1cell.bdy4.in",
+      inputpath + "x3d.mesh3d_1cell.bdy5.in", inputpath + "x3d.mesh3d_1cell.bdy6.in"};
+  const std::vector<unsigned> bdy_flags = {3, 1, 0, 2, 1, 5};
+
+  // construct reader
+  std::shared_ptr<X3D_Draco_Mesh_Reader> x3d_reader(
+      new X3D_Draco_Mesh_Reader(filename, bdy_filenames, bdy_flags));
+
+  // read mesh
+  x3d_reader->read_mesh();
+
+  // instantiate a mesh builder and build the mesh
+  Draco_Mesh_Builder<X3D_Draco_Mesh_Reader> mesh_builder(x3d_reader);
+  std::shared_ptr<Draco_Mesh> mesh = mesh_builder.build_mesh(geometry);
+
+  // check that the scalar data is correct
+  FAIL_IF(mesh->get_dimension() != 3);
+  FAIL_IF(mesh->get_geometry() != Draco_Mesh::Geometry::CARTESIAN);
+  FAIL_IF(mesh->get_num_cells() != 1);
+  FAIL_IF(mesh->get_num_nodes() != 8);
+
+  // check layout sizes
+  FAIL_IF((mesh->get_cc_linkage()).size() > 0);
+  FAIL_IF((mesh->get_cs_linkage()).size() != 1);
+  FAIL_IF((mesh->get_cg_linkage()).size() > 0);
+
+  // get the boundary cell layout
+  Draco_Mesh::Layout cellside_linkage = mesh->get_cs_linkage();
+
+  // check that 6 faces are adjacent to the side
+  FAIL_IF_NOT(cellside_linkage.at(0).size() == 6);
+
+  // test nodes ordered clockwise out of cell
+  std::vector<std::vector<unsigned>> ref_nodes = {{0, 2, 3, 1}, {5, 7, 6, 4}, {0, 1, 5, 4},
+                                                  {6, 7, 3, 2}, {0, 4, 6, 2}, {3, 7, 5, 1}};
+
+  // test "side" index of face (side index ordered low-x, hig-x, low-y, hig-y, low-z, hig-z)
+  // side indices are in order of parsered file, not necessarily same as face ordering in layout
+  std::vector<unsigned> ref_sides = {4, 5, 2, 3, 0, 1};
+
+  if (cellside_linkage.at(0).size() == 6) {
+
+    // check number of nodes per face
+    for (int face = 0; face < 6; ++face) {
+      FAIL_IF_NOT(cellside_linkage.at(0)[face].first == ref_sides[face]);
+      FAIL_IF_NOT(cellside_linkage.at(0)[face].second.size() == 4);
+      FAIL_IF_NOT(cellside_linkage.at(0)[face].second == ref_nodes[face]);
+    }
+  }
+
+  // successful test output
+  if (ut.numFails == 0)
+    PASSMSG("3D X3D_Draco_Mesh_Reader mesh build tests ok.");
+  return;
+}
+
+//------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
@@ -328,6 +398,7 @@ int main(int argc, char *argv[]) {
     build_x3d_mesh_2d(ut);
     read_voronoi_mesh(ut);
     read_x3d_mesh_3d(ut);
+    build_x3d_mesh_3d(ut);
   }
   UT_EPILOG(ut);
 }

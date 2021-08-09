@@ -10,3 +10,5 @@ whitespace-multdiv = true
 whitespace-print = true
 whitespace-type = true
 whitespace-intrinsics = true
+enable-replacements = true
+c-relations = true
