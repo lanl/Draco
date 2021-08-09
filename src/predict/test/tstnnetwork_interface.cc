@@ -30,7 +30,7 @@ void test_replication(ParallelUnitTest &ut) {
   nnetwork_interface net(nn_file_name);
   if (!net.valid())
     ITFAILS;
-  std::vector<float> input(input_dim, 1. / input_dim);
+  std::vector<float> input(input_dim, 1.0f / static_cast<float>(input_dim));
   std::vector<float> result = net.predict(input, input_dim, output_dim);
   if (!rtt_dsxx::soft_equiv(double(result[0]), 0.4891, 1.0e-4))
     ITFAILS;
