@@ -112,10 +112,10 @@ inline double kde::calc_radius(const std::array<double, 3> &center,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
+ * \brief Calculate the arch length between two points 
  *
- * Calculate the arch length between two points (infinitely extended from
- * sphere center) at a specified radius.
+ * Calculate the arch length between two points (infinitely extended from sphere center) at a
+ * specified radius.
  *
  *
  * \param[in] center the center location (x,y,z) or (r,z) of the sphere

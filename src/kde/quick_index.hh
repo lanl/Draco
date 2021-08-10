@@ -2,9 +2,9 @@
 /*!
  * \file   kde/quick_index.hh
  * \author Mathew Cleveland
- * \brief  This class generates coarse spatial indexing to quickly access
- * near-neighbor data. This additionally provides simple interpolation schemes
- * to map data to simple structured meshes. 
+ * \brief  This class generates coarse spatial indexing to quickly access near-neighbor data. This
+ *         additionally provides simple interpolation schemes to map data to simple structured
+ *         meshes. 
  * \note   Copyright (C) 2018-2021 Triad National Security, LLC.
  *         All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -24,8 +24,7 @@ namespace rtt_kde {
 /*!
  * \brief quick_index
  *
- * Provide a hash like index of spatial distributed data along with simple
- * mapping functions.
+ * Provide a hash like index of spatial distributed data along with simple mapping functions.
  * 
  */
 //================================================================================================//
