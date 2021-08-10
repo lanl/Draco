@@ -5,7 +5,7 @@
  * \brief  This class generates coarse spatial indexing to quickly access
  * near-neighbor data. This additionally provides simple interpolation schemes
  * to map data to simple structured meshes. 
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
+ * \note   Copyright (C) 2018-2021 Triad National Security, LLC.
  *         All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
@@ -13,6 +13,7 @@
 #define rtt_kde_quick_index_hh
 
 #include "c4/global.hh"
+#include "units/MathConstants.hh"
 #include <array>
 #include <map>
 #include <vector>
@@ -21,8 +22,7 @@ namespace rtt_kde {
 
 //================================================================================================//
 /*!
- * \class quick_index
- * \brief
+ * \brief quick_index
  *
  * Provide a hash like index of spatial distributed data along with simple
  * mapping functions.
@@ -56,7 +56,7 @@ public:
   //! Map local+ghost data to grid window
   void map_data_to_grid_window(const std::vector<double> &local_data,
                                const std::vector<double> &ghost_data,
-                               std::vector<double> &grid_dataaa,
+                               std::vector<double> &grid_data,
                                const std::array<double, 3> &window_min,
                                const std::array<double, 3> &window_max,
                                const std::array<size_t, 3> &grid_bins, const std::string &map_type,
@@ -74,7 +74,7 @@ public:
   //! Map local+ghost data to grid window
   void map_data_to_sphere_grid_window(
       const std::vector<double> &local_data, const std::vector<double> &ghost_data,
-      std::vector<double> &grid_dataaa, const std::array<double, 3> &sphere_center,
+      std::vector<double> &grid_data, const std::array<double, 3> &sphere_center,
       const std::array<double, 3> &window_min, const std::array<double, 3> &window_max,
       const std::array<size_t, 3> &grid_bins, const std::string &map_type, const bool normalize,
       const bool bias) const;
@@ -134,7 +134,7 @@ private:
   std::map<size_t, std::vector<std::array<int, 3>>> put_window_map;
   // max put buffer size;
   size_t max_put_buffer_size;
-  const double pi = 3.14159265359;
+  const double pi = rtt_units::PI;
 };
 
 } // end namespace  rtt_kde

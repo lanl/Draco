@@ -3,7 +3,7 @@
  * \file   kde/quick_index.cc
  * \author Mathew Cleveland
  * \brief  Explicitly defined quick_index functions.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
+ * \note   Copyright (C) 2018-2021 Triad National Security, LLC.
  *         All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
@@ -16,16 +16,16 @@
 namespace rtt_kde {
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
- * 
- * quick_index constructor. This function builds up a global indexing table to
- * quickly access data that is spatial located near each other. It breaks up
- * the data into equally spaced bins in each dimension. For domain decomposed
- * data it builds a one sided communication map to place local data that is
- * need on other processors for ghost cells. The ghost cell extents is
- * determined by the max_data_window spatial size such that any cell on the
- * local domain will have access to all points that should fall into the
- * spatial window centered on any given local point.
+ * \brief quick_index constructor. 
+ *
+ * This function builds up a global indexing table to quickly access data that
+ * is spatial located near each other. It breaks up the data into equally
+ * spaced bins in each dimension. For domain decomposed data it builds a one
+ * sided communication map to place local data that is need on other processors
+ * for ghost cells. The ghost cell extents is determined by the max_data_window
+ * spatial size such that any cell on the local domain will have access to all
+ * points that should fall into the spatial window centered on any given local
+ * point.
  *
  * \param[in] dim_ specifying the data dimensionality 
  * \param[in] locations_ data locations.
@@ -38,6 +38,8 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
                          const bool domain_decomposed_)
     : dim(dim_), domain_decomposed(domain_decomposed_), coarse_bin_resolution(bins_per_dimension_),
       max_window_size(max_window_size_), locations(locations_), n_locations(locations_.size()) {
+  Require(dim > 0);
+  Require(coarse_bin_resolution > 0);
 
   // Build local bounding box
   bounding_box_min = {0, 0, 0};
@@ -82,6 +84,7 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
   for (auto &loc : locations) {
     std::array<size_t, 3> index{0UL, 0UL, 0UL};
     for (size_t d = 0; d < dim; d++) {
+      Check(bounding_box_min[d] < bounding_box_max[d]);
       index[d] = static_cast<size_t>(std::floor(crd * (loc[d] - bounding_box_min[d]) /
                                                 (bounding_box_max[d] - bounding_box_min[d])));
       index[d] = std::min(index[d], coarse_bin_resolution - 1);
@@ -217,9 +220,9 @@ auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
+ * \brief collect_ghost_data vector<std::array<double, 3>>
  * 
- * collect_ghost_data for vector of 3 dimensional arrays. This function uses
+ * Collect ghost data for vector of 3 dimensional arrays. This function uses
  * RMA and the local put_window_map to allow each rank to independently fill in
  * its data to ghost cells of other ranks.
  *
@@ -274,9 +277,9 @@ void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &l
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
+ * \brief collect_ghost_data for vector<vector<double>> 
  * 
- * collect_ghost_data for vector<vector<double>> arrays. This function uses
+ * Collect ghost data for vector<vector<double>> arrays. This function uses
  * RMA and the local put_window_map to allow each rank to independently fill in
  * its data to ghost cells of other ranks.
  *
@@ -337,9 +340,9 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
+ * \brief collect_ghost_data vector<double>
  * 
- * collect_ghost_data for vector of 3 dimensional arrays. This function uses
+ * Collect ghost data for a single vector. This function uses
  * RMA and the local put_window_map to allow each rank to independently fill in
  * its data to ghost cells of other ranks.
  *
@@ -383,10 +386,10 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
+ * \brief window_coarse_index_list
  * 
- * window_coarse_index_list provides a list of global indecies that are
- * required by any given window range.
+ *  Provides a list of global indices that are required by any given window
+ *  range.
  *
  * \param[in] window_min the smallest corner point for every dimension
  * \param[in] window_max the largest corner point for every dimension
@@ -578,11 +581,11 @@ auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, aut
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
+ * \brief map_data_to_grid_window for vector<double> data
  * 
- * map_data_to_grid_window maps local+ghost data to a fixed mesh grid based on
- * a specified weighting type. This data can additionally be normalized and
- * positively biased on the grid.
+ * Maps local+ghost data to a fixed mesh grid based on a specified weighting
+ * type. This data can additionally be normalized and positively biased on the
+ * grid.
  * 
  *
  * \param[in] local_data the local data on the processor to be mapped to the window
@@ -593,7 +596,8 @@ auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, aut
  * \param[in] grid_bins number of equally spaced bins in each dir
  * \param[in] map_type_in string indicating the mapping (max, min, ave)
  * \param[in] normalize bool operator to specify if the data should be normalized to a pdf
- * \param[in] bias bool operator to specify if the data should be moved to the positive domain space
+ * \param[in] bias bool operator to specify if the data should be moved to the
+ * positive domain space
  */
 void quick_index::map_data_to_grid_window(
     const std::vector<double> &local_data, const std::vector<double> &ghost_data,
@@ -813,10 +817,10 @@ auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_da
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
+ * \brief map_data_to_grid_window for vector<vector<double>>
  * 
- * map_data_to_grid_window maps multiple local+ghost data vectors to a fixed mesh grid based on
- * a specified weighting type. This data can additionally be normalized and
+ * Maps multiple local+ghost data vectors to a fixed mesh grid based on a
+ * specified weighting type. This data can additionally be normalized and
  * positively biased on the grid.
  * 
  *
@@ -827,8 +831,10 @@ auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_da
  * \param[in] window_max the largest corner point for every dimension
  * \param[in] grid_bins number of equally spaced bins in each dir
  * \param[in] map_type_in string indicating the mapping (max, min, ave)
- * \param[in] normalize bool operator to specify if the data should be normalized to a pdf (independent of each data vector)
- * \param[in] bias bool operator to specify if the data should be moved to the positive domain space (independent of each data vector)
+ * \param[in] normalize bool operator to specify if the data should be
+ * normalized to a pdf (independent of each data vector)
+ * \param[in] bias bool operator to specify if the data should be moved to the
+ * positive domain space (independent of each data vector)
  * \return bin_list list of global bins requested for the current window.
  */
 void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>> &local_data,
@@ -1014,10 +1020,10 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
- * 
- * tranform_r_theta_phi calculate a relative r theta and phi coordinate
- * relative to a sphere center location from a standard (x,y,z) or (r,z) coordinates
+ * \brief tranform_r_theta_phi 
+ *
+ * Calculate a relative r theta and phi coordinate relative to a sphere center
+ * location from a standard (x,y,z) or (r,z) coordinates
  *
  * \param[in] sphere_center center of sphere in (x,y,z) or (r,z) coordinates
  * \param[in] location (x,y,z) or (r,z) location to transform to relative (r, theta, phi) space.
@@ -1038,12 +1044,12 @@ std::array<double, 3> quick_index::transform_r_theta(const std::array<double, 3>
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
- * 
- * calc_wedge_xy_bounds calculates the (x,y,0.0) min and max bounds
- * for a pre-defined wedge [origin (x,y,z), wedge_xyz_center
- * (x,y,z), wedge_dr_dtheta (dr, dtheta, 0.0)]. This computes the
- * bounding box for the truncated wedge (bounded by rmin and rmax).
+ * \brief calc_wedge_xy_bounds 
+ *
+ * Calculates the (x,y,0.0) min and max bounds for a pre-defined wedge [origin
+ * (x,y,z), wedge_xyz_center (x,y,z), wedge_dr_dtheta (dr, dtheta, 0.0)]. This
+ * computes the bounding box for the truncated wedge (bounded by rmin and
+ * rmax).
  *
  *                                  win_max
  *               ---------------(xmax,ymax,0.0)
@@ -1056,7 +1062,7 @@ std::array<double, 3> quick_index::transform_r_theta(const std::array<double, 3>
  * (xmin,ymin,0.0)---------------
  *
  * '*' is the geometric center (not the centroid) 
- * 'x' is the wedge_origin
+ * 'x' is the wedge_origin (or center of the spherical grid)
  *
  * \param[in] wedge_xyz_center geometric center of the wedge in (x,y,z) or (r,z) coordinates
  * \param[in] wedge_origin axisymetric origin (x,y,z) or (r,z) of the wedge.
@@ -1120,11 +1126,11 @@ void quick_index::calc_wedge_xy_bounds(const std::array<double, 3> &wedge_xyz_ce
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
- * 
- * map_data_to_sphere_grid_window maps local+ghost data to a fixed r-theta mesh grid based on
- * a specified weighting type. This data can additionally be normalized and
- * positively biased on the grid.
+ * \brief map_data_to_sphere_grid_window for vector<double> data
+ *
+ * Maps local+ghost data to a fixed r-theta mesh grid based on a specified
+ * weighting type. This data can additionally be normalized and positively
+ * biased on the grid.
  * 
  *
  * \param[in] local_data the local data on the processor to be mapped to the window
@@ -1324,11 +1330,11 @@ void quick_index::map_data_to_sphere_grid_window(
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
- * 
- * map_data_to_sphere_grid_window maps local+ghost data to a fixed r-theta mesh grid based on
- * a specified weighting type. This data can additionally be normalized and
- * positively biased on the grid.
+ * \brief map_data_to_sphere_grid_window for vector<vector<double>> data
+ *
+ * Maps local+ghost data to a fixed r-theta mesh grid based on a specified
+ * weighting type. This data can additionally be normalized and positively
+ * biased on the grid.
  * 
  *
  * \param[in] local_data the local data on the processor to be mapped to the window

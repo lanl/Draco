@@ -112,7 +112,7 @@ const std::string author_list(bool const use_doxygen_formatting) {
   current_developers.insert(fomdev(127, "Andrew T. Till"));
   current_developers.insert(fomdev(91, "Ondrej Certik"));
   current_developers.insert(fomdev(15, "David A. Dixon"));
-  current_developers.insert(fomdev(5, "Howard Pritchard"));
+  current_developers.insert(fomdev(4, "Howard Pritchard"));
 
   mmdevs prior_developers;
 
