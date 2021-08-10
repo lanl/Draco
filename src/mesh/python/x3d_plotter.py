@@ -34,6 +34,7 @@ numnodes = None
 numfaces = None
 numcells = None
 nodes = []
+face_indices = []
 faces = []
 cells = []
 
@@ -69,21 +70,34 @@ for line in lines:
         if len(words) >= 3:
             face = []
             for nnodes in range(int(words[1])):
+                # Convert from file node ID to code node index
                 face.append(int(words[nnodes + 2]) - 1)
-            faces.append(face)
+            face_index = int(words[0])
+            if face_index not in face_indices:
+                faces.append(face)
+                face_indices.append(int(words[0]))
     elif current_block == 'cells':
         if len(words) >= 3:
             cell = []
             for nface in range(int(words[1])):
+                # Convert from file face ID to code face index
                 cell.append(int(words[nface + 2]) - 1)
             cells.append(cell)
+
+faces = [x for _, x in sorted(zip(face_indices, faces))]
+print(face_indices)
+print(sorted(face_indices))
+# print(faces)
+print(cells[0])
+print(faces[131:134])
+#import sys; sys.exit()
 
 assert (numdim is not None), "numdim not found!"
 assert (numnodes is not None), "numnodes not found!"
 assert (numfaces is not None), "numfaces not found!"
 assert (numcells is not None), "numcells not found!"
 assert (len(nodes) == numnodes), "numnodes does not match number of nodes!"
-assert (len(faces) == numfaces), "numfaces does not match number of faces!"
+#assert (len(faces) == numfaces), "numfaces does not match number of faces!"
 assert (len(cells) == numcells), "numcells does not match number of faces!"
 
 # ------------------------------------------------------------------------------------------------ #
@@ -92,9 +106,27 @@ assert (len(cells) == numcells), "numcells does not match number of faces!"
 plt.figure()
 ax = plt.gca()
 
+plotted_faces = []
+print(len(cells))
 for cell in cells:
+    print("num faces: ", len(cell))
+    print(cell)
     for face in cell:
-        pt1 = nodes[faces[face][0]]
-        pt2 = nodes[faces[face][1]]
-        ax.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], color='k')
+        print(faces[face])
+        # Don't re-plot the same face
+        if (([faces[face][0], faces[face][1]] not in plotted_faces) and
+            ([faces[face][1], faces[face][0]] not in plotted_faces)):
+            pt1 = nodes[faces[face][0]]
+            pt2 = nodes[faces[face][1]]
+            plotted_faces.append([faces[face][0], faces[face][1]])
+            ax.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], color='k')
+    # plt.show()
+    # break
+# Check that all faces are really there
+# for face in faces:
+#  pt1 = nodes[face[0]]
+#  pt2 = nodes[face[1]]
+#  ax.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], color='k')
+for node in nodes:
+    ax.plot([node[0]], [node[1]], marker='.', color='b')
 plt.show()
