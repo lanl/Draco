@@ -6,8 +6,6 @@
 # note  Copyright (C) 2021, Triad National Security, LLC.,  All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import matplotlib.pyplot as plt
-import mesh_types
-import numpy as np
 import argparse
 import os
 
