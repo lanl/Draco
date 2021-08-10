@@ -534,14 +534,9 @@ class vor_2d_mesh(base_mesh):
             else:
                 ridge_vertices.append(verts)
 
-        # -- assign ridge vertices to regions and boundaries
+        # -- assign ridge vertices to regions
         cells = []
         cell_nodes = []
-        boundary_edges = {}
-        boundary_edges['xl'] = []
-        boundary_edges['xr'] = []
-        boundary_edges['yl'] = []
-        boundary_edges['yr'] = []
         for n, point in enumerate(points):
             cell_nodes.append(n)
             cells.append([])
@@ -561,20 +556,6 @@ class vor_2d_mesh(base_mesh):
             else:
                 # -- a boundary
                 cells[indices[0]].append(ridge_idx)
-                if (soft_equiv(vertices[v_indices[0]][0], xmin) and
-                    soft_equiv(vertices[v_indices[1]][0], xmin)):
-                    boundary_edges['xl'].append(ridge_idx)
-                elif (soft_equiv(vertices[v_indices[0]][0], xmax) and
-                      soft_equiv(vertices[v_indices[1]][0], xmax)):
-                    boundary_edges['xr'].append(ridge_idx)
-                elif (soft_equiv(vertices[v_indices[0]][1], ymin) and
-                      soft_equiv(vertices[v_indices[1]][1], ymin)):
-                    boundary_edges['yl'].append(ridge_idx)
-                elif (soft_equiv(vertices[v_indices[0]][1], ymax) and
-                      soft_equiv(vertices[v_indices[1]][1], ymax)):
-                    boundary_edges['yr'].append(ridge_idx)
-                else:
-                    assert (False), 'Boundary edge not identified'
 
         # -- update remaining base class values
         self.num_nodes = len(vertices)
@@ -591,16 +572,6 @@ class vor_2d_mesh(base_mesh):
             self.num_nodes_per_face[n] = 2
         self.faces_per_cell = cells
         self.nodes_per_face = ridge_vertices
-        self.nodes_per_side = []
-        for n in range(4):
-            bdy_key = list(boundary_edges.keys())[n]
-            bdy_nodes = []
-            for bdy in boundary_edges[bdy_key]:
-                nodes = ridge_vertices[bdy]
-                for node in nodes:
-                    if node not in bdy_nodes:
-                        bdy_nodes.append(node)
-            self.nodes_per_side.append(bdy_nodes)
 
         # -- rewrite cells and faces to not have duplicate faces
         new_cells = []
@@ -614,13 +585,13 @@ class vor_2d_mesh(base_mesh):
         self.faces_per_cell = new_cells
         self.nodes_per_face = new_faces
 
-        # -- rewrite boundaries for new faces
+        # -- write boundaries for new faces
+        boundary_edges = {}
         boundary_edges['xl'] = []
         boundary_edges['xr'] = []
         boundary_edges['yl'] = []
         boundary_edges['yr'] = []
         for face_idx, v_indices in enumerate(self.nodes_per_face):
-            print(face_idx)
             midpoint = [(vertices[v_indices[0]][0] + vertices[v_indices[1]][0]) / 2,
                         (vertices[v_indices[0]][1] + vertices[v_indices[1]][1]) / 2]
             distances = np.zeros(len(cell_nodes))
@@ -655,7 +626,6 @@ class vor_2d_mesh(base_mesh):
                     if node not in bdy_nodes:
                         bdy_nodes.append(node)
             self.nodes_per_side.append(bdy_nodes)
-        print(self.nodes_per_side)
 
 
 # ------------------------------------------------------------------------------------------------ #

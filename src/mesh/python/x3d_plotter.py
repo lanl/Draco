@@ -93,17 +93,13 @@ boundary_files = []
 boundary_nodes = []
 boundary_faces = []
 if numdim == 2:
-    print(args.file_name)
-    print(os.path.basename(args.file_name))
     for n in range(4):
         assert (args.file_name[-3:] == '.in'), "Filename does not end in \".in\""
         boundary_files.append(args.file_name[:-3] + f".bdy{n+1}.in")
-    print(boundary_files)
 
 for boundary_file in boundary_files:
     with open(boundary_file) as f:
         lines = [line.strip() for line in f]
-    print(lines)
     # -- read in boundary nodes
     boundary = []
     for line in lines:
@@ -117,13 +113,7 @@ for boundary_file in boundary_files:
         node1 = face[1]
         if node0 in boundary and node1 in boundary:
             boundary_face_tmp.append(face_idx)
-    # for node in boundary:
-    #  print(node)
     boundary_faces.append(boundary_face_tmp)
-
-#import sys; sys.exit()
-
-print(boundary_faces)
 
 
 # -- sanity checks
