@@ -602,30 +602,58 @@ class vor_2d_mesh(base_mesh):
                         bdy_nodes.append(node)
             self.nodes_per_side.append(bdy_nodes)
 
-        #faces = self.faces_per_cell[0]
-        # print("Faces:")
-        # for face in faces:
-        #    print(face)
-        #    print(self.nodes_per_face[face])
-        #    for node in self.nodes_per_face[face]:
-        #        print(self.coordinates_per_node[node])
-
-        # Rewrite to not have duplicate faces
+        # -- rewrite cells and faces to not have duplicate faces
         new_cells = []
         new_faces = []
         for cell in cells:
             new_cell = []
             for face in cell:
-                print(face)
                 new_faces.append(ridge_vertices[face])
                 new_cell.append(len(new_faces) - 1)
             new_cells.append(new_cell)
-        print(self.faces_per_cell)
-        print(self.nodes_per_face)
-        print(new_cells)
-        print(new_faces)
         self.faces_per_cell = new_cells
         self.nodes_per_face = new_faces
+
+        # -- rewrite boundaries for new faces
+        boundary_edges['xl'] = []
+        boundary_edges['xr'] = []
+        boundary_edges['yl'] = []
+        boundary_edges['yr'] = []
+        for face_idx, v_indices in enumerate(self.nodes_per_face):
+            midpoint = [(vertices[v_indices[0]][0] + vertices[v_indices[1]][0]) / 2,
+                        (vertices[v_indices[0]][1] + vertices[v_indices[1]][1]) / 2]
+            distances = np.zeros(len(cell_nodes))
+            for n, node in enumerate(cell_nodes):
+                distances[n] = np.sqrt((points[n][0] - midpoint[0])**2 +
+                                       (points[n][1] - midpoint[1])**2)
+            indices = np.argsort(distances)
+            distances = np.sort(distances)
+            if not soft_equiv(distances[0], distances[1]):
+                # -- a boundary
+                if (soft_equiv(vertices[v_indices[0]][0], xmin) and
+                    soft_equiv(vertices[v_indices[1]][0], xmin)):
+                    boundary_edges['xl'].append(face_idx)
+                elif (soft_equiv(vertices[v_indices[0]][0], xmax) and
+                      soft_equiv(vertices[v_indices[1]][0], xmax)):
+                    boundary_edges['xr'].append(face_idx)
+                elif (soft_equiv(vertices[v_indices[0]][1], ymin) and
+                      soft_equiv(vertices[v_indices[1]][1], ymin)):
+                    boundary_edges['yl'].append(face_idx)
+                elif (soft_equiv(vertices[v_indices[0]][1], ymax) and
+                      soft_equiv(vertices[v_indices[1]][1], ymax)):
+                    boundary_edges['yr'].append(face_idx)
+                else:
+                    assert (False), 'Boundary edge not identified'
+        self.nodes_per_side = []
+        for n in range(4):
+            bdy_key = list(boundary_edges.keys())[n]
+            bdy_nodes = []
+            for bdy in boundary_edges[bdy_key]:
+                nodes = self.nodes_per_face[bdy]
+                for node in nodes:
+                    if node not in bdy_nodes:
+                        bdy_nodes.append(node)
+            self.nodes_per_side.append(bdy_nodes)
 
 
 # ------------------------------------------------------------------------------------------------ #
