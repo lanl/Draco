@@ -13,7 +13,7 @@
 ###########################################################
 # CONFIGURATION:
 # select which pre-commit hooks are going to be installed
-HOOKS="pre-commit pre-commit-clang-format pre-commit-flake8 pre-commit-f90-format f90-format.el "
+HOOKS="pre-commit pre-commit-clang-format pre-commit-autopep8 pre-commit-flake8 pre-commit-fprettify"
 HOOKS="$HOOKS pre-commit-cmake-format pre-commit-cmake-lint"
 TOOLS="common.sh"
 ###########################################################

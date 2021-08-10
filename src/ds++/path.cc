@@ -2,7 +2,7 @@
 /*!
  * \file   ds++/path.cc
  * \brief  Encapsulate path information (path separator, etc.)
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "path.hh"
@@ -10,9 +10,6 @@
 #include <cstdlib>    // realpath
 #include <cstring>    // strerror
 #include <sys/stat.h> // stat
-#ifdef UNIX
-#include <dirent.h> // struct DIR
-#endif
 
 namespace rtt_dsxx {
 

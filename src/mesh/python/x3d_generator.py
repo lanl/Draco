@@ -10,7 +10,8 @@ import numpy as np
 import argparse
 
 # -- mesh class dictionary
-mesh_type_dict = {'orth_2d_mesh': mesh_types.orth_2d_mesh, 'orth_3d_mesh': mesh_types.orth_3d_mesh}
+mesh_type_dict = {'orth_2d_mesh': mesh_types.orth_2d_mesh, 'orth_3d_mesh': mesh_types.orth_3d_mesh,
+                  'vor_2d_mesh': mesh_types.vor_2d_mesh}
 
 # ------------------------------------------------------------------------------------------------ #
 # -- create argument parser
@@ -24,6 +25,8 @@ parser.add_argument('-bd', '--bnd_per_dim', type=float, nargs='+', default=[0.0,
                     help='Length per dimension.')
 parser.add_argument('--name', type=str, default='mesh',
                     help='Select file name (will be prefixed with x3d. and sufficed with .in).')
+parser.add_argument('--num_cells', type=int, default=100,
+                    help='Number of cells')
 
 # -- parse arguments from command line
 args = parser.parse_args()
@@ -43,7 +46,10 @@ assert (len(args.bnd_per_dim) == 2 * ndim), 'len(args.bnd_per_dim) != 2 * ndim'
 bnd_per_dim = [[args.bnd_per_dim[2 * i], args.bnd_per_dim[2 * i + 1]] for i in range(ndim)]
 
 # -- instantiate the class for the mesh type selected
-mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim)
+if args.mesh_type in ['orth_2d_mesh', 'orth_3d_mesh']:
+    mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim)
+elif args.mesh_type in ['vor_2d_mesh']:
+    mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_cells)
 
 # ------------------------------------------------------------------------------------------------ #
 # -- write out the main mesh file in x3d format
@@ -117,13 +123,13 @@ fo.write('faces\n')
 for cell in range(mesh.num_cells):
     for j in range(mesh.num_faces_per_cell[cell]):
         # -- get the full face index for the cell and local face index
-        face = mesh.faces_per_cell[cell, j]
+        face = mesh.faces_per_cell[cell][j]
         # -- get the number of nodes for this face
         nnpf = mesh.num_nodes_per_face[face]
         # -- build face string
         face_str = '{0:10d}{1:10d}'.format(face + 1, nnpf)
         # -- append node indices to face string
-        for node in mesh.nodes_per_face[face, :]:
+        for node in mesh.nodes_per_face[face]:
             face_str += '{0:10d}'.format(node + 1)
         # -- write face line
         fo.write(face_str + '\n')
@@ -140,7 +146,7 @@ for cell in range(mesh.num_cells):
     # -- build cell string
     cell_str = '{0:10d}{1:10d}'.format(cell + 1, nfpc)
     # -- append face indices to cell string
-    for face in mesh.faces_per_cell[cell, :]:
+    for face in mesh.faces_per_cell[cell]:
         cell_str += '{0:10d}'.format(face + 1)
     # -- write cell line
     fo.write(cell_str + '\n')
@@ -178,7 +184,8 @@ fo.close()
 # -- assume two boundaries per dimension
 # -- x3d only needs a unique node list
 for i in range(2 * mesh.ndim):
-    np.savetxt(fname + '.bdy' + str(i + 1) + '.in', np.unique(mesh.nodes_per_side[i] + 1), fmt='%d')
+    np.savetxt(fname + '.bdy' + str(i + 1) + '.in',
+               np.unique(np.array(mesh.nodes_per_side[i]) + 1), fmt='%d')
 
 # ------------------------------------------------------------------------------------------------ #
 # end of x3d_generator.py

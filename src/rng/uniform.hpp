@@ -215,20 +215,6 @@ R123_CUDA_DEVICE R123_STATIC_INLINE Ftype u01fixedpt(Itype in) {
       std::numeric_limits<Utype>::digits - std::numeric_limits<Ftype>::digits;
   if (excess >= 0) {
 
-    // 2015-09-26 KT - Suppress warnings for the following expressions (see
-    // https://rtt.lanl.gov/redmine/issues/416)
-    //
-    // Counter_RNG.hh:124:65:   required from here
-    // uniform.hpp:200:48: warning: second operand of conditional expression
-    // has no effect [-Wunused-value]
-    //         R123_CONSTEXPR int ex_nowarn = (excess>=0) ? excess : 0;
-    //
-    // Unfortunately, if this expression is simplified (see r7628) some
-    // compilers will not compile the code because the RHS of the assignment
-    // may contain values that are not known at comile time (not constexpr).
-    // We don't want to spend to much time debugging this issue because the
-    // code is essentially vendor owned (Random123).
-
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-value"

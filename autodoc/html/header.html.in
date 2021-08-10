@@ -24,9 +24,9 @@ $extrastylesheet
 <td align="left">
   <a href="https://github.com/lanl/Draco"> GitHub </a>
   &nbsp; | &nbsp;
-  <a href="https://rtt.lanl.gov/redmine"> Redmine </a>
+  <a href="https://re-git.lanl.gov/draco"> Gitlab </a>
   &nbsp; | &nbsp;
-  <a href="https://rtt.lanl.gov/cdash"> CDash </a>
+  <a href="https://rtt.lanl.gov/cdash3"> CDash </a>
 </td>
 <td align="right">
   <a href="../../autodoc/draco/index.html"> Draco Autodoc Home </a>
