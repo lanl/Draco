@@ -623,9 +623,8 @@ class vor_2d_mesh(base_mesh):
             for bdy in boundary_edges[bdy_key]:
                 nodes = self.nodes_per_face[bdy]
                 for node in nodes:
-                    if node not in bdy_nodes:
-                        bdy_nodes.append(node)
-            self.nodes_per_side.append(bdy_nodes)
+                    bdy_nodes.append(node)
+            self.nodes_per_side.append(np.unique(bdy_nodes))
 
 
 # ------------------------------------------------------------------------------------------------ #
