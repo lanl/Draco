@@ -10,9 +10,9 @@ files (some of which should be usable for RTT file creation).
 For instance, one could add a mesh class that stochastically samples points and
 triangulates them to form a mesh of triangles.
 Currently supported meshes are:
- - orth_2d_mesh (default)
- - orth_3d_mesh
- - vor_2d_mesh
+- orth_2d_mesh (default)
+- orth_3d_mesh
+- vor_2d_mesh
 
 Currently, there is a script called `x3d_generator.py`, which takes command-line
 input to instantiate a mesh object from one of the mesh_type classes and outputs
