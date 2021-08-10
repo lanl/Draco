@@ -5,6 +5,7 @@
 # brief This script plots X3D mesh files.
 # note  Copyright (C) 2021, Triad National Security, LLC.,  All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
+import matplotlib.pyplot as plt
 import mesh_types
 import numpy as np
 import argparse
@@ -26,8 +27,6 @@ args = parser.parse_args()
 assert (os.path.exists(args.file_name)), f"Mesh file \"{args.file_name}\" does not exist!"
 with open(args.file_name) as f:
     lines = [line.strip() for line in f]
-
-print(lines)
 
 # Data to read in
 numdim = None
@@ -68,25 +67,34 @@ for line in lines:
             nodes.append([float(words[1]), float(words[2]), float(words[3])])
     elif current_block == 'faces':
         if len(words) >= 3:
-            print(words)
             face = []
-            for nface in range(int(words[1])):
-                face.append(words[nface + 2])
+            for nnodes in range(int(words[1])):
+                face.append(int(words[nnodes + 2]) - 1)
             faces.append(face)
-
-    # if current_block is not None:
-            # print(current_block)
-
-# for n in range(
+    elif current_block == 'cells':
+        if len(words) >= 3:
+            cell = []
+            for nface in range(int(words[1])):
+                cell.append(int(words[nface + 2]) - 1)
+            cells.append(cell)
 
 assert (numdim is not None), "numdim not found!"
 assert (numnodes is not None), "numnodes not found!"
 assert (numfaces is not None), "numfaces not found!"
 assert (numcells is not None), "numcells not found!"
 assert (len(nodes) == numnodes), "numnodes does not match number of nodes!"
-print(numfaces)
-print(len(faces))
-# print(faces)
 assert (len(faces) == numfaces), "numfaces does not match number of faces!"
+assert (len(cells) == numcells), "numcells does not match number of faces!"
 
-print(nodes)
+# ------------------------------------------------------------------------------------------------ #
+# -- Plot mesh
+
+plt.figure()
+ax = plt.gca()
+
+for cell in cells:
+    for face in cell:
+        pt1 = nodes[faces[face][0]]
+        pt2 = nodes[faces[face][1]]
+        ax.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], color='k')
+plt.show()
