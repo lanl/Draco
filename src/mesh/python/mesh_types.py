@@ -620,6 +620,7 @@ class vor_2d_mesh(base_mesh):
         boundary_edges['yl'] = []
         boundary_edges['yr'] = []
         for face_idx, v_indices in enumerate(self.nodes_per_face):
+            print(face_idx)
             midpoint = [(vertices[v_indices[0]][0] + vertices[v_indices[1]][0]) / 2,
                         (vertices[v_indices[0]][1] + vertices[v_indices[1]][1]) / 2]
             distances = np.zeros(len(cell_nodes))
@@ -654,6 +655,7 @@ class vor_2d_mesh(base_mesh):
                     if node not in bdy_nodes:
                         bdy_nodes.append(node)
             self.nodes_per_side.append(bdy_nodes)
+        print(self.nodes_per_side)
 
 
 # ------------------------------------------------------------------------------------------------ #

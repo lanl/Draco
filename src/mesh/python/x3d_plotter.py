@@ -37,6 +37,7 @@ nodes = []
 face_indices = []
 faces = []
 cells = []
+boundaries = []
 
 blocks = ['header', 'nodes', 'faces', 'cells']
 current_block = None
@@ -84,14 +85,48 @@ for line in lines:
                 cell.append(int(words[nface + 2]) - 1)
             cells.append(cell)
 
+# Sort faces in case they are out of order
 faces = [x for _, x in sorted(zip(face_indices, faces))]
-print(face_indices)
-print(sorted(face_indices))
-# print(faces)
-print(cells[0])
-print(faces[131:134])
+
+# Read boundaries
+boundary_files = []
+boundary_nodes = []
+boundary_faces = []
+if numdim == 2:
+    print(args.file_name)
+    print(os.path.basename(args.file_name))
+    for n in range(4):
+        assert (args.file_name[-3:] == '.in'), "Filename does not end in \".in\""
+        boundary_files.append(args.file_name[:-3] + f".bdy{n+1}.in")
+    print(boundary_files)
+
+for boundary_file in boundary_files:
+    with open(boundary_file) as f:
+        lines = [line.strip() for line in f]
+    print(lines)
+    # -- read in boundary nodes
+    boundary = []
+    for line in lines:
+        boundary.append(int(line) - 1)
+    boundary_nodes.append(boundary)
+
+    # -- calculate boundary faces
+    boundary_face_tmp = []
+    for face_idx, face in enumerate(faces):
+        node0 = face[0]
+        node1 = face[1]
+        if node0 in boundary and node1 in boundary:
+            boundary_face_tmp.append(face_idx)
+    # for node in boundary:
+    #  print(node)
+    boundary_faces.append(boundary_face_tmp)
+
 #import sys; sys.exit()
 
+print(boundary_faces)
+
+
+# -- sanity checks
 assert (numdim is not None), "numdim not found!"
 assert (numnodes is not None), "numnodes not found!"
 assert (numfaces is not None), "numfaces not found!"
@@ -103,30 +138,37 @@ assert (len(cells) == numcells), "numcells does not match number of faces!"
 # ------------------------------------------------------------------------------------------------ #
 # -- Plot mesh
 
-plt.figure()
-ax = plt.gca()
+if numdim == 1:
+    assert (False), "1D plotting not supported!"
+elif numdim == 2:
 
-plotted_faces = []
-print(len(cells))
-for cell in cells:
-    print("num faces: ", len(cell))
-    print(cell)
-    for face in cell:
-        print(faces[face])
-        # Don't re-plot the same face
-        if (([faces[face][0], faces[face][1]] not in plotted_faces) and
-            ([faces[face][1], faces[face][0]] not in plotted_faces)):
+    plt.figure()
+    ax = plt.gca()
+
+    # -- plot faces
+    plotted_faces = []
+    for cell in cells:
+        for face in cell:
+            # Don't re-plot the same face
+            if (([faces[face][0], faces[face][1]] not in plotted_faces) and
+                ([faces[face][1], faces[face][0]] not in plotted_faces)):
+                pt1 = nodes[faces[face][0]]
+                pt2 = nodes[faces[face][1]]
+                plotted_faces.append([faces[face][0], faces[face][1]])
+                ax.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], color='k')
+
+    # -- plot boundary faces
+    colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red']
+    for n, bound in enumerate(boundary_faces):
+        for face in bound:
             pt1 = nodes[faces[face][0]]
             pt2 = nodes[faces[face][1]]
-            plotted_faces.append([faces[face][0], faces[face][1]])
-            ax.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], color='k')
-    # plt.show()
-    # break
-# Check that all faces are really there
-# for face in faces:
-#  pt1 = nodes[face[0]]
-#  pt2 = nodes[face[1]]
-#  ax.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], color='k')
-for node in nodes:
-    ax.plot([node[0]], [node[1]], marker='.', color='b')
-plt.show()
+            ax.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], color=colors[n], linewidth=4)
+
+    # -- plot nodes
+    for node in nodes:
+        ax.plot([node[0]], [node[1]], marker='.', color='b')
+    plt.show()
+
+elif numdim == 3:
+    assert (False), "3D plotting not supported!"
