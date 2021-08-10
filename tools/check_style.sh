@@ -9,9 +9,9 @@
 #
 # Runs various lint programs in the current directory and list locally modified files that are not
 # compliant with the current coding standard (see .clang_format in the top level source directory.)
-# - clang-format for C and C++ code.
-# - emacs for Fortran90
-# - cmake-format and cmake-tidy for CMake scripts.
+# - clang-format for C and C++ code. (.clang-format)
+# - fprettify for Fortran90 (.fprettify.rc)
+# - cmake-format and cmake-tidy for CMake scripts (.cmake-format.py)
 # ------------------------------------------------------------------------------------------------ #
 
 #--------------------------------------------------------------------------------------------------#
@@ -40,8 +40,7 @@ if [[ -f "${rscriptdir}/common.sh" ]]; then
 else
   echo " "
   echo "FATAL ERROR: Unable to locate Draco's bash functions: "
-  echo "   looking for .../tools/common.sh"
-  echo "   searched rscriptdir = $rscriptdir"
+  echo "   looking for .../tools/common.sh, searched rscriptdir = $rscriptdir"
   exit 1
 fi
 export rscriptdir
@@ -51,14 +50,11 @@ export rscriptdir
 #--------------------------------------------------------------------------------------------------#
 print_use()
 {
-    echo " "
-    echo "Usage: ${0##*/} -f -t"
-    echo " "
+    echo -e "\nUsage: ${0##*/} -f -t\n"
     echo "All arguments are optional."
     echo "  -f Show diff and fix files (when possible)."
     echo -n "  -t Run as a pre-commit check, print list of non-conformant files and return with"
-    echo "     exit code = 1 (implies -d)."
-    echo " "
+    echo -e "     exit code = 1 (implies -d).\n"
 }
 
 #--------------------------------------------------------------------------------------------------#
@@ -250,6 +246,8 @@ if [[ -x $CMF ]]; then
   fi
   rm -f "${patchfile_cmf}"
 
+else
+  echo -ne "\n==> Skipping cmake-format checks\n\n"
 fi
 
 #--------------------------------------------------------------------------------------------------#
@@ -303,34 +301,38 @@ if [[ -x $CML ]]; then
     echo  "PASS: Changes to CMake sources conform to this project's style requirements."
   fi
 
+else
+  echo -ne "\n==> Skipping cmake-lint checks\n\n"
 fi
 
 #--------------------------------------------------------------------------------------------------#
-# Check mode (Test F90 code indentation with emacs and bash)
+# Check mode (Test F90 code indentation with fprettify)
 #--------------------------------------------------------------------------------------------------#
 
 # Defaults ----------------------------------------
-EMACS=$(which emacs)
-if [[ $EMACS ]]; then
-  EMACSVER=$("$EMACS" --version | head -n 1 | sed -e 's/.*Emacs //')
-  if [[ $(version_gt "24.0.0" "${EMACSVER}") ]]; then
-    echo "WARNING: Your version of emacs is too old. Expecting v 24.0+. Pre-commit-hook partially"
-    echo "         disabled (f90 indentation)"
-    unset EMACS
+FPY=$(which fprettify)
+if [[ $FPY ]]; then
+  FPYVER=$("$FPY" --version | tail -n 1 | sed -e 's/.*fprettify //')
+  if [[ $(version_gt "0.3.5" "${FPYVER}") ]]; then
+    echo "WARNING: Your version of fprettify is too old. Expecting v 0.3.6+. Pre-commit-hook"
+    echo "         for f90 indentation will be disabled."
+    unset FPY
   fi
 fi
 
-if [[ -x "$EMACS" ]]; then
+if [[ -x "$FPY" ]]; then
 
   echo -ne "\n--------------------------------------------------------------------------------\n"
-  echo -e "Checking modified F90 code for style conformance (indentation).\n"
+  echo -e "Checking modified F90 code for style conformance.\n"
 
-  patchfile_f90=$(mktemp /tmp/emf90.patch.XXXXXXXX)
+  patchfile_f90=$(mktemp /tmp/fpy.patch.XXXXXXXX)
+  lintfile_f90=$(mktemp /tmp/fpy.lint.XXXXXXXX)
 
   # file types to parse.
   FILE_EXTS=".f90 .F90 .f .F"
   # FILE_ENDINGS_INCLUDE="CMakeLists.txt"
   # FILE_ENDINGS_EXLCUDE=".cmake.in"
+  export FILE_EXTS
 
   # Loop over all modified F90 files.  Create one patch containing all changes to these files
   for file in $modifiedfiles; do
@@ -341,94 +343,57 @@ if [[ -x "$EMACS" ]]; then
 
     file_nameonly=$(basename "${file}")
     tmpfile1="/tmp/f90-format-${file_nameonly}"
-    cp -f "${file}" "${tmpfile1}"
-    "$EMACS" -batch "${tmpfile1}" -l "${rscriptdir}/../environment/git/f90-format.el" \
-      -f emacs-format-f90-sources &> /dev/null
-    # color output is possible if diff -version >= 3.4 with option `--color`
-    diff ${DIFFCOLOR} -u "${file}" "${tmpfile1}" | \
+
+    # 1. These issues can be fixed automatically.
+    "$FPY" -sS "${file}" &> "${tmpfile1}"
+    diff -u "${file}" "${tmpfile1}" | \
       sed -e "1s|--- |--- a/|" -e "2s|+++ ${tmpfile1}|+++ b/${file}|" >> "$patchfile_f90"
     rm "${tmpfile1}"
+
+    # 2. These issues can not be fixed automatically.
+    cp "${file}" "${tmpfile1}"
+    "$FPY" -S "${tmpfile1}"
+    "$FPY" "${tmpfile1}" >> "${lintfile_f90}" 2>&1
 
   done
 
   # If the patch file is size 0, then no changes are needed.
-  if [[ -s "$patchfile_f90" ]]; then
+  if [[ -s "$patchfile_f90" ]] || [[ -s "$lintfile_f90" ]]; then
     foundissues=1
-    echo -n "FAIL: some F90 files do not conform to this project's style requirements:"
+    echo -ne "FAIL: some F90 files do not conform to this project's style requirements:\n"
     # Modify files, if requested
-    if [[ "${fix_mode}" == 1 ]]; then
-      echo -e "      The following patch has been applied to your file.\n"
-      run "git apply $patchfile_f90"
-      cat "$patchfile_f90"
-    else
-      echo -ne "      run ${0##*/} with option -f to automatically apply this patch.\n"
-      cat "$patchfile_f90"
+    if [[ -s "$patchfile_f90" ]]; then
+      if [[ "${fix_mode}" == 1 ]]; then
+        run "git apply $patchfile_f90"
+        echo -ne "\n      Changes have been made to your F90 files to meet style guidelines."
+        echo -ne "\n      Please check the updated files and add them to your commit.\n"
+      else
+        echo -ne "      run ${0##*/} with option -f to automatically apply this patch.\n"
+        cat "$patchfile_f90"
+      fi
+    fi
+    if [[ -s "$lintfile_f90" ]]; then
+
+      echo -e "      The following F90 style errors must be fixed.\n"
+      cat "${lintfile_f90}"
+      echo -ne "\n      Please reformat lines listed above and attempt running\n"
+      echo -ne "      ${0##*/} again. These issues cannot be fixed with the -f option."
     fi
   else
     echo -n "PASS: Changes to F90 sources conform to this project's style requirements."
   fi
   rm -f "${patchfile_f90}"
+  rm -f "${lintfile_f90}"
 
-fi
-
-#--------------------------------------------------------------------------------------------------#
-# Check mode (Test F90 code line length with bash)
-#--------------------------------------------------------------------------------------------------#
-
-echo -ne "\n--------------------------------------------------------------------------------"
-echo -e "\nChecking modified F90 code for style conformance (line length)..\n"
-
-tmpfile2=$(mktemp /tmp/f90-format-line-len.XXXXXXXX)
-
-# Loop over all modified F90 files.  Create one patch containing all changes to these files
-for file in $modifiedfiles; do
-
-  # ignore file if we do check for file extensions and the file does not match any of the extensions
-  # specified in $FILE_EXTS
-  if ! matches_extension "$file"; then continue; fi
-
-  header_printed=0
-  lineno=0
-
-  # shellcheck disable=SC2162
-  while read line; do
-    (( lineno++ ))
-    # Exceptions:
-    # - Long URLs
-    exception=$(echo "${line}" | grep -i -c http)
-    if [[ ${#line} -gt 100 && ${exception} == 0 ]]; then
-      if [[ ${header_printed} == 0 ]]; then
-        {
-          echo -e "\nFile: ${file} [code line too long]\n";
-          echo "  line   length content";
-          echo -n "  ------ ------ -------------------------------------------------------------";
-          echo "-------------------"
-        } >> "${tmpfile2}"
-        header_printed=1
-      fi
-      printf "  %-6s %-6s %s\n" "${lineno}" "${#line}" "${line}" >> "${tmpfile2}"
-    fi
-    # reset exception flag
-    exception=0
-  done < "${file}"
-done
-
-unset FILE_EXTS
-unset FILE_ENDINGS_INCLUDE
-unset FILE_ENDINGS_EXCLUDE
-
-# If there are issues, report them
-if [[ $(wc -l < "${tmpfile2}") -gt 0 ]]; then
-    foundissues=1
-    echo -ne "FAIL: some F90 files do not conform to this project's style requirements:\n"
-    cat "$tmpfile2"
-    echo -ne "\nPlease reformat lines listed above to fit into 80 columns and attempt running\n"
-    echo -ne "${0##*/} again. These issues cannot be fixed with the -f option."
 fi
 
 #--------------------------------------------------------------------------------------------------#
 # Done
 #--------------------------------------------------------------------------------------------------#
+
+echo -ne "\n--------------------------------------------------------------------------------\n"
+echo "Done"
+echo -ne "\n--------------------------------------------------------------------------------\n"
 
 # Return code: 0==ok,1==bad
 exit $foundissues

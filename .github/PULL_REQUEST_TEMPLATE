@@ -5,7 +5,6 @@
 ### Purpose of Pull Request
 
 * detail 1, refs #2 (github number)
-* detail 2
 * [Fixes re-git issue #3](https://re-git.lanl.gov/draco/draco/-/issues/3)
 
 ### Description of changes
@@ -16,7 +15,7 @@
 
 * Reference:
   * [Pre-Merge Code Review](https://github.com/lanl/Draco/wiki/Style-Guide)
-  * [CDash Status](https://rtt.lanl.gov/cdash/index.php?project=Draco&filtercount=1&showfilters=1&field1=buildname&compare1=63&value1=-pr)
+  * [CDash Status](https://rtt.lanl.gov/cdash3/index.php?project=Draco&filtercount=1&showfilters=1&field1=buildname&compare1=63&value1=-pr)
 * Checks
   * [ ] Travis/Appveyor CI checks pass
   * [ ] Code coverage does not decrease

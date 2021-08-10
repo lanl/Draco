@@ -3,21 +3,18 @@
  * \file   kde/kde.cc
  * \author Mathew Cleveland
  * \date   November 10th 2020
- * \brief  Explicitly defined KDE functions for various dimensions and coordinate
- *         KDE or Kernel Density Estimators are unbiased statical based
- *         reconstruction.  They can significantly increase the convergence
- *         rate of statical distributions. The KDE performs a reconstruction by
- *         evaluating a mean over some discrete kernel shape. In this DRACO
- *         implementation the mean is evaluated based on the sample locations
- *         that are bound by the kernel shape.  A renormalization is used to
- *         ensure the proper mean is returned given there is no guarantee the
- *         full kernel (which integrates exactly to 1) will be integrated fully
- *         in space. This renormalization also avoids the need for boundary
- *         fix-ups which are typically used in KDE applications to account for
- *         the kernel extending beyond the bounds of the spatial domain. Other
- *         approaches that could be considered are quadrature based approaches
- *         that fully sample the Kernel space reducing the need for the
- *         normalization.
+ * \brief  Explicitly defined KDE functions for various dimensions and coordinate KDE or Kernel
+ *         Density Estimators are unbiased statical based reconstruction.  They can significantly
+ *         increase the convergence rate of statical distributions. The KDE performs a
+ *         reconstruction by evaluating a mean over some discrete kernel shape. In this DRACO
+ *         implementation the mean is evaluated based on the sample locations that are bound by the
+ *         kernel shape.  A renormalization is used to ensure the proper mean is returned given
+ *         there is no guarantee the full kernel (which integrates exactly to 1) will be integrated
+ *         fully in space. This renormalization also avoids the need for boundary fix-ups which are
+ *         typically used in KDE applications to account for the kernel extending beyond the bounds
+ *         of the spatial domain. Other approaches that could be considered are quadrature based
+ *         approaches that fully sample the Kernel space reducing the need for the normalization.
+ *
  * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
@@ -30,16 +27,18 @@ namespace rtt_kde {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief calculate weight
+ * \brief Calculate Cartesian Weight
  * 
- * \pre Calculate the effective weight in Cartesian geometry from a given location to the current kernel 
+ * \pre Calculate the effective weight in Cartesian geometry from a given location to the current
+ * kernel 
  *
  * \param[in] r0 current kernel center location
  * \param[in] one_over_h0 current kernel width
  * \param[in] r data location
  * \param[in] one_over_h kernel width at this data location
  * \param[in] qindex quick indexing class
- * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the reconstruction
+ * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
+ * reconstruction
  *
  * \return weight contribution to the current kernel
  *
@@ -51,6 +50,12 @@ double kde::calc_cartesian_weight(const std::array<double, 3> &r0,
                                   const std::array<double, 3> &one_over_h,
                                   const quick_index &qindex,
                                   const double &discontinuity_cutoff) const {
+  Require(one_over_h0[0] > 0.0);
+  Require(qindex.dim > 1 ? one_over_h0[1] > 0.0 : true);
+  Require(qindex.dim > 2 ? one_over_h0[2] > 0.0 : true);
+  Require(one_over_h[0] > 0.0);
+  Require(qindex.dim > 1 ? one_over_h[1] > 0.0 : true);
+  Require(qindex.dim > 2 ? one_over_h[2] > 0.0 : true);
   double weight = 1.0;
   for (size_t d = 0; d < qindex.dim; d++) {
     const double u = (r0[d] - r[d]) * one_over_h0[d];
@@ -77,6 +82,7 @@ double kde::calc_cartesian_weight(const std::array<double, 3> &r0,
     }
     weight *= scale * bc_weight * epan_kernel(u) * one_over_h0[d];
   }
+  Ensure(!(weight < 0.0));
   return weight;
 }
 
@@ -91,7 +97,8 @@ double kde::calc_cartesian_weight(const std::array<double, 3> &r0,
  * \param[in] r data location
  * \param[in] one_over_h kernel width at this data location
  * \param[in] qindex quick indexing class
- * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the reconstruction
+ * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
+ * reconstruction
  *
  * \return weight contribution to the current kernel
  *
@@ -103,6 +110,13 @@ double kde::calc_spherical_weight(const std::array<double, 3> &r0,
                                   const std::array<double, 3> &one_over_h,
                                   const quick_index &qindex,
                                   const double &discontinuity_cutoff) const {
+  Require(one_over_h0[0] > 0.0);
+  Require(qindex.dim > 1 ? one_over_h0[1] > 0.0 : true);
+  Require(qindex.dim > 2 ? one_over_h0[2] > 0.0 : true);
+  Require(one_over_h[0] > 0.0);
+  Require(qindex.dim > 1 ? one_over_h[1] > 0.0 : true);
+  Require(qindex.dim > 2 ? one_over_h[2] > 0.0 : true);
+
   // largest active smoothing length
   const auto r0_theta_phi = qindex.transform_r_theta(sphere_center, r0);
   // if we are near the origin of the sphere, fall back to xyz reconstruction
@@ -140,6 +154,7 @@ double kde::calc_spherical_weight(const std::array<double, 3> &r0,
     */
     weight *= scale * bc_weight * epan_kernel(u) * one_over_h0[d];
   }
+  Ensure(!(weight < 0.0));
   return weight;
 }
 
@@ -147,14 +162,14 @@ double kde::calc_spherical_weight(const std::array<double, 3> &r0,
 /*!
  * \brief KDE reconstruction 
  * 
- * \pre The local reconstruction data is passed into this function which
- * includes the original data distribution, its spatial position, and the
- * optimal bandwidth to be used at each point.
+ * \pre The local reconstruction data is passed into this function which includes the original data
+ * distribution, its spatial position, and the optimal bandwidth to be used at each point.
  *
  * \param[in] distribution original data to be reconstructed
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
- * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the reconstruction
+ * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
+ * reconstruction
  * \return final local KDE function distribution reconstruction
  *
  * \post the local reconstruction of the original data is returned.
@@ -254,16 +269,16 @@ kde::reconstruction(const std::vector<double> &distribution,
 /*!
  * \brief KDE reconstruction done in logarithmic data space
  * 
- * \pre The local reconstruction data is passed into this function which
- * includes the original data distribution, its spatial position, and the
- * optimal bandwidth to be used at each point. The original data distribution
- * is transformed into log space prior and post reconstruction. This is helpful
- * for strongly peaked data and should be exact for exponential distributions.
+ * \pre The local reconstruction data is passed into this function which includes the original data
+ * distribution, its spatial position, and the optimal bandwidth to be used at each point. The
+ * original data distribution is transformed into log space prior and post reconstruction. This is
+ * helpful for strongly peaked data and should be exact for exponential distributions.
  *
  * \param[in] distribution original data to be reconstructed
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
- * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the reconstruction
+ * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
+ * reconstruction
  * \return final local KDE function distribution reconstruction
  *
  * \post the local reconstruction of the original data is returned.
@@ -272,7 +287,7 @@ std::vector<double>
 kde::log_reconstruction(const std::vector<double> &distribution,
                         const std::vector<std::array<double, 3>> &one_over_bandwidth,
                         const quick_index &qindex, const double discontinuity_cutoff) const {
-  size_t dim = qindex.dim;
+  const size_t dim = qindex.dim;
   Require(dim < 3 && dim > 0);
   const size_t local_size = distribution.size();
   Require(qindex.locations.size() == local_size);
@@ -381,8 +396,8 @@ kde::log_reconstruction(const std::vector<double> &distribution,
 /*!
  * \brief KDE apply conservation
  * 
- * \pre Apply conservation fix to the new distribution so
- * sum(original_distribution) == sum(new_distribution)
+ * \pre Apply conservation fix to the new distribution so sum(original_distribution) ==
+ * sum(new_distribution)
  *
  * \param[in] original_distribution original data to be reconstructed
  * \param[in,out] new_distribution original data to be reconstructed
@@ -429,15 +444,16 @@ void kde::apply_conservation(const std::vector<double> &original_distribution,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief 
+ * \brief Calculate window min and max bounds.
  *
- *  Calculate the bounding window (via win_min (x_min,y_min,z_min) and win_max
- *  (x_max, y_max, z_max)) given a central location and the bandwidth size in
- *  each dimension (dx,dy) for Cartesian or (dr,arc_length) for spherical.
+ *  Calculate the bounding window (via win_min (x_min,y_min,z_min) and win_max (x_max, y_max,
+ *  z_max)) given a central location and the bandwidth size in each dimension (dx,dy) for Cartesian
+ *  or (dr,arc_length) for spherical.
  * 
  * \param[in] qindex quick index class for finding bounds xy bounds of a wedge shape
  * \param[in] position is the central location of the bounds
- * \param[in] one_over_bandwidth size of the reconstruction domain in each dimension. This is (dx,dy) for Caresian and (dr, arc_length) for spherical. 
+ * \param[in] one_over_bandwidth size of the reconstruction domain in each dimension. This is
+ * (dx,dy) for Caresian and (dr, arc_length) for spherical. 
  * \param[in,out] win_min is the minimum corner of the bounding box (x_min, y_min, z_min)
  * \param[in,out] win_max is the maximum corner of the bounding box (x_max, y_max, z_max)
  *
@@ -445,18 +461,30 @@ void kde::apply_conservation(const std::vector<double> &original_distribution,
 void kde::calc_win_min_max(const quick_index &qindex, const std::array<double, 3> &position,
                            const std::array<double, 3> &one_over_bandwidth,
                            std::array<double, 3> &win_min, std::array<double, 3> &win_max) const {
-  size_t dim = qindex.dim;
+  const size_t dim = qindex.dim;
+  Require(dim > 0);
+  Require(one_over_bandwidth[0] > 0.0);
+  Require(dim > 1 ? one_over_bandwidth[1] > 0.0 : true);
+  Require(dim > 2 ? one_over_bandwidth[2] > 0.0 : true);
   if (use_spherical_reconstruction) {
     const double dr = 1.0 / one_over_bandwidth[0];
     const double rmax = sqrt((sphere_center[0] - position[0]) * (sphere_center[0] - position[0]) +
                              (sphere_center[1] - position[1]) * (sphere_center[1] - position[1])) +
                         dr;
-    // dtheta = arch_length_max/rmax
-    const double dtheta = std::min(1.0 / (one_over_bandwidth[1] * rmax), acos(0));
-    qindex.calc_wedge_xy_bounds(position, sphere_center, {dr, dtheta, 0.0}, win_min, win_max);
+    Check(rmax > 0.0);
+    const double dtheta =
+        std::min(1.0 / (one_over_bandwidth[1] * rmax), rtt_units::PI / 2.0 - 1e-12);
+    if (!(rmax < sphere_min_radius || rmax > sphere_max_radius)) {
+      // dtheta = arch_length_max/rmax
+      qindex.calc_wedge_xy_bounds(position, sphere_center, {dr, dtheta, 0.0}, win_min, win_max);
+    } else {
+      for (size_t d = 0; d < dim; d++) {
+        win_min[d] = position[d] - 1.0 / one_over_bandwidth[d];
+        win_max[d] = position[d] + 1.0 / one_over_bandwidth[d];
+      }
+    }
   } else {
     for (size_t d = 0; d < dim; d++) {
-      Check(one_over_bandwidth[d] > 0.0);
       win_min[d] = position[d] - 1.0 / one_over_bandwidth[d];
       win_max[d] = position[d] + 1.0 / one_over_bandwidth[d];
     }

@@ -17,8 +17,9 @@ namespace rtt_kde {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
- * epan_kernel basis function used during reconstruction
+ * \brief epan_kernel 
+ *
+ * Basis function used during reconstruction.
  *
  * Epanechnikov kenrel to be used in reconstrtuction
  *
@@ -34,8 +35,9 @@ inline double kde::epan_kernel(const double x) const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
- * log_transform pushes the distribution to log space which is less sensitive to sharp derivatives.
+ * \brief log_transform 
+ *
+ * Transforms data to log space given a bias.
  *
  *
  * \param[in] value of original distribution
@@ -52,8 +54,9 @@ inline double kde::log_transform(const double value, const double bias) const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
- * log_inv_transform bring the distribution back to the original space.
+ * \brief log_inv_transform 
+ *
+ * Inverse transform back from log space given the current bias.
  *
  *
  * \param[in] log_value of original distribution
@@ -70,14 +73,20 @@ inline double kde::log_inv_transform(const double log_value, const double bias) 
 
 //! Lambda to calculate a vector
 auto calc_vec = [](const auto &v1, const auto &v2) {
+  Require(v1.size() == 3);
+  Require(v2.size() == 3);
   return std::array<double, 3>{v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2]};
 };
 
 //! Lambda to calculate vector magnitude
-auto calc_mag = [](const auto &v) { return sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]); };
+auto calc_mag = [](const auto &v) {
+  Require(v.size() == 3);
+  return sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+};
 
 //! Lambda to calculate unit vector
 auto calc_unit_vec = [](const auto &v) {
+  Require(v.size() == 3);
   const double mag = calc_mag(v);
   return std::array<double, 3>{v[0] / mag, v[1] / mag, v[2] / mag};
 };
@@ -103,8 +112,10 @@ inline double kde::calc_radius(const std::array<double, 3> &center,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief
- * Calculate the arch length between two points (infinitely extended from sphere center) at a specified radius.
+ * \brief Calculate the arch length between two points 
+ *
+ * Calculate the arch length between two points (infinitely extended from sphere center) at a
+ * specified radius.
  *
  *
  * \param[in] center the center location (x,y,z) or (r,z) of the sphere

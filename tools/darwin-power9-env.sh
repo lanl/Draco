@@ -28,9 +28,9 @@ case "${ddir}" in
       run "module load draco/power9-gcc930-smpi"
       run "module list"
 
-      # work around for known openmpi issues:
-      # https://rtt.lanl.gov/redmine/issues/1229
+      # work around for known openmpi issues: https://re-git.lanl.gov/draco/draco/-/issues/938
       # eliminates warnings: "there are more than one active ports on host"
+
       # export OMPI_MCA_btl=^openib
       UCX_NET_DEVICES=mlx5_0:1
       UCX_WARN_UNUSED_ENV_VARS=n
@@ -61,9 +61,9 @@ case "${ddir}" in
       run "module load draco/power9-xl16117-smpi"
       run "module list"
 
-      # work around for known openmpi issues:
-      # https://rtt.lanl.gov/redmine/issues/1229
-      # eliminates warnings: "there are more than one active ports on host"
+      # work around for known openmpi issues: https://re-git.lanl.gov/draco/draco/-/issues/938
+      # warnings: "there are more than one active ports on host"
+
       # export OMPI_MCA_btl=^openib
       UCX_NET_DEVICES=mlx5_0:1
       UCX_WARN_UNUSED_ENV_VARS=n
