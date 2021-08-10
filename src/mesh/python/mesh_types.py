@@ -602,13 +602,30 @@ class vor_2d_mesh(base_mesh):
                         bdy_nodes.append(node)
             self.nodes_per_side.append(bdy_nodes)
 
-        faces = self.faces_per_cell[0]
-        print("Faces:")
-        for face in faces:
-            print(face)
-            print(self.nodes_per_face[face])
-            for node in self.nodes_per_face[face]:
-                print(self.coordinates_per_node[node])
+        #faces = self.faces_per_cell[0]
+        # print("Faces:")
+        # for face in faces:
+        #    print(face)
+        #    print(self.nodes_per_face[face])
+        #    for node in self.nodes_per_face[face]:
+        #        print(self.coordinates_per_node[node])
+
+        # Rewrite to not have duplicate faces
+        new_cells = []
+        new_faces = []
+        for cell in cells:
+            new_cell = []
+            for face in cell:
+                print(face)
+                new_faces.append(ridge_vertices[face])
+                new_cell.append(len(new_faces) - 1)
+            new_cells.append(new_cell)
+        print(self.faces_per_cell)
+        print(self.nodes_per_face)
+        print(new_cells)
+        print(new_faces)
+        self.faces_per_cell = new_cells
+        self.nodes_per_face = new_faces
 
 
 # ------------------------------------------------------------------------------------------------ #

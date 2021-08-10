@@ -73,9 +73,9 @@ for line in lines:
                 # Convert from file node ID to code node index
                 face.append(int(words[nnodes + 2]) - 1)
             face_index = int(words[0])
-            if face_index not in face_indices:
-                faces.append(face)
-                face_indices.append(int(words[0]))
+            # if face_index not in face_indices:
+            faces.append(face)
+            face_indices.append(int(words[0]))
     elif current_block == 'cells':
         if len(words) >= 3:
             cell = []
@@ -97,7 +97,7 @@ assert (numnodes is not None), "numnodes not found!"
 assert (numfaces is not None), "numfaces not found!"
 assert (numcells is not None), "numcells not found!"
 assert (len(nodes) == numnodes), "numnodes does not match number of nodes!"
-#assert (len(faces) == numfaces), "numfaces does not match number of faces!"
+assert (len(faces) == numfaces), "numfaces does not match number of faces!"
 assert (len(cells) == numcells), "numcells does not match number of faces!"
 
 # ------------------------------------------------------------------------------------------------ #
