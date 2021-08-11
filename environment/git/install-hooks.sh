@@ -14,7 +14,7 @@
 # CONFIGURATION:
 # select which pre-commit hooks are going to be installed
 HOOKS="pre-commit pre-commit-clang-format pre-commit-autopep8 pre-commit-flake8 pre-commit-fprettify"
-HOOKS="$HOOKS pre-commit-cmake-format pre-commit-cmake-lint"
+HOOKS="$HOOKS pre-commit-cmake-format pre-commit-cmake-lint pre-commit-copyright"
 TOOLS="common.sh"
 ###########################################################
 # There should be no need to change anything below this line.
