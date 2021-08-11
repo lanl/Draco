@@ -387,6 +387,118 @@ if [[ -x "$FPY" ]]; then
 
 fi
 
+# ------------------------------------------------------------------------------------------------ #
+# Check copyright block
+# ------------------------------------------------------------------------------------------------ #
+
+echo -ne "\n--------------------------------------------------------------------------------\n"
+echo -e "Checking modified code for copyright block conformance.\n"
+
+patchfile_cb=$(mktemp /tmp/copyright_block.patch.XXXXXXXX)
+
+# file types to parse.
+FILE_EXTS=".c .cc .h .hh .in .f90 .F90 .f .F .py"
+#FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
+FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc"
+export FILE_EXTS FILE_ENDINGS_EXCLUDE
+
+# Loop over all modified files.  Create one patch containing all changes to these files
+for file in $modifiedfiles; do
+
+  # ignore file if we do check for file extensions and the file does not match any of the
+  # extensions specified in $FILE_EXTS
+  if ! matches_extension "$file"; then continue; fi
+
+  file_nameonly=$(basename "${file}")
+  tmpfile1="/tmp/copyright-${file_nameonly}"
+
+  # Copy the file and attempt update it.
+  cp "${file}" "${tmpfile1}"
+
+  today=$(date +%Y)
+
+  # This data was found in the header comments.  It might be a single year or a range.
+  crl=$(grep Copyright $tmpfile1)
+  create_date=$(echo $crl | sed -e 's/.* \([0-9][0-9]*\).*/\1/')
+
+  # These dates are reported by git
+  git_last_mod_date=$(git log -1 $file | grep Date | \
+                              sed -e 's/.* \([0-9][0-9][0-9][0-9]\).*/\1/')
+  git_create_date=$(git log $file | grep Date | tail -n 1 | \
+                            sed -e 's/.* \([0-9][0-9][0-9][0-9]\).*/\1/')
+
+  # Sanity Checks
+  [[ "${create_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
+  # [[ "${mod_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
+  [[ "${git_last_mod_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
+  [[ "${git_create_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
+  if [[ "${create_date}" -gt "${today}" ]] || [[ "${create_date}" -lt "1990" ]]; then
+    die "Existing copyright date range is corrupt. Please fix $file manually."
+  fi
+  if [[ "${git_create_date}" -gt "${today}" ]] || [[ "${git_create_date}" -lt "1990" ]]; then
+    die "Existing copyright date range is corrupt. Please fix $file manually."
+  fi
+  if [[ "${create_date}" -gt "${today}" ]] || [[ "${create_date}" -lt "1990" ]]; then
+    die "Existing copyright date range is corrupt. Please fix $file manually."
+  fi
+
+  # We converted from CVS to svn in 2010. This is the oldest create date that git will report.  In
+  # this case older data is lost, so just use whatever is in the file as the create date.
+  [[ "${git_create_date}" == "2010" ]] && git_create_date="${create_date}"
+
+  # Expected Copyright line:
+  ecrl="Copyright (C) ${git_create_date}-${today} Triad National Security, LLC., "
+  ecrl+=" All rights reserved."
+
+  # If existing copyright spans two lines, reduce it to one line.
+  twolines=$(grep -A 1 Copyright $tmpfile1 | tail -n 1 | grep -c reserved)
+  if [[ $twolines -gt 0 ]]; then
+    sed -i 's/All rights reserved[.]*//' ${tmpfile1}
+  fi
+
+  # Do we have terminating comement character on the 'copyright' line.  If so, keep it.
+  ecm=""
+  if [[ $(echo $crl | grep -c "\\\*/") -gt 0 ]]; then
+    ecm=" */"
+  fi
+
+  # Replace copyright with new one
+  sed -i "s%Copyright.*%${ecrl}${ecm}%" $tmpfile1
+  diff -u "${file}" "${tmpfile1}" | \
+    sed -e "1s|--- |--- a/|" -e "2s|+++ ${tmpfile1}|+++ b/${file}|" >> "$patchfile_cb"
+  rm $tmpfile1
+
+  unset today
+  unset crl
+  unset create_date
+  unset git_last_mod_date
+  unset git_create_date
+  unset ecrl
+  unset twolines
+  unset ecm
+
+done
+
+# If the patch file is size 0, then no changes are needed.
+if [[ -s "$patchfile_cb" ]]; then
+  foundissues=1
+  echo -ne "FAIL: some files do not conform to this project's Copyright block requirements:\n"
+  # Modify files, if requested
+  if [[ -s "$patchfile_cb" ]]; then
+    if [[ "${fix_mode}" == 1 ]]; then
+      run "git apply $patchfile_cb"
+      echo -ne "\n      Changes have been made to your files to meet Copyright block guidelines."
+      echo -ne "\n      Please check the updated files and add them to your commit.\n"
+    else
+      echo -ne "      run ${0##*/} with option -f to automatically apply this patch.\n"
+      cat "$patchfile_cb"
+    fi
+  fi
+else
+  echo -n "PASS: Changes to sources conform to this project's Copyright block requirements."
+fi
+rm -f "${patchfile_cb}"
+
 #--------------------------------------------------------------------------------------------------#
 # Done
 #--------------------------------------------------------------------------------------------------#
