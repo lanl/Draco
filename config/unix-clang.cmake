@@ -71,7 +71,12 @@ if(NOT CXX_FLAGS_INITIALIZED)
     #
     # ld.lld: error: corrupt input file: version definition index 0 for symbol mpiprivc_ is out of
     # bounds
-    string(APPEND CMAKE_EXE_LINKER_FLAGS " -fuse-ld=bfd")
+    #
+    # As of 2021-08-10, this is required on Capulin/Thunder when using cce@11, but must be ommitted
+    # on rznevada when using cce@12.
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 12.0.0)
+      string(APPEND CMAKE_EXE_LINKER_FLAGS " -fuse-ld=bfd")
+    endif()
   else()
     string(APPEND CMAKE_CXX_FLAGS " -stdlib=libc++")
   endif()
