@@ -5,8 +5,8 @@
  * \brief  This class generates coarse spatial indexing to quickly access near-neighbor data. This
  *         additionally provides simple interpolation schemes to map data to simple structured
  *         meshes. 
- * \note   Copyright (C) 2018-2021 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved. 
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_kde_quick_index_hh

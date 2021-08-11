@@ -4,8 +4,8 @@
  * \author Mathew Cleveland
  * \date   Nov. 10th 2020
  * \brief  KDE function tests
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2020-2021 Triad National Security, LLC., All rights reserved. 
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "kde/kde.hh"

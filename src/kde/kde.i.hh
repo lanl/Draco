@@ -4,8 +4,8 @@
  * \author Mathew Cleveland
  * \date   Nov. 10th 2020
  * \brief  Member definitions of class kde
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved. 
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef kde_kde_i_hh
