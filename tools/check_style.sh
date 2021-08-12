@@ -418,13 +418,13 @@ for file in $modifiedfiles; do
   today=$(date +%Y)
 
   # This data was found in the header comments.  It might be a single year or a range.
-  crl=$(grep Copyright $tmpfile1)
-  create_date=$(echo $crl | sed -e 's/.* \([0-9][0-9]*\).*/\1/')
+  crl=$(grep Copyright "${tmpfile1}")
+  create_date=$(echo "${crl}" | sed -e 's/.* \([0-9][0-9]*\).*/\1/')
 
   # These dates are reported by git
-  git_last_mod_date=$(git log -1 $file | grep Date | \
+  git_last_mod_date=$(git log -1 "${file}" | grep Date | \
                               sed -e 's/.* \([0-9][0-9][0-9][0-9]\).*/\1/')
-  git_create_date=$(git log $file | grep Date | tail -n 1 | \
+  git_create_date=$(git log "${file}" | grep Date | tail -n 1 | \
                             sed -e 's/.* \([0-9][0-9][0-9][0-9]\).*/\1/')
 
   # Sanity Checks
@@ -451,22 +451,22 @@ for file in $modifiedfiles; do
   ecrl+=" All rights reserved."
 
   # If existing copyright spans two lines, reduce it to one line.
-  twolines=$(grep -A 1 Copyright $tmpfile1 | tail -n 1 | grep -c reserved)
+  twolines=$(grep -A 1 Copyright "${tmpfile1}" | tail -n 1 | grep -c reserved)
   if [[ $twolines -gt 0 ]]; then
     sed -i 's/All rights reserved[.]*//' ${tmpfile1}
   fi
 
   # Do we have terminating comement character on the 'copyright' line.  If so, keep it.
   ecm=""
-  if [[ $(echo $crl | grep -c "\\\*/") -gt 0 ]]; then
+  if [[ $(echo "${crl}" | grep -c "\\\*/") -gt 0 ]]; then
     ecm=" */"
   fi
 
   # Replace copyright with new one
-  sed -i "s%Copyright.*%${ecrl}${ecm}%" $tmpfile1
+  sed -i "s%Copyright.*%${ecrl}${ecm}%" "${tmpfile1}"
   diff -u "${file}" "${tmpfile1}" | \
     sed -e "1s|--- |--- a/|" -e "2s|+++ ${tmpfile1}|+++ b/${file}|" >> "$patchfile_cb"
-  rm $tmpfile1
+  rm "${tmpfile1}"
 
   unset today
   unset crl

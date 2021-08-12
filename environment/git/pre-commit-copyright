@@ -17,13 +17,13 @@ umask 0077
 debug=off
 function debugprint()
 {
-  if [[ "$debug" == "on" ]]; then echo "==> $@"; fi
+  if [[ "$debug" == "on" ]]; then echo "==>" $@; fi
 }
 
 debugprint "running pre-commit-copyright"
 
 # remove any older patches from previous commits. Set to true or false.
-DELETE_OLD_PATCHES=true
+# DELETE_OLD_PATCHES=true
 
 # file types to parse.
 FILE_EXTS=".c .cc .h .hh .in .f90 .F90 .f .F .py"
@@ -53,17 +53,22 @@ function rewrite_copyright_block()
 {
   local filename=$1
   local gitfile=$2
-  local today=$(date +%Y)
+  local today
+  today=$(date +%Y)
 
   # This data was found in the header comments.  It might be a single year or a range.
-  local crl=$(grep Copyright $filename)
-  local create_date=$(echo $crl | sed -e 's/.* \([0-9][0-9]*\).*/\1/')
+  local crl
+  crl=$(grep Copyright "${filename}")
+  local create_date
+  create_date=$(echo "${crl}" | sed -e 's/.* \([0-9][0-9]*\).*/\1/')
 
   # These dates are reported by git
-  local git_last_mod_date=$(git log -1 $gitfile | grep Date | \
-                              sed -e 's/.* \([0-9][0-9][0-9][0-9]\).*/\1/')
-  local git_create_date=$(git log $gitfile | grep Date | tail -n 1 | \
-                            sed -e 's/.* \([0-9][0-9][0-9][0-9]\).*/\1/')
+  local git_last_mod_date
+  local git_create_date
+  git_last_mod_date=$(git log -1 "${gitfile}" | grep Date | \
+                        sed -e 's/.* \([0-9][0-9][0-9][0-9]\).*/\1/')
+  git_create_date=$(git log "${gitfile}" | grep Date | tail -n 1 | \
+                      sed -e 's/.* \([0-9][0-9][0-9][0-9]\).*/\1/')
 
   debugprint "$crl"
   debugprint "$create_date $git_last_mod_date $git_create_date"
@@ -93,21 +98,19 @@ function rewrite_copyright_block()
   debugprint "ecrl = $ecrl"
 
   # If existing copyright spans two lines, reduce it to one line.
-  local twolines=$(grep -A 1 Copyright $filename | tail -n 1 | grep -c reserved)
+  local twolines
+  twolines=$(grep -A 1 Copyright "${filename}" | tail -n 1 | grep -c reserved)
   if [[ $twolines -gt 0 ]]; then
-    sed -i 's/All rights reserved[.]*//' ${filename}
+    sed -i 's/All rights reserved[.]*//' "${filename}"
   fi
 
   # Do we have terminating comement character on the 'copyright' line.  If so, keep it.
   local ecm=""
-  if [[ $(echo $crl | grep -c "\\\*/") -gt 0 ]]; then
-    ecm=" */"
-    debugprint "ecm = $ecm"
-  fi
+  if [[ $(echo "${crl}" | grep -c "\\\*/") -gt 0 ]]; then ecm=" */"; fi
 
   # Replace copyright with new one
-  debugprint "sed -i s%Copyright.*%${ecrl}${ecm}% $filename"
-  sed -i "s%Copyright.*%${ecrl}${ecm}%" $filename
+  debugprint "sed -i s%Copyright.*%${ecrl}${ecm}% "${filename}""
+  sed -i "s%Copyright.*%${ecrl}${ecm}%" "${filename}"
 }
 
 # create a random filename to store our generated patch
@@ -144,7 +147,7 @@ do
   debugprint "  updating patchfile"
   diff -u "${file}" "${tmpfile1}" | \
     sed -e "1s|--- |--- a/|" -e "2s|+++ ${tmpfile1}|+++ b/${file}|" >> "$patchfile"
-  rm $tmpfile1
+  rm "${tmpfile1}"
 done
 
 # if no patch has been generated all is ok, clean up the file stub and exit
