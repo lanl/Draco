@@ -66,7 +66,7 @@ public:
 private:
   struct mpibuf : public std::streambuf {
 
-    void send(std::ostream &out);
+    void send(std::ostream &myout);
     void shrink_to_fit();
 
     int_type overflow(int_type c) override;

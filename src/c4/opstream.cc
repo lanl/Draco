@@ -20,11 +20,11 @@ namespace rtt_c4 {
  *
  * /param[in,out] out ostream buffer to write data into. defaults to std::cout.
  */
-void opstream::mpibuf::send(std::ostream &out) {
+void opstream::mpibuf::send(std::ostream &myout) {
   unsigned const pid = rtt_c4::node();
   if (pid == 0) {
     buffer_.push_back('\0'); // guarantees that buffer_.size() > 0
-    out << &buffer_[0];
+    myout << &buffer_[0];
     buffer_.clear();
 
     unsigned const pids = rtt_c4::nodes();
@@ -36,7 +36,7 @@ void opstream::mpibuf::send(std::ostream &out) {
         rtt_c4::receive(&buffer_[0], N, i);
       }
       buffer_.push_back('\0');
-      out << &buffer_[0]; // guarantees that buffer_.size() > 0
+      myout << &buffer_[0]; // guarantees that buffer_.size() > 0
     }
   } else {
 
