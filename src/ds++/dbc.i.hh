@@ -79,7 +79,7 @@ bool is_strict_monotonic_increasing(Forward_Iterator first, Forward_Iterator con
  *
  * Checks whether every element in a sequence is greater than the next element of the sequence.
  *
- * \tparm Forward_Iterator A forward iterator whose value type supports \c operator<.
+ * \tparam Forward_Iterator A forward iterator whose value type supports \c operator<.
  * \param[in,out] first Points to the first element of the sequence.
  * \param[in]     last Points one element past the end of the sequence.
  *
