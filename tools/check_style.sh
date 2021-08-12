@@ -397,7 +397,7 @@ echo -e "Checking modified code for copyright block conformance.\n"
 patchfile_cb=$(mktemp /tmp/copyright_block.patch.XXXXXXXX)
 
 # file types to parse.
-FILE_EXTS=".c .cc .h .hh .in .f90 .F90 .f .F .py"
+FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .txt"
 #FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
 FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc"
 export FILE_EXTS FILE_ENDINGS_EXCLUDE
