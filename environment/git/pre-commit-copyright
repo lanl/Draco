@@ -95,7 +95,7 @@ function rewrite_copyright_block()
 
   # Expected Copyright line:
   local ecrl="Copyright (C) ${git_create_date}-${today} Triad National Security, LLC., "
-  ecrl+=" All rights reserved."
+  ecrl+="All rights reserved."
   debugprint "ecrl = $ecrl"
 
   # If existing copyright spans two lines, reduce it to one line.
