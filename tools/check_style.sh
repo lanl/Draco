@@ -445,7 +445,7 @@ for file in $modifiedfiles; do
 
   # We converted from CVS to svn in 2010. This is the oldest create date that git will report.  In
   # this case older data is lost, so just use whatever is in the file as the create date.
-  [[ "${git_create_date}" == "2010" ]] && git_create_date="${create_date}"
+  [[ "${git_create_date}" -lt "2011" ]] && git_create_date="${create_date}"
 
   # Expected Copyright line:
   ecrl="Copyright (C) ${git_create_date}-${today} Triad National Security, LLC., "
