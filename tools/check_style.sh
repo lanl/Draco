@@ -419,6 +419,7 @@ for file in $modifiedfiles; do
 
   # This data was found in the header comments.  It might be a single year or a range.
   crl=$(grep Copyright "${tmpfile1}")
+  # shellcheck disable=SC2001
   create_date=$(echo "${crl}" | sed -e 's/.* \([0-9][0-9]*\).*/\1/')
 
   # These dates are reported by git
@@ -453,7 +454,7 @@ for file in $modifiedfiles; do
   # If existing copyright spans two lines, reduce it to one line.
   twolines=$(grep -A 1 Copyright "${tmpfile1}" | tail -n 1 | grep -c reserved)
   if [[ $twolines -gt 0 ]]; then
-    sed -i 's/All rights reserved[.]*//' ${tmpfile1}
+    sed -i 's/All rights reserved[.]*//' "${tmpfile1}"
   fi
 
   # Do we have terminating comement character on the 'copyright' line.  If so, keep it.

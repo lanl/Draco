@@ -17,7 +17,7 @@ umask 0077
 debug=off
 function debugprint()
 {
-  if [[ "$debug" == "on" ]]; then echo "==>" $@; fi
+  if [[ "$debug" == "on" ]]; then echo "==>" "$@"; fi
 }
 
 debugprint "running pre-commit-copyright"
@@ -26,7 +26,7 @@ debugprint "running pre-commit-copyright"
 # DELETE_OLD_PATCHES=true
 
 # file types to parse.
-FILE_EXTS=".c .cc .h .hh .in .f90 .F90 .f .F .py"
+FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .txt"
 #FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
 FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc"
 export FILE_EXTS FILE_ENDINGS_EXCLUDE
@@ -60,6 +60,7 @@ function rewrite_copyright_block()
   local crl
   crl=$(grep Copyright "${filename}")
   local create_date
+  # shellcheck disable=SC2001
   create_date=$(echo "${crl}" | sed -e 's/.* \([0-9][0-9]*\).*/\1/')
 
   # These dates are reported by git
@@ -109,7 +110,7 @@ function rewrite_copyright_block()
   if [[ $(echo "${crl}" | grep -c "\\\*/") -gt 0 ]]; then ecm=" */"; fi
 
   # Replace copyright with new one
-  debugprint "sed -i s%Copyright.*%${ecrl}${ecm}% "${filename}""
+  debugprint "sed -i s%Copyright.*%${ecrl}${ecm}% ${filename}"
   sed -i "s%Copyright.*%${ecrl}${ecm}%" "${filename}"
 }
 
