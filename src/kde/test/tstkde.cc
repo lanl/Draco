@@ -72,7 +72,7 @@ void test_replication(ParallelUnitTest &ut) {
         shell_data[point_i] = static_cast<double>(ri) + 1.0;
         double rel_y = r * mu;
         position_array[point_i][0] =
-            rtt_dsxx::soft_equiv(r, rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
+            rtt_dsxx::soft_equiv(r * r, rel_y * rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
         position_array[point_i][1] = sphere_center[1] + rel_y;
         point_i++;
         mui++;
@@ -1031,7 +1031,7 @@ void test_decomposition(ParallelUnitTest &ut) {
         shell_data[point_i] = static_cast<double>(ri) + 1.0;
         double rel_y = r * mu;
         position_array[point_i][0] =
-            rtt_dsxx::soft_equiv(r, rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
+            rtt_dsxx::soft_equiv(r * r, rel_y * rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
         position_array[point_i][1] = sphere_center[1] + rel_y;
         point_i++;
         mui++;
