@@ -273,7 +273,7 @@ void Dense_Compton_Data::compute_nonlinear_difference() {
     for (UINT64 g = 0; g < numGroups; ++g) {
       const FP Elow = groupBdrs[g];
       const FP Ehigh = groupBdrs[g + 1];
-      bg[g] = rtt_cdi::CDI::integratePlanckSpectrum(Elow, Ehigh, T);
+      bg[g] = rtt_cdi::integratePlanckSpectrum(Elow, Ehigh, T);
       bgsum += bg[g];
     }
     bgsum = bgsum > 0.0 ? bgsum : 1.0;
@@ -917,7 +917,7 @@ void read_csk_files(std::string const &basename, int verbosity) {
       for (UINT64 g = 0; g < dat.numGroups; ++g) {
         const FP Elow = dat.groupBdrs[g];
         const FP Ehigh = dat.groupBdrs[g + 1];
-        bg[g] = rtt_cdi::CDI::integratePlanckSpectrum(Elow, Ehigh, T);
+        bg[g] = rtt_cdi::integratePlanckSpectrum(Elow, Ehigh, T);
         bgsum += bg[g];
 
         if (verbosity > 1)
