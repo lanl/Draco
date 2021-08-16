@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Template implementation for dbc
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved.
  *
  * This header defines several function templates that perform common numerical operations not
  * standardized in the STL algorithm header. It also defines some useful STL-style predicates. These
@@ -21,7 +21,7 @@
 
 namespace rtt_dsxx {
 
-//-------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 /*!
  * \brief Check whether a sequence is monotonically increasing.
  *
@@ -29,20 +29,15 @@ namespace rtt_dsxx {
  * sequence.  This is particularly useful for Design by Contract assertions that check that a
  * sequence is sorted.
  *
- * \arg \a Forward_Iterator
- * A forward iterator whose value type supports \c operator<.
- *
- * \param first
- * Points to the first element of the sequence.
- *
- * \param last
- * Points one element past the end of the sequence.
+ * \tparam Forward_Iterator A forward iterator whose value type supports \c operator<.
+ * \param[in,out] first Points to the first element of the sequence.
+ * \param[in]     last Points one element past the end of the sequence.
  *
  * \return \c true if \f$a_i<=a_{i+1}\f$ for all \f$a_i\f$ in the sequence;
  * \c false otherwise.
  */
 template <typename Forward_Iterator>
-bool is_monotonic_increasing(Forward_Iterator first, Forward_Iterator last) {
+bool is_monotonic_increasing(Forward_Iterator first, Forward_Iterator const last) {
   Forward_Iterator prev = first;
   while (++first != last) {
     if (*first < *prev)
@@ -53,7 +48,7 @@ bool is_monotonic_increasing(Forward_Iterator first, Forward_Iterator last) {
   return true;
 }
 
-//-------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 /*!
  * \brief Check whether a sequence is strictly monotonically increasing.
  *
@@ -61,20 +56,14 @@ bool is_monotonic_increasing(Forward_Iterator first, Forward_Iterator last) {
  * is particularly useful for Design by Contract assertions that check the validity of a table of
  * data.
  *
- * \arg \a Forward_Iterator
- * A forward iterator whose value type supports \c operator<.
+ * \tparam Forward_Iterator A forward iterator whose value type supports \c operator<.
+ * \param[in,out] first Points to the first element of the sequence.
+ * \param[in]     last Points one element past the end of the sequence.
  *
- * \param first
- * Points to the first element of the sequence.
- *
- * \param last
- * Points one element past the end of the sequence.
- *
- * \return \c true if \f$a_i<a_{i+1}\f$ for all \f$a_i\f$ in the sequence;
- * \c false otherwise.
+ * \return \c true if \f$a_i<a_{i+1}\f$ for all \f$a_i\f$ in the sequence; \c false otherwise.
  */
 template <typename Forward_Iterator>
-bool is_strict_monotonic_increasing(Forward_Iterator first, Forward_Iterator last) {
+bool is_strict_monotonic_increasing(Forward_Iterator first, Forward_Iterator const last) {
   Forward_Iterator prev = first;
   while (++first != last) {
     if (!(*prev < *first))
@@ -84,20 +73,15 @@ bool is_strict_monotonic_increasing(Forward_Iterator first, Forward_Iterator las
   return true;
 }
 
-//-------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 /*!
  * \brief Check whether a sequence is strictly monotonically decreasing.
  *
  * Checks whether every element in a sequence is greater than the next element of the sequence.
  *
- * \arg \a Forward_Iterator
- * A forward iterator whose value type supports \c operator<.
- *
- * \param first
- * Points to the first element of the sequence.
- *
- * \param last
- * Points one element past the end of the sequence.
+ * \tparam Forward_Iterator A forward iterator whose value type supports \c operator<.
+ * \param[in,out] first Points to the first element of the sequence.
+ * \param[in]     last Points one element past the end of the sequence.
  *
  * \pre \c last>first
  *
@@ -105,7 +89,7 @@ bool is_strict_monotonic_increasing(Forward_Iterator first, Forward_Iterator las
  * \c false otherwise.
  */
 template <typename Forward_Iterator>
-bool is_strict_monotonic_decreasing(Forward_Iterator first, Forward_Iterator last) {
+bool is_strict_monotonic_decreasing(Forward_Iterator first, Forward_Iterator const last) {
   Require(first < last);
   Forward_Iterator prev = first;
   while (++first != last) {
@@ -116,24 +100,19 @@ bool is_strict_monotonic_decreasing(Forward_Iterator first, Forward_Iterator las
   return true;
 }
 
-//-------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 /*!
  * \brief Check whether a matrix is symmetric.
  *
- * \arg \a Random_Access_Container
- * A random access container type.
- *
- * \param A Matrix that is supposed to be symmetric.
- *
- * \param n Rank of the matrix.
- *
- * \param tolerance Tolerance for comparing matrix elements.
+ * \tparam Random_Access_Container A random access container type.
+ * \param[in] A Matrix that is supposed to be symmetric.
+ * \param[in] n Rank of the matrix.
+ * \param[in] tolerance Tolerance for comparing matrix elements.
  *
  * \pre \c A.size()==n*n
  * \pre \c tolerance>=0.0
  *
- * \return \c true if <code>A[i+n*j]==A[j+n*i]</code> for all \c i and \c j; \c false
- * otherwise.
+ * \return \c true if <code>A[i+n*j]==A[j+n*i]</code> for all \c i and \c j; \c false otherwise.
  */
 template <typename Random_Access_Container>
 bool is_symmetric_matrix(Random_Access_Container const &A, unsigned const n,

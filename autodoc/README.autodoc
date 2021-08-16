@@ -1,16 +1,15 @@
 Autodoc
-================================================================================
+====================================================================================================
 
-Developer documentation is generated using doxygen
-(https://www.stack.nl/~dimitri/doxygen). If available, this build can use
-graphviz (dot), dia and mscgen to generate graphics like dependency diagrams,
-UML and sequence diagrams.
+Developer documentation is generated using doxygen (https://www.stack.nl/~dimitri/doxygen). If
+available, this build can use graphviz (dot), dia and mscgen to generate graphics like dependency
+diagrams, UML and sequence diagrams.
 
 Documentation is generated nightly and published to the LANL Yellow Network at
-https://rtt.lanl.gov/autodoc.
+https://jayenne.re-pages.lanl.gov/jayenne/draco/index.html.
 
-The Draco source code templates (draco/environment/templates) provide
-recommended doxygen commands for use by Draco developers.
+The Draco source code templates (draco/environment/templates) provide recommended doxygen commands
+for use by Draco developers.
 
 Additional information:
 
@@ -19,7 +18,7 @@ Additional information:
 - equations      : https://www.stack.nl/~dimitri/doxygen/manual/formulas.html
 - call graphs    : https://www.stack.nl/~dimitri/doxygen/manual/diagrams.html
 
-================================================================================
+====================================================================================================
 Sample: mscgen diagram
 
 /*!

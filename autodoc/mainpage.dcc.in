@@ -10,12 +10,11 @@
 
 \par Executive Summary
 
-Draco is a C++ radiation transport component library developed by CCS-2, Los
-Alamos National Laboratory. In addition to providing infrastructure for
-radiation transport code development, Draco serves as a "model Development
-Environment (DE)" for code development activities within CCS-2.  Most CCS-2 code
-projects are based on the coding standards, idioms, style, organization, and
-architecture of Draco.
+Draco is a C++ radiation transport component library developed by CCS-2, Los Alamos National
+Laboratory. In addition to providing infrastructure for radiation transport code development, Draco
+serves as a "model Development Environment (DE)" for code development activities within CCS-2.  Most
+CCS-2 code projects are based on the coding standards, idioms, style, organization, and architecture
+of Draco.
 
 \par Authors:
 
@@ -24,14 +23,13 @@ architecture of Draco.
 \par Resources
 
 To get started building Draco see \ref build_system  or [build
-system](https://rtt.lanl.gov/redmine/projects/draco/wiki/Common_Configure_Options).
+system](https://re-git.lanl.gov/draco/draco/-/wikis/Common_Configure_Options).
 Package overviews can be found in the <a href="pages.html">Related Pages</a>
 section of the documentation. Also see:
 
 - <a href=https://github.com/lanl/Draco>Draco on GitHub</a>.
-- <a href=http://rtt.lanl.gov/redmine/projects/draco>Draco project
-  management (Redmine) </a>.
-- <a href=http://rtt.lanl.gov/cdash>Draco regression reporting on CDash</a>.
+- <a href=http://re-git.lanl.gov/draco/draco>Draco project management (Redmine) </a>.
+- <a href=http://rtt.lanl.gov/cdash3>Draco regression reporting on CDash</a>.
 - Draco mailing list, draco@lanl.gov
 
 \par Copyright

@@ -19,15 +19,15 @@ namespace rtt_dsxx {
 
 //! Check whether a sequence is monotonically increasing.
 template <typename Forward_Iterator>
-bool is_monotonic_increasing(Forward_Iterator first, Forward_Iterator last);
+bool is_monotonic_increasing(Forward_Iterator first, Forward_Iterator const last);
 
 //! Check whether a sequence is strictly monotonically increasing.
 template <typename Forward_Iterator>
-bool is_strict_monotonic_increasing(Forward_Iterator first, Forward_Iterator last);
+bool is_strict_monotonic_increasing(Forward_Iterator first, Forward_Iterator const last);
 
 //! Check whether a sequence is strictly monotonically decreasing.
 template <typename Forward_Iterator>
-bool is_strict_monotonic_decreasing(Forward_Iterator first, Forward_Iterator last);
+bool is_strict_monotonic_decreasing(Forward_Iterator first, Forward_Iterator const last);
 
 //! Check whether a matrix is symmetric.
 template <typename Random_Access_Container>

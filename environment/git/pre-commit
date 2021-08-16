@@ -14,7 +14,7 @@
 # pre-commit hooks to be executed. They should be in the same .git/hooks/ folder as this
 # script. Hooks should return 0 if successful and nonzero to cancel the commit. They are executed in
 # the order in which they are listed.
-HOOKS="pre-commit-clang-format"
+HOOKS="pre-commit-clang-format pre-commit-copyright"
 
 # only run autopep8 if the tool is available
 [[ $(which autopep8 2> /dev/null | wc -w) -gt 0 ]] && HOOKS+=" pre-commit-autopep8"

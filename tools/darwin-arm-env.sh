@@ -35,7 +35,7 @@ case "${ddir}" in
       FC=$(which gfortran)
       MPIEXEC_EXECUTABLE=$(which mpirun)
       unset MPI_ROOT
-      # work around for known openmpi issues: https://rtt.lanl.gov/redmine/issues/1229
+      # work around for known openmpi issues: https://re-git.lanl.gov/draco/draco/-/issues/938
       OMPI_MCA_btl=^openib
       UCX_NET_DEVICES=mlx5_0:1
       export CXX
