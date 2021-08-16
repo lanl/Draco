@@ -344,6 +344,8 @@ macro(dbsSetupCxx)
     include(unix-g++)
   elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
     include(windows-cl)
+  elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "XLClang" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "XLCLang")
+    include(unix-xl)
   else()
     # missing CMAKE_CXX_COMPILER_ID? - try to match the compiler path+name to a string.
     if("${my_cxx_compiler}" MATCHES "pgCC" OR "${my_cxx_compiler}" MATCHES "pgc[+][+]")

@@ -81,11 +81,6 @@ if(NOT ${DRACO_C4} STREQUAL "SCALAR")
 endif()
 
 # Tests that expect exactly 4 PE (omit for DRACO_C4=SCALAR builds):
-#
-# * There is a weird API conflict between libquo and openmpi@3.  The former uses hwloc@2 and the
-#   later uses hwloc@1.  Valgrind trips on this with an UMR that frequently leads to a code hang.
-#   The solution is to build openmpi~internal-hwloc or move openmpi@4 which uses hwloc@2. Ref:
-#   https://rtt.lanl.gov/redmine/issues/2163
 set(four_pe_tests ${PROJECT_SOURCE_DIR}/tstQuoWrapper.cc)
 list(REMOVE_ITEM test_sources ${four_pe_tests})
 

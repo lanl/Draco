@@ -10,7 +10,9 @@ if __name__ == '__main__':
     modified_files = []
     for line in all_files.split('\n'):
       if 'A' in line[0:2] or 'M' in line[0:2]:
-        modified_files.append(os.path.join(base_dir, line[2:].strip()))
+        filename = os.path.join(base_dir, line[2:].strip())
+        if filename[-3:] == '.py':
+          modified_files.append(filename)
 
     for filename in modified_files:
         autopep8_call = ['autopep8', '--in-place', filename]

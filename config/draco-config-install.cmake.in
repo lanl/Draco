@@ -29,7 +29,7 @@ endif()
 # Provide some pretty print information during configure
 include( FeatureSummary )
 set_package_properties( draco PROPERTIES
-   URL "https://rtt.lanl.gov/redmine/projects/draco"
+   URL "https://re-git.lanl.gov/draco/draco"
    DESCRIPTION "Draco is a comprehensive, radiation transport framework that provides key, reusable
  components for serial and parallel computational physics codes."
    TYPE REQUIRED
