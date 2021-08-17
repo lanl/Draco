@@ -3,7 +3,7 @@
  * \file   c4/opstream.hh
  * \author Kent G. Budge
  * \brief  Define class opstream
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_opstream_hh
@@ -58,7 +58,7 @@ public:
   }
 
   //! Send all buffered data synchronously to the console.
-  void send() { sb_.send(); }
+  void send(std::ostream &myout = std::cout) { sb_.send(myout); }
 
   //! Shrink the internal buffer to fit the current buffered data.
   void shrink_to_fit() { sb_.shrink_to_fit(); }
@@ -66,7 +66,7 @@ public:
 private:
   struct mpibuf : public std::streambuf {
 
-    void send();
+    void send(std::ostream &myout);
     void shrink_to_fit();
 
     int_type overflow(int_type c) override;
