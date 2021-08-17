@@ -179,8 +179,7 @@ std::vector<double>
 kde::reconstruction(const std::vector<double> &distribution,
                     const std::vector<std::array<double, 3>> &one_over_bandwidth,
                     const quick_index &qindex, const double discontinuity_cutoff) const {
-  size_t dim = qindex.dim;
-  Require(dim < 3 && dim > 0);
+  Require(qindex.dim < 3 && qindex.dim > 0);
   const size_t local_size = distribution.size();
   // be sure that the quick_index matches this data size
   Require(qindex.locations.size() == local_size);
@@ -288,8 +287,7 @@ std::vector<double>
 kde::log_reconstruction(const std::vector<double> &distribution,
                         const std::vector<std::array<double, 3>> &one_over_bandwidth,
                         const quick_index &qindex, const double discontinuity_cutoff) const {
-  const size_t dim = qindex.dim;
-  Require(dim < 3 && dim > 0);
+  Require(qindex.dim < 3 && qindex.dim > 0);
   const size_t local_size = distribution.size();
   Require(qindex.locations.size() == local_size);
   Require(one_over_bandwidth.size() == local_size);
