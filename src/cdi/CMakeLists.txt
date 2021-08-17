@@ -15,12 +15,17 @@ file(GLOB sources *.cc)
 file(GLOB explicit_instantiations *_pt.cc)
 file(GLOB headers *.hh)
 
+set( include_dirs PUBLIC
+  $<BUILD_INTERFACE:${draco_src_dir_BINARY_DIR}/device>
+)
+
 # ------------------------------------------------------------------------------------------------ #
 # Build package library
 # ------------------------------------------------------------------------------------------------ #
 add_component_library(
   TARGET Lib_cdi
   TARGET_DEPS Lib_dsxx
+  INCLUDE_DIRS "${include_dirs}"
   LIBRARY_NAME cdi
   HEADERS "${headers}"
   SOURCES "${sources}")

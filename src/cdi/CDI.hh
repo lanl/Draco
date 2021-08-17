@@ -15,6 +15,7 @@
 #include "EoS.hh"
 #include "GrayOpacity.hh"
 #include "MultigroupOpacity.hh"
+#include "device/config.h"
 #include "ds++/Constexpr_Functions.hh"
 #include "ds++/FMA.hh"
 #include "ds++/Soft_Equivalence.hh"
@@ -78,7 +79,7 @@ namespace rtt_cdi {
  * \param[in] x The point at which the Planck integral is evaluated.
  * \return The integral value.
  */
-constexpr double taylor_series_planck(double x) {
+GPU_HOST_DEVICE inline double taylor_series_planck(double x) {
   Require(x >= 0.0);
 
   double const xsqrd = x * x;
@@ -105,7 +106,7 @@ constexpr double taylor_series_planck(double x) {
  * \brief return the 10-term Polylogarithmic expansion (minus one) for the Planck integral given
  *        \f$ x \f$ and \f$ e^{-x} \f$ (for efficiency)
  */
-constexpr double polylog_series_minus_one_planck(double const x, double const eix) {
+GPU_HOST_DEVICE inline double polylog_series_minus_one_planck(double const x, double const eix) {
   Require(x >= 0.0);
   Require(x < 1.0e154); // value will be squared, make sure it's less than sqrt of max double
   Require(rtt_dsxx::soft_equiv(std::exp(-x), eix));
@@ -185,8 +186,7 @@ constexpr double polylog_series_minus_one_planck(double const x, double const ei
 /**
  * \brief Integrate the normalized Planckian spectrum from 0 to \f$ x (\frac{h\nu}{kT}) \f$.
  *
- * \param scaled_freq upper integration limit, scaled by the temperature.
- * \param exp_scaled_freq upper integration limit, scaled by an exponential function.
+ * \param[in] scaled_freq upper integration limit, scaled by the temperature.
  * \return integrated normalized Planckian from 0 to x \f$(\frac{h\nu}{kT})\f$
  *
  * There are 3 cases to consider:
@@ -196,7 +196,7 @@ constexpr double polylog_series_minus_one_planck(double const x, double const ei
  *    Represent the integral via Taylor series expansion (this will be more efficient than case 3).
  * 3. All other cases. Use the polylog algorithm.
  */
-constexpr double integrate_planck(double const scaled_freq) {
+GPU_HOST_DEVICE inline double integrate_planck(double const scaled_freq) {
   Require(scaled_freq >= 0);
 
   double const exp_scaled_freq = std::exp(-scaled_freq);
@@ -240,13 +240,13 @@ constexpr double integrate_planck(double const scaled_freq) {
  * \param[in] exp_freq exp(-freq)
  * \return The difference between the integrated Planck and Rosseland curves over \f$ (0,\nu) \f$.
  */
-constexpr double Planck2Rosseland(double const freq, double const exp_freq) {
+GPU_HOST_DEVICE inline double Planck2Rosseland(double const freq, double const exp_freq) {
   Require(freq >= 0.0);
   Require(rtt_dsxx::soft_equiv(exp_freq, std::exp(-freq)));
 
   // Case 1: if nu/T is sufficiently large, then the evaluation is 0.0.
   //         this evaluation also prevents overflow when evaluating (nu/T)^4.
-  if (freq > std::pow(std::numeric_limits<decltype(freq)>::max(), 1.0 / 4.0))
+  if (freq > 1.15792038e77) // hard-coded pow(numeric_limits<double>::max(), 1/4)
     return 0.0;
 
   double const freq_3 = freq * freq * freq;
@@ -263,13 +263,14 @@ constexpr double Planck2Rosseland(double const freq, double const exp_freq) {
 /*! \brief Integrate the normalized Planckian and Rosseland spectra from 0 to \f$ x
  *         (\frac{h\nu}{kT}) \f$.
  *
- * \param scaled_freq frequency upper integration limit scaled by temperature
- * \param exp_scaled_freq upper integration limit, scaled by an exponential function.
- * \param planck Variable to return the Planck integral
- * \param rosseland Variable to return the Rosseland integral
+ * \param[in] scaled_freq frequency upper integration limit scaled by temperature
+ * \param[in] exp_scaled_freq upper integration limit, scaled by an exponential function.
+ * \param[in] planck Variable to return the Planck integral
+ * \param[in] rosseland Variable to return the Rosseland integral
  */
-constexpr void integrate_planck_rosseland(double const scaled_freq, double const exp_scaled_freq,
-                                          double &planck, double &rosseland) {
+GPU_HOST_DEVICE inline void integrate_planck_rosseland(double const scaled_freq,
+                                                       double const exp_scaled_freq, double &planck,
+                                                       double &rosseland) {
   Require(scaled_freq >= 0.0);
   Require(rtt_dsxx::soft_equiv(exp_scaled_freq, std::exp(-scaled_freq)));
 
@@ -304,7 +305,7 @@ constexpr void integrate_planck_rosseland(double const scaled_freq, double const
  *
  * \return integrated normalized Plankian from low to high
  */
-constexpr double integratePlanckSpectrum(double low, double high, const double T) {
+GPU_HOST_DEVICE inline double integratePlanckSpectrum(double low, double high, const double T) {
   Require(low >= 0.0);
   Require(high >= low);
   Require(T >= 0.0);
@@ -335,8 +336,8 @@ constexpr double integratePlanckSpectrum(double low, double high, const double T
  * and temperature is in K, then low and high must first be multiplied by Planck's constant and
  * temperature by Boltzmann's constant before they are passed to this function.
  *
- * \param low Lower limit of frequency range.
- * \param high Higher limit of frequency range.
+ * \param[in] low Lower limit of frequency range.
+ * \param[in] high Higher limit of frequency range.
  * \param[in] T Temperature (must be greater than 0.0).
  * \param[out] planck On return, contains the integrated normalized Planckian from low to high.
  * \param[out] rosseland On return, contains the integrated normalized Rosseland from low to high
@@ -346,8 +347,9 @@ constexpr double integratePlanckSpectrum(double low, double high, const double T
  * rosseland(T) = \int_{\nu_1}^{\nu_2}{\frac{\partial B(\nu,T)}{\partial T}d\nu}
  * \f]
  */
-constexpr void integrate_Rosseland_Planckian_Spectrum(double low, double high, double const T,
-                                                      double &planck, double &rosseland) {
+GPU_HOST_DEVICE inline void integrate_Rosseland_Planckian_Spectrum(double low, double high,
+                                                                   double const T, double &planck,
+                                                                   double &rosseland) {
   Require(low >= 0.0);
   Require(high >= low);
   Require(T >= 0.0);
@@ -390,13 +392,14 @@ constexpr void integrate_Rosseland_Planckian_Spectrum(double low, double high, d
  * and temperature is in K, then low and high must first be multiplied by Planck's constant and
  * temperature by Boltzmann's constant before they are passed to this function.
  *
- * \param low lower frequency bound.
- * \param high higher frequency bound.
- * \param T the temperature (must be greater than 0.0)
+ * \param[in] low lower frequency bound.
+ * \param[in] high higher frequency bound.
+ * \param[in] T the temperature (must be greater than 0.0)
  *
  * \return integrated normalized Rosseland from low to high
  */
-constexpr double integrateRosselandSpectrum(const double low, const double high, const double T) {
+GPU_HOST_DEVICE inline double integrateRosselandSpectrum(const double low, const double high,
+                                                         const double T) {
   Require(low >= 0.0);
   Require(high >= low);
   Require(T >= 0.0);
