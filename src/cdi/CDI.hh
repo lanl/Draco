@@ -123,7 +123,10 @@ constexpr double polylog_series_minus_one_planck(double const x, double const ei
       0.1111111111111111, // 1/9
       0.1000000000000000  // 1/10
   };
-  double const *curr_inv = i_plus_two_inv.data();
+  static_assert(i_plus_two_inv.size() > 0, "i_plus_two_inv must be non-zero size");
+  // Note: in C++ 17 the array.data() method is constexpr and should be used here and the static
+  // assert can be removed
+  double const *curr_inv = &i_plus_two_inv[0];
 
   // initialize to what would have been the calculation of the i=1 term. This saves a number of "mul
   // by one" ops.
