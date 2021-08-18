@@ -366,12 +366,12 @@ void Ensight_Translator::write_case() {
   // write the pointer to the node variables
   for (auto &data_name : d_vdata_names)
     caseout << "scalar per node:    1  " << setw(19) << setiosflags(ios::left) << data_name
-            << setw(4) << " ./" << data_name << "/data.****\n";
+            << setw(3) << " ./" << data_name << "/data.****\n";
 
   // write the pointer to the cell variables
   for (auto &cdata_name : d_cdata_names)
     caseout << "scalar per element: 1  " << setw(19) << setiosflags(ios::left) << cdata_name
-            << setw(4) << " ./" << cdata_name << "/data.****\n";
+            << setw(3) << " ./" << cdata_name << "/data.****\n";
 
   // write out the time block
   caseout << "\nTIME\n"

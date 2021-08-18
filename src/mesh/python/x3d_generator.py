@@ -188,5 +188,10 @@ for i in range(2 * mesh.ndim):
                np.unique(np.array(mesh.nodes_per_side[i]) + 1), fmt='%d')
 
 # ------------------------------------------------------------------------------------------------ #
+# -- write out the mesh region files based on matid
+# -- todo: map (dictionary) matid to cell lists (this is only for X3D, so it's not a mesh task)
+np.savetxt(fname + '.Reg' + str(1) + '.in', np.arange(1, mesh.num_cells + 1), fmt='%d')
+
+# ------------------------------------------------------------------------------------------------ #
 # end of x3d_generator.py
 # ------------------------------------------------------------------------------------------------ #
