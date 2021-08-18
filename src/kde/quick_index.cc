@@ -3,8 +3,8 @@
  * \file   kde/quick_index.cc
  * \author Mathew Cleveland
  * \brief  Explicitly defined quick_index functions.
- * \note   Copyright (C) 2018-2021 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "quick_index.hh"
@@ -472,7 +472,6 @@ auto get_window_bin = [](const auto dim, const auto &grid_bins, const auto &loca
 
   return std::tuple<bool, size_t, std::array<double, 3>>{valid, local_window_bin, bin_center};
 };
-
 
 //------------------------------------------------------------------------------------------------//
 // Lambda for getting the mapped window bin

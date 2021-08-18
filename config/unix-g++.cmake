@@ -38,8 +38,8 @@ if(NOT CXX_FLAGS_INITIALIZED)
       "yes"
       CACHE INTERNAL "using draco settings.")
   string(APPEND CMAKE_C_FLAGS
-         " -g -Wall -Wextra -pedantic -Wcast-align -Wpointer-arith -Wfloat-equal -Wunused-macros"
-         " -Wshadow -Wformat=2")
+         " -g -Wall -Wextra -pedantic -Wcast-align -Wconversion -Wpointer-arith -Wfloat-equal"
+         " -Wunused-macros -Wshadow -Wformat=2")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.0)
     string(APPEND CMAKE_C_FLAGS " -Wnull-dereference")
   endif()
@@ -92,7 +92,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
   endif()
 
   string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS}")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Woverloaded-virtual")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Woverloaded-virtual -Wsuggest-override")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")

@@ -13,7 +13,7 @@ include(component_macros)
 
 # Extra 'draco-only' flags
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.0)
-  toggle_compiler_flag(TRUE "-Wconversion -Wdouble-promotion" "CXX" "DEBUG")
+  toggle_compiler_flag(TRUE "-Wdouble-promotion" "CXX" "DEBUG")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   string(REPLACE "/W2" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
   string(REPLACE "/W2" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")

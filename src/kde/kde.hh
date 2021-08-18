@@ -3,8 +3,8 @@
  * \file   kde/kde.hh
  * \author Mathew Cleveland
  * \brief  Define class kernel density estimator class
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef kde_kde_hh
@@ -32,8 +32,7 @@ class kde {
 public:
   //! Constructor
   kde(const std::array<bool, 6> reflect_boundary_ = {false, false, false, false, false, false})
-      : reflect_boundary(reflect_boundary_), sphere_center({0.0, 0.0, 0.0}), sphere_min_radius(0.0),
-        sphere_max_radius(0.0), use_spherical_reconstruction(false) {}
+      : reflect_boundary(reflect_boundary_) {}
 
   //! Reconstruct distribution
   std::vector<double> reconstruction(const std::vector<double> &distribution,

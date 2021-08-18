@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Mon Jun 25 12:12:31 MDT 2018
  * \brief  Define methods of class opstream
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "opstream.hh"
@@ -17,12 +17,14 @@ namespace rtt_c4 {
  *
  * Causes all buffered data to be written to console in MPI rank order; that is, all data from rank
  * 0 is written first, then all data from rank 1, and so on.
+ *
+ * /param[in,out] out ostream buffer to write data into. defaults to std::cout.
  */
-void opstream::mpibuf::send() {
+void opstream::mpibuf::send(std::ostream &myout) {
   unsigned const pid = rtt_c4::node();
   if (pid == 0) {
     buffer_.push_back('\0'); // guarantees that buffer_.size() > 0
-    std::cout << &buffer_[0];
+    myout << &buffer_[0];
     buffer_.clear();
 
     unsigned const pids = rtt_c4::nodes();
@@ -34,7 +36,7 @@ void opstream::mpibuf::send() {
         rtt_c4::receive(&buffer_[0], N, i);
       }
       buffer_.push_back('\0');
-      std::cout << &buffer_[0]; // guarantees that buffer_.size() > 0
+      myout << &buffer_[0]; // guarantees that buffer_.size() > 0
     }
   } else {
 

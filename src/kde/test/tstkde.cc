@@ -4,8 +4,8 @@
  * \author Mathew Cleveland
  * \date   Nov. 10th 2020
  * \brief  KDE function tests
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "kde/kde.hh"
@@ -72,7 +72,7 @@ void test_replication(ParallelUnitTest &ut) {
         shell_data[point_i] = static_cast<double>(ri) + 1.0;
         double rel_y = r * mu;
         position_array[point_i][0] =
-            rtt_dsxx::soft_equiv(r, rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
+            rtt_dsxx::soft_equiv(r * r, rel_y * rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
         position_array[point_i][1] = sphere_center[1] + rel_y;
         point_i++;
         mui++;
@@ -990,7 +990,7 @@ void test_replication(ParallelUnitTest &ut) {
   } else {
     FAILMSG("KDE checks failed");
   }
-  }
+}
 
 void test_decomposition(ParallelUnitTest &ut) {
   kde test_kde;
@@ -1031,7 +1031,7 @@ void test_decomposition(ParallelUnitTest &ut) {
         shell_data[point_i] = static_cast<double>(ri) + 1.0;
         double rel_y = r * mu;
         position_array[point_i][0] =
-            rtt_dsxx::soft_equiv(r, rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
+            rtt_dsxx::soft_equiv(r * r, rel_y * rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
         position_array[point_i][1] = sphere_center[1] + rel_y;
         point_i++;
         mui++;
