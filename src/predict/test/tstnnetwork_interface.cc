@@ -4,8 +4,8 @@
  * \author Mathew Cleveland
  * \date   Nov. 10th 2020
  * \brief  KDE function tests
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ *          */
 //------------------------------------------------------------------------------------------------//
 
 #include "../nnetwork_interface.hh"
@@ -22,6 +22,7 @@ using namespace rtt_predict;
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
+//
 //
 void test_replication(ParallelUnitTest &ut) {
   std::string nn_file_name = "kde.pt";

@@ -5,8 +5,8 @@
  * \brief  Provide a basic neural network interface. Given there are many open
  * source NN libraries we decided to provide a general wrapper class to provide
  * flexibility in the implementation details.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ *          */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef predict_nnetwork_interface_hh
@@ -27,7 +27,6 @@ namespace rtt_predict {
  * generating inline predictions from external Machine Learning libraries
  *
  * \sa nnetwork_interface.cc for detailed descriptions.
- *
  */
 //================================================================================================//
 

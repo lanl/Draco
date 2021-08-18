@@ -4,8 +4,8 @@
  * \author Mathew Cleveland
  * \brief  HEADER ONLY Definition of the neural network backend to enable build
  * specific implementations.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ *          */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef predict_nnetwork_wrapper_hh
@@ -28,7 +28,6 @@ namespace rtt_predict {
  *
  * A libtorch implementation of the neural network backend
  * 
- *
  */
 //================================================================================================//
 
@@ -51,8 +50,7 @@ public:
     // Generate Prediction from pre-loaded network
     at::Tensor T_output = net_.forward(inputs).toTensor();
     // Assign output tensor data type to standard vector
-    std::vector<float> output(T_output.data_ptr<float>(),
-                              T_output.data_ptr<float>() + output_size);
+    std::vector<float> output(T_output.data_ptr<float>(), T_output.data_ptr<float>() + output_size);
     return output;
   }
 

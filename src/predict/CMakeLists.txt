@@ -4,9 +4,10 @@
 # author Mathew cleveland
 # date   Jan. 11 2021
 # brief  Provided an interface for generating predictions from pre-trained neural networks.
-# note   Copyright (C) 2018-2020 Triad National Security, LLC.
-#        All rights reserved.
+# note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+#        
 #--------------------------------------------------------------------------------------------------#
+
 project( predict CXX )
 
 #--------------------------------------------------------------------------------------------------#
