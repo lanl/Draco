@@ -52,26 +52,6 @@ inline double kde::log_transform(const double value, const double bias) const {
   return log(value + bias);
 }
 
-//! Lambda to calculate a vector
-auto calc_vec = [](const auto &v1, const auto &v2) {
-  Require(v1.size() == 3);
-  Require(v2.size() == 3);
-  return std::array<double, 3>{v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2]};
-};
-
-//! Lambda to calculate vector magnitude
-auto calc_mag = [](const auto &v) {
-  Require(v.size() == 3);
-  return sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-};
-
-//! Lambda to calculate unit vector
-auto calc_unit_vec = [](const auto &v) {
-  Require(v.size() == 3);
-  const double mag = calc_mag(v);
-  return std::array<double, 3>{v[0] / mag, v[1] / mag, v[2] / mag};
-};
-
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief log_inv_transform 
