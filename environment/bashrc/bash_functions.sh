@@ -304,7 +304,7 @@ function rdp()
     echo "FATAL ERROR: expecting a machine name as an argument.  Example: 'rdp centipede'."
     exit 1
   fi
-  xfreerdp /sec:rdp +clipboard /dynamic-resolution /size:90% /v:$1
+  xfreerdp /sec:rdp +clipboard /dynamic-resolution /size:90% "/v:$1"
 }
 export -f rdp
 

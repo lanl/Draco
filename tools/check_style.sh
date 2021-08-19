@@ -130,7 +130,7 @@ echo -ne "\n--------------------------------------------------------------------
 echo -ne "Checking modified C/C++ code for style conformance...\n\n"
 
 mkdir -p "/tmp/$USER" || die "Could not create /tmp/$USER"
-patchfile_c=$(mktemp /tmp/$USER/gcf.patch.XXXXXXXX)
+patchfile_c=$(mktemp "/tmp/$USER/gcf.patch.XXXXXXXX")
 
 # don't actually modify the files (originally we compared to branch 'develop', but let's try
 # ORIG_HEAD or maybe use CI variables like TRAVIS_BRANCH or CI_MERGE_REQUEST_TARGET_BRANCH_NAME).
@@ -205,7 +205,7 @@ if [[ -x "${CMF}" ]]; then
   echo -ne "\n--------------------------------------------------------------------------------\n"
   echo -ne "Checking modified CMake code for style conformance...\n\n"
 
-  patchfile_cmf=$(mktemp /tmp/$USER/cmf.patch.XXXXXXXX)
+  patchfile_cmf=$(mktemp "/tmp/$USER/cmf.patch.XXXXXXXX")
 
   # file types to parse.
   FILE_EXTS=".cmake"
@@ -334,8 +334,8 @@ if [[ -x "$FPY" ]]; then
   echo -ne "\n--------------------------------------------------------------------------------\n"
   echo -e "Checking modified F90 code for style conformance.\n"
 
-  patchfile_f90=$(mktemp /tmp/$USER/fpy.patch.XXXXXXXX)
-  lintfile_f90=$(mktemp /tmp/$USER/fpy.lint.XXXXXXXX)
+  patchfile_f90=$(mktemp "/tmp/$USER/fpy.patch.XXXXXXXX")
+  lintfile_f90=$(mktemp "/tmp/$USER/fpy.lint.XXXXXXXX")
 
   # file types to parse.
   FILE_EXTS=".f90 .F90 .f .F"
@@ -403,7 +403,7 @@ fi
 echo -ne "\n--------------------------------------------------------------------------------\n"
 echo -e "Checking modified code for copyright block conformance.\n"
 
-patchfile_cb=$(mktemp /tmp/$USER/copyright_block.patch.XXXXXXXX)
+patchfile_cb=$(mktemp "/tmp/$USER/copyright_block.patch.XXXXXXXX")
 
 # file types to parse.
 FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .txt"
