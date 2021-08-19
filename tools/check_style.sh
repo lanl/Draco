@@ -461,9 +461,14 @@ for file in $modifiedfiles; do
   ecrl+="All rights reserved."
 
   # If existing copyright spans two lines, reduce it to one line.
-  twolines=$(grep -A 1 Copyright "${tmpfile1}" | tail -n 1 | grep -c reserved)
+  twolines=$(grep -A 1 Copyright "${filename}" | tail -n 1 | grep -c reserved)
+  twolines_closes_cpp_comment=$(grep -A 1 Copyright "${filename}" | tail -n 1 | grep -c '[*]/')
   if [[ $twolines -gt 0 ]]; then
-    sed -i 's/All rights reserved[.]*//' "${tmpfile1}"
+    if [[ $twolines_closes_cpp_comment -gt 0 ]]; then
+      sed -i 's%^.*All rights reserved[.]*$% */%' "${filename}"
+    else
+      sed -i '/All rights reserved/d' "${filename}"
+    fi
   fi
 
   # Do we have terminating comement character on the 'copyright' line.  If so, keep it.
@@ -485,6 +490,7 @@ for file in $modifiedfiles; do
   unset git_create_date
   unset ecrl
   unset twolines
+  unset twolines_closes_cpp_comment
   unset ecm
 
 done
