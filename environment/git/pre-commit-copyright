@@ -26,9 +26,9 @@ debugprint "running pre-commit-copyright"
 # DELETE_OLD_PATCHES=true
 
 # file types to parse.
-FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .txt"
+FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .sh .txt"
 #FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
-FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc"
+FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc check_style.sh"
 export FILE_EXTS FILE_ENDINGS_EXCLUDE
 
 ##################################################################
@@ -58,7 +58,7 @@ function rewrite_copyright_block()
 
   # This data was found in the header comments.  It might be a single year or a range.
   local crl
-  crl=$(grep Copyright "${filename}")
+  crl=$(grep Copyright "${filename}" | head -n 1)
   local create_date
   # shellcheck disable=SC2001
   create_date=$(echo "${crl}" | sed -e 's/.* \([0-9][0-9]*\).*/\1/')
@@ -75,10 +75,10 @@ function rewrite_copyright_block()
   debugprint "$create_date $git_last_mod_date $git_create_date"
 
   # Sanity Checks
-  [[ "${create_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
+  [[ "${create_date}" =~ "Copyright" ]] && die "Failed to parse copyright line (err 1)"
   # [[ "${mod_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
-  [[ "${git_last_mod_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
-  [[ "${git_create_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
+  [[ "${git_last_mod_date}" =~ "Copyright" ]] && die "Failed to parse copyright line (err 2)"
+  [[ "${git_create_date}" =~ "Copyright" ]] && die "Failed to parse copyright line (err 3)"
   if [[ "${create_date}" -gt "${today}" ]] || [[ "${create_date}" -lt "1990" ]]; then
     die "Existing copyright date range is corrupt. Please fix $filename manually."
   fi
@@ -119,7 +119,8 @@ prefix="pre-commit-copyright"
 suffix="$(date +%s)"
 
 # clean up any older fprettify patches
-# $DELETE_OLD_PATCHES && rm -f /tmp/$prefix-*. &> /dev/null
+# $DELETE_OLD_PATCHES && rm -f /tmp/$USER/$prefix-*. &> /dev/null
+mkdir -p "/tmp/$USER" || die "Could not create /tmp/$USER"
 patchfile=$(mktemp "/tmp/$USER/${prefix}-${suffix}.patch.XXXXXXXX")
 
 # create one patch containing all changes to the files
@@ -140,7 +141,7 @@ do
 
   debugprint "Looking at $file"
   file_nameonly=$(basename "${file}")
-  tmpfile1="/tmp/${prefix}-$file_nameonly"
+  tmpfile1="/tmp/$USER/${prefix}-$file_nameonly"
 
   # Copy the file and attempt update it.
   cp "${file}" "${tmpfile1}"
