@@ -3,7 +3,7 @@
  * \file   kde/quick_index.cc
  * \author Mathew Cleveland
  * \brief  Explicitly defined quick_index functions.
- * \note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved. 
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -141,11 +141,6 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
     }
     rtt_c4::global_sum(&global_need_bins_per_proc[0], nbins * nodes);
 
-    // Build a global list of buffer sizes
-    std::vector<int> proc_ghost_buffer_size(nodes, 0);
-    proc_ghost_buffer_size[node] = static_cast<int>(local_ghost_buffer_size);
-    rtt_c4::global_sum(&proc_ghost_buffer_size[0], nodes);
-
     // calculate the put map so each node knows which processor to send data
     // and where to index that data
     // PERFORMANCE NOTE: This would be more efficient to use a MPI_SCAN and
@@ -172,8 +167,7 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
               max_put_buffer_size = map.second.size();
 
             // build up map data
-            put_window_map[map.first].push_back(
-                std::array<int, 3>{rec_proc, proc_ghost_buffer_size[rec_proc], offset});
+            put_window_map[map.first].push_back(std::array<int, 2>{rec_proc, offset});
             offset += static_cast<int>(map.second.size());
           }
         }
@@ -197,8 +191,7 @@ auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win) {
   // loop over all ranks we need to send this buffer too.
   for (auto &putv : put.second) {
     const int put_rank = putv[0];
-    const int put_rank_buffer_size = putv[1];
-    const int put_offset = putv[2];
+    const int put_offset = putv[1];
     // This is dumb, but we need to write in chunks because MPI_Put writes
     // junk with large (>10,000) buffer sizes.
     int chunk_size = 1000;
@@ -208,7 +201,7 @@ auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win) {
     for (int c = 0; c < nchunks; c++) {
       chunk_size = std::min(chunk_size, static_cast<int>(put_size) - nput);
       Check(chunk_size > 0);
-      MPI_Put(&put_buffer[nput], chunk_size, MPI_DOUBLE, put_rank, put_offset, put_rank_buffer_size,
+      MPI_Put(&put_buffer[nput], chunk_size, MPI_DOUBLE, put_rank, put_offset, chunk_size,
               MPI_DOUBLE, win);
       nput += chunk_size;
     }
