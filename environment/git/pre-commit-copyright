@@ -101,8 +101,14 @@ function rewrite_copyright_block()
   # If existing copyright spans two lines, reduce it to one line.
   local twolines
   twolines=$(grep -A 1 Copyright "${filename}" | tail -n 1 | grep -c reserved)
+  local twolines_closes_cpp_comment
+  twolines_closes_cpp_comment=$(grep -A 1 Copyright "${filename}" | tail -n 1 | grep -c '[*]/')
   if [[ $twolines -gt 0 ]]; then
-    sed -i 's/All rights reserved[.]*//' "${filename}"
+    if [[ $twolines_closes_cpp_comment -gt 0 ]]; then
+      sed -i 's%^.*All rights reserved[.]*$% */%' "${filename}"
+    else
+      sed -i '/All rights reserved/d' "${filename}"
+    fi
   fi
 
   # Do we have terminating comement character on the 'copyright' line.  If so, keep it.
