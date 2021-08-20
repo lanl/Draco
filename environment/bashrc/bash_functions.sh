@@ -1,42 +1,46 @@
 #!/bin/bash
-## -*- Mode: bash -*-
-##-----------------------------------------------------------------------------------------------##
-## File  : environment/bashrc/bash_functions.sh
-## Date  : Tuesday, May 31, 2016, 14:48 pm
-## Author: Kelly Thompson
-## Note  : Copyright (C) 2016-2020, Triad National Security, LLC., All rights are reserved.
-##-----------------------------------------------------------------------------------------------##
-##
-## Summary: Misc bash functions useful during development of code.
-##
-## Functions
-## ---------
-##
-## whichall <string> - show path of all commands in path that match <string>
-##
-## cleanemacs        - recursively remove ~ files, .flc files and .rel files.
-##
-## findsymbol <sym>  - search all libraries (.so and .a files) in the current directory for symbol
-##                     <sym>.
-##
-## npwd              - function used to set the prompt under bash.
-##
-## xfstatus          - report status of transfer.lanl.gov
-##
-## rm_from_path      - remove a directory from $PATH
-##
-## add_to_path       - add a directory to $PATH
-##
-## proxy             - (un)set http_proxy variables
-##
-## fn_exists         - test if a bash function is defined
-##
-## run               - echo then evaluate a bash command
-##
-## rdde              - reload the default draco environment
-##
-## qrm               - quick remove (for lustre filesystems).
-##-----------------------------------------------------------------------------------------------##
+# -*- Mode: bash -*-
+# ------------------------------------------------------------------------------------------------ #
+# File  : environment/bashrc/bash_functions.sh
+# Date  : Tuesday, May 31, 2016, 14:48 pm
+# Author: Kelly Thompson
+# Note  : Copyright (C) 2019-2021 Triad National Security, LLC., All rights reserved.
+# ------------------------------------------------------------------------------------------------ #
+
+#
+# Summary: Misc bash functions useful during development of code.
+#
+# Functions
+# ---------
+#
+# add_to_path       - add a directory to $PATH
+#
+# cleanemacs        - recursively remove ~ files, .flc files and .rel files.
+#
+# findsymbol <sym>  - search all libraries (.so and .a files) in the current directory for symbol
+#                     <sym>.
+#
+# fn_exists         - test if a bash function is defined
+#
+# npwd              - function used to set the prompt under bash.
+#
+# proxy             - (un)set http_proxy variables
+#
+# qrm               - quick remove (for lustre filesystems).
+#
+# rdde              - reload the default draco environment
+#
+# rdp               - start an xfree rdp session (Cortez)
+#
+# rm_from_path      - remove a directory from $PATH
+#
+# run               - echo then evaluate a bash command
+#
+# whichall <string> - show path of all commands in path that match <string>
+#
+# xfstatus          - report status of transfer.lanl.gov
+# ------------------------------------------------------------------------------------------------ #
+
 
 # pragma once
 if [[ $(type dbf_pragma_once 2>&1 | grep -c "bash: type: ") != 0 ]]; then
@@ -48,9 +52,9 @@ if [[ "${verbose:=false}" ==  "true" ]]; then
   echo "in draco/environment/bashrc/bash_functions.sh";
 fi
 
-##-----------------------------------------------------------------------------------------------##
-## Find all matches in PATH (not just the first one)
-##-----------------------------------------------------------------------------------------------##
+#-----------------------------------------------------------------------------------------------#
+# Find all matches in PATH (not just the first one)
+#-----------------------------------------------------------------------------------------------#
 
 function whichall ()
 {
@@ -60,9 +64,9 @@ function whichall ()
 }
 export -f whichall
 
-##-----------------------------------------------------------------------------------------------##
-## Recursively delete all ~ files.
-##-----------------------------------------------------------------------------------------------##
+#-----------------------------------------------------------------------------------------------#
+# Recursively delete all ~ files.
+#-----------------------------------------------------------------------------------------------#
 
 function cleanemacs
 {
@@ -79,12 +83,12 @@ function cleanemacs
 }
 export -f cleanemacs
 
-##-----------------------------------------------------------------------------------------------##
-## Used for formatting PROMPT.
-## $HOME            -> ~
-## ...scratch...    -> #
-## .../projects/... -> @
-##-----------------------------------------------------------------------------------------------##
+#-----------------------------------------------------------------------------------------------#
+# Used for formatting PROMPT.
+# $HOME            -> ~
+# ...scratch...    -> #
+# .../projects/... -> @
+#-----------------------------------------------------------------------------------------------#
 parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
@@ -151,14 +155,14 @@ export -f npwd_alt
 # PROMPT_COMMAND='DIR=`pwd|sed -e "s!$HOME!~!"`; if [ ${#DIR} -gt 30 ]; then CurDir=${DIR:0:12}...${DIR:${#DIR}-15}; else CurDir=$DIR; fi'
 # PS1="[\$CurDir] \$ "
 
-##-----------------------------------------------------------------------------------------------##
-## Usage:
-##    findsymbol <symbol>
-##
-## Searches all .a and .so files in local directory for symbol
-## <symbol>.  If found, the script provides the name of the library
-## that contains the symbol.
-##-----------------------------------------------------------------------------------------------##
+#-----------------------------------------------------------------------------------------------#
+# Usage:
+#    findsymbol <symbol>
+#
+# Searches all .a and .so files in local directory for symbol
+# <symbol>.  If found, the script provides the name of the library
+# that contains the symbol.
+#-----------------------------------------------------------------------------------------------#
 
 function findsymbol()
 {
@@ -181,15 +185,15 @@ function findsymbol()
 }
 export -f findsymbol
 
-##-----------------------------------------------------------------------------------------------##
-## Transfer 2.0 (Mercury replacement)
-## Ref: http://transfer.lanl.gov
-##
-## Examples:
-##   xfpush foo.txt
-##   xfstatus
-##   xfpull foo.txt
-##-----------------------------------------------------------------------------------------------##
+#-----------------------------------------------------------------------------------------------#
+# Transfer 2.0 (Mercury replacement)
+# Ref: http://transfer.lanl.gov
+#
+# Examples:
+#   xfpush foo.txt
+#   xfstatus
+#   xfpull foo.txt
+#-----------------------------------------------------------------------------------------------#
 
 function xfstatus()
 {
@@ -197,21 +201,21 @@ function xfstatus()
 }
 export -f xfstatus
 
-##-----------------------------------------------------------------------------------------------##
-## If string is found in PATH, remove it.
-##-----------------------------------------------------------------------------------------------##
+#-----------------------------------------------------------------------------------------------#
+# If string is found in PATH, remove it.
+#-----------------------------------------------------------------------------------------------#
 function rm_from_path ()
 {
   export PATH="${PATH//${1}/}"
 }
 export -f rm_from_path
 
-##-----------------------------------------------------------------------------------------------##
-## If path is a directory add it to PATH (if not already in PATH)
-##
-## Use:
-##   add_to_path <path> TEXINPUTS|BSTINPUTS|BIBINPUTS|PATH
-##-----------------------------------------------------------------------------------------------##
+#-----------------------------------------------------------------------------------------------#
+# If path is a directory add it to PATH (if not already in PATH)
+#
+# Use:
+#   add_to_path <path> TEXINPUTS|BSTINPUTS|BIBINPUTS|PATH
+#-----------------------------------------------------------------------------------------------#
 function add_to_path ()
 {
   case $2 in
@@ -231,10 +235,10 @@ function add_to_path ()
 }
 export -f add_to_path
 
-##-----------------------------------------------------------------------------------------------##
-## Toggle LANL proxies on/off
-## https://wiki.archlinux.org/index.php/proxy_settings
-##-----------------------------------------------------------------------------------------------##
+#-----------------------------------------------------------------------------------------------#
+# Toggle LANL proxies on/off
+# https://wiki.archlinux.org/index.php/proxy_settings
+#-----------------------------------------------------------------------------------------------#
 function proxy()
 {
   if [[ ! ${http_proxy} ]]; then
@@ -259,9 +263,9 @@ function proxy()
 }
 export -f proxy
 
-##-----------------------------------------------------------------------------------------------##
-## Test to determine if named bash function exists in the current environment.
-##-----------------------------------------------------------------------------------------------##
+#-----------------------------------------------------------------------------------------------#
+# Test to determine if named bash function exists in the current environment.
+#-----------------------------------------------------------------------------------------------#
 function fn_exists()
 {
   type "$1" 2>/dev/null | grep -q 'is a function'
@@ -271,18 +275,18 @@ function fn_exists()
 }
 export -f fn_exists
 
-##-----------------------------------------------------------------------------------------------##
-## Echo commands before execution (used in scripts)
-##-----------------------------------------------------------------------------------------------##
+#-----------------------------------------------------------------------------------------------#
+# Echo commands before execution (used in scripts)
+#-----------------------------------------------------------------------------------------------#
 function run () {
   echo "$1"
   if [[ "${dry_run:-notset}" != "notset" ]]; then eval "$1"; fi
 }
 export -f run
 
-##-----------------------------------------------------------------------------------------------##
-## Reset the draco developer environment
-##-----------------------------------------------------------------------------------------------##
+#-----------------------------------------------------------------------------------------------#
+# Reset the draco developer environment
+#-----------------------------------------------------------------------------------------------#
 function rdde ()
 {
   unset DRACO_BASHRC_DONE
@@ -290,6 +294,19 @@ function rdde ()
   source "${DRACO_ENV_DIR}/bashrc/.bashrc"
 }
 export -f rdde
+
+# ------------------------------------------------------------------------------------------------ #
+# Start a Remote Desktop Session: `rdp mymachine`
+# ------------------------------------------------------------------------------------------------ #
+function rdp()
+{
+  if [[ $1 == "" ]]; then
+    echo "FATAL ERROR: expecting a machine name as an argument.  Example: 'rdp centipede'."
+    exit 1
+  fi
+  xfreerdp /sec:rdp +clipboard /dynamic-resolution /size:90% "/v:$1"
+}
+export -f rdp
 
 #--------------------------------------------------------------------------------------------------#
 # Quick remove: instead of 'rm -rf', mv the directory to .../trash/tmpname

@@ -112,7 +112,7 @@ double CDI::integratePlanckSpectrum(size_t const groupIndex, double const T) {
   const double upper_bound = frequencyGroupBoundaries[groupIndex];
   Check(upper_bound > lower_bound);
 
-  double integral = integratePlanckSpectrum(lower_bound, upper_bound, T);
+  double integral = rtt_cdi::integratePlanckSpectrum(lower_bound, upper_bound, T);
 
   Ensure(integral >= 0.0);
   Ensure(integral <= 1.0);
@@ -136,7 +136,7 @@ double CDI::integratePlanckSpectrum(const double T) {
   Check(upper_bound > lower_bound);
 
   // calculate the integral
-  double integral = integratePlanckSpectrum(lower_bound, upper_bound, T);
+  double integral = rtt_cdi::integratePlanckSpectrum(lower_bound, upper_bound, T);
 
   Ensure(integral >= 0.0 && integral <= 1.0);
 
@@ -165,7 +165,7 @@ double CDI::integrateRosselandSpectrum(size_t const groupIndex, double const T) 
   const double highFreq = frequencyGroupBoundaries[groupIndex];
   Check(highFreq > lowFreq);
 
-  double rosseland = integrateRosselandSpectrum(lowFreq, highFreq, T);
+  double rosseland = rtt_cdi::integrateRosselandSpectrum(lowFreq, highFreq, T);
 
   return rosseland;
 }
@@ -196,7 +196,7 @@ void CDI::integrate_Rosseland_Planckian_Spectrum(const size_t groupIndex, const 
   Check(highFreq > lowFreq);
 
   // Call the general frequency version
-  integrate_Rosseland_Planckian_Spectrum(lowFreq, highFreq, T, planck, rosseland);
+  rtt_cdi::integrate_Rosseland_Planckian_Spectrum(lowFreq, highFreq, T, planck, rosseland);
   return;
 }
 
