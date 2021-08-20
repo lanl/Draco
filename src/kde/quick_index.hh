@@ -130,7 +130,7 @@ private:
   // Map used to write local data to other processor ghost cells
   // put_window_map[global_id] = [put_rank, ghost_proc_buffer_size, ghost_proc_put_offset]
   // array is integers to accommodate mpi data types
-  std::map<size_t, std::vector<std::array<int, 3>>> put_window_map;
+  std::map<size_t, std::vector<std::array<int, 2>>> put_window_map;
   // max put buffer size;
   size_t max_put_buffer_size;
   const double pi = rtt_units::PI;
