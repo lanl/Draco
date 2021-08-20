@@ -417,6 +417,8 @@ for file in $modifiedfiles; do
   # ignore file if we do check for file extensions and the file does not match any of the
   # extensions specified in $FILE_EXTS
   if ! matches_extension "$file"; then continue; fi
+  # If this PR deletes a file, skip it
+  if ! [[ -f "${file}" ]]; then continue; fi
 
   file_nameonly=$(basename "${file}")
   tmpfile1="/tmp/$USER/copyright-${file_nameonly}"
