@@ -457,8 +457,11 @@ for file in $modifiedfiles; do
   [[ "${git_create_date}" -lt "2011" ]] && git_create_date="${create_date}"
 
   # Expected Copyright line:
-  ecrl="Copyright (C) ${git_create_date}-${today} Triad National Security, LLC., "
-  ecrl+="All rights reserved."
+  ecrl="Copyright (C) "
+  if [[ "${git_create_date}" != "${today}" ]]; then
+    ecrl+="${git_create_date}-"
+  fi
+  ecrl+="${today} Triad National Security, LLC., All rights reserved."
 
   # If existing copyright spans two lines, reduce it to one line.
   twolines=$(grep -A 1 Copyright "${tmpfile1}" | tail -n 1 | grep -c reserved)
