@@ -167,7 +167,7 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
               max_put_buffer_size = map.second.size();
 
             // build up map data
-            put_window_map[map.first].push_back(std::array<int, 3>{rec_proc, offset});
+            put_window_map[map.first].push_back(std::array<int, 2>{rec_proc, offset});
             offset += static_cast<int>(map.second.size());
           }
         }
