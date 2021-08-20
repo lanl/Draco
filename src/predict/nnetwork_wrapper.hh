@@ -76,7 +76,9 @@ private:
 class nnetwork_wrapper {
 public:
   //! load_network stub
-  void load_network(const std::string & /*net_file*/){};
+  void load_network(const std::string & /*net_file*/) {
+    Insist(false, "Neural Network Backend was not compiled into this build");
+  };
 
   //! predict stub
   std::vector<float> predict(std::vector<float> & /*signal*/, const long int /*input_size*/,

@@ -25,6 +25,8 @@ using namespace rtt_predict;
 //
 //
 void test_replication(ParallelUnitTest &ut) {
+
+#ifdef LIBTORCH
   std::string nn_file_name = "kde.pt";
   const int input_dim{100};
   const int output_dim{1};
@@ -40,14 +42,19 @@ void test_replication(ParallelUnitTest &ut) {
   } else {
     FAILMSG("KDE checks failed");
   }
-}
-
-void test_decomposition(ParallelUnitTest &ut) {
-  if (ut.numFails == 0) {
-    PASSMSG("KDE DD checks pass");
-  } else {
-    FAILMSG("KDE DD checks failed");
+#else
+  try {
+    nnetwork_interface net("junk");
+    FAILMSG("Failed to catch invalid NN backend error");
+  } catch (...) {
+    PASSMSG("Expected assertion caught: Not compiled with valid neural network backed");
   }
+  if (ut.numFails == 0) {
+    PASSMSG("KDE checks pass");
+  } else {
+    FAILMSG("KDE checks failed");
+  }
+#endif
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -56,8 +63,6 @@ int main(int argc, char *argv[]) {
   try {
     // >>> UNIT TESTS
     test_replication(ut);
-    if (nodes() == 3)
-      test_decomposition(ut);
   }
   UT_EPILOG(ut);
 }
