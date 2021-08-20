@@ -191,7 +191,7 @@ auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win) {
   // loop over all ranks we need to send this buffer too.
   for (auto &putv : put.second) {
     const int put_rank = putv[0];
-    const int put_offset = putv[2];
+    const int put_offset = putv[1];
     // This is dumb, but we need to write in chunks because MPI_Put writes
     // junk with large (>10,000) buffer sizes.
     int chunk_size = 1000;
