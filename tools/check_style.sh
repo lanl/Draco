@@ -119,6 +119,9 @@ t) fix_mode=0 ;;
 esac
 done
 
+# The copyright block check needs the full history
+run "git fetch --depth=1000000"
+
 #--------------------------------------------------------------------------------------------------#
 # Test C++ code with git-clang-format
 #--------------------------------------------------------------------------------------------------#
@@ -126,7 +129,8 @@ done
 echo -ne "\n--------------------------------------------------------------------------------\n"
 echo -ne "Checking modified C/C++ code for style conformance...\n\n"
 
-patchfile_c=$(mktemp /tmp/gcf.patch.XXXXXXXX)
+mkdir -p "/tmp/$USER" || die "Could not create /tmp/$USER"
+patchfile_c=$(mktemp "/tmp/$USER/gcf.patch.XXXXXXXX")
 
 # don't actually modify the files (originally we compared to branch 'develop', but let's try
 # ORIG_HEAD or maybe use CI variables like TRAVIS_BRANCH or CI_MERGE_REQUEST_TARGET_BRANCH_NAME).
@@ -157,7 +161,7 @@ else
     cat "${patchfile_c}"
   else
     echo -ne "      run clang-formt -i < file> to fix files, or"
-    echo -e  " run ${0##*/} with option -f to automatically apply this patch.\n"
+    echo -e  "      run ${0##*/} with option -f to automatically apply this patch.\n"
     cat "${patchfile_c}"
   fi
 fi
@@ -187,18 +191,21 @@ if [[ $CMF ]]; then
     echo "         partially disabled (cmake-format, cmake-lint)"
     unset CMF
   fi
-  if ! [[ -f "${rscriptdir}/../.cmake-format.py" ]]; then unset CMF; fi
+  if ! [[ -f "${rscriptdir}/../../.cmake-format.py" ]]; then
+    unset CMF;
+    echo "WARNING: Missing .cmake-format.py configuration file, skipping cmake-format checks."
+  fi
 fi
 
 DIFFVER=$(diff --version | head -n 1 | sed -e 's/.*[ ]\([0-9.]\)/\1/')
 [[ $(version_gt "3.4" "${DIFFVER}") ]] && DIFFCOLOR="--color"
 
-if [[ -x $CMF ]]; then
+if [[ -x "${CMF}" ]]; then
 
   echo -ne "\n--------------------------------------------------------------------------------\n"
   echo -ne "Checking modified CMake code for style conformance...\n\n"
 
-  patchfile_cmf=$(mktemp /tmp/cmf.patch.XXXXXXXX)
+  patchfile_cmf=$(mktemp "/tmp/$USER/cmf.patch.XXXXXXXX")
 
   # file types to parse.
   FILE_EXTS=".cmake"
@@ -213,7 +220,8 @@ if [[ -x $CMF ]]; then
     if ! matches_extension "$file"; then continue; fi
 
     file_nameonly=$(basename "${file}")
-    tmpfile1="/tmp/cmf-${file_nameonly}"
+    tmpfile1="/tmp/$USER/cmf-${file_nameonly}"
+    echo "==> cmake-format ${file}"
     cp -f "${file}" "${tmpfile1}"
     $CMF -c "${rscriptdir}/../.cmake-format.py" -i "${tmpfile1}" &> /dev/null
     # color output is possible if diff -version >= 3.4 with option `--color`
@@ -274,6 +282,7 @@ if [[ -x $CML ]]; then
   FILE_EXTS=".cmake"
   FILE_ENDINGS_INCLUDE="CMakeLists.txt"
   # FILE_ENDINGS_EXLCUDE=".cmake.in"
+  export FILE_EXTS FILE_ENDINGS_INCLUDE
 
   cml_issues=0
   # Loop over all modified cmake files.  Create one patch containing all changes to these files
@@ -325,8 +334,8 @@ if [[ -x "$FPY" ]]; then
   echo -ne "\n--------------------------------------------------------------------------------\n"
   echo -e "Checking modified F90 code for style conformance.\n"
 
-  patchfile_f90=$(mktemp /tmp/fpy.patch.XXXXXXXX)
-  lintfile_f90=$(mktemp /tmp/fpy.lint.XXXXXXXX)
+  patchfile_f90=$(mktemp "/tmp/$USER/fpy.patch.XXXXXXXX")
+  lintfile_f90=$(mktemp "/tmp/$USER/fpy.lint.XXXXXXXX")
 
   # file types to parse.
   FILE_EXTS=".f90 .F90 .f .F"
@@ -342,7 +351,7 @@ if [[ -x "$FPY" ]]; then
     if ! matches_extension "$file"; then continue; fi
 
     file_nameonly=$(basename "${file}")
-    tmpfile1="/tmp/f90-format-${file_nameonly}"
+    tmpfile1="/tmp/$USER/f90-format-${file_nameonly}"
 
     # 1. These issues can be fixed automatically.
     "$FPY" -sS "${file}" &> "${tmpfile1}"
@@ -394,12 +403,12 @@ fi
 echo -ne "\n--------------------------------------------------------------------------------\n"
 echo -e "Checking modified code for copyright block conformance.\n"
 
-patchfile_cb=$(mktemp /tmp/copyright_block.patch.XXXXXXXX)
+patchfile_cb=$(mktemp "/tmp/$USER/copyright_block.patch.XXXXXXXX")
 
 # file types to parse.
 FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .txt"
 #FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
-FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc"
+FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc check_style.sh"
 export FILE_EXTS FILE_ENDINGS_EXCLUDE
 
 # Loop over all modified files.  Create one patch containing all changes to these files
@@ -410,7 +419,7 @@ for file in $modifiedfiles; do
   if ! matches_extension "$file"; then continue; fi
 
   file_nameonly=$(basename "${file}")
-  tmpfile1="/tmp/copyright-${file_nameonly}"
+  tmpfile1="/tmp/$USER/copyright-${file_nameonly}"
 
   # Copy the file and attempt update it.
   cp "${file}" "${tmpfile1}"
@@ -449,7 +458,7 @@ for file in $modifiedfiles; do
 
   # Expected Copyright line:
   ecrl="Copyright (C) ${git_create_date}-${today} Triad National Security, LLC., "
-  ecrl+=" All rights reserved."
+  ecrl+="All rights reserved."
 
   # If existing copyright spans two lines, reduce it to one line.
   twolines=$(grep -A 1 Copyright "${tmpfile1}" | tail -n 1 | grep -c reserved)

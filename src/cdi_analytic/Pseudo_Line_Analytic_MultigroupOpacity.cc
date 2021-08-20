@@ -158,7 +158,7 @@ sf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double T, double /*
         for (unsigned ig = 0; ig < qpoints_; ++ig) {
           double const x = (ig + 0.5) * (g1 - g0) / qpoints_ + g0;
 
-          double w = CDI::integrateRosselandSpectrum(g0, g1, T);
+          double w = rtt_cdi::integrateRosselandSpectrum(g0, g1, T);
 
           t += w / monoOpacity(x, T);
           b += w;
@@ -194,7 +194,7 @@ sf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double T, double /*
         for (unsigned ig = 0; ig < qpoints_; ++ig) {
           double const x = (ig + 0.5) * (g1 - g0) / qpoints_ + g0;
 
-          double w = CDI::integratePlanckSpectrum(g0, g1, T);
+          double w = rtt_cdi::integratePlanckSpectrum(g0, g1, T);
 
           t += w * monoOpacity(x, T);
           b += w;
