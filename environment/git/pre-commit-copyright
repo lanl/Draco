@@ -75,18 +75,21 @@ function rewrite_copyright_block()
   debugprint "$create_date $git_last_mod_date $git_create_date"
 
   # Sanity Checks
-  [[ "${create_date}" =~ "Copyright" ]] && die "Failed to parse copyright line (err 1)"
-  # [[ "${mod_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
-  [[ "${git_last_mod_date}" =~ "Copyright" ]] && die "Failed to parse copyright line (err 2)"
-  [[ "${git_create_date}" =~ "Copyright" ]] && die "Failed to parse copyright line (err 3)"
+  [[ "${create_date}" =~ "Copyright" ]] && echo "Failed to parse copyright line (err 1)" && exit 1
+  # [[ "${mod_date}" =~ "Copyright" ]] && echo "Failed to parse copyright line" && exit 1
+  [[ "${git_last_mod_date}" =~ "Copyright" ]] && echo "Failed to parse copyright line (err 2)" &&
+    exit 1
+  [[ "${git_create_date}" =~ "Copyright" ]] && echo "Failed to parse copyright line (err 3)" &&
+    exit 1
+
   if [[ "${create_date}" -gt "${today}" ]] || [[ "${create_date}" -lt "1990" ]]; then
-    die "Existing copyright date range is corrupt. Please fix $filename manually."
+    echo "Existing copyright date range is corrupt. Please fix $filename manually." && exit 1
   fi
   if [[ "${git_create_date}" -gt "${today}" ]] || [[ "${git_create_date}" -lt "1990" ]]; then
-    die "Existing copyright date range is corrupt. Please fix $filename manually."
+    echo "Existing copyright date range is corrupt. Please fix $filename manually." && exit 1
   fi
   if [[ "${create_date}" -gt "${today}" ]] || [[ "${create_date}" -lt "1990" ]]; then
-    die "Existing copyright date range is corrupt. Please fix $filename manually."
+    echo "Existing copyright date range is corrupt. Please fix $filename manually." && exit 1
   fi
 
   # We converted from CVS to svn in 2010. This is the oldest create date that git will report.  In
@@ -94,15 +97,23 @@ function rewrite_copyright_block()
   [[ "${git_create_date}" -lt "2011" ]] && git_create_date="${create_date}"
 
   # Expected Copyright line:
-  local ecrl="Copyright (C) ${git_create_date}-${today} Triad National Security, LLC., "
-  ecrl+="All rights reserved."
-  debugprint "ecrl = $ecrl"
+  local ecrl="Copyright (C) "
+  if [[ "${git_create_date}" != "${today}" ]]; then
+    ecrl+="${git_create_date}-"
+  fi
+  ecrl+="${today} Triad National Security, LLC., All rights reserved."
 
   # If existing copyright spans two lines, reduce it to one line.
   local twolines
   twolines=$(grep -A 1 Copyright "${filename}" | tail -n 1 | grep -c reserved)
+  local twolines_closes_cpp_comment
+  twolines_closes_cpp_comment=$(grep -A 1 Copyright "${filename}" | tail -n 1 | grep -c '[*]/')
   if [[ $twolines -gt 0 ]]; then
-    sed -i 's/All rights reserved[.]*//' "${filename}"
+    if [[ $twolines_closes_cpp_comment -gt 0 ]]; then
+      sed -i 's%^.*All rights reserved[.]*$% */%' "${filename}"
+    else
+      sed -i '/All rights reserved/d' "${filename}"
+    fi
   fi
 
   # Do we have terminating comement character on the 'copyright' line.  If so, keep it.
@@ -120,7 +131,7 @@ suffix="$(date +%s)"
 
 # clean up any older fprettify patches
 # $DELETE_OLD_PATCHES && rm -f /tmp/$USER/$prefix-*. &> /dev/null
-mkdir -p "/tmp/$USER" || die "Could not create /tmp/$USER"
+mkdir -p "/tmp/$USER" || ( echo "Could not create /tmp/$USER" && exit 1 )
 patchfile=$(mktemp "/tmp/$USER/${prefix}-${suffix}.patch.XXXXXXXX")
 
 # create one patch containing all changes to the files
