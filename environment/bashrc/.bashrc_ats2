@@ -45,7 +45,7 @@ else
   module use --append /usr/gapps/jayenne/Modules
   module unuse /usr/share/lmod/lmod/modulefiles/Core
   module unuse /collab/usr/global/tools/modulefiles/blueos_3_ppc64le_ib_p9/Core
-  module load draco/lapse-xl-gpu-1.7.0
+  module load lapse/1.8.0-xl
 fi
 
 # Do not escape $ for bash completion
