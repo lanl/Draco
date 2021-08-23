@@ -147,6 +147,10 @@ void X3D_Draco_Mesh_Reader::read_mesh() {
     auto const &matids = parsed_pairs[dist].second;
     dist++;
     for (auto const &id : matids) {
+      if (i >= x3d_matids.size()) {
+        // Yes, this can happen, if the file is corrupted the right (wrong?) way
+        throw std::invalid_argument("wrong number of matids in x3d file " + filename);
+      }
       x3d_matids[i++] = id;
     }
   }
