@@ -52,7 +52,7 @@ if(NOT CUDA_FLAGS_INITIALIZED)
       "yes"
       CACHE INTERNAL "using draco settings.")
 
-  string(APPEND CMAKE_CUDA_FLAGS " -G --expt-relaxed-constexpr")
+  string(APPEND CMAKE_CUDA_FLAGS " -g --expt-relaxed-constexpr")
   string(APPEND CMAKE_CUDA_FLAGS " --expt-extended-lambda")
   if(CMAKE_CXX_COMPILER_ID MATCHES "XL")
     string(APPEND CMAKE_CUDA_FLAGS " -DCUB_IGNORE_DEPRECATED_CPP_DIALECT"
