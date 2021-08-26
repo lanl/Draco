@@ -115,8 +115,7 @@ public:
   const std::array<double, 3> sphere_center;
   const size_t coarse_bin_resolution;
   const double max_window_size;
-  // keep a mutable copy of the locations (can be change to spherical)
-  std::vector<std::array<double, 3>> locations;
+  const std::vector<std::array<double, 3>> locations;
   const size_t n_locations;
 
   // Global bounds
