@@ -3,17 +3,17 @@
  * \file   kde/quick_index.cc
  * \author Mathew Cleveland
  * \brief  Explicitly defined quick_index functions.
- * \note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved. 
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
 #include "quick_index.hh"
 #include "ds++/dbc.hh"
-#include <cmath>
 #include <numeric>
 #include <tuple>
 
 namespace rtt_kde {
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief quick_index constructor. 
@@ -33,9 +33,13 @@ namespace rtt_kde {
  */
 quick_index::quick_index(const size_t dim_, const std::vector<std::array<double, 3>> &locations_,
                          const double max_window_size_, const size_t bins_per_dimension_,
-                         const bool domain_decomposed_)
-    : dim(dim_), domain_decomposed(domain_decomposed_), coarse_bin_resolution(bins_per_dimension_),
-      max_window_size(max_window_size_), locations(locations_), n_locations(locations_.size()) {
+                         const bool domain_decomposed_, const bool spherical_,
+                         const std::array<double, 3> &sphere_center_)
+    : dim(dim_), domain_decomposed(domain_decomposed_), spherical(spherical_),
+      sphere_center(sphere_center_), coarse_bin_resolution(bins_per_dimension_),
+      max_window_size(max_window_size_),
+      locations(spherical ? transform_spherical(dim_, sphere_center_, locations_) : locations_),
+      n_locations(locations_.size()) {
   Require(dim > 0);
   Require(coarse_bin_resolution > 0);
 
@@ -62,15 +66,27 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
     local_bounding_box_min = bounding_box_min;
     local_bounding_box_max = bounding_box_max;
     for (size_t d = 0; d < dim; d++) {
-      local_bounding_box_min[d] -= max_window_size * 0.5;
-      local_bounding_box_max[d] += max_window_size * 0.5;
+      double wsize = max_window_size * 0.5;
+      if (spherical && d == 1) {
+        // Transform to dtheta via arch_lenght=r*dtheta
+        // enforce a 90 degree maximum angle
+        wsize = std::min(rtt_units::PI / 2, 0.5 * max_window_size / local_bounding_box_max[0]);
+      }
+      local_bounding_box_min[d] -= wsize;
+      local_bounding_box_max[d] += wsize;
+      // No negative radius values
+      if (spherical && d == 0)
+        local_bounding_box_min[d] = std::max(0.0, local_bounding_box_min[d]);
     }
     // Global reduce to get the global min and max
     rtt_c4::global_min(&bounding_box_min[0], 3);
     rtt_c4::global_max(&bounding_box_max[0], 3);
-    for (size_t d = 0; d < dim; d++) {
-      local_bounding_box_min[d] = std::max(local_bounding_box_min[d], bounding_box_min[d]);
-      local_bounding_box_max[d] = std::min(local_bounding_box_max[d], bounding_box_max[d]);
+    if (!spherical) {
+      // spherical theta bounds can exceed global bounds because the window wraps around theta=0.
+      for (size_t d = 0; d < dim; d++) {
+        local_bounding_box_min[d] = std::max(local_bounding_box_min[d], bounding_box_min[d]);
+        local_bounding_box_max[d] = std::min(local_bounding_box_max[d], bounding_box_max[d]);
+      }
     }
   }
 
@@ -409,10 +425,15 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
   for (size_t d = 0; d < dim; d++) {
     // because local bounds can extend beyond the mesh we need to force a
     // positive index if necessary
+    double wmin = window_min[d];
+    if (spherical && d == 1 && window_min[d] < bounding_box_min[d])
+      wmin = bounding_box_min[d]; // truncate to standard theta space
+    double wmax = window_max[d];
+    if (spherical && d == 1 && window_max[d] > bounding_box_max[d])
+      wmax = bounding_box_max[d]; // truncate to standard theta space
     index_min[d] = static_cast<size_t>(std::floor(std::max(
-        crd * (window_min[d] - bounding_box_min[d]) / (bounding_box_max[d] - bounding_box_min[d]),
-        0.0)));
-    index_max[d] = static_cast<size_t>(std::floor(crd * (window_max[d] - bounding_box_min[d]) /
+        crd * (wmin - bounding_box_min[d]) / (bounding_box_max[d] - bounding_box_min[d]), 0.0)));
+    index_max[d] = static_cast<size_t>(std::floor(crd * (wmax - bounding_box_min[d]) /
                                                   (bounding_box_max[d] - bounding_box_min[d])));
     // because local bounds can extend beyond the mesh we need to floor to
     // the max bin size
@@ -436,22 +457,84 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
       }
     }
   }
+
+  // Fill in the overflow around theta=0.0
+  if (spherical && (window_min[1] < 0.0 || window_max[1] > 2.0 * rtt_units::PI)) {
+    // Only one bound of the window should every overshoot zero
+    Check(!(window_min[1] < 0.0 && window_max[1] > 2.0 * rtt_units::PI));
+    size_t overlap_nbins = 1;
+    for (size_t d = 0; d < dim; d++) {
+      // because local bounds can extend beyond the mesh we need to force a
+      // positive index if necessary
+      double wmin = window_min[d];
+      double wmax = window_max[d];
+      if (spherical && d == 1 && window_min[d] < 0.0) {
+        // Capture the overshoot theta space
+        wmin = std::min(2.0 * rtt_units::PI - window_min[d], bounding_box_max[d]);
+        wmax = 2.0 * rtt_units::PI;
+      }
+      if (spherical && d == 1 && window_max[d] > 2.0 * rtt_units::PI) {
+        // Capture the overshoot theta space
+        wmin = 0.0;
+        wmax = std::max(2.0 * rtt_units::PI - window_max[d], bounding_box_min[d]);
+      }
+      // Truncate based on global space
+      if (spherical && d == 1 && wmin < bounding_box_min[d])
+        wmin = bounding_box_min[d]; // truncate to standard theta space
+      if (spherical && d == 1 && wmax > bounding_box_max[d])
+        wmax = bounding_box_max[d]; //trunacte to standard theta space
+      index_min[d] = static_cast<size_t>(std::floor(std::max(
+          crd * (wmin - bounding_box_min[d]) / (bounding_box_max[d] - bounding_box_min[d]), 0.0)));
+      index_max[d] = static_cast<size_t>(std::floor(std::max(
+          crd * (wmax - bounding_box_min[d]) / (bounding_box_max[d] - bounding_box_min[d]), 0.0)));
+      // because local bounds can extend beyond the mesh we need to floor to
+      // the max bin size
+      index_min[d] = std::min(index_min[d], coarse_bin_resolution - 1);
+      index_max[d] = std::min(index_max[d], coarse_bin_resolution - 1);
+
+      // Use multiplicity to accumulate total bins;
+      if ((index_max[d] - index_min[d]) > 0)
+        overlap_nbins *= index_max[d] - index_min[d] + 1;
+    }
+    for (size_t k = index_min[2]; k <= index_max[2]; k++) {
+      for (size_t j = index_min[1]; j <= index_max[1]; j++) {
+        for (size_t i = index_min[0]; i <= index_max[0]; i++) {
+          size_t bin_index =
+              i + j * coarse_bin_resolution + k * coarse_bin_resolution * coarse_bin_resolution;
+          // make sure we don't duplicate a bin here
+          if (std::find(bin_list.begin(), bin_list.end(), bin_index) == bin_list.end()) {
+            bin_list.push_back(bin_index);
+          }
+        }
+      }
+    }
+  }
+
   return bin_list;
 }
 
 //------------------------------------------------------------------------------------------------//
 // Lambda for getting the mapped window bin
-auto get_window_bin = [](const auto dim, const auto &grid_bins, const auto &location,
-                         const auto &window_min, const auto &window_max,
+auto get_window_bin = [](auto spherical, const auto dim, const auto &grid_bins,
+                         const auto &location, const auto &window_min, const auto &window_max,
                          const auto &Remember(n_map_bins)) {
   // calculate local bin index
   bool valid = true;
   std::array<size_t, 3> bin_id{0, 0, 0};
-  std::array<double, 3> bin_center{0, 0, 0};
+  double distance_to_bin_center = 0.0;
   for (size_t d = 0; d < dim; d++) {
     Check((window_max[d] - window_min[d]) > 0.0);
-    const double bin_value = static_cast<double>(grid_bins[d]) * (location[d] - window_min[d]) /
-                             (window_max[d] - window_min[d]);
+    double loc = location[d];
+    // transform location for zero theta overshoot
+    if (spherical && d == 1 && window_max[d] > 2.0 * rtt_units::PI &&
+        location[d] < window_max[d] - 2.0 * rtt_units::PI)
+      loc += 2.0 * rtt_units::PI;
+    // transform location for zero theta overshoot
+    if (spherical && d == 1 && window_min[d] < 0 &&
+        location[d] > 2.0 * rtt_units::PI - window_min[d])
+      loc -= 2.0 * rtt_units::PI;
+    const double bin_value =
+        static_cast<double>(grid_bins[d]) * (loc - window_min[d]) / (window_max[d] - window_min[d]);
     if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
       valid = false;
       break;
@@ -459,93 +542,36 @@ auto get_window_bin = [](const auto dim, const auto &grid_bins, const auto &loca
       bin_id[d] = static_cast<size_t>(bin_value);
       // catch any values exactly on the edge of the top bin
       bin_id[d] = std::min(grid_bins[d] - 1, bin_id[d]);
-      bin_center[d] =
+      const double bin_center =
           window_min[d] + (static_cast<double>(bin_id[d]) / static_cast<double>(grid_bins[d]) +
                            0.5 / static_cast<double>(grid_bins[d])) *
                               (window_max[d] - window_min[d]);
+      // approximate in spherical geometry;
+      distance_to_bin_center += (bin_center - loc) * (bin_center - loc);
     }
   }
+  distance_to_bin_center =
+      rtt_dsxx::soft_equiv(distance_to_bin_center, 0.0) ? 0.0 : sqrt(distance_to_bin_center);
   const size_t local_window_bin =
       bin_id[0] + bin_id[1] * grid_bins[0] + bin_id[2] * grid_bins[0] * grid_bins[1];
 
   Check(valid ? local_window_bin < n_map_bins : true);
 
-  return std::tuple<bool, size_t, std::array<double, 3>>{valid, local_window_bin, bin_center};
-};
-
-//------------------------------------------------------------------------------------------------//
-// Lambda for getting the mapped window bin
-auto get_sphere_window_bin = [](const auto &grid_bins, const auto &location, const auto &window_min,
-                                const auto &window_max, const auto &Remember(n_map_bins),
-                                const auto pi) {
-  // calculate local bin index
-  bool valid = true;
-  std::array<size_t, 3> bin_id{0, 0, 0};
-  std::array<double, 3> bin_center{0, 0, 0};
-  {
-    Check((window_max[0] - window_min[0]) > 0.0);
-    const double bin_value = static_cast<double>(grid_bins[0]) * (location[0] - window_min[0]) /
-                             (window_max[0] - window_min[0]);
-    if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[0])) {
-      valid = false;
-    } else {
-      bin_id[0] = static_cast<size_t>(bin_value);
-      // catch any values exactly on the edge of the top bin
-      bin_id[0] = std::min(grid_bins[0] - 1, bin_id[0]);
-      bin_center[0] =
-          window_min[0] + (static_cast<double>(bin_id[0]) / static_cast<double>(grid_bins[0]) +
-                           0.5 / static_cast<double>(grid_bins[0])) *
-                              (window_max[0] - window_min[0]);
-    }
-  }
-  if (valid) {
-    // catch the window that wraps around the zero theta location
-    const double theta_location =
-        (window_max[1] - window_min[1]) > 0.0
-            ? location[1]
-            : location[1] < window_max[1] ? location[1] + 2 * pi : location[1];
-    const double theta_max =
-        (window_max[1] - window_min[1]) > 0.0 ? window_max[1] : 2 * pi + window_max[1];
-    Check(!((theta_max - window_min[1]) < 0.0));
-    const double bin_value = static_cast<double>(grid_bins[1]) * (theta_location - window_min[1]) /
-                             (theta_max - window_min[1]);
-    if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[1])) {
-      valid = false;
-    } else {
-      bin_id[1] = static_cast<size_t>(bin_value);
-      // catch any values exactly on the edge of the top bin
-      bin_id[1] = std::min(grid_bins[1] - 1, bin_id[1]);
-      bin_center[1] =
-          window_min[1] + (static_cast<double>(bin_id[1]) / static_cast<double>(grid_bins[1]) +
-                           0.5 / static_cast<double>(grid_bins[1])) *
-                              (theta_max - window_min[1]);
-      bin_center[1] = bin_center[1] < 2.0 * pi ? bin_center[1] : bin_center[1] - 2.0 * pi;
-    }
-  }
-
-  const size_t local_window_bin =
-      bin_id[0] + bin_id[1] * grid_bins[0] + bin_id[2] * grid_bins[0] * grid_bins[1];
-
-  Check(valid ? local_window_bin < n_map_bins : true);
-
-  return std::tuple<bool, size_t, std::array<double, 3>>{valid, local_window_bin, bin_center};
+  return std::tuple<bool, size_t, double>{valid, local_window_bin, distance_to_bin_center};
 };
 
 //------------------------------------------------------------------------------------------------//
 // Lambda for mapping the data
 auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, auto &min_distance,
-                   const auto &dim, const auto &map_type, const auto &data, const auto &bin_center,
-                   const auto &location, const auto &local_window_bin, const auto &data_bin) {
+                   const auto &dim, const auto &map_type, const auto &data,
+                   const auto &distance_to_bin_center, const auto &location,
+                   const auto &local_window_bin, const auto &data_bin) {
   // regardless of map type if it is the first value to enter the bin it
   // gets set to that value
   if (data_count[local_window_bin] == 0) {
     bias_cell_count += 1.0;
     data_count[local_window_bin]++;
-    double distance = 0.0;
-    for (size_t d = 0; d < dim; d++) {
-      distance += (location[d] - bin_center[d]) * (location[d] - bin_center[d]);
-    }
-    min_distance[local_window_bin] = sqrt(distance);
+    min_distance[local_window_bin] = distance_to_bin_center;
     grid_data[local_window_bin] = data[data_bin];
   } else if (map_type == "max") {
     if (data[data_bin] > grid_data[local_window_bin])
@@ -557,16 +583,11 @@ auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, aut
     data_count[local_window_bin] += 1;
     grid_data[local_window_bin] += data[data_bin];
   } else if (map_type == "nearest") {
-    double distance = 0.0;
-    for (size_t d = 0; d < dim; d++) {
-      distance += (location[d] - bin_center[d]) * (location[d] - bin_center[d]);
-    }
-    distance = sqrt(distance);
-    if (rtt_dsxx::soft_equiv(distance, min_distance[local_window_bin])) {
+    if (rtt_dsxx::soft_equiv(distance_to_bin_center, min_distance[local_window_bin])) {
       data_count[local_window_bin] += 1;
       grid_data[local_window_bin] += data[data_bin];
-    } else if (distance < min_distance[local_window_bin]) {
-      min_distance[local_window_bin] = distance;
+    } else if (distance_to_bin_center < min_distance[local_window_bin]) {
+      min_distance[local_window_bin] = distance_to_bin_center;
       data_count[local_window_bin] = 1;
       grid_data[local_window_bin] = data[data_bin];
     } // else exclude the far points.
@@ -607,9 +628,9 @@ void quick_index::map_data_to_grid_window(
   Require(domain_decomposed
               ? (fabs(window_max[0] - window_min[0]) - max_window_size) / max_window_size < 1e-6
               : true);
-  Require(domain_decomposed
-              ? (fabs(window_max[1] - window_min[1]) - max_window_size) / max_window_size < 1e-6
-              : true);
+  Remember(double ymax = spherical ? std::min(rtt_units::PI / 2.0, max_window_size / window_max[0])
+                                   : max_window_size);
+  Require(domain_decomposed ? (fabs(window_max[1] - window_min[1]) - ymax) / ymax < 1e-6 : true);
   Require(domain_decomposed
               ? (fabs(window_max[2] - window_min[2]) - max_window_size) / max_window_size < 1e-6
               : true);
@@ -674,9 +695,9 @@ void quick_index::map_data_to_grid_window(
       for (auto &l : mapItr->second) {
         bool valid;
         size_t local_window_bin;
-        std::array<double, 3> bin_center;
-        std::tie(valid, local_window_bin, bin_center) =
-            get_window_bin(dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
+        double distance_to_bin_center;
+        std::tie(valid, local_window_bin, distance_to_bin_center) = get_window_bin(
+            spherical, dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
 
         // If the bin is outside the window continue to the next poin
         if (!valid)
@@ -684,7 +705,7 @@ void quick_index::map_data_to_grid_window(
 
         // lambda for mapping the data
         map_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type, local_data,
-                 bin_center, locations[l], local_window_bin, l);
+                 distance_to_bin_center, locations[l], local_window_bin, l);
 
       } // end local point loop
     }   // if valid local bin loop
@@ -696,9 +717,10 @@ void quick_index::map_data_to_grid_window(
         for (auto &g : gmapItr->second) {
           bool valid;
           size_t local_window_bin;
-          std::array<double, 3> bin_center;
-          std::tie(valid, local_window_bin, bin_center) = get_window_bin(
-              dim, grid_bins, local_ghost_locations[g], window_min, window_max, n_map_bins);
+          double distance_to_bin_center;
+          std::tie(valid, local_window_bin, distance_to_bin_center) =
+              get_window_bin(spherical, dim, grid_bins, local_ghost_locations[g], window_min,
+                             window_max, n_map_bins);
 
           // If the bin is outside the window continue to the next poin
           if (!valid)
@@ -706,7 +728,7 @@ void quick_index::map_data_to_grid_window(
 
           // lambda for mapping the data
           map_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type, ghost_data,
-                   bin_center, local_ghost_locations[g], local_window_bin, g);
+                   distance_to_bin_center, local_ghost_locations[g], local_window_bin, g);
         } // end ghost point loop
       }   // if valid ghost bin
     }     // if dd
@@ -763,17 +785,14 @@ void quick_index::map_data_to_grid_window(
 // Lambda for mapping the vector data
 auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data,
                           auto &min_distance, const auto &dim, const auto &map_type,
-                          const auto &data, const auto &bin_center, const auto &location,
-                          const auto &local_window_bin, const auto &data_bin, const auto &vsize) {
+                          const auto &data, const auto &distance_to_bin_center,
+                          const auto &location, const auto &local_window_bin, const auto &data_bin,
+                          const auto &vsize) {
   // regardless of map type if it is the first value to enter the bin it gets set to that value
   if (data_count[local_window_bin] == 0) {
     bias_cell_count += 1.0;
     data_count[local_window_bin]++;
-    double distance = 0.0;
-    for (size_t d = 0; d < dim; d++) {
-      distance += (location[d] - bin_center[d]) * (location[d] - bin_center[d]);
-    }
-    min_distance[local_window_bin] = sqrt(distance);
+    min_distance[local_window_bin] = distance_to_bin_center;
     for (size_t v = 0; v < vsize; v++)
       grid_data[v][local_window_bin] = data[v][data_bin];
   } else if (map_type == "max") {
@@ -789,17 +808,12 @@ auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_da
     for (size_t v = 0; v < vsize; v++)
       grid_data[v][local_window_bin] += data[v][data_bin];
   } else if (map_type == "nearest") {
-    double distance = 0.0;
-    for (size_t d = 0; d < dim; d++) {
-      distance += (location[d] - bin_center[d]) * (location[d] - bin_center[d]);
-    }
-    distance = sqrt(distance);
-    if (rtt_dsxx::soft_equiv(distance, min_distance[local_window_bin])) {
+    if (rtt_dsxx::soft_equiv(distance_to_bin_center, min_distance[local_window_bin])) {
       data_count[local_window_bin] += 1;
       for (size_t v = 0; v < vsize; v++)
         grid_data[v][local_window_bin] += data[v][data_bin];
-    } else if (distance < min_distance[local_window_bin]) {
-      min_distance[local_window_bin] = distance;
+    } else if (distance_to_bin_center < min_distance[local_window_bin]) {
+      min_distance[local_window_bin] = distance_to_bin_center;
       data_count[local_window_bin] = 1;
       for (size_t v = 0; v < vsize; v++)
         grid_data[v][local_window_bin] = data[v][data_bin];
@@ -845,536 +859,10 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
   Require(domain_decomposed
               ? (fabs(window_max[0] - window_min[0]) - max_window_size) / max_window_size < 1e-6
               : true);
-  Require(domain_decomposed
-              ? (fabs(window_max[1] - window_min[1]) - max_window_size) / max_window_size < 1e-6
-              : true);
-  Require(domain_decomposed
-              ? (fabs(window_max[2] - window_min[2]) - max_window_size) / max_window_size < 1e-6
-              : true);
-
-  bool fill = false;
-  std::string map_type = map_type_in;
-  if (map_type_in == "max_fill") {
-    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
-           "one of grid bins must be == 1, Grid must be 1D to use max_fill option");
-    fill = true;
-    map_type = "max";
-  } else if (map_type_in == "min_fill") {
-    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
-           "one of grid bins must be == 1, Grid must be 1D to use min_fill option");
-    fill = true;
-    map_type = "min";
-  } else if (map_type_in == "ave_fill") {
-    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
-           "one of grid bins must be == 1, Grid must be 1D to use ave_fill option");
-    fill = true;
-    map_type = "ave";
-  } else if (map_type_in == "nearest_fill") {
-    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
-           "one of grid bins must be == 1, Grid must be 1D to use ave_fill option");
-    fill = true;
-    map_type = "nearest";
-  }
-
-  for (size_t d = 0; d < dim; d++)
-    Insist(grid_bins[d] > 0, "Bin size must be greater then zero for each active dimension");
-
-  const size_t vsize = local_data.size();
-  // Grab the global bins that lie in this window
-  std::vector<size_t> global_bins = window_coarse_index_list(window_min, window_max);
-  size_t n_map_bins = 1;
-  for (size_t d = 0; d < dim; d++) {
-    n_map_bins *= grid_bins[d];
-  }
-
-  for (size_t v = 0; v < vsize; v++) {
-    Insist(grid_data[v].size() == n_map_bins,
-           "grid_data[" + std::to_string(v) +
-               "] must match the flatten grid_bin size for the active dimensions (in 3d "
-               "grid_data.size()==grib_bins[0]*grid_bins[1]*grid_bins[2])");
-    std::fill(grid_data[v].begin(), grid_data[v].end(), 0.0);
-  }
-
-  // initialize grid data
-  std::vector<int> data_count(n_map_bins, 0);
-  std::vector<double> min_distance(n_map_bins, 0);
-  double bias_cell_count = 0.0;
-  // Loop over all possible bins
-  for (auto &cb : global_bins) {
-    // skip bins that aren't present in the map (can't use [] operator with constness)
-    // loop over the local data
-    auto mapItr = coarse_index_map.find(cb);
-    if (mapItr != coarse_index_map.end()) {
-      for (auto &l : mapItr->second) {
-        bool valid;
-        size_t local_window_bin;
-        std::array<double, 3> bin_center;
-        std::tie(valid, local_window_bin, bin_center) =
-            get_window_bin(dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
-        // If the bin is outside the window continue to the next poin
-        if (!valid)
-          continue;
-        Check(local_window_bin < n_map_bins);
-        map_vector_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type,
-                        local_data, bin_center, locations[l], local_window_bin, l, vsize);
-      } // end local point loop
-    }   // if valid local bin loop
-    if (domain_decomposed) {
-      // loop over the ghost data
-      auto gmapItr = local_ghost_index_map.find(cb);
-      if (gmapItr != local_ghost_index_map.end()) {
-        // loop over ghost data
-        for (auto &g : gmapItr->second) {
-          bool valid;
-          size_t local_window_bin;
-          std::array<double, 3> bin_center;
-          std::tie(valid, local_window_bin, bin_center) = get_window_bin(
-              dim, grid_bins, local_ghost_locations[g], window_min, window_max, n_map_bins);
-
-          // If the bin is outside the window continue to the next poin
-          if (!valid)
-            continue;
-          map_vector_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type,
-                          ghost_data, bin_center, local_ghost_locations[g], local_window_bin, g,
-                          vsize);
-        } // end ghost point loop
-      }   // if valid ghost bin
-    }     // if dd
-  }       // end coarse bin loop
-
-  if (map_type == "ave" || map_type == "nearest") {
-    for (size_t i = 0; i < n_map_bins; i++) {
-      for (size_t v = 0; v < vsize; v++) {
-        if (data_count[i] > 0) {
-          grid_data[v][i] /= data_count[i];
-        }
-      }
-    }
-  }
-  if (fill) {
-    std::vector<double> last_val(vsize, 0.0);
-    int last_data_count = 0;
-    for (size_t i = 0; i < n_map_bins; i++) {
-      for (size_t v = 0; v < vsize; v++) {
-        if (data_count[i] > 0) {
-          last_val[v] = grid_data[v][i];
-          last_data_count = data_count[i];
-        } else {
-          grid_data[v][i] = last_val[v];
-          if (v == vsize - 1)
-            data_count[i] = last_data_count;
-        }
-      }
-    }
-  }
-
-  if (bias && normalize) {
-    // return a positive normalized distribution
-    for (size_t v = 0; v < vsize; v++) {
-      const double bias_value =
-          fabs(std::min(0.0, *std::min_element(grid_data[v].begin(), grid_data[v].end())));
-      const double sum = std::accumulate(grid_data[v].begin(), grid_data[v].end(), 0.0) +
-                         bias_value * bias_cell_count;
-      // catch zero instance
-      const double scale = !rtt_dsxx::soft_equiv(sum, 0.0) ? 1.0 / sum : 1.0;
-      for (size_t i = 0; i < n_map_bins; i++)
-        if (data_count[i] > 0)
-          grid_data[v][i] = (grid_data[v][i] + bias_value) * scale;
-    }
-  } else if (bias) {
-    // return a positive distribution
-    for (size_t v = 0; v < vsize; v++) {
-      const double bias_value =
-          fabs(std::min(0.0, *std::min_element(grid_data[v].begin(), grid_data[v].end())));
-      for (size_t i = 0; i < n_map_bins; i++)
-        if (data_count[i] > 0)
-          grid_data[v][i] += bias_value;
-    }
-  } else if (normalize) {
-    // return a normalized distribution
-    for (size_t v = 0; v < vsize; v++) {
-      const double sum = std::accumulate(grid_data[v].begin(), grid_data[v].end(), 0.0);
-      // catch zero instance
-      const double scale = !rtt_dsxx::soft_equiv(sum, 0.0) ? 1.0 / sum : 1.0;
-      for (size_t i = 0; i < n_map_bins; i++)
-        if (data_count[i] > 0)
-          grid_data[v][i] *= scale;
-    }
-  }
-}
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief Transform (x, y, z) position to (r, theta, phi) grid
- *
- * Calculate a relative r theta and phi coordinate relative to a sphere center location from a
- * standard (x,y,z) or (r,z) coordinates
- *
- * \param[in] sphere_center center of sphere in (x,y,z) or (r,z) coordinates
- * \param[in] location (x,y,z) or (r,z) location to transform to relative (r, theta, phi) space.
- *
- * \return relative r theta phi location
- */
-std::array<double, 3> quick_index::transform_r_theta(const std::array<double, 3> &sphere_center,
-                                                     const std::array<double, 3> &location) const {
-  Insist(dim == 2, "Transform_r_theta Only implemented in 2d");
-  const std::array<double, 3> v{location[0] - sphere_center[0], location[1] - sphere_center[1],
-                                0.0};
-  const double r = sqrt(v[0] * v[0] + v[1] * v[1]);
-  const double mag = sqrt(v[0] * v[0] + v[1] * v[1]);
-  double cos_theta = mag > 0.0 ? std::max(std::min(v[1] / mag, 1.0), -1.0) : 0.0;
-  return std::array<double, 3>{
-      r, location[0] < sphere_center[0] ? 2.0 * pi - acos(cos_theta) : acos(cos_theta), 0.0};
-}
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief Calculate the bounding box of a wedge
- *
- * Calculates the (x,y,0.0) min and max bounds for a pre-defined wedge [origin (x,y,z),
- * wedge_xyz_center (x,y,z), wedge_dr_dtheta (dr, dtheta, 0.0)]. This computes the bounding box for
- * the truncated wedge (bounded by rmin and rmax).
- *
- *                                  win_max
- *               ---------------(xmax,ymax,0.0)
- *               |       x      | __
- *               |      /|\     |  
- *               |     / | \    | dr
- *               |    /  *  \   | --
- *               |   /   |   \  | dr
- *     win_min   |  / dt | dt \ |__
- * (xmin,ymin,0.0)---------------
- *
- * '*' is the geometric center (not the centroid) 
- * 'x' is the wedge_origin (or center of the spherical grid)
- *
- * \param[in] wedge_xyz_center geometric center of the wedge in (x,y,z) or (r,z) coordinates
- * \param[in] wedge_origin axisymetric origin (x,y,z) or (r,z) of the wedge.
- * \param[in] wedge_dr_dtheta differential size of the wedge in each dimension. 
- * \param[in,out] win_min differential size of the wedge in each dimension. 
- * \param[in,out] win_max differential size of the wedge in each dimension. 
- * 
- */
-void quick_index::calc_wedge_xy_bounds(const std::array<double, 3> &wedge_xyz_center,
-                                       const std::array<double, 3> &wedge_origin,
-                                       const std::array<double, 3> &wedge_dr_dtheta,
-                                       std::array<double, 3> &win_min,
-                                       std::array<double, 3> &win_max) const {
-  Require(wedge_dr_dtheta[0] > 0.0);
-  Require(wedge_dr_dtheta[1] > 0.0);
-  // Some of the checks might not hold for large theta angles
-  Require(wedge_dr_dtheta[1] < pi / 2.0);
-  const auto r_theta = transform_r_theta(wedge_origin, wedge_xyz_center);
-  const double rmin = std::max(0.0, r_theta[0] - wedge_dr_dtheta[0]);
-  const double rmax = r_theta[0] + wedge_dr_dtheta[0];
-  const double dtheta = wedge_dr_dtheta[1];
-  const double theta_min =
-      dtheta < r_theta[1] ? r_theta[1] - dtheta : 2.0 * pi + r_theta[1] - dtheta;
-  const double theta_max = dtheta + r_theta[1];
-  const double cos_theta = cos(r_theta[1]);
-  const double cos_theta_y_min = r_theta[1] < pi ? cos(theta_max) : cos(theta_min);
-  const double cos_theta_y_max = r_theta[1] < pi ? cos(theta_min) : cos(theta_max);
-  const double ymin = theta_max > pi && theta_min < pi
-                          ? wedge_origin[1] - rmax
-                          : cos_theta_y_min < 0.0 ? wedge_origin[1] + rmax * cos_theta_y_min
-                                                  : wedge_origin[1] + rmin * cos_theta_y_min;
-  const double ymax = theta_max > 2.0 * pi || theta_min > theta_max
-                          ? wedge_origin[1] + rmax
-                          : cos_theta_y_max < 0.0 ? wedge_origin[1] + rmin * cos_theta_y_max
-                                                  : wedge_origin[1] + rmax * cos_theta_y_max;
-  const double xmin_theta = cos_theta < 0 ? theta_max : theta_min;
-  const double xmin_r = xmin_theta < pi ? rmin : rmax;
-  const double xmax_theta = cos_theta < 0 ? theta_min : theta_max;
-  const double xmax_r = xmax_theta < pi ? rmax : rmin;
-  const double sign_min = xmin_theta < pi ? 1.0 : -1.0;
-  const double sign_max = xmax_theta < pi ? 1.0 : -1.0;
-  const double xmin =
-      theta_max > 3. / 2. * pi && theta_min < 3. / 2. * pi
-          ? wedge_origin[0] - rmax
-          : wedge_origin[0] +
-                sign_min * sqrt(xmin_r * xmin_r * (1.0 - cos(xmin_theta) * cos(xmin_theta)));
-
-  const double xmax =
-      theta_max > pi / 2. && theta_min < pi / 2.0
-          ? wedge_origin[0] + rmax
-          : wedge_origin[0] +
-                sign_max * sqrt(xmax_r * xmax_r * (1.0 - cos(xmax_theta) * cos(xmax_theta)));
-  win_min[0] = xmin;
-  win_min[1] = ymin;
-  win_max[0] = xmax;
-  win_max[1] = ymax;
-  Ensure(!(win_min[0] > win_max[0]));
-  Ensure(!(win_min[1] > win_max[1]));
-  return;
-}
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief Map data to sphere grid window for vector<double> data
- *
- * Maps local+ghost data to a fixed r-theta mesh grid based on a specified weighting type. This data
- * can additionally be normalized and positively biased on the grid.
- * 
- *
- * \param[in] local_data the local data on the processor to be mapped to the window
- * \param[in] ghost_data the ghost data on the processor to be mapped to the window
- * \param[in,out] grid_data the resulting data map
- * \param[in] sphere_center the center location of the sphere mesh
- * \param[in] wedge_window_center the geometric center (x,y,x) of the wedge window
- * \param[in] wedge_dr_dtheta the differential size in each direction (dr, dtheta, 0.0) used to form
- * the wedge
- * \param[in] grid_bins number of equally spaced bins in each dir
- * \param[in] map_type_in string indicating the mapping (max, min, ave)
- * \param[in] normalize bool operator to specify if the data should be normalized to a pdf
- * \param[in] bias bool operator to specify if the data should be moved to the positive domain space
- */
-void quick_index::map_data_to_sphere_grid_window(
-    const std::vector<double> &local_data, const std::vector<double> &ghost_data,
-    std::vector<double> &grid_data, const std::array<double, 3> &sphere_center,
-    const std::array<double, 3> &wedge_window_center, const std::array<double, 3> &wedge_dr_dtheta,
-    const std::array<size_t, 3> &grid_bins, const std::string &map_type_in, const bool normalize,
-    const bool bias) const {
-  Insist(dim > 1, "Sphere grid window is invalid in 1d geometry");
-  const auto r_theta = transform_r_theta(sphere_center, wedge_window_center);
-  // Store some r-theta values
-  const std::array<double, 3> r_theta_phi_max{r_theta[0] + wedge_dr_dtheta[0],
-                                              r_theta[1] + wedge_dr_dtheta[1], 0.0};
-  const std::array<double, 3> r_theta_phi_min{std::max(r_theta[0] - wedge_dr_dtheta[0], 0.0),
-                                              wedge_dr_dtheta[1] < r_theta[1]
-                                                  ? r_theta[1] - wedge_dr_dtheta[1]
-                                                  : r_theta[1] - wedge_dr_dtheta[1] + 2. * pi,
-                                              0.0};
-  Check(!(r_theta_phi_min[1] > 2. * pi));
-  // setup the xy window_max_min
-  std::array<double, 3> window_max{0.0, 0.0, 0.0};
-  std::array<double, 3> window_min{0.0, 0.0, 0.0};
-  calc_wedge_xy_bounds(wedge_window_center, sphere_center, wedge_dr_dtheta, window_min, window_max);
-
-  Require(local_data.size() == n_locations);
-  Require(!(window_max[0] < window_min[0]));
-  Require(!(window_max[1] < window_min[1]));
-  Require(!(window_max[2] < window_min[2]));
-  Require(domain_decomposed ? ghost_data.size() == local_ghost_buffer_size : true);
-  Require(domain_decomposed
-              ? (fabs(window_max[0] - window_min[0]) - max_window_size) / max_window_size < 1e-6
-              : true);
-  Require(domain_decomposed
-              ? (fabs(window_max[1] - window_min[1]) - max_window_size) / max_window_size < 1e-6
-              : true);
-  Require(domain_decomposed
-              ? (fabs(window_max[2] - window_min[2]) - max_window_size) / max_window_size < 1e-6
-              : true);
-
-  bool fill = false;
-  std::string map_type = map_type_in;
-  if (map_type_in == "max_fill") {
-    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
-           "one of grid bins must be == 1, Grid must be 1D to use max_fill option");
-    fill = true;
-    map_type = "max";
-  } else if (map_type_in == "min_fill") {
-    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
-           "one of grid bins must be == 1, Grid must be 1D to use min_fill option");
-    fill = true;
-    map_type = "min";
-  } else if (map_type_in == "ave_fill") {
-    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
-           "one of grid bins must be == 1, Grid must be 1D to use ave_fill option");
-    fill = true;
-    map_type = "ave";
-  } else if (map_type_in == "nearest_fill") {
-    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
-               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
-           "one of grid bins must be == 1, Grid must be 1D to use ave_fill option");
-    fill = true;
-    map_type = "nearest";
-  }
-
-  for (size_t d = 0; d < dim; d++)
-    Insist(grid_bins[d] > 0, "Bin size must be greater then zero for each active dimension");
-
-  size_t n_map_bins = 1;
-  for (size_t d = 0; d < dim; d++)
-    n_map_bins *= grid_bins[d];
-
-  Insist(grid_data.size() == n_map_bins,
-         "grid_data must match the flatten grid_bin size for the active dimensions (in 3d "
-         "grid_data.size()==grib_bins[0]*grid_bins[1]*grid_bins[2])");
-
-  std::fill(grid_data.begin(), grid_data.end(), 0.0);
-
-  // Grab the global bins that lie in this window
-  std::vector<size_t> global_bins = window_coarse_index_list(window_min, window_max);
-
-  std::vector<int> data_count(n_map_bins, 0);
-  std::vector<double> min_distance(n_map_bins, 0);
-  double bias_cell_count = 0.0;
-  // Loop over all possible bins
-  for (auto &cb : global_bins) {
-    // skip bins that aren't present in the map (can't use [] operator with constness)
-    // loop over the local data
-    auto mapItr = coarse_index_map.find(cb);
-    if (mapItr != coarse_index_map.end()) {
-      for (auto &l : mapItr->second) {
-        bool valid;
-        size_t local_window_bin;
-        std::array<double, 3> bin_center;
-        std::tie(valid, local_window_bin, bin_center) =
-            get_sphere_window_bin(grid_bins, transform_r_theta(sphere_center, locations[l]),
-                                  r_theta_phi_min, r_theta_phi_max, n_map_bins, pi);
-
-        // If the bin is outside the window continue to the next point
-        if (!valid)
-          continue;
-
-        // lambda for mapping the data
-        map_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type, local_data,
-                 bin_center, locations[l], local_window_bin, l);
-
-      } // end local point loop
-    }   // if valid local bin loop
-    if (domain_decomposed) {
-      // loop over the ghost data
-      auto gmapItr = local_ghost_index_map.find(cb);
-      if (gmapItr != local_ghost_index_map.end()) {
-        // loop over ghost data
-        for (auto &g : gmapItr->second) {
-          bool valid;
-          size_t local_window_bin;
-          std::array<double, 3> bin_center;
-          std::tie(valid, local_window_bin, bin_center) = get_sphere_window_bin(
-              grid_bins, transform_r_theta(sphere_center, local_ghost_locations[g]),
-              r_theta_phi_min, r_theta_phi_max, n_map_bins, pi);
-
-          // If the bin is outside the window continue to the next poin
-          if (!valid)
-            continue;
-
-          // lambda for mapping the data
-          map_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type, ghost_data,
-                   bin_center, local_ghost_locations[g], local_window_bin, g);
-        } // end ghost point loop
-      }   // if valid ghost bin
-    }     // if dd
-  }       // end coarse bin loop
-
-  if (map_type == "ave" || map_type == "nearest") {
-    for (size_t i = 0; i < n_map_bins; i++) {
-      if (data_count[i] > 0) {
-        grid_data[i] /= data_count[i];
-      }
-    }
-  }
-  if (fill) {
-    double last_val = 0.0;
-    int last_data_count = 0;
-    for (size_t i = 0; i < n_map_bins; i++) {
-      if (data_count[i] > 0) {
-        last_val = grid_data[i];
-        last_data_count = data_count[i];
-      } else {
-        grid_data[i] = last_val;
-        data_count[i] = last_data_count;
-      }
-    }
-  }
-
-  if (bias && normalize) {
-    // return a positive normalized distribution
-    const double bias_value =
-        fabs(std::min(0.0, *std::min_element(grid_data.begin(), grid_data.end())));
-    const double sum =
-        std::accumulate(grid_data.begin(), grid_data.end(), 0.0) + bias_value * bias_cell_count;
-    // catch zero instance
-    const double scale = !rtt_dsxx::soft_equiv(sum, 0.0) ? 1.0 / sum : 1.0;
-    for (size_t i = 0; i < n_map_bins; i++)
-      grid_data[i] = (grid_data[i] + bias_value) * scale;
-  } else if (bias) {
-    // return a positive distribution
-    const double bias_value =
-        fabs(std::min(0.0, *std::min_element(grid_data.begin(), grid_data.end())));
-    for (size_t i = 0; i < n_map_bins; i++)
-      grid_data[i] += bias_value;
-  } else if (normalize) {
-    // return a normalized distribution
-    const double sum = std::accumulate(grid_data.begin(), grid_data.end(), 0.0);
-    // catch zero instance
-    const double scale = !rtt_dsxx::soft_equiv(sum, 0.0) ? 1.0 / sum : 1.0;
-    for (size_t i = 0; i < n_map_bins; i++)
-      grid_data[i] *= scale;
-  }
-}
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief map_data_to_sphere_grid_window for vector<vector<double>> data
- *
- * Maps local+ghost data to a fixed r-theta mesh grid based on a specified weighting type. This data
- * can additionally be normalized and positively biased on the grid.
- * 
- *
- * \param[in] local_data the local data on the processor to be mapped to the window
- * \param[in] ghost_data the ghost data on the processor to be mapped to the window
- * \param[in,out] grid_data the resulting data map
- * \param[in] sphere_center the center location of the sphere mesh
- * \param[in] wedge_window_center the geometric center (x,y,x) of the wedge window
- * \param[in] wedge_dr_dtheta the differential size in each direction (dr, dtheta, 0.0) used to form
- * the wedge
- * \param[in] grid_bins number of equally spaced bins in each dir
- * \param[in] map_type_in string indicating the mapping (max, min, ave)
- * \param[in] normalize bool operator to specify if the data should be normalized to a pdf
- * (independent of each data vector)
- * \param[in] bias bool operator to specify if the data should be moved to the positive domain space
- * (independent of each data vector)
- * \return bin_list list of global bins requested for the current window.
- */
-void quick_index::map_data_to_sphere_grid_window(
-    const std::vector<std::vector<double>> &local_data,
-    const std::vector<std::vector<double>> &ghost_data, std::vector<std::vector<double>> &grid_data,
-    const std::array<double, 3> &sphere_center, const std::array<double, 3> &wedge_window_center,
-    const std::array<double, 3> &wedge_dr_dtheta, const std::array<size_t, 3> &grid_bins,
-    const std::string &map_type_in, const bool normalize, const bool bias) const {
-  Insist(dim > 1, "Sphere grid window is invalid in 1d geometry");
-  const auto r_theta = transform_r_theta(sphere_center, wedge_window_center);
-  // Store some r-theta values
-  const std::array<double, 3> r_theta_phi_max{r_theta[0] + wedge_dr_dtheta[0],
-                                              r_theta[1] + wedge_dr_dtheta[1], 0.0};
-  const std::array<double, 3> r_theta_phi_min{std::max(r_theta[0] - wedge_dr_dtheta[0], 0.0),
-                                              wedge_dr_dtheta[1] < r_theta[1]
-                                                  ? r_theta[1] - wedge_dr_dtheta[1]
-                                                  : r_theta[1] - wedge_dr_dtheta[1] + 2. * pi,
-                                              0.0};
-  Check(!(r_theta_phi_min[1] > 2. * pi));
-  // setup the xy window_max_min
-  std::array<double, 3> window_max{0.0, 0.0, 0.0};
-  std::array<double, 3> window_min{0.0, 0.0, 0.0};
-  calc_wedge_xy_bounds(wedge_window_center, sphere_center, wedge_dr_dtheta, window_min, window_max);
-
-  Require(domain_decomposed ? local_data.size() == ghost_data.size() : true);
-  Require(!(window_max[0] < window_min[0]));
-  Require(!(window_max[1] < window_min[1]));
-  Require(!(window_max[2] < window_min[2]));
-  Require(domain_decomposed
-              ? (fabs(window_max[0] - window_min[0]) - max_window_size) / max_window_size < 1e-6
-              : true);
-  Require(domain_decomposed
-              ? (fabs(window_max[1] - window_min[1]) - max_window_size) / max_window_size < 1e-6
-              : true);
+  Remember(double ymax = spherical ? std::min(rtt_units::PI / 2.0, max_window_size / window_max[0])
+                                   : max_window_size;)
+      Require(domain_decomposed ? (fabs(window_max[1] - window_min[1]) - ymax) / ymax < 1e-6
+                                : true);
   Require(domain_decomposed
               ? (fabs(window_max[2] - window_min[2]) - max_window_size) / max_window_size < 1e-6
               : true);
@@ -1443,16 +931,16 @@ void quick_index::map_data_to_sphere_grid_window(
       for (auto &l : mapItr->second) {
         bool valid;
         size_t local_window_bin;
-        std::array<double, 3> bin_center;
-        std::tie(valid, local_window_bin, bin_center) =
-            get_sphere_window_bin(grid_bins, transform_r_theta(sphere_center, locations[l]),
-                                  r_theta_phi_min, r_theta_phi_max, n_map_bins, pi);
+        double distance_to_bin_center;
+        std::tie(valid, local_window_bin, distance_to_bin_center) = get_window_bin(
+            spherical, dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
         // If the bin is outside the window continue to the next poin
         if (!valid)
           continue;
         Check(local_window_bin < n_map_bins);
         map_vector_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type,
-                        local_data, bin_center, locations[l], local_window_bin, l, vsize);
+                        local_data, distance_to_bin_center, locations[l], local_window_bin, l,
+                        vsize);
       } // end local point loop
     }   // if valid local bin loop
     if (domain_decomposed) {
@@ -1463,17 +951,17 @@ void quick_index::map_data_to_sphere_grid_window(
         for (auto &g : gmapItr->second) {
           bool valid;
           size_t local_window_bin;
-          std::array<double, 3> bin_center;
-          std::tie(valid, local_window_bin, bin_center) = get_sphere_window_bin(
-              grid_bins, transform_r_theta(sphere_center, local_ghost_locations[g]),
-              r_theta_phi_min, r_theta_phi_max, n_map_bins, pi);
+          double distance_to_bin_center;
+          std::tie(valid, local_window_bin, distance_to_bin_center) =
+              get_window_bin(spherical, dim, grid_bins, local_ghost_locations[g], window_min,
+                             window_max, n_map_bins);
 
           // If the bin is outside the window continue to the next poin
           if (!valid)
             continue;
           map_vector_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type,
-                          ghost_data, bin_center, local_ghost_locations[g], local_window_bin, g,
-                          vsize);
+                          ghost_data, distance_to_bin_center, local_ghost_locations[g],
+                          local_window_bin, g, vsize);
         } // end ghost point loop
       }   // if valid ghost bin
     }     // if dd
@@ -1538,6 +1026,28 @@ void quick_index::map_data_to_sphere_grid_window(
           grid_data[v][i] *= scale;
     }
   }
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Calculate the orthogonal distance between two points
+ * 
+ * Maps multiple local+ghost data vectors to a fixed mesh grid based on a specified weighting type.
+ * This data can additionally be normalized and positively biased on the grid.
+ * 
+ *
+ * \param[in] r0 initial position
+ * \param[in] r final position
+ * \param[in] arch_radius this is used for spherical geometry to determine at what radial point the
+ * orthognal archlength is measured. This point must be bound by the initial and final point radius.
+ * \return orthognal distance between the initial and final point in each direction
+ */
+std::array<double, 3> quick_index::calc_orthogonal_distance(const std::array<double, 3> &r0,
+                                                            const std::array<double, 3> &r,
+                                                            const double arch_radius) const {
+  Require(spherical ? dim == 2 : true);
+  Require(spherical ? !(arch_radius < 0.0) : true);
+  return {r[0] - r0[0], spherical ? arch_radius * (r[1] - r0[1]) : r[1] - r0[1], r[2] - r0[2]};
 }
 
 } // namespace rtt_kde

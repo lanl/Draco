@@ -15,7 +15,7 @@
  *         of the spatial domain. Other approaches that could be considered are quadrature based
  *         approaches that fully sample the Kernel space reducing the need for the normalization.
  *
- * \note   Copyright (C) 2020-2021 Triad National Security, LLC., All rights reserved. 
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -28,9 +28,9 @@ namespace rtt_kde {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Calculate Cartesian Weight
+ * \brief Calculate Weight
  * 
- * \pre Calculate the effective weight in Cartesian geometry from a given location to the current
+ * \pre Calculate the effective weight in Cartesian and Spherical reconstructions from a given location to the current
  * kernel 
  *
  * \param[in] r0 current kernel center location
@@ -45,21 +45,33 @@ namespace rtt_kde {
  *
  * \post the local reconstruction of the original data is returned.
  */
-double kde::calc_cartesian_weight(const std::array<double, 3> &r0,
-                                  const std::array<double, 3> &one_over_h0,
-                                  const std::array<double, 3> &r,
-                                  const std::array<double, 3> &one_over_h,
-                                  const quick_index &qindex,
-                                  const double &discontinuity_cutoff) const {
+double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double, 3> &one_over_h0,
+                        const std::array<double, 3> &r, const std::array<double, 3> &one_over_h,
+                        const quick_index &qindex, const double &discontinuity_cutoff) const {
   Require(one_over_h0[0] > 0.0);
   Require(qindex.dim > 1 ? one_over_h0[1] > 0.0 : true);
   Require(qindex.dim > 2 ? one_over_h0[2] > 0.0 : true);
   Require(one_over_h[0] > 0.0);
   Require(qindex.dim > 1 ? one_over_h[1] > 0.0 : true);
   Require(qindex.dim > 2 ? one_over_h[2] > 0.0 : true);
+  // do not allow spherical reflection of the radial direction
+  Require(qindex.spherical ? !reflect_boundary[0] : true);
+  Require(qindex.spherical ? !reflect_boundary[1] : true);
   double weight = 1.0;
+  // set the radius at which all arch_lengths should be computed
+  // this value is ignored by calc_orthogonal_distance in non-spherical geometry
+  double arch_radius = r0[0];
+  std::array<double, 3> distance = qindex.calc_orthogonal_distance(r0, r, arch_radius);
+  std::array<double, 3> low_reflect_r0_distance =
+      qindex.calc_orthogonal_distance(qindex.bounding_box_min, r0, arch_radius);
+  std::array<double, 3> low_reflect_r_distance =
+      qindex.calc_orthogonal_distance(qindex.bounding_box_min, r, arch_radius);
+  std::array<double, 3> high_reflect_r0_distance =
+      qindex.calc_orthogonal_distance(r0, qindex.bounding_box_max, arch_radius);
+  std::array<double, 3> high_reflect_r_distance =
+      qindex.calc_orthogonal_distance(r, qindex.bounding_box_max, arch_radius);
   for (size_t d = 0; d < qindex.dim; d++) {
-    const double u = (r0[d] - r[d]) * one_over_h0[d];
+    const double u = distance[d] * one_over_h0[d];
     const double scale =
         fabs(one_over_h0[d] - one_over_h[d]) / std::max(one_over_h0[d], one_over_h[d]) >
                 discontinuity_cutoff
@@ -71,88 +83,14 @@ double kde::calc_cartesian_weight(const std::array<double, 3> &r0,
     const bool high_reflect = reflect_boundary[d * 2 + 1];
     if (low_reflect) {
       const double low_u =
-          ((r0[d] - qindex.bounding_box_min[d]) + (r[d] - qindex.bounding_box_min[d])) *
-          one_over_h0[d];
+          (low_reflect_r0_distance[d] + low_reflect_r_distance[d]) * one_over_h0[d];
       bc_weight += epan_kernel(low_u);
     }
     if (high_reflect) {
       const double high_u =
-          ((qindex.bounding_box_max[d] - r0[d]) + (qindex.bounding_box_max[d] - r[d])) *
-          one_over_h0[d];
+          (high_reflect_r0_distance[d] + high_reflect_r_distance[d]) * one_over_h0[d];
       bc_weight += epan_kernel(high_u);
     }
-    weight *= scale * bc_weight * epan_kernel(u) * one_over_h0[d];
-  }
-  Ensure(!(weight < 0.0));
-  return weight;
-}
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief calculate spherical weight
- * 
- * \pre Calculate the effective weight from a given location to the current kernel 
- *
- * \param[in] r0 current kernel center location
- * \param[in] one_over_h0 current kernel width
- * \param[in] r data location
- * \param[in] one_over_h kernel width at this data location
- * \param[in] qindex quick indexing class
- * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
- * reconstruction
- *
- * \return weight contribution to the current kernel
- *
- * \post the local reconstruction of the original data is returned.
- */
-double kde::calc_spherical_weight(const std::array<double, 3> &r0,
-                                  const std::array<double, 3> &one_over_h0,
-                                  const std::array<double, 3> &r,
-                                  const std::array<double, 3> &one_over_h,
-                                  const quick_index &qindex,
-                                  const double &discontinuity_cutoff) const {
-  Require(one_over_h0[0] > 0.0);
-  Require(qindex.dim > 1 ? one_over_h0[1] > 0.0 : true);
-  Require(qindex.dim > 2 ? one_over_h0[2] > 0.0 : true);
-  Require(one_over_h[0] > 0.0);
-  Require(qindex.dim > 1 ? one_over_h[1] > 0.0 : true);
-  Require(qindex.dim > 2 ? one_over_h[2] > 0.0 : true);
-
-  // largest active smoothing length
-  const auto r0_theta_phi = qindex.transform_r_theta(sphere_center, r0);
-  // if we are near the origin of the sphere, fall back to xyz reconstruction
-  if (r0_theta_phi[0] < sphere_min_radius || r0_theta_phi[0] > sphere_max_radius)
-    return calc_cartesian_weight(r0, one_over_h0, r, one_over_h, qindex, discontinuity_cutoff);
-
-  const auto r_theta_phi = qindex.transform_r_theta(sphere_center, r);
-  const double radius = r0_theta_phi[0];
-  double weight = 1.0;
-  for (size_t d = 0; d < qindex.dim; d++) {
-    const double arch_scale = d > 0 ? radius : 1.0;
-    const double u = (r0_theta_phi[d] - r_theta_phi[d]) * arch_scale * one_over_h0[d];
-    const double scale =
-        fabs(one_over_h0[d] - one_over_h[d]) / std::max(one_over_h0[d], one_over_h[d]) >
-                discontinuity_cutoff
-            ? 0.0
-            : 1.0;
-    // Apply Boundary Condition Weighting
-    double bc_weight = 1.0;
-    /* BC are a little tricky so I will implement them later
-    const bool low_reflect = reflect_boundary[d * 2];
-    const bool high_reflect = reflect_boundary[d * 2 + 1];
-    if (low_reflect) {
-      const double low_u =
-          ((r0_theta_phi[d] - qindex.bounding_box_min[d]) + (r[d] - qindex.bounding_box_min[d])) *
-          one_over_h0[d];
-      bc_weight += epan_kernel(low_u);
-    }
-    if (high_reflect) {
-      const double high_u =
-          ((qindex.bounding_box_max[d] - r0[d]) + (qindex.bounding_box_max[d] - r[d])) *
-          one_over_h0[d];
-      bc_weight += epan_kernel(high_u);
-    }
-    */
     weight *= scale * bc_weight * epan_kernel(u) * one_over_h0[d];
   }
   Ensure(!(weight < 0.0));
@@ -465,28 +403,9 @@ void kde::calc_win_min_max(const quick_index &qindex, const std::array<double, 3
   Require(one_over_bandwidth[0] > 0.0);
   Require(dim > 1 ? one_over_bandwidth[1] > 0.0 : true);
   Require(dim > 2 ? one_over_bandwidth[2] > 0.0 : true);
-  if (use_spherical_reconstruction) {
-    const double dr = 1.0 / one_over_bandwidth[0];
-    const double rmax = sqrt((sphere_center[0] - position[0]) * (sphere_center[0] - position[0]) +
-                             (sphere_center[1] - position[1]) * (sphere_center[1] - position[1])) +
-                        dr;
-    Check(rmax > 0.0);
-    const double dtheta =
-        std::min(1.0 / (one_over_bandwidth[1] * rmax), rtt_units::PI / 2.0 - 1e-12);
-    if (!(rmax < sphere_min_radius || rmax > sphere_max_radius)) {
-      // dtheta = arch_length_max/rmax
-      qindex.calc_wedge_xy_bounds(position, sphere_center, {dr, dtheta, 0.0}, win_min, win_max);
-    } else {
-      for (size_t d = 0; d < dim; d++) {
-        win_min[d] = position[d] - 1.0 / one_over_bandwidth[d];
-        win_max[d] = position[d] + 1.0 / one_over_bandwidth[d];
-      }
-    }
-  } else {
-    for (size_t d = 0; d < dim; d++) {
-      win_min[d] = position[d] - 1.0 / one_over_bandwidth[d];
-      win_max[d] = position[d] + 1.0 / one_over_bandwidth[d];
-    }
+  for (size_t d = 0; d < dim; d++) {
+    win_min[d] = position[d] - 1.0 / one_over_bandwidth[d];
+    win_max[d] = position[d] + 1.0 / one_over_bandwidth[d];
   }
 }
 

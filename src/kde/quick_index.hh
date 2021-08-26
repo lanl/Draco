@@ -5,7 +5,7 @@
  * \brief  This class generates coarse spatial indexing to quickly access near-neighbor data. This
  *         additionally provides simple interpolation schemes to map data to simple structured
  *         meshes. 
- * \note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved. 
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -15,10 +15,40 @@
 #include "c4/global.hh"
 #include "units/MathConstants.hh"
 #include <array>
+#include <cmath>
 #include <map>
 #include <vector>
 
 namespace rtt_kde {
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Transform location array (x, y, z) positions to (r, theta, phi) grid
+ *
+ * Calculate a relative r theta and phi coordinate relative to a sphere center location from a
+ * standard (x,y,z) or (r,z) coordinates
+ *
+ * \param[in] sphere_center center of sphere in (x,y,z) or (r,z) coordinates
+ * \param[in] locations (x,y,z) or (r,z) locations to transform to relative (r, theta, phi) space.
+ *
+ */
+inline std::vector<std::array<double, 3>>
+transform_spherical(const size_t dim, const std::array<double, 3> &sphere_center,
+                    const std::vector<std::array<double, 3>> &locations) {
+  Insist(dim == 2, "Transform_r_theta Only implemented in 2d");
+  std::vector<std::array<double, 3>> r_theta_locations(locations);
+  for (auto &location : r_theta_locations) {
+    const std::array<double, 3> v{location[0] - sphere_center[0], location[1] - sphere_center[1],
+                                  0.0};
+    const double r = sqrt(v[0] * v[0] + v[1] * v[1]);
+    const double mag = sqrt(v[0] * v[0] + v[1] * v[1]);
+    double cos_theta = mag > 0.0 ? std::max(std::min(v[1] / mag, 1.0), -1.0) : 0.0;
+    location = std::array<double, 3>{
+        r, location[0] < sphere_center[0] ? 2.0 * rtt_units::PI - acos(cos_theta) : acos(cos_theta),
+        0.0};
+  }
+  return r_theta_locations;
+}
 
 //================================================================================================//
 /*!
@@ -31,10 +61,11 @@ namespace rtt_kde {
 
 class quick_index {
 public:
-  //! Default constructors.
+  //! cartsian constructor
   quick_index(const size_t dim, const std::vector<std::array<double, 3>> &locations,
               const double max_window_size, const size_t bins_per_dimension,
-              const bool domain_decomposed);
+              const bool domain_decomposed, const bool spherical = false,
+              const std::array<double, 3> &sphere_center = {0.0, 0.0, 0.0});
 
   //! Collect Ghost Data
   void collect_ghost_data(const std::vector<double> &local_data,
@@ -70,40 +101,21 @@ public:
                                const std::array<size_t, 3> &grid_bins, const std::string &map_type,
                                const bool normalize, const bool bias) const;
 
-  //! Map local+ghost data to grid window
-  void map_data_to_sphere_grid_window(
-      const std::vector<double> &local_data, const std::vector<double> &ghost_data,
-      std::vector<double> &grid_data, const std::array<double, 3> &sphere_center,
-      const std::array<double, 3> &window_min, const std::array<double, 3> &window_max,
-      const std::array<size_t, 3> &grid_bins, const std::string &map_type, const bool normalize,
-      const bool bias) const;
+  //! Calculate the orthogonal distance between to locations
+  std::array<double, 3> calc_orthogonal_distance(const std::array<double, 3> &r0,
+                                                 const std::array<double, 3> &r,
+                                                 const double arch_radius) const;
 
-  //! Map local+ghost data to grid window for multi-dimensional data
-  void map_data_to_sphere_grid_window(const std::vector<std::vector<double>> &local_data,
-                                      const std::vector<std::vector<double>> &ghost_data,
-                                      std::vector<std::vector<double>> &grid_data,
-                                      const std::array<double, 3> &sphere_center,
-                                      const std::array<double, 3> &wedge_window_center,
-                                      const std::array<double, 3> &wedge_dr_dtheta,
-                                      const std::array<size_t, 3> &grid_bins,
-                                      const std::string &map_type, const bool normalize,
-                                      const bool bias) const;
-
-  std::array<double, 3> transform_r_theta(const std::array<double, 3> &sphere_center,
-                                          const std::array<double, 3> &location) const;
-
-  void calc_wedge_xy_bounds(const std::array<double, 3> &wedge_xyz_center,
-                            const std::array<double, 3> &wedge_origin,
-                            const std::array<double, 3> &wedge_dr_dtheta,
-                            std::array<double, 3> &win_min, std::array<double, 3> &win_max) const;
   // PUBLIC DATA
   // Quick index initialization data
   const size_t dim;
   const bool domain_decomposed;
+  const double spherical;
+  const std::array<double, 3> sphere_center;
   const size_t coarse_bin_resolution;
   const double max_window_size;
-  // keep a copy of the locations
-  const std::vector<std::array<double, 3>> locations;
+  // keep a mutable copy of the locations (can be change to spherical)
+  std::vector<std::array<double, 3>> locations;
   const size_t n_locations;
 
   // Global bounds
@@ -133,7 +145,6 @@ private:
   std::map<size_t, std::vector<std::array<int, 3>>> put_window_map;
   // max put buffer size;
   size_t max_put_buffer_size;
-  const double pi = rtt_units::PI;
 };
 
 } // end namespace  rtt_kde

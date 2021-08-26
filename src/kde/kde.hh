@@ -3,7 +3,7 @@
  * \file   kde/kde.hh
  * \author Mathew Cleveland
  * \brief  Define class kernel density estimator class
- * \note   Copyright (C) 2020-2021 Triad National Security, LLC., All rights reserved. 
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -60,25 +60,6 @@ public:
   //! Move the solution back from log space
   inline double log_inv_transform(const double log_value, const double bias) const;
 
-  //! Calculate radius
-  inline double calc_radius(const std::array<double, 3> &center,
-                            const std::array<double, 3> &location) const;
-
-  //! Calculate Arch Length between two locations at a specific radius
-  inline double calc_arch_length(const std::array<double, 3> &center, const double radius,
-                                 const std::array<double, 3> &location_1,
-                                 const std::array<double, 3> &location_2) const;
-  //! Setup a spherical reconstruction with a
-  void set_sphere_center(const std::array<double, 3> &sph_center, const double min_radius,
-                         const double max_radius) {
-    Insist(max_radius > min_radius, "Spherical KDE max radius must be larger then min radius");
-
-    use_spherical_reconstruction = true;
-    sphere_center = sph_center;
-    sphere_min_radius = min_radius;
-    sphere_max_radius = max_radius;
-  }
-
 protected:
   // IMPLEMENTATION
 
@@ -86,12 +67,7 @@ private:
   //! Private function to calculate kernel weight
   double calc_weight(const std::array<double, 3> &r0, const std::array<double, 3> &one_over_h0,
                      const std::array<double, 3> &r, const std::array<double, 3> &one_over_h,
-                     const quick_index &qindex, const double &discontinuity_cutoff) const {
-    return use_spherical_reconstruction
-               ? calc_spherical_weight(r0, one_over_h0, r, one_over_h, qindex, discontinuity_cutoff)
-               : calc_cartesian_weight(r0, one_over_h0, r, one_over_h, qindex,
-                                       discontinuity_cutoff);
-  }
+                     const quick_index &qindex, const double &discontinuity_cutoff) const;
 
   void calc_win_min_max(const quick_index &qindex, const std::array<double, 3> &position,
                         const std::array<double, 3> &one_over_bandwidth, std::array<double, 3> &min,
@@ -112,11 +88,6 @@ private:
   // DATA
   //! reflecting boundary conditions [lower_x, upper_x, lower_y, upper_y, lower_z, upper_z]
   const std::array<bool, 6> reflect_boundary;
-  //! Spherical Mesh Reconstruction Data
-  std::array<double, 3> sphere_center{0.0, 0.0, 0.0};
-  double sphere_min_radius{0.0};
-  double sphere_max_radius{0.0};
-  bool use_spherical_reconstruction{false};
 };
 
 } // end namespace rtt_kde
