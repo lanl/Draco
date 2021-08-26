@@ -76,6 +76,11 @@ void test_replication(ParallelUnitTest &ut) {
       for (size_t i = 0; i < map.second.size(); i++)
         if (gold_map[map.first][i] != map.second[i])
           ITFAILS;
+
+    // Check non-spherical orthogonal distance calculation
+    auto distance = qindex.calc_orthogonal_distance({-1, -1, -1}, {1, 1, 1}, 10.0);
+    for (auto &val : distance)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(val, 2.0));
   }
 
   if (ut.numFails == 0) {
@@ -142,6 +147,11 @@ void test_replication_sphere(ParallelUnitTest &ut) {
       for (size_t i = 0; i < map.second.size(); i++)
         if (gold_map[map.first][i] != map.second[i])
           ITFAILS;
+
+    // Check non-spherical orthogonal distance calculation
+    auto distance = qindex.calc_orthogonal_distance({-1, 0.5, -1}, {1, 1, 1}, 4.0);
+    for (auto &val : distance)
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(val, 2.0));
   }
 
   if (ut.numFails == 0) {
@@ -1501,9 +1511,6 @@ void test_decomposition_sphere(ParallelUnitTest &ut) {
 
     const size_t local_size = 4;
     const std::array<double, 3> sphere_center{0.0, 0.0, 0.0};
-    const double max_radius = 1.0;
-    const double min_radius = 0.0;
-    const double shell_min_radius = 0.5;
     const std::array<double, 2> radial_edges{0.5, 1.0};
     const std::array<double, 6> cosine_edges{-.99, 0, .99, -.99, 0, .99};
     const size_t data_size = radial_edges.size() * cosine_edges.size();
@@ -1721,9 +1728,6 @@ void test_decomposition_sphere(ParallelUnitTest &ut) {
 
     const size_t local_size = 24;
     const std::array<double, 3> sphere_center{0.0, -1.0, 0.0};
-    const double max_radius = 1.0;
-    const double min_radius = 0.0;
-    const double shell_min_radius = 0.5;
     const std::array<double, 8> radial_edges{0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0};
     const std::array<double, 9> cosine_edges{-1.0, -0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75, 1.0};
     const size_t data_size = radial_edges.size() * cosine_edges.size();

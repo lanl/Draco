@@ -28,6 +28,7 @@ namespace rtt_kde {
  * Calculate a relative r theta and phi coordinate relative to a sphere center location from a
  * standard (x,y,z) or (r,z) coordinates
  *
+ * \param[in] dim used to ensure it is only used in valid dimension ranges
  * \param[in] sphere_center center of sphere in (x,y,z) or (r,z) coordinates
  * \param[in] locations (x,y,z) or (r,z) locations to transform to relative (r, theta, phi) space.
  *
@@ -110,7 +111,7 @@ public:
   // Quick index initialization data
   const size_t dim;
   const bool domain_decomposed;
-  const double spherical;
+  const bool spherical;
   const std::array<double, 3> sphere_center;
   const size_t coarse_bin_resolution;
   const double max_window_size;

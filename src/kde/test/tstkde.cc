@@ -34,8 +34,6 @@ void test_replication(ParallelUnitTest &ut) {
   {
     const bool spherical = true;
     const std::array<double, 3> sphere_center{0.0, -1.0, 0.0};
-    const double max_radius = 1.0;
-    const double min_radius = 0.0;
     kde sphere_kde;
     // reflect on the theta boundary
     kde theta_reflected_sphere_kde({false, false, true, true, false, false});
@@ -1046,9 +1044,6 @@ void test_decomposition(ParallelUnitTest &ut) {
     const bool spherical = true;
     const size_t local_size = 24;
     const std::array<double, 3> sphere_center{0.0, -1.0, 0.0};
-    const double max_radius = 1.0;
-    const double min_radius = 0.0;
-    const double shell_min_radius = 0.5;
     kde sphere_kde;
     // reflect on the theta boundary
     kde theta_reflected_sphere_kde({false, false, true, true, false, false});
