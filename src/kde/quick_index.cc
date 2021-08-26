@@ -30,6 +30,8 @@ namespace rtt_kde {
  * \param[in] max_window_size_ maximum supported window size
  * \param[in] bins_per_dimension_ number of bins in each dimension
  * \param[in] domain_decomposed_
+ * \param[in] spherical_ bool operator to enable spherical transform
+ * \param[in] sphere_center_ origin of spherical transform
  */
 quick_index::quick_index(const size_t dim_, const std::vector<std::array<double, 3>> &locations_,
                          const double max_window_size_, const size_t bins_per_dimension_,
@@ -556,8 +558,7 @@ auto get_window_bin = [](auto spherical, const auto dim, const auto &grid_bins,
 //------------------------------------------------------------------------------------------------//
 // Lambda for mapping the data
 auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, auto &min_distance,
-                   const auto &dim, const auto &map_type, const auto &data,
-                   const auto &distance_to_bin_center, const auto &location,
+                   const auto &map_type, const auto &data, const auto &distance_to_bin_center,
                    const auto &local_window_bin, const auto &data_bin) {
   // regardless of map type if it is the first value to enter the bin it
   // gets set to that value
@@ -697,8 +698,8 @@ void quick_index::map_data_to_grid_window(
           continue;
 
         // lambda for mapping the data
-        map_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type, local_data,
-                 distance_to_bin_center, locations[l], local_window_bin, l);
+        map_data(bias_cell_count, data_count, grid_data, min_distance, map_type, local_data,
+                 distance_to_bin_center, local_window_bin, l);
 
       } // end local point loop
     }   // if valid local bin loop
@@ -720,8 +721,8 @@ void quick_index::map_data_to_grid_window(
             continue;
 
           // lambda for mapping the data
-          map_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type, ghost_data,
-                   distance_to_bin_center, local_ghost_locations[g], local_window_bin, g);
+          map_data(bias_cell_count, data_count, grid_data, min_distance, map_type, ghost_data,
+                   distance_to_bin_center, local_window_bin, g);
         } // end ghost point loop
       }   // if valid ghost bin
     }     // if dd
@@ -777,10 +778,9 @@ void quick_index::map_data_to_grid_window(
 //------------------------------------------------------------------------------------------------//
 // Lambda for mapping the vector data
 auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data,
-                          auto &min_distance, const auto &dim, const auto &map_type,
-                          const auto &data, const auto &distance_to_bin_center,
-                          const auto &location, const auto &local_window_bin, const auto &data_bin,
-                          const auto &vsize) {
+                          auto &min_distance, const auto &map_type, const auto &data,
+                          const auto &distance_to_bin_center, const auto &local_window_bin,
+                          const auto &data_bin, const auto &vsize) {
   // regardless of map type if it is the first value to enter the bin it gets set to that value
   if (data_count[local_window_bin] == 0) {
     bias_cell_count += 1.0;
@@ -931,9 +931,8 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
         if (!valid)
           continue;
         Check(local_window_bin < n_map_bins);
-        map_vector_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type,
-                        local_data, distance_to_bin_center, locations[l], local_window_bin, l,
-                        vsize);
+        map_vector_data(bias_cell_count, data_count, grid_data, min_distance, map_type, local_data,
+                        distance_to_bin_center, local_window_bin, l, vsize);
       } // end local point loop
     }   // if valid local bin loop
     if (domain_decomposed) {
@@ -952,9 +951,8 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
           // If the bin is outside the window continue to the next poin
           if (!valid)
             continue;
-          map_vector_data(bias_cell_count, data_count, grid_data, min_distance, dim, map_type,
-                          ghost_data, distance_to_bin_center, local_ghost_locations[g],
-                          local_window_bin, g, vsize);
+          map_vector_data(bias_cell_count, data_count, grid_data, min_distance, map_type,
+                          ghost_data, distance_to_bin_center, local_window_bin, g, vsize);
         } // end ghost point loop
       }   // if valid ghost bin
     }     // if dd
