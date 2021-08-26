@@ -30,30 +30,15 @@ void test_replication(ParallelUnitTest &ut) {
   if (!rtt_dsxx::soft_equiv(value, 0.75))
     ITFAILS;
 
-  // test some public sphere calculations
-  {
-    const std::array<double, 3> sphere_center{0.0, 0.0, 0.0};
-    const std::array<double, 3> location{sqrt(2), sqrt(2), 0.0};
-    const std::array<double, 3> location2{0.0, 2.0, 0.0};
-    const double radius = 2.0;
-    const double small_radius = 1.0;
-    const double pi_over_4 = 0.78539816;
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(test_kde.calc_radius(sphere_center, location), 2.0));
-    FAIL_IF_NOT(
-        rtt_dsxx::soft_equiv(test_kde.calc_arch_length(sphere_center, radius, location, location2),
-                             2.0 * pi_over_4, 1e-6));
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
-        test_kde.calc_arch_length(sphere_center, small_radius, location, location2), pi_over_4,
-        1e-6));
-  }
-
   // spherical reconstruction
   {
+    const bool spherical = true;
     const std::array<double, 3> sphere_center{0.0, -1.0, 0.0};
     const double max_radius = 1.0;
     const double min_radius = 0.0;
     kde sphere_kde;
-    sphere_kde.set_sphere_center(sphere_center, min_radius, max_radius);
+    // reflect on the theta boundary
+    kde theta_reflected_sphere_kde({false, false, true, true, false, false});
     const std::array<double, 8> radial_edges{0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0};
     const std::array<double, 9> cosine_edges{-1.0, -0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75, 1.0};
     const size_t data_size = radial_edges.size() * cosine_edges.size();
@@ -83,6 +68,7 @@ void test_replication(ParallelUnitTest &ut) {
     // zero reconstruction array
     {
       std::vector<double> zero_data(data_size, 0.0);
+      // R-theta space bandwidths in spherical reconstruction
       std::vector<std::array<double, 3>> one_over_bandwidth_array(
           data_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
       const bool dd = false;
@@ -90,7 +76,8 @@ void test_replication(ParallelUnitTest &ut) {
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
 
       std::vector<double> smooth_result =
           sphere_kde.reconstruction(zero_data, one_over_bandwidth_array, qindex);
@@ -126,7 +113,8 @@ void test_replication(ParallelUnitTest &ut) {
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
 
       std::vector<double> smooth_result =
           sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
@@ -163,7 +151,8 @@ void test_replication(ParallelUnitTest &ut) {
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
 
       std::vector<double> smooth_result =
           sphere_kde.reconstruction(shell_data, one_over_bandwidth_array, qindex);
@@ -195,14 +184,14 @@ void test_replication(ParallelUnitTest &ut) {
     {
 
       std::vector<double> spoke_smoothed_shells{
-          2.51488, 2.99904, 2.99904, 3.69002, 3.72457, 3.69002, 2.99904, 2.99904, 2.51488,
-          2.51645, 3.00418, 3.00418, 3.72015, 3.7866,  3.72015, 3.00418, 3.00418, 2.51645,
-          2.51803, 3.00928, 3.00928, 3.74919, 3.84522, 3.74919, 3.00928, 3.00928, 2.51803,
-          2.51961, 3.01436, 3.01436, 3.77729, 3.90089, 3.77729, 3.01436, 3.01436, 2.51961,
-          5.52169, 3.04531, 3.04531, 3.93334, 4.19165, 3.93334, 3.04531, 3.04531, 5.52169,
-          5.55417, 6.52859, 6.95461, 4.19454, 4.61685, 4.19454, 6.95461, 6.52859, 5.55417,
-          7.53548, 6.56107, 7,       4.58158, 5.14978, 4.58158, 7,       6.56107, 7.53548,
-          7.56796, 8,       7.14194, 8,       6.33455, 8,       7.14194, 8,       7.56796};
+          3.7717,  3.7717,  3.7717,  3.7717,  3.7717,  3.7717,  3.7717,  3.7717,  3.7717,
+          3.83452, 3.83452, 3.83452, 3.83452, 3.83452, 3.83452, 3.83452, 3.83452, 3.83452,
+          3.89388, 3.89388, 3.89388, 3.89388, 3.89388, 3.89388, 3.89388, 3.89388, 3.89388,
+          3.95025, 3.95025, 3.95025, 3.95025, 3.95025, 3.95025, 3.95025, 3.95025, 3.95025,
+          4.24469, 4.24469, 4.24469, 4.24469, 4.24469, 4.24469, 4.24469, 4.24469, 4.24469,
+          4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528,
+          5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495,
+          6.41471, 6.41472, 6.41472, 6.41472, 6.41471, 6.41471, 6.41471, 6.41471, 6.41471};
       std::vector<std::array<double, 3>> one_over_bandwidth_array(
           data_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
       const bool dd = false;
@@ -210,7 +199,8 @@ void test_replication(ParallelUnitTest &ut) {
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
 
       std::vector<double> smooth_result =
           sphere_kde.reconstruction(shell_data, one_over_bandwidth_array, qindex);
@@ -241,14 +231,14 @@ void test_replication(ParallelUnitTest &ut) {
     // shell smoothing on spoke array
     {
       std::vector<double> shell_smoothed_spoke{
-          4.82322, 4.82519, 4.82608, 4.82681, 4.8275, 4.82819, 4.82892, 4.8298,  4.83177,
-          4.81029, 4.81825, 4.8218,  4.82475, 4.8275, 4.83025, 4.8332,  4.83675, 4.8447,
-          4.78839, 4.80659, 4.81462, 4.82129, 4.8275, 4.83371, 4.84037, 4.84841, 4.86661,
-          4.75694, 4.79008, 4.8045,  4.81642, 4.8275, 4.83857, 4.8505,  4.86492, 4.89805,
-          4.04388, 4.22611, 4.67522, 4.75503, 5,      4.97765, 5.14326, 6.35454, 5.61112,
-          2.62832, 3.75795, 4.12091, 4.47922, 5,      6.9148,  6.66199, 7.35789, 7.02668,
-          1.66976, 3.01482, 3.72878, 4.43378, 5,      8.6895,  8.00342, 6.64018, 7.98524,
-          1,       2,       4.02682, 4.51075, 5,      5.14424, 5.62818, 8,       9};
+          2.06793, 3.61898, 4.65287, 4.65345, 5.17042, 5.68739, 5.68796, 5.91166, 6.47113,
+          2.06722, 3.61803, 4.65136, 4.65367, 5.17042, 5.68716, 5.68948, 5.91951, 6.49562,
+          2.06603, 3.61645, 4.64883, 4.65404, 5.17042, 5.68679, 5.69201, 5.93267, 6.53704,
+          2.06437, 3.61422, 4.64527, 4.65457, 5.17042, 5.68627, 5.69557, 5.95127, 6.59632,
+          2.04372, 3.58678, 4.60095, 4.66103, 5,       5.67981, 5.73989, 6.19173, 7.4492,
+          1.95893, 3.47577, 4.41363, 4.68754, 5,       5.6533,  5.92721, 6.86506, 8.38191,
+          1.76287, 3.22898, 3.99365, 4.74873, 5,       5.59211, 6.34718, 7.11186, 8.57797,
+          1.36835, 2.8677,  3.80371, 4.44763, 5,       5.89321, 6.53713, 7.47314, 8.97248};
       std::vector<std::array<double, 3>> one_over_bandwidth_array(
           data_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
       const bool dd = false;
@@ -256,12 +246,60 @@ void test_replication(ParallelUnitTest &ut) {
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
 
       std::vector<double> smooth_result =
           sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result =
           sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
+      // Apply Conservation
+      sphere_kde.apply_conservation(spoke_data, smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(spoke_data, log_smooth_result, qindex.domain_decomposed);
+
+      // Check smooth result
+      for (size_t i = 0; i < data_size; i++) {
+        if (!rtt_dsxx::soft_equiv(smooth_result[i], shell_smoothed_spoke[i], 1e-3))
+          ITFAILS;
+        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], shell_smoothed_spoke[i], 1e-3))
+          ITFAILS;
+      }
+
+      // Energy conservation
+      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
+        ITFAILS;
+      if (!rtt_dsxx::soft_equiv(
+              std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
+        ITFAILS;
+    }
+
+    // shell smoothing on spoke array with theta reflection
+    {
+      std::vector<double> shell_smoothed_spoke{
+          2.06881, 3.62039, 4.65429, 4.65452, 5.17084, 5.68715, 5.68738, 5.91075, 6.4677,
+          2.0703,  3.62288, 4.65595, 4.65685, 5.17084, 5.68482, 5.68573, 5.91436, 6.48016,
+          2.07296, 3.62722, 4.65887, 4.66084, 5.17084, 5.68084, 5.6828,  5.92023, 6.50097,
+          2.07714, 3.63377, 4.66332, 4.66664, 5.17084, 5.67503, 5.67835, 5.92809, 6.53015,
+          2.03363, 3.51215, 4.56263, 4.63799, 5,       5.70368, 5.77904, 6.28319, 7.525,
+          1.91731, 3.16957, 4.17923, 4.56555, 5,       5.77612, 6.16244, 7.1721,  8.42436,
+          1.67727, 3.05587, 3.93229, 4.74886, 5,       5.59282, 6.40939, 7.2858,  8.6644,
+          1.31387, 2.7775,  3.80402, 4.44799, 5,       5.89368, 6.53766, 7.56417, 9.02781};
+      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+          data_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
+      const bool dd = false;
+      // two bins per point
+      const size_t n_coarse_bins = 5;
+      const double max_window_size = 1.0;
+      const size_t dim = 2;
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
+
+      std::vector<double> smooth_result =
+          theta_reflected_sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result =
+          theta_reflected_sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
       // Apply Conservation
       sphere_kde.apply_conservation(spoke_data, smooth_result, qindex.domain_decomposed);
       sphere_kde.apply_conservation(spoke_data, log_smooth_result, qindex.domain_decomposed);
@@ -1005,15 +1043,15 @@ void test_decomposition(ParallelUnitTest &ut) {
 
   // spherical reconstruction
   {
+    const bool spherical = true;
     const size_t local_size = 24;
     const std::array<double, 3> sphere_center{0.0, -1.0, 0.0};
     const double max_radius = 1.0;
     const double min_radius = 0.0;
     const double shell_min_radius = 0.5;
     kde sphere_kde;
-    sphere_kde.set_sphere_center(sphere_center, min_radius, max_radius);
-    kde shell_kde;
-    shell_kde.set_sphere_center(sphere_center, shell_min_radius, max_radius);
+    // reflect on the theta boundary
+    kde theta_reflected_sphere_kde({false, false, true, true, false, false});
     const std::array<double, 8> radial_edges{0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0};
     const std::array<double, 9> cosine_edges{-1.0, -0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75, 1.0};
     const size_t data_size = radial_edges.size() * cosine_edges.size();
@@ -1039,35 +1077,47 @@ void test_decomposition(ParallelUnitTest &ut) {
       ri++;
     }
     std::vector<double> spoke_smoothed_shells{
-        2.51488, 2.99904, 2.99904, 3.69002, 3.72457, 3.69002, 2.99904, 2.99904, 2.51488,
-        2.51645, 3.00418, 3.00418, 3.72015, 3.7866,  3.72015, 3.00418, 3.00418, 2.51645,
-        2.51803, 3.00928, 3.00928, 3.74919, 3.84522, 3.74919, 3.00928, 3.00928, 2.51803,
-        2.51961, 3.01436, 3.01436, 3.77729, 3.90089, 3.77729, 3.01436, 3.01436, 2.51961,
-        5.52169, 3.04531, 3.04531, 3.93334, 4.19165, 3.93334, 3.04531, 3.04531, 5.52169,
-        5.55417, 6.52859, 6.95461, 4.19454, 4.61685, 4.19454, 6.95461, 6.52859, 5.55417,
-        7.53548, 6.56107, 7,       4.58158, 5.14978, 4.58158, 7,       6.56107, 7.53548,
-        7.56796, 8,       7.14194, 8,       6.33455, 8,       7.14194, 8,       7.56796};
+        3.7717,  3.7717,  3.7717,  3.7717,  3.7717,  3.7717,  3.7717,  3.7717,  3.7717,
+        3.83452, 3.83452, 3.83452, 3.83452, 3.83452, 3.83452, 3.83452, 3.83452, 3.83452,
+        3.89388, 3.89388, 3.89388, 3.89388, 3.89388, 3.89388, 3.89388, 3.89388, 3.89388,
+        3.95025, 3.95025, 3.95025, 3.95025, 3.95025, 3.95025, 3.95025, 3.95025, 3.95025,
+        4.24469, 4.24469, 4.24469, 4.24469, 4.24469, 4.24469, 4.24469, 4.24469, 4.24469,
+        4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528,
+        5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495,
+        6.41471, 6.41472, 6.41472, 6.41472, 6.41471, 6.41471, 6.41471, 6.41471, 6.41471};
     std::vector<double> shell_smoothed_spoke{
-        4.82322, 4.82519, 4.82608, 4.82681, 4.8275, 4.82819, 4.82892, 4.8298,  4.83177,
-        4.81029, 4.81825, 4.8218,  4.82475, 4.8275, 4.83025, 4.8332,  4.83675, 4.8447,
-        4.78839, 4.80659, 4.81462, 4.82129, 4.8275, 4.83371, 4.84037, 4.84841, 4.86661,
-        4.75694, 4.79008, 4.8045,  4.81642, 4.8275, 4.83857, 4.8505,  4.86492, 4.89805,
-        4.04388, 4.22611, 4.67522, 4.75503, 5,      4.97765, 5.14326, 6.35454, 5.61112,
-        2.62832, 3.75795, 4.12091, 4.47922, 5,      6.9148,  6.66199, 7.35789, 7.02668,
-        1.66976, 3.01482, 3.72878, 4.43378, 5,      8.6895,  8.00342, 6.64018, 7.98524,
-        1,       2,       4.02682, 4.51075, 5,      5.14424, 5.62818, 8,       9};
+        2.06793, 3.61898, 4.65287, 4.65345, 5.17042, 5.68739, 5.68796, 5.91166, 6.47113,
+        2.06722, 3.61803, 4.65136, 4.65367, 5.17042, 5.68716, 5.68948, 5.91951, 6.49562,
+        2.06603, 3.61645, 4.64883, 4.65404, 5.17042, 5.68679, 5.69201, 5.93267, 6.53704,
+        2.06437, 3.61422, 4.64527, 4.65457, 5.17042, 5.68627, 5.69557, 5.95127, 6.59632,
+        2.04372, 3.58678, 4.60095, 4.66103, 5,       5.67981, 5.73989, 6.19173, 7.4492,
+        1.95893, 3.47577, 4.41363, 4.68754, 5,       5.6533,  5.92721, 6.86506, 8.38191,
+        1.76287, 3.22898, 3.99365, 4.74873, 5,       5.59211, 6.34718, 7.11186, 8.57797,
+        1.36835, 2.8677,  3.80371, 4.44763, 5,       5.89321, 6.53713, 7.47314, 8.97248};
+    std::vector<double> shell_smoothed_spoke_theta_ref{
+        2.06881, 3.62039, 4.65429, 4.65452, 5.17084, 5.68715, 5.68738, 5.91075, 6.4677,
+        2.0703,  3.62288, 4.65595, 4.65685, 5.17084, 5.68482, 5.68573, 5.91436, 6.48016,
+        2.07296, 3.62722, 4.65887, 4.66084, 5.17084, 5.68084, 5.6828,  5.92023, 6.50097,
+        2.07714, 3.63377, 4.66332, 4.66664, 5.17084, 5.67503, 5.67835, 5.92809, 6.53015,
+        2.03363, 3.51215, 4.56263, 4.63799, 5,       5.70368, 5.77904, 6.28319, 7.525,
+        1.91731, 3.16957, 4.17923, 4.56555, 5,       5.77612, 6.16244, 7.1721,  8.42436,
+        1.67727, 3.05587, 3.93229, 4.74886, 5,       5.59282, 6.40939, 7.2858,  8.6644,
+        1.31387, 2.7775,  3.80402, 4.44799, 5,       5.89368, 6.53766, 7.56417, 9.02781};
 
     std::vector<double> dd_const_data(local_size, 1.0);
     std::vector<double> dd_spoke_data(local_size);
     std::vector<double> dd_shell_data(local_size);
     std::vector<double> dd_spoke_smoothed_shells(local_size);
     std::vector<double> dd_shell_smoothed_spoke(local_size);
+    std::vector<double> dd_shell_smoothed_spoke_theta_ref(local_size);
     std::vector<std::array<double, 3>> dd_position_array(local_size);
     for (size_t i = 0; i < local_size; i++) {
       dd_spoke_data[i] = spoke_data[i + rtt_c4::node() * local_size];
       dd_shell_data[i] = shell_data[i + rtt_c4::node() * local_size];
       dd_spoke_smoothed_shells[i] = spoke_smoothed_shells[i + rtt_c4::node() * local_size];
       dd_shell_smoothed_spoke[i] = shell_smoothed_spoke[i + rtt_c4::node() * local_size];
+      dd_shell_smoothed_spoke_theta_ref[i] =
+          shell_smoothed_spoke_theta_ref[i + rtt_c4::node() * local_size];
       dd_position_array[i] = position_array[i + rtt_c4::node() * local_size];
     }
 
@@ -1081,15 +1131,16 @@ void test_decomposition(ParallelUnitTest &ut) {
       const size_t n_coarse_bins = 5;
       const double max_window_size = 2.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
 
       std::vector<double> smooth_result =
-          shell_kde.reconstruction(zero_data, one_over_bandwidth_array, qindex);
+          sphere_kde.reconstruction(zero_data, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result =
-          shell_kde.log_reconstruction(zero_data, one_over_bandwidth_array, qindex);
+          sphere_kde.log_reconstruction(zero_data, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      shell_kde.apply_conservation(zero_data, smooth_result, qindex.domain_decomposed);
-      shell_kde.apply_conservation(zero_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(zero_data, smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(zero_data, log_smooth_result, qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
@@ -1121,7 +1172,8 @@ void test_decomposition(ParallelUnitTest &ut) {
       const size_t n_coarse_bins = 5;
       const double max_window_size = 2.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
 
       std::vector<double> smooth_result =
           sphere_kde.reconstruction(dd_spoke_data, one_over_bandwidth_array, qindex);
@@ -1163,7 +1215,8 @@ void test_decomposition(ParallelUnitTest &ut) {
       const size_t n_coarse_bins = 5;
       const double max_window_size = 2.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
 
       std::vector<double> smooth_result =
           sphere_kde.reconstruction(dd_shell_data, one_over_bandwidth_array, qindex);
@@ -1205,7 +1258,8 @@ void test_decomposition(ParallelUnitTest &ut) {
       const size_t n_coarse_bins = 5;
       const double max_window_size = 2.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
 
       std::vector<double> smooth_result =
           sphere_kde.reconstruction(dd_shell_data, one_over_bandwidth_array, qindex);
@@ -1247,7 +1301,8 @@ void test_decomposition(ParallelUnitTest &ut) {
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
 
       std::vector<double> smooth_result =
           sphere_kde.reconstruction(dd_spoke_data, one_over_bandwidth_array, qindex);
@@ -1262,6 +1317,49 @@ void test_decomposition(ParallelUnitTest &ut) {
         if (!rtt_dsxx::soft_equiv(smooth_result[i], dd_shell_smoothed_spoke[i], 1e-3))
           ITFAILS;
         if (!rtt_dsxx::soft_equiv(log_smooth_result[i], dd_shell_smoothed_spoke[i], 1e-3))
+          ITFAILS;
+      }
+
+      double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
+      rtt_c4::global_sum(smooth_conservation);
+      double log_smooth_conservation =
+          std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0);
+      rtt_c4::global_sum(log_smooth_conservation);
+
+      // Energy conservation
+      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                                smooth_conservation))
+        ITFAILS;
+      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                                log_smooth_conservation))
+        ITFAILS;
+    }
+
+    // shell smoothing on spoke array with theta reflection
+    {
+      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+          local_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
+      const bool dd = true;
+      // two bins per point
+      const size_t n_coarse_bins = 5;
+      const double max_window_size = 1.0;
+      const size_t dim = 2;
+      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
+
+      std::vector<double> smooth_result = theta_reflected_sphere_kde.reconstruction(
+          dd_spoke_data, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = theta_reflected_sphere_kde.reconstruction(
+          dd_spoke_data, one_over_bandwidth_array, qindex);
+      // Apply Conservation
+      sphere_kde.apply_conservation(dd_spoke_data, smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_spoke_data, log_smooth_result, qindex.domain_decomposed);
+
+      // Check smooth result
+      for (size_t i = 0; i < local_size; i++) {
+        if (!rtt_dsxx::soft_equiv(smooth_result[i], dd_shell_smoothed_spoke_theta_ref[i], 1e-3))
+          ITFAILS;
+        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], dd_shell_smoothed_spoke_theta_ref[i], 1e-3))
           ITFAILS;
       }
 
