@@ -522,11 +522,11 @@ auto get_window_bin = [](auto spherical, const auto dim, const auto &grid_bins,
     double loc = location[d];
     // transform location for zero theta overshoot
     if (spherical && d == 1 && window_max[d] > 2.0 * rtt_units::PI &&
-        location[d] < window_max[d] - 2.0 * rtt_units::PI)
+        location[d] < (window_max[d] - 2.0 * rtt_units::PI))
       loc += 2.0 * rtt_units::PI;
     // transform location for zero theta overshoot
     if (spherical && d == 1 && window_min[d] < 0 &&
-        location[d] > 2.0 * rtt_units::PI - window_min[d])
+        location[d] > (2.0 * rtt_units::PI + window_min[d]))
       loc -= 2.0 * rtt_units::PI;
     const double bin_value =
         static_cast<double>(grid_bins[d]) * (loc - window_min[d]) / (window_max[d] - window_min[d]);
