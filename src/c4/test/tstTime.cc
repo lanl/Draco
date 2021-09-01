@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 17:19:16 2002
  * \brief  Test timing functions in C4.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/Global_Timer.hh"
@@ -63,7 +62,7 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
 
   Timer t;
 
-#ifdef WIN32
+#ifdef _MSC_VER
   // KT: I'm not sure why I'm having so much trouble on Win32 for the timing
   // precision check.  I may need to use a different mechanism for timing
   // values.  Right now the ngihtly tests fail about 1 out of 20 times.
@@ -271,8 +270,7 @@ void test_pause(rtt_dsxx::UnitTest &ut) {
 
   double end(rtt_c4::wall_clock_time());
 
-  if (end - begin < pauseTime)
-    ITFAILS;
+  FAIL_IF(end - begin < pauseTime);
 
   std::cout << "Starting tstTime::test_pause tests...done\n" << std::endl;
 

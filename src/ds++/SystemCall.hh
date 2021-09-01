@@ -1,8 +1,8 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   ds++/SystemCall.hh
+ * \file  ds++/SystemCall.hh
  * \brief Wrapper for system calls. Hide differences between Unix/Windows system calls.
- * \note Copyright (C) 2016-2021 Triad National Security, LLC.  All rights reserved. */
+ * \note  Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_SystemCall_hh
@@ -16,7 +16,7 @@
 #include <sstream>
 #include <string>
 #include <thread>
-#ifdef WIN32
+#ifdef _MSC_VER
 #define _WINSOCKAPI_
 #include <WinSock2.h>
 #include <Windows.h>
@@ -54,7 +54,7 @@ std::string draco_getcwd();
 class draco_getstat {
 private:
   int stat_return_code;
-#ifdef WIN32
+#ifdef _MSC_VER
   struct _stat buf;
   bool filefound;
   WIN32_FIND_DATA FileInformation; // Additional file information

@@ -3,7 +3,7 @@
  * \file  ds++/SystemCall.cc
  * \brief Implementation for the Draco wrapper for system calls. This routine attempts to hide
  *        differences between Unix/Windows system calls.
- * \note Copyright (C) 2016-2020 Triad National Security, LLC.  All rights reserved. */
+ * \note  Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "SystemCall.hh"
@@ -17,7 +17,7 @@
 #include <sys/param.h> // MAXPATHLEN
 #include <unistd.h>    // gethostname
 #endif
-#ifdef WIN32
+#ifdef _MSC_VER
 #include <direct.h>  // _getcwd
 #include <process.h> // _getpid
 #include <sstream>
@@ -50,7 +50,7 @@ namespace rtt_dsxx {
  */
 std::string draco_gethostname() {
 // Windows: gethostname from <winsock2.h>
-#ifdef WIN32
+#ifdef _MSC_VER
   std::array<char, HOST_NAME_MAX> hostname;
   hostname.fill('x');
   int err = gethostname(&hostname[0], sizeof(hostname));
@@ -83,7 +83,7 @@ std::string draco_gethostname() {
  * Catamount systems do not have getpid().  This function will return -1.
  */
 int draco_getpid() {
-#ifdef WIN32
+#ifdef _MSC_VER
   int i = _getpid();
   return i;
 #else
@@ -104,7 +104,7 @@ int draco_getpid() {
  */
 std::string draco_getcwd() {
 // Identify the current working directory.
-#ifdef WIN32
+#ifdef _MSC_VER
   char *buffer;
   Insist((buffer = _getcwd(nullptr, 0)) != nullptr,
          std::string("getcwd failed: " + std::string(strerror(errno))));
@@ -133,7 +133,7 @@ std::string draco_getcwd() {
  * Linux
  *    http://en.wikipedia.org/wiki/Stat_%28system_call%29
  */
-#ifdef WIN32
+#ifdef _MSC_VER
 draco_getstat::draco_getstat(std::string const &fqName)
     : stat_return_code(0), buf(), FileInformation({0}) {
   filefound = true;
@@ -179,7 +179,7 @@ draco_getstat::draco_getstat(std::string const &fqName) : stat_return_code(0), b
 //------------------------------------------------------------------------------------------------//
 //! Is this a regular file?
 bool draco_getstat::isreg() {
-#ifdef WIN32
+#ifdef _MSC_VER
   bool b = FileInformation.dwFileAttributes & FILE_ATTRIBUTE_NORMAL;
   return filefound && b;
 #else
@@ -191,7 +191,7 @@ bool draco_getstat::isreg() {
 //------------------------------------------------------------------------------------------------//
 //! Is this a directory?
 bool draco_getstat::isdir() {
-#ifdef WIN32
+#ifdef _MSC_VER
   bool b = FileInformation.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
   return filefound && b;
 #else
@@ -202,7 +202,7 @@ bool draco_getstat::isdir() {
 
 //------------------------------------------------------------------------------------------------//
 //! Is a Unix permission bit set?
-#ifdef WIN32
+#ifdef _MSC_VER
 bool draco_getstat::has_permission_bit(int /*mask*/) {
   Insist(isreg(), "Can only check permission bit for regular files.");
   Insist(false, "draco_getstat::hsa_permission_bit() not implemented for WIN32");
@@ -221,7 +221,7 @@ bool draco_getstat::has_permission_bit(int mask) {
 std::string draco_getrealpath(std::string const &path) {
   std::array<char, MAXPATHLEN> buffer; // _MAX_PATH
   buffer.fill('a');
-#ifdef WIN32
+#ifdef _MSC_VER
   // http://msdn.microsoft.com/en-us/library/506720ff%28v=vs.100%29.aspx
   Insist(_fullpath(&buffer[0], path.c_str(), MAXPATHLEN) != nullptr, "Invalid path.");
   std::string retVal(buffer.data());
@@ -243,7 +243,7 @@ std::string draco_getrealpath(std::string const &path) {
  * \todo Do we need a permissions argument?
  */
 void draco_mkdir(std::string const &path) {
-#ifdef WIN32
+#ifdef _MSC_VER
   draco_getstat dirInfo(path);
   if (!dirInfo.isdir()) {
     /*! \note If path contains the location of a directory, it cannot contain a trailing
@@ -297,7 +297,7 @@ void draco_mkdir(std::string const &path) {
  */
 void draco_remove(std::string const &dirpath) {
   // remove() works for all unix items but only for files (not directories) for windows.
-#ifdef WIN32
+#ifdef _MSC_VER
   if (draco_getstat(dirpath).isdir()) {
     // Clear any special directory attributes.
     bool ok = ::SetFileAttributes(dirpath.c_str(), FILE_ATTRIBUTE_NORMAL);

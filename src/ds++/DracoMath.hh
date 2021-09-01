@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  New or overloaded cmath or cmath-like functions.
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_DracoMath_hh
@@ -27,7 +27,7 @@ namespace rtt_dsxx {
 // namespace.  The problem here is that PGI/13.7 does not have these language features.  However,
 // PGI does provide the C99 _macros_ of the same name (w/o namespace qualifier).
 //------------------------------------------------------------------------------------------------//
-#if defined _WIN32 || defined __CYGWIN__
+#if defined _MSC_VER || defined __CYGWIN__
 
 template <typename T> bool isNan(T a) { return _isnan(a); }
 template <typename T> bool isInf(T a) { return !_finite(a); }

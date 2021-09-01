@@ -2,7 +2,7 @@
 /*!
  * \file   ds++/path_getFilenameComponent.cc
  * \brief  Encapsulate path information (path separator, etc.)
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "path.hh"
@@ -111,7 +111,7 @@ std::string getFilenameComponent(std::string const &fqName, FilenameComponent fc
   }
 
   // Always convert paths to use native format.
-#ifdef WIN32
+#ifdef _MSC_VER
   std::replace(retVal.begin(), retVal.end(), UnixDirSep, dirSep);
 #else
   std::replace(retVal.begin(), retVal.end(), WinDirSep, dirSep);

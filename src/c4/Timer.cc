@@ -3,7 +3,7 @@
  * \file   c4/Timer.cc
  * \author Thomas M. Evans
  * \date   Mon Mar 25 17:56:11 2002
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Timer.hh"
@@ -41,7 +41,7 @@ Timer::Timer()
     : tms_begin(DRACO_TIME_TYPE()), tms_end(DRACO_TIME_TYPE()),
       posix_clock_ticks_per_second(static_cast<int>(DRACO_CLOCKS_PER_SEC)),
       isMPIWtimeAvailable(setIsMPIWtimeAvailable()) {
-#if defined(WIN32)
+#if defined(_MSC_VER)
   static_assert(DRACO_CLOCKS_PER_SEC < INT32_MAX, "!(DRACO_CLOCKS_PER_SEC < INT32_MAX)");
 #else
   Check(DRACO_CLOCKS_PER_SEC < INT32_MAX);

@@ -4,18 +4,14 @@
  * \author Kent G. Budge
  * \date   Feb 18 2003
  * \brief  Unit test for the class rtt_parser::Token.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved.
- */
-//------------------------------------------------------------------------------------------------//
-
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
 #include "ds++/ScalarUnitTest.hh"
 #include "parser/Token.hh"
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #undef ERROR
 #endif
 
