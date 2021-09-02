@@ -452,7 +452,6 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
       }
     }
   }
-
   // Fill in the overflow around theta=0.0
   if (spherical && (window_min[1] < 0.0 || window_max[1] > 2.0 * rtt_units::PI)) {
     // Only one bound of the window should every overshoot zero
@@ -465,13 +464,13 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
       double wmax = window_max[d];
       if (spherical && d == 1 && window_min[d] < 0.0) {
         // Capture the overshoot theta space
-        wmin = std::min(2.0 * rtt_units::PI - window_min[d], bounding_box_max[d]);
+        wmin = std::min(2.0 * rtt_units::PI + window_min[d], bounding_box_max[d]);
         wmax = 2.0 * rtt_units::PI;
       }
       if (spherical && d == 1 && window_max[d] > 2.0 * rtt_units::PI) {
         // Capture the overshoot theta space
         wmin = 0.0;
-        wmax = std::max(2.0 * rtt_units::PI - window_max[d], bounding_box_min[d]);
+        wmax = std::max(window_max[d] - 2.0 * rtt_units::PI, bounding_box_min[d]);
       }
       // Truncate based on global space
       if (spherical && d == 1 && wmin < bounding_box_min[d])
