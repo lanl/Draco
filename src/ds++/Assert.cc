@@ -2,7 +2,7 @@
 /*!
  * \file   ds++/Assert.cc
  * \brief  Helper functions for the Assert facility.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC. All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Assert.hh"

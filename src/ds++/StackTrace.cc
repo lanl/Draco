@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Friday, Dec 20, 2013, 10:15 am
  * \brief  Linux/X86 implementation of stack trace functions.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "StackTrace.hh"
@@ -156,7 +156,7 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
 //------------------------------------------------------------------------------------------------//
 // Stack trace feature is also available on Win32-based systems when compiled with Visual Studio.
 // ------------------------------------------------------------------------------------------------//
-#ifdef WIN32
+#ifdef _MSC_VER
 
 //------------------------------------------------------------------------------------------------//
 // Print a demangled stack backtrace of the caller function.
@@ -184,7 +184,7 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
   return msg.str();
 }
 
-#endif // WIN32
+#endif // _MSC_VER
 
 //------------------------------------------------------------------------------------------------//
 // end of ds++/StackTrace.cc

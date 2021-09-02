@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>, Kendra Long
  * \date   Thursday, Jul 12, 2018, 08:46 am
  * \brief  X3D_Draco_Mesh_Reader class implementation file.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "X3D_Draco_Mesh_Reader.hh"
@@ -147,6 +147,10 @@ void X3D_Draco_Mesh_Reader::read_mesh() {
     auto const &matids = parsed_pairs[dist].second;
     dist++;
     for (auto const &id : matids) {
+      if (i >= x3d_matids.size()) {
+        // Yes, this can happen, if the file is corrupted the right (wrong?) way
+        throw std::invalid_argument("wrong number of matids in x3d file " + filename);
+      }
       x3d_matids[i++] = id;
     }
   }

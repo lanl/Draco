@@ -30,6 +30,12 @@ in [0,1]x[0,2]x[0,4]:
 ./x3d_generator.py --mesh_type orth_3d_mesh --num_per_dim 4 4 4 --bnd_per_dim 0 1 0 2 0 4
 ```
 
+To create the same mesh, but with distinct upper-half and lower-half regions (lower is region id 2, upper is id 1):
+
+```bash
+./x3d_generator.py --mesh_type orth_3d_mesh --num_per_dim 4 4 4 --bnd_per_dim 0 1 0 2 0 4 --reg_ids 1 2  --reg_bnd_per_dim  0 1 0 2 2 4  0 1 0 2 0 2
+```
+
 To display a plot of the generated mesh file:
 
 ```bash

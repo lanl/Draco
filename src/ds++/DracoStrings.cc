@@ -1,10 +1,10 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   ds++/DracoStrings.cc
- * \author Kelly G. Thompson <kgt@lanl.gov
+ * \author Kelly G. Thompson <kgt@lanl.gov>
  * \date   Wednesday, Aug 23, 2017, 12:48 pm
  * \brief  Encapsulates common string manipulations (implementation).
- * \note   Copyright (C) 2017-2020 Triad National Security, LLC.  All rights reserved. */
+ * \note   Copyright (C) 2017-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "DracoStrings.hh"
@@ -53,7 +53,7 @@ template <> auto parse_number_impl<uint64_t>(std::string const &str) -> uint64_t
 }
 
 // See notes in DracoStrings.hh about this CPP block
-#if defined(WIN32) || defined(APPLE)
+#if defined(_MSC_VER) || defined(APPLE)
 
 template <> auto parse_number_impl<long>(std::string const &str) -> long {
   return std::stol(str); // use stoull or stul?

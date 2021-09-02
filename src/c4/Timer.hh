@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 17:35:07 2002
  * \brief  Define class Timer, a POSIX standard timer.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_Timer_hh
@@ -322,7 +322,7 @@ double Timer::wall_clock() const {
 //! Return the system cpu time in seconds, for the last interval.
 double Timer::system_cpu() const {
   Require(!timer_on);
-#if defined(WIN32)
+#if defined(_MSC_VER)
   return 0.0; // difftime( tms_end, tms_begin );
 #else
   return static_cast<double>(tms_end.tms_stime - tms_begin.tms_stime) /
@@ -334,7 +334,7 @@ double Timer::system_cpu() const {
 //! Return the user cpu time in seconds, for the last interval.
 double Timer::user_cpu() const {
   Require(!timer_on);
-#if defined(WIN32)
+#if defined(_MSC_VER)
   using namespace std::chrono;
   duration<double> diff = tms_end - tms_begin;
   return duration_cast<nanoseconds>(diff).count() / 1.0e9;

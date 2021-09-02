@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 17:06:25 2002
  * \brief  Implementation of C4 serial option.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "C4_Functions.hh"
@@ -66,7 +66,7 @@ void global_barrier() { /* empty */
 // TIMING FUNCTIONS
 //------------------------------------------------------------------------------------------------//
 
-#if defined(WIN32)
+#if defined(_MSC_VER)
 double wall_clock_time(DRACO_TIME_TYPE &now) {
   using namespace std::chrono;
   now = high_resolution_clock::now();

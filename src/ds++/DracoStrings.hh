@@ -4,8 +4,7 @@
  * \author Kelly G. Thompson <kgt@lanl.gov
  * \date   Wednesday, Aug 23, 2017, 12:48 pm
  * \brief  Encapsulates common string manipulations.
- * \note   Copyright (C) 2017-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2017-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_DracoStrings_hh
@@ -114,7 +113,7 @@ template <> auto parse_number_impl<uint64_t>(std::string const &str) -> uint64_t
 // If we are using Visual Studio, we need these definitions. I expect that they will be needed for
 // 32-bit Linux as well, but I can't test that.  Might need to add "|| (defined(__GNUC__) &&
 // __WORDSIZE != 64)"
-#if defined(WIN32) || defined(APPLE)
+#if defined(_MSC_VER) || defined(APPLE)
 
 template <> auto parse_number_impl<long>(std::string const &str) -> long;
 template <> auto parse_number_impl<unsigned long>(std::string const &str) -> unsigned long;
@@ -126,8 +125,7 @@ template <> auto parse_number_impl<double>(std::string const &str) -> double;
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Convert a string into a floating-point type or an integral type with
- *        error checking.
+ * \brief Convert a string into a floating-point type or an integral type with error checking.
  *
  * \param[in] str The string that contains a number.
  * \param[in] verbose Should the function print conversion message warnings (default: true).
@@ -140,7 +138,7 @@ template <> auto parse_number_impl<double>(std::string const &str) -> double;
  * appropriate.
  *
  * Consider catching thrown conversion errors using code similar to this:
-
+ *
  * \code
  try {
     parse_number<T>(str);

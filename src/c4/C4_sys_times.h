@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Mon Sep 20 21:54:18 2010
  * \brief  Encapsulate system headers for timing information.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_C4_sys_times_h
@@ -12,7 +12,7 @@
 
 #include "ds++/config.h"
 
-#if defined(WIN32) || defined(MINGW)
+#if defined(_MSC_VER) || defined(MINGW)
 #include <chrono>
 #include <ctime>
 #else
@@ -20,7 +20,7 @@
 #include <unistd.h>
 #endif
 
-#if defined(WIN32)
+#if defined(_MSC_VER)
 // Consider using GetProcessTimes instead of this as a higher resolution timer.
 #define DRACO_TIME_TYPE std::chrono::high_resolution_clock::time_point
 #define DRACO_CLOCKS_PER_SEC CLOCKS_PER_SEC

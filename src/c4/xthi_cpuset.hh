@@ -4,7 +4,7 @@
  * \author Mike Berry <mrberry@lanl.gov>, Kelly Thompson <kgt@lanl.gov>
  * \date   Wednesday, Aug 09, 2017, 11:45 am
  * \brief  Helper functions to generate string for core affinity.
- * \note   Copyright (C) 2017-2020 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2019-2021 Triad National Security, LLC., All rights reserved.
  *
  * These functions are needed by c4's xthi and ythi programs to report human readable thread
  * bindings.  It is also used by the unit test for libquo.
@@ -20,7 +20,7 @@
 #include <bitset>
 #include <sstream>
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #include <processthreadsapi.h> // requries SystemCall.hh to be loaded first.
 #endif
 
@@ -102,7 +102,7 @@ inline int sched_getaffinity(pid_t /*pid*/, size_t /*cpu_size*/, cpu_set_t *cpu_
 
 #endif
 
-#ifdef WIN32
+#ifdef _MSC_VER
 
 //! \param[in] num_cpu Number of CPU's per node.
 inline std::string cpuset_to_string(unsigned const num_cpu) {

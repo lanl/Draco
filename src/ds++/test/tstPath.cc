@@ -4,8 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Jul 12 16:00:59 2011
  * \brief  Test functions found in ds++/path.hh and path.cc
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2011-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -140,7 +139,7 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
   // ------------------------------------------------------------
   string realpath = getFilenameComponent(fqp, rtt_dsxx::FC_REALPATH);
 
-#if defined(WIN32)
+#if defined(_MSC_VER)
   { // The binary should exist.  Windows does not provide an execute bit.
 
     if (realpath.size() > 0)

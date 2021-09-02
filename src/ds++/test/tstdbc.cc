@@ -3,7 +3,7 @@
  * \file   ds++/test/tstdbc.cc
  * \author Kent G. Budge
  * \date   Feb 18 2003
- * \brief  Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \brief  Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/DracoMath.hh"
@@ -55,8 +55,8 @@ void dbc_test(UnitTest &ut) {
   else
     PASSMSG("is_monotonic_increasing function template ok");
 
-  // Ensure that the is_monotonic_increasing() function will return true if
-  // there is only one data point.
+  // Ensure that the is_monotonic_increasing() function will return true if there is only one data
+  // point.
 
   if (!is_monotonic_increasing(sum_test_array.begin(), sum_test_array.begin() + 1))
     FAILMSG(string("is_monotonic_increasing function template ") +
@@ -71,8 +71,8 @@ void dbc_test(UnitTest &ut) {
   else
     PASSMSG("is_strict_monotonic_increasing function template ok");
 
-  // Ensure that the is_strict_monotonic_increasing() function will return true
-  // if there is only one data point.
+  // Ensure that the is_strict_monotonic_increasing() function will return true if there is only one
+  // data point.
 
   if (is_strict_monotonic_increasing(sum_test_array.begin(), sum_test_array.begin() + 1))
     PASSMSG(string("is_strict_monotonic_increasing function template worked ") +
@@ -87,8 +87,8 @@ void dbc_test(UnitTest &ut) {
   else
     FAILMSG("is_strict_monotonic_decreasing function template FAILED");
 
-  // Ensure that the is_strict_monotonic_decreasing() function will return
-  // true if there is only one data point.
+  // Ensure that the is_strict_monotonic_decreasing() function will return true if there is only one
+  // data point.
 
   if (is_strict_monotonic_decreasing(sum_test_array.begin(), sum_test_array.begin() + 1))
     PASSMSG(string("is_strict_monotonic_decreasing function template ") +
@@ -103,13 +103,12 @@ void dbc_test(UnitTest &ut) {
   else
     PASSMSG("std::bind2nd or std::greater function templates ok");
 
-// The preceeding tests whether binders are present in the C++
-// implementation. The binders in <functional> supercede the old
-// rtt_utils::exceeds predicate.
+// The preceeding tests whether binders are present in the C++ implementation. The binders in
+// <functional> supercede the old rtt_utils::exceeds predicate.
 
 // Test badly formed numbers.
 // Note: VS2013 with Nov 2013 CTP will not compile an explicit division by zero.
-#ifndef WIN32
+#ifndef _MSC_VER
   if (!ut.fpe_trap_active) {
     double const Zero = 0.0;
     double const Infinity = 1.0 / Zero;

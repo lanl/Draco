@@ -169,7 +169,6 @@ rm -f "${patchfile_c}"
 
 # ------------------------------------------------------------------------------------------------ #
 # Liast of modified files
-# - Used for cmake-format and Emacs F90 processing.
 # ------------------------------------------------------------------------------------------------ #
 
 # staged files
@@ -417,6 +416,8 @@ for file in $modifiedfiles; do
   # ignore file if we do check for file extensions and the file does not match any of the
   # extensions specified in $FILE_EXTS
   if ! matches_extension "$file"; then continue; fi
+  # If this PR deletes a file, skip it
+  if ! [[ -f "${file}" ]]; then continue; fi
 
   file_nameonly=$(basename "${file}")
   tmpfile1="/tmp/$USER/copyright-${file_nameonly}"
@@ -438,32 +439,54 @@ for file in $modifiedfiles; do
                             sed -e 's/.* \([0-9][0-9][0-9][0-9]\).*/\1/')
 
   # Sanity Checks
-  [[ "${create_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
-  # [[ "${mod_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
-  [[ "${git_last_mod_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
-  [[ "${git_create_date}" =~ "Copyright" ]] && die "Failed to parse copyright line"
+  if [[ "${create_date}" =~ "Copyright" ]]; then
+    echo "Failed to parse copyright line (err 1)"
+    exit 1
+  fi
+  # [[ "${mod_date}" =~ "Copyright" ]] && echo "Failed to parse copyright line" && exit 1
+  if [[ "${git_last_mod_date}" =~ "Copyright" ]]; then
+    echo "Failed to parse copyright line (err 2)"
+    exit 1
+  fi
+  if [[ "${git_create_date}" =~ "Copyright" ]]; then
+    echo "Failed to parse copyright line (err 3)"
+    exit 1
+  fi
   if [[ "${create_date}" -gt "${today}" ]] || [[ "${create_date}" -lt "1990" ]]; then
-    die "Existing copyright date range is corrupt. Please fix $file manually."
+    echo "Existing copyright date range is corrupt. Please fix $filename manually."
+    exit 1
   fi
   if [[ "${git_create_date}" -gt "${today}" ]] || [[ "${git_create_date}" -lt "1990" ]]; then
-    die "Existing copyright date range is corrupt. Please fix $file manually."
+    echo "Existing copyright date range is corrupt. Please fix $filename manually."
+    exit 1
   fi
   if [[ "${create_date}" -gt "${today}" ]] || [[ "${create_date}" -lt "1990" ]]; then
-    die "Existing copyright date range is corrupt. Please fix $file manually."
+    echo "Existing copyright date range is corrupt. Please fix $filename manually."
+    exit 1
   fi
 
   # We converted from CVS to svn in 2010. This is the oldest create date that git will report.  In
   # this case older data is lost, so just use whatever is in the file as the create date.
-  [[ "${git_create_date}" -lt "2011" ]] && git_create_date="${create_date}"
+  if [[ "${git_create_date}" -lt "2011" ]] && [[ "${create_date}" -lt "${git_create_date}" ]]; then
+    git_create_date="${create_date}"
+  fi
 
   # Expected Copyright line:
-  ecrl="Copyright (C) ${git_create_date}-${today} Triad National Security, LLC., "
-  ecrl+="All rights reserved."
+  ecrl="Copyright (C) "
+  if [[ "${git_create_date}" != "${today}" ]]; then
+    ecrl+="${git_create_date}-"
+  fi
+  ecrl+="${today} Triad National Security, LLC., All rights reserved."
 
   # If existing copyright spans two lines, reduce it to one line.
-  twolines=$(grep -A 1 Copyright "${tmpfile1}" | tail -n 1 | grep -c reserved)
+  twolines=$(grep -A 1 Copyright "${filename}" | tail -n 1 | grep -c reserved)
+  twolines_closes_cpp_comment=$(grep -A 1 Copyright "${filename}" | tail -n 1 | grep -c '[*]/')
   if [[ $twolines -gt 0 ]]; then
-    sed -i 's/All rights reserved[.]*//' "${tmpfile1}"
+    if [[ $twolines_closes_cpp_comment -gt 0 ]]; then
+      sed -i 's%^.*All [Rr]ights [Rr]eserved[.]*.*[*]/$% */%' "${filename}"
+    else
+      sed -i '/All rights reserved/d' "${filename}"
+    fi
   fi
 
   # Do we have terminating comement character on the 'copyright' line.  If so, keep it.
@@ -485,6 +508,7 @@ for file in $modifiedfiles; do
   unset git_create_date
   unset ecrl
   unset twolines
+  unset twolines_closes_cpp_comment
   unset ecm
 
 done

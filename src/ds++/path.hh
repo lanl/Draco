@@ -2,7 +2,7 @@
 /*!
  * \file   ds++/path.hh
  * \brief  Encapsulate path information (path separator, etc.)
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved.
  *
  * \bug Consider replacing path.cc and path.hh with C++17 filesystem */
 //------------------------------------------------------------------------------------------------//
@@ -99,9 +99,9 @@ void draco_walk_directory_tree(std::string const &dirname, T const &myOperator) 
     return;
   }
 
-#ifdef WIN32
+#ifdef _MSC_VER
   /*! \note If path contains the location of a directory, it cannot contain a trailing backslash. If
-     * it does, -1 will be returned and errno will be set to ENOENT. */
+   * it does, -1 will be returned and errno will be set to ENOENT. */
   std::string d_name;
   if (dirname[dirname.size() - 1] == rtt_dsxx::WinDirSep ||
       dirname[dirname.size() - 1] == rtt_dsxx::UnixDirSep)
