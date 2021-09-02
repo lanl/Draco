@@ -406,8 +406,6 @@ void kde::calc_win_min_max(const quick_index &qindex, const std::array<double, 3
   for (size_t d = 0; d < dim; d++) {
     win_min[d] = position[d] - 1.0 / one_over_bandwidth[d];
     win_max[d] = position[d] + 1.0 / one_over_bandwidth[d];
-    Ensure(win_min[d] >= local_bounding_box_min[d]);
-    Ensure(win_max[d] <= local_bounding_box_max[d]);
   }
 }
 
