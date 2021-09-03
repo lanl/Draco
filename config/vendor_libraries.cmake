@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 June 6
 # brief  Look for any libraries which are required at the top level.
-# note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 include_guard(GLOBAL)
@@ -64,38 +64,35 @@ endmacro()
 # Helper macros for LAPACK/Unix
 #
 # This module sets the following variables:
-# - BLAS_FOUND   - set to true if a library implementing the BLAS interface is found
-# - LAPACK_FOUND - set to true if a library implementing the LAPACK interface is found
+# * BLAS_FOUND   - set to true if a library implementing the BLAS interface is found
+# * LAPACK_FOUND - set to true if a library implementing the LAPACK interface is found
 #
 # Provides import targets:
-# - LAPACK::LAPACK
-# - BLAS::BLAS
+# * LAPACK::LAPACK
+# * BLAS::BLAS
 #
 # Providers:
-# - Linux - use spack to install netlib-lapack, openblas, or mkl, https://github.com/spack/spack
-# - Windows - Use vcpkg, https://github.com/microsoft/vcpkg, or
-#             clone and build from sources,
+# * Linux - use spack to install netlib-lapack, openblas, or mkl, https://github.com/spack/spack
+# * Windows - Use vcpkg, https://github.com/microsoft/vcpkg, or clone and build from sources,
 #             https://github.com/KineticTheory/lapack-visualstudio-mingw-gfortran
+#
+# Special instructions:
+# * cmake-3.21+ will find Fujitsu_SSL2 when using xlc++ on Power9.  As of Sep 2021, this provider
+#   seems broken on darwin and rzansel. To avoid the bad behavior, we set BLA_VENDOR=Generic to help
+#   cmake find netlib-lapack.
 #--------------------------------------------------------------------------------------------------
 function( setupLAPACKLibraries )
   message( STATUS "Looking for LAPACK {netlib, mkl, openblas}...")
+  if (CMAKE_CXX_COMPILER_ID STREQUAL XLClang )
+    # If xlc++, we need to use netlib-lapack to avoid wierd issues.
+    # https://re-git.lanl.gov/draco/draco/-/issues/1361
+    set(BLA_VENDOR "Generic")
+  endif()
   if( NOT TARGET BLAS::BLAS )
-    find_package( BLAS QUIET )
+    find_package(BLAS QUIET)
   endif()
   if( NOT TARGET LAPACK::LAPACK )
-    find_package( LAPACK QUIET )
-  endif()
-  if( TARGET LAPACK::LAPACK )
-    get_target_property( blas_iface_link_lib BLAS::BLAS INTERFACE_LINK_LIBRARIES )
-    if ( blas_iface_link_lib MATCHES NOTFOUND AND CMAKE_CXX_COMPILER_ID STREQUAL XLClang )
-      # XL seems to provide sgemm and this prevents FindBLAS.cmake from doing it's job.
-      get_filename_component(lldir ${LAPACK_LIBRARIES} DIRECTORY)
-      unset(BLAS_LIBRARIES)
-      find_library(BLAS_LIBRARIES NAMES blas HINTS ${lldir} NO_DEFAULT_PATH )
-      target_link_libraries(LAPACK::LAPACK INTERFACE ${BLAS_LIBRARIES})
-    else()
-      target_link_libraries(LAPACK::LAPACK INTERFACE BLAS::BLAS)
-    endif()
+    find_package(LAPACK QUIET)
   endif()
   set( lapack_url "http://www.netlib.org/lapack" )
   if( LAPACK_LIBRARIES MATCHES openblas )
@@ -113,7 +110,7 @@ function( setupLAPACKLibraries )
     DESCRIPTION "Linear Algebra PACKage"
     TYPE OPTIONAL
     PURPOSE "Required for building the lapack_wrap component." )
-  message( STATUS "Looking for LAPACK {netlib, mkl, openblas}...found ${LAPACK_LIBRARIES}")
+  message(STATUS "Looking for LAPACK {netlib, mkl, openblas}...found ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES}")
 endfunction()
 
 #--------------------------------------------------------------------------------------------------
