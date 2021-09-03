@@ -122,6 +122,21 @@ done
 # The copyright block check needs the full history
 run "git fetch --depth=1000000"
 
+# ------------------------------------------------------------------------------------------------ #
+# List of modified files
+# ------------------------------------------------------------------------------------------------ #
+
+# staged files
+modifiedfiles=$(git diff --name-only --cached)
+# unstaged files
+modifiedfiles="${modifiedfiles} $(git diff --name-only)"
+# all files
+modifiedfiles=$(echo "${modifiedfiles}" | sort -u)
+echo "Files modified in this PR:"
+for file in $modifiedfiles; do
+  echo "  - $file"
+done
+
 #--------------------------------------------------------------------------------------------------#
 # Test C++ code with git-clang-format
 #--------------------------------------------------------------------------------------------------#
@@ -134,9 +149,6 @@ patchfile_c=$(mktemp "/tmp/$USER/gcf.patch.XXXXXXXX")
 
 # don't actually modify the files (originally we compared to branch 'develop', but let's try
 # ORIG_HEAD or maybe use CI variables like TRAVIS_BRANCH or CI_MERGE_REQUEST_TARGET_BRANCH_NAME).
-#run "git branch -a"
-#echo "TRAVIS_BRANCH = $TRAVIS_BRANCH"
-#echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME = $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
 target_branch=develop
 if [[ -n ${TRAVIS_BRANCH} ]]; then
   target_branch=${TRAVIS_BRANCH}
@@ -166,17 +178,6 @@ else
   fi
 fi
 rm -f "${patchfile_c}"
-
-# ------------------------------------------------------------------------------------------------ #
-# Liast of modified files
-# ------------------------------------------------------------------------------------------------ #
-
-# staged files
-modifiedfiles=$(git diff --name-only --cached)
-# unstaged files
-modifiedfiles="${modifiedfiles} $(git diff --name-only)"
-# all files
-modifiedfiles=$(echo "${modifiedfiles}" | sort -u)
 
 #--------------------------------------------------------------------------------------------------#
 # Test CMake script for formatting issues

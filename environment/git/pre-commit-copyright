@@ -28,7 +28,7 @@ debugprint "running pre-commit-copyright"
 # file types to parse.
 FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .sh .txt"
 #FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
-FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc check_style.sh"
+FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc check_style.sh imc_info.cc"
 export FILE_EXTS FILE_ENDINGS_EXCLUDE
 
 ##################################################################
@@ -76,16 +76,16 @@ function rewrite_copyright_block()
 
   # Sanity Checks
   if [[ "${create_date}" =~ "Copyright" ]]; then
-    echo "Failed to parse copyright line (err 1)"
+    echo "Failed to parse copyright line (err 1) for $filename"
     exit 1
   fi
   # [[ "${mod_date}" =~ "Copyright" ]] && echo "Failed to parse copyright line" && exit 1
   if [[ "${git_last_mod_date}" =~ "Copyright" ]]; then
-    echo "Failed to parse copyright line (err 2)"
+    echo "Failed to parse copyright line (err 2) for $filename"
     exit 1
   fi
   if [[ "${git_create_date}" =~ "Copyright" ]]; then
-    echo "Failed to parse copyright line (err 3)"
+    echo "Failed to parse copyright line (err 3) for $filename"
     exit 1
   fi
   if [[ "${create_date}" -gt "${today}" ]] || [[ "${create_date}" -lt "1990" ]]; then
@@ -170,7 +170,7 @@ do
 
   # Copy the file and attempt update it.
   cp "${file}" "${tmpfile1}"
-  rewrite_copyright_block "$tmpfile1" "$file"
+  rewrite_copyright_block "$tmpfile1" "$file" || exit 1
   debugprint "  updating patchfile"
   diff -u "${file}" "${tmpfile1}" | \
     sed -e "1s|--- |--- a/|" -e "2s|+++ ${tmpfile1}|+++ b/${file}|" >> "$patchfile"
