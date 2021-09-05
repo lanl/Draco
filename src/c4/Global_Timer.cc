@@ -1,10 +1,10 @@
-//-----------------------------------*-C++-*----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   c4/Global_Timer.cc
  * \author Kent G. Budge
  * \date   Mon Mar 25 17:35:07 2002
  * \brief  Define methods of class Global_Timer, a POSIX standard timer.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Global_Timer.hh"
@@ -18,7 +18,6 @@ map<string, Global_Timer::timer_entry> Global_Timer::active_list_;
 //------------------------------------------------------------------------------------------------//
 Global_Timer::Global_Timer(char const *name) : name_(name), active_(false) {
   Require(name != nullptr);
-
   timer_entry &entry = active_list_[name];
   active_ = entry.is_active;
   Check(entry.timer == nullptr); // Global_Timers must have unique names.
@@ -28,7 +27,6 @@ Global_Timer::Global_Timer(char const *name) : name_(name), active_(false) {
 }
 
 //------------------------------------------------------------------------------------------------//
-/*static*/
 void Global_Timer::set_selected_activity(set<string> const &timer_list, bool const active) {
   if (rtt_c4::node() == 0) {
     cout << "***** Global timers selectively activated:" << endl;
@@ -51,26 +49,17 @@ void Global_Timer::set_selected_activity(set<string> const &timer_list, bool con
 }
 
 //------------------------------------------------------------------------------------------------//
-/* static */
 void Global_Timer::set_global_activity(bool const active) {
   global_active_ = active;
-  if (rtt_c4::node() == 0) {
-    cout << "***** Global timers are now ";
-    if (active)
-      cout << "ACTIVE";
-    else
-      cout << "INACTIVE";
-
-    cout << endl;
-  }
+  std::string const status = active ? "ACTIVE" : "INACTIVE";
+  if (rtt_c4::node() == 0)
+    cout << "***** Global timers are now " << status << endl;
 }
 
 //------------------------------------------------------------------------------------------------//
-/*static*/
 void Global_Timer::reset_all() {
-  if (rtt_c4::node() == 0) {
+  if (rtt_c4::node() == 0)
     cout << "***** Resetting all global timers" << endl;
-  }
   for (auto const &i : active_list_) {
     timer_entry const entry = i.second;
     if ((entry.is_active || global_active_) && entry.timer) {
@@ -80,16 +69,13 @@ void Global_Timer::reset_all() {
 }
 
 //------------------------------------------------------------------------------------------------//
-/*static*/
 void Global_Timer::report_all(ostream &out) {
   if (rtt_c4::node() == 0) {
 
-    cout << string(92U, '-') << endl;
-    cout << "Timing report for all global timers:" << endl << endl;
-    cout << "            N                   user                   system     "
-            "           "
-            " wall"
-         << endl;
+    std::string const divider(92U, '-');
+    out << divider << "\nTiming report for all global timers:\n\n"
+        << "            N                   user                   system                wall"
+        << endl;
   }
   bool deferred_not_found = false;
   for (auto const &i : active_list_) {
@@ -107,14 +93,14 @@ void Global_Timer::report_all(ostream &out) {
   }
   if (rtt_c4::node() == 0) {
     if (!global_active_ && deferred_not_found) {
-      cout << "**** WARNING: DEFERRED timers not found:" << endl;
+      out << "**** WARNING: DEFERRED timers not found:" << endl;
       for (auto const &i : active_list_) {
         timer_entry const entry = i.second;
         if (entry.is_active && entry.timer == nullptr) {
           out << i.first << endl;
         }
       }
-      cout << endl << "Perhaps you wanted one of these timers found but not active?" << endl;
+      out << endl << "Perhaps you wanted one of these timers found but not active?" << endl;
       for (auto const &i : active_list_) {
         timer_entry const entry = i.second;
         if (!entry.is_active && entry.timer != nullptr) {
@@ -122,7 +108,7 @@ void Global_Timer::report_all(ostream &out) {
         }
       }
     }
-    cout << string(92U, '-') << endl;
+    out << string(92U, '-') << endl;
   }
 }
 

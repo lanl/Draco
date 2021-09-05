@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Mon Mar 25 17:35:07 2002
  * \brief  Define class Global_Timer, a POSIX standard timer.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_Global_Timer_hh
@@ -36,13 +36,16 @@ namespace rtt_c4 {
 //================================================================================================//
 
 class Global_Timer : public Timer {
-private:
-  char const *name_; // name assigned by client to this timer, to distinguish its output from that
-                     // of any other timers.
 
-  bool active_; // This timer is active. This does not mean it is currently accumulating timing
-                // statistics, but only that it is flagged to do so when start() is called. If not
-                // active, a call to start() is ignored.
+private:
+  /*! name assigned by client to this timer, to distinguish its output from than of any other
+   *  timers. */
+  char const *name_;
+
+  /*! This timer is active. This does not mean it is currently accumulating timing statistics, but
+   * only that it is flagged to do so when start() is called. If not active, a call to start() is
+   * ignored. */
+  bool active_;
 
   //! All Global_Timers are active
   DLL_PUBLIC_c4 static bool global_active_;
@@ -59,7 +62,9 @@ private:
   static active_list_type active_list_;
 
 public:
+  //
   // Constructors & Destructors
+  //
 
   explicit Global_Timer(char const *name); //! default constructor
   ~Global_Timer() override = default;      //! default destructor
@@ -73,37 +78,42 @@ public:
   Global_Timer operator=(Global_Timer const &rhs) = delete;
   Global_Timer operator=(Global_Timer &&rhs) = delete;
 
+  //
   // Accessors
+  //
 
   char const *name() const { return name_; }
-
   bool is_active() const { return active_ || global_active_; }
 
+  //
   // Manipulators
+  //
 
+  //! Activate or deactivate global timers
   void set_activity(bool active) { active_ = active; }
 
+  //! Begin acumulating time for the global timer
   void start() {
     if (active_ || global_active_)
       Timer::start();
   }
 
+  //! Stop acumulating time for the global timer
   void stop() {
     if (active_ || global_active_)
       Timer::stop();
   }
 
-  // Statics
-
-  /*!
-   *  \bug no documentation!
-   */
+  //! (De)Activate global timers.
   static void set_global_activity(bool active);
 
+  //! (De)Activate named sub-timers.
   static void set_selected_activity(std::set<std::string> const &timer_list, bool active);
 
+  //! Reset all timers
   static void reset_all();
 
+  //! Print a report that contains all timer information
   static void report_all(std::ostream &);
 };
 
