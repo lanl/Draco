@@ -1,51 +1,61 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
-// build_system.dcc
-// The Draco Build System Documenation
-// This file is prepared by doxygen so that it can be part of the CCS-2 development web site as well
-// as a written report.
+/*! \file build_system.dcc
+ *  \brief The Draco Build System Documenation
+ * \note Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved.
+ *
+ * This file is prepared by doxygen so that it can be part of the CCS-2 development web site as well
+ * as a written report. */
 //------------------------------------------------------------------------------------------------//
 
 /*!
-
 \page build_system The Draco Build System
-\version LA-UR-03-0000
-\author Tom Evans
+\author Tom Evans, Kelly Thompson
+\tableofcontents
 
-Draco is a C++ radiation transport component library developed by CCS-2, Los Alamos National
-Laboratory. In addition to providing infrastructure for radiation transport code developmfent, Draco
-serves as a "model Development Environment (DE)" for code development activities within CCS-2.  Most
-CCS-2 code projects are based on the coding standards, idioms, style, organization, and architecture
-of Draco.  In this vein, an important service that Draco provides is its configure/make system,
-forwith referred to as the Draco Build System (DBS).
+<a href="https://github.com/lanl/draco">Draco</a> is a C++ radiation transport component library
+developed by CCS-2, <a href="https://www.lanl.gov">Los Alamos National Laboratory</a>. In addition
+to providing infrastructure for radiation transport code developmfent, Draco serves as a "model
+Development Environment (DE)" for code development activities within CCS-2.  Most CCS-2 code
+projects are based on the coding standards, idioms, style, organization, and architecture of Draco.
+In this vein, an important service that Draco provides is its configure/make system, forwith
+referred to as the Draco Build System (DBS).
 
 Utilization of a common build system provides two primary benefits:
 
-\arg code infrastructure maintainence is leveraged
-\arg porting to new systems is leveraged.
+- code infrastructure maintainence is leveraged
+- porting to new systems is leveraged.
 
 The Draco build system has the following highlighted features:
 
-\arg built using CMake/Make
-\arg Support for most modern C/C++/Fortran compilers.
-\arg a well-defined C++ template instantiation model
-\arg extensible vendor support for <a href="http://www.mcs.anl.gov/mpi/index.html"
-     target="external">MPI</a>,
-     <a href="http://www.netlib.org" target="external"> LAPACK and BLAS, MKL, OpenBlas</a>,
-     <a href="http://laurel.lanl.gov/PROJECTS/DATA/eos/eos.shtml" target="external">EOSPAC</a>, and
-     <a href="http://www-users.cs.umn.edu/~karypis/metis/parmetis/" target="external">ParMetis</a>.
-\arg parallel builds
-\arg target-source architecture that protects source integrity and allows multiple configurations
-     from the same source
-\arg automated unit-testing framework
-\arg DBS is exportable and extensible
-\arg integrated with a set of elisp macros (for emacs, xemacs) that allows automated package
-     inclusion and promotes the use of a common coding style
+- built using <a href="https://cmake.org/cmake/help/latest/index.html">CMake</a> to generate
+  Makefile- or VisualStudio-based projects. Support for Ninja- and Xcode-based projects might be
+  supported but isn't currently used and might require some deferred maintenance to be done
+  before these later two systems are functional.
+- Support for most modern C/C++/Fortran compilers (GNU, LLVM, MSVC, Intel, and others)
+- a well-defined C++ template instantiation model
+- extensible vendor support for <a href="http://www.mcs.anl.gov/mpi/index.html"
+  target="external">MPI</a>, <a href="http://www.netlib.org" target="external"> LAPACK and BLAS,
+  MKL, OpenBlas</a>, <a href="http://laurel.lanl.gov/PROJECTS/DATA/eos/eos.shtml"
+  target="external">EOSPAC</a>, <a href="http://www.deshawresearch.com/downloads/">Random123</a>, <a
+  href="http://www.gnu.org/software/gsl">GSL</a>, <a
+  href="https://github.com/lanl/libquo">libquo</a>, and <a
+  href="http://www-users.cs.umn.edu/~karypis/metis/parmetis/"
+  target="external">Metis/ParMetis</a>. All of Draco's vendors can be installed by using the <a
+  href="https://github.com/spack/spack">Spack</a> pcakage manager.
+- parallel builds
+- target-source architecture that protects source integrity and allows multiple configurations
+  from the same source
+- automated unit-testing framework that builds on ctest.
+- DBS is exportable and extensible
+- integrated with a set of elisp macros (for emacs, xemacs) that allows automated package
+  inclusion and promotes the use of a common coding style
 
 Currently, the Draco Build System is supported on the following systems/operating systems:
 
 - Linux (x86_64-based platforms)
-- Windows (x86_64)
-- OSX
+- Windows (x86_64) via Visual Studio or MinGW/MSYS.  Probably works in Cygwin, but this is
+  untested.
+- OSX via Makefiles or Xcode-projects
 - IBM (Power9)
 - ARM
 - Nvidia GPUs
@@ -63,29 +73,48 @@ component library, and its constituent packages could be called components.  How
 the term package to refer to code components sitting in draco/src, and that is the convention that
 will be used here.
 
-<!---------------------------------------------------------------------------->
+*/
+//------------------------------------------------------------------------------------------------//
+/*!
 
 \section access2src Access to the Source Code
 
-Needs updated content.
+Draco has BSD-3 open source license and is available for anyone to download from
+- <a href="https://github.com/lanl/Draco" target="external">git repository</a>,
+- <a href="https://github.com/lanl/Draco/tags" target="external">tar.gz versioned releases</a>,
+- <a href="https://github.com/spack/spack" target="external">Spack</a>.
 
-<!---------------------------------------------------------------------------->
+Accessing git-controlled source code:
+
+\verbatim
+git clone git@github.com:lanl/Draco draco
+\endverbatim
+
+*/
+//------------------------------------------------------------------------------------------------//
+/*!
 
 \section access2release Access to Released versions of Draco
 
 The collection of Draco libraries, header files, applications, unit tests and documentation is
-periodically installed on various machines at LANL.  These \e released versions of Draco can be
-found at the following locations.
+periodically installed on various machines at LANL and LLNL.  These \e released versions of Draco
+can be found at the following locations.
+- LANL HPC: \c /usr/projects/draco
+- LANL Darwin: \c /projects/draco
+- LLNL HPC: \c /usr/gapps/jayenne/draco
 
 Information concerning released versions of Draco is also published on the <a
 href="http://github.com/lanl/draco" target="external">Draco GitHub website</a>.  At this web site
 you will also find discussion forums, mailing list archives, and other related documents.
 
-<!---------------------------------------------------------------------------->
+*/
+//------------------------------------------------------------------------------------------------//
+/*!
 
 \section build Configuring and Building Draco
 
-The Draco Build System is based on CMake and MAKE (or project based IDE's like Visual Studio).
+The Draco Build System is based on CMake and Make (or project based IDE's like Visual Studio and
+Xcode).
 
 The basic steps to build Draco are the following:
 -# obtain source code from the git repository
@@ -148,7 +177,7 @@ package tree and required vendors.
 Having configured Draco, compiling and installing is straightforward
 \verbatim
   > cd $BUILD
-  > make -j 40 -l 40
+  > make -j -l 40
 \endverbatim
 
 MAKE runs different targets depending upon the the directory level at which it is run.  Running MAKE
@@ -381,33 +410,16 @@ assume we wished to manually run the \c tstNDI_CP_Eloss unit test:
   > src/cdi_ndi/test/tstNDI_CP_Eloss
 \endverbatim
 
-<!---------------------------------------------------------------------------->
-
-\section arch Build System Architecture
-
-The Draco Build System is a CMake-based build system. It supports the following generators:
-- Makefiles on Linux
-- Visual Studio 2019
-- NMake Makefiles
+*/
+//------------------------------------------------------------------------------------------------//
+/*!
 .
-
-<!---------------------------------------------------------------------------->
-
-\section pkg Adding a Package to Draco
-
-New packages are easily added to Draco through the build system.
-
-<!---------------------------------------------------------------------------->
-
-\section import Importing the Draco Build System
-
-The Draco Build System is designed to be imported into other codes.
-
-<!---------------------------------------------------------------------------->
-
 \section faq Frequenty Asked Questions
 
-<!---------------------------------------------------------------------------->
+*/
+//------------------------------------------------------------------------------------------------//
+/*!
+
 
 \section system Draco Build System Reference Manual.
 
