@@ -3,7 +3,7 @@
  * \file   quadrature/Quadrature.cc
  * \author Kelly Thompson
  * \date   Tue Feb 22 15:38:56 2000
- * \brief  Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \brief  Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Quadrature.hh"
@@ -117,7 +117,7 @@ void Quadrature::add_1D_starting_directions_(Geometry const geometry,
   // Add starting directions if necessary
 
   if (add_starting_directions) {
-    if (geometry == rtt_mesh_element::SPHERICAL) {
+    if (geometry == rtt_mesh_element::Geometry::SPHERICAL) {
       // insert mu=-1 starting direction
       auto a = ordinates.begin();
       a = ordinates.insert(a, Ordinate(-1.0, 0.0, 0.0, 0.0));
@@ -125,7 +125,7 @@ void Quadrature::add_1D_starting_directions_(Geometry const geometry,
       // insert mu=1 starting direction
       if (add_extra_starting_directions)
         ordinates.emplace_back(Ordinate(1.0, 0.0, 0.0, 0.0));
-    } else if (geometry == rtt_mesh_element::AXISYMMETRIC) {
+    } else if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
       Insist(false, "should not be reached");
     }
   }
@@ -140,7 +140,7 @@ void Quadrature::add_2D_starting_directions_(Geometry const geometry,
   // Add starting directions if necessary
 
   if (add_starting_directions) {
-    if (geometry == rtt_mesh_element::AXISYMMETRIC) {
+    if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
       std::sort(ordinates.begin(), ordinates.end(), Ordinate_Set::level_compare);
 
       // Define an impossible value for a direction cosine.  We use this to simplify the logic of
@@ -282,11 +282,12 @@ std::shared_ptr<Ordinate_Space> Quadrature::create_ordinate_space(
   Require(qim == SN || qim == GQ1 || qim == GQ2 || qim == GQF);
   Require(qim == SN || moment_expansion_order >= 0);
 
-  std::vector<Ordinate> ordinates = create_ordinates(dimension, geometry,
-                                                     1.0, // hardwired norm
-                                                     geometry != rtt_mesh_element::CARTESIAN,
-                                                     // include starting directions if curvilinear
-                                                     include_extra_directions);
+  std::vector<Ordinate> ordinates =
+      create_ordinates(dimension, geometry,
+                       1.0, // hardwired norm
+                       geometry != rtt_mesh_element::Geometry::CARTESIAN,
+                       // include starting directions if curvilinear
+                       include_extra_directions);
 
   std::shared_ptr<Ordinate_Space> Result;
   if (qim == SN)

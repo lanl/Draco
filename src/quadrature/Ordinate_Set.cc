@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Dec 21 14:20:03 2004
  * \brief  Declaration file for the class rtt_quadrature::Ordinate.
- * \note   Copyright (C)  2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Ordinate_Set.hh"
@@ -120,10 +120,10 @@ Ordinate_Set::Ordinate_Set(unsigned const dimension, rtt_mesh_element::Geometry 
       has_extra_starting_directions_(has_extra_starting_directions), ordering_(ordering),
       norm_(0.0), ordinates_(ordinates) {
   Require(dimension >= 1 && dimension <= 3);
-  Require(geometry != rtt_mesh_element::AXISYMMETRIC || dimension < 3);
-  Require(geometry != rtt_mesh_element::SPHERICAL || dimension < 2);
+  Require(geometry != rtt_mesh_element::Geometry::AXISYMMETRIC || dimension < 3);
+  Require(geometry != rtt_mesh_element::Geometry::SPHERICAL || dimension < 2);
   Require(has_starting_directions || !has_extra_starting_directions);
-  Require(dimension > 1 || geometry == rtt_mesh_element::SPHERICAL || check_4(ordinates));
+  Require(dimension > 1 || geometry == rtt_mesh_element::Geometry::SPHERICAL || check_4(ordinates));
   Require(dimension != 2 || check_2(ordinates));
 
   norm_ = 0.0;
@@ -158,10 +158,11 @@ Ordinate_Set::Ordinate_Set(Ordinate_Set const &other)
 //------------------------------------------------------------------------------------------------//
 bool Ordinate_Set::check_class_invariants() const {
   return (dimension_ >= 1 && dimension_ <= 3) &&
-         (geometry_ != rtt_mesh_element::AXISYMMETRIC || dimension_ < 3) &&
-         (geometry_ != rtt_mesh_element::SPHERICAL || dimension_ < 2) &&
+         (geometry_ != rtt_mesh_element::Geometry::AXISYMMETRIC || dimension_ < 3) &&
+         (geometry_ != rtt_mesh_element::Geometry::SPHERICAL || dimension_ < 2) &&
          (has_starting_directions_ || !has_extra_starting_directions_) &&
-         (dimension_ > 1 || geometry_ == rtt_mesh_element::SPHERICAL || check_4(ordinates_)) &&
+         (dimension_ > 1 || geometry_ == rtt_mesh_element::Geometry::SPHERICAL ||
+          check_4(ordinates_)) &&
          (dimension_ != 2 || check_2(ordinates_));
 }
 
@@ -171,7 +172,7 @@ void Ordinate_Set::display() const {
   using std::endl;
   using std::setprecision;
 
-  if (dimension() == 1 && geometry() != rtt_mesh_element::AXISYMMETRIC) {
+  if (dimension() == 1 && geometry() != rtt_mesh_element::Geometry::AXISYMMETRIC) {
     cout << endl << "The Quadrature directions and weights are:" << endl << endl;
     cout << "   m  \t    mu        \t     wt      " << endl;
     cout << "  --- \t------------- \t-------------" << endl;

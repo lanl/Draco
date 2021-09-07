@@ -3,8 +3,7 @@
  * \file   parser/test/tstutilities.cc
  * \author Kent G. Budge
  * \date   Feb 18 2003
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -353,23 +352,23 @@ void tstutilities(UnitTest &ut) {
   }
 
   // Try reading a geometry.
-  rtt_mesh_element::Geometry geometry = rtt_mesh_element::END_GEOMETRY;
+  rtt_mesh_element::Geometry geometry = rtt_mesh_element::Geometry::END_GEOMETRY;
   parse_geometry(tokens, geometry);
-  if (geometry != rtt_mesh_element::AXISYMMETRIC)
+  if (geometry != rtt_mesh_element::Geometry::AXISYMMETRIC)
     FAILMSG("axisymmetric geometry NOT successfully parsed");
   else
     PASSMSG("geometry successfully parsed");
 
-  geometry = rtt_mesh_element::END_GEOMETRY;
+  geometry = rtt_mesh_element::Geometry::END_GEOMETRY;
   parse_geometry(tokens, geometry);
-  if (geometry != rtt_mesh_element::CARTESIAN)
+  if (geometry != rtt_mesh_element::Geometry::CARTESIAN)
     FAILMSG("cartesian geometry NOT successfully parsed");
   else
     PASSMSG("geometry successfully parsed");
 
-  geometry = rtt_mesh_element::END_GEOMETRY;
+  geometry = rtt_mesh_element::Geometry::END_GEOMETRY;
   parse_geometry(tokens, geometry);
-  if (geometry != rtt_mesh_element::SPHERICAL)
+  if (geometry != rtt_mesh_element::Geometry::SPHERICAL)
     FAILMSG("spherical geometry NOT successfully parsed");
   else
     PASSMSG("geometry successfully parsed");
@@ -384,20 +383,20 @@ void tstutilities(UnitTest &ut) {
 
   {
     String_Token_Stream ltokens("cylindrical, cartesian, xy, bad");
-    rtt_mesh_element::Geometry parsed_geometry = rtt_mesh_element::AXISYMMETRIC;
+    rtt_mesh_element::Geometry parsed_geometry = rtt_mesh_element::Geometry::AXISYMMETRIC;
     parse_geometry(ltokens, parsed_geometry);
     if (ltokens.error_count() == 0) {
       FAILMSG("did NOT detect duplicate geometry definition");
     }
-    if (parsed_geometry != rtt_mesh_element::AXISYMMETRIC) {
+    if (parsed_geometry != rtt_mesh_element::Geometry::AXISYMMETRIC) {
       FAILMSG("did NOT parse cylindrical geometry correctly");
     }
     parse_geometry(ltokens, parsed_geometry);
-    if (parsed_geometry != rtt_mesh_element::CARTESIAN) {
+    if (parsed_geometry != rtt_mesh_element::Geometry::CARTESIAN) {
       FAILMSG("did NOT parse cartesian geometry correctly");
     }
     parse_geometry(ltokens, parsed_geometry);
-    if (parsed_geometry != rtt_mesh_element::CARTESIAN) {
+    if (parsed_geometry != rtt_mesh_element::Geometry::CARTESIAN) {
       FAILMSG("did NOT parse xy geometry correctly");
     }
     try {

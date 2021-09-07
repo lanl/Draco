@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Thursday, Jun 07, 2018, 15:38 pm
  * \brief  Draco_Mesh class header file.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_Draco_Mesh_hh
@@ -191,11 +191,6 @@ private:
                                     const std::vector<unsigned> &side_to_node_linkage,
                                     const std::vector<unsigned> &ghost_cell_type,
                                     const std::vector<unsigned> &ghost_cell_to_node_linkage);
-
-  //! Calculate a map of node to vectors of indices (cells, sides, ghost cells)
-  std::map<unsigned, std::vector<unsigned>>
-  compute_node_indx_map(const std::vector<unsigned> &indx_type,
-                        const std::vector<unsigned> &indx_to_node_linkage) const;
 
   //! Calculate a map of node vectors to indices (sides, ghost cells)
   std::map<std::set<unsigned>, unsigned>

@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Mon Mar 26 16:11:19 2007
  * \brief  Define methods of class Ordinate_Space
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Ordinate_Space.hh"
@@ -45,7 +45,7 @@ double Ordinate_Space::compute_azimuthalAngle(double const mu, double const eta)
   // making the computation of the azimuthal angle here consistent with the discretization by using
   // the eta and mu ordinates to define phi.
 
-  if (this->geometry() == rtt_mesh_element::AXISYMMETRIC && azimuthalAngle < 0.0)
+  if (this->geometry() == rtt_mesh_element::Geometry::AXISYMMETRIC && azimuthalAngle < 0.0)
     azimuthalAngle += 2 * PI;
 
   return azimuthalAngle;
@@ -75,7 +75,7 @@ void Ordinate_Space::compute_angle_operator_coefficients_() {
   // weight.
 
   levels_.resize(number_of_ordinates);
-  if (geometry == rtt_mesh_element::AXISYMMETRIC) {
+  if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
     vector<double> C;
 
     double Csum = 0;
@@ -174,7 +174,7 @@ void Ordinate_Space::compute_angle_operator_coefficients_() {
         Check(tau_[a] >= 0.0 && tau_[a] < 1.0);
       }
     }
-  } else if (geometry == rtt_mesh_element::SPHERICAL) {
+  } else if (geometry == rtt_mesh_element::Geometry::SPHERICAL) {
     number_of_levels_ = 1;
     double norm(0);
     for (unsigned a = 0; a < number_of_ordinates; ++a) {
@@ -222,7 +222,7 @@ void Ordinate_Space::compute_angle_operator_coefficients_() {
         Check(tau_[a] > 0.0 && tau_[a] <= 1.0);
       }
     }
-  } else if (geometry == rtt_mesh_element::CARTESIAN) {
+  } else if (geometry == rtt_mesh_element::Geometry::CARTESIAN) {
     if (this->dimension() == 2 && this->ordering() == LEVEL_ORDERED) {
       // NEW: organize quadratures for 2D into levels, even for Cartesian coordinates, but do not
       // compute angular derivative approximation coefficients For our purposes here, the use of the
@@ -274,13 +274,13 @@ vector<Moment> Ordinate_Space::compute_n2lk_(Quadrature_Class const quadrature_c
   if (dim == 3) {
     return compute_n2lk_3D_(quadrature_class, sn_order);
   } else if (dim == 2) {
-    if (geometry == rtt_mesh_element::AXISYMMETRIC) {
+    if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
       return compute_n2lk_2Da_(quadrature_class, sn_order);
     } else
       return compute_n2lk_2D_(quadrature_class, sn_order);
   } else {
     Check(dim == 1);
-    if (geometry == rtt_mesh_element::AXISYMMETRIC) {
+    if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
       return compute_n2lk_1Da_(quadrature_class, sn_order);
     } else
       return compute_n2lk_1D_(quadrature_class, sn_order);
@@ -344,7 +344,8 @@ void Ordinate_Space::compute_moments_(Quadrature_Class const quadrature_class, i
 Ordinate_Space::Ordinate_Space(unsigned const dimension, rtt_mesh_element::Geometry const geometry,
                                vector<Ordinate> const &ordinates, int const expansion_order,
                                bool const extra_starting_directions, Ordering const ordering)
-    : Ordinate_Set(dimension, geometry, ordinates, geometry != rtt_mesh_element::CARTESIAN,
+    : Ordinate_Set(dimension, geometry, ordinates,
+                   geometry != rtt_mesh_element::Geometry::CARTESIAN,
                    // include starting directions if curvilinear
                    extra_starting_directions, ordering),
       expansion_order_(expansion_order), has_extra_starting_directions_(extra_starting_directions),
@@ -352,7 +353,7 @@ Ordinate_Space::Ordinate_Space(unsigned const dimension, rtt_mesh_element::Geome
       reflect_eta_(), reflect_xi_(), alpha_(), tau_(), number_of_moments_(0), moments_(),
       moments_per_order_() {
   Require(dimension > 0 && dimension < 4);
-  Require(geometry != rtt_mesh_element::END_GEOMETRY);
+  Require(geometry != rtt_mesh_element::Geometry::END_GEOMETRY);
 
   compute_angle_operator_coefficients_();
 
@@ -408,7 +409,7 @@ double Ordinate_Space::bookkeeping_coefficient(unsigned const a) const {
 
 //------------------------------------------------------------------------------------------------//
 bool Ordinate_Space::check_class_invariants() const {
-  if (geometry() == rtt_mesh_element::CARTESIAN) {
+  if (geometry() == rtt_mesh_element::Geometry::CARTESIAN) {
     return ((this->dimension() != 2 || this->ordering() != LEVEL_ORDERED) ||
             (first_angles_.size() == number_of_levels_));
   } else {
@@ -492,7 +493,7 @@ void Ordinate_Space::moment_to_flux(std::array<unsigned, 3> &flux_map,
 
   if (dimension() == 1) {
     flux_map[0] = 0;
-    if (geometry() != rtt_mesh_element::AXISYMMETRIC)
+    if (geometry() != rtt_mesh_element::Geometry::AXISYMMETRIC)
       flux_fact[0] = RROOT3;
     else
       flux_fact[0] = -RROOT3;
@@ -544,7 +545,7 @@ void Ordinate_Space::flux_to_moment(std::array<unsigned, 3> &flux_map,
     // harmonics is aligned along the coordinate axis for consistency with 2-D axisymmetric, and so
     // the flux is the -Y(1,1) harmonic (times the normalization).
     flux_map[0] = 0;
-    if (geometry() != rtt_mesh_element::AXISYMMETRIC)
+    if (geometry() != rtt_mesh_element::Geometry::AXISYMMETRIC)
       flux_fact[0] = ROOT3;
     else
       flux_fact[0] = -ROOT3;

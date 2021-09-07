@@ -1,7 +1,7 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   config/compilerEnv.cmake
 # brief  Default CMake build parameters
-# note   Copyright (C) 2019-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 include_guard(GLOBAL)
@@ -518,7 +518,7 @@ macro(dbsSetupStaticAnalyzers)
         if(NOT CLANG_TIDY_CHECKS)
           # * -checks=mpi-*,bugprone-*,performance-*,modernize-*
           # * See full list: `clang-tidy -check=* -list-checks'
-          # * Default: all modernize checks; except use-triling-return-type.
+          # * Default: all modernize checks; except use-trailing-return-type.
           set(CLANG_TIDY_CHECKS "-checks=modernize-*,-modernize-use-trailing-return-type")
           if(DEFINED ENV{CI})
             string(REPLACE "-checks=" "--warnings-as-errors=" tmp ${CLANG_TIDY_CHECKS})

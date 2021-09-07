@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Mon Mar 26 16:11:19 2007
  * \brief  Define methods of class Sn_Ordinate_Space
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Sn_Ordinate_Space.hh"
@@ -106,7 +106,8 @@ void Sn_Ordinate_Space::compute_M() {
       unsigned const ell(n2lk[n].L());
       int const k(n2lk[n].M());
 
-      if (dim == 1 && geometry != rtt_mesh_element::AXISYMMETRIC) // 1D mesh, 1D quadrature
+      if (dim == 1 &&
+          geometry != rtt_mesh_element::Geometry::AXISYMMETRIC) // 1D mesh, 1D quadrature
       {
         double mu(ordinates[m].mu());
         M_[n + m * numMoments] = Ylm(ell, k, mu, 0.0, sumwt);
@@ -117,33 +118,29 @@ void Sn_Ordinate_Space::compute_M() {
 
         // R-Z coordinate system
         //
-        // It is important to remember here that the positive mu axis points to
-        // the left and the positive eta axis points up, when the unit sphere is
-        // projected on the plane of the mu- and eta-axis in R-Z. In this case,
-        // phi is measured from the mu-axis counterclockwise.
+        // It is important to remember here that the positive mu axis points to the left and the
+        // positive eta axis points up, when the unit sphere is projected on the plane of the mu-
+        // and eta-axis in R-Z. In this case, phi is measured from the mu-axis counterclockwise.
         //
-        // This accounts for the fact that the azimuthal angle is discretized on
-        // levels of the xi-axis, making the computation of the azimuthal angle
-        // here consistent with the discretization by using the eta and mu
-        // ordinates to define phi.
+        // This accounts for the fact that the azimuthal angle is discretized on levels of the
+        // xi-axis, making the computation of the azimuthal angle here consistent with the
+        // discretization by using the eta and mu ordinates to define phi.
 
         // X-Y coordinate system
         //
-        // Note that we choose the same moments and spherical harmonics as for
-        // R-Z in this case, unlike the Galerkin method.
+        // Note that we choose the same moments and spherical harmonics as for R-Z in this case,
+        // unlike the Galerkin method.
         //
-        // This is because we choose the "front" of the hemisphere, here, so
-        // that the spherical harmonics chosen are even in the azimuthal angle
-        // (symmetry from front to back) and not even in the polar angle. Thus,
-        // in this case, the polar angle is measured from the eta-axis [0, Pi],
-        // and the azimuthal angle is measured from the mu-axis [0,Pi].
+        // This is because we choose the "front" of the hemisphere, here, so that the spherical
+        // harmonics chosen are even in the azimuthal angle (symmetry from front to back) and not
+        // even in the polar angle. Thus, in this case, the polar angle is measured from the
+        // eta-axis [0, Pi], and the azimuthal angle is measured from the mu-axis [0,Pi].
         //
-        // In contrast, the Galerkin methods chooses the "top" hemisphere, and
-        // projects down onto the x-y plane. Hence the polar angle in that case
-        // is xi and extends from [0,Pi/2] while the azimuthal angle is on [0, 2
-        // Pi]. Therefore, in that case, the spherical harmonics must be those
-        // that are even in the polar angle. That may be determined by
-        // considering the even-ness of the associated Legendre polynomials.
+        // In contrast, the Galerkin methods chooses the "top" hemisphere, and projects down onto
+        // the x-y plane. Hence the polar angle in that case is xi and extends from [0,Pi/2] while
+        // the azimuthal angle is on [0, 2 Pi]. Therefore, in that case, the spherical harmonics
+        // must be those that are even in the polar angle. That may be determined by considering the
+        // even-ness of the associated Legendre polynomials.
 
         double phi(compute_azimuthalAngle(mu, xi));
         M_[n + m * numMoments] = Ylm(ell, k, eta, phi, sumwt);
@@ -153,9 +150,7 @@ void Sn_Ordinate_Space::compute_M() {
 }
 
 //------------------------------------------------------------------------------------------------//
-/*! This computation requires that the moment-to-discrete matrix M is already
- *  created.
- */
+//! This computation requires that the moment-to-discrete matrix M is already created.
 void Sn_Ordinate_Space::compute_D() {
 
   Insist(!M_.empty(), "The SN ordinate space computation for D requires that M be available.");
@@ -197,32 +192,21 @@ void Sn_Ordinate_Space::compute_D() {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- *
- * The computation of the tau and alpha coefficients is described by Morel in
- * various technical notes on the treatment of the angle derivatives in the
- * streaming operator.
+ * The computation of the tau and alpha coefficients is described by Morel in various technical
+ * notes on the treatment of the angle derivatives in the streaming operator.
  *
  * \param dimension Dimension of the physical problem space (1, 2, or 3)
- *
- * \param geometry Geometry of the physical problem space (spherical,
- * axisymmetric, Cartesian)
- *
+ * \param geometry Geometry of the physical problem space (spherical, axisymmetric, Cartesian)
  * \param ordinates Set of ordinate directions
- *
- * \param expansion_order Expansion order of the desired scattering moment
- * space. If negative, the moment space is not needed.
- *
- * \param extra_starting_directions Add extra directions to each level set. In
- * most geometries, an additional ordinate is added that is opposite in
- * direction to the starting direction. This is used to implement reflection
- * exactly in curvilinear coordinates. In 1D spherical, that means an
- * additional angle is added at mu=1. In axisymmetric, that means additional
- * angles are added that are oriented opposite to the incoming starting
- * direction on each level.
- *
+ * \param expansion_order Expansion order of the desired scattering moment space. If negative, the
+ *        moment space is not needed.
+ * \param extra_starting_directions Add extra directions to each level set. In most geometries, an
+ *        additional ordinate is added that is opposite in direction to the starting direction. This
+ *        is used to implement reflection exactly in curvilinear coordinates. In 1D spherical, that
+ *        means an additional angle is added at mu=1. In axisymmetric, that means additional angles
+ *        are added that are oriented opposite to the incoming starting direction on each level.
  * \param ordering Ordering into which to sort the ordinates.
  */
-
 Sn_Ordinate_Space::Sn_Ordinate_Space(unsigned const dimension,
                                      rtt_mesh_element::Geometry const geometry,
                                      vector<Ordinate> const &ordinates, int const expansion_order,
@@ -231,7 +215,7 @@ Sn_Ordinate_Space::Sn_Ordinate_Space(unsigned const dimension,
                      ordering),
       D_(), M_() {
   Require(dimension > 0 && dimension < 4);
-  Require(geometry != rtt_mesh_element::END_GEOMETRY);
+  Require(geometry != rtt_mesh_element::Geometry::END_GEOMETRY);
 
   compute_moments_(END_QUADRATURE,   // not used by Sn
                    expansion_order); // also not actually used

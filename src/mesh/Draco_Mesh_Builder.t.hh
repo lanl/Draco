@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Tuesday, Jul 03, 2018, 11:26 am
  * \brief  Draco_Mesh_Builder class header file.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Draco_Mesh.hh"
@@ -49,7 +49,7 @@ template <typename FRT>
 std::shared_ptr<Draco_Mesh>
 Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
 
-  Require(geometry != rtt_mesh_element::END_GEOMETRY);
+  Require(geometry != rtt_mesh_element::Geometry::END_GEOMETRY);
 
   // >>> GENERATE MESH CONSTRUCTOR ARGUMENTS
 

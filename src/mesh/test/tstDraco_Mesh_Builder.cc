@@ -4,8 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Sunday, Jul 01, 2018, 18:21 pm
  * \brief  Draco_Mesh_Builder class unit test.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Mesh_Interface.hh"
@@ -134,11 +133,9 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
     std::vector<unsigned>::const_iterator sn_first = sn_linkage.begin();
     for (unsigned side = 0; side < mesh_iface.num_sides; ++side) {
 
-      // check that sn_linkage is a permutation of the original side-node
-      // linkage
-      if (!std::is_permutation(sn_first, sn_first + side_node_count[side], ref_sn_first,
-                               ref_sn_first + side_node_count[side]))
-        ITFAILS;
+      // check that sn_linkage is a permutation of the original side-node linkage
+      FAIL_IF_NOT(std::is_permutation(sn_first, sn_first + side_node_count[side], ref_sn_first,
+                                      ref_sn_first + side_node_count[side]));
 
       // update the iterators
       ref_sn_first += side_node_count[side];
@@ -148,7 +145,7 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
 
   // successful test output
   if (ut.numFails == 0)
-    PASSMSG("2D Cartesian Draco_Mesh_Builder tests ok.");
+    PASSMSG("2D Cartesian Draco_Mesh_Builder tests okay.");
   return;
 }
 

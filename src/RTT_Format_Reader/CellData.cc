@@ -4,7 +4,7 @@
  * \author B.T. Adams
  * \date   Wed Jun 7 10:33:26 2000
  * \brief  Implementation file for RTT_Format_Reader/CellData class.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "CellData.hh"
@@ -57,7 +57,7 @@ void CellData::readData(ifstream &meshfile) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Reads and validate the end_celldat block keyworde.
+ * \brief Reads and validate the end_celldat block keyword.
  * \param meshfile Mesh file name.
  */
 void CellData::readEndKeyword(ifstream &meshfile) {
