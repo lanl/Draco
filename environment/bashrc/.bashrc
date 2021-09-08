@@ -128,8 +128,16 @@ if [[ ${INTERACTIVE} == true ]]; then
     export https_proxy=$http_proxy
     export HTTP_PROXY=$http_proxy
     export HTTPS_PROXY=$http_proxy
-    export no_proxy=".lanl.gov,127.0.0.1,localhost"
-    export NO_PROXY=$no_proxy
+    export proxy_rsync=$http_proxy
+    export RSYNC_PROXY=$http_proxy
+    export proxy_http=$http_proxy
+    export proxy_skip=$http_proxy
+    export proxy_https=$http_proxy
+    export proxy_ftp=$http_proxy
+    if ! [[ "${nodename}" =~ "-rfe" ]]; then
+      export no_proxy=".lanl.gov,127.0.0.1,localhost"
+      export NO_PROXY=$no_proxy
+    fi
   fi
 
   # cd paths - disable here, let user choose in ~/.bashrc
