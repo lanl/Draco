@@ -253,7 +253,7 @@ function proxy()
     export proxy_skip=$http_proxy
     export proxy_https=$http_proxy
     export proxy_ftp=$http_proxy
-    if ! [[ "${nodename}" =~ "-rfe" ]]; then
+    if ! [[ "$(uname -n)" =~ "-rfe" ]]; then
       export no_proxy="localhost,127.0.0.1,.lanl.gov"
       export NO_PROXY=$no_proxy
     fi
