@@ -14,9 +14,9 @@ Compiler Setup...
 ")
 endif()
 
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # PAPI
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 if(DEFINED ENV{PAPI_HOME})
   set(HAVE_PAPI
       1
@@ -43,12 +43,12 @@ if(HAVE_PAPI)
   add_feature_info(HAVE_PAPI HAVE_PAPI "Provide PAPI hardware counters if available.")
 endif()
 
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # Query OpenMP availability
 #
 # This feature is usually compiler specific and a compile flag must be added. For this to work the
 # <platform>-<compiler>.cmake files (e.g.:  unix-g++.cmake) call this macro.
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 macro(query_openmp_availability)
   if(NOT PLATFORM_CHECK_OPENMP_DONE)
     set(PLATFORM_CHECK_OPENMP_DONE
@@ -77,9 +77,9 @@ macro(query_openmp_availability)
   endif()
 endmacro()
 
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # Force save compiler flags to CMakeCache.txt
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 function(force_compiler_flags_to_cache lang_list)
   if("${lang_list}x" STREQUAL "x")
     message(FATAL_ERROR "argument lang_list is required. eg. \"C;CXX\"")
@@ -96,14 +96,15 @@ function(force_compiler_flags_to_cache lang_list)
       CACHE STRING "link flags" FORCE)
 endfunction()
 
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # De-duplicate compiler flags
 #
 # example: deduplicate_flags(CMAKE_C_FLAGS)
 #
 # * ${FLAGS} evaluates to a string like "CMAKE_C_FLAGS"
 # * ${${FLAGS}} evaluates to a list of compiler options like "-Werror -O2"
-# --------------------------------------------------------------------------------------------------#
+#
+# ------------------------------------------------------------------------------------------------ #
 function(deduplicate_flags FLAGS)
   set(flag_list ${${FLAGS}}) # ${FLAGS} is CMAKE_C_FLAGS, double ${${FLAGS}} is the string of flags.
   separate_arguments(flag_list)
@@ -115,9 +116,9 @@ function(deduplicate_flags FLAGS)
       PARENT_SCOPE)
 endfunction()
 
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # Setup compilers
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 macro(dbsSetupCompilers)
 
   if(NOT dbsSetupCompilers_done)
@@ -344,7 +345,8 @@ macro(dbsSetupCxx)
     include(unix-g++)
   elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
     include(windows-cl)
-  elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "XLClang" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "XLCLang")
+  elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "XLClang" OR "${CMAKE_C_COMPILER_ID}" STREQUAL
+                                                          "XLCLang")
     include(unix-xl)
   else()
     # missing CMAKE_CXX_COMPILER_ID? - try to match the compiler path+name to a string.
