@@ -29,6 +29,9 @@ if [[ -n "$MODULESHOME" ]]; then
       module load draco/x64-gcc930
       if [[ "${SLURM_JOB_PARTITION}" =~ "volta" || "${SLURM_JOB_PARTITION}" =~ "gpu" ]]; then
         module load cuda/11.0
+      elif [[ "${SLURM_JOB_PARTITION}" =~ "skylake" ]]; then
+        module unload draco
+        module load draco/skylake-intel1905
       fi
       ;;
   esac
