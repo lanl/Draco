@@ -57,7 +57,8 @@ if(NOT CUDA_FLAGS_INITIALIZED)
   if(CMAKE_CXX_COMPILER_ID MATCHES "XL")
     string(APPEND CMAKE_CUDA_FLAGS " -DCUB_IGNORE_DEPRECATED_CPP_DIALECT"
            " -DTHRUST_IGNORE_DEPRECATED_CPP_DIALECT")
-    string(APPEND CMAKE_CUDA_FLAGS " -ccbin ${CMAKE_CXX_COMPILER} -Xcompiler -std=c++14")
+    string(APPEND CMAKE_CUDA_FLAGS " -ccbin ${CMAKE_CXX_COMPILER} -Xcompiler -std=c++14"
+      " -Xcompiler -qxflag=disable__cplusplusOverride")
     if(EXISTS /usr/gapps)
       # ATS-2
       string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler --gcc-toolchain=/usr/tce/packages/gcc/gcc-8.3.1"
