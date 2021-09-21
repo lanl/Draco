@@ -58,18 +58,15 @@ double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double
   Require(qindex.spherical ? !reflect_boundary[0] : true);
   Require(qindex.spherical ? !reflect_boundary[1] : true);
   double weight = 1.0;
-  // set the radius at which all arch_lengths should be computed
-  // this value is ignored by calc_orthogonal_distance in non-spherical geometry
-  double arch_radius = r0[0];
-  std::array<double, 3> distance = qindex.calc_orthogonal_distance(r0, r, arch_radius);
+  std::array<double, 3> distance = qindex.calc_orthogonal_distance(r0, r);
   std::array<double, 3> low_reflect_r0_distance =
-      qindex.calc_orthogonal_distance(qindex.bounding_box_min, r0, arch_radius);
+      qindex.calc_orthogonal_distance(qindex.bounding_box_min, r0);
   std::array<double, 3> low_reflect_r_distance =
-      qindex.calc_orthogonal_distance(qindex.bounding_box_min, r, arch_radius);
+      qindex.calc_orthogonal_distance(qindex.bounding_box_min, r);
   std::array<double, 3> high_reflect_r0_distance =
-      qindex.calc_orthogonal_distance(r0, qindex.bounding_box_max, arch_radius);
+      qindex.calc_orthogonal_distance(r0, qindex.bounding_box_max);
   std::array<double, 3> high_reflect_r_distance =
-      qindex.calc_orthogonal_distance(r, qindex.bounding_box_max, arch_radius);
+      qindex.calc_orthogonal_distance(r, qindex.bounding_box_max);
   for (size_t d = 0; d < qindex.dim; d++) {
     const double u = distance[d] * one_over_h0[d];
     const double scale =
@@ -91,7 +88,7 @@ double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double
           (high_reflect_r0_distance[d] + high_reflect_r_distance[d]) * one_over_h0[d];
       bc_weight += epan_kernel(high_u);
     }
-    weight *= scale * bc_weight * epan_kernel(u) * one_over_h0[d];
+    weight *= scale * (bc_weight + epan_kernel(u)) * one_over_h0[d];
   }
   Ensure(!(weight < 0.0));
   return weight;

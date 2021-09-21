@@ -736,15 +736,25 @@ void quick_index::map_data_to_grid_window(
     }
   }
   if (fill) {
-    double last_val = 0.0;
-    int last_data_count = 0;
+    double left_val = 0.0;
+    int left_data_count = 0;
+    double right_val = 0.0;
+    int right_data_count = 0;
     for (size_t i = 0; i < n_map_bins; i++) {
+      size_t ri = n_map_bins - 1 - i;
       if (data_count[i] > 0) {
-        last_val = grid_data[i];
-        last_data_count = data_count[i];
-      } else {
-        grid_data[i] = last_val;
-        data_count[i] = last_data_count;
+        left_val = grid_data[i];
+        left_data_count = data_count[i];
+      } else if (i > static_cast<size_t>(std::floor(n_map_bins / 2))) {
+        grid_data[i] = left_val;
+        data_count[i] = left_data_count;
+      }
+      if (data_count[ri] > 0) {
+        right_val = grid_data[ri];
+        right_data_count = data_count[ri];
+      } else if (i <= static_cast<size_t>(std::floor(n_map_bins / 2))) {
+        grid_data[ri] = right_val;
+        data_count[ri] = right_data_count;
       }
     }
   }
@@ -968,17 +978,28 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
     }
   }
   if (fill) {
-    std::vector<double> last_val(vsize, 0.0);
-    int last_data_count = 0;
+    std::vector<double> left_val(vsize, 0.0);
+    int left_data_count = 0;
+    std::vector<double> right_val(vsize, 0.0);
+    int right_data_count = 0;
     for (size_t i = 0; i < n_map_bins; i++) {
       for (size_t v = 0; v < vsize; v++) {
+        size_t ri = n_map_bins - 1 - i;
         if (data_count[i] > 0) {
-          last_val[v] = grid_data[v][i];
-          last_data_count = data_count[i];
-        } else {
-          grid_data[v][i] = last_val[v];
+          left_val[v] = grid_data[v][i];
+          left_data_count = data_count[i];
+        } else if (i > static_cast<size_t>(std::floor(n_map_bins / 2))) {
+          grid_data[v][i] = left_val[v];
           if (v == vsize - 1)
-            data_count[i] = last_data_count;
+            data_count[i] = left_data_count;
+        }
+        if (data_count[ri] > 0) {
+          right_val[v] = grid_data[v][ri];
+          right_data_count = data_count[ri];
+        } else if (i <= static_cast<size_t>(std::floor(n_map_bins / 2))) {
+          grid_data[v][ri] = right_val[v];
+          if (v == vsize - 1)
+            data_count[ri] = right_data_count;
         }
       }
     }
@@ -1029,16 +1050,12 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
  *
  * \param[in] r0 initial position
  * \param[in] r final position
- * \param[in] arch_radius this is used for spherical geometry to determine at what radial point the
- * orthognal archlength is measured. This point must be bound by the initial and final point radius.
  * \return orthognal distance between the initial and final point in each direction
  */
 std::array<double, 3> quick_index::calc_orthogonal_distance(const std::array<double, 3> &r0,
-                                                            const std::array<double, 3> &r,
-                                                            const double arch_radius) const {
+                                                            const std::array<double, 3> &r) const {
   Require(spherical ? dim == 2 : true);
-  Require(spherical ? !(arch_radius < 0.0) : true);
-  return {r[0] - r0[0], spherical ? arch_radius * (r[1] - r0[1]) : r[1] - r0[1], r[2] - r0[2]};
+  return {r[0] - r0[0], r[1] - r0[1], r[2] - r0[2]};
 }
 
 } // namespace rtt_kde

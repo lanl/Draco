@@ -104,8 +104,7 @@ public:
 
   //! Calculate the orthogonal distance between to locations
   std::array<double, 3> calc_orthogonal_distance(const std::array<double, 3> &r0,
-                                                 const std::array<double, 3> &r,
-                                                 const double arch_radius) const;
+                                                 const std::array<double, 3> &r) const;
 
   // PUBLIC DATA
   // Quick index initialization data
