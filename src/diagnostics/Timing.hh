@@ -317,15 +317,13 @@ execute_IMC:cycle_init                    0.005869      0.005936      0.005903  
 /*!
  * \def TIMER_REPORT( timer_name, ostream, comment)
  *
- * If DRACO_TIMING > 1, , and DRACO_CALIPER is false TIMER_REPORT( timer_name, ostream, comment)
+ * If DRACO_TIMING > 1, and DRACO_CALIPER is false TIMER_REPORT( timer_name, ostream, comment)
  * expands to:
  *
  * \code
- *     ostream << __FILE__ << " " << __LINE__ << ": " << comment      \
- *             << " elapsed wall_clock: " << timer.wall_clock()       \
- *             << " seconds; elapsed user_time: " << timer.user_cpu() \
- *             << " seconds; elapsed sys_time: " << timer.system_cpu()\
- *             << " seconds.\n" << flush
+ *   ostream << __FILE__ << " " << __LINE__ << ": " << comment << " elapsed wall_clock: " \
+ *           << timer.wall_clock() << " seconds; elapsed user_time: " << timer.user_cpu() \
+ *           << " seconds; elapsed sys_time: " << timer.system_cpu() << " seconds.\n" << flush
  * \endcode
  *
  * Otherwise it is empty. The flush ensures that regression tests continue to pass (otherwise, in
@@ -350,6 +348,14 @@ execute_IMC:cycle_init                    0.005869      0.005936      0.005903  
  * \endcode
  */
 //------------------------------------------------------------------------------------------------//
+/*!
+ * \def DRACO_CALIPER
+ *
+ * If defined, this CPP macro indicates that Caliper is available in the current build of Draco. The
+ * logic for setting this variable is in diagnostics/CMakeLists.txt and the value is safed to
+ * diagnostics/config.h.
+ */
+//------------------------------------------------------------------------------------------------//
 
 #if !defined(DRACO_TIMING)
 #define DRACO_TIMING 0
@@ -369,7 +375,7 @@ execute_IMC:cycle_init                    0.005869      0.005936      0.005903  
 #endif
 
 //------------------------------------------------------------------------------------------------//
-//! DRACO NATIVE TIMERS (not caliper)
+// DRACO NATIVE TIMERS (not caliper)
 //------------------------------------------------------------------------------------------------//
 
 #ifndef DRACO_CALIPER
