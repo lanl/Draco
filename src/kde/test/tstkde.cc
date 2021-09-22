@@ -124,6 +124,7 @@ void test_replication(ParallelUnitTest &ut) {
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
+        std::cout << smooth_result[i] << " " << spoke_data[i] << std::endl;
         if (!rtt_dsxx::soft_equiv(smooth_result[i], spoke_data[i]))
           ITFAILS;
         if (!rtt_dsxx::soft_equiv(log_smooth_result[i], spoke_data[i]))

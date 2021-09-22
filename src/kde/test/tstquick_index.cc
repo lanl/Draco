@@ -78,7 +78,7 @@ void test_replication(ParallelUnitTest &ut) {
           ITFAILS;
 
     // Check non-spherical orthogonal distance calculation
-    auto distance = qindex.calc_orthogonal_distance({-1, -1, -1}, {1, 1, 1}, 10.0);
+    auto distance = qindex.calc_orthogonal_distance({-1, -1, -1}, {1, 1, 1});
     for (auto &val : distance)
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(val, 2.0));
   }
@@ -149,7 +149,7 @@ void test_replication_sphere(ParallelUnitTest &ut) {
           ITFAILS;
 
     // Check non-spherical orthogonal distance calculation
-    auto distance = qindex.calc_orthogonal_distance({-1, 0.5, -1}, {1, 1, 1}, 4.0);
+    auto distance = qindex.calc_orthogonal_distance({-1, -1, -1}, {1, 1, 1});
     for (auto &val : distance)
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(val, 2.0));
   }

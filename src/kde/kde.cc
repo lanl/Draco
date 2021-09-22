@@ -75,7 +75,7 @@ double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double
             ? 0.0
             : 1.0;
     // Apply Boundary Condition Weighting
-    double bc_weight = 1.0;
+    double bc_weight = 0.0;
     const bool low_reflect = reflect_boundary[d * 2];
     const bool high_reflect = reflect_boundary[d * 2 + 1];
     if (low_reflect) {
