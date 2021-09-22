@@ -144,12 +144,12 @@ public:
  * \dot
  * digraph draco_timing {
  *  node [shape=record, fontname=Helvetica, fontsize=10];
- *      start [ label="Start", shape="box", style=rounded ];
+ *      start [ label="Start", shape="box", style="rounded" ];
  *      dt_gt_0 [ label="DRACO_TIMING>0?", shape="diamond", URL="\ref DRACO_TIMING"];
- *      have_caliper [ label="DRACO_CALIPER?", shape="diamond", URL="\ref DRACO_CALIPER" ];
- *      notimers [ label="No timers", shape="box", style=rounded ];
- *      caltimer [ label="Caliper Timers", shape="box", style=rounded ];
- *      dratimer [ label="Draco Timers", shape="box", style=rounded ];
+ *      have_caliper [ label="DRACO_CALIPER?", shape="diamond" ];
+ *      notimers [ label="No timers", shape="box", style="rounded" ];
+ *      caltimer [ label="Caliper Timers", shape="box", style="rounded" ];
+ *      dratimer [ label="Draco Timers", shape="box", style="rounded" ];
  *
  *      start -> dt_gt_0 [ arrowhead="open", style="dashed" ];
  *      dt_gt_0 -> notimers [label="no"];
@@ -349,7 +349,7 @@ execute_IMC:cycle_init                    0.005869      0.005936      0.005903  
  */
 //------------------------------------------------------------------------------------------------//
 /*!
- * \def DRACO_CALIPER
+ * DRACO_CALIPER
  *
  * If defined, this CPP macro indicates that Caliper is available in the current build of Draco. The
  * logic for setting this variable is in diagnostics/CMakeLists.txt and the value is safed to
