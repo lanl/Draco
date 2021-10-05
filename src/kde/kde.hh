@@ -3,7 +3,7 @@
  * \file   kde/kde.hh
  * \author Mathew Cleveland
  * \brief  Define class kernel density estimator class
- * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -39,6 +39,11 @@ public:
                                      const std::vector<std::array<double, 3>> &one_over_band_width,
                                      const quick_index &qindex,
                                      const double discontinuity_cutoff = 1.0) const;
+
+  std::vector<double>
+  sampled_reconstruction(const std::vector<double> &distribution,
+                         const std::vector<std::array<double, 3>> &one_over_band_width,
+                         const quick_index &qindex, const double discontinuity_cutoff = 1.0) const;
 
   //! Reconstruct distribution in logarithmic space
   std::vector<double>

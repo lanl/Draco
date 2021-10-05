@@ -15,7 +15,7 @@
  *         of the spatial domain. Other approaches that could be considered are quadrature based
  *         approaches that fully sample the Kernel space reducing the need for the normalization.
  *
- * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -185,6 +185,201 @@ kde::reconstruction(const std::vector<double> &distribution,
                                               one_over_bandwidth[l], qindex, discontinuity_cutoff);
             result[i] += distribution[l] * weight;
             normal[i] += weight;
+          }
+        }
+      }
+    }
+  }
+
+  // normalize the integrated weight contributions
+  for (size_t i = 0; i < local_size; i++) {
+    Check(normal[i] > 0.0);
+    result[i] /= normal[i];
+  }
+
+  return result;
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief KDE sampled reconstruction 
+ * 
+ * \pre The local reconstruction data is passed into this function which includes the original data
+ * distribution, its spatial position, and the optimal bandwidth to be used at each point. Rather
+ * then treating each point as a delta function we will sample the integration volume on a fixed
+ * grid using nearest neighbor mapping.
+ *
+ * \param[in] distribution original data to be reconstructed
+ * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
+ * \param[in] qindex quick_index class to be used for data access.
+ * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
+ * reconstruction
+ * \return final local KDE function distribution reconstruction
+ *
+ * \post the local reconstruction of the original data is returned.
+ */
+std::vector<double>
+kde::sampled_reconstruction(const std::vector<double> &distribution,
+                            const std::vector<std::array<double, 3>> &one_over_bandwidth,
+                            const quick_index &qindex, const double discontinuity_cutoff) const {
+  Require(qindex.dim < 3 && qindex.dim > 0);
+  const size_t local_size = distribution.size();
+  // be sure that the quick_index matches this data size
+  Require(qindex.locations.size() == local_size);
+  Require(one_over_bandwidth.size() == local_size);
+
+  // used for the zero accumulation conservation
+  std::vector<double> result(local_size, 0.0);
+  std::vector<double> normal(local_size, 0.0);
+  const std::array<size_t, 3> dir_samples{10, qindex.dim > 1 ? 10 : 1, qindex.dim > 2 ? 10 : 1};
+  if (qindex.domain_decomposed) {
+
+    std::vector<double> ghost_distribution(qindex.local_ghost_buffer_size);
+    qindex.collect_ghost_data(distribution, ghost_distribution);
+    std::vector<std::array<double, 3>> ghost_one_over_bandwidth(qindex.local_ghost_buffer_size,
+                                                                {0.0, 0.0, 0.0});
+    qindex.collect_ghost_data(one_over_bandwidth, ghost_one_over_bandwidth);
+
+    std::array<double, 3> win_min{0.0, 0.0, 0.0};
+    std::array<double, 3> win_max{0.0, 0.0, 0.0};
+    // now apply the kernel to the local ranks
+    for (size_t i = 0; i < local_size; i++) {
+      const std::array<double, 3> r0 = qindex.locations[i];
+      const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
+      calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
+      std::vector<double> min_dist(dir_samples[0] * dir_samples[1] * dir_samples[2], 1e20);
+      std::vector<double> value(dir_samples[0] * dir_samples[1] * dir_samples[2], 0.0);
+      const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
+      const std::array<double, 3> delta = {
+          (win_max[0] - win_min[0]) / static_cast<double>(dir_samples[0]),
+          (win_max[1] - win_min[1]) / static_cast<double>(dir_samples[1]),
+          (win_max[2] - win_min[2]) / static_cast<double>(dir_samples[2])};
+      // fetch local contribution
+      for (auto &cb : coarse_bins) {
+        // skip bins that aren't present in the map (for constness)
+        auto mapItr = qindex.coarse_index_map.find(cb);
+        if (mapItr != qindex.coarse_index_map.end()) {
+          // loop over local data
+          for (auto &l : mapItr->second) {
+            size_t count = 0;
+            for (size_t xi = 0; xi < dir_samples[0]; xi++) {
+              for (size_t yi = 0; yi < dir_samples[0]; xi++) {
+                for (size_t zi = 0; zi < dir_samples[0]; xi++) {
+                  const double dx =
+                      qindex.locations[l][0] - win_min[0] + 0.5 * delta[0] + xi * delta[0];
+                  const double dy =
+                      qindex.locations[l][1] - win_min[1] + 0.5 * delta[1] + xi * delta[1];
+                  const double dz =
+                      qindex.locations[l][2] - win_min[2] + 0.5 * delta[2] + xi * delta[2];
+                  const double current_distance = sqrt(dx * dx + dy * dy + dz * dz);
+                  if (current_distance < min_dist[count]) {
+                    min_dist[count] = current_distance;
+                    value[count] = distribution[l];
+                  }
+                  count++;
+                }
+              }
+            }
+          }
+        }
+        auto gmapItr = qindex.local_ghost_index_map.find(cb);
+        if (gmapItr != qindex.local_ghost_index_map.end()) {
+          // loop over ghost data
+          for (auto &g : gmapItr->second) {
+            size_t count = 0;
+            for (size_t xi = 0; xi < dir_samples[0]; xi++) {
+              for (size_t yi = 0; yi < dir_samples[0]; xi++) {
+                for (size_t zi = 0; zi < dir_samples[0]; xi++) {
+                  const double dx = qindex.local_ghost_locations[g][0] - win_min[0] +
+                                    0.5 * delta[0] + xi * delta[0];
+                  const double dy = qindex.local_ghost_locations[g][1] - win_min[1] +
+                                    0.5 * delta[1] + xi * delta[1];
+                  const double dz = qindex.local_ghost_locations[g][2] - win_min[2] +
+                                    0.5 * delta[2] + xi * delta[2];
+                  const double current_distance = sqrt(dx * dx + dy * dy + dz * dz);
+                  if (current_distance < min_dist[count]) {
+                    min_dist[count] = current_distance;
+                    value[count] = ghost_distribution[g];
+                  }
+                  count++;
+                }
+              }
+            }
+          }
+        }
+        size_t count = 0;
+        for (size_t xi = 0; xi < dir_samples[0]; xi++) {
+          for (size_t yi = 0; yi < dir_samples[0]; xi++) {
+            for (size_t zi = 0; zi < dir_samples[0]; xi++) {
+              const std::array<double, 3> location{win_min[0] + 0.5 * delta[0] + xi * delta[0],
+                                                   win_min[1] + 0.5 * delta[1] + xi * delta[1],
+                                                   win_min[2] + 0.5 * delta[2] + xi * delta[2]};
+              const double weight =
+                  calc_weight(r0, one_over_h0, location, one_over_h0, qindex, discontinuity_cutoff);
+              result[i] += value[count] * weight;
+              normal[i] += weight;
+              count++;
+            }
+          }
+        }
+      }
+    }
+  } else { // local reconstruction only
+
+    std::array<double, 3> win_min{0.0, 0.0, 0.0};
+    std::array<double, 3> win_max{0.0, 0.0, 0.0};
+    // now apply the kernel to the local ranks
+    for (size_t i = 0; i < local_size; i++) {
+      const std::array<double, 3> r0 = qindex.locations[i];
+      const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
+      calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
+      std::vector<double> min_dist(dir_samples[0] * dir_samples[1] * dir_samples[2], 1e20);
+      std::vector<double> value(dir_samples[0] * dir_samples[1] * dir_samples[2], 0.0);
+      const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
+      const std::array<double, 3> delta = {
+          (win_max[0] - win_min[0]) / static_cast<double>(dir_samples[0]),
+          (win_max[1] - win_min[1]) / static_cast<double>(dir_samples[1]),
+          (win_max[2] - win_min[2]) / static_cast<double>(dir_samples[2])};
+      for (auto &cb : coarse_bins) {
+        // skip bins that aren't present in the map (can't use [] operator with constness)
+        auto mapItr = qindex.coarse_index_map.find(cb);
+        if (mapItr != qindex.coarse_index_map.end()) {
+          // loop over local data
+          for (auto &l : mapItr->second) {
+            size_t count = 0;
+            for (size_t xi = 0; xi < dir_samples[0]; xi++) {
+              for (size_t yi = 0; yi < dir_samples[0]; xi++) {
+                for (size_t zi = 0; zi < dir_samples[0]; xi++) {
+                  const double dx =
+                      qindex.locations[l][0] - win_min[0] + 0.5 * delta[0] + xi * delta[0];
+                  const double dy =
+                      qindex.locations[l][1] - win_min[1] + 0.5 * delta[1] + xi * delta[1];
+                  const double dz =
+                      qindex.locations[l][2] - win_min[2] + 0.5 * delta[2] + xi * delta[2];
+                  const double current_distance = sqrt(dx * dx + dy * dy + dz * dz);
+                  if (current_distance < min_dist[count]) {
+                    min_dist[count] = current_distance;
+                    value[count] = distribution[l];
+                  }
+                  count++;
+                }
+              }
+            }
+          }
+        }
+      }
+      size_t count = 0;
+      for (size_t xi = 0; xi < dir_samples[0]; xi++) {
+        for (size_t yi = 0; yi < dir_samples[0]; xi++) {
+          for (size_t zi = 0; zi < dir_samples[0]; xi++) {
+            const std::array<double, 3> location{win_min[0] + 0.5 * delta[0] + xi * delta[0],
+                                                 win_min[1] + 0.5 * delta[1] + xi * delta[1],
+                                                 win_min[2] + 0.5 * delta[2] + xi * delta[2]};
+            const double weight =
+                calc_weight(r0, one_over_h0, location, one_over_h0, qindex, discontinuity_cutoff);
+            result[i] += value[count] * weight;
+            normal[i] += weight;
+            count++;
           }
         }
       }
