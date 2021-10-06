@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Nov. 10th 2020
  * \brief  KDE function tests
- * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -81,6 +81,8 @@ void test_replication(ParallelUnitTest &ut) {
           sphere_kde.reconstruction(zero_data, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result =
           sphere_kde.log_reconstruction(zero_data, one_over_bandwidth_array, qindex);
+      std::vector<double> sampled_smooth_result =
+          sphere_kde.sampled_reconstruction(zero_data, one_over_bandwidth_array, qindex);
       // Apply Conservation
       sphere_kde.apply_conservation(zero_data, smooth_result, qindex.domain_decomposed);
       sphere_kde.apply_conservation(spoke_data, log_smooth_result, qindex.domain_decomposed);

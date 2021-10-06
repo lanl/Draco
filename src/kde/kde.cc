@@ -263,14 +263,14 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
           for (auto &l : mapItr->second) {
             size_t count = 0;
             for (size_t xi = 0; xi < dir_samples[0]; xi++) {
-              for (size_t yi = 0; yi < dir_samples[0]; xi++) {
-                for (size_t zi = 0; zi < dir_samples[0]; xi++) {
-                  const double dx =
-                      qindex.locations[l][0] - win_min[0] + 0.5 * delta[0] + xi * delta[0];
-                  const double dy =
-                      qindex.locations[l][1] - win_min[1] + 0.5 * delta[1] + xi * delta[1];
-                  const double dz =
-                      qindex.locations[l][2] - win_min[2] + 0.5 * delta[2] + xi * delta[2];
+              for (size_t yi = 0; yi < dir_samples[0]; yi++) {
+                for (size_t zi = 0; zi < dir_samples[0]; zi++) {
+                  const double dx = qindex.locations[l][0] - win_min[0] + 0.5 * delta[0] +
+                                    static_cast<double>(xi) * delta[0];
+                  const double dy = qindex.locations[l][1] - win_min[1] + 0.5 * delta[1] +
+                                    static_cast<double>(yi) * delta[1];
+                  const double dz = qindex.locations[l][2] - win_min[2] + 0.5 * delta[2] +
+                                    static_cast<double>(zi) * delta[2];
                   const double current_distance = sqrt(dx * dx + dy * dy + dz * dz);
                   if (current_distance < min_dist[count]) {
                     min_dist[count] = current_distance;
@@ -288,14 +288,14 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
           for (auto &g : gmapItr->second) {
             size_t count = 0;
             for (size_t xi = 0; xi < dir_samples[0]; xi++) {
-              for (size_t yi = 0; yi < dir_samples[0]; xi++) {
-                for (size_t zi = 0; zi < dir_samples[0]; xi++) {
+              for (size_t yi = 0; yi < dir_samples[0]; yi++) {
+                for (size_t zi = 0; zi < dir_samples[0]; zi++) {
                   const double dx = qindex.local_ghost_locations[g][0] - win_min[0] +
-                                    0.5 * delta[0] + xi * delta[0];
+                                    0.5 * delta[0] + static_cast<double>(xi) * delta[0];
                   const double dy = qindex.local_ghost_locations[g][1] - win_min[1] +
-                                    0.5 * delta[1] + xi * delta[1];
+                                    0.5 * delta[1] + static_cast<double>(yi) * delta[1];
                   const double dz = qindex.local_ghost_locations[g][2] - win_min[2] +
-                                    0.5 * delta[2] + xi * delta[2];
+                                    0.5 * delta[2] + static_cast<double>(zi) * delta[2];
                   const double current_distance = sqrt(dx * dx + dy * dy + dz * dz);
                   if (current_distance < min_dist[count]) {
                     min_dist[count] = current_distance;
@@ -309,11 +309,12 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
         }
         size_t count = 0;
         for (size_t xi = 0; xi < dir_samples[0]; xi++) {
-          for (size_t yi = 0; yi < dir_samples[0]; xi++) {
-            for (size_t zi = 0; zi < dir_samples[0]; xi++) {
-              const std::array<double, 3> location{win_min[0] + 0.5 * delta[0] + xi * delta[0],
-                                                   win_min[1] + 0.5 * delta[1] + xi * delta[1],
-                                                   win_min[2] + 0.5 * delta[2] + xi * delta[2]};
+          for (size_t yi = 0; yi < dir_samples[0]; yi++) {
+            for (size_t zi = 0; zi < dir_samples[0]; zi++) {
+              const std::array<double, 3> location{
+                  win_min[0] + 0.5 * delta[0] + static_cast<double>(xi) * delta[0],
+                  win_min[1] + 0.5 * delta[1] + static_cast<double>(yi) * delta[1],
+                  win_min[2] + 0.5 * delta[2] + static_cast<double>(zi) * delta[2]};
               const double weight =
                   calc_weight(r0, one_over_h0, location, one_over_h0, qindex, discontinuity_cutoff);
               result[i] += value[count] * weight;
@@ -348,14 +349,14 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
           for (auto &l : mapItr->second) {
             size_t count = 0;
             for (size_t xi = 0; xi < dir_samples[0]; xi++) {
-              for (size_t yi = 0; yi < dir_samples[0]; xi++) {
-                for (size_t zi = 0; zi < dir_samples[0]; xi++) {
-                  const double dx =
-                      qindex.locations[l][0] - win_min[0] + 0.5 * delta[0] + xi * delta[0];
-                  const double dy =
-                      qindex.locations[l][1] - win_min[1] + 0.5 * delta[1] + xi * delta[1];
-                  const double dz =
-                      qindex.locations[l][2] - win_min[2] + 0.5 * delta[2] + xi * delta[2];
+              for (size_t yi = 0; yi < dir_samples[0]; yi++) {
+                for (size_t zi = 0; zi < dir_samples[0]; zi++) {
+                  const double dx = qindex.locations[l][0] - win_min[0] + 0.5 * delta[0] +
+                                    static_cast<double>(xi) * delta[0];
+                  const double dy = qindex.locations[l][1] - win_min[1] + 0.5 * delta[1] +
+                                    static_cast<double>(yi) * delta[1];
+                  const double dz = qindex.locations[l][2] - win_min[2] + 0.5 * delta[2] +
+                                    static_cast<double>(zi) * delta[2];
                   const double current_distance = sqrt(dx * dx + dy * dy + dz * dz);
                   if (current_distance < min_dist[count]) {
                     min_dist[count] = current_distance;
@@ -370,11 +371,12 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
       }
       size_t count = 0;
       for (size_t xi = 0; xi < dir_samples[0]; xi++) {
-        for (size_t yi = 0; yi < dir_samples[0]; xi++) {
-          for (size_t zi = 0; zi < dir_samples[0]; xi++) {
-            const std::array<double, 3> location{win_min[0] + 0.5 * delta[0] + xi * delta[0],
-                                                 win_min[1] + 0.5 * delta[1] + xi * delta[1],
-                                                 win_min[2] + 0.5 * delta[2] + xi * delta[2]};
+        for (size_t yi = 0; yi < dir_samples[0]; yi++) {
+          for (size_t zi = 0; zi < dir_samples[0]; zi++) {
+            const std::array<double, 3> location{
+                win_min[0] + 0.5 * delta[0] + static_cast<double>(xi) * delta[0],
+                win_min[1] + 0.5 * delta[1] + static_cast<double>(yi) * delta[1],
+                win_min[2] + 0.5 * delta[2] + static_cast<double>(zi) * delta[2]};
             const double weight =
                 calc_weight(r0, one_over_h0, location, one_over_h0, qindex, discontinuity_cutoff);
             result[i] += value[count] * weight;
