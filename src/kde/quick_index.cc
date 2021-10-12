@@ -3,7 +3,7 @@
  * \file   kde/quick_index.cc
  * \author Mathew Cleveland
  * \brief  Explicitly defined quick_index functions.
- * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -534,15 +534,17 @@ auto get_window_bin = [](auto spherical, const auto dim, const auto &grid_bins,
       valid = false;
       break;
     } else {
+      const double delta = window_max[d] - window_min[d];
+      Check(delta > 0.0);
       bin_id[d] = static_cast<size_t>(bin_value);
       // catch any values exactly on the edge of the top bin
       bin_id[d] = std::min(grid_bins[d] - 1, bin_id[d]);
       const double bin_center =
           window_min[d] + (static_cast<double>(bin_id[d]) / static_cast<double>(grid_bins[d]) +
                            0.5 / static_cast<double>(grid_bins[d])) *
-                              (window_max[d] - window_min[d]);
+                              delta;
       // approximate in spherical geometry;
-      distance_to_bin_center += (bin_center - loc) * (bin_center - loc);
+      distance_to_bin_center += (bin_center - loc) * (bin_center - loc) / delta;
     }
   }
   distance_to_bin_center =
