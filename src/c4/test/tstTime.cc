@@ -63,10 +63,9 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
   Timer t;
 
 #ifdef _MSC_VER
-  // KT: I'm not sure why I'm having so much trouble on Win32 for the timing
-  // precision check.  I may need to use a different mechanism for timing
-  // values.  Right now the ngihtly tests fail about 1 out of 20 times.
-  // When the check fails it is significant:
+  // KT: I'm not sure why I'm having so much trouble on Win32 for the timing precision check.  I may
+  // need to use a different mechanism for timing values.  Right now the ngihtly tests fail about 1
+  // out of 20 times.  When the check fails it is significant:
   //
   // t.wall_clock() value does not match the expected value.
   //   end            = 43461.5
@@ -76,12 +75,12 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
   //   error          = 0.0160977
   //   prec           = 0.002
   //
-  // This may be due to the system being busy or scans done by LANL IT.  I'm not
-  // really sure what is going on.  It always passes for interactive jobs.
+  // This may be due to the system being busy or scans done by LANL IT.  I'm not really sure what is
+  // going on.  It always passes for interactive jobs.
   //
-  // In any case, I am making the prec value for Win32 10x the Linux value.
-  // This should keep the tests passing and is still valid because the relative
-  // error is less than 10% for this very short time interval.
+  // In any case, I am making the prec value for Win32 10x the Linux value.  This should keep the
+  // tests passing and is still valid because the relative error is less than 10% for this very
+  // short time interval.
   double const prec(20.0 * t.posix_err());
 #else
   double const prec(4.0 * t.posix_err());
@@ -121,12 +120,12 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
     FAILMSG(msg.str());
   }
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   // Ensure that system + user <= wall
   //
-  // Due to round off errors, the wall clock time might be less than the system
-  // + user time.  But this difference should never exceed t.posix_err().
-  // -------------------------------------------------------------------------//
+  // Due to round off errors, the wall clock time might be less than the system + user time.  But
+  // this difference should never exceed t.posix_err().
+  //----------------------------------------------------------------------------------------------//
 
   double const deltaWallTime(t.wall_clock() - (t.system_cpu() + t.user_cpu()));
 #ifdef _MSC_VER

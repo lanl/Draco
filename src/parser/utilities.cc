@@ -1,11 +1,10 @@
-//---------------------------------*-C++-*-----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   parser/utilities.cc
  * \author Kent G. Budge
  * \date   18 Feb 2003
  * \brief  Definitions of parsing utility functions.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "utilities.hh"
@@ -32,31 +31,28 @@ using namespace std;
 //------------------------------------------------------------------------------------------------//
 /*! Set the unit system to which all parser code converts unit expressions.
  *
- * By default, all unit expressions are converted to SI values by the parser
- * utility routines. For example, if the double parse_quantity function is given
- * the text "2.7 cm", it will return a value of 0.027. The function
- * set_common_unit_system can be used to change the internal unit system, for
- * example, to CGS, so that if the double parse_quantity function is given the
- * text "2.7 cm", it will return a value of 2.7.
+ * By default, all unit expressions are converted to SI values by the parser utility routines. For
+ * example, if the double parse_quantity function is given the text "2.7 cm", it will return a value
+ * of 0.027. The function set_common_unit_system can be used to change the internal unit system, for
+ * example, to CGS, so that if the double parse_quantity function is given the text "2.7 cm", it
+ * will return a value of 2.7.
  *
- * Similarly, by default,the Expression parse_quantity function assumes that all
- * input quantities to the Expression it constructs will be in SI units, but
- * this will be overridden if set_common_unit_system is used to change the
- * internal unit system. Thus, if Expression parse_quantity is given the text
- * "0.5*(t+2*x*s/cm)*erg" then by default it will construct an Expression that
- * computes 0.5e-7*(t+200*x). However, if set_internal_unit_system had
- * previously been called to set the internal unit system to CGS, the Expression
- * constructed would compute 0.5*(t+2*x).
+ * Similarly, by default,the Expression parse_quantity function assumes that all input quantities to
+ * the Expression it constructs will be in SI units, but this will be overridden if
+ * set_common_unit_system is used to change the internal unit system. Thus, if Expression
+ * parse_quantity is given the text "0.5*(t+2*x*s/cm)*erg" then by default it will construct an
+ * Expression that computes 0.5e-7*(t+200*x). However, if set_internal_unit_system had previously
+ * been called to set the internal unit system to CGS, the Expression constructed would compute
+ * 0.5*(t+2*x).
  *
- * This function will normally be called once at the beginning of a parse, since
- * if the internal unit system changes halfway through a parse, there is rarely
- * any easy way to go back and convert quantities parsed earlier to the new
- * internal unit system. For example, if an input file is allowed to specify the
- * internal unit system, this specification should normally be required to be
+ * This function will normally be called once at the beginning of a parse, since if the internal
+ * unit system changes halfway through a parse, there is rarely any easy way to go back and convert
+ * quantities parsed earlier to the new internal unit system. For example, if an input file is
+ * allowed to specify the internal unit system, this specification should normally be required to be
  * the first line in the input file.
  *
- * There is no delete associated with the new global static value. It remains in
- * scope until the program terminates.
+ * There is no delete associated with the new global static value. It remains in scope until the
+ * program terminates.
  */
 void set_internal_unit_system(rtt_units::UnitSystem const &units) {
   if (internal_unit_system != nullptr)
@@ -76,34 +72,29 @@ void free_internal_unit_system() {
 //------------------------------------------------------------------------------------------------//
 /*! Set whether unit expressions are mandatory.
  *
- * By default,the parse_quantity routines expect the texts they parse to be of
- * the form "2.99792e10 cm/s", that is, a real number followed by a unit
- * expression. However, set_are_unit_expressions_required can be used to either
- * turn on or turn off the mandatory unit expression. Quantities can always have
- * a unit expression, and the quantity will then be converted to the internal
- * unit system, but if the mandatory unit expression flag is turned off,
- * quantities may optionally omit the unit expression and will be assumed to be
- * expressed in the internal unit system.
+ * By default,the parse_quantity routines expect the texts they parse to be of the form "2.99792e10
+ * cm/s", that is, a real number followed by a unit expression. However,
+ * set_are_unit_expressions_required can be used to either turn on or turn off the mandatory unit
+ * expression. Quantities can always have a unit expression, and the quantity will then be converted
+ * to the internal unit system, but if the mandatory unit expression flag is turned off, quantities
+ * may optionally omit the unit expression and will be assumed to be expressed in the internal unit
+ * system.
  *
- * Thus, if unit expressions are mandatory and the internal unit system has been
- * set to CGS, then "2.7 m" will be read by double parse_quantity as 270 while
- * "2.7" will be an error. If unit expressions are not mandatory and the
- * internal unit system has been set to CGS, then "2.7 m" will still be read by
- * double parse_quantity as 270, but "2.7" will be read as 2.7.
+ * Thus, if unit expressions are mandatory and the internal unit system has been set to CGS, then
+ * "2.7 m" will be read by double parse_quantity as 270 while "2.7" will be an error. If unit
+ * expressions are not mandatory and the internal unit system has been set to CGS, then "2.7 m" will
+ * still be read by double parse_quantity as 270, but "2.7" will be read as 2.7.
  *
- * It should be clear that mandatory unit expressions are preferable when humans
- * are writing the input files being parsed, since input files that consistently
- * use unit expressions will be less ambiguous, better documented, and more
- * likely to be free from error. The ability to turn off mandatory unit
- * expressions is targeted primarily at situations where it is programs that are
- * communicating with each other through text files rather than humans
- * communicating to a program.
+ * It should be clear that mandatory unit expressions are preferable when humans are writing the
+ * input files being parsed, since input files that consistently use unit expressions will be less
+ * ambiguous, better documented, and more likely to be free from error. The ability to turn off
+ * mandatory unit expressions is targeted primarily at situations where it is programs that are
+ * communicating with each other through text files rather than humans communicating to a program.
  *
- * It is particularly not recommended that unit expressions be made optional
- * where humans will be composing Expressions, since the effect of turning off
- * mandatory unit expressions is to turn off checking of internal dimensional
- * consistency of Expressions. This is a powerful error checking capability that
- * should not be discarded lightly.
+ * It is particularly not recommended that unit expressions be made optional where humans will be
+ * composing Expressions, since the effect of turning off mandatory unit expressions is to turn off
+ * checking of internal dimensional consistency of Expressions. This is a powerful error checking
+ * capability that should not be discarded lightly.
  */
 void set_unit_expressions_are_required(bool const b) { require_unit_expressions = b; }
 
@@ -124,8 +115,7 @@ bool unit_expressions_are_required() { return require_unit_expressions; }
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \param tokens
- * Token stream from which to parse the quantity.
+ * \param[in,out] tokens Token stream from which to parse the quantity.
  *
  * \return The parsed quantity.
  */
@@ -146,7 +136,7 @@ unsigned parse_unsigned_integer(Token_Stream &tokens) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \param tokens Token stream from which to parse the quantity.
+ * \param[in,out] tokens Token stream from which to parse the quantity.
  * \return The parsed quantity.
  */
 unsigned parse_positive_integer(Token_Stream &tokens) {
@@ -162,7 +152,7 @@ unsigned parse_positive_integer(Token_Stream &tokens) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \param tokens Token stream from which to parse the quantity.
+ * \param[in,out] tokens Token stream from which to parse the quantity.
  * \return The parsed quantity.
  */
 int parse_integer(Token_Stream &tokens) {
@@ -210,11 +200,11 @@ bool at_real(Token_Stream &tokens) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * We permit an integer token to appear where a real is expected, consistent
- * with the integers being a subset of reals, and with about five decades of
- * common practice in the computer language community.
+ * We permit an integer token to appear where a real is expected, consistent with the integers being
+ * a subset of reals, and with about five decades of common practice in the computer language
+ * community.
  *
- * \param tokens Token stream from which to parse the quantity.
+ * \param[in,out] tokens Token stream from which to parse the quantity.
  * \return The parsed quantity.
  */
 double parse_real(Token_Stream &tokens) {
@@ -331,13 +321,11 @@ void parse_unsigned_vector(Token_Stream &tokens, unsigned *x, unsigned size) {
 /*!
  * \brief Are we at a unit term?
  *
- * We are at a unit term if the next token on the Token_Stream is a valid unit
- * name.
+ * We are at a unit term if the next token on the Token_Stream is a valid unit name.
  *
  * \param tokens Token_Stream from which to parse.
- * \param position Position in Token_Stream at which to parse.  This lookahead
- * capability is needed by parse_unit to see if a hyphen '-' is part of a unit
- * expression.
+ * \param position Position in Token_Stream at which to parse.  This lookahead capability is needed
+ *        by parse_unit to see if a hyphen '-' is part of a unit expression.
  *
  * \return \c true if we are at the start of a unit term; \c false otherwise
  */
@@ -442,8 +430,7 @@ Unit parse_unit(Token_Stream &tokens);
 /*!
  * \brief Parse a unit name.
  *
- * A unit name can either be a literal unit name, like "kg", or a parenthesized
- * unit expression.
+ * A unit name can either be a literal unit name, like "kg", or a parenthesized unit expression.
  *
  * \param tokens Token_Stream from which to parse.
  * \return The unit.
@@ -694,12 +681,11 @@ static Unit parse_unit_term(Token_Stream &tokens) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * A unit expression is a sequence of tokens with a form such as "kg-m/sec" or
- * "erg/cm^2/sec/Hz" that gives the dimensions of a physical quantity.  This
- * function parses such an expression from its Token_Stream, returning the
- * result as a Unit whose conversion factor is relative to SI.  An empty unit
- * expression is permitted and returns rtt_parser::dimensionless, the
- * identity Unit representing the pure number 1.
+ * A unit expression is a sequence of tokens with a form such as "kg-m/sec" or "erg/cm^2/sec/Hz"
+ * that gives the dimensions of a physical quantity.  This function parses such an expression from
+ * its Token_Stream, returning the result as a Unit whose conversion factor is relative to SI.  An
+ * empty unit expression is permitted and returns rtt_parser::dimensionless, the identity Unit
+ * representing the pure number 1.
  *
  * \param tokens Token_Stream from which to parse.
  * \return The unit expression.
@@ -730,17 +716,15 @@ Unit parse_unit(Token_Stream &tokens) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function parses a quantity having dimensions. It is assumed that the
- * client expects certain dimensions for the quantity, and an exception is
- * thrown if the dimensions are not what the client expected. The quantity
- * will be converted to the desired unit system, as indicated by the \c .conv
+ * This function parses a quantity having dimensions. It is assumed that the client expects certain
+ * dimensions for the quantity, and an exception is thrown if the dimensions are not what the client
+ * expected. The quantity will be converted to the desired unit system, as indicated by the \c .conv
  * member of the \c target_unit argument.
  *
  * \param tokens Token stream from which to parse the quantity.
- * \param target_unit Expected units for the quantity parsed, including
- * conversion factor.
- * \param name Name of the units expected for the quantity parsed, such as
- * "length" or "ergs/cm/sec/Hz". Used to generate diagnostic messages.
+ * \param target_unit Expected units for the quantity parsed, including* conversion factor.
+ * \param name Name of the units expected for the quantity parsed, such as "length" or
+ *        "ergs/cm/sec/Hz". Used to generate diagnostic messages.
  *
  * \return The parsed value, converted to the desired unit system.
  */
@@ -763,9 +747,9 @@ double parse_quantity(Token_Stream &tokens, Unit const &target_unit, char const 
 /*!
  * \brief Parse a temperature specification
  *
- * It is very common for transport researchers to specify a temperature in units
- * of energy, using Boltzmann's constant as the conversion factor.  This
- * function is useful for parsers that accommodate this convention.
+ * It is very common for transport researchers to specify a temperature in units of energy, using
+ * Boltzmann's constant as the conversion factor.  This function is useful for parsers that
+ * accommodate this convention.
  *
  * \param tokens Token stream from which to parse the specification.
  * \return The parsed temperature.
@@ -803,20 +787,16 @@ double parse_temperature(Token_Stream &tokens) {
 /*!
  * \brief Parse a temperature specification
  *
- * It is very common for transport researchers to specify a temperature in units
- * of energy, using Boltzmann's constant as the conversion factor.  This
- * function is useful for parsers that accommodate this convention.
+ * It is very common for transport researchers to specify a temperature in units of energy, using
+ * Boltzmann's constant as the conversion factor.  This function is useful for parsers that
+ * accommodate this convention.
  *
- * This version of the function parses a temperature expression containing
- * user-defined variables.
+ * This version of the function parses a temperature expression containing user-defined variables.
  *
  * \param tokens Token stream from which to parse the specification.
- *
- * \param number_of_variables Number of user-defined variables potentially
- * present in the parsed expression.
- *
+ * \param number_of_variables Number of user-defined variables potentially present in the parsed
+ *        expression.
  * \param variable_map Map of variable names to variables indices.
- *
  * \return The parsed temperature.
  *
  * \post \c Result>=0.0
@@ -871,31 +851,29 @@ std::string parse_manifest_string(Token_Stream &tokens) {
  * \brief Parse a geometry specification.
  *
  * \param tokens Token stream from which to parse the geometry.
- * \param parsed_geometry On entry, if the value is not \c END_GEOMETRY, a
- *           diagnostic is generated to the token stream. On return, contains
- *           the geometry that was parsed.
+ * \param parsed_geometry On entry, if the value is not \c END_GEOMETRY, a diagnostic is generated
+ *           to the token stream. On return, contains the geometry that was parsed.
  *
- * \post <code> parsed_geometry == rtt_mesh_element::AXISYMMETRIC ||
- *         parsed_geometry == rtt_mesh_element::CARTESIAN    ||
- *         parsed_geometry == rtt_mesh_element::SPHERICAL </code>
+ * \post <code> parsed_geometry == rtt_mesh_element::AXISYMMETRIC || parsed_geometry ==
+ *         rtt_mesh_element::CARTESIAN || parsed_geometry == rtt_mesh_element::SPHERICAL </code>
  */
 void parse_geometry(Token_Stream &tokens, rtt_mesh_element::Geometry &parsed_geometry) {
-  tokens.check_semantics(parsed_geometry == rtt_mesh_element::END_GEOMETRY,
+  tokens.check_semantics(parsed_geometry == rtt_mesh_element::Geometry::END_GEOMETRY,
                          "geometry specified twice");
 
   Token const token = tokens.shift();
   if (token.text() == "axisymmetric" || token.text() == "cylindrical") {
-    parsed_geometry = rtt_mesh_element::AXISYMMETRIC;
+    parsed_geometry = rtt_mesh_element::Geometry::AXISYMMETRIC;
   } else if (token.text() == "cartesian" || token.text() == "xy" || token.text() == "slab") {
-    parsed_geometry = rtt_mesh_element::CARTESIAN;
+    parsed_geometry = rtt_mesh_element::Geometry::CARTESIAN;
   } else if (token.text() == "spherical") {
-    parsed_geometry = rtt_mesh_element::SPHERICAL;
+    parsed_geometry = rtt_mesh_element::Geometry::SPHERICAL;
   } else {
     tokens.report_syntax_error(token, "expected a geometry option, but saw " + token.text());
   }
-  Ensure(parsed_geometry == rtt_mesh_element::AXISYMMETRIC ||
-         parsed_geometry == rtt_mesh_element::CARTESIAN ||
-         parsed_geometry == rtt_mesh_element::SPHERICAL);
+  Ensure(parsed_geometry == rtt_mesh_element::Geometry::AXISYMMETRIC ||
+         parsed_geometry == rtt_mesh_element::Geometry::CARTESIAN ||
+         parsed_geometry == rtt_mesh_element::Geometry::SPHERICAL);
   return;
 }
 
@@ -916,19 +894,17 @@ bool parse_bool(Token_Stream &tokens) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function parses an expression having dimensions. It is assumed that the
- * client expects certain dimensions for the quantity, and an exception is
- * thrown if the dimensions are not what the client expected. The quantity
- * will be converted to the desired unit system, as indicated by the \c .conv
- * member of the \c target_unit argument.
+ * This function parses an expression having dimensions. It is assumed that the client expects
+ * certain dimensions for the quantity, and an exception is thrown if the dimensions are not what
+ * the client expected. The quantity will be converted to the desired unit system, as indicated by
+ * the \c .conv member of the \c target_unit argument.
  *
  * \param tokens Token stream from which to parse the quantity.
- * \param target_unit Expected units for the quantity parsed, including
- * conversion factor.
- * \param name Name of the units expected for the quantity parsed, such as
- * "length" or "ergs/cm/sec/Hz". Used to generate diagnostic messages.
- * \param number_of_variables Number of user-defined variables potentially
- * present in the parsed expression.
+ * \param target_unit Expected units for the quantity parsed, including conversion factor.
+ * \param name Name of the units expected for the quantity parsed, such as "length" or
+ *        "ergs/cm/sec/Hz". Used to generate diagnostic messages.
+ * \param number_of_variables Number of user-defined variables potentially present in the parsed
+ &        expression.
  * \param variable_map Map of variable names to variables indices.
  * \return The parsed value, converted to the desired unit system.
  */

@@ -452,7 +452,6 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
       }
     }
   }
-
   // Fill in the overflow around theta=0.0
   if (spherical && (window_min[1] < 0.0 || window_max[1] > 2.0 * rtt_units::PI)) {
     // Only one bound of the window should every overshoot zero

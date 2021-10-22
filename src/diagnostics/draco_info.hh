@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wednesday, Nov 07, 2012, 18:49 pm
  * \brief  Small executable that prints the version and copyright strings.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_diagnostics_draco_info_hh
@@ -22,17 +22,19 @@ namespace rtt_diagnostics {
  * \brief Store and present basic information about the current draco build.
  *
  * The constructed string will take this form:
+ *
  * \verbatim
-Draco-6_25_20181114, build date 2018/11/14;build type: Debug;DBC: 7; DRACO_DIAGNOSTICS: 0
+Draco-7_11_20210915, build date 2021 Sep 15, build type: Debug, DBC: 7, DRACO_DIAGNOSTICS: 0
 
-CCS-2 Draco Team: Kelly G. Thompson, Kent G. Budge, Ryan T. Wollaeger, James S. Warsa, 
-     Alex R. Long, Kendra P. Keady, Jae H. Chang, Matt A. Cleveland, Andrew T. Till, Tim Kelley, 
-     and Kris C. Garrett.
+CCS-2 Draco Team: Kelly G. Thompson, Kent G. Budge, Matt A. Cleveland, Ryan T. Wollaeger,
+     Ben R. Ryan, Alex R. Long, Kendra P. Long, James S. Warsa, Jae H. Chang, Andrew T. Till,
+     and David A. Dixon.
 
-Prior Contributers: Jeff D. Densmore, Gabriel M. Rockefeller, Allan B. Wollaber, Rob B. Lowrie, 
-     Lori A. Pritchett-Sheats, Paul W. Talbot, and Katherine J. Wang.
-
-Copyright (C) 2016-2020 Triad National Security, LLC. (LA-CC-16-016)
+Prior Contributors: Gabriel M. Rockefeller, Allan B. Wollaber, Tim Kelley, Rob B. Lowrie,
+     Paul W. Talbot, Katherine J. Wang, Seth D. Cook, Ondrej Certik, Peter Ahrens,
+     Massimiliano Rosa, Todd J. Urbatsch, Daniel Holladay, Jeff D. Densmore, Howard Pritchard,
+     Jeff Furnish, John McGhee, Kris C. Garrett, Mike Buksas, Nick Myers, Paul Henning,
+     Randy Roberts, Seth Johnson, Todd Adams, Tom Evans, and Lori Pritchett-Sheats.
 
 For information, send e-mail to draco@lanl.gov.
 
@@ -43,18 +45,18 @@ Build information:
     Site name         : ccscs3
     CUDA support      : disabled
     MPI support       : enabled
-      mpirun cmd      : /scratch/.../bin/mpiexec -n <N> -bind-to none
+      mpirun cmd      : /ccs/opt/.../bin/mpiexec -n <N> -bind-to none
     OpenMP support    : enabled
     Design-by-Contract: 7, features = Insist, Require, Check, Ensure
     Diagnostics       : 0
     Diagnostics Timing: disabled
     CXX Compiler      : /scratch/vendors/spack.20180425/opt/spack/linux-rhel7-x86_64/gcc-4.8.5/
                         gcc-8.1.0-3c5hjkqndywdp3w2l5vts62xlllrsbtq/bin/g++
-    CXX_FLAGS         : -Wcast-align -Wpointer-arith -Wall -pedantic -Wno-expansion-to-defined 
+    CXX_FLAGS         : -Wcast-align -Wpointer-arith -Wall -pedantic -Wno-expansion-to-defined
                         -Wnarrowing -march=native -fopenmp -Werror
     C Compiler        : /scratch/vendors/spack.20180425/opt/spack/linux-rhel7-x86_64/gcc-4.8.5/
                         gcc-8.1.0-3c5hjkqndywdp3w2l5vts62xlllrsbtq/bin/gcc
-    C_FLAGS           : -Wcast-align -Wpointer-arith -Wall -pedantic -Wno-expansion-to-defined 
+    C_FLAGS           : -Wcast-align -Wpointer-arith -Wall -pedantic -Wno-expansion-to-defined
                         -Wnarrowing -march=native -fopenmp -Werror
     Fortran Compiler  : /scratch/vendors/spack.20180425/opt/spack/linux-rhel7-x86_64/gcc-4.8.5/
                         gcc-8.1.0-3c5hjkqndywdp3w2l5vts62xlllrsbtq/bin/gfortran
@@ -79,7 +81,7 @@ public:
    *         build parameters. */
   std::string fullReport() const;
 
-  //! Version and Copyright only
+  //! Version and (C)
   std::string briefReport() const;
 
   //! Version only
@@ -108,6 +110,8 @@ private:
   std::string cc_flags;
   std::string fc;
   std::string fc_flags;
+  std::string cuda_compiler; //! < full path to the cuda compiler (if any)
+  std::string cuda_flags;    //!< Compiler flags for cuda
 };
 
 } // end namespace rtt_diagnostics

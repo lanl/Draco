@@ -3,7 +3,7 @@
  * \file   quadrature/test/quadrature_test.cc
  * \author Kent G. Budge
  * \brief  Define class quadrature_test
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC. All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature_test.hh"
@@ -55,7 +55,7 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
   vector<unsigned> const &first_angles = ordinate_space->first_angles();
   unsigned const number_of_levels = quadrature.number_of_levels();
 
-  if (geometry == rtt_mesh_element::SPHERICAL) {
+  if (geometry == rtt_mesh_element::Geometry::SPHERICAL) {
     if (first_angles.size() == 1) {
       PASSMSG("first angles is correct");
     } else {
@@ -71,7 +71,7 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
     ordinate_space->psi_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
     ordinate_space->source_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
     // check that throws no exception
-  } else if (geometry == rtt_mesh_element::AXISYMMETRIC) {
+  } else if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
     if ((dimension > 1 && first_angles.size() == number_of_levels) ||
         (dimension == 1 && 2 * first_angles.size() == number_of_levels)) {
       PASSMSG("first angles is correct");
@@ -192,7 +192,7 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
   switch (quadrature.quadrature_class()) {
   case TRIANGLE_QUADRATURE:
     if (dimension == 1) {
-      if (geometry == rtt_mesh_element::CARTESIAN && L != Num)
+      if (geometry == rtt_mesh_element::Geometry::CARTESIAN && L != Num)
         FAILMSG("ordinate count is wrong for triangular quadrature");
     } else if (dimension == 3) {
       if (L * (L + 2) != Num)
@@ -389,7 +389,7 @@ void quadrature_integration_test(UnitTest & /*ut*/, Quadrature &quadrature) {
     // Build an ordinate set
     std::shared_ptr<Ordinate_Set> ordinate_set =
         quadrature.create_ordinate_set(3U, // dimension
-                                       rtt_mesh_element::CARTESIAN,
+                                       rtt_mesh_element::Geometry::CARTESIAN,
                                        1.0,   // norm,
                                        false, // add_starting_directions
                                        false, // add_extra_directions,
@@ -539,7 +539,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
     std::shared_ptr<Ordinate_Set> ordinate_set =
         quadrature.create_ordinate_set(1U, // dimension
-                                       rtt_mesh_element::CARTESIAN,
+                                       rtt_mesh_element::Geometry::CARTESIAN,
                                        1.0,   // norm,
                                        false, // add_starting_directions
                                        false, // add_extra_directions,
@@ -563,7 +563,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
     test_no_axis(ut, quadrature,
                  1U, // dimension,
-                 rtt_mesh_element::CARTESIAN,
+                 rtt_mesh_element::Geometry::CARTESIAN,
                  1U, // expansion_order,
                  "SN",
                  false, // add_extra_directions,
@@ -571,7 +571,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
     test_no_axis(ut, quadrature,
                  1U, // dimension,
-                 rtt_mesh_element::CARTESIAN,
+                 rtt_mesh_element::Geometry::CARTESIAN,
                  1U, // expansion_order,
                  "GQ1",
                  false, // add_extra_directions,
@@ -579,7 +579,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
     test_no_axis(ut, quadrature,
                  1U, // dimension,
-                 rtt_mesh_element::CARTESIAN,
+                 rtt_mesh_element::Geometry::CARTESIAN,
                  1U, // expansion_order,
                  "GQF",
                  false, // add_extra_directions,
@@ -592,7 +592,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
         test_no_axis(ut, quadrature,
                      1U, // dimension,
-                     rtt_mesh_element::SPHERICAL,
+                     rtt_mesh_element::Geometry::SPHERICAL,
                      1U, // expansion_order,
                      "SN",
                      false, // add_extra_directions,
@@ -600,7 +600,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
         test_no_axis(ut, quadrature,
                      1U, // dimension,
-                     rtt_mesh_element::SPHERICAL,
+                     rtt_mesh_element::Geometry::SPHERICAL,
                      1U, // expansion_order,
                      "GQ1",
                      false, // add_extra_directions,
@@ -616,7 +616,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
     std::shared_ptr<Ordinate_Set> ordinate_set =
         quadrature.create_ordinate_set(3U, // dimension
-                                       rtt_mesh_element::CARTESIAN,
+                                       rtt_mesh_element::Geometry::CARTESIAN,
                                        1.0,   // norm,
                                        false, // add_starting_directions
                                        false, // add_extra_directions,
@@ -638,7 +638,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
     test_no_axis(ut, quadrature,
                  2U, // dimension,
-                 rtt_mesh_element::CARTESIAN,
+                 rtt_mesh_element::Geometry::CARTESIAN,
                  8U, // expansion_order,
                  "SN",
                  false, // add_extra_directions,
@@ -646,7 +646,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
     test_no_axis(ut, quadrature,
                  3U, // dimension,
-                 rtt_mesh_element::CARTESIAN,
+                 rtt_mesh_element::Geometry::CARTESIAN,
                  8U, // expansion_order,
                  "SN",
                  false, // add_extra_directions,
@@ -655,7 +655,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
     if (quadrature.quadrature_class() == TRIANGLE_QUADRATURE) {
       test_no_axis(ut, quadrature,
                    2U, // dimension,
-                   rtt_mesh_element::CARTESIAN,
+                   rtt_mesh_element::Geometry::CARTESIAN,
                    // expansion_order
                    min(8U, quadrature.number_of_levels()), "GQ1",
                    false, // add_extra_directions,
@@ -663,7 +663,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
       test_no_axis(ut, quadrature,
                    3U, // dimension,
-                   rtt_mesh_element::CARTESIAN,
+                   rtt_mesh_element::Geometry::CARTESIAN,
                    // expansion_order
                    quadrature.number_of_levels() - 1, "GQ1",
                    false, // add_extra_directions,
@@ -673,7 +673,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
     if (!cartesian_tests_only) {
       test_no_axis(ut, quadrature,
                    1U, // dimension,
-                   rtt_mesh_element::AXISYMMETRIC,
+                   rtt_mesh_element::Geometry::AXISYMMETRIC,
                    8U, // expansion_order,
                    "SN",
                    false, // add_extra_directions,
@@ -681,7 +681,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
       test_no_axis(ut, quadrature,
                    2U, // dimension,
-                   rtt_mesh_element::AXISYMMETRIC,
+                   rtt_mesh_element::Geometry::AXISYMMETRIC,
                    8U, // expansion_order,
                    "SN",
                    false, // add_extra_directions,
@@ -692,7 +692,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
     test_axis(ut, quadrature,
               3U, // dimension,
-              rtt_mesh_element::CARTESIAN,
+              rtt_mesh_element::Geometry::CARTESIAN,
               8U, // expansion_order,
               "SN",
               false, // add_extra_directions,

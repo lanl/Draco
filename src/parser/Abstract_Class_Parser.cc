@@ -3,8 +3,7 @@
  * \file   parser/Abstract_Class_Parser.cc
  * \author Kent Budge
  * \brief  Define destructor for Abstract_Class_Parser_Base
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2020 Triad National Security, LLC..All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Abstract_Class_Parser.hh"
@@ -14,16 +13,8 @@
 
 namespace rtt_parser {
 
+// Create global static variable on the stack.
 c_string_vector abstract_class_parser_keys;
-
-//------------------------------------------------------------------------------------------------//
-c_string_vector::~c_string_vector() {
-  Check(data.size() < UINT_MAX);
-  auto const n = static_cast<unsigned>(data.size());
-  for (unsigned i = 0; i < n; ++i) {
-    delete[] data[i];
-  }
-}
 
 } // end namespace rtt_parser
 

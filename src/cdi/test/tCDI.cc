@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Oct  9 15:52:01 2001
  * \brief  CDI test executable.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "DummyEoS.hh"
@@ -1036,10 +1036,9 @@ void test_mgopacity_collapse(rtt_dsxx::UnitTest &ut) {
     double const opacity_ross_only =
         CDI::collapseMultigroupOpacitiesRosseland(bounds, mgOpacities, rosseland_only_spectrum);
 
-    std::vector<double> emission_group_cdf_ref(bounds.size() - 1);
-    emission_group_cdf_ref[0] = 0.019244301636310527;
-    emission_group_cdf_ref[1] = 0.29196935332821244;
-    emission_group_cdf_ref[2] = 0.30090440514265909;
+    std::vector<double> emission_group_cdf_ref = {0.019244301636310527, 0.29196935332821244,
+                                                  0.30090440514265909};
+    Check(emission_group_cdf_ref.size() == 3 && bounds.size() == 4);
     double const opacity_pl_ref(0.30090440514265909);
     double const opacity_pl_recip_ref(8.80345577340399);
     double const opacity_ross_ref(0.0778314764921229);

@@ -1,6 +1,29 @@
+2021-10-06  Kendra P. Long <keadyk@lanl.gov>
+        * Draco has been updated to version 7_12_0 and is tied to the release of Jayenne-8_10_0
+	  and Capsaicin-1_10_0.
+         - https://re-git.lanl.gov/draco/draco/-/milestones/2
+         - https://re-git.lanl.gov/groups/jayenne/-/milestones/1
+         - https://re-git.lanl.gov/groups/capsaicin/-/milestones/1
+
+        Draco-7_12_0, build date 2021 Oct 06, build type: Release, DBC: 0, DRACO_DIAGNOSTICS: 0
+
+	CCS-2 Draco Team: Kelly G. Thompson, Kent G. Budge, Matt A. Cleveland, Ryan T. Wollaeger,
+          Ben R. Ryan, Alex R. Long, Kendra P. Long, James S. Warsa, Jae H. Chang, Andrew T. Till,
+          and David A. Dixon.
+
+	Prior Contributors: Gabriel M. Rockefeller, Allan B. Wollaber, Tim Kelley, Rob B. Lowrie,
+          Paul W. Talbot, Katherine J. Wang, Seth D. Cook, Ondrej Certik, Peter Ahrens,
+          Massimiliano Rosa, Todd J. Urbatsch, Daniel Holladay, Jeff D. Densmore, Howard Pritchard,
+          Jeff Furnish, John McGhee, Kris C. Garrett, Mike Buksas, Nick Myers, Paul Henning,
+          Randy Roberts, Seth Johnson, Todd Adams, Tom Evans, and Lori Pritchett-Sheats.
+
+	Copyright (C) 2016-2021 Triad National Security, LLC. (C19028, LA-CC-16-016),
+	Released under a 3-Clause BSD License.
+
+
 2021-06-30  Kelly (KT) Thompson  <kgt@lanl.gov>
 
-	* Draco has been updated to version 7_10_0 and is tied to the release of Jayenne-8_9_0 and
+	* Draco has been updated to version 7_11_0 and is tied to the release of Jayenne-8_9_0 and
 	  Capsaicin-1_9_0.
 	  - https://rtt.lanl.gov/redmine/versions/99
 	  - https://rtt.lanl.gov/redmine/versions/100

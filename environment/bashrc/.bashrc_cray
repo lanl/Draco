@@ -3,7 +3,7 @@
 # File  : environment/bashrc/.bashrc_cray
 # Date  : Tuesday, May 31, 2016, 14:48 pm
 # Author: Kelly Thompson
-# Note  : Copyright (C) 2016-2020, Triad National Security, LLC., All rights are reserved.
+# Note  : Copyright (C) 2016-2021, Triad National Security, LLC., All rights are reserved.
 #
 # Bash configuration file for Cray HPC machines.
 #--------------------------------------------------------------------------------------------------#
@@ -72,6 +72,7 @@ arch=`uname -m`
 # Use modules found in the draco directory
 sysname=`/usr/projects/hpcsoft/utilities/bin/sys_name`
 module use --append /usr/projects/draco/Modules/$sysname
+module unload draco lapse
 case $sysname in
   capulin)
     module unuse /usr/share/modules
@@ -80,7 +81,7 @@ case $sysname in
     module load draco
     ;;
   trinitite | trinity )
-    module load draco/intel19
+    module load lapse/1.8-intel
     if [[ ${SLURM_JOB_PARTITION} =~ "knl" ]]; then
       module swap craype-haswell craype-mic-knl
     fi

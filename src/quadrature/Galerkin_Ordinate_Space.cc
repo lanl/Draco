@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Mon Mar 26 16:11:19 2007
  * \brief  Define methods of class Galerkin_Ordinate_Space
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Galerkin_Ordinate_Space.hh"
@@ -150,7 +150,7 @@ Galerkin_Ordinate_Space::Galerkin_Ordinate_Space(
                      ordering),
       method_(method), D_(), M_() {
   Require(dimension > 0 && dimension < 4);
-  Require(geometry != rtt_mesh_element::END_GEOMETRY);
+  Require(geometry != rtt_mesh_element::Geometry::END_GEOMETRY);
   Require(sn_order > 0 && sn_order % 2 == 0);
   Require(method_ == GQ1 || method_ == GQ2 || method_ == GQF);
 
@@ -284,7 +284,7 @@ void Galerkin_Ordinate_Space::compute_operators() {
 
   // store the final form of the operators in M_ and D_
 
-  if (geometry == rtt_mesh_element::CARTESIAN) {
+  if (geometry == rtt_mesh_element::Geometry::CARTESIAN) {
     M_ = cartesian_M;
     D_ = cartesian_D;
   } else // augment the Cartesian operators for the zero-weight starting directions then store
@@ -386,7 +386,8 @@ vector<double> Galerkin_Ordinate_Space::compute_M_SN(vector<Ordinate> const &ord
     int const k(n2lk[n].M());
 
     for (unsigned m = 0; m < numOrdinates; ++m) {
-      if (dim == 1 && geometry != rtt_mesh_element::AXISYMMETRIC) // 1D mesh, 1D quadrature
+      if (dim == 1 &&
+          geometry != rtt_mesh_element::Geometry::AXISYMMETRIC) // 1D mesh, 1D quadrature
       {
         double mu(ordinates[m].mu());
         M[n + m * numMoments] = Ylm(ell, k, mu, 0.0, sumwt);
@@ -395,7 +396,7 @@ vector<double> Galerkin_Ordinate_Space::compute_M_SN(vector<Ordinate> const &ord
         double eta(ordinates[m].eta());
         double xi(ordinates[m].xi());
 
-        if (geometry == rtt_mesh_element::AXISYMMETRIC) {
+        if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
           // R-Z coordinate system
           //
           // It is important to remember here that the positive mu axis points to the left and the
@@ -408,7 +409,7 @@ vector<double> Galerkin_Ordinate_Space::compute_M_SN(vector<Ordinate> const &ord
 
           double phi(compute_azimuthalAngle(mu, xi));
           M[n + m * numMoments] = Ylm(ell, k, eta, phi, sumwt);
-        } else if (geometry == rtt_mesh_element::CARTESIAN) {
+        } else if (geometry == rtt_mesh_element::Geometry::CARTESIAN) {
           // X-Y coordinate system
           //
           // In order to make the harmonic trial space is correctly oriented with respect to the

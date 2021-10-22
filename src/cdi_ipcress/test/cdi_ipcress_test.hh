@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Oct 12 15:36:36 2001
  * \brief  cdi_ipcress test function headers.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2011-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_ipcress_test_hh
@@ -58,9 +57,8 @@ void testTemperatureGridAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType 
   // Read the temperature grid from the IPCRESS file.
   std::vector<double> temps = spOpacity->getTemperatureGrid();
 
-  // Verify that the size of the temperature grid looks right.  If it is the
-  // right size then compare the temperature grid data to the data specified
-  // when we created the IPCRESS file using TOPS.
+  // Verify that the size of the temperature grid looks right.  If it is the right size then compare
+  // the temperature grid data to the data specified when we created the IPCRESS file using TOPS.
   if (temps.size() == spOpacity->getNumTemperatures() && temps.size() == 3) {
     ostringstream message;
     message << "The number of temperature points found in the data\n\t"
@@ -69,10 +67,8 @@ void testTemperatureGridAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType 
     ut.passes(message.str());
 
     // The grid specified by TOPS has 3 temperature points.
-    std::vector<double> temps_ref(temps.size());
-    temps_ref[0] = 0.1;
-    temps_ref[1] = 1.0;
-    temps_ref[2] = 10.0;
+    std::vector<double> temps_ref = {0.1, 1.0, 10.0};
+    Check(temps.size() == 3);
 
     // Compare the grids.
     if (rtt_dsxx::soft_equiv(temps, temps_ref))
@@ -105,15 +101,12 @@ void testDensityGridAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType cons
   if (density.size() == 3 && density.size() == spOpacity->getNumDensities()) {
     ostringstream message;
     message << "The number of density points found in the data\n\t"
-            << "grid matches the number returned by the\n\t"
-            << "getNumDensities() accessor.";
+            << "grid matches the number returned by the\n\tgetNumDensities() accessor.";
     ut.passes(message.str());
 
     // The grid specified by TOPS has 3 density points
-    std::vector<double> density_ref(density.size());
-    density_ref[0] = 0.1;
-    density_ref[1] = 0.5;
-    density_ref[2] = 1.0;
+    std::vector<double> density_ref = {0.1, 0.5, 1.0};
+    Check(density.size() == 3);
 
     // Compare the grids.
     if (rtt_dsxx::soft_equiv(density, density_ref))
@@ -125,8 +118,7 @@ void testDensityGridAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType cons
     message << "The number of density points found in the data\n\t"
             << "grid does not match the number returned by the\n\t"
             << "getNumDensities() accessor. \n"
-            << "Did not test the results returned by\n\t"
-            << "getDensityGrid().";
+            << "Did not test the results returned by\n\tgetDensityGrid().";
     ut.failure(message.str());
   }
 }
@@ -139,9 +131,9 @@ void testEnergyBoundaryAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType c
   // Read the grid from the IPCRESS file.
   std::vector<double> ebounds = spOpacity->getGroupBoundaries();
 
-  // Verify that the size of the group boundary grid looks right.  If
-  // it is the right size then compare the energy groups grid data to
-  // the data specified when we created the IPCRESS file using TOPS.
+  // Verify that the size of the group boundary grid looks right.  If it is the right size then
+  // compare the energy groups grid data to the data specified when we created the IPCRESS file
+  // using TOPS.
   if (ebounds.size() == 13 && ebounds.size() == spOpacity->getNumGroupBoundaries()) {
     ostringstream message;
     message << "The number of energy boundary points found in the data\n\t"
@@ -150,20 +142,9 @@ void testEnergyBoundaryAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType c
     ut.passes(message.str());
 
     // The grid specified by TOPS has 13 energy boundaries.
-    std::vector<double> ebounds_ref(ebounds.size());
-    ebounds_ref[0] = 0.01;
-    ebounds_ref[1] = 0.03;
-    ebounds_ref[2] = 0.07;
-    ebounds_ref[3] = 0.1;
-    ebounds_ref[4] = 0.3;
-    ebounds_ref[5] = 0.7;
-    ebounds_ref[6] = 1.0;
-    ebounds_ref[7] = 3.0;
-    ebounds_ref[8] = 7.0;
-    ebounds_ref[9] = 10.0;
-    ebounds_ref[10] = 30.0;
-    ebounds_ref[11] = 70.0;
-    ebounds_ref[12] = 100.0;
+    std::vector<double> ebounds_ref = {0.01, 0.03, 0.07, 0.1,  0.3,  0.7,  1.0,
+                                       3.0,  7.0,  10.0, 30.0, 70.0, 100.0};
+    Check(ebounds.size() == 13);
 
     // Compare the grids.
     if (rtt_dsxx::soft_equiv(ebounds, ebounds_ref))
@@ -175,8 +156,7 @@ void testEnergyBoundaryAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType c
     message << "The number of energy boundary points found in the data\n\t"
             << "grid does not match the number returned by the\n\t"
             << "get NumGroupBoundaries() accessor. \n"
-            << "Did not test the results returned by\n\t"
-            << "getGroupBoundaries().";
+            << "Did not test the results returned by\n\tgetGroupBoundaries().";
     ut.failure(message.str());
   }
 }

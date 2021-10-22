@@ -3,8 +3,7 @@
  * \file   ds++/test/tstatomics.cc
  * \author Tim Kelley
  * \date   Thursday, Sept. 6, 2018, 10:51 am
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -17,10 +16,9 @@
 using rtt_dsxx::UnitTest;
 
 //------------------------------------------------------------------------------------------------//
-/* Hammer an atomic from each thread. Each iteration, the thread adds
- * (tid * iteration) to the counter. The atomic ensures that everyone sees
- * a consistent view of the counter: no thread overwrites the contribution
- * from any other thread.
+/* Hammer an atomic from each thread. Each iteration, the thread adds (tid * iteration) to the
+ * counter. The atomic ensures that everyone sees a consistent view of the counter: no thread
+ * overwrites the contribution from any other thread.
  */
 void thread_action(std::atomic<double> &d, size_t N, size_t tid) {
   auto const did = static_cast<double>(tid);
@@ -87,14 +85,12 @@ void test_fetch_add_atomic_1e6(UnitTest &ut) {
 } // test_fetch_add_atomic
 
 // --------------------- non-atomic version --------------------------
-// This should give the wrong answer nearly every time on any respectable
-// thread implementation.
+// This should give the wrong answer nearly every time on any respectable thread implementation.
 
 //------------------------------------------------------------------------------------------------//
-/* Similarly, hammer a POD from each thread. Each iteration, the thread adds
- * (tid * iteration) to the counter. Since the threads are contending, we expect
- * to have a race condition where two threads read the same value from d and
- * one of the thread's write (+=) overwrites the other's.
+/* Similarly, hammer a POD from each thread. Each iteration, the thread adds (tid * iteration) to
+ * the counter. Since the threads are contending, we expect to have a race condition where two
+ * threads read the same value from d and one of the thread's write (+=) overwrites the other's.
  */
 void thread_action_pod(double &d, size_t N, size_t tid) {
   auto const did = static_cast<double>(tid);
@@ -155,8 +151,8 @@ void test_fetch_add_not_atomic(UnitTest & /*ut*/) {
 
 // fetch_sub tests
 
-/* Same as thread_action above, except uses fetch_sub. Total sum is just the
- * negative of the preceding test.
+/* Same as thread_action above, except uses fetch_sub. Total sum is just the negative of the
+ * preceding test.
  */
 void thread_action_sub(std::atomic<double> &d, size_t N, size_t tid) {
   auto const did = static_cast<double>(tid);
@@ -210,14 +206,14 @@ void fetch_sub_atomic_core(UnitTest &ut, size_t const n_threads, size_t const n_
 } // fetch_add_atomic_core
 
 void test_fetch_sub_atomic(UnitTest &ut) {
-  size_t const n_threads(19);
+  size_t const n_threads(8);
   size_t const n_iterations(10001);
   fetch_sub_atomic_core(ut, n_threads, n_iterations);
   return;
 } // test_fetch_add_atomic
 
 void test_fetch_sub_atomic_1e6(UnitTest &ut) {
-  size_t const n_threads(19);
+  size_t const n_threads(8);
   size_t const n_iterations(1000001);
   fetch_sub_atomic_core(ut, n_threads, n_iterations);
   return;

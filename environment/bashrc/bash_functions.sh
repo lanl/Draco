@@ -247,16 +247,28 @@ function proxy()
     export https_proxy=$http_proxy
     export HTTP_PROXY=$http_proxy
     export HTTPS_PROXY=$http_proxy
-    # export http_no_proxy="*.lanl.gov"
-    export no_proxy="localhost,127.0.0.1,.lanl.gov"
-    export NO_PROXY=$no_proxy
+    export proxy_rsync=$http_proxy
+    export RSYNC_PROXY=$http_proxy
+    export proxy_http=$http_proxy
+    export proxy_skip=$http_proxy
+    export proxy_https=$http_proxy
+    export proxy_ftp=$http_proxy
+    if ! [[ "$(uname -n)" =~ "-rfe" ]]; then
+      export no_proxy="localhost,127.0.0.1,.lanl.gov"
+      export NO_PROXY=$no_proxy
+    fi
   else
     # proxies are set, kill them
     unset http_proxy
     unset https_proxy
     unset HTTP_PROXY
     unset HTTPS_PROXY
-    #unset http_no_proxy
+    unset proxy_rsync
+    unset RSYNC_PROXY
+    unset proxy_http
+    unset proxy_skip
+    unset proxy_https
+    unset proxy_ftp
     unset no_proxy
     unset NO_PROXY
   fi

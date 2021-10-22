@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wednesday, Nov 07, 2012, 18:49 pm
  * \brief  Small executable that prints the version and copyright strings.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "draco_info.hh"
@@ -28,7 +28,7 @@ DracoInfo::DracoInfo()
       build_type(rtt_dsxx::string_toupper(CBT)), library_type("static"), system_type("Unknown"),
       site_name("Unknown"), mpirun_cmd(""), diagnostics_level("disabled"), cxx(CMAKE_CXX_COMPILER),
       cxx_flags(CMAKE_CXX_FLAGS), cc(CMAKE_C_COMPILER), cc_flags(CMAKE_C_FLAGS), fc("none"),
-      fc_flags("none") {
+      fc_flags("none"), cuda_compiler("none"), cuda_flags("none") {
 #ifdef DRACO_SHARED_LIBS
   library_type = "Shared";
 #endif
@@ -78,12 +78,23 @@ DracoInfo::DracoInfo()
   else if (build_type == std::string("DEBUG"))
     fc_flags += CMAKE_Fortran_FLAGS_DEBUG;
 #endif
+#ifdef CMAKE_CUDA_COMPILER
+  cuda_compiler = CMAKE_CUDA_COMPILER;
+  cuda_flags = CMAKE_CUDA_FLAGS;
+  if (build_type == std::string("RELEASE"))
+    cuda_flags += CMAKE_CUDA_FLAGS_RELEASE;
+  else if (build_type == std::string("DEBUG"))
+    cuda_flags += CMAKE_CUDA_FLAGS_DEBUG;
+#endif
 }
 
 //------------------------------------------------------------------------------------------------//
 void print_text_with_word_wrap(std::string const &longstring, size_t const indent_column,
                                size_t const max_width, std::ostringstream &msg,
                                std::string const &delimiters = " ") {
+  // Preserve leading slash
+  if (longstring[0] == '/')
+    msg << "/";
   std::vector<std::string> const tokens = rtt_dsxx::tokenize(longstring, delimiters);
   std::string const delimiter(delimiters.substr(0, 1));
   size_t i(indent_column);
@@ -130,6 +141,8 @@ std::string DracoInfo::fullReport() const {
 
   // Build Information
   //------------------
+  size_t constexpr max_width(100);
+  size_t const hanging_indent(std::string("    CXX Compiler      : ").length());
 
   infoMessage << "Build information:"
               << "\n    Build type        : " << build_type
@@ -139,8 +152,10 @@ std::string DracoInfo::fullReport() const {
               << "\n    CUDA support      : " << (cuda ? "enabled" : "disabled")
               << "\n    MPI support       : " << (mpi ? "enabled" : "disabled (c4 scalar mode)");
 
-  if (mpi)
-    infoMessage << "\n      mpirun cmd      : " << mpirun_cmd;
+  if (mpi) {
+    infoMessage << "\n      mpirun cmd      : ";
+    print_text_with_word_wrap(mpirun_cmd, hanging_indent, max_width, infoMessage, "/");
+  }
 
   infoMessage << "\n    OpenMP support    : " << (openmp ? "enabled" : "disabled")
               << "\n    Design-by-Contract: " << DBC << ", features = ";
@@ -151,8 +166,6 @@ std::string DracoInfo::fullReport() const {
               << "\n    Diagnostics Timing: " << (diagnostics_timing ? "enabled" : "disabled");
 
   // Compilers and Flags
-  size_t const max_width(100);
-  size_t const hanging_indent(std::string("    CXX Compiler      : ").length());
   infoMessage << "\n    CXX Compiler      : ";
   print_text_with_word_wrap(cxx, hanging_indent, max_width, infoMessage, "/");
   infoMessage << "\n    CXX_FLAGS         : ";
@@ -161,10 +174,18 @@ std::string DracoInfo::fullReport() const {
   print_text_with_word_wrap(cc, hanging_indent, max_width, infoMessage, "/");
   infoMessage << "\n    C_FLAGS           : ";
   print_text_with_word_wrap(cc_flags, hanging_indent, max_width, infoMessage);
+#ifdef CMAKE_Fortran_COMPILER
   infoMessage << "\n    Fortran Compiler  : ";
   print_text_with_word_wrap(fc, hanging_indent, max_width, infoMessage, "/");
   infoMessage << "\n    Fortran_FLAGS     : ";
   print_text_with_word_wrap(fc_flags, hanging_indent, max_width, infoMessage);
+#endif
+  if (cuda) {
+    infoMessage << "\n    Cuda Compiler     : ";
+    print_text_with_word_wrap(cuda_compiler, hanging_indent, max_width, infoMessage, "/");
+    infoMessage << "\n    CUDA_FLAGS        : ";
+    print_text_with_word_wrap(cuda_flags, hanging_indent, max_width, infoMessage);
+  }
 
   infoMessage << "\n" << endl;
 

@@ -3,10 +3,8 @@
  * \file   quadrature/Ordinate_Set_Factory.cc
  * \author Allan Wollaber
  * \date   Mon Mar  7 10:42:56 EST 2016
- * \brief  Implementation file for the class
- *         rtt_quadrature::Ordinate_Set_Factory.
- * \note   Copyright (C)  2016-2020 Triad National Security, LLC.
- *         All rights reserved.  */
+ * \brief  Implementation file for the class rtt_quadrature::Ordinate_Set_Factory.
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Ordinate_Set_Factory.hh"
@@ -31,18 +29,16 @@ namespace rtt_quadrature {
  *
  * \return A smart pointer to the correctly instantiated Ordinate_Set
  *
- *  All of the "magic numbers" in the quadrature_data struct get interpreted
- *  here to build the Ordinate_Set object.
+ *  All of the "magic numbers" in the quadrature_data struct get interpreted here to build the
+ *  Ordinate_Set object.
  *
- *  This class/method combination would be better suited as a factory method
- *  (and not a factory class) within Ordinate_Set, but this would introduce a
- *  cyclic dependency between Quadrature and Ordinate_Set. Alternatively, it
- *  could be a factory method in Quadrature, but we'd then need an additional
- *  factory method to create the Quadrature object itself. As seen below,
- *  the derived Quadrature object need only exist temporarily
- *  in order to call "create_ordinate_set".  This solution avoids both of those
- *  pitfalls, but it is not ideal and could be refactored into one or the other
- *  classes if their design ever changes.
+ *  This class/method combination would be better suited as a factory method (and not a factory
+ *  class) within Ordinate_Set, but this would introduce a cyclic dependency between Quadrature and
+ *  Ordinate_Set. Alternatively, it could be a factory method in Quadrature, but we'd then need an
+ *  additional factory method to create the Quadrature object itself. As seen below, the derived
+ *  Quadrature object need only exist temporarily in order to call "create_ordinate_set".  This
+ *  solution avoids both of those pitfalls, but it is not ideal and could be refactored into one or
+ *  the other classes if their design ever changes.
  */
 std::shared_ptr<Ordinate_Set> Ordinate_Set_Factory::get_Ordinate_Set() const {
 
@@ -56,22 +52,22 @@ std::shared_ptr<Ordinate_Set> Ordinate_Set_Factory::get_Ordinate_Set() const {
   // Find the geometry
   switch (quad_.geometry) {
   case 0:
-    geometry = rtt_mesh_element::CARTESIAN;
+    geometry = rtt_mesh_element::Geometry::CARTESIAN;
     break;
 
   case 1:
-    geometry = rtt_mesh_element::AXISYMMETRIC;
+    geometry = rtt_mesh_element::Geometry::AXISYMMETRIC;
     add_starting_directions = true;
     break;
 
   case 2:
-    geometry = rtt_mesh_element::SPHERICAL;
+    geometry = rtt_mesh_element::Geometry::SPHERICAL;
     add_starting_directions = true;
     break;
 
   default:
     Insist(false, "Unrecognized Geometry");
-    geometry = rtt_mesh_element::CARTESIAN;
+    geometry = rtt_mesh_element::Geometry::CARTESIAN;
   }
 
   std::shared_ptr<Ordinate_Set> ordinate_set;

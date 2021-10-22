@@ -4,8 +4,7 @@
  * \author Allan Wollaber
  * \date   Mon Mar  7 16:21:45 EST 2016
  * \brief  Ordinate Set Mapper tests
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -191,7 +190,7 @@ void nearest_three_test(rtt_dsxx::UnitTest &ut, const Ordinate &ord, const Ordin
 // -----------------------------------------------------------------------------
 void ordinate_set_2D_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
   int N(2); // quadrature order
-  rtt_mesh_element::Geometry geometry(rtt_mesh_element::CARTESIAN);
+  rtt_mesh_element::Geometry geometry(rtt_mesh_element::Geometry::CARTESIAN);
   Level_Symmetric quadrature(N);
 
   std::shared_ptr<Ordinate_Set> os_LS2 =
@@ -288,7 +287,7 @@ void ordinate_set_2D_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void ordinate_set_1D_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
   int N(4); // quadrature order
-  rtt_mesh_element::Geometry geometry(rtt_mesh_element::CARTESIAN);
+  rtt_mesh_element::Geometry geometry(rtt_mesh_element::Geometry::CARTESIAN);
   Gauss_Legendre quadrature(N);
 
   std::shared_ptr<Ordinate_Set> os_LS4 =
@@ -382,7 +381,7 @@ void ordinate_set_1D_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void ordinate_set_3D_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
   int N(4); // quadrature order
-  rtt_mesh_element::Geometry geometry(rtt_mesh_element::CARTESIAN);
+  rtt_mesh_element::Geometry geometry(rtt_mesh_element::Geometry::CARTESIAN);
   Product_Chebyshev_Legendre quadrature(N, N);
 
   std::shared_ptr<Ordinate_Set> os_LS2 =
@@ -484,7 +483,7 @@ void ordinate_set_3D_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void ordinate_set_1D_sph_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
   int N(2); // quadrature order
-  rtt_mesh_element::Geometry geometry(rtt_mesh_element::SPHERICAL);
+  rtt_mesh_element::Geometry geometry(rtt_mesh_element::Geometry::SPHERICAL);
   Gauss_Legendre quadrature(N);
 
   // Note that this test uses "starting directions" in the Ordinate_Set These
@@ -540,7 +539,7 @@ void ordinate_set_1D_sph_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void ordinate_set_1D_nt_mapper_test(rtt_dsxx::UnitTest &ut) {
   int N(8); // quadrature order
-  rtt_mesh_element::Geometry geometry(rtt_mesh_element::CARTESIAN);
+  rtt_mesh_element::Geometry geometry(rtt_mesh_element::Geometry::CARTESIAN);
   Gauss_Legendre quadrature(N);
 
   std::shared_ptr<Ordinate_Set> os_LS4 =
@@ -664,7 +663,7 @@ void ordinate_set_1D_nt_mapper_test(rtt_dsxx::UnitTest &ut) {
 // -----------------------------------------------------------------------------
 void ordinate_set_2D_nt_mapper_test(rtt_dsxx::UnitTest &ut) {
   int N(6); // quadrature order
-  rtt_mesh_element::Geometry geometry(rtt_mesh_element::CARTESIAN);
+  rtt_mesh_element::Geometry geometry(rtt_mesh_element::Geometry::CARTESIAN);
   Level_Symmetric quadrature(N);
 
   std::shared_ptr<Ordinate_Set> os_LS2 =
@@ -761,7 +760,7 @@ void ordinate_set_2D_nt_mapper_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void ordinate_set_3D_nt_mapper_test(rtt_dsxx::UnitTest &ut) {
   int N(4); // quadrature order
-  rtt_mesh_element::Geometry geometry(rtt_mesh_element::CARTESIAN);
+  rtt_mesh_element::Geometry geometry(rtt_mesh_element::Geometry::CARTESIAN);
   Product_Chebyshev_Legendre quadrature(N, N);
 
   std::shared_ptr<Ordinate_Set> os_LS2 =

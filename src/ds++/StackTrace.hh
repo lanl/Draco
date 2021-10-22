@@ -19,8 +19,7 @@ namespace rtt_dsxx {
 /*!
  * \brief print_stacktrace
  *
- * \param error_name A string that identifies why the stack trace is
- *                   requested.
+ * \param error_name A string that identifies why the stack trace is requested.
  * \return A multi-line message including the error_name and the stack trace.
  *
  * A stack trace will look something like this:

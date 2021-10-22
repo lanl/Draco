@@ -55,7 +55,8 @@ else
 
   if [[ -d /usr/projects/draco/Modules/cts1 ]]; then
     module use --append /usr/projects/draco/Modules/cts1
-    module load draco/intel19
+    module unload draco lapse
+    module load lapse/1.8-intel
   fi
 
 fi

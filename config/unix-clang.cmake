@@ -60,10 +60,24 @@ if(NOT CXX_FLAGS_INITIALIZED)
   set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_RELEASE}")
   set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O3 -funroll-loops")
 
+  # OneAPI on trinitite reports itself as "LLVM" and parses this file.  The Intel optimizer needs
+  # these options to maintain IEEE 754 compliance.
+  if(DEFINED CMAKE_CXX_COMPILER_WRAPPER AND CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv AND
+      DEFINED ENV{INTEL_COMPILER_TYPE} AND "$ENV{INTEL_COMPILER_TYPE}" STREQUAL "ONEAPI")
+    string(APPEND CMAKE_C_FLAGS_RELEASE " -fp-model=precise")
+    string(APPEND CMAKE_C_FLAGS_RELWITHDEBINFO " -fp-model=precise")
+  endif()
+
   # Suppress warnings about typeid() called with function as an argument. In this case, the function
   # might not be called if the type can be deduced.
   string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS} -Wno-undefined-var-template"
          " -Wno-potentially-evaluated-expression")
+
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Woverloaded-virtual")
+  # Tried to use -fsanitize=safe-stack but this caused build issues.
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+  set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
 
   if(DEFINED CMAKE_CXX_COMPILER_WRAPPER AND "${CMAKE_CXX_COMPILER_WRAPPER}" STREQUAL "CrayPrgEnv")
     string(APPEND CMAKE_CXX_FLAGS " -stdlib=libstdc++")
@@ -80,12 +94,6 @@ if(NOT CXX_FLAGS_INITIALIZED)
   else()
     string(APPEND CMAKE_CXX_FLAGS " -stdlib=libc++")
   endif()
-
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Woverloaded-virtual")
-  # Tried to use -fsanitize=safe-stack but this caused build issues.
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
-  set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
 
 endif()
 

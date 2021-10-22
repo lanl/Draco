@@ -99,29 +99,28 @@ const std::string author_list(bool const use_doxygen_formatting) {
 
   mmdevs current_developers;
   // not totally fair... KT got credit for LOC when svn repository was converted to git.
-  current_developers.insert(fomdev(174665, "Kelly G. Thompson"));
-  current_developers.insert(fomdev(23091, "Kent G. Budge"));
-  current_developers.insert(fomdev(6998, "Matt A. Cleveland"));
-  current_developers.insert(fomdev(4314, "Ryan T. Wollaeger"));
-  current_developers.insert(fomdev(3525, "Ben R. Ryan"));
-  current_developers.insert(fomdev(2927, "Alex R. Long"));
+  current_developers.insert(fomdev(174829, "Kelly G. Thompson"));
+  current_developers.insert(fomdev(22854, "Kent G. Budge"));
+  current_developers.insert(fomdev(12730, "Matt A. Cleveland"));
+  current_developers.insert(fomdev(5464, "Ryan T. Wollaeger"));
+  current_developers.insert(fomdev(4074, "Ben R. Ryan"));
+  current_developers.insert(fomdev(3169, "Alex R. Long"));
   current_developers.insert(fomdev(1565, "Kendra P. Long"));
-  current_developers.insert(fomdev(1270, "James S. Warsa"));
-  current_developers.insert(fomdev(904, "Tim Kelley"));
-  current_developers.insert(fomdev(353, "Jae H. Chang"));
+  current_developers.insert(fomdev(1267, "James S. Warsa"));
+  current_developers.insert(fomdev(354, "Jae H. Chang"));
   current_developers.insert(fomdev(127, "Andrew T. Till"));
-  current_developers.insert(fomdev(91, "Ondrej Certik"));
   current_developers.insert(fomdev(15, "David A. Dixon"));
-  current_developers.insert(fomdev(4, "Howard Pritchard"));
 
   mmdevs prior_developers;
 
   prior_developers.insert(fomdev(3628, "Gabriel M. Rockefeller"));
-  prior_developers.insert(fomdev(1738, "Allan B. Wollaber"));
+  prior_developers.insert(fomdev(1716, "Allan B. Wollaber"));
+  prior_developers.insert(fomdev(879, "Tim Kelley"));
   prior_developers.insert(fomdev(407, "Rob B. Lowrie"));
   prior_developers.insert(fomdev(282, "Paul W. Talbot"));
   prior_developers.insert(fomdev(184, "Katherine J. Wang"));
   prior_developers.insert(fomdev(98, "Seth D. Cook"));
+  prior_developers.insert(fomdev(90, "Ondrej Certik"));
   prior_developers.insert(fomdev(65, "Peter Ahrens"));
 
   // Previous authors with no current LOC attribution (less than 10):
@@ -129,6 +128,7 @@ const std::string author_list(bool const use_doxygen_formatting) {
   prior_developers.insert(fomdev(7, "Todd J. Urbatsch"));
   prior_developers.insert(fomdev(6, "Daniel Holladay"));
   prior_developers.insert(fomdev(5, "Jeff D. Densmore"));
+  prior_developers.insert(fomdev(4, "Howard Pritchard"));
   prior_developers.insert(fomdev(1, "Jeff Furnish"));
   prior_developers.insert(fomdev(1, "John McGhee"));
   prior_developers.insert(fomdev(1, "Kris C. Garrett"));

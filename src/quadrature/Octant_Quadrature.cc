@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Friday, Nov 30, 2012, 08:27 am
  * \brief  Implementation for Octant_Quadrature
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Octant_Quadrature.hh"
@@ -106,7 +106,7 @@ std::vector<Ordinate> Octant_Quadrature::create_ordinates_(
     for (size_t i = 0; i < numOrdinates; ++i) {
       Result[i] = Ordinate(mu[i], eta[i], xi[i], wt[i]);
     }
-  } else if (dimension == 2 || geometry == rtt_mesh_element::AXISYMMETRIC) {
+  } else if (dimension == 2 || geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
     map_axes_(mu_axis, eta_axis, mu, eta, xi);
 
     // Copy the half-sphere
@@ -124,7 +124,7 @@ std::vector<Ordinate> Octant_Quadrature::create_ordinates_(
     add_2D_starting_directions_(geometry, include_starting_directions, include_extra_directions,
                                 Result);
   } else {
-    Check(dimension == 1 && geometry != rtt_mesh_element::AXISYMMETRIC);
+    Check(dimension == 1 && geometry != rtt_mesh_element::Geometry::AXISYMMETRIC);
     Check(mu_axis == 2);
 
     map_axes_(0, 2, mu, eta, xi);
@@ -177,7 +177,7 @@ std::vector<Ordinate> Octant_Quadrature::create_ordinates_(
   for (size_t n = 0; n <= numOrdinates - 1; ++n)
     wsum = wsum + Result[n].wt();
 
-  if (dimension == 1 && geometry != rtt_mesh_element::AXISYMMETRIC) {
+  if (dimension == 1 && geometry != rtt_mesh_element::Geometry::AXISYMMETRIC) {
     for (size_t n = 0; n <= numOrdinates - 1; ++n)
       Result[n] = Ordinate(Result[n].mu(), Result[n].wt() * (norm / wsum));
   } else {
@@ -201,7 +201,7 @@ std::vector<Ordinate> Octant_Quadrature::create_ordinates_(unsigned dimension, G
     switch (dimension) {
     case 1:
       switch (geometry) {
-      case rtt_mesh_element::AXISYMMETRIC:
+      case rtt_mesh_element::Geometry::AXISYMMETRIC:
         mu_axis = 0;
         eta_axis = 2;
         break;
@@ -215,7 +215,7 @@ std::vector<Ordinate> Octant_Quadrature::create_ordinates_(unsigned dimension, G
 
     case 2:
       switch (geometry) {
-      case rtt_mesh_element::AXISYMMETRIC:
+      case rtt_mesh_element::Geometry::AXISYMMETRIC:
         mu_axis = 0;
         eta_axis = 2;
         break;

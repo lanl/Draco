@@ -4,8 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Jun  6 15:03:08 2006
  * \brief  Demonstrate basic OMP threads under MPI.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2011-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"
@@ -79,17 +78,14 @@ bool topology_report() {
 void topo_report(rtt_dsxx::UnitTest &ut, bool &one_mpi_rank_per_node) {
   // Determine if MPI ranks are on unique machine nodes:
   //
-  // If there are multiple MPI ranks per machine node, then don't use OMP
-  // because OMP can't restrict its threads to running only on an MPI rank's
-  // cores.  The OMP threads will be distributed over the whole machine node.
-  // For example, we might choose to use 4 MPI ranks on a machine node with 16
-  // cores.  Ideally, we could allow each MPI rank to use 4 OMP threads for a
-  // maximum of 4x4=16 OMP threads on the 16 core node.  However, because OMP
-  // doesn't know about the MPI ranks sharing the 16 cores, the even
-  // distribution of OMP threads is not guaranteed.
+  // If there are multiple MPI ranks per machine node, then don't use OMP because OMP can't restrict
+  // its threads to running only on an MPI rank's cores.  The OMP threads will be distributed over
+  // the whole machine node.  For example, we might choose to use 4 MPI ranks on a machine node with
+  // 16 cores.  Ideally, we could allow each MPI rank to use 4 OMP threads for a maximum of 4x4=16
+  // OMP threads on the 16 core node.  However, because OMP doesn't know about the MPI ranks sharing
+  // the 16 cores, the even distribution of OMP threads is not guaranteed.
   //
-  // So - if we have more than one MPI rank per machine node, then turn off OMP
-  // threads.
+  // So - if we have more than one MPI rank per machine node, then turn off OMP threads.
   one_mpi_rank_per_node = topology_report();
 
   std::string procname = rtt_c4::get_processor_name();
@@ -101,9 +97,13 @@ void topo_report(rtt_dsxx::UnitTest &ut, bool &one_mpi_rank_per_node) {
   int num_dynamic_threads = omp_get_dynamic();
 
   int tid(-1);
-  int nthreads(-1), maxthreads(-1);
+  int nthreads(-1);
+  int maxthreads(-1);
 
   maxthreads = omp_get_max_threads();
+  // This is just a unit test. Limit the parallelism.
+  if (maxthreads > 16)
+    omp_set_num_threads(16);
 
 #pragma omp parallel private(tid)
   {
@@ -172,6 +172,12 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
 
 #ifdef OPENMP_FOUND
   {
+    // This is just a unit test. Limit the parallelism.
+    int maxthreads(-1);
+    maxthreads = omp_get_max_threads();
+    if (maxthreads > 16)
+      omp_set_num_threads(16);
+
     // More than 1 MPI rank per node --> turn off OMP.
     if (!omrpn)
       omp_set_num_threads(1);
@@ -231,9 +237,8 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
                 << std::endl;
     }
 
-    // [2015-11-17 KT] The accumulate test no longer provides enough work
-    // to offset the overhead of OpenMP, especially for the optimized
-    // build.  Turn this test off...
+    // [2015-11-17 KT] The accumulate test no longer provides enough work to offset the overhead of
+    // OpenMP, especially for the optimized build.  Turn this test off...
 
     // if( omrpn && nthreads > 4 )
     // {
@@ -251,12 +256,9 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
 }
 
 //------------------------------------------------------------------------------------------------//
-// This is a simple demonstration problem for OMP.  Nothing really to check
-// for PASS/FAIL.
+// This is a simple demonstration problem for OMP.  Nothing really to check for PASS/FAIL.
 int MandelbrotCalculate(std::complex<double> c, int maxiter) {
-  // iterates z = z*z + c until |z| >= 2 or maxiter is reached, returns the
-  // number of iterations
-
+  // iterates z = z*z + c until |z| >= 2 or maxiter is reached, returns the number of iterations
   std::complex<double> z = c;
   int n = 0;
   for (; n < maxiter; ++n) {
@@ -277,16 +279,23 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
   const complex<double> center(-0.7, 0.0);
   const complex<double> span(2.7, -(4 / 3.0) * 2.7 * height / width);
   const complex<double> begin = center - span / 2.0;
-  // const complex<double> end   = center+span/2.0;
   const int maxiter = 100000;
 
   // Use OMP threads
   Timer t;
-  ostringstream image1, image2;
+  ostringstream image1;
+  ostringstream image2;
   t.start();
 
   int nthreads(-1);
 #ifdef OPENMP_FOUND
+
+  // This is just a unit test. Limit the parallelism.
+  int maxthreads(-1);
+  maxthreads = omp_get_max_threads();
+  if (maxthreads > 16)
+    omp_set_num_threads(16);
+
 #pragma omp parallel
   {
     if (node() == 0 && omp_get_thread_num() == 0) {
