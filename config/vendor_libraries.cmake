@@ -446,6 +446,7 @@ macro(SetupVendorLibrariesUnix)
   setupqt()
   setuplibquo()
   setupcaliper()
+  setuptorch()
 
   # Doxygen ------------------------------------------------------------------
   message(STATUS "Looking for Doxygen...")
