@@ -646,23 +646,22 @@ endmacro()
 
 endmacro()
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Setup LibTorch (https://github.com/pytorch/pytorch)
-#------------------------------------------------------------------------------
-macro( setupTorch)
+# ------------------------------------------------------------------------------
+macro(setupTorch)
 
-  if( NOT TARGET TORCH::torch )
-    message( STATUS "Looking for Torch...")
-    find_package( Torch QUIET )
+  if(NOT TARGET TORCH::torch)
+    message(STATUS "Looking for Torch...")
+    find_package(Torch QUIET)
     if(TORCH_FOUND)
-        message(STATUS "Looking for Torch...${TORCH_LIBRARY}")
+      message(STATUS "Looking for Torch...${TORCH_LIBRARY}")
     else()
       message(STATUS "Looking for Torch...not found")
     endif()
   endif()
 
 endmacro()
-
 
 # ------------------------------------------------------------------------------------------------ #
 # End vendor_libraries.cmake
