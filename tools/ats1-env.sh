@@ -24,7 +24,7 @@ else
 fi
 
 # The following toolchains will be used when releasing code
-environments="cce11env intel1904env intel1904env-knl"
+environments="cce11env lapse18intelenv lapse18intelenv-knl"
 
 # Extra cmake options
 export CONFIG_BASE+=" -DCMAKE_VERBOSE_MAKEFILE=ON"
@@ -70,7 +70,7 @@ case "$ddir" in
       export CC CXX FC
     }
 
-    function intel1904env()
+    function lapse18intelenv()
     {
       unset partition
       unset jobnameext
@@ -78,19 +78,19 @@ case "$ddir" in
       sysname=$(/usr/projects/hpcsoft/utilities/bin/sys_name)
       module use --append "/usr/projects/draco/Modules/${sysname}"
 
-      run "module unload draco"
-      run "module unload PrgEnv-cray"
+      run "module unload draco lapse"
+      run "module unload PrgEnv-intel PrgEnv-cray PrgEnv-gnu"
       run "module load PrgEnv-intel"
-      run "module load draco/intel19"
+      run "module load lapse/1.8-intel"
       run "module list"
       CC=$(which cc)
       CXX=$(which CC)
       FC=$(which ftn)
-      # export LD_LIBRARY_PATH="$CRAY_LD_LIBRARY_PATH":"$LD_LIBRARY_PATH"
+      export LD_LIBRARY_PATH="$CRAY_LD_LIBRARY_PATH":"$LD_LIBRARY_PATH"
       export CC CXX FC
     }
 
-    function intel1904env-knl()
+    function lapse18intelenv-knl()
     {
       export partition="-p knl --exclude=nid00192"
       export jobnameext="-knl"
@@ -98,13 +98,13 @@ case "$ddir" in
       sysname=$(/usr/projects/hpcsoft/utilities/bin/sys_name)
       module use --append "/usr/projects/draco/Modules/${sysname}"
 
-      run "module unload draco"
-      run "module unload PrgEnv-cray"
+      run "module unload draco lapse"
+      run "module unload PrgEnv-intel PrgEnv-cray PrgEnv-gnu"
       run "module load PrgEnv-intel"
-      run "module load draco/intel19"
-      if ! [[ "${CRAY_CPU_TARGET}" == mic-knl ]]; then
-        run "module swap craype-haswell craype-mic-knl"
-      fi
+      run "module load lapse/1.8-intel"
+      # Be explicit about unloading haswell / loading the knl module!
+      run "module unload craype-haswell"
+      run "module load craype-mic-knl"
       run "module list"
       CC=$(which cc)
       CXX=$(which CC)
