@@ -290,6 +290,64 @@ void test_replication(ParallelUnitTest &ut) {
         ITFAILS;
     }
 
+    // shell smoothing on spoke array with mask over inner sphere points
+    {
+      std::vector<double> masked_shell_smoothed_spoke{
+          1.0,     2.0,     3.0,     4.0,     5, 6.0,     7.0,     8.0,     9.0,
+          1.0,     2.0,     3.0,     4.0,     5, 6.0,     7.0,     8.0,     9.0,
+          1.0,     2.0,     3.0,     4.0,     5, 6.0,     7.0,     8.0,     9.0,
+          1.0,     2.0,     3.0,     4.0,     5, 6.0,     7.0,     8.0,     9.0,
+          1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675,
+          1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675,
+          1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675,
+          1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675};
+      std::vector<bool> shell_mask{
+          false, false, false, false, false, false, false, false, false, false, false, false,
+          false, false, false, false, false, false, false, false, false, false, false, false,
+          false, false, false, false, false, false, false, false, false, false, false, false,
+          true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+          true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+          true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true};
+
+      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+          data_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
+      const bool dd = false;
+      // two bins per point
+      const size_t n_coarse_bins = 5;
+      const double max_window_size = 1.0;
+      const size_t dim = 2;
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
+
+      std::vector<bool> reconstruction_mask(data_size, true);
+      std::vector<double> smooth_result =
+          sphere_kde.reconstruction(spoke_data, shell_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result =
+          sphere_kde.reconstruction(spoke_data, shell_mask, one_over_bandwidth_array, qindex);
+      // Apply Conservation
+      sphere_kde.apply_conservation(spoke_data, shell_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(spoke_data, shell_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
+
+      // Check smooth result
+      for (size_t i = 0; i < data_size; i++) {
+        if (!rtt_dsxx::soft_equiv(smooth_result[i], masked_shell_smoothed_spoke[i], 1e-3))
+          ITFAILS;
+        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], masked_shell_smoothed_spoke[i], 1e-3))
+          ITFAILS;
+      }
+
+      // Energy conservation
+      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
+        ITFAILS;
+      if (!rtt_dsxx::soft_equiv(
+              std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
+        ITFAILS;
+    }
+
     // shell smoothing on spoke array with theta reflection
     {
       std::vector<double> shell_smoothed_spoke{
@@ -1137,6 +1195,22 @@ void test_decomposition(ParallelUnitTest &ut) {
         1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675,
         1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675,
         1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675};
+    std::vector<double> masked_shell_smoothed_spoke{
+        1.0,     2.0,     3.0,     4.0,     5, 6.0,     7.0,     8.0,     9.0,
+        1.0,     2.0,     3.0,     4.0,     5, 6.0,     7.0,     8.0,     9.0,
+        1.0,     2.0,     3.0,     4.0,     5, 6.0,     7.0,     8.0,     9.0,
+        1.0,     2.0,     3.0,     4.0,     5, 6.0,     7.0,     8.0,     9.0,
+        1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675,
+        1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675,
+        1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675,
+        1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675};
+    std::vector<bool> shell_mask{
+        false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false, false, false, false, false,
+        true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+        true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+        true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true};
     std::vector<double> shell_smoothed_spoke_theta_ref{
         1.32325, 2.5489, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.4511, 8.67675,
         1.32325, 2.5489, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.4511, 8.67675,
@@ -1152,6 +1226,8 @@ void test_decomposition(ParallelUnitTest &ut) {
     std::vector<double> dd_shell_data(local_size);
     std::vector<double> dd_spoke_smoothed_shells(local_size);
     std::vector<double> dd_shell_smoothed_spoke(local_size);
+    std::vector<double> dd_masked_shell_smoothed_spoke(local_size);
+    std::vector<bool> dd_shell_mask(local_size);
     std::vector<double> dd_shell_smoothed_spoke_theta_ref(local_size);
     std::vector<std::array<double, 3>> dd_position_array(local_size);
     for (size_t i = 0; i < local_size; i++) {
@@ -1159,6 +1235,9 @@ void test_decomposition(ParallelUnitTest &ut) {
       dd_shell_data[i] = shell_data[i + rtt_c4::node() * local_size];
       dd_spoke_smoothed_shells[i] = spoke_smoothed_shells[i + rtt_c4::node() * local_size];
       dd_shell_smoothed_spoke[i] = shell_smoothed_spoke[i + rtt_c4::node() * local_size];
+      dd_masked_shell_smoothed_spoke[i] =
+          masked_shell_smoothed_spoke[i + rtt_c4::node() * local_size];
+      dd_shell_mask[i] = shell_mask[i + rtt_c4::node() * local_size];
       dd_shell_smoothed_spoke_theta_ref[i] =
           shell_smoothed_spoke_theta_ref[i + rtt_c4::node() * local_size];
       dd_position_array[i] = position_array[i + rtt_c4::node() * local_size];
@@ -1375,6 +1454,51 @@ void test_decomposition(ParallelUnitTest &ut) {
         if (!rtt_dsxx::soft_equiv(smooth_result[i], dd_shell_smoothed_spoke[i], 1e-3))
           ITFAILS;
         if (!rtt_dsxx::soft_equiv(log_smooth_result[i], dd_shell_smoothed_spoke[i], 1e-3))
+          ITFAILS;
+      }
+
+      double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
+      rtt_c4::global_sum(smooth_conservation);
+      double log_smooth_conservation =
+          std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0);
+      rtt_c4::global_sum(log_smooth_conservation);
+
+      // Energy conservation
+      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                                smooth_conservation))
+        ITFAILS;
+      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                                log_smooth_conservation))
+        ITFAILS;
+    }
+
+    // shell smoothing on spoke array with mask
+    {
+      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+          local_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
+      const bool dd = true;
+      // two bins per point
+      const size_t n_coarse_bins = 5;
+      const double max_window_size = 1.0;
+      const size_t dim = 2;
+      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
+
+      std::vector<double> smooth_result =
+          sphere_kde.reconstruction(dd_spoke_data, dd_shell_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result =
+          sphere_kde.reconstruction(dd_spoke_data, dd_shell_mask, one_over_bandwidth_array, qindex);
+      // Apply Conservation
+      sphere_kde.apply_conservation(dd_spoke_data, dd_shell_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_spoke_data, dd_shell_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
+
+      // Check smooth result
+      for (size_t i = 0; i < local_size; i++) {
+        if (!rtt_dsxx::soft_equiv(smooth_result[i], dd_masked_shell_smoothed_spoke[i], 1e-3))
+          ITFAILS;
+        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], dd_masked_shell_smoothed_spoke[i], 1e-3))
           ITFAILS;
       }
 
