@@ -36,23 +36,27 @@ public:
 
   //! Reconstruct distribution
   std::vector<double> reconstruction(const std::vector<double> &distribution,
+                                     const std::vector<bool> &reconstruction_mask,
                                      const std::vector<std::array<double, 3>> &one_over_band_width,
                                      const quick_index &qindex,
                                      const double discontinuity_cutoff = 1.0) const;
 
   std::vector<double>
   sampled_reconstruction(const std::vector<double> &distribution,
+                         const std::vector<bool> &reconstruction_mask,
                          const std::vector<std::array<double, 3>> &one_over_band_width,
                          const quick_index &qindex, const double discontinuity_cutoff = 1.0) const;
 
   //! Reconstruct distribution in logarithmic space
   std::vector<double>
   log_reconstruction(const std::vector<double> &distribution,
+                     const std::vector<bool> &reconstruction_mask,
                      const std::vector<std::array<double, 3>> &one_over_band_width,
                      const quick_index &qindex, const double discontinuity_cutoff = 1.0) const;
 
   //! Apply conservation to reconstructed distribution
   void apply_conservation(const std::vector<double> &original_distribution,
+                          const std::vector<bool> &conservation_mask,
                           std::vector<double> &new_distribution, const bool domain_decompsed) const;
   // STATICS
 

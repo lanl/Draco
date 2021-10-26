@@ -103,6 +103,7 @@ double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double
  * distribution, its spatial position, and the optimal bandwidth to be used at each point.
  *
  * \param[in] distribution original data to be reconstructed
+ * \param[in] reconstruction_mask designate cells that should be reconstructed
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
  * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
@@ -113,6 +114,7 @@ double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double
  */
 std::vector<double>
 kde::reconstruction(const std::vector<double> &distribution,
+                    const std::vector<bool> &reconstruction_mask,
                     const std::vector<std::array<double, 3>> &one_over_bandwidth,
                     const quick_index &qindex, const double discontinuity_cutoff) const {
   Require(qindex.dim < 3 && qindex.dim > 0);
@@ -136,6 +138,12 @@ kde::reconstruction(const std::vector<double> &distribution,
     std::array<double, 3> win_max{0.0, 0.0, 0.0};
     // now apply the kernel to the local ranks
     for (size_t i = 0; i < local_size; i++) {
+      // skip masked data
+      if (!reconstruction_mask[i]) {
+        result[i] = distribution[i];
+        normal[i] = 1.0;
+        continue;
+      }
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
       calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
@@ -172,6 +180,12 @@ kde::reconstruction(const std::vector<double> &distribution,
     std::array<double, 3> win_max{0.0, 0.0, 0.0};
     // now apply the kernel to the local ranks
     for (size_t i = 0; i < local_size; i++) {
+      // skip masked data
+      if (!reconstruction_mask[i]) {
+        result[i] = distribution[i];
+        normal[i] = 1.0;
+        continue;
+      }
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
       calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
@@ -211,6 +225,7 @@ kde::reconstruction(const std::vector<double> &distribution,
  * grid using nearest neighbor mapping.
  *
  * \param[in] distribution original data to be reconstructed
+ * \param[in] reconstruction_mask designate cells that should be reconstructed
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
  * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
@@ -221,6 +236,7 @@ kde::reconstruction(const std::vector<double> &distribution,
  */
 std::vector<double>
 kde::sampled_reconstruction(const std::vector<double> &distribution,
+                            const std::vector<bool> &reconstruction_mask,
                             const std::vector<std::array<double, 3>> &one_over_bandwidth,
                             const quick_index &qindex, const double discontinuity_cutoff) const {
   Require(qindex.dim < 3 && qindex.dim > 0);
@@ -245,6 +261,12 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
     std::array<double, 3> win_max{0.0, 0.0, 0.0};
     // now apply the kernel to the local ranks
     for (size_t i = 0; i < local_size; i++) {
+      // skip masked data
+      if (!reconstruction_mask[i]) {
+        result[i] = distribution[i];
+        normal[i] = 1.0;
+        continue;
+      }
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
       calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
@@ -344,6 +366,12 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
     std::array<double, 3> win_max{0.0, 0.0, 0.0};
     // now apply the kernel to the local ranks
     for (size_t i = 0; i < local_size; i++) {
+      // skip masked data
+      if (!reconstruction_mask[i]) {
+        result[i] = distribution[i];
+        normal[i] = 1.0;
+        continue;
+      }
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
       calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
@@ -424,6 +452,7 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
  * helpful for strongly peaked data and should be exact for exponential distributions.
  *
  * \param[in] distribution original data to be reconstructed
+ * \param[in] reconstruction_mask designate cells that should be reconstructed
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
  * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
@@ -434,6 +463,7 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
  */
 std::vector<double>
 kde::log_reconstruction(const std::vector<double> &distribution,
+                        const std::vector<bool> &reconstruction_mask,
                         const std::vector<std::array<double, 3>> &one_over_bandwidth,
                         const quick_index &qindex, const double discontinuity_cutoff) const {
   Require(qindex.dim < 3 && qindex.dim > 0);
@@ -466,6 +496,12 @@ kde::log_reconstruction(const std::vector<double> &distribution,
     std::array<double, 3> win_min{0.0, 0.0, 0.0};
     std::array<double, 3> win_max{0.0, 0.0, 0.0};
     for (size_t i = 0; i < local_size; i++) {
+      // skip masked data
+      if (!reconstruction_mask[i]) {
+        result[i] = distribution[i];
+        normal[i] = 1.0;
+        continue;
+      }
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
       calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
@@ -506,6 +542,12 @@ kde::log_reconstruction(const std::vector<double> &distribution,
     std::array<double, 3> win_min{0.0, 0.0, 0.0};
     std::array<double, 3> win_max{0.0, 0.0, 0.0};
     for (size_t i = 0; i < local_size; i++) {
+      // skip masked data
+      if (!reconstruction_mask[i]) {
+        result[i] = distribution[i];
+        normal[i] = 1.0;
+        continue;
+      }
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
       calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
@@ -548,32 +590,40 @@ kde::log_reconstruction(const std::vector<double> &distribution,
  * sum(new_distribution)
  *
  * \param[in] original_distribution original data to be reconstructed
- * \param[in,out] new_distribution original data to be reconstructed
+ * \param[in] conservation_mask designate cells that should be considered in conservation
+ * \param[in,out] new_distribution original data to apply conservation fixup to
  * \param[in] domain_decomposed bool
  *
  */
 void kde::apply_conservation(const std::vector<double> &original_distribution,
+                             const std::vector<bool> &conservation_mask,
                              std::vector<double> &new_distribution,
                              const bool domain_decomposed) const {
 
   const size_t local_size = original_distribution.size();
   Insist(new_distribution.size() == local_size,
          "Original and new distributions must be the same size");
+  Insist(conservation_mask.size() == local_size, "Conservation maks size does not match data size");
 
-  // compute absolute solution
+  // compute absolute solution and setup double mask
   std::vector<double> abs_distribution(local_size, 0.0);
+  std::vector<double> mask(local_size, 1.0);
   for (size_t i = 0; i < local_size; i++) {
+    // convert mask to double for easy math operations
+    if (!conservation_mask[i])
+      mask[i] = 0.0;
+    // Exclude perfect reconstruction values
     if (!rtt_dsxx::soft_equiv(new_distribution[i], original_distribution[i], 1e-12))
       abs_distribution[i] = fabs(new_distribution[i]);
   }
 
   // compute totals to be used in residual calculation
-  double original_conservation =
-      std::accumulate(original_distribution.begin(), original_distribution.end(), 0.0);
+  double original_conservation = std::inner_product(original_distribution.begin(),
+                                                    original_distribution.end(), mask.begin(), 0.0);
   double reconstruction_conservation =
-      std::accumulate(new_distribution.begin(), new_distribution.end(), 0.0);
+      std::inner_product(new_distribution.begin(), new_distribution.end(), mask.begin(), 0.0);
   double abs_distribution_conservation =
-      std::accumulate(abs_distribution.begin(), abs_distribution.end(), 0.0);
+      std::inner_product(abs_distribution.begin(), abs_distribution.end(), mask.begin(), 0.0);
 
   if (domain_decomposed) {
     // accumulate global contribution
@@ -586,7 +636,7 @@ void kde::apply_conservation(const std::vector<double> &original_distribution,
   if (abs_distribution_conservation > 0.0) {
     const double res = original_conservation - reconstruction_conservation;
     for (size_t i = 0; i < local_size; i++)
-      new_distribution[i] += res * abs_distribution[i] / abs_distribution_conservation;
+      new_distribution[i] += mask[i] * res * abs_distribution[i] / abs_distribution_conservation;
   }
 }
 

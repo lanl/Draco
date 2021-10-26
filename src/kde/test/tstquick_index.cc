@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Aug. 10th 2021
  * \brief  quick_index testing function
- * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -496,20 +496,20 @@ void test_decomposition(ParallelUnitTest &ut) {
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
-        gold_window_data = {0.0, 0.0, 3.0, 3.0, 8.0};
-        gold_window_3x_data[0] = {0.0, 0.0, 3.0, 3.0, 8.0};
-        gold_window_3x_data[1] = {0.0, 0.0, 4.0, 4.0, 9.0};
-        gold_window_3x_data[2] = {0.0, 0.0, -3.0, -3.0, -8.0};
+        gold_window_data = {3.0, 3.0, 3.0, 3.0, 8.0};
+        gold_window_3x_data[0] = {3.0, 3.0, 3.0, 3.0, 8.0};
+        gold_window_3x_data[1] = {4.0, 4.0, 4.0, 4.0, 9.0};
+        gold_window_3x_data[2] = {-3.0, -3.0, -3.0, -3.0, -8.0};
       } else if (rtt_c4::node() == 1) {
-        gold_window_data = {10.0, 10.0, 6.0, 6.0, 11.0};
-        gold_window_3x_data[0] = {10.0, 10.0, 6.0, 6.0, 11.0};
-        gold_window_3x_data[1] = {11.0, 11.0, 7.0, 7.0, 12.0};
-        gold_window_3x_data[2] = {-10.0, -10.0, -6.0, -6.0, -11.0};
+        gold_window_data = {10.0, 6.0, 6.0, 6.0, 11.0};
+        gold_window_3x_data[0] = {10.0, 6.0, 6.0, 6.0, 11.0};
+        gold_window_3x_data[1] = {11.0, 7.0, 7.0, 7.0, 12.0};
+        gold_window_3x_data[2] = {-10.0, -6.0, -6.0, -6.0, -11.0};
       } else {
-        gold_window_data = {4.0, 4.0, 9.0, 9.0, 5.0};
-        gold_window_3x_data[0] = {4.0, 4.0, 9.0, 9.0, 5.0};
-        gold_window_3x_data[1] = {5.0, 5.0, 10.0, 10.0, 6.0};
-        gold_window_3x_data[2] = {-4.0, -4.0, -9.0, -9.0, -5.0};
+        gold_window_data = {4.0, 9.0, 9.0, 9.0, 5.0};
+        gold_window_3x_data[0] = {4.0, 9.0, 9.0, 9.0, 5.0};
+        gold_window_3x_data[1] = {5.0, 10.0, 10.0, 10.0, 6.0};
+        gold_window_3x_data[2] = {-4.0, -9.0, -9.0, -9.0, -5.0};
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
@@ -582,20 +582,20 @@ void test_decomposition(ParallelUnitTest &ut) {
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
-        gold_window_data = {0.0, 0.0, 3.0, 3.0, 8.0};
-        gold_window_3x_data[0] = {0.0, 0.0, 3.0, 3.0, 8.0};
-        gold_window_3x_data[1] = {0.0, 0.0, 4.0, 4.0, 9.0};
-        gold_window_3x_data[2] = {0.0, 0.0, -3.0, -3.0, -8.0};
+        gold_window_data = {3.0, 3.0, 3.0, 3.0, 8.0};
+        gold_window_3x_data[0] = {3.0, 3.0, 3.0, 3.0, 8.0};
+        gold_window_3x_data[1] = {4.0, 4.0, 4.0, 4.0, 9.0};
+        gold_window_3x_data[2] = {-3.0, -3.0, -3.0, -3.0, -8.0};
       } else if (rtt_c4::node() == 1) {
-        gold_window_data = {10.0, 10.0, 6.0, 6.0, 11.0};
-        gold_window_3x_data[0] = {10.0, 10.0, 6.0, 6.0, 11.0};
-        gold_window_3x_data[1] = {11.0, 11.0, 7.0, 7.0, 12.0};
-        gold_window_3x_data[2] = {-10.0, -10.0, -6.0, -6.0, -11.0};
+        gold_window_data = {10.0, 6.0, 6.0, 6.0, 11.0};
+        gold_window_3x_data[0] = {10.0, 6.0, 6.0, 6.0, 11.0};
+        gold_window_3x_data[1] = {11.0, 7.0, 7.0, 7.0, 12.0};
+        gold_window_3x_data[2] = {-10.0, -6.0, -6.0, -6.0, -11.0};
       } else {
-        gold_window_data = {4.0, 4.0, 9.0, 9.0, 5.0};
-        gold_window_3x_data[0] = {4.0, 4.0, 9.0, 9.0, 5.0};
-        gold_window_3x_data[1] = {5.0, 5.0, 10.0, 10.0, 6.0};
-        gold_window_3x_data[2] = {-4.0, -4.0, -9.0, -9.0, -5.0};
+        gold_window_data = {4.0, 9.0, 9.0, 9.0, 5.0};
+        gold_window_3x_data[0] = {4.0, 9.0, 9.0, 9.0, 5.0};
+        gold_window_3x_data[1] = {5.0, 10.0, 10.0, 10.0, 6.0};
+        gold_window_3x_data[2] = {-4.0, -9.0, -9.0, -9.0, -5.0};
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
@@ -668,20 +668,20 @@ void test_decomposition(ParallelUnitTest &ut) {
       std::vector<double> gold_window_data;
       std::vector<std::vector<double>> gold_window_3x_data(3);
       if (rtt_c4::node() == 0) {
-        gold_window_data = {0.0, 0.0, 3.0 / 14.0, 3.0 / 14.0, 8.0 / 14.0};
-        gold_window_3x_data[0] = {0.0, 0.0, 3.0 / 14.0, 3.0 / 14.0, 8.0 / 14.0};
-        gold_window_3x_data[1] = {0.0, 0.0, 4.0 / 17.0, 4.0 / 17, 9.0 / 17.0};
-        gold_window_3x_data[2] = {0.0, 0.0, 3.0 / 14.0, 3.0 / 14.0, 8.0 / 14.0};
+        gold_window_data = {3.0 / 20.0, 3.0 / 20.0, 3.0 / 20.0, 3.0 / 20.0, 8.0 / 20.0};
+        gold_window_3x_data[0] = {3.0 / 20.0, 3.0 / 20.0, 3.0 / 20.0, 3.0 / 20.0, 8.0 / 20.0};
+        gold_window_3x_data[1] = {4.0 / 25.0, 4.0 / 25.0, 4.0 / 25.0, 4.0 / 25, 9.0 / 25.0};
+        gold_window_3x_data[2] = {3.0 / 20.0, 3.0 / 20.0, 3.0 / 20.0, 3.0 / 20.0, 8.0 / 20.0};
       } else if (rtt_c4::node() == 1) {
-        gold_window_data = {10.0 / 43.0, 10.0 / 43.0, 6.0 / 43.0, 6.0 / 43.0, 11.0 / 43.0};
-        gold_window_3x_data[0] = {10.0 / 43.0, 10.0 / 43.0, 6.0 / 43.0, 6.0 / 43.0, 11.0 / 43.0};
-        gold_window_3x_data[1] = {11.0 / 48.0, 11.0 / 48.0, 7.0 / 48.0, 7.0 / 48.0, 12.0 / 48.0};
-        gold_window_3x_data[2] = {10.0 / 43.0, 10.0 / 43.0, 6.0 / 43.0, 6.0 / 43.0, 11.0 / 43.0};
+        gold_window_data = {10.0 / 39.0, 6.0 / 39.0, 6.0 / 39.0, 6.0 / 39.0, 11.0 / 39.0};
+        gold_window_3x_data[0] = {10.0 / 39.0, 6.0 / 39.0, 6.0 / 39.0, 6.0 / 39.0, 11.0 / 39.0};
+        gold_window_3x_data[1] = {11.0 / 44.0, 7.0 / 44.0, 7.0 / 44.0, 7.0 / 44.0, 12.0 / 44.0};
+        gold_window_3x_data[2] = {10.0 / 39.0, 6.0 / 39.0, 6.0 / 39.0, 6.0 / 39.0, 11.0 / 39.0};
       } else {
-        gold_window_data = {4.0 / 31.0, 4.0 / 31.0, 9.0 / 31.0, 9.0 / 31.0, 5.0 / 31.0};
-        gold_window_3x_data[0] = {4.0 / 31.0, 4.0 / 31.0, 9.0 / 31.0, 9.0 / 31.0, 5.0 / 31.0};
-        gold_window_3x_data[1] = {5.0 / 36.0, 5.0 / 36.0, 10.0 / 36.0, 10.0 / 36.0, 6.0 / 36.0};
-        gold_window_3x_data[2] = {4.0 / 31.0, 4.0 / 31.0, 9.0 / 31.0, 9.0 / 31.0, 5.0 / 31.0};
+        gold_window_data = {4.0 / 36.0, 9.0 / 36.0, 9.0 / 36.0, 9.0 / 36.0, 5.0 / 36.0};
+        gold_window_3x_data[0] = {4.0 / 36.0, 9.0 / 36.0, 9.0 / 36.0, 9.0 / 36.0, 5.0 / 36.0};
+        gold_window_3x_data[1] = {5.0 / 41.0, 10.0 / 41.0, 10.0 / 41.0, 10.0 / 41.0, 6.0 / 41.0};
+        gold_window_3x_data[2] = {4.0 / 36.0, 9.0 / 36.0, 9.0 / 36.0, 9.0 / 36.0, 5.0 / 36.0};
       }
 
       for (size_t v = 0; v < 3; v++)
@@ -1344,20 +1344,20 @@ void test_decomposition(ParallelUnitTest &ut) {
       std::vector<std::vector<double>> gold_window_3x_data(3);
       // different result then 1D because the 1.0 y offset of the data
       if (rtt_c4::node() == 0) {
-        gold_window_data = {0.0, 0.0, 3.0, 3.0, 3.0};
-        gold_window_3x_data[0] = {0.0, 0.0, 3.0, 3.0, 3.0};
-        gold_window_3x_data[1] = {0.0, 0.0, 4.0, 4.0, 4.0};
-        gold_window_3x_data[2] = {0.0, 0.0, -3.0, -3.0, -3.0};
+        gold_window_data = {3.0, 3.0, 3.0, 3.0, 3.0};
+        gold_window_3x_data[0] = {3.0, 3.0, 3.0, 3.0, 3.0};
+        gold_window_3x_data[1] = {4.0, 4.0, 4.0, 4.0, 4.0};
+        gold_window_3x_data[2] = {-3.0, -3.0, -3.0, -3.0, -3.0};
       } else if (rtt_c4::node() == 1) {
-        gold_window_data = {0.0, 0.0, 6.0, 6.0, 6.0};
-        gold_window_3x_data[0] = {0.0, 0.0, 6.0, 6.0, 6.0};
-        gold_window_3x_data[1] = {0.0, 0.0, 7.0, 7.0, 7.0};
-        gold_window_3x_data[2] = {0.0, 0.0, -6.0, -6.0, -6.0};
+        gold_window_data = {6.0, 6.0, 6.0, 6.0, 6.0};
+        gold_window_3x_data[0] = {6.0, 6.0, 6.0, 6.0, 6.0};
+        gold_window_3x_data[1] = {7.0, 7.0, 7.0, 7.0, 7.0};
+        gold_window_3x_data[2] = {-6.0, -6.0, -6.0, -6.0, -6.0};
       } else {
-        gold_window_data = {0.0, 0.0, 9.0, 9.0, 9.0};
-        gold_window_3x_data[0] = {0.0, 0.0, 9.0, 9.0, 9.0};
-        gold_window_3x_data[1] = {0.0, 0.0, 10.0, 10.0, 10.0};
-        gold_window_3x_data[2] = {0.0, 0.0, -9.0, -9.0, -9.0};
+        gold_window_data = {9.0, 9.0, 9.0, 9.0, 9.0};
+        gold_window_3x_data[0] = {9.0, 9.0, 9.0, 9.0, 9.0};
+        gold_window_3x_data[1] = {10.0, 10.0, 10.0, 10.0, 10.0};
+        gold_window_3x_data[2] = {-9.0, -9.0, -9.0, -9.0, -9.0};
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
@@ -2272,11 +2272,11 @@ void test_decomposition_sphere(ParallelUnitTest &ut) {
       if (rtt_c4::node() == 0) {
         gold_window_data = {1.0, 1.0, 1.0, 1.0, 1.0};
         gold_window_2x_data[0] = {1.0, 1.0, 1.0, 1.0, 1.0};
-        gold_window_2x_data[1] = {2.0, 2.0, 1.0, 1.0, 1.0};
+        gold_window_2x_data[1] = {2.0, 1.0, 1.0, 1.0, 1.0};
       } else if (rtt_c4::node() == 1) {
-        gold_window_data = {0.0, 3.0, 3.0, 3.0, 3.0};
-        gold_window_2x_data[0] = {0.0, 3.0, 3.0, 3.0, 3.0};
-        gold_window_2x_data[1] = {0.0, 8.0, 7.0, 6.0, 5.0};
+        gold_window_data = {3.0, 3.0, 3.0, 3.0, 3.0};
+        gold_window_2x_data[0] = {3.0, 3.0, 3.0, 3.0, 3.0};
+        gold_window_2x_data[1] = {8.0, 8.0, 7.0, 6.0, 5.0};
       } else {
         gold_window_data = {6.0, 6.0, 6.0, 6.0, 6.0};
         gold_window_2x_data[0] = {6.0, 6.0, 6.0, 6.0, 6.0};
@@ -2316,11 +2316,11 @@ void test_decomposition_sphere(ParallelUnitTest &ut) {
       if (rtt_c4::node() == 0) {
         gold_window_data = {1.0, 1.0, 1.0, 1.0, 1.0};
         gold_window_2x_data[0] = {1.0, 1.0, 1.0, 1.0, 1.0};
-        gold_window_2x_data[1] = {2.0, 2.0, 1.0, 1.0, 1.0};
+        gold_window_2x_data[1] = {2.0, 1.0, 1.0, 1.0, 1.0};
       } else if (rtt_c4::node() == 1) {
-        gold_window_data = {0.0, 3.0, 3.0, 3.0, 3.0};
-        gold_window_2x_data[0] = {0.0, 3.0, 3.0, 3.0, 3.0};
-        gold_window_2x_data[1] = {0.0, 8.0, 7.0, 6.0, 5.0};
+        gold_window_data = {3.0, 3.0, 3.0, 3.0, 3.0};
+        gold_window_2x_data[0] = {3.0, 3.0, 3.0, 3.0, 3.0};
+        gold_window_2x_data[1] = {8.0, 8.0, 7.0, 6.0, 5.0};
       } else {
         gold_window_data = {6.0, 6.0, 6.0, 6.0, 6.0};
         gold_window_2x_data[0] = {6.0, 6.0, 6.0, 6.0, 6.0};
@@ -2360,11 +2360,11 @@ void test_decomposition_sphere(ParallelUnitTest &ut) {
       if (rtt_c4::node() == 0) {
         gold_window_data = {1.0, 1.0, 1.0, 1.0, 1.0};
         gold_window_2x_data[0] = {1.0, 1.0, 1.0, 1.0, 1.0};
-        gold_window_2x_data[1] = {2.0, 2.0, 1.0, 1.0, 1.0};
+        gold_window_2x_data[1] = {2.0, 1.0, 1.0, 1.0, 1.0};
       } else if (rtt_c4::node() == 1) {
-        gold_window_data = {0.0, 3.0, 3.0, 3.0, 3.0};
-        gold_window_2x_data[0] = {0.0, 3.0, 3.0, 3.0, 3.0};
-        gold_window_2x_data[1] = {0.0, 8.0, 7.0, 6.0, 5.0};
+        gold_window_data = {3.0, 3.0, 3.0, 3.0, 3.0};
+        gold_window_2x_data[0] = {3.0, 3.0, 3.0, 3.0, 3.0};
+        gold_window_2x_data[1] = {8.0, 8.0, 7.0, 6.0, 5.0};
       } else {
         gold_window_data = {6.0, 6.0, 6.0, 6.0, 6.0};
         gold_window_2x_data[0] = {6.0, 6.0, 6.0, 6.0, 6.0};

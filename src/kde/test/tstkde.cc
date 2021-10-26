@@ -77,15 +77,18 @@ void test_replication(ParallelUnitTest &ut) {
       quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
-      std::vector<double> smooth_result =
-          sphere_kde.reconstruction(zero_data, one_over_bandwidth_array, qindex);
-      std::vector<double> log_smooth_result =
-          sphere_kde.log_reconstruction(zero_data, one_over_bandwidth_array, qindex);
-      std::vector<double> sampled_smooth_result =
-          sphere_kde.sampled_reconstruction(zero_data, one_over_bandwidth_array, qindex);
+      std::vector<bool> reconstruction_mask(data_size, true);
+      std::vector<double> smooth_result = sphere_kde.reconstruction(
+          zero_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
+          zero_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> sampled_smooth_result = sphere_kde.sampled_reconstruction(
+          zero_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(zero_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(spoke_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(zero_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(spoke_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
@@ -116,13 +119,16 @@ void test_replication(ParallelUnitTest &ut) {
       quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
-      std::vector<double> smooth_result =
-          sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
-      std::vector<double> log_smooth_result =
-          sphere_kde.log_reconstruction(spoke_data, one_over_bandwidth_array, qindex);
+      std::vector<bool> reconstruction_mask(data_size, true);
+      std::vector<double> smooth_result = sphere_kde.reconstruction(
+          spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
+          spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(spoke_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(spoke_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(spoke_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(spoke_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
@@ -155,13 +161,16 @@ void test_replication(ParallelUnitTest &ut) {
       quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
-      std::vector<double> smooth_result =
-          sphere_kde.reconstruction(shell_data, one_over_bandwidth_array, qindex);
-      std::vector<double> log_smooth_result =
-          sphere_kde.log_reconstruction(shell_data, one_over_bandwidth_array, qindex);
+      std::vector<bool> reconstruction_mask(data_size, true);
+      std::vector<double> smooth_result = sphere_kde.reconstruction(
+          shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
+          shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(shell_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(shell_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(shell_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(shell_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
@@ -203,13 +212,16 @@ void test_replication(ParallelUnitTest &ut) {
       quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
-      std::vector<double> smooth_result =
-          sphere_kde.reconstruction(shell_data, one_over_bandwidth_array, qindex);
-      std::vector<double> log_smooth_result =
-          sphere_kde.reconstruction(shell_data, one_over_bandwidth_array, qindex);
+      std::vector<bool> reconstruction_mask(data_size, true);
+      std::vector<double> smooth_result = sphere_kde.reconstruction(
+          shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = sphere_kde.reconstruction(
+          shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(shell_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(shell_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(shell_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(shell_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
@@ -250,13 +262,16 @@ void test_replication(ParallelUnitTest &ut) {
       quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
-      std::vector<double> smooth_result =
-          sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
-      std::vector<double> log_smooth_result =
-          sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
+      std::vector<bool> reconstruction_mask(data_size, true);
+      std::vector<double> smooth_result = sphere_kde.reconstruction(
+          spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = sphere_kde.reconstruction(
+          spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(spoke_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(spoke_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(spoke_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(spoke_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
@@ -297,13 +312,16 @@ void test_replication(ParallelUnitTest &ut) {
       quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
-      std::vector<double> smooth_result =
-          theta_reflected_sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
-      std::vector<double> log_smooth_result =
-          theta_reflected_sphere_kde.reconstruction(spoke_data, one_over_bandwidth_array, qindex);
+      std::vector<bool> reconstruction_mask(data_size, true);
+      std::vector<double> smooth_result = theta_reflected_sphere_kde.reconstruction(
+          spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = theta_reflected_sphere_kde.reconstruction(
+          spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(spoke_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(spoke_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(spoke_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(spoke_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
@@ -341,13 +359,15 @@ void test_replication(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -384,13 +404,15 @@ void test_replication(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -426,13 +448,15 @@ void test_replication(ParallelUnitTest &ut) {
     const double max_window_size = 4.0;
     const size_t dim = 1;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -468,13 +492,15 @@ void test_replication(ParallelUnitTest &ut) {
     const double max_window_size = 4.0;
     const size_t dim = 2;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -510,13 +536,15 @@ void test_replication(ParallelUnitTest &ut) {
     const double max_window_size = 0.1;
     const size_t dim = 1;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -552,13 +580,15 @@ void test_replication(ParallelUnitTest &ut) {
     const double max_window_size = 0.1;
     const size_t dim = 2;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -597,13 +627,15 @@ void test_replication(ParallelUnitTest &ut) {
     const double max_window_size = 4.0;
     const size_t dim = 2;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -639,13 +671,15 @@ void test_replication(ParallelUnitTest &ut) {
     const double max_window_size = 4.0;
     const size_t dim = 2;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -693,13 +727,15 @@ void test_replication(ParallelUnitTest &ut) {
     const double max_window_size = 4.0;
     const size_t dim = 2;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     std::vector<double> bench{0.122267, 0.181788, 0.118212, 0.181788, 0.118212,
                               0.181788, 0.118212, 0.181788, 0.118212, 0.177733};
@@ -741,13 +777,15 @@ void test_replication(ParallelUnitTest &ut) {
     const double max_window_size = 4.0;
     const size_t dim = 2;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -784,13 +822,15 @@ void test_replication(ParallelUnitTest &ut) {
     const double max_window_size = 4.0;
     const size_t dim = 1;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
@@ -828,10 +868,11 @@ void test_replication(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
 
     std::vector<double> bench{0.01446,   0.0172074, 0.10425,  0.172074, 0.131586,
                               0.0172074, 0.040488,  0.172074, 0.131586, 0.15906};
@@ -866,10 +907,11 @@ void test_replication(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
 
     std::vector<double> bench{0.0142901, 0.0172733, 0.104099, 0.172733, 0.130699,
                               0.0172733, 0.0396694, 0.172733, 0.130699, 0.160531};
@@ -909,10 +951,11 @@ void test_replication(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
 
     std::vector<double> bench{0.0131256, 0.0158657, 0.1,      0.2,      0.1,
                               0.0158657, 0.0364369, 0.158657, 0.120049, 0.2};
@@ -959,10 +1002,11 @@ void test_replication(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
 
     std::vector<double> bench{0.0159208, 0.0177581, 0.1,      0.157576, 0.15506,
                               0.0164128, 0.01,      0.177581, 0.154304, 0.155386};
@@ -998,13 +1042,15 @@ void test_replication(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(10, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(data, one_over_bandwidth_array, qindex);
+        test_kde.log_reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     for (int i = 0; i < 10; i++) {
       if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2))
@@ -1132,13 +1178,16 @@ void test_decomposition(ParallelUnitTest &ut) {
       quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
-      std::vector<double> smooth_result =
-          sphere_kde.reconstruction(zero_data, one_over_bandwidth_array, qindex);
-      std::vector<double> log_smooth_result =
-          sphere_kde.log_reconstruction(zero_data, one_over_bandwidth_array, qindex);
+      std::vector<bool> reconstruction_mask(local_size, true);
+      std::vector<double> smooth_result = sphere_kde.reconstruction(
+          zero_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
+          zero_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(zero_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(zero_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(zero_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(zero_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
@@ -1173,13 +1222,16 @@ void test_decomposition(ParallelUnitTest &ut) {
       quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
-      std::vector<double> smooth_result =
-          sphere_kde.reconstruction(dd_spoke_data, one_over_bandwidth_array, qindex);
-      std::vector<double> log_smooth_result =
-          sphere_kde.log_reconstruction(dd_spoke_data, one_over_bandwidth_array, qindex);
+      std::vector<bool> reconstruction_mask(local_size, true);
+      std::vector<double> smooth_result = sphere_kde.reconstruction(
+          dd_spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
+          dd_spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(dd_spoke_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(dd_spoke_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_spoke_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_spoke_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
@@ -1216,13 +1268,16 @@ void test_decomposition(ParallelUnitTest &ut) {
       quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
-      std::vector<double> smooth_result =
-          sphere_kde.reconstruction(dd_shell_data, one_over_bandwidth_array, qindex);
-      std::vector<double> log_smooth_result =
-          sphere_kde.log_reconstruction(dd_shell_data, one_over_bandwidth_array, qindex);
+      std::vector<bool> reconstruction_mask(local_size, true);
+      std::vector<double> smooth_result = sphere_kde.reconstruction(
+          dd_shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
+          dd_shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(dd_shell_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(dd_shell_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_shell_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_shell_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
@@ -1259,13 +1314,16 @@ void test_decomposition(ParallelUnitTest &ut) {
       quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
-      std::vector<double> smooth_result =
-          sphere_kde.reconstruction(dd_shell_data, one_over_bandwidth_array, qindex);
-      std::vector<double> log_smooth_result =
-          sphere_kde.reconstruction(dd_shell_data, one_over_bandwidth_array, qindex);
+      std::vector<bool> reconstruction_mask(local_size, true);
+      std::vector<double> smooth_result = sphere_kde.reconstruction(
+          dd_shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = sphere_kde.reconstruction(
+          dd_shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(dd_shell_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(dd_shell_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_shell_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_shell_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
@@ -1302,13 +1360,16 @@ void test_decomposition(ParallelUnitTest &ut) {
       quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
-      std::vector<double> smooth_result =
-          sphere_kde.reconstruction(dd_spoke_data, one_over_bandwidth_array, qindex);
-      std::vector<double> log_smooth_result =
-          sphere_kde.reconstruction(dd_spoke_data, one_over_bandwidth_array, qindex);
+      std::vector<bool> reconstruction_mask(local_size, true);
+      std::vector<double> smooth_result = sphere_kde.reconstruction(
+          dd_spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
+      std::vector<double> log_smooth_result = sphere_kde.reconstruction(
+          dd_spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(dd_spoke_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(dd_spoke_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_spoke_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_spoke_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
@@ -1345,13 +1406,16 @@ void test_decomposition(ParallelUnitTest &ut) {
       quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
                          sphere_center);
 
+      std::vector<bool> reconstruction_mask(local_size, true);
       std::vector<double> smooth_result = theta_reflected_sphere_kde.reconstruction(
-          dd_spoke_data, one_over_bandwidth_array, qindex);
+          dd_spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = theta_reflected_sphere_kde.reconstruction(
-          dd_spoke_data, one_over_bandwidth_array, qindex);
+          dd_spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      sphere_kde.apply_conservation(dd_spoke_data, smooth_result, qindex.domain_decomposed);
-      sphere_kde.apply_conservation(dd_spoke_data, log_smooth_result, qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_spoke_data, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+      sphere_kde.apply_conservation(dd_spoke_data, reconstruction_mask, log_smooth_result,
+                                    qindex.domain_decomposed);
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
@@ -1413,13 +1477,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1474,13 +1541,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1535,13 +1605,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1596,13 +1669,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1657,13 +1733,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1718,13 +1797,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1782,13 +1864,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1843,13 +1928,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     // Check smooth result
@@ -1925,13 +2013,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -1987,13 +2078,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -2049,13 +2143,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -2112,10 +2209,12 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -2164,10 +2263,12 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -2224,10 +2325,12 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -2284,10 +2387,12 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
@@ -2334,13 +2439,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 1;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        test_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        test_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = test_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    test_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    test_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    test_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     for (int i = 0; i < local_size; i++) {
       if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2))
@@ -2396,13 +2504,16 @@ void test_decomposition(ParallelUnitTest &ut) {
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
+    std::vector<bool> reconstruction_mask(local_size, true);
     std::vector<double> smooth_result =
-        refl_kde.reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
-    std::vector<double> log_smooth_result =
-        refl_kde.log_reconstruction(dd_data, dd_one_over_bandwidth_array, qindex);
+        refl_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
+    std::vector<double> log_smooth_result = refl_kde.log_reconstruction(
+        dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
-    refl_kde.apply_conservation(dd_data, smooth_result, qindex.domain_decomposed);
-    refl_kde.apply_conservation(dd_data, log_smooth_result, qindex.domain_decomposed);
+    refl_kde.apply_conservation(dd_data, reconstruction_mask, smooth_result,
+                                qindex.domain_decomposed);
+    refl_kde.apply_conservation(dd_data, reconstruction_mask, log_smooth_result,
+                                qindex.domain_decomposed);
 
     for (int i = 0; i < local_size; i++) {
       if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2))

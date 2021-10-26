@@ -753,7 +753,7 @@ void quick_index::map_data_to_grid_window(
       if (data_count[ri] > 0) {
         right_val = grid_data[ri];
         right_data_count = data_count[ri];
-      } else if (i <= static_cast<size_t>(std::floor(n_map_bins / 2))) {
+      } else if (ri <= static_cast<size_t>(std::floor(n_map_bins / 2))) {
         grid_data[ri] = right_val;
         data_count[ri] = right_data_count;
       }
@@ -997,7 +997,7 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
         if (data_count[ri] > 0) {
           right_val[v] = grid_data[v][ri];
           right_data_count = data_count[ri];
-        } else if (i <= static_cast<size_t>(std::floor(n_map_bins / 2))) {
+        } else if (ri <= static_cast<size_t>(std::floor(n_map_bins / 2))) {
           grid_data[v][ri] = right_val[v];
           if (v == vsize - 1)
             data_count[ri] = right_data_count;
