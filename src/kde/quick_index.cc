@@ -453,9 +453,9 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
     }
   }
   // Fill in the overflow around theta=0.0
-  if (spherical && (window_min[1] < 0.0 || window_max[1] > 2.0 * rtt_units::PI)) {
-    // Only one bound of the window should every overshoot zero
-    Check(!(window_min[1] < 0.0 && window_max[1] > 2.0 * rtt_units::PI));
+  // If both bounds wrap around zero then the standard fill already grabbed every point
+  if (spherical && (window_min[1] < 0.0 || window_max[1] > 2.0 * rtt_units::PI) &&
+      !(window_min[1] < 0.0 && window_max[1] > 2.0 * rtt_units::PI)) {
     size_t overlap_nbins = 1;
     for (size_t d = 0; d < dim; d++) {
       // because local bounds can extend beyond the mesh we need to force a
