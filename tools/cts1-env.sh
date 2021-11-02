@@ -14,7 +14,7 @@ else
 fi
 
 # The following toolchains will be used when releasing code
-environments="intel1904env gcc930env"
+environments="intel1904env gcc930env lapse18intelenv"
 
 # Extra cmake options
 export CONFIG_BASE+=" -DCMAKE_VERBOSE_MAKEFILE=ON"
@@ -57,6 +57,13 @@ case "${ddir}" in
       run "module purge"
       run "module use --append /usr/projects/draco/Modules/cts1"
       run "module load draco/gcc9"
+      run "module list"
+    }
+    function lapse18intelenv()
+    {
+      run "module purge"
+      run "module use --append /usr/projects/draco/Modules/cts1"
+      run "module load lapse/1.8-intel"
       run "module list"
     }
     ;;

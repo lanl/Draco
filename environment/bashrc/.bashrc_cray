@@ -56,10 +56,6 @@ if [[ -d /usr/projects/eap/users ]]; then
 elif [[ -d /usr/projects/crestone/users ]]; then
   export UPE=/usr/projects/crestone
 fi
-if [[ -d ${UPE}/users/ccsrad/Cassio.deployment ]]; then
-  export TF_DEPLOYMENT_CLONES=${UPE}/users/ccsrad/Cassio.deployment
-  export TF_SPACK_INSTANCES=${UPE}/users/ccsrad/spack_instances
-fi
 add_to_path ${UPE}/tools
 
 #
