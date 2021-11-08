@@ -96,11 +96,9 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
     std::cout << "\nDoing some work..." << std::endl;
   size_t len(10000000);
   std::vector<double> foo(len);
-  //double sum(0);
   for (size_t i = 0; i < len; ++i) {
     auto const d(static_cast<double>(i + 1));
     foo[i] = std::sqrt(std::log(d * 3.14) * std::fabs(std::cos(d / 3.14)));
-    // sum += foo[i];
   }
 
   double end = rtt_c4::wall_clock_time();

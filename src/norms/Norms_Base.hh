@@ -4,7 +4,7 @@
   \author Rob Lowrie
   \date   Fri Jan 14 13:01:19 2005
   \brief  Header file for Norms_Base.
-  \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+  \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_norms_Norms_Base_hh
@@ -52,20 +52,12 @@ public:
   virtual ~Norms_Base() = default;
 
   //! Copy assignment
-  Norms_Base operator=(Norms_Base const &rhs) {
-    if (this != &rhs) {
-      d_sum_L1 = rhs.d_sum_L1;
-      d_sum_L2 = rhs.d_sum_L2;
-      d_Linf = rhs.d_Linf;
-      d_sum_weights = rhs.d_sum_weights;
-    }
-    return *this;
-  }
+  Norms_Base &operator=(Norms_Base const &rhs) = default;
+  Norms_Base &operator=(Norms_Base &&rhs) = default;
 
   //! Copy constructor
-  Norms_Base(Norms_Base const &rhs)
-      : d_sum_L1(rhs.d_sum_L1), d_sum_L2(rhs.d_sum_L2), d_Linf(rhs.d_Linf),
-        d_sum_weights(rhs.d_sum_weights) {}
+  Norms_Base(Norms_Base const &rhs) = default;
+  Norms_Base(Norms_Base &&rhs) = default;
 
   // MANIPULATORS
 

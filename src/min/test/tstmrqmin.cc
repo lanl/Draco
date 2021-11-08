@@ -3,7 +3,7 @@
  * \file   min/test/tstmrqmin.cc
  * \author Kent Budge
  * \date   Mon Aug  9 13:39:20 2004
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -69,8 +69,6 @@ void tstmrqmin(UnitTest &ut) {
   ifstream data(filename.c_str());
   vector<double> x, y, sig;
   for (;;) {
-    // double y2sum = 0;
-    // double ysum = 0;
     double ymin = 1e100;
     for (unsigned i = 0; i < 3; ++i) {
       double s, n, c, a, t;
@@ -83,23 +81,15 @@ void tstmrqmin(UnitTest &ut) {
         x.push_back(n);
         x.push_back(c);
         x.push_back(a);
-        //                y.push_back(t);
       }
-      // y2sum += t * t;
-      // ysum += t;
       ymin = min(t, ymin);
     }
     if (!data) {
       break;
     }
-    //        for (unsigned i=0; i<3; ++i)
     {
-      //            double const ymean = ysum/3;
       y.push_back(ymin);
       sig.push_back(ymin);
-      //            sig.push_back(sqrt(0.5*(y2sum - 2*ysum*ymean + 3*ymean*ymean)));
-      //            sig.push_back(ymean);
-      //            sig.push_back(1.0);
     }
   }
 

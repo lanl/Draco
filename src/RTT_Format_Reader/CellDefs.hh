@@ -4,7 +4,7 @@
  * \author B.T. Adams
  * \date   Wed Jun 7 10:33:26 2000
  * \brief  Header file for CellDefs library.
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_RTT_Format_Reader_CellDefs_hh
@@ -59,10 +59,13 @@ public:
   ~CellDef() = default;
 
   //! Copy constructor
-  CellDef(CellDef const &rhs)
-      : cellDefs(rhs.cellDefs), name(rhs.name), nnodes(rhs.nnodes), nsides(rhs.nsides),
-        side_types(rhs.side_types), sides(rhs.sides), ordered_sides(rhs.ordered_sides),
-        node_map(rhs.node_map) {}
+  CellDef(CellDef const &rhs) = default;
+  CellDef(CellDef &&rhs) = default;
+
+  // Assignment operator - "explicitly defaulted assignment op is implicitly deleted because
+  // CellsDefs is of reference type.
+  // CellDef & operator=(CellDef const & rhs) = default;
+  // CellDef & operator=(CellDef && rhs) = default;
 
   void readDef(ifstream &meshfile);
   void redefineCellDef(vector_uint const &new_side_types_,
@@ -101,7 +104,7 @@ public:
   /*!
    * \brief Returns the side definition of the specified side index of this cell definition with the
    *        returned cell-node indexes in sorted order.
-   * \param s Side index number.
+   * \param[in] s Side index number.
    * \return The side definition (i.e., the cell-node indexes that comprise the side).
    */
   vector_uint const &get_side(size_t s) const { return sides[s]; }
@@ -110,7 +113,7 @@ public:
    * \brief Returns the side definition of the specified side index of this cell definition with the
    *        returned cell-node indexes ordered to preserve the right hand rule for the
    *        outward-directed normal.
-   * \param s Side index number.
+   * \param[in] s Side index number.
    * \return The side definition (i.e., the cell-node indexes that comprise the side).
    */
   vector_uint const &get_ordered_side(size_t s) const { return ordered_sides[s]; }
@@ -162,7 +165,7 @@ private:
 public:
   /*!
    * \brief Returns the name of the specified cell definition.
-   * \param i Cell definition index number.
+   * \param[in] i Cell definition index number.
    * \return The cell definition name.
    */
   string get_name(size_t i) const {
@@ -172,7 +175,7 @@ public:
 
   /*!
    * \brief Returns the specified cell definition.
-   * \param i Cell definition index number.
+   * \param[in] i Cell definition index number.
    * \return The cell definition.
    */
   const CellDef &get_cell_def(size_t i) const { return *(defs[i]); }
@@ -180,14 +183,14 @@ public:
 
   /*!
    * \brief Returns the number of nodes associated with the specified cell definition.
-  * \param i Cell definition index number.
+   * \param[in] i Cell definition index number.
    * \return The number of nodes comprising the cell definition.
    */
   size_t get_nnodes(size_t i) const { return defs[i]->get_nnodes(); }
 
   /*!
    * \brief Returns the number of sides associated with the specified cell definition.
-   * \param i Cell definition index number.
+   * \param[in] i Cell definition index number.
    * \return The number of sides comprising the cell definition.
    */
   size_t get_nsides(size_t i) const { return defs[i]->get_nsides(); }
@@ -195,8 +198,8 @@ public:
   /*!
    * \brief Returns the side type number associated with the specified side index and cell
    *        definition.
-   * \param i Cell definition index number.
-   * \param s Side index number.
+   * \param[in] i Cell definition index number.
+   * \param[in] s Side index number.
    * \return The side type number.
    */
   int get_side_types(size_t i, size_t s) const { return defs[i]->get_side_types(s); }
@@ -204,8 +207,8 @@ public:
   /*!
    * \brief Returns the side definition associated with the specified cell definition and side index
    *        with the returned cell-node indexes in sorted order.
-   * \param i Cell definition index number.
-   * \param s Side index number.
+   * \param[in] i Cell definition index number.
+   * \param[in] s Side index number.
    * \return The side definition (i.e., the cell-node indexes that comprise the side).
    */
   vector_uint const &get_side(size_t i, size_t s) const { return defs[i]->get_side(s); }
@@ -214,8 +217,8 @@ public:
    * \brief Returns the side definition associated with the specified cell definition and side index
    *        with the returned cell-node indexes ordered to preserve the right hand rule for the
    *        outward-directed normal.
-   * \param i Cell definition index number.
-   * \param s Side index number.
+   * \param[in] i Cell definition index number.
+   * \param[in] s Side index number.
    * \return The side definition (i.e., the cell-node indexes that comprise the side).
    */
   vector_uint const &get_ordered_side(size_t i, size_t s) const {
@@ -231,7 +234,7 @@ public:
   /*!
    * \brief Returns the new node map for the specified cell definition when redefinition has been
    *        performed.
-   * \param cell_def Cell definition index.
+   * \param[in] cell_def Cell definition index.
    * \return New cell definition node map.
    */
   const vector_uint &get_node_map(int cell_def) const { return defs[cell_def]->get_node_map(); }

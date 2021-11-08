@@ -3,7 +3,7 @@
  * \file   Token_Stream.hh
  * \author Kent G. Budge
  * \brief  Definition of class Token_Stream.
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Token_Stream_HH
@@ -83,16 +83,12 @@ public:
   virtual ~Token_Stream() = default;
 
   //! Copy constructor
-  Token_Stream(Token_Stream const &rhs) : error_count_(rhs.error_count_), deq(rhs.deq) {}
+  Token_Stream(Token_Stream const &rhs) = default;
+  Token_Stream(Token_Stream &&rhs) = default;
 
   //! Copy assignment
-  Token_Stream &operator=(Token_Stream const &rhs) {
-    if (this != &rhs) {
-      error_count_ = rhs.error_count_;
-      deq = rhs.deq;
-    }
-    return *this;
-  }
+  Token_Stream &operator=(Token_Stream const &rhs) = default;
+  Token_Stream &operator=(Token_Stream &&rhs) = default;
 
   // MANIPULATORS
 

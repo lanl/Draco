@@ -4,7 +4,7 @@
  * \author John McGhee
  * \date   Fri Feb 25 10:03:18 2000
  * \brief  Header file for the RTT Element_Definition class.
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_element_Element_Definition_hh
@@ -253,6 +253,11 @@ public:
 
   //! Copy constructor
   Element_Definition(Element_Definition const &rhs) = default;
+  Element_Definition(Element_Definition &&rhs) = default;
+
+  //! Assignment operator
+  Element_Definition &operator=(Element_Definition const &rhs) = default;
+  Element_Definition &operator=(Element_Definition &&rhs) = default;
 
   // ACCESSORS
 
