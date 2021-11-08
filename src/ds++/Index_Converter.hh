@@ -4,7 +4,7 @@
  * \author Mike Buksas
  * \date   Fri Jan 20 14:51:51 2006
  * \brief  Decleration and Definition of Index_Converter
- * \note   Copyright 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_Index_Converter_hh
@@ -39,6 +39,10 @@ public:
 
   //! Construct a with all dimensions equal
   Index_Converter(const unsigned dimension) { set_size(dimension); }
+
+  //! Copy constructor
+  Index_Converter(Index_Converter const &rhs)
+      : Index_Set<D, OFFSET>(rhs), sub_sizes(rhs.sub_sizes) {}
 
   //! Destructor
   ~Index_Converter() override = default;

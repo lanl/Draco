@@ -51,8 +51,17 @@
 #pragma clang diagnostic ignored "-Wextra-semi"
 #endif
 
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreserved-identifier"
+#endif
+
 #include "Random123/threefry.h"
 #include "uniform.hpp"
+
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic pop
+#endif
 
 #if defined(__clang__) && !defined(__ibmxl__)
 // Restore clang diagnostics to previous state.

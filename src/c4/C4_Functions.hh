@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Thu Mar 21 11:42:03 2002
  * \brief  C4 Communication Functions.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved.
  *
  * This file contains the declarations for communication functions provided by C4. This file allows
  * the client to include the message passing services provided by C4.  The function declarations and

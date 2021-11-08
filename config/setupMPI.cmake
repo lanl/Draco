@@ -513,6 +513,7 @@ macro(setupMPILibrariesUnix)
     setmpiflavorver()
 
     # Set additional flags, environments that are MPI vendor specific.
+    message("==> MPI_FLAVOR = ${MPI_FLAVOR}")
     if("${MPI_FLAVOR}" MATCHES "openmpi")
       setupopenmpi()
     elseif("${MPI_FLAVOR}" MATCHES "mpich")

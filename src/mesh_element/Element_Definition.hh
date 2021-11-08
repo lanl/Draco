@@ -258,6 +258,12 @@ public:
    */
   virtual ~Element_Definition() = default;
 
+  //! Copy constructor
+  Element_Definition(Element_Definition const &rhs)
+      : name(rhs.name), type(rhs.type), dimension(rhs.dimension),
+        number_of_nodes(rhs.number_of_nodes), number_of_sides(rhs.number_of_sides),
+        elem_defs(rhs.elem_defs), side_type(rhs.side_type), side_nodes(rhs.side_nodes) {}
+
   // ACCESSORS
 
   /*!

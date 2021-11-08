@@ -62,10 +62,11 @@ if(NOT CXX_FLAGS_INITIALIZED)
 
   # OneAPI on trinitite reports itself as "LLVM" and parses this file.  The Intel optimizer needs
   # these options to maintain IEEE 754 compliance.
-  if(DEFINED CMAKE_CXX_COMPILER_WRAPPER AND CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv AND
-      DEFINED ENV{INTEL_COMPILER_TYPE} AND "$ENV{INTEL_COMPILER_TYPE}" STREQUAL "ONEAPI")
-    string(APPEND CMAKE_C_FLAGS_RELEASE " -fp-model=precise")
-    string(APPEND CMAKE_C_FLAGS_RELWITHDEBINFO " -fp-model=precise")
+  if(DEFINED CMAKE_CXX_COMPILER_WRAPPER
+     AND CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv
+     AND DEFINED ENV{INTEL_COMPILER_TYPE}
+     AND "$ENV{INTEL_COMPILER_TYPE}" STREQUAL "ONEAPI")
+    string(APPEND CMAKE_C_FLAGS " -fp-model=precise")
   endif()
 
   # Suppress warnings about typeid() called with function as an argument. In this case, the function

@@ -70,6 +70,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma clang diagnostic ignored "-Wshadow"
 #endif
 
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreserved-identifier"
+#endif
+
 #include <Random123/MicroURNG.hpp>
 #include <Random123/conventional/Engine.hpp>
 #include <cstring>
@@ -242,6 +247,10 @@ void host_execute_tests(kat_instance *tests, unsigned ntests) {
 
   dev_execute_tests(tests, ntests);
 }
+
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic pop
+#endif
 
 #ifdef __clang__
 // Restore clang diagnostics to previous state.

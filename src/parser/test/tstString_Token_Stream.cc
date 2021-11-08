@@ -4,8 +4,7 @@
  * \author Kent G. Budge
  * \date   Feb 18 2003
  * \brief  Unit tests for String_Token_Stream class.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

@@ -3,8 +3,7 @@
  * \file   Token_Stream.hh
  * \author Kent G. Budge
  * \brief  Definition of class Token_Stream.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Token_Stream_HH
@@ -32,59 +31,49 @@ public:
 /*!
  * \brief Abstract token stream for simple parsers
  *
- * Modern simulation codes require detailed problem specifications, which
- * typically take the form of a human-readable ASCII text input file.  The
- * problem specification language used in such input files has some similarities
- * to a programming language, though it is typically simpler than a high-level
- * language like C++ or Java. The problem specification expressed in this
- * problem specification language must be scanned and parsed by the simulation
- * code in order to load the data structures and control parameters required to
- * run the simulation.
+ * Modern simulation codes require detailed problem specifications, which typically take the form of
+ * a human-readable ASCII text input file.  The problem specification language used in such input
+ * files has some similarities to a programming language, though it is typically simpler than a
+ * high-level language like C++ or Java. The problem specification expressed in this problem
+ * specification language must be scanned and parsed by the simulation code in order to load the
+ * data structures and control parameters required to run the simulation.
  *
  * For example, if a fragment of a problem specification text takes the form
  *
  * <code>   boundary 1 gray source 1.0 keV  </code>
  *
- * then the simulation code must be able to recognize keywords like "boundary"
- * or "gray source", numerical values like "1" or "1.0", and expressions like
- * "keV". It must also understand the syntax of the problem specification
- * language, which requires an integer value after a "boundary" keyword,
- * followed by a keyword identifying the kind of boundary ("gray source"), and
- * so on.
+ * then the simulation code must be able to recognize keywords like "boundary" or "gray source",
+ * numerical values like "1" or "1.0", and expressions like "keV". It must also understand the
+ * syntax of the problem specification language, which requires an integer value after a "boundary"
+ * keyword, followed by a keyword identifying the kind of boundary ("gray source"), and so on.
  *
- * Modern input readers split the task of reading a problem specification text
- * into scanning and parsing. Scanning is the task of converting the raw text
- * into a sequence of \b tokens, which represent the keywords, numerical or
- * string values, and other lowest-level constructs in the problem specification
- * language. This sequence or stream of tokens is then analyzed by a parser that
- * understands the syntax of the problem specification language and can extract
- * the semantic meaning of each part of the problem specification.
+ * Modern input readers split the task of reading a problem specification text into scanning and
+ * parsing. Scanning is the task of converting the raw text into a sequence of \b tokens, which
+ * represent the keywords, numerical or string values, and other lowest-level constructs in the
+ * problem specification language. This sequence or stream of tokens is then analyzed by a parser
+ * that understands the syntax of the problem specification language and can extract the semantic
+ * meaning of each part of the problem specification.
  *
- * A Token_Stream is an abstract representation of a stream of tokens that can
- * be presented to a Parse_Table or other parsing client. Each token is
- * represented as a Token struct.  There is unlimited lookahead and pushback
- * capability, but no backtracking is implemented in this release.  In other
- * words, the client may look as many tokens to the right of the cursor as he
- * desires, and he may push any number of tokens onto the stream at the cursor
- * position; but when the cursor advances (via the Shift method) the token it
- * advances over is discarded forever.
+ * A Token_Stream is an abstract representation of a stream of tokens that can be presented to a
+ * Parse_Table or other parsing client. Each token is represented as a Token struct.  There is
+ * unlimited lookahead and pushback capability, but no backtracking is implemented in this release.
+ * In other words, the client may look as many tokens to the right of the cursor as he desires, and
+ * he may push any number of tokens onto the stream at the cursor position; but when the cursor
+ * advances (via the Shift method) the token it advances over is discarded forever.
  *
- * The actual scanner that does the conversion of raw text to tokens is provided
- * by an implementation of the \c fill function in a child class. This is
- * usually the \c Text_Token_Stream class, whose implementation of the \c fill
- * function converts a stream of ASCII characters to a stream of tokens, but one
- * can imagine unconventional sources of tokens such as an HTML form on a web
- * interface.
+ * The actual scanner that does the conversion of raw text to tokens is provided by an
+ * implementation of the \c fill function in a child class. This is usually the \c Text_Token_Stream
+ * class, whose implementation of the \c fill function converts a stream of ASCII characters to a
+ * stream of tokens, but one can imagine unconventional sources of tokens such as an HTML form on a
+ * web interface.
  *
- * Because the token stream object is specific to a particular kind of user
- * interface, we find it convenient to allow the parser to report any syntax or
- * semantic errors it discovers in the problem specification to the token
- * stream, which "knows" the best way to convey these to the human client
- * running the program. This style of error reporting also permits the token
- * stream to add additional information to the error message, indicating to the
- * human client where the error occurred. For example, a \c File_Token_Stream
- * can tell the human client the line in the input file where the error was
- * detected.
+ * Because the token stream object is specific to a particular kind of user interface, we find it
+ * convenient to allow the parser to report any syntax or semantic errors it discovers in the
+ * problem specification to the token stream, which "knows" the best way to convey these to the
+ * human client running the program. This style of error reporting also permits the token stream to
+ * add additional information to the error message, indicating to the human client where the error
+ * occurred. For example, a \c File_Token_Stream can tell the human client the line in the input
+ * file where the error was detected.
  */
 
 class Token_Stream {
@@ -92,6 +81,18 @@ public:
   // CREATORS
 
   virtual ~Token_Stream() = default;
+
+  //! Copy constructor
+  Token_Stream(Token_Stream const &rhs) : error_count_(rhs.error_count_), deq(rhs.deq) {}
+
+  //! Copy assignment
+  Token_Stream &operator=(Token_Stream const &rhs) {
+    if (this != &rhs) {
+      error_count_ = rhs.error_count_;
+      deq = rhs.deq;
+    }
+    return *this;
+  }
 
   // MANIPULATORS
 
@@ -101,8 +102,7 @@ public:
   /*!
    * \brief Look ahead at tokens.
    *
-   * Lookahead references should remain valid until the referenced token is
-   * shifted.
+   * Lookahead references should remain valid until the referenced token is shifted.
    */
   Token const &lookahead(unsigned pos = 0);
 
@@ -149,8 +149,8 @@ public:
   /*!
    * \brief Report an error to the user.
    *
-   * This function sends a message to the user in a stream-specific manner. This
-   * variant assumes that the cursor gives the correct location of the error.
+   * This function sends a message to the user in a stream-specific manner. This variant assumes
+   * that the cursor gives the correct location of the error.
    *
    * \param message
    * Message to be passed to the user.
@@ -161,11 +161,10 @@ public:
   /*!
    * \brief Send a comment, without location information, to the user.
    *
-   * This function sends a message to the user in a stream-specific manner. This
-   * differs from the report() functions chiefly in that the message is not
-   * preceded by any location information. This is useful for extended comments,
-   * e.g., listing available keywords when the stream contains an unrecognized
-   * keyword.
+   * This function sends a message to the user in a stream-specific manner. This differs from the
+   * report() functions chiefly in that the message is not preceded by any location
+   * information. This is useful for extended comments, e.g., listing available keywords when the
+   * stream contains an unrecognized keyword.
    *
    * \param message
    * Message to be passed to the user.
@@ -175,13 +174,12 @@ public:
   //------------------------------------------------------------------------------------------------//
   /*! Check a syntax condition.
    *
-   * By putting the check branch here, we improve coverage statistics for branch
-   * coverage. Making the function inline keeps the cost of doing so negligible.
+   * By putting the check branch here, we improve coverage statistics for branch coverage. Making
+   * the function inline keeps the cost of doing so negligible.
    *
-   * \param condition
-   * Condition to be checked. If false, the message is delivered in a
-   * stream-dependent manner, the stream's error counter is incremented, and a
-   * syntax exception is thrown.
+   * \param condition Condition to be checked. If false, the message is delivered in a
+   * stream-dependent manner, the stream's error counter is incremented, and a syntax exception is
+   * thrown.
    *
    * \param message
    * Diagnostic message to be delivered if condition tests as false.
@@ -194,14 +192,13 @@ public:
   //------------------------------------------------------------------------------------------------//
   /*! Check a semantic condition.
    *
-   * By putting the check branch here, we improve coverage statistics for branch
-   * coverage. Making the function inline keeps the cost of doing so negligible.
+   * By putting the check branch here, we improve coverage statistics for branch coverage. Making
+   * the function inline keeps the cost of doing so negligible.
    *
-   * \param condition Condition to be checked. If false, the message is
-   * delivered and the stream's error counter is incremented.
+   * \param condition Condition to be checked. If false, the message is delivered and the stream's
+   * error counter is incremented.
    *
-   * \param message Diagnostic message to be delivered if condition tests as
-   * false.
+   * \param message Diagnostic message to be delivered if condition tests as false.
    */
   void check_semantics(bool const condition, char const *const message) {
     if (!condition)
@@ -210,8 +207,7 @@ public:
 
   // ACCESSORS
 
-  //! Return the number of errors reported to the stream since it was last
-  //! constructed or rewound.
+  //! Return the number of errors reported to the stream since it was last constructed or rewound.
   unsigned error_count() const noexcept { return error_count_; }
 
   //! Check that all class invariants are satisfied.
@@ -229,12 +225,11 @@ protected:
   /*!
    * \brief Add one or more tokens to the end of the lookahead buffer.
    *
-   * This function is used by \c shift and \c lookahead to keep the token stream
-   * filled.
+   * This function is used by \c shift and \c lookahead to keep the token stream filled.
    *
-   * Each call to the function scans the next token from the ultimate token
-   * source (such as a text file or GUI) and returns it to the client. If no
-   * more tokens are available, the function must return an EXIT token.
+   * Each call to the function scans the next token from the ultimate token source (such as a text
+   * file or GUI) and returns it to the client. If no more tokens are available, the function must
+   * return an EXIT token.
    *
    * \return Next token to put on the token buffer.
    */
@@ -243,8 +238,7 @@ protected:
 private:
   // DATA
 
-  //! Number of errors reported to the stream since it was constructed or last
-  //! rewound.
+  //! Number of errors reported to the stream since it was constructed or last rewound.
   unsigned error_count_ = {0};
 
 private:

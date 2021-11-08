@@ -38,6 +38,10 @@ public:
   //! Default constructors.
   explicit Index_Counter(const Index_Set<D, OFFSET> &index_set);
 
+  //! Copy constructor
+  Index_Counter(Index_Counter const &rhs)
+      : index_set(rhs.index_set), indices(rhs.indices), index(rhs.index), in_range(rhs.in_range) {}
+
   //! Destructor.
   ~Index_Counter() = default;
 

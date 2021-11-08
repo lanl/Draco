@@ -87,6 +87,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma clang diagnostic ignored "-Wshorten-64-to-32"
 #endif
 
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreserved-identifier"
+#endif
+
 #include "uniform.hpp"
 #include <Random123/threefry.h>
 #include <map>
@@ -201,6 +206,10 @@ int main(int argc, char **argv) {
 
   return !!nfail;
 }
+
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic pop
+#endif
 
 #if defined(__clang__) && !defined(__ibmxl__)
 // Restore clang diagnostics to previous state.

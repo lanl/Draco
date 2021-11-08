@@ -3,8 +3,7 @@
  * \file   ds++/test/tstIndex_Converter.cc
  * \author Mike Buksas
  * \date   Fri Jan 20 15:53:51 2006
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Index_Converter.hh"

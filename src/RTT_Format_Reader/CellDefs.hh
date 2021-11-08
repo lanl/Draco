@@ -4,7 +4,7 @@
  * \author B.T. Adams
  * \date   Wed Jun 7 10:33:26 2000
  * \brief  Header file for CellDefs library.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_RTT_Format_Reader_CellDefs_hh
@@ -57,6 +57,12 @@ public:
   }
 
   ~CellDef() = default;
+
+  //! Copy constructor
+  CellDef(CellDef const &rhs)
+      : cellDefs(rhs.cellDefs), name(rhs.name), nnodes(rhs.nnodes), nsides(rhs.nsides),
+        side_types(rhs.side_types), sides(rhs.sides), ordered_sides(rhs.ordered_sides),
+        node_map(rhs.node_map) {}
 
   void readDef(ifstream &meshfile);
   void redefineCellDef(vector_uint const &new_side_types_,

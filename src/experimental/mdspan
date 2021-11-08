@@ -65,6 +65,11 @@
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreserved-identifier"
+#endif
+
 #include "__p0009_bits/accessor_basic.hpp"
 #include "__p0009_bits/all_type.hpp"
 #include "__p0009_bits/array_workaround.hpp"
@@ -78,6 +83,10 @@
 #include "__p0009_bits/macros.hpp"
 #include "__p0009_bits/mixed_size_storage.hpp"
 #include "__p0009_bits/subspan.hpp"
+
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic pop
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop

@@ -3,8 +3,7 @@
  * \file   kde/quick_index.cc
  * \author Mathew Cleveland
  * \brief  Explicitly defined quick_index functions.
- * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quick_index.hh"
@@ -16,7 +15,7 @@ namespace rtt_kde {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief quick_index constructor. 
+ * \brief quick_index constructor.
  *
  * This function builds up a global indexing table to quickly access data that is spatial located
  * near each other. It breaks up the data into equally spaced bins in each dimension. For domain
@@ -25,7 +24,7 @@ namespace rtt_kde {
  * size such that any cell on the local domain will have access to all points that should fall into
  * the spatial window centered on any given local point.
  *
- * \param[in] dim_ specifying the data dimensionality 
+ * \param[in] dim_ specifying the data dimensionality
  * \param[in] locations_ data locations.
  * \param[in] max_window_size_ maximum supported window size
  * \param[in] bins_per_dimension_ number of bins in each dimension
@@ -230,14 +229,14 @@ auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win) {
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Collect ghost data for a vector<std::array<double, 3>>
- * 
+ *
  * Collect ghost data for vector of 3 dimensional arrays. This function uses RMA and the local
  * put_window_map to allow each rank to independently fill in its data to ghost cells of other
  * ranks.
  *
  * \param[in] local_data the local 3 dimensional data that is required to be available as ghost cell
  * data on other processors.
- * \param[in] local_ghost_data the resulting 3 dimensional ghost data data. 
+ * \param[in] local_ghost_data the resulting 3 dimensional ghost data data.
  */
 void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &local_data,
                                      std::vector<std::array<double, 3>> &local_ghost_data) const {
@@ -286,8 +285,8 @@ void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &l
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Collect ghost data for a vector<vector<double>> 
- * 
+ * \brief Collect ghost data for a vector<vector<double>>
+ *
  * Collect ghost data for vector<vector<double>> arrays. This function uses RMA and the local
  * put_window_map to allow each rank to independently fill in its data to ghost cells of other
  * ranks.
@@ -350,7 +349,7 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Collect ghost data for a vector<double>
- * 
+ *
  * Collect ghost data for a single vector. This function uses RMA and the local put_window_map to
  * allow each rank to independently fill in its data to ghost cells of other ranks.
  *
@@ -395,7 +394,7 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Generate a coarse index list for a window.
- * 
+ *
  *  Provides a list of global indices that are required by any given window range.
  *
  * \param[in] window_min the smallest corner point for every dimension
@@ -456,7 +455,7 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
   if (spherical && (window_min[1] < 0.0 || window_max[1] > 2.0 * rtt_units::PI)) {
     // Only one bound of the window should every overshoot zero
     Check(!(window_min[1] < 0.0 && window_max[1] > 2.0 * rtt_units::PI));
-    size_t overlap_nbins = 1;
+    // size_t overlap_nbins = 1;
     for (size_t d = 0; d < dim; d++) {
       // because local bounds can extend beyond the mesh we need to force a
       // positive index if necessary
@@ -487,8 +486,8 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
       index_max[d] = std::min(index_max[d], coarse_bin_resolution - 1);
 
       // Use multiplicity to accumulate total bins;
-      if ((index_max[d] - index_min[d]) > 0)
-        overlap_nbins *= index_max[d] - index_min[d] + 1;
+      // if ((index_max[d] - index_min[d]) > 0)
+      //   overlap_nbins *= index_max[d] - index_min[d] + 1;
     }
     for (size_t k = index_min[2]; k <= index_max[2]; k++) {
       for (size_t j = index_min[1]; j <= index_max[1]; j++) {
@@ -592,10 +591,10 @@ auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, aut
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Map data to a grid window for vector<double> data
- * 
+ *
  * Maps local+ghost data to a fixed mesh grid based on a specified weighting type. This data can
  * additionally be normalized and positively biased on the grid.
- * 
+ *
  *
  * \param[in] local_data the local data on the processor to be mapped to the window
  * \param[in] ghost_data the ghost data on the processor to be mapped to the window
@@ -818,10 +817,10 @@ auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_da
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Map data to a grid window for vector<vector<double>>
- * 
+ *
  * Maps multiple local+ghost data vectors to a fixed mesh grid based on a specified weighting type.
  * This data can additionally be normalized and positively biased on the grid.
- * 
+ *
  *
  * \param[in] local_data the local data on the processor to be mapped to the window
  * \param[in] ghost_data the ghost data on the processor to be mapped to the window
@@ -1021,10 +1020,10 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Calculate the orthogonal distance between two points
- * 
+ *
  * Maps multiple local+ghost data vectors to a fixed mesh grid based on a specified weighting type.
  * This data can additionally be normalized and positively biased on the grid.
- * 
+ *
  *
  * \param[in] r0 initial position
  * \param[in] r final position

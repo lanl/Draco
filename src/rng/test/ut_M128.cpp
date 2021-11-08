@@ -54,6 +54,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
+#endif
+
 #include <Random123/features/compilerfeatures.h>
 #if !R123_USE_SSE
 #include <stdio.h>
@@ -187,6 +192,10 @@ int main(int, char **) {
   return 0;
 }
 
+#endif
+
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic pop
 #endif
 
 #if defined(__GNUC__) && !defined(__clang__)

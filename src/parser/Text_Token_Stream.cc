@@ -3,8 +3,7 @@
  * \file   parser/Text_Token_Stream.cc
  * \author Kent G. Budge
  * \brief  Contains definitions of all Text_Token_Stream member functions.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Text_Token_Stream.hh"
@@ -21,8 +20,7 @@ namespace rtt_parser {
 using namespace std;
 
 //------------------------------------------------------------------------------------------------//
-// Helper function to allow a string && argument to take over storage of a
-// string.
+// Helper function to allow a string && argument to take over storage of a string.
 static string give(string &source) {
   string Result;
   Result.swap(source);
@@ -34,35 +32,28 @@ set<char> const Text_Token_Stream::default_whitespace = {'=', ':', ';', ','};
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Constructs a Text_Token_Stream with the specified set of breaking
- * whitespace characters.
+ * \brief Constructs a Text_Token_Stream with the specified set of breaking whitespace characters.
  *
- * \param ws String containing the user-defined whitespace characters for this
- * Text_Token_Stream.
+ * \param ws String containing the user-defined whitespace characters for this Text_Token_Stream.
  *
- * \param no_nonbreaking_ws If true, treat spaces and tabs as breaking
- * whitespace. This has the effect of forcing all keywords to consist of a
- * single identifier.
+ * \param no_nonbreaking_ws If true, treat spaces and tabs as breaking whitespace. This has the
+ * effect of forcing all keywords to consist of a single identifier.
  *
- * Whitespace characters are classified as breaking or nonbreaking whitespace.
- * Nonbreaking whitespace separates non-keyword tokens and identifiers within a
- * keyword but has no other significance. Breaking whitespace is similar to
- * nonbreaking whitespace except that it always separates tokens; thus, two
- * identifiers separated by breaking whitespace are considered to belong to
- * separate keywords.
+ * Whitespace characters are classified as breaking or nonbreaking whitespace.  Nonbreaking
+ * whitespace separates non-keyword tokens and identifiers within a keyword but has no other
+ * significance. Breaking whitespace is similar to nonbreaking whitespace except that it always
+ * separates tokens; thus, two identifiers separated by breaking whitespace are considered to belong
+ * to separate keywords.
  *
- * Nonbreaking whitespace characters are the space and horizontal tab
- * characters.
+ * Nonbreaking whitespace characters are the space and horizontal tab characters.
  *
- * Breaking whitespace characters include all other characters for which the
- * standard C library function <CODE>isspace(char)</CODE> returns a nonzero
- * value, plus additional characters defined as nonbreaking whitespace by the
- * client of the Token_Stream. In particular, a newline character is always
- * breaking whitespace.
+ * Breaking whitespace characters include all other characters for which the standard C library
+ * function <CODE>isspace(char)</CODE> returns a nonzero value, plus additional characters defined
+ * as nonbreaking whitespace by the client of the Token_Stream. In particular, a newline character
+ * is always breaking whitespace.
  *
- * Whitespace is stripped from the beginning and end of every token, and the
- * nonbreaking whitespace separating each identifier within a keyword is
- * replaced by a single space character.
+ * Whitespace is stripped from the beginning and end of every token, and the nonbreaking whitespace
+ * separating each identifier within a keyword is replaced by a single space character.
  */
 Text_Token_Stream::Text_Token_Stream(set<char> const &ws, bool const no_nonbreaking_ws)
     : buffer_(), whitespace_(ws), no_nonbreaking_ws_(no_nonbreaking_ws) {
@@ -74,9 +65,8 @@ Text_Token_Stream::Text_Token_Stream(set<char> const &ws, bool const no_nonbreak
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Constructs a Text_Token_Stream with the default set of breaking
- * whitespace characters. See the previous constructor documentation for a
- * discussion of how whitespace is defined and handled.
+ * \brief Constructs a Text_Token_Stream with the default set of breaking whitespace characters. See
+ * the previous constructor documentation for a discussion of how whitespace is defined and handled.
  *
  * The default whitespace characters are contained in the set
  * \c Text_Token_Stream::default_whitespace.
@@ -90,9 +80,8 @@ Text_Token_Stream::Text_Token_Stream() : buffer_(), whitespace_(default_whitespa
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Scan the next token from the character stream. The character stream
- * is accessed via the fill_character_buffer, error, and end functions, which
- * are pure virtual functions.
+ * \brief Scan the next token from the character stream. The character stream is accessed via the
+ * fill_character_buffer, error, and end functions, which are pure virtual functions.
  */
 Token Text_Token_Stream::fill_() {
   eat_whitespace_();
@@ -126,10 +115,9 @@ Token Text_Token_Stream::fill_() {
       Ensure(check_class_invariants());
       return Result;
     } else if (isdigit(c) || c == '.') {
-      // A number of some kind.  Note that an initial sign ('+' or '-')
-      // is tokenized independently, because it could be interpreted as
-      // a binary operator in arithmetic expressions.  It is up to the
-      // parser to decide if this is the correct interpretation.
+      // A number of some kind.  Note that an initial sign ('+' or '-') is tokenized independently,
+      // because it could be interpreted as a binary operator in arithmetic expressions.  It is up
+      // to the parser to decide if this is the correct interpretation.
       unsigned const float_length = scan_floating_literal_();
       unsigned const int_length = scan_integer_literal_();
       string text;
@@ -246,13 +234,12 @@ Token Text_Token_Stream::fill_() {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief This function searches for the argument character in its internal
- *        list of whitespace characters.
+ * \brief This function searches for the argument character in its internal list of whitespace
+ *        characters.
  *
  * \param c Character to be checked against the whitespace list.
  *
- * \return \c true if and only if the character is found in the internal
- *         whitespace list.
+ * \return \c true if and only if the character is found in the internal whitespace list.
  */
 bool Text_Token_Stream::is_whitespace(char const c) const {
   return isspace(c) || whitespace_.count(c);
@@ -260,14 +247,13 @@ bool Text_Token_Stream::is_whitespace(char const c) const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief This function searches for the argument character in the
- * Token_Stream's internal list of nonbreaking whitespace characters.
+ * \brief This function searches for the argument character in the Token_Stream's internal list of
+ * nonbreaking whitespace characters.
  *
  * \param c Character to be checked against the nonbreaking whitespace list.
  *
- * \return \c true if and only if the character is found in the internal
- * nonbreaking whitespace list, and is \e not found in the breaking whitespace
- * list..
+ * \return \c true if and only if the character is found in the internal nonbreaking whitespace
+ * list, and is \e not found in the breaking whitespace list..
  */
 bool Text_Token_Stream::is_nb_whitespace(char const c) const {
   return !whitespace_.count(c) && (c == ' ' || c == '\t');
@@ -275,12 +261,11 @@ bool Text_Token_Stream::is_nb_whitespace(char const c) const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * An internal buffer is used to implement unlimited lookahead, necessary for
- * scanning numbers (which have a quite complex regular expression.)  This
- * function pops a character off the top of the internal buffer, using
- * fill_character_buffer() if necessary to ensure that there is at least one
- * character in the buffer.  If the next character is a carriage return, the
- * line count is incremented.
+ * An internal buffer is used to implement unlimited lookahead, necessary for scanning numbers
+ * (which have a quite complex regular expression.)  This function pops a character off the top of
+ * the internal buffer, using fill_character_buffer() if necessary to ensure that there is at least
+ * one character in the buffer.  If the next character is a carriage return, the line count is
+ * incremented.
  *
  * \return The next character in the buffer.
  */
@@ -460,11 +445,10 @@ unsigned Text_Token_Stream::scan_octal_literal_(unsigned &pos) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * An internal buffer is used to implement unlimited lookahead, necessary for
- * scanning numbers (which have a quite complex regular expression.)  This
- * function peeks ahead the specified number of places in the buffer, using
- * fill_character_buffer() if necessary to ensure that there is a sufficient
- * number of characters in the buffer.
+ * An internal buffer is used to implement unlimited lookahead, necessary for scanning numbers
+ * (which have a quite complex regular expression.)  This function peeks ahead the specified number
+ * of places in the buffer, using fill_character_buffer() if necessary to ensure that there is a
+ * sufficient number of characters in the buffer.
  *
  * \param pos Position at which to peek.
  *
@@ -481,9 +465,9 @@ char Text_Token_Stream::peek_(unsigned const pos) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function flushes the Text_Token_Stream's internal buffers, so that
- * scanning resumes at the beginning of the file stream.  It is normally called
- * by its overriding version in children of Text_Token_Stream.
+ * This function flushes the Text_Token_Stream's internal buffers, so that scanning resumes at the
+ * beginning of the file stream.  It is normally called by its overriding version in children of
+ * Text_Token_Stream.
  */
 void Text_Token_Stream::rewind() {
   while (!buffers_.empty())
@@ -504,9 +488,8 @@ bool Text_Token_Stream::check_class_invariants() const { return line_ > 0; }
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function skips past any whitespace present at the cursor position,
- * leaving the cursor at the first non-whitespace character following the
- * initial cursor position.
+ * This function skips past any whitespace present at the cursor position, leaving the cursor at the
+ * first non-whitespace character following the initial cursor position.
  */
 
 /* private */
@@ -550,37 +533,33 @@ void Text_Token_Stream::eat_whitespace_() {
  * \param c Character to be pushed onto the back of the character queue.
  */
 void Text_Token_Stream::character_push_back_(char const c) {
-  Remember(auto const old_buffer__size = static_cast<unsigned>(buffer_.size()));
+  Remember(auto const old_buffer_size = static_cast<unsigned>(buffer_.size()));
   buffer_.push_back(c);
   Ensure(check_class_invariants());
-  Ensure(buffer_.size() == old_buffer__size + 1);
+  Ensure(buffer_.size() == old_buffer_size + 1);
   Ensure(buffer_.back() == c);
 }
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \param file_name Name of file to be included at this point. On
- * return, replaced with an absolute path based on DRACO_INCLUDE_PATH if the
- * relative path did not exist.
+ * \param file_name Name of file to be included at this point. On return, replaced with an absolute
+ * path based on DRACO_INCLUDE_PATH if the relative path did not exist.
  *
- * Child classes must set a policy on how to include a file. For example, a
- * File_Token_Stream can be expected to read the included file in serial; a
- * Parallel_File_Token_Stream can be expected to read the included file in
- * parallel; and a Console_Token_Stream or String_Token_Stream presently do
- * not provide this capability and will treat a include directive as an
- * error.
+ * Child classes must set a policy on how to include a file. For example, a File_Token_Stream can be
+ * expected to read the included file in serial; a Parallel_File_Token_Stream can be expected to
+ * read the included file in parallel; and a Console_Token_Stream or String_Token_Stream presently
+ * do not provide this capability and will treat a include directive as an error.
  *
- * This function is pure virtual with an implementation. This means that every
- * child class must implement this function, but part of its implementation
- * must be to include
+ * This function is pure virtual with an implementation. This means that every child class must
+ * implement this function, but part of its implementation must be to include
  *
  * \code
  *    Text_Token_Stream::push_include(include_file_name);
  * \endcode
  *
- * as the first line in its implementation of this function. This call stashes
- * the line and character buffer of the underlying Text_Token_Stream and also
- * finds the absolute path of the file name.
+ * as the first line in its implementation of this function. This call stashes the line and
+ * character buffer of the underlying Text_Token_Stream and also finds the absolute path of the file
+ * name.
  */
 void Text_Token_Stream::push_include(std::string &file_name) {
   lines_.push(line_);
@@ -591,11 +570,11 @@ void Text_Token_Stream::push_include(std::string &file_name) {
   // Now find the absolute path of the file name.
 
   if (!rtt_dsxx::fileExists(file_name)) {
-    // File name as given does not resolve to an existing file. Assume this
-    // is a relative path and look for the file in DRACO_INCLUDE_PATH.
+    // File name as given does not resolve to an existing file. Assume this is a relative path and
+    // look for the file in DRACO_INCLUDE_PATH.
 
-    // At present, DRACO_INCLUDE_PATH can contain only a single path.
-    // Multiple search options may be implemented in the future.
+    // At present, DRACO_INCLUDE_PATH can contain only a single path.  Multiple search options may
+    // be implemented in the future.
     auto path = getenv("DRACO_INCLUDE_PATH");
     if (path != nullptr) {
       // For now, the only other possibility:
@@ -612,10 +591,9 @@ void Text_Token_Stream::push_include(std::string &file_name) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function is pure virtual with an implementation. This means that every
- * child class must implement this function, but part of its implementation
- * must be to reset the line number by directly calling the base version. That
- * is, every child class must include
+ * This function is pure virtual with an implementation. This means that every child class must
+ * implement this function, but part of its implementation must be to reset the line number by
+ * directly calling the base version. That is, every child class must include
  *
  * \code
  *    Text_Token_Stream::pop_include(include_file_name);
@@ -651,9 +629,8 @@ Token Text_Token_Stream::scan_keyword() {
       c = peek_(ci);
     }
     if (!no_nonbreaking_ws_) {
-      // Replace any nonbreaking whitespace after the identifier with a
-      // single space, but ONLY if the identifier is followed by another
-      // identifer.
+      // Replace any nonbreaking whitespace after the identifier with a single space, but ONLY if
+      // the identifier is followed by another identifer.
       while (is_nb_whitespace(c)) {
         ci++;
         c = peek_(ci);
@@ -676,9 +653,8 @@ Token Text_Token_Stream::scan_keyword() {
       c = peek_();
     }
     if (!no_nonbreaking_ws_) {
-      // Replace any nonbreaking whitespace after the identifier with a
-      // single space, but ONLY if the identifier is followed by another
-      // identifer.
+      // Replace any nonbreaking whitespace after the identifier with a single space, but ONLY if
+      // the identifier is followed by another identifer.
       while (is_nb_whitespace(c)) {
         pop_char_();
         c = peek_();

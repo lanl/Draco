@@ -17,6 +17,7 @@
 #include "c4_omp.h"
 #include "ds++/Assert.hh"
 #include "ds++/SystemCall.hh"
+
 #include <bitset>
 #include <sstream>
 
@@ -140,6 +141,11 @@ inline std::string cpuset_to_string(unsigned const num_cpu) {
 
 #else
 
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreserved-identifier"
+#endif
+
 inline std::string cpuset_to_string(unsigned const /*num_cpu*/) {
 
   // return value;
@@ -170,6 +176,10 @@ inline std::string cpuset_to_string(unsigned const /*num_cpu*/) {
   }
   return cpuset.str().substr(0, cpuset.str().length() - entry_made);
 }
+
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic pop
+#endif
 
 #endif
 

@@ -4,8 +4,7 @@
   \author Rob Lowrie
   \date   Fri Jan 14 13:01:19 2005
   \brief  Header file for Norms_Base.
-  \note   Copyright (C) 2016-2020 Triad National Security, LLC.
-          All rights reserved. */
+  \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_norms_Norms_Base_hh
@@ -22,8 +21,8 @@ namespace rtt_norms {
 
   \brief Base class for all (template) Norms classes.
 
-  This class is not intended to be used by clients.  It allows non-template
-  dependent functionality of Norms to be compiled in a single place.
+  This class is not intended to be used by clients.  It allows non-template dependent functionality
+  of Norms to be compiled in a single place.
 */
 //================================================================================================//
 class Norms_Base {
@@ -51,6 +50,22 @@ public:
 
   /// Destructor for Norms_Base.
   virtual ~Norms_Base() = default;
+
+  //! Copy assignment
+  Norms_Base operator=(Norms_Base const &rhs) {
+    if (this != &rhs) {
+      d_sum_L1 = rhs.d_sum_L1;
+      d_sum_L2 = rhs.d_sum_L2;
+      d_Linf = rhs.d_Linf;
+      d_sum_weights = rhs.d_sum_weights;
+    }
+    return *this;
+  }
+
+  //! Copy constructor
+  Norms_Base(Norms_Base const &rhs)
+      : d_sum_L1(rhs.d_sum_L1), d_sum_L2(rhs.d_sum_L2), d_Linf(rhs.d_Linf),
+        d_sum_weights(rhs.d_sum_weights) {}
 
   // MANIPULATORS
 

@@ -38,6 +38,10 @@ public:
   //! Construct with all dimensions equal
   explicit Index_Set(const unsigned dimension) { set_size(dimension); }
 
+  //! Copy constructor
+  Index_Set(Index_Set const &rhs)
+      : m_array_size(rhs.m_array_size), m_dimensions(rhs.m_dimensions) {}
+
   //! Destructor
   virtual ~Index_Set() = default;
 

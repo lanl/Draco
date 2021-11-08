@@ -69,7 +69,9 @@ void tstmrqmin(UnitTest &ut) {
   ifstream data(filename.c_str());
   vector<double> x, y, sig;
   for (;;) {
-    double y2sum = 0, ysum = 0, ymin = 1e100;
+    // double y2sum = 0;
+    // double ysum = 0;
+    double ymin = 1e100;
     for (unsigned i = 0; i < 3; ++i) {
       double s, n, c, a, t;
       data >> s >> n >> c >> a >> t;
@@ -83,8 +85,8 @@ void tstmrqmin(UnitTest &ut) {
         x.push_back(a);
         //                y.push_back(t);
       }
-      y2sum += t * t;
-      ysum += t;
+      // y2sum += t * t;
+      // ysum += t;
       ymin = min(t, ymin);
     }
     if (!data) {

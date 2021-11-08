@@ -64,7 +64,7 @@ public:
    *
    * Do not allow destructor to throw.
    */
-  ~EospacException() noexcept override = default;
+  // ~EospacException() noexcept override = default;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -73,7 +73,7 @@ public:
   explicit EospacUnknownDataType(std::string const &msg) noexcept
       : EospacException(msg) { /* empty */
   }
-  ~EospacUnknownDataType() noexcept override = default;
+  // ~EospacUnknownDataType() noexcept override = default;
 };
 
 } // end namespace rtt_cdi_eospac
