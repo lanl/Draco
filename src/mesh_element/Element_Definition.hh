@@ -4,7 +4,7 @@
  * \author John McGhee
  * \date   Fri Feb 25 10:03:18 2000
  * \brief  Header file for the RTT Element_Definition class.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_element_Element_Definition_hh
@@ -183,27 +183,23 @@ public:
    *
    * \param name_ The name of the element.
    *
-   * \param dimension_ The dimension of the element. i.e. nodes return 0, lines
-   *        return 1, quads return 2, hexahedra return 3.
+   * \param dimension_ The dimension of the element. i.e. nodes return 0, lines return 1, quads
+   *        return 2, hexahedra return 3.
    *
    * \param number_of_nodes_ Total number of nodes in the element
    *
-   * \param number_of_sides_ The number of n-1 dimensional entities that compose
-   *        an n dimensional element. i.e. nodes return 0, lines return 2, quads
-   *        return 4, hexahedra return 6.
+   * \param number_of_sides_ The number of n-1 dimensional entities that compose an n dimensional
+   *        element. i.e. nodes return 0, lines return 2, quads return 4, hexahedra return 6.
    *
-   * \param elem_defs_ Element definitions that describe element sides.  There
-   *        need be only one such definition for each type of side present in
-   *        the element.  For example, a QUAD_4 element would need only one side
-   *        element definition, for BAR_2.
+   * \param elem_defs_ Element definitions that describe element sides.  There need be only one such
+   *        definition for each type of side present in the element.  For example, a QUAD_4 element
+   *        would need only one side element definition, for BAR_2.
    *
-   * \param side_type_ Index into \c elem_defs_ of the element definition
-   *        appropriate for each side.
+   * \param side_type_ Index into \c elem_defs_ of the element definition appropriate for each side.
    *
-   * \param side_nodes_ A vector of vectors specifying the nodes associated with
-   *        each side. For example, <code>side_nodes_[2]</code> is a vector
-   *        specifying the nodes associated with the third side of the element.
-   *        Note that the node numbering is 0 based.
+   * \param side_nodes_ A vector of vectors specifying the nodes associated with each side. For
+   *        example, <code>side_nodes_[2]</code> is a vector specifying the nodes associated with
+   *        the third side of the element.  Note that the node numbering is 0 based.
    *
    * \pre <code>dimension_>=0</code>
    *
@@ -222,12 +218,10 @@ public:
    * \pre <code>side_nodes_.size()==number_of_sides_</code>
    *
    * \pre All elements of \c side_nodes_ must satisfy
-   *        <code>side_nodes_[i].size() ==
-   *        elem_defs_[side_type_[i]].get_number_of_nodes() </code>
+   *        <code>side_nodes_[i].size() == elem_defs_[side_type_[i]].get_number_of_nodes() </code>
    *
    * \pre All elements of \c side_nodes_ must satisfy
-   *        <code>static_cast<unsigned>(side_nodes_[i][j])<number_of_nodes_
-   *        </code>
+   *        <code>static_cast<unsigned>(side_nodes_[i][j])<number_of_nodes_</code>
    *
    * \post <code> get_type()==Element_Definition::POLYGON </code>
    *
@@ -253,16 +247,12 @@ public:
   /*!
    * \brief Destructor for the Element_Definition class.
    *
-   * This destructor is virtual, implying that Element_Definition is extensible
-   * by inheritance.
+   * This destructor is virtual, implying that Element_Definition is extensible by inheritance.
    */
   virtual ~Element_Definition() = default;
 
   //! Copy constructor
-  Element_Definition(Element_Definition const &rhs)
-      : name(rhs.name), type(rhs.type), dimension(rhs.dimension),
-        number_of_nodes(rhs.number_of_nodes), number_of_sides(rhs.number_of_sides),
-        elem_defs(rhs.elem_defs), side_type(rhs.side_type), side_nodes(rhs.side_nodes) {}
+  Element_Definition(Element_Definition const &rhs) = default;
 
   // ACCESSORS
 
@@ -284,8 +274,8 @@ public:
    */
   unsigned get_number_of_nodes() const { return number_of_nodes; }
   /*!
-   * \brief Returns the dimension of an element. i.e. nodes return 0, lines
-   *        return 1, quads return 2, hexahedra return 3.
+   * \brief Returns the dimension of an element. i.e. nodes return 0, lines return 1, quads return
+   *        2, hexahedra return 3.
    *
    * \return The element dimension (0, 1, 2, or 3).
    */
@@ -293,25 +283,22 @@ public:
   /*!
    * \brief Returns the number of sides on an element.
    *
-   * \return The number of n-1 dimensional entities that compose an n
-   *         dimensional element. i.e. nodes return 0, lines return 2, quads
-   *         return 4, hexahedra return 6.
+   * \return The number of n-1 dimensional entities that compose an n dimensional
+   *         element. i.e. nodes return 0, lines return 2, quads return 4, hexahedra return 6.
    */
   unsigned get_number_of_sides() const { return number_of_sides; }
 
   /*!
    * \brief Returns the type (i.e. quad, tri, etc.) of a specified element side.
    *
-   * \return Returns a valid element definition that describes a element
-   *         side. Can be queried using any of the accessors provided in the
-   *         Element_Definition class.
+   * \return Returns a valid element definition that describes a element side. Can be queried using
+   *         any of the accessors provided in the Element_Definition class.
 
    * \param side_number Side number for which a type is desired.  Side numbers
    *        are in the range [0:number_of_sides).
    *
-   * Note that there is no valid side number for a "NODE" element.  "Side" in
-   * the context of this method means the (n-1) dimensional element that
-   * composes a n dimensional element.
+   * Note that there is no valid side number for a "NODE" element.  "Side" in the context of this
+   * method means the (n-1) dimensional element that composes a n dimensional element.
    */
   Element_Definition get_side_type(unsigned const side_number) const {
     Insist(side_number < side_type.size(), "Side index out of range!");
@@ -319,34 +306,29 @@ public:
   }
 
   /*!
-   * \brief Returns a vector of node numbers that are associated with a
-   *        particular element side.
+   * \brief Returns a vector of node numbers that are associated with a particular element side.
    *
-   * \param side_number The number of the element side for which the nodes are
-   *        desired. Side numbers are in the range [0:number_of_sides)
+   * \param side_number The number of the element side for which the nodes are desired. Side numbers
+   *        are in the range [0:number_of_sides)
    *
-   * \return A vector of the nodes associated with the side. Note that the node
-   *         numbering is 0 based.
+   * \return A vector of the nodes associated with the side. Note that the node numbering is 0
+   *         based.
    *
-   * "Side" in the context of this method means the (n-1) dimensional element
-   * that composes a (n) dimensional element. For example, on a hexahedra, a
-   * side is a quadrilateral, whereas, on a quadrilateral a side is a line
-   * element.  The returned order of the side nodes is significant. The
-   * side-node numbers are returned in the following order based on node
-   * location: (corners, edges, faces, cells). For sides which are faces of 3D
-   * elements, the vector cross product of the vector from (side-node1 to
-   * side-node2) with the vector from (side-node1 to side- node3) results in a
-   * vector that is oriented outward from the parent element.  Equivalently, the
-   * side corner-nodes are listed sequentially in a counter-clockwise direction
-   * when viewed from outside the element. Both corner and edge nodes are
-   * returned in a sequential order as one progresses around a side. Moreover,
-   * the corner and edge nodes are returned so that edge-node1 lies between
-   * corner-node1 and corner-node2, etc., etc.
+   * "Side" in the context of this method means the (n-1) dimensional element that composes a (n)
+   * dimensional element. For example, on a hexahedra, a side is a quadrilateral, whereas, on a
+   * quadrilateral a side is a line element.  The returned order of the side nodes is
+   * significant. The side-node numbers are returned in the following order based on node location:
+   * (corners, edges, faces, cells). For sides which are faces of 3D elements, the vector cross
+   * product of the vector from (side-node1 to side-node2) with the vector from (side-node1 to side-
+   * node3) results in a vector that is oriented outward from the parent element.  Equivalently, the
+   * side corner-nodes are listed sequentially in a counter-clockwise direction when viewed from
+   * outside the element. Both corner and edge nodes are returned in a sequential order as one
+   * progresses around a side. Moreover, the corner and edge nodes are returned so that edge-node1
+   * lies between corner-node1 and corner-node2, etc., etc.
    *
-   * For sides which are edges of 2D elements, the vector cross product of the
-   * vector from (side-node1 to side-node2) with a vector pointing towards the
-   * observer results in a vector that is oriented outward from the parent
-   * element.
+   * For sides which are edges of 2D elements, the vector cross product of the vector from
+   * (side-node1 to side-node2) with a vector pointing towards the observer results in a vector that
+   * is oriented outward from the parent element.
    *
    * Note that there is no valid side number for a "NODE" element.
    */
@@ -378,9 +360,8 @@ public:
   }
 
   /*!
-   * \brief Performs some simple sanity checks on the private data of the
-   *        Element_Description class. Note that this only works with DBC turned
-   *        on.
+   * \brief Performs some simple sanity checks on the private data of the Element_Description
+   *        class. Note that this only works with DBC turned on.
    */
   bool invariant_satisfied() const;
 
