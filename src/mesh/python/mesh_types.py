@@ -29,6 +29,7 @@ class base_mesh:
         self.nodes_per_face = [np.array([], dtype=int)]  # node indexes per face
         self.nodes_per_side = [[np.array([], dtype=int)]]  # list of arrays of node per bdy face
 
+
 # ------------------------------------------------------------------------------------------------ #
 # orthogonal 1D mesh type
 class orth_1d_mesh(base_mesh):
@@ -88,7 +89,7 @@ class orth_1d_mesh(base_mesh):
         nodes_per_side_xlow = np.zeros((1, 1), dtype=int)
         nodes_per_side_xhig = np.zeros((1, 1), dtype=int)
         nodes_per_side_xlow[0, 0] = 0
-        nodes_per_side_xhig[0, 0] = 2*nx - 1
+        nodes_per_side_xhig[0, 0] = 2 * nx - 1
         # -- compile into one side face array list
         self.nodes_per_side = [nodes_per_side_xlow, nodes_per_side_xhig]
 
