@@ -29,6 +29,69 @@ class base_mesh:
         self.nodes_per_face = [np.array([], dtype=int)]  # node indexes per face
         self.nodes_per_side = [[np.array([], dtype=int)]]  # list of arrays of node per bdy face
 
+# ------------------------------------------------------------------------------------------------ #
+# orthogonal 1D mesh type
+class orth_1d_mesh(base_mesh):
+    '''
+    Class for orthogonally structured 1D mesh data.
+    This class generates an orthogonally structured mesh in an unstructured
+    format suitable for creating unstructured-mesh input files.
+    '''
+
+    def __init__(self, bounds_per_dim, num_cells_per_dim):
+
+        # -- short-cuts
+        nx = num_cells_per_dim[0]
+
+        # -- number of dimensions
+        ndim = len(num_cells_per_dim)
+        self.ndim = ndim
+        assert (ndim == 1), 'ndim != 1, exiting...'
+        assert (len(bounds_per_dim) == ndim), 'len(bounds_per_dim) != ndim, exiting...'
+
+        # create grid arrays along each dimension
+        grid_per_dim = [np.linspace(bounds_per_dim[i][0], bounds_per_dim[i][1],
+                                    num_cells_per_dim[i] + 1) for i in range(ndim)]
+
+        # -- create node indices
+        num_nodes = nx + 1
+        self.num_nodes = num_nodes
+        self.coordinates_per_node = np.zeros((num_nodes, ndim))
+        for i in range(nx + 1):
+            node = i
+            self.coordinates_per_node[node, 0] = grid_per_dim[0][i]
+
+        # -- set total number of cells and faces
+        num_cells = nx
+        self.num_cells = num_cells
+        self.num_faces = 2 * num_cells
+
+        # -- constants for this mesh
+        self.num_faces_per_cell = 2 * np.ones((num_cells), dtype=int)
+        self.num_nodes_per_face = np.ones((2 * num_cells), dtype=int)
+
+        # -- set nodes per face and faces per cell
+        self.faces_per_cell = np.zeros((num_cells, 2), dtype=int)
+        self.nodes_per_face = np.zeros((2 * num_cells, 1), dtype=int)
+        for i in range(nx):
+            # -- cell index
+            cell = i
+            # -- faces per cell
+            self.faces_per_cell[cell, 0] = 2 * cell
+            self.faces_per_cell[cell, 1] = 2 * cell + 1
+            # -- nodes per face (per cell)
+            self.nodes_per_face[2 * cell, 0] = i
+            self.nodes_per_face[2 * cell + 1, 0] = i + 1
+
+        # -- enumerate boundary nodes per face ("side")
+        # -- faces at x extrema
+        nodes_per_side_xlow = np.zeros((1, 1), dtype=int)
+        nodes_per_side_xhig = np.zeros((1, 1), dtype=int)
+        nodes_per_side_xlow[0, 0] = 0
+        nodes_per_side_xhig[0, 0] = 2*nx - 1
+        # -- compile into one side face array list
+        self.nodes_per_side = [nodes_per_side_xlow, nodes_per_side_xhig]
+
 
 # ------------------------------------------------------------------------------------------------ #
 # orthogonal 2D mesh type
