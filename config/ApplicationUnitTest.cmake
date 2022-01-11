@@ -4,7 +4,7 @@
 # date  Monday, Nov 19, 2012, 16:21 pm
 # brief Provide macros that aid in creating unit tests that run interactive user codes (i.e.: run a
 #       binary that reads an input file and diff the resulting output file).
-# note  Copyright (C) 2016-2021, Triad National Security, LLC., All rights reserved.
+# note  Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 # * Reference: https://re-git.lanl.gov/draco/draco/-/wikis/CMake-based_ApplicationUnitTest
@@ -70,30 +70,17 @@
 
 # ------------------------------------------------------------------------------------------------ #
 
+# cmake-lint: disable=R0912,R0915
+
 include_guard(GLOBAL)
 set(VERBOSE_DEBUG OFF)
 
+# String manipulation
 function(JOIN VALUES GLUE OUTPUT)
   string(REGEX REPLACE "([^\\]|^);" "\\1${GLUE}" _TMP_STR "${VALUES}")
   string(REGEX REPLACE "[\\](.)" "\\1" _TMP_STR "${_TMP_STR}") # fixes escaping
   set(${OUTPUT}
       "${_TMP_STR}"
-      PARENT_SCOPE)
-endfunction()
-
-# Helper for setting the depth (-d) option for aprun.  We want n*d==mpi_cores_per_cpu. For example:
-# Trinity: 32 = 4 x 8 = 2 x 16, etc.
-function(set_aprun_depth_flags numPE aprun_depth_options)
-  math(EXPR depth "${MPI_CORES_PER_CPU} / ${numPE}")
-  math(EXPR remainder "${MPI_CORES_PER_CPU} % ${numPE}")
-  if(${remainder} GREATER "0")
-    message(
-      FATAL_ERROR
-        "Expecting the requested number of ranks (${numPE}) to be a factor of the ranks/node "
-        "(${MPI_CORES_PER_CPU})")
-  endif()
-  set(aprun_depth_options
-      "-d ${depth}"
       PARENT_SCOPE)
 endfunction()
 
@@ -184,11 +171,13 @@ macro(PASSMSG msg)
   message("Test Passes: ${msg}")
 endmacro()
 
+# Increment the number of test failures and print a warning
 macro(FAILMSG msg)
   math(EXPR numfails "${numfails} + 1")
   message("Test Fails: ${msg}")
 endmacro()
 
+# Increment the number of test failures
 macro(ITFAILS)
   math(EXPR numfails "${numfails} + 1")
 endmacro()
@@ -293,7 +282,7 @@ macro(aut_register_test)
   # Add python version if python driver file is specified
 
   if(${PYTHON_TEST})
-    add_test(NAME ${ctestname_base}${argname} COMMAND "${Python_EXECUTABLE}" ${aut_DRIVER}
+    add_test(NAME ${ctestname_base}${argname} COMMAND "${Python_EXECUTABLE}" -B ${aut_DRIVER}
                                                       ${SHARED_ARGUMENTS})
   else()
     add_test(NAME ${ctestname_base}${argname} COMMAND ${CMAKE_COMMAND} ${SHARED_ARGUMENTS} -P
@@ -362,18 +351,12 @@ macro(add_app_unit_test)
   if(DEFINED aut_PE_LIST AND ${DRACO_C4} MATCHES "MPI")
 
     # Parallel tests
-    if("${MPIEXEC_EXECUTABLE}" MATCHES "aprun")
-      set(RUN_CMD "aprun -n")
-    else()
-      set(RUN_CMD "${MPIEXEC_EXECUTABLE} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG}")
-    endif()
+    set(RUN_CMD "${MPIEXEC_EXECUTABLE} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG}")
 
   else()
 
     # Scalar tests
-    if("${MPIEXEC_EXECUTABLE}" MATCHES "aprun"
-       OR "${MPIEXEC_EXECUTABLE}" MATCHES "jsrun"
-       OR "${MPIEXEC_EXECUTABLE}" MATCHES "srun")
+    if("${MPIEXEC_EXECUTABLE}" MATCHES "jsrun" OR "${MPIEXEC_EXECUTABLE}" MATCHES "srun")
       set(RUN_CMD "${MPIEXEC_EXECUTABLE} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} 1")
     endif()
   endif()
@@ -483,7 +466,7 @@ macro(aut_runTests)
 ")
 
   # Print version information
-  separate_arguments(RUN_CMD)
+  separate_arguments(RUN_CMD UNIX_COMMAND "${RUN_CMD}")
   set(runcmd ${RUN_CMD}) # plain string with spaces (used in Capsaicin)
 
   if(numPE)
@@ -534,8 +517,8 @@ macro(aut_runTests)
 
   # Run the application capturing all output.
 
-  separate_arguments(INPUT_FILE)
-  separate_arguments(ARGVALUE)
+  separate_arguments(INPUT_FILE UNIX_COMMAND "${INPUT_FILE}")
+  separate_arguments(ARGVALUE UNIX_COMMAND "${ARGVALUE}")
 
   execute_process(
     COMMAND ${RUN_CMD} ${numPE} ${APP} ${ARGVALUE}
@@ -551,12 +534,6 @@ macro(aut_runTests)
 
   if(FALSE)
     # This block was too slow for some Capsaicin tests
-
-    # Capture all the output to log files:
-    #
-    # * before we create the file, extract some lines that we want to exclude:
-    #
-    #   1. Aprun inserts this line: "Application 12227386 resources: utime ~0s, stime ~0s, ..."
 
     # Preserve blank lines by settting the variable "Esc" to the ASCII value 27 - basically
     # something which is unlikely to conflict with anything in the file contents.
@@ -590,10 +567,15 @@ endmacro()
 # Set numdiff run command
 # ------------------------------------------------------------------------------------------------ #
 function(set_numdiff_run_cmd RUN_CMD numdiff_run_cmd)
-  if(DEFINED RUN_CMD)
-    set(numdiff_run_cmd ${RUN_CMD})
-    separate_arguments(numdiff_run_cmd)
-    if("${MPIEXEC_EXECUTABLE}" MATCHES "aprun" OR "${MPIEXEC_EXECUTABLE}" MATCHES "mpiexec")
+  if("${RUN_CMD}x" STREQUAL "x")
+    set(numdiff_run_cmd "")
+  else()
+    if(NOT "${RUN_CMD}" MATCHES ";")
+      separate_arguments(numdiff_run_cmd UNIX_COMMAND "${RUN_CMD}")
+    else()
+      set(numdiff_run_cmd ${RUN_CMD})
+    endif()
+    if("${MPIEXEC_EXECUTABLE}" MATCHES "mpiexec")
       # For Cray environments, let numdiff run on the login node.
       set(numdiff_run_cmd "")
     elseif(numPE)
@@ -725,7 +707,7 @@ Did you list it when registering this test?")
   # ----------------------------------------
   # Run GDIFF or PGDIFF
 
-  separate_arguments(pgdiff_gdiff)
+  separate_arguments(pgdiff_gdiff UNIX_COMMAND "${pgdiff_gdiff}")
   # pretty print string
   string(REPLACE ";" " " pgdiff_gdiff_string "${pgdiff_gdiff}")
   message(
