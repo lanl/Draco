@@ -4,7 +4,7 @@
 # File  : .gitlab/ci/environments.sh
 # Date  : Monday, Jun 01, 2020, 15:43 pm
 # Author: Kelly Thompson
-# Note  : Copyright (C) 2020-2021 Triad National Security, LLC., All rights reserved.
+# Note  : Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 echo "==> Setting up CI environment..."
@@ -26,7 +26,7 @@ if [[ "${SITE_ID}" == "darwin" ]]; then
   DRACO_ARCH=$(/usr/projects/draco/vendors/bin/target_arch)
   run "module use --append /projects/draco/Modules"
   case ${DRACO_ENV} in
-    arm-gcc930 | power9-gcc930-smpi | power9-xl16117 | x64-gcc930 | x64-intel1905) ;;
+    arm-gcc930 | power9-gcc930-smpi | power9-xl16117 | x64-gcc930* | x64-intel1905) ;;
     *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
   esac
   if [[ "${MPIARCH:-notset}" == "openmpi" ]]; then
