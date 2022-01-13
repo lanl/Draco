@@ -37,6 +37,8 @@ CTEST_CMAKE_GENERATOR  = ${CTEST_CMAKE_GENERATOR}
 # - MPI_PHYSCIAL_CORES
 # ------------------------------------------------------------------------------------------------ #
 cmake_host_system_information(RESULT MPI_PHYSICAL_CORES QUERY NUMBER_OF_PHYSICAL_CORES)
+message("==> MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}")
+message("==> MAXLOAD            = $ENV{MAXLOAD}")
 if( (${MPI_PHYSICAL_CORES} LESS 2) AND ($ENV{MAXLOAD} GREATER 1))
   # for power9, the cmake command returns 1, so revert to the shell script value.
   set(MPI_PHYSICAL_CORES $ENV{MAXLOAD})
