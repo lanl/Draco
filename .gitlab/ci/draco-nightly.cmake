@@ -85,6 +85,8 @@ CTEST_MODE       = ${CTEST_MODE}
 CTEST_SITE       = ${CTEST_SITE}
 EXTRA_CMAKE_ARGS = ${EXTRA_CMAKE_ARGS}
 EXTRA_CTEST_ARGS = ${EXTRA_CTEST_ARGS}
+CTEST_NPROC      = ${CTEST_NPROC}
+MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}
 ")
 
 # ------------------------------------------------------------------------------------------------ #
