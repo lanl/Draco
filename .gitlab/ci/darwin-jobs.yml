@@ -56,6 +56,46 @@ dp9_deb_gcc930_deploy:
     MAXLOAD: 40
     SCHEDULER_PARAMETERS: ${SP_power9}
 
+dp9_rel_gcc930_deploy:
+  extends: .darwin_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: power9-gcc930-smpi
+    ARCH: power9
+    CTEST_NPROC: 10
+    MAXLOAD: 40
+    SCHEDULER_PARAMETERS: ${SP_power9}
+
+dp9_rel_xl16_deploy:
+  extends: .darwin_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: power9-xl16117
+    ARCH: power9
+    CTEST_NPROC: 10
+    MAXLOAD: 40
+    SCHEDULER_PARAMETERS: ${SP_power9}
+
+dp9_deb_xl16_deploy:
+  extends: .darwin_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: power9-xl16117
+    ARCH: power9
+    CTEST_NPROC: 10
+    MAXLOAD: 40
+    SCHEDULER_PARAMETERS: ${SP_power9}
+
+dp9_deb_volta_deploy:
+  extends: .darwin_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: x64-gcc930-centos8
+    ARCH: x86_64
+    CTEST_NPROC: 10
+    MAXLOAD: 40
+    SCHEDULER_PARAMETERS: ${SP_volta_x86}
+
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
 #--------------------------------------------------------------------------------------------------#
