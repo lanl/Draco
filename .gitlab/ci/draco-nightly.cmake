@@ -37,6 +37,10 @@ CTEST_CMAKE_GENERATOR  = ${CTEST_CMAKE_GENERATOR}
 # - MPI_PHYSCIAL_CORES
 # ------------------------------------------------------------------------------------------------ #
 cmake_host_system_information(RESULT MPI_PHYSICAL_CORES QUERY NUMBER_OF_PHYSICAL_CORES)
+if( (${MPI_PHYSICAL_CORES} LESS 2) AND ($ENV{MAXLOAD} GREATER 1))
+  # for power9, the cmake command returns 1, so revert to the shell script value.
+  set(MPI_PHYSICAL_CORES $ENV{MAXLOAD})
+endif()
 
 # ------------------------------------------------------------------------------------------------ #
 # Collect information specified by the *-jobs.yml job configuration
@@ -85,7 +89,7 @@ CTEST_MODE       = ${CTEST_MODE}
 CTEST_SITE       = ${CTEST_SITE}
 EXTRA_CMAKE_ARGS = ${EXTRA_CMAKE_ARGS}
 EXTRA_CTEST_ARGS = ${EXTRA_CTEST_ARGS}
-CTEST_NPROC      = ${CTEST_NPROC}
+CTEST_NPROC      = $ENV{CTEST_NPROC}
 MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}
 ")
 
