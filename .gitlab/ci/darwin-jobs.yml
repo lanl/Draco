@@ -253,6 +253,38 @@ dx86_deb_volta_regress:
     MAKEFILE_FLAGS: -j -l 40
     CTEST_NPROC: 10
     SCHEDULER_PARAMETERS: ${SP_volta_x86}
+    CTEST_BUILD_NAME: volta-${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+
+dx86_rel_volta_regress:
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: x64-gcc930-centos8
+    ARCH: x86_64
+    MAKEFILE_FLAGS: -j -l 40
+    CTEST_NPROC: 10
+    SCHEDULER_PARAMETERS: ${SP_volta_x86}
+    CTEST_BUILD_NAME: volta-${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+
+darm_deb_gcc930_regress:
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: arm-gcc930
+    ARCH: arm
+    MAKEFILE_FLAGS: -j -l 40
+    CTEST_NPROC: 40
+    SCHEDULER_PARAMETERS: ${SP_arm}
+
+darm_rel_arm930_regress:
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: arm-gcc930
+    ARCH: arm
+    MAKEFILE_FLAGS: -j -l 40
+    CTEST_NPROC: 40
+    SCHEDULER_PARAMETERS: ${SP_arm}
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/darwin-jobs.yml
