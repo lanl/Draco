@@ -214,6 +214,46 @@ dp9_rel_g930_regress:
     CTEST_NPROC: 40
     SCHEDULER_PARAMETERS: ${SP_power9}
 
+dp9_deb_g930_regress:
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: power9-gcc930-smpi
+    ARCH: power9
+    MAKEFILE_FLAGS: -j -l 40
+    CTEST_NPROC: 40
+    SCHEDULER_PARAMETERS: ${SP_power9}
+
+dp9_rel_xl16_regress:
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: power9-xl16117
+    ARCH: power9
+    MAKEFILE_FLAGS: -j -l 40
+    CTEST_NPROC: 20
+    SCHEDULER_PARAMETERS: ${SP_power9}
+
+dp9_deb_xl16_regress:
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: power9-xl16117
+    ARCH: power9
+    MAKEFILE_FLAGS: -j -l 40
+    CTEST_NPROC: 20
+    SCHEDULER_PARAMETERS: ${SP_power9}
+
+dx86_deb_volta_regress:
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: x64-gcc930-centos8
+    ARCH: x86_64
+    MAKEFILE_FLAGS: -j -l 40
+    CTEST_NPROC: 10
+    SCHEDULER_PARAMETERS: ${SP_volta_x86}
+
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/darwin-jobs.yml
 #--------------------------------------------------------------------------------------------------#

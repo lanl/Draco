@@ -3,7 +3,7 @@
 # File  : ./.gitlab/ci/gitlab-nightly-regress.sh
 # Date  : Tuesday, Jun 02, 2020, 10:31 am
 # Author: Kelly Thompson <kgt@lanl.gov>
-# Note  : Copyright (C) 2021 Triad National Security, LLC., All rights reserved.
+# Note  : Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 print_use()
