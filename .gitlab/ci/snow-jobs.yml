@@ -97,6 +97,7 @@ sn_rel_i1904_mr:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-intel"
+    SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --reservation=ci --qos=interactive"
 
 # ----- regular test -----
 
