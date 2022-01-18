@@ -26,7 +26,7 @@ if [[ -n "$MODULESHOME" ]]; then
     arm)     module load draco/arm-gcc930 ;;
     power9*) module load draco/power9-gcc930-smpi ;;
     x86_64)
-      module load draco/x64-gcc930
+      module load draco/x64-gcc930-centos8
       if [[ "${SLURM_JOB_PARTITION}" =~ "volta" || "${SLURM_JOB_PARTITION}" =~ "gpu" ]]; then
         module load cuda/11.0
       elif [[ "${SLURM_JOB_PARTITION}" =~ "skylake" ]]; then
