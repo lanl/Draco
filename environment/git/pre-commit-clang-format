@@ -62,7 +62,7 @@ cf_min_ver=6.0
 cf_ver=$("$CLANG_FORMAT" --version | sed 's/[[:alpha:]|(|[:space:]|-]//g')
 if version_gt "${cf_min_ver}" "${cf_ver}"; then
   echo "ERROR: Your version of clang-format is too old. Expecting v6.0+. The pre-commit-hook has"
-  ehco "       been disabled."
+  echo "       been disabled."
   exit 0
 fi
 if [ ! -x "$CLANG_FORMAT" ] ; then

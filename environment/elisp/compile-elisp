@@ -37,7 +37,7 @@ while getopts "hix" flag; do
     if test "${flag}" = "h"; then
       echo " "
       echo "This small script will compile all of the local elisp scripts for faster XEmacs"
-      ehco "execution."
+      echo "execution."
       echo " "
       echo "Usage:"
       echo "  ./compile-elisp [-x] [file.el]"
