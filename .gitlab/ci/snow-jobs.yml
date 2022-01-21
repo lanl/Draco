@@ -62,10 +62,17 @@ sn_rel_i1913_deploy:
     DRACO_ENV: "draco/intel1913"
     FLAVOR: intel1913-Release
 
-sn_deb_g830_deploy:
+sn_deb_g930_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/1.8-gnu"
+    FLAVOR: lapse18-gnu-Debug
+
+sn_rel_g930_deploy:
+  extends: .snow_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-gnu"
     FLAVOR: lapse18-gnu-Debug
 
