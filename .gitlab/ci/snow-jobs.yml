@@ -74,7 +74,7 @@ sn_rel_g930_deploy:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-gnu"
-    FLAVOR: lapse18-gnu-Debug
+    FLAVOR: lapse18-gnu-Release
 
 sn_deb_fulldiag_deploy:
   extends: .snow_deploy
