@@ -1,7 +1,7 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   config/compilerEnv.cmake
 # brief  Default CMake build parameters
-# note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 include_guard(GLOBAL)
@@ -242,7 +242,7 @@ macro(dbsSetupCompilers)
             ${CODE_COVERAGE_IGNORE_REGEX}
             CACHE STRING "List of regex that lcov will ignore" FORCE)
 
-        if(CMAKE_BUILD_TYPE STREQUAL Debug OR CMAKE_BUILD_TYPE STREQUAL DEBUG )
+        if(CMAKE_BUILD_TYPE STREQUAL Debug OR CMAKE_BUILD_TYPE STREQUAL DEBUG)
           # Add required flags (GCC & LLVM/Clang)
           target_compile_options(coverage_config INTERFACE --coverage)
           target_link_options(coverage_config INTERFACE --coverage)

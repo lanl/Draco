@@ -4,7 +4,7 @@
  * \author Thomas M. Evans, Ryan T. Wollaeger
  * \date   Wednesday, Oct 03, 2018, 15:27 pm
  * \brief  Ensight_Translator unstructured mesh test.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"
@@ -131,11 +131,11 @@ int main(int argc, char *argv[]) {
       // check serial writes
       bool decomposed{false};
       std::string prefix = "unstr2d_testproblem_serial_" + std::to_string(rtt_c4::nodes());
-      ensight_dump_test_unstr2d<int>(ut, prefix, binary, geom, decomposed);
+      ensight_dump_test_unstr2d<uint32_t>(ut, prefix, binary, geom, decomposed);
 
       // Binary dumps
       binary = true;
-      ensight_dump_test_unstr2d<int>(ut, prefix, binary, geom, decomposed);
+      ensight_dump_test_unstr2d<uint32_t>(ut, prefix, binary, geom, decomposed);
 
       // ASCII dumps with unsigned integer data
       binary = false;
@@ -144,11 +144,11 @@ int main(int argc, char *argv[]) {
     // check decomposed writes
     bool decomposed{true};
     std::string prefix = "unstr2d_testproblem_parallel_" + std::to_string(rtt_c4::nodes());
-    ensight_dump_test_unstr2d<int>(ut, prefix, binary, geom, decomposed);
+    ensight_dump_test_unstr2d<uint32_t>(ut, prefix, binary, geom, decomposed);
 
     // Binary dumps
     binary = true;
-    ensight_dump_test_unstr2d<int>(ut, prefix, binary, geom, decomposed);
+    ensight_dump_test_unstr2d<uint32_t>(ut, prefix, binary, geom, decomposed);
 
     // ASCII dumps with unsigned integer data
     binary = false;

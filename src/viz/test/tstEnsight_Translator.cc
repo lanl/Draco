@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Jan 24 11:12:59 2000
  * \brief  Ensight_Translator test.
- * \note   Copyright (C) 2000-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2000-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"
@@ -26,12 +26,12 @@ void ensight_dump_test(rtt_dsxx::UnitTest &ut, string prefix, bool const binary,
     cout << "\nGenerating ascii files...\n" << endl;
 
   // dimensions
-  size_t ncells = 27;
-  size_t nvert = 64;
-  size_t ndim = 3;
-  size_t ndata = 2;
-  size_t nhexvert = 8;
-  size_t nrgn = 2;
+  constexpr size_t ncells = 27;
+  constexpr size_t nvert = 64;
+  constexpr size_t ndim = 3;
+  constexpr size_t ndata = 2;
+  constexpr size_t nhexvert = 8;
+  constexpr size_t nrgn = 2;
 
   using vec_s = vector<string>;
   using vec_i = vector<IT>;
@@ -234,11 +234,11 @@ int main(int argc, char *argv[]) {
       // check serial writes
       bool decomposed{false};
       string prefix = "testproblem_serial_" + std::to_string(rtt_c4::nodes());
-      ensight_dump_test<int>(ut, prefix, binary, geom, decomposed);
+      ensight_dump_test<uint32_t>(ut, prefix, binary, geom, decomposed);
 
       // Binary dumps
       binary = true;
-      ensight_dump_test<int>(ut, prefix, binary, geom, decomposed);
+      ensight_dump_test<uint32_t>(ut, prefix, binary, geom, decomposed);
 
       // ASCII dumps with unsigned integer data
       binary = false;
@@ -249,11 +249,11 @@ int main(int argc, char *argv[]) {
     // check decomposed writes
     bool decomposed{true};
     string prefix = "testproblem_parallel_" + std::to_string(rtt_c4::nodes());
-    ensight_dump_test<int>(ut, prefix, binary, geom, decomposed);
+    ensight_dump_test<uint32_t>(ut, prefix, binary, geom, decomposed);
 
     // Binary dumps
     binary = true;
-    ensight_dump_test<int>(ut, prefix, binary, geom, decomposed);
+    ensight_dump_test<uint32_t>(ut, prefix, binary, geom, decomposed);
 
     // ASCII dumps with unsigned integer data
     binary = false;
