@@ -3,7 +3,7 @@
  * \file   memory/memory.cc
  * \author Kent G. Budge
  * \brief  memory diagnostic utilities
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "memory.hh"
@@ -39,6 +39,8 @@ static uint64_t largest;
 static uint64_t check_peak = numeric_limits<uint64_t>::max();
 // normally set in debugger to trigger a breakpoint
 
+#if DRACO_DIAGNOSTICS & 2
+
 static uint64_t check_large = numeric_limits<uint64_t>::max();
 // normally set in debugger to trigger a breakpoint
 
@@ -52,6 +54,8 @@ static unsigned dump_count = 0;
 // indicates whether to dump the first few largest allocations and exit
 
 static uint64_t report_threshold = numeric_limits<uint64_t>::max();
+
+#endif
 
 static bool is_active = false;
 
@@ -109,7 +113,11 @@ bool set_memory_checking(bool new_status) {
 }
 
 //----------------------------------------------------------------------------------------//
+#if DRACO_DIAGNOSTICS & 2
 void set_report_threshold(uint64_t threshold) { report_threshold = threshold; }
+#else
+void set_report_threshold(uint64_t) {}
+#endif
 
 //------------------------------------------------------------------------------------------------//
 uint64_t total_allocation() { return total; }
@@ -151,7 +159,7 @@ uint64_t set_check_peak(uint64_t new_peak) {
 }
 
 //----------------------------------------------------------------------------------------//
-void set_dump_and_exit(unsigned new_dump_count) { dump_count = new_dump_count; }
+// void set_dump_and_exit(unsigned new_dump_count) { dump_count = new_dump_count; }
 
 } // end namespace rtt_memory
 

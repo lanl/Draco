@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  New or overloaded cmath or cmath-like functions.
- * \note   Copyright (C) 2013-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_DracoMath_hh
@@ -32,12 +32,6 @@ namespace rtt_dsxx {
 template <typename T> bool isNan(T a) { return _isnan(a); }
 template <typename T> bool isInf(T a) { return !_finite(a); }
 template <typename T> bool isFinite(T a) { return _finite(a); }
-
-#elif defined draco_isPGI
-
-template <typename T> bool isNan(T a) { return isnan(a); }
-template <typename T> bool isInf(T a) { return isinf(a); }
-template <typename T> bool isFinite(T a) { return isfinite(a); }
 
 #else
 

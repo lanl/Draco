@@ -4,11 +4,12 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 16:36:10 2000
  * \brief  Ensight_Translator template definitions.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2015-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include <map>
 #include <sstream>
+#include <type_traits>
 
 namespace rtt_viz {
 
@@ -161,12 +162,16 @@ Ensight_Translator::Ensight_Translator(const std_string &prefix, std_string gd_w
  *           field types.
  * \sa Examples page for more details about how to do Ensight dumps.
  */
+
 template <typename ISF, typename IVF, typename SSF, typename FVF>
-void Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &ipar_in,
-                                      const ISF &iel_type, const ISF &cell_rgn_index,
-                                      const FVF &pt_coor_in, const FVF &vrtx_data_in,
-                                      const FVF &cell_data_in, const ISF &rgn_numbers,
-                                      const SSF &rgn_name) {
+enable_if_t<std::is_integral<typename ISF::value_type>::value &&
+                std::is_unsigned<typename ISF::value_type>::value,
+            void>
+Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &ipar_in,
+                                 const ISF &iel_type, const ISF &cell_rgn_index,
+                                 const FVF &pt_coor_in, const FVF &vrtx_data_in,
+                                 const FVF &cell_data_in, const ISF &rgn_numbers,
+                                 const SSF &rgn_name) {
   using rtt_viz::Viz_Traits;
   using std::find;
   using std::string;
@@ -238,7 +243,7 @@ void Ensight_Translator::ensight_dump(int icycle, double time, double dt, const 
     auto const find_location = find(parts_list.begin(), parts_list.end(), cell_rgn_index[i]);
 
     Check(find_location != parts_list.end());
-    Check(iel_type[i] >= 0);
+    //Check(iel_type[i] >= 0);
     Check(static_cast<unsigned>(iel_type[i]) < d_num_cell_types);
 
     auto const ipart = find_location - parts_list.begin();
@@ -334,11 +339,13 @@ void Ensight_Translator::ensight_dump(int icycle, double time, double dt, const 
  * \sa Examples page for more details about how to do Ensight dumps.
  */
 template <typename ISF, typename IVF, typename FVF>
-void Ensight_Translator::write_part(uint32_t part_num, const std_string &part_name,
-                                    const IVF &ipar_in, const ISF &iel_type, const FVF &pt_coor_in,
-                                    const FVF &vrtx_data_in, const FVF &cell_data_in,
-                                    const ISF &g_vrtx_indices, const ISF &g_cell_indices) {
-
+enable_if_t<std::is_integral<typename ISF::value_type>::value &&
+                std::is_unsigned<typename ISF::value_type>::value,
+            void>
+Ensight_Translator::write_part(uint32_t part_num, const std_string &part_name, const IVF &ipar_in,
+                               const ISF &iel_type, const FVF &pt_coor_in, const FVF &vrtx_data_in,
+                               const FVF &cell_data_in, const ISF &g_vrtx_indices,
+                               const ISF &g_cell_indices) {
   Require(part_num > 0);
 
   using rtt_viz::Viz_Traits;
@@ -367,7 +374,7 @@ void Ensight_Translator::write_part(uint32_t part_num, const std_string &part_na
   sf2_int cells_of_type(d_num_cell_types);
 
   for (size_t i = 0; i < ncells; ++i) {
-    Check(iel_type[i] >= 0);
+    // Check(iel_type[i] >= 0);
     Check(static_cast<unsigned>(iel_type[i]) < d_num_cell_types);
     Check(i < INT_MAX);
     cells_of_type[iel_type[i]].push_back(static_cast<int>(i));
