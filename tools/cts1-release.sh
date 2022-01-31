@@ -3,7 +3,7 @@
 # export dry_run=1
 
 [[ -z $package ]] && package="unknown"
-[[ -z $buildfalvor ]] && buildflavor="unknown"
+[[ -z $buildflavor ]] && buildflavor="unknown"
 [[ -z $rttversion ]] && rttversion="unknown"
 [[ -z $access_queue ]] && access_queue="unknown"
 
