@@ -49,7 +49,7 @@ fi
 case "$ddir" in
 
   #------------------------------------------------------------------------------------------------#
-  draco-7_9* | draco-7_10* | draco-7_11* | draco-7_12*)
+  draco-7_9* | draco-7_10* | draco-7_11* | draco-7_12* | draco-7_13*)
     function cce11env()
     {
       unset partition

@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 April 28
 # brief  Instructions for building root level Makefile.
-# note   Copyright (C) 2019-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
 #
 # Build notes:
 #
@@ -16,7 +16,7 @@ string(CONCAT ddesc "An object-oriented component library supporting radiation t
 project(
   Draco
   DESCRIPTION ${ddesc}
-  VERSION 7.12
+  VERSION 7.13
   LANGUAGES CXX C)
 
 # Export compile commands for compiler tools

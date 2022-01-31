@@ -99,17 +99,16 @@ const std::string author_list(bool const use_doxygen_formatting) {
 
   mmdevs current_developers;
   // not totally fair... KT got credit for LOC when svn repository was converted to git.
-  current_developers.insert(fomdev(174829, "Kelly G. Thompson"));
-  current_developers.insert(fomdev(22854, "Kent G. Budge"));
-  current_developers.insert(fomdev(12730, "Matt A. Cleveland"));
-  current_developers.insert(fomdev(5464, "Ryan T. Wollaeger"));
-  current_developers.insert(fomdev(4074, "Ben R. Ryan"));
+  current_developers.insert(fomdev(181746, "Kelly G. Thompson"));
+  current_developers.insert(fomdev(22790, "Kent G. Budge"));
+  current_developers.insert(fomdev(12719, "Matt A. Cleveland"));
+  current_developers.insert(fomdev(5537, "Ryan T. Wollaeger"));
+  current_developers.insert(fomdev(4136, "Ben R. Ryan"));
   current_developers.insert(fomdev(3169, "Alex R. Long"));
-  current_developers.insert(fomdev(1565, "Kendra P. Long"));
-  current_developers.insert(fomdev(1267, "James S. Warsa"));
+  current_developers.insert(fomdev(1625, "Kendra P. Long"));
+  current_developers.insert(fomdev(1266, "James S. Warsa"));
   current_developers.insert(fomdev(354, "Jae H. Chang"));
-  current_developers.insert(fomdev(127, "Andrew T. Till"));
-  current_developers.insert(fomdev(15, "David A. Dixon"));
+  current_developers.insert(fomdev(126, "Andrew T. Till"));
 
   mmdevs prior_developers;
 
@@ -122,6 +121,7 @@ const std::string author_list(bool const use_doxygen_formatting) {
   prior_developers.insert(fomdev(98, "Seth D. Cook"));
   prior_developers.insert(fomdev(90, "Ondrej Certik"));
   prior_developers.insert(fomdev(65, "Peter Ahrens"));
+  prior_developers.insert(fomdev(15, "David A. Dixon"));
 
   // Previous authors with no current LOC attribution (less than 10):
   prior_developers.insert(fomdev(9, "Massimiliano Rosa"));
@@ -176,7 +176,7 @@ const std::string copyright() {
 
   msg << author_list() << "\n"
       << Term::ccolor(Term::fg::green)
-      << "Copyright (C) 2016-2021 Triad National Security, LLC. "
+      << "Copyright (C) 2016-2022 Triad National Security, LLC. "
          "(C19028, LA-CC-16-016),\n     Released under a 3-Clause BSD License."
       << Term::ccolor(Term::fg::reset) << std::endl;
 

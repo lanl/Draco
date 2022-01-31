@@ -25,7 +25,7 @@ popd || exit
 case "${ddir:=notset}" in
 
   #---------------------------------------------------------------------------#
-  draco-7_10* | draco-7_11* | draco-7_12*)
+  draco-7_10* | draco-7_11* | draco-7_12* | draco-7_13*)
     function x86gcc930env()
     {
       export darwin_queue="-p volta-x86"
