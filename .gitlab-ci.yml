@@ -23,6 +23,7 @@ stages:
   - deploy
 
 include:
+  - local: /.gitlab/ci/tt-jobs.yml
   - local: /.gitlab/ci/snow-jobs.yml
   - local: /.gitlab/ci/ccscs-jobs.yml
   - local: /.gitlab/ci/darwin-jobs.yml
