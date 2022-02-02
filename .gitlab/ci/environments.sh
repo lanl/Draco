@@ -4,7 +4,7 @@
 # File  : .gitlab/ci/environments.sh
 # Date  : Monday, Jun 01, 2020, 15:43 pm
 # Author: Kelly Thompson
-# Note  : Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+# Note  : Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 echo "==> Setting up CI environment..."
@@ -12,7 +12,7 @@ echo "    SITE_ID = ${SITE_ID}"
 [[ -n "${SCHEDULER_PARAMETERS}" ]] && echo "    Using: salloc ${SCHEDULER_PARAMETERS}"
 
 case ${SITE_ID} in
-  darwin | ccscs* | sn*) ;;
+  darwin | ccscs* | sn* | trinitite*) ;;
   *) die ".gitlab/ci/environments.sh :: SITE_ID not recognized, SITE_ID = ${SITE_ID}" ;;
 esac
 
@@ -63,6 +63,19 @@ elif [[ "${SITE_ID}" =~ "snow" ]]; then
     lapse* | draco* ) ;;
     *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
   esac
+  run "module load ${DRACO_ENV}"
+
+#------------------------------------------------------------------------------#
+# Trinitite
+#------------------------------------------------------------------------------#
+elif [[ "${SITE_ID}" =~ "trinitite" ]]; then
+  run "module use --append /usr/projects/draco/Modules/trinitite"
+  # export PATH=/scratch/vendors/bin:$PATH # clang-format
+  case ${DRACO_ENV} in
+    lapse* | draco* ) ;;
+    *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
+  esac
+  run "module unload draco lapse"
   run "module load ${DRACO_ENV}"
 
 fi
