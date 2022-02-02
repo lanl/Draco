@@ -50,8 +50,12 @@
     #- git.exe config --global --unset http.proxy
     #- git.exe config --global --unset https.proxy
     - cmd.exe /c "%CI_PROJECT_DIR%\.gitlab\ci\gitlab-ci-run-tests.bat"
-  only:
-    - merge_requests
+  rules:
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_msvc/'
+      when: never
+    - if: '$CI_MERGE_REQUEST_TITLE =~ /Draft:/ || $CI_MERGE_REQUEST_TITLE =~ /WIP:/'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 #.msvc_nightly:
 #  extends: .msvc

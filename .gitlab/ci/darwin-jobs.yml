@@ -139,9 +139,7 @@ darm_rel_gcc930_deploy:
   rules:
     - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
       when: never
-    - if: '$CI_MERGE_REQUEST_TITLE =~ /Draft:/'
-      when: never
-    - if: '$CI_MERGE_REQUEST_TITLE =~ /WIP:/'
+    - if: '$CI_MERGE_REQUEST_TITLE =~ /Draft:/ || $CI_MERGE_REQUEST_TITLE =~ /WIP:/'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
