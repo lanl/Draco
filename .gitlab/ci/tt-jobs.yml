@@ -50,41 +50,40 @@ tt_rel_i1904_deploy:
     DRACO_ENV: "lapse/1.8-intel"
     FLAVOR: lapse18-intel-Release
 
-# tt_deb_i1904_deploy:
-#   extends: .tt_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: "lapse/1.8-intel"
-#     FLAVOR: lapse18-intel-Debug
+tt_deb_i1904_deploy:
+  extends: .tt_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/1.8-intel"
+    FLAVOR: lapse18-intel-Debug
 
-# tt_rel_i1913_deploy:
-#   extends: .tt_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: "draco/intel1913"
-#     FLAVOR: intel1913-Release
+tt_deb_cce1101_deploy:
+  extends: .tt_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/cce1101"
+    FLAVOR: cce1101-Debug
 
-# tt_deb_g930_deploy:
-#   extends: .tt_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: "lapse/1.8-gnu"
-#     FLAVOR: lapse18-gnu-Debug
+tt_rel_cce1101_deploy:
+  extends: .tt_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "draco/cce1101"
+    FLAVOR: cce1101-Release
 
-# tt_rel_g930_deploy:
-#   extends: .tt_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: "lapse/1.8-gnu"
-#     FLAVOR: lapse18-gnu-Release
+tt_deb_oneapi2140_deploy:
+  extends: .tt_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/oneapi2140"
+    FLAVOR: oneapi2140-Debug
 
-# tt_deb_fulldiag_deploy:
-#   extends: .tt_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: "lapse/1.8-intel"
-#     EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
-#     FLAVOR: intel-fulldiag-static
+tt_rel_oneapi2140_deploy:
+  extends: .tt_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "draco/oneapi2140"
+    FLAVOR: oneapi2140-Release
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
