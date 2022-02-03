@@ -18,7 +18,8 @@
     DEPLOY: "FALSE"
     SITE_ID: trinitite
     CTEST_NPROC: 32
-    SCHEDULER_PARAMETERS: "-N 1 --reservation=DAT-175329-haswell"
+    SCHEDULER_PARAMETERS: "-N 1 --reservation=debug"
+    # SCHEDULER_PARAMETERS: "-N 1 --reservation=DAT-175329-haswell"
     # Special reservation 175329 has fixes that allow us to pack a node.
     # --reservation=DAT-175329-knl
     # --reservation=debug
