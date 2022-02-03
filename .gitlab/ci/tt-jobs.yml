@@ -17,9 +17,12 @@
     CTEST_MODE: Experimental
     DEPLOY: "FALSE"
     SITE_ID: trinitite
-    SCHEDULER_PARAMETERS: "-N 1 --reservation=debug"
     CTEST_NPROC: 32
-    # -A asc-ci --reservation=ci"
+    SCHEDULER_PARAMETERS: "-N 1 --reservation=DAT-175329-haswell"
+    # Special reservation 175329 has fixes that allow us to pack a node.
+    # --reservation=DAT-175329-knl
+    # --reservation=debug
+    # -A asc-ci --reservation=ci
     # CI_DEBUG_TRACE: "true"
 
 #--------------------------------------------------------------------------------------------------#
@@ -162,36 +165,45 @@ tt_rel_i1904_regress:
     DRACO_ENV: "lapse/1.8-intel"
     CTEST_BUILD_NAME: "lapse18-intel-Release"
 
-# tt_deb_i1904_regress:
-#   stage: test
-#   extends: .tt_nightly
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: "lapse/1.8-intel"
-#     CTEST_BUILD_NAME: "lapse18-intel-Debug"
+tt_deb_i1904_regress:
+  stage: test
+  extends: .tt_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/1.8-intel"
+    CTEST_BUILD_NAME: "lapse18-intel-Debug"
 
-# tt_rel_i1913_regress:
-#   extends: .tt_nightly
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: "draco/intel1913"
-#     CTEST_BUILD_NAME: "intel1913-Release"
+tt_rel_cce1101_regress:
+  stage: test
+  extends: .tt_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "draco/cce1101"
+    CTEST_BUILD_NAME: "cce1101-Release"
 
-# tt_deb_g830_regress:
-#   extends: .tt_nightly
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: "lapse/1.8-gnu"
-#     CTEST_BUILD_NAME: "lapse18-gnu-Debug"
+tt_deb_cce1101_regress:
+  stage: test
+  extends: .tt_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/cce1101"
+    CTEST_BUILD_NAME: "cce1101-Debug"
 
-# tt_deb_fulldiag_regress:
-#   extends: .tt_nightly
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: "lapse/1.8-intel"
-#     FLAVOR: intel-fulldiag-static
-#     EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
-#     CTEST_BUILD_NAME: intel-fulldiag-static
+tt_rel_oneapi2140_regress:
+  stage: test
+  extends: .tt_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "draco/oneapi2140"
+    CTEST_BUILD_NAME: "oneapi2140-Release"
+
+tt_deb_oneapi2140_regress:
+  stage: test
+  extends: .tt_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/oneapi2140"
+    CTEST_BUILD_NAME: "oneapi2140-Debug"
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/tt-jobs.yml
