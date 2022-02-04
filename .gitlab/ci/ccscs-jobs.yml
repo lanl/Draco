@@ -18,15 +18,39 @@
     # CI_DEBUG_TRACE: "true"
 
 #--------------------------------------------------------------------------------------------------#
-# Build Templates
+# MRs - linters
 #--------------------------------------------------------------------------------------------------#
 
-.ccscs_style_checks:
+ccs1_style_cxx:
+  tags:
+    - CCSCS1-setuid-shared
+  stage: lint
   extends: .ccscs
   variables:
     CTEST_MODE: Experimental
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs1
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-style-checks.sh"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+ccs1_clangtidy:
+  tags:
+    - CCSCS1-setuid-shared
+  extends: .ccscs
+  stage: lint
+  variables:
+    CTEST_MODE: Experimental
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: llvm11
+    CTEST_NPROC: 32
+    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
+    EXTRA_CTEST_ARGS: -R dsxx_tstRelease
+    SITE_ID: ccscs1
+  script:
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
@@ -190,16 +214,6 @@ ccs2_valgrind_deploy:
 
 # FAST TEST
 
-ccs1_style_cxx:
-  tags:
-    - CCSCS1-setuid-shared
-  stage: fasttest
-  extends: .ccscs_style_checks
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1020-ompi4
-    SITE_ID: ccscs1
-
 ccs3_deb_gcc_1020:
   tags:
     - CCSCS3-setuid-shared
@@ -317,19 +331,6 @@ ccs2_valgrind:
 
 # ---------- Optional ---------- #
 
-ccs1_clangtidy:
-  tags:
-    - CCSCS1-setuid-shared
-  # stage: optional
-  stage: fasttest
-  # allow_failure: true
-  extends: .ccscs_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm11
-    CTEST_NPROC: 32
-    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
-    SITE_ID: ccscs1
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
