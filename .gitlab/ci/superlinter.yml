@@ -11,7 +11,7 @@
 superlinter:
   tags:
     - darwin-docker-shared
-  stage: fasttest
+  stage: lint
   image:
     name: github/super-linter:slim-v4
     # entrypoint: [""]
