@@ -27,12 +27,6 @@ fi
 [[ -z "${MAXLOAD}" ]] && MAXLOAD=$NPROC || echo "limiting MAXLOAD = $MAXLOAD"
 [[ "${DEPLOY}" == "TRUE" ]] && EXTRA_CMAKE_ARGS="-DBUILD_TESTING=NO ${EXTRA_CMAKE_ARGS}"
 if [[ -n "${DRACO_INSTALL_DIR}" ]]; then
-  if ! [[ -d "${DRACO_INSTALL_DIR}" ]]; then
-    run "mkdir -p ${DRACO_INSTALL_DIR}"
-    run "chgrp ccsrad ${DRACO_INSTALL_DIR}"
-    run "chmod g+rwX,o+rX ${DRACO_INSTALL_DIR}"
-    run "chmod g+s ${DRACO_INSTALL_DIR}"
-  fi
   EXTRA_CMAKE_ARGS="-DCMAKE_INSTALL_PREFIX=${DRACO_INSTALL_DIR} ${EXTRA_CMAKE_ARGS}"
 fi
 
@@ -125,7 +119,22 @@ else
     EXTRA_CTEST_ARGS+=" -E ${TEST_EXCLUSIONS}"
   fi
   if [[ "${DEPLOY}" == "TRUE" ]]; then
+    # Remove existing deployment directory (but only if 'make' w/o install works)
+    # - This ensures removed files are also removed from the deployment.
+    # - This ensures permissions are consistent and correct.
+    if [[ -n "${DRACO_INSTALL_DIR}" ]]; then
+      run "rm -rf ${DRACO_INSTALL_DIR}"
+      run "mkdir -p ${DRACO_INSTALL_DIR}"
+      run "chgrp ccsrad ${DRACO_INSTALL_DIR}"
+      run "chmod g+rwX,o+rX ${DRACO_INSTALL_DIR}"
+      run "chmod g+s ${DRACO_INSTALL_DIR}"
+    fi
     run "make -j -l $MAXLOAD install"
+
+    # Double check permissions for installed (deployed) files
+    run "chgrp -R ccsrad ${DRACO_INSTALL_DIR}"
+    run "chmod -R g+rwX,o+rX ${DRACO_INSTALL_DIR}"
+
   else
     run "ctest ${EXTRA_CTEST_ARGS} -j ${CTEST_NPROC} --test-load ${MAXLOAD} --output-on-failure --stop-on-failure"
   fi
@@ -134,14 +143,6 @@ fi
 # Generate a coverage report (text and html)
 if [[ "${CODECOV}" == "ON" && "${DEPLOY}" != "TRUE" ]]; then
   run "make covrep"
-fi
-
-# Double check permissions for installed (deployed) files
-if [[ "${DEPLOY}" == "TRUE" ]]; then
-  # run "find ${DRACO_INSTALL_DIR} ! -perm -g+rw -exec ls -aFl {} \;"
-  # badpermfiles=$(find ${DRACO_INSTALL_DIR} ! -perm -g+rw -exec ls  {} \;)
-  run "chgrp -R ccsrad ${DRACO_INSTALL_DIR}"
-  run "chmod -R g+rwX,o+rX ${DRACO_INSTALL_DIR}"
 fi
 
 if [[ ${CTEST_MODE} == "Nightly" ]]; then
