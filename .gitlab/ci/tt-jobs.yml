@@ -52,42 +52,42 @@ tt_rel_i1904_deploy:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-intel"
-    FLAVOR: lapse18-intel-Release
+    FLAVOR: lapse18-intel-${CMAKE_BUILD_TYPE}
 
 tt_deb_i1904_deploy:
   extends: .tt_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-intel"
-    FLAVOR: lapse18-intel-Debug
+    FLAVOR: lapse18-intel-${CMAKE_BUILD_TYPE}
 
 tt_deb_cce1101_deploy:
   extends: .tt_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/cce1101"
-    FLAVOR: cce1101-Debug
+    FLAVOR: cce1101-${CMAKE_BUILD_TYPE}
 
 tt_rel_cce1101_deploy:
   extends: .tt_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/cce1101"
-    FLAVOR: cce1101-Release
+    FLAVOR: cce1101-${CMAKE_BUILD_TYPE}
 
 tt_deb_oneapi2140_deploy:
   extends: .tt_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/oneapi2140"
-    FLAVOR: oneapi2140-Debug
+    FLAVOR: oneapi2140-${CMAKE_BUILD_TYPE}
 
 tt_rel_oneapi2140_deploy:
   extends: .tt_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/oneapi2140"
-    FLAVOR: oneapi2140-Release
+    FLAVOR: oneapi2140-${CMAKE_BUILD_TYPE}
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
@@ -119,13 +119,6 @@ tt_rel_i1904_mr:
     DRACO_ENV: "lapse/1.8-intel"
 
 # ----- slow -----
-
-tt_deb_i1904_mr:
-  stage: slowtest
-  extends: .tt_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/1.8-intel"
 
 tt_deb_oneapi_mr:
   stage: slowtest
