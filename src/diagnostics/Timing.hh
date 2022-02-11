@@ -4,7 +4,7 @@
  * \author T.M. Kelly, Thomas M. Evans
  * \date   Tue Dec 13 10:44:29 2005
  * \brief  Timing class and macros definition.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef diagnostics_Timing_hh
@@ -159,10 +159,30 @@ public:
  * }
  * \enddot
  *
- * If Caliper timers are used, simple reports can be generated like this:
+ * If Caliper timers are used, reports are generated based on the value of the
+ * CALI_CONFIG (preferred in more recent Caliper documentation) and
+ * CALI_CONFIG_PROFILE environment variables.
+ *
+ * Examples of CALI_CONFIG include:
+ * \verbatim
+
+ # Low overhead (often <<5%)
+ $ CALI_CONFIG='runtime-report(output=timing.txt)' ./tstTiming
+ $ CALI_CONFIG='hatchet-region-profile(output=timing.json,output.format=json)' ./tstTiming
+
+ # Variable overhead (1.10x to >7x)
+ $ CALI_CONFIG='mpi-report' ./tstTiming
+ $ CALI_CONFIG='runtime-report(profile.mpi)' ./tstTiming
+
+ # High overhead (>20x)
+ $ CALI_CONFIG='runtime-report(mem.highwatermark)' ./tstTiming
+
+ * \endverbatim
+ *
+ * Examples of using CALI_CONFIG_PROFILE to generate simple reports include:
  *
  * \verbatim
- $ CALI_CONFIG_PROFILE=runtime-report ./tstTiming
+ $ CALI_CONFIG_PROFILE='runtime-report' ./tstTiming
 
   Path            Inclusive time Exclusive time Time %
   Outer                 0.000710       0.000014  1.680672
@@ -174,7 +194,7 @@ public:
  * Or with MPI like this:
  *
  * \verbatim
-$ CALI_CONFIG_PROFILE=runtime-report mpiexec -n 2 ../bin/mcgrid -i amr_xyz_mg/mginf01
+$ CALI_CONFIG_PROFILE='runtime-report' mpiexec -n 2 ../bin/mcgrid -i amr_xyz_mg/mginf01
 ...
 Path                                 Inclusive time Exclusive time Time %
 execute_IMC:regroup                        0.006950       0.006950  9.675084
@@ -197,7 +217,7 @@ execute_IMC:cycle_init                     0.024644       0.005712  7.951666
  * You can also generate MPI timing reports like this:
  *
  * \verbatim
- $ CALI_CONFIG_PROFILE=mpi-runtime-report mpiexec -n 2 ../bin/mcgrid -i amr_xyz_mg/mginf01
+ $ CALI_CONFIG_PROFILE='mpi-runtime-report' mpiexec -n 2 ../bin/mcgrid -i amr_xyz_mg/mginf01
 ...
 Path                                 Min time/rank Max time/rank Avg time/rank Time % (total)
 MPI_Finalize                              0.000007      0.000042      0.000024       0.036926
