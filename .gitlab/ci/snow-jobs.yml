@@ -17,7 +17,8 @@
     CTEST_MODE: Experimental
     DEPLOY: "FALSE"
     SITE_ID: snow
-    SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --reservation=ci"
+    slurmJID: "-J re-git-draco"
+    SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --reservation=ci ${slurmJID}"
     # CI_DEBUG_TRACE: "true"
 
 #--------------------------------------------------------------------------------------------------#
@@ -98,6 +99,8 @@ sn_deb_fulldiag_deploy:
       when: never
     - if: '$CI_MERGE_REQUEST_TITLE =~ /Draft:/ || $CI_MERGE_REQUEST_TITLE =~ /WIP:/'
       when: never
+    - if: '$CI_PROJECT_NAMESPACE != "draco"'
+      when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 # ----- fast -----
@@ -108,7 +111,7 @@ sn_rel_i1904_mr:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-intel"
-    SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --reservation=ci"
+    slurmJID: "-J re-git-draco-i19rel"
 
 # ----- regular test -----
 
@@ -118,6 +121,7 @@ sn_deb_i1904_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-intel"
+    slurmJID: "-J re-git-draco-i19rel"
 
 sn_rel_i1913_mr:
   stage: test
@@ -125,13 +129,15 @@ sn_rel_i1913_mr:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/intel1913"
+    slurmJID: "-J re-git-draco-i1913rel"
 
-sn_deb_g830_mr:
+sn_deb_g930_mr:
   stage: test
   extends: .snow_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-gnu"
+    slurmJID: "-J re-git-draco-g930deb"
 
 # ----- slow -----
 
@@ -142,6 +148,7 @@ sn_deb_fulldiag_mr:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-intel"
     EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    slurmJID: "-J re-git-draco-fulldiag"
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
