@@ -4,8 +4,7 @@
  * \author Mike Buksas, Rob Lowrie
  * \date   Mon Nov 19 16:33:08 2007
  * \brief  Tests Invert_Comm_Map
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved.
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

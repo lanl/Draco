@@ -3,8 +3,8 @@
  * \file   Token_Stream.cc
  * \author Kent G. Budge
  * \brief  Definitions of Token_Stream member functions.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "Token_Stream.hh"

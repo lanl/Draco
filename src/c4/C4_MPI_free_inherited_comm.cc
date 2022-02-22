@@ -4,8 +4,8 @@
  * \author Thomas M. Evans
  * \date   Thu Mar 21 16:56:17 2002
  * \brief  C4 MPI implementation.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "C4_Functions.hh"

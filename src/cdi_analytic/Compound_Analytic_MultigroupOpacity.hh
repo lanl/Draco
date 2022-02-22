@@ -4,8 +4,8 @@
  * \author Thomas M. Evans
  * \date   Tue Nov 13 11:19:59 2001
  * \brief  Compound_Analytic_MultigroupOpacity class definition.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Compound_Analytic_MultigroupOpacity_hh

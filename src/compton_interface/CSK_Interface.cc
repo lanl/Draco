@@ -4,7 +4,7 @@
  * \author Kendra Keady
  * \date   Tues Feb 21 2017
  * \brief  Implementation file for compton CSK_generator interface
- * \note   Copyright (C) 2017-2020 Triad National Security, LLC. All rights reserved. */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 // headers provided in draco:

@@ -4,7 +4,7 @@
  * \author Rob Lowrie
  * \date   Fri Jan 14 13:00:47 2005
  * \brief  Instantiates Norms_Index for some types.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Norms_Index.t.hh"

@@ -3,8 +3,8 @@
  * \file   ds++/test/tstRange_finder.cc
  * \author Mike Buksas
  * \date   Thu Feb  6 12:43:22 2003
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Range_Finder.hh"

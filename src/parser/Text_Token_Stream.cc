@@ -3,7 +3,7 @@
  * \file   parser/Text_Token_Stream.cc
  * \author Kent G. Budge
  * \brief  Contains definitions of all Text_Token_Stream member functions.
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Text_Token_Stream.hh"

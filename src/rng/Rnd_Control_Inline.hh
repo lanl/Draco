@@ -3,8 +3,8 @@
  * \file   rng/Rnd_Control_Inline.hh
  * \author Paul Henning
  * \brief  Rnd_Control header file.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_rng_Rnd_Control_Inline_hh

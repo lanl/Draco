@@ -4,8 +4,8 @@
  * \author Ben R. Ryan
  * \date   Feb 21 2020
  * \brief  Analytic_Spitzer_Eloss_Model implementation file.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "Analytic_Spitzer_Eloss_Model.hh"

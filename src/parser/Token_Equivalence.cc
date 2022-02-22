@@ -4,8 +4,8 @@
  * \author Kelly G. Thompson
  * \date Thu Jul 20 9:27:29 MST 2006
  * \brief Provide services for ApplicationUnitTest framework.
- * \note Copyright (C) 2016-2020 Triad National Security, LLC.
- *       All rights reserved. */
+ * \note Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "Token_Equivalence.hh"

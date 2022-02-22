@@ -4,7 +4,7 @@
  * \author Kent Grimmett Budge
  * \date   Tue Nov  6 13:19:40 2018
  * \brief  Test the test function for parallel case.
- * \note   Copyright (C) 2018 TRIAD, LLC. All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"

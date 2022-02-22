@@ -2,7 +2,7 @@
 /*!
  * \file   parser/Class_Parser.hh
  * \brief  Definition of Class_Parser_Keyword and Class_Parser.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Class_Parser_HH

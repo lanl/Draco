@@ -3,7 +3,7 @@
  * \file   c4/test/tstglobal_containers.cc
  * \author Kent Budge
  * \date   Mon Mar 24 09:41:04 2008
- * \note   Copyright (C) 2008-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2008-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"

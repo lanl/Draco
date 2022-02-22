@@ -3,7 +3,7 @@
  *  \author Kelly Thompson
  *  \brief  This file contains enums, conversion factors and labels that help define a UnitSystem.
  *  \date   Fri Oct 24 15:57:09 2003
- *  \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_units_UnitSystemEnums_hh

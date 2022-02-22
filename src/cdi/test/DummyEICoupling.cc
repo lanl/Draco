@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   March 2019
  * \brief  DummyEICoupling class header file (derived from ../EICoupling)
- * \note   Copyright (C) 2019-2020 Triad National Security, LLC., All rights reserved.  */
+ * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "DummyEICoupling.hh"

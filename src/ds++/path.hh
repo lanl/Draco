@@ -2,7 +2,7 @@
 /*!
  * \file   ds++/path.hh
  * \brief  Encapsulate path information (path separator, etc.)
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
  *
  * \bug Consider replacing path.cc and path.hh with C++17 filesystem */
 //------------------------------------------------------------------------------------------------//

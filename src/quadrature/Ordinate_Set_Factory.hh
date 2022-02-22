@@ -4,8 +4,8 @@
  * \author Allan Wollaber
  * \date   Mon Mar  7 10:42:56 EST 2016
  * \brief  Builds an Ordinate_Set using a Quadrature_Interface struct
- * \note   Copyright (C)  2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_Ordinate_Set_Factory_hh

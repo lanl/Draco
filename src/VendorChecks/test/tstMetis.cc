@@ -3,7 +3,7 @@
  * \file   VendorChecks/test/tstMetis.cc
  * \date   Wednesday, May 11, 2016, 12:01 pm
  * \brief  Attempt to link to libmetis and run a simple problem.
- * \note   Copyright (C) 2016-2020, Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifdef _MSC_FULL_VER

@@ -4,7 +4,7 @@
  * \author Mike Berry <mrberry@lanl.gov>, Kelly Thompson <kgt@lanl.gov>
  * \date   Wednesday, Aug 09, 2017, 11:45 am
  * \brief  Helper functions to generate string for core affinity.
- * \note   Copyright (C) 2019-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
  *
  * These functions are needed by c4's xthi and ythi programs to report human readable thread
  * bindings.  It is also used by the unit test for libquo.

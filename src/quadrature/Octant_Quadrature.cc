@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Friday, Nov 30, 2012, 08:27 am
  * \brief  Implementation for Octant_Quadrature
- * \note   Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Octant_Quadrature.hh"

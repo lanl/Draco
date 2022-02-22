@@ -4,8 +4,8 @@
  * \author Kent Budge
  * \date   Wed Apr 28 09:31:51 2010
  * \brief  Test c4::determinate_swap and c4::indeterminate_swap functions
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"

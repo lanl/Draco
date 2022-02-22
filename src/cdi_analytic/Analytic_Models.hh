@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Wed Aug 29 16:46:52 2001
  * \brief  Analytic_Model definitions
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Analytic_Models_hh

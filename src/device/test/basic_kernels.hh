@@ -4,7 +4,7 @@
  * \author Alex R. Long
  * \date   Mon Mar 25 2019
  * \brief  Simple kernels for basic GPU tests
- * \note   Copyright (C) 2019-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_device_test_basic_kernels_hh

@@ -3,8 +3,8 @@
  * \file   ds++/test/tstField_Traits.cc
  * \author Kent Budge
  * \date   Tue Aug 26 12:18:55 2008
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Field_Traits.hh"

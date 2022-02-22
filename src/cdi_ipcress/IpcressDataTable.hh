@@ -4,8 +4,8 @@
  * \author Kelly Thompson
  * \date   Wednesday, Nov 16, 2011, 17:07 pm
  * \brief  Header file for IpcressDataTable
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_ipcress_IpcressDataTable_hh

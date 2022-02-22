@@ -3,7 +3,7 @@
  * \file   ds++/Index_Set.i.hh
  * \author Mike Buksas
  * \date   Thu Feb  2 10:01:46 2006
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_Index_Set_i_hh

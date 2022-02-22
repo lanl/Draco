@@ -3,7 +3,7 @@
  * \file   cdi_analytic/Pseudo_Line_Analytic_MultigroupOpacity.hh
  * \author Kent G. Budge
  * \date   Tue Apr  5 08:36:13 MDT 2011
- * \note   Copyright (C) 2011-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Pseudo_Line_Analytic_MultigroupOpacity_hh

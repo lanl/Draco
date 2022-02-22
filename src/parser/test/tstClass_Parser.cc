@@ -3,7 +3,7 @@
  * \file   parser/test/tstClass_Parser.cc
  * \author Kent Budge
  * \date   Mon Aug 28 07:36:50 2006
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

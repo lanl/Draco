@@ -4,8 +4,8 @@
  * \author Kent G. Budge
  * \date   Tue Nov  9 14:34:11 2010
  * \brief  Test the Abstract_Class_Contextual_Parser template
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

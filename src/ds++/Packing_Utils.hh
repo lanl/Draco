@@ -4,7 +4,7 @@
  * \author Thomas M. Evans, Tim Kelley <tkelley@lanl.gov>
  * \date   Thu Jul 19 11:27:46 2001
  * \brief  Packing Utilities, classes for packing stuff.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
  *
  * This file contains classes and utilities that are used to "pack" data into byte-streams. The
  * byte-streams are represented by the char* type.  The following classes are:

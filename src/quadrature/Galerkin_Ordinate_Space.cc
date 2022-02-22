@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Mon Mar 26 16:11:19 2007
  * \brief  Define methods of class Galerkin_Ordinate_Space
- * \note   Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Galerkin_Ordinate_Space.hh"

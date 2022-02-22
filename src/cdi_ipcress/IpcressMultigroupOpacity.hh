@@ -5,8 +5,8 @@
  * \date   Tue Nov 15 15:51:27 2011
  * \brief  IpcressMultigroupOpacity class header file (derived from
  *         cdi/MultigroupOpacity)
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_ipcress_IpcressMultigroupOpacity_hh

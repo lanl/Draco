@@ -4,7 +4,7 @@
  * \author John McGhee
  * \date   Tue Mar  7 08:38:04 2000
  * \brief  Implements a CIC-19 Hex Mesh Format mesh reader.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Hex_Mesh_Reader.hh"

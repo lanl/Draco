@@ -3,7 +3,7 @@
  * \file   kde/kde.hh
  * \author Mathew Cleveland
  * \brief  Define class kernel density estimator class
- * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

@@ -4,8 +4,7 @@
  * \author Rob Lowrie
  * \date   Fri Jan 14 09:12:16 2005
  * \brief  Tests Norms.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved.
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

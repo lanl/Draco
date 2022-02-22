@@ -3,7 +3,7 @@
  * \file   quadrature/General_Octant_Quadrature.cc
  * \author Kelly Thompson
  * \date   Wed Sep  1 10:19:52 2004
- * \note   Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "General_Octant_Quadrature.hh"

@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Aug 10 12:37:43 2004
  * \brief  Perform a Jacobi rotation on a pair of matrices.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef linear_rotate_hh

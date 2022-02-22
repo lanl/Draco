@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Thu Mar 21 11:42:03 2002
  * \brief  Data gatherv functions
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
  *
  * This file contains the declarations for determinate and indeterminate variable length gather
  * functions.

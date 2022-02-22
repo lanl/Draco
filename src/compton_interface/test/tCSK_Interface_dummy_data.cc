@@ -4,7 +4,7 @@
  * \author Andrew Till
  * \date   2020 Oct 14
  * \brief  Implementation file for tCSK_Interface_dummy_data
- * \note   Copyright (C) 2017-2020 Triad National Security, LLC. All rights reserved.
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Fri Aug 7 11:11:31 MDT 2009
  * \brief  Specializations of mrqmin
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "mrqmin.t.hh"

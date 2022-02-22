@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2015 June 26
 # brief  Generate build project files for diagnostics/qt
-# note   Copyright (C) 2016-2021, Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.17.0)
 project(diagnostics_qt CXX)
@@ -54,7 +54,8 @@ if(WIN32)
     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Lib_c4>
             $<TARGET_FILE_DIR:Exe_draco_info_gui>
     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Lib_diagnostics>
-            $<TARGET_FILE_DIR:Exe_draco_info_gui>)
+            $<TARGET_FILE_DIR:Exe_draco_info_gui>
+    COMMENT "")
 endif()
 
 # ------------------------------------------------------------------------------------------------ #

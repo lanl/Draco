@@ -2,7 +2,7 @@
 /*!
  * \file   ds++/path.cc
  * \brief  Encapsulate path information (path separator, etc.)
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "path.hh"

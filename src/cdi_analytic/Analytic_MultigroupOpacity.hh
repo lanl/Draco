@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Nov 13 11:19:59 2001
  * \brief  Analytic_MultigroupOpacity class definition.
- * \note   Copyright (C) 2011-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Analytic_MultigroupOpacity_hh

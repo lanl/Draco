@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Fri Apr  6 08:57:48 2001
  * \brief  Implementation file for SesameTables (mapping material IDs to Sesame table indexes).
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "SesameTables.hh"

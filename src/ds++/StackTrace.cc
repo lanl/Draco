@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Friday, Dec 20, 2013, 10:15 am
  * \brief  Linux/X86 implementation of stack trace functions.
- * \note   Copyright (C) 2014-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "StackTrace.hh"

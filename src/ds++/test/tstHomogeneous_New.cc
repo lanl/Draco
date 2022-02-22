@@ -4,8 +4,8 @@
  * \author Kent Budge
  * \date   Tue Nov 28 09:17:23 2006
  * \brief  test the Homogeneous_New allocator class.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Homogeneous_New.hh"

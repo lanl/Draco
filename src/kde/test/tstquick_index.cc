@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Aug. 10th 2021
  * \brief  quick_index testing function
- * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

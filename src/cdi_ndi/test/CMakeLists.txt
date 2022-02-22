@@ -3,7 +3,7 @@
 # author Ben. R. Ryan <brryan@lanl.gov>
 # date   2020 Feb 4
 # brief  Generate build project files for cdi_ndi/test.
-# note   Copyright (C) 2020-2021, Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(cdi_ndi_test CXX)
 

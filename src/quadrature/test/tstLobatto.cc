@@ -3,7 +3,7 @@
  * \file   quadrature/test/tstLobatto.cc
  * \author Kent G. Budge
  * \date   Tue Nov  6 13:08:49 2012
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 // $Id: template_test.cc 5830 2011-05-05 19:43:43Z kellyt $

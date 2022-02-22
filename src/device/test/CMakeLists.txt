@@ -1,7 +1,7 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   device/test/CMakeLists.txt
 # brief  Instructions for building device/test Makefile.
-# note   Copyright(C) 2016-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(device_test CXX ${CUDA_DBS_STRING})
 

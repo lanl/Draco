@@ -3,8 +3,8 @@
  * \file   <pkg>/<class>__parser.cc
  * \author <user>
  * \brief  Define parse table for <class>
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2015-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "<class>__parser.hh"
@@ -47,7 +47,7 @@ SP << class >> Class_Parse_Table << class >> ::create_object() {
 
 //------------------------------------------------------------------------------------------------//
 template <> SP << class >> parse_class << class >> (Token_Stream & tokens) {
-  return parse_class_from_table<Class_Parse_Table << class>>> (tokens);
+  return parse_class_from_table<Class_Parse_Table << class> >> (tokens);
 }
 
 } // end namespace rtt_parser

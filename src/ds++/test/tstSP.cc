@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Wed Feb  5 17:29:59 2003
  * \brief  SP test.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

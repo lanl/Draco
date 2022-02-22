@@ -3,7 +3,7 @@
  * \file   linear/test/tstrsolv.cc
  * \author Kent Budge
  * \date   Mon Aug  9 13:39:20 2004
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

@@ -2,7 +2,7 @@
 /*!
  * \file   ds++/path_getFilenameComponent.cc
  * \brief  Encapsulate path information (path separator, etc.)
- * \note   Copyright (C) 2014-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "path.hh"

@@ -4,8 +4,8 @@
  * \author Kent Budge
  * \date   Wed Jul 26 08:15:18 2006
  * \brief  Test the Expression class and expression parsing.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/DracoMath.hh"

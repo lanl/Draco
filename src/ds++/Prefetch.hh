@@ -2,7 +2,7 @@
 /*!
  * \file   ds++/SystemCall.hh
  * \brief  Wrapper for explicit prefetch commands. Hides system dependence.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_Prefetch_hh

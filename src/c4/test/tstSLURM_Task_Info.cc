@@ -3,8 +3,8 @@
  * \file   c4/test/tstSLURM_Task_Info.cc
  * \author Tim Kelley
  * \date   Fri Jun 7 08:06:53 2019
- * \note   Copyright (C) 2019-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/SLURM_Task_Info.hh"

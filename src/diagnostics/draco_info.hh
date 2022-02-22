@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wednesday, Nov 07, 2012, 18:49 pm
  * \brief  Small executable that prints the version and copyright strings.
- * \note   Copyright (C) 2014-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_diagnostics_draco_info_hh

@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Mon Jun 25 11:36:43 MDT 2018
  * \brief  Define methods of class ofpstream
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ofpstream.hh"

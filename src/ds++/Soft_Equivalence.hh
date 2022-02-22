@@ -4,7 +4,7 @@
  * \author Thomas M. Evans and Todd Urbatsch
  * \date   Wed Nov  7 14:10:55 2001
  * \brief  Soft_Equivalence functions for floating point comparisons.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_Soft_Equivalence_hh

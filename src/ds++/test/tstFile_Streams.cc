@@ -4,8 +4,8 @@
  * \author Rob Lowrie
  * \date   Sun Nov 21 19:36:12 2004
  * \brief  Tests File_Input and File_Output.
- * \note   Copyright 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/File_Streams.hh"

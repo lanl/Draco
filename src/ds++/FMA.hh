@@ -4,7 +4,7 @@
  * \author  Kelly Thompson
  * \date    Thursday, Feb 09, 2017, 11:22 am
  * \brief   Provide extra control for FMA operations.
- * \note    Copyright (C) 2017-2020 Triad National Security, LLC. All rights reserved.
+ * \note    Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved.
  *
  * Intel Haswell and later (and also modern AMD cpus) have hardware FMA features. On machines
  * without hardware FMA, the use of \c fma(c,b,a) provides a accurate value than \c a*b+c because

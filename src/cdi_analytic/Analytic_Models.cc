@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Wed Nov 21 14:36:15 2001
  * \brief  Analytic_Models implementation file.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Analytic_Models.hh"

@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Mon Mar 24 09:26:31 2008
  * \brief  Member definitions of class global_containers
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_global_containers_t_hh

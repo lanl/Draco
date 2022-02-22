@@ -3,7 +3,7 @@
  * \file   ds++/test/tstatomics.cc
  * \author Tim Kelley
  * \date   Thursday, Sept. 6, 2018, 10:51 am
- * \note   Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

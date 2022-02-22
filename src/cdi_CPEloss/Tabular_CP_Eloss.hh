@@ -4,8 +4,8 @@
  * \author Ben R. Ryan
  * \date   2019 Nov 4
  * \brief  Tabular_CP_Eloss class definition.
- * \note   Copyright (C) 2019-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef cdi_CPEloss_Tabular_CP_Eloss_hh

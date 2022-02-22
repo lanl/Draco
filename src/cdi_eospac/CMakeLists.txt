@@ -1,7 +1,7 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   cdi_eospac/CMakeLists.txt
 # brief  Instructions for building cdi_eospac Makefiles.
-# note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.9.0)
 project(cdi_eospac CXX)
@@ -37,7 +37,8 @@ if(EOSPAC_FOUND AND NOT DEFINED ENV{TRAVIS})
       TARGET Lib_cdi_eospac
       POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:EOSPAC::eospac>
-              $<TARGET_FILE_DIR:Lib_cdi_eospac>)
+              $<TARGET_FILE_DIR:Lib_cdi_eospac>
+      COMMENT "")
   endif()
 
   # ---------------------------------------------------------------------------------------------- #

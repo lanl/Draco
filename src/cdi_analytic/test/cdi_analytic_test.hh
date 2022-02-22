@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Sep 24 12:04:00 2001
  * \brief  Dummy model used for testing cdi_analytic software.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_test_hh

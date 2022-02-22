@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for cdi_analytic/test.
-# note   Copyright (C) 2016-2021, Triad National Security, All rights reserved.
+# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(cdi_analytic_test CXX)
 

@@ -5,8 +5,8 @@
  * \date   Mon Sep 20 15:15:40 2004
  * \brief  Integrate an ordinary differential equation with local error
  *         control using fifth-order Cash-Karp Runge-Kutta steps.
- * \note   Copyright (C) 2004-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2004-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef ode_rkqs_i_hh

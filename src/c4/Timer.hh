@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 17:35:07 2002
  * \brief  Define class Timer, a POSIX standard timer.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_Timer_hh

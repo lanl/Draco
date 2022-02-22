@@ -3,7 +3,7 @@
  * \file   parser/test/tstutilities.cc
  * \author Kent G. Budge
  * \date   Feb 18 2003
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

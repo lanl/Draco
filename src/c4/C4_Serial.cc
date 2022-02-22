@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 17:06:25 2002
  * \brief  Implementation of C4 serial option.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "C4_Functions.hh"

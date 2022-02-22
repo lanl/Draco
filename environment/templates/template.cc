@@ -4,8 +4,8 @@
  * \author <user>
  * \date   <date>
  * \brief  <start>
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "<basename>.hh"
@@ -15,7 +15,7 @@ namespace<namespace> {
   // void foo() { return; };
   // class Bar { int i; };
 
-} // namespace <namespace>
+} // namespace >
 
 //------------------------------------------------------------------------------------------------//
 // end of <basename>.cc

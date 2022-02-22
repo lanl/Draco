@@ -4,7 +4,7 @@
  * \author Kent Grimmett Budge
  * \date   Tue Nov  6 13:12:37 2018
  * \brief  Member definitions of class test
- * \note   Copyright (C) 2018-2020 Triad Nationaol Security, LLC. All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_ScalarUnitTest_i_hh

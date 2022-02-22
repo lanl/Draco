@@ -2,7 +2,7 @@
 /*!
  * \file   lapack_wrap/Blas.hh
  * \brief  Header for BLAS functions.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_lapack_wrap_Blas_hh

@@ -4,7 +4,7 @@
  * \author Andrew Till
  * \date   11 May 2020
  * \brief  Implementation file for compton interface
- * \note   Copyright (C) 2020 Triad National Security, LLC. All rights reserved.
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

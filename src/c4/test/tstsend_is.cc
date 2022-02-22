@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Friday, Dec 07, 2012, 14:02 pm
  * \brief  Unit tests for rtt_c4::send_is()
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"

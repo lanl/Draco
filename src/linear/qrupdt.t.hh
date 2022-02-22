@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Aug 10 11:59:48 2004
  * \brief  Update the QR decomposition of a square matrix
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef linear_qrupdt_t_hh

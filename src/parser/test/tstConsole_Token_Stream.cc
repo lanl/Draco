@@ -4,8 +4,8 @@
  * \author Kent G. Budge
  * \date   Wed May 19 11:26:15 MDT 2004
  * \brief  Unit tests for Console_Token_Stream class.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

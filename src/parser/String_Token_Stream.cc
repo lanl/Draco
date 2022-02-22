@@ -4,8 +4,8 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Definitions of String_Token_Stream methods.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "String_Token_Stream.hh"

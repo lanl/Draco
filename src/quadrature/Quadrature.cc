@@ -3,7 +3,7 @@
  * \file   quadrature/Quadrature.cc
  * \author Kelly Thompson
  * \date   Tue Feb 22 15:38:56 2000
- * \brief  Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \brief  Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Quadrature.hh"

@@ -4,7 +4,7 @@
  * \author Kelly G. Thompson <kgt@lanl.gov
  * \date   Wednesday, Aug 23, 2017, 12:48 pm
  * \brief  Encapsulates common string manipulations.
- * \note   Copyright (C) 2017-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_DracoStrings_hh

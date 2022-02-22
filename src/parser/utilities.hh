@@ -3,8 +3,7 @@
  * \file   parser/utilities.hh
  * \author Kent G. Budge
  * \brief  Declarations of a number of useful parsing utilities.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved.
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
  *
  * This file declares functions that parse certain common constructs in a
  * uniform way.

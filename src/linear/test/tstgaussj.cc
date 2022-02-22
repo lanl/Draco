@@ -3,7 +3,7 @@
  * \file   linear/test/tstgaussj.cc
  * \author Kent Budge
  * \date   Wed Sep 13 11:46:05 2006
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

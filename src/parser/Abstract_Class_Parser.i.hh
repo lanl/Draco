@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Thu Jul 17 14:08:42 2008
  * \brief  Member definitions of class Abstract_Class_Parser
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef utils_Abstract_Class_Parser_i_hh

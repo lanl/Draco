@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>, Kendra Long
  * \date   Thursday, Jul 12, 2018, 08:46 am
  * \brief  X3D_Draco_Mesh_Reader class implementation header file.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/DracoStrings.hh"

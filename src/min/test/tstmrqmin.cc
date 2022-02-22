@@ -3,7 +3,7 @@
  * \file   min/test/tstmrqmin.cc
  * \author Kent Budge
  * \date   Mon Aug  9 13:39:20 2004
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

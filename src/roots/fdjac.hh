@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Wed Aug 11 08:07:04 2004
  * \brief  Compute the Jacobian of a nonlinear system of equations
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef roots_fdjac_hh

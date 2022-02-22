@@ -4,7 +4,7 @@
  * \author John McGhee
  * \date   Fri Feb 25 10:03:18 2000
  * \brief  Header file for the RTT Element_Definition class.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_element_Element_Definition_hh

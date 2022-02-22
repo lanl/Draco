@@ -4,8 +4,8 @@
  * \author Kelly Thompson
  * \date   Thursday, Nov 12, 2015, 10:35 am
  * \brief  Test C++ main linking a Fortran library that uses MPI
- * \note   Copyright (c) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

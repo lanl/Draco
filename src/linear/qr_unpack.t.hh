@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Mon Aug  9 13:17:31 2004
  * \brief  Compute an explicit representation of a packed QR decomposition.
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef linear_qr_unpack_t_hh

@@ -4,8 +4,8 @@
  * \author Kelly Thompson
  * \date   Monday, Apr 22, 2013, 13:59 pm
  * \brief  Procmon test.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "diagnostics/Procmon.hh"

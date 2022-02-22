@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Mon Jun 25 12:12:31 MDT 2018
  * \brief  Define methods of class opstream
- * \note   Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "opstream.hh"

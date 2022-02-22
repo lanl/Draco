@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Mon Mar 24 10:17:40 2008
  * \brief  Explicit template instatiations for class global_containers.
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/config.h"

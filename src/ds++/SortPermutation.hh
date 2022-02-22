@@ -4,7 +4,7 @@
  * \author Randy M. Roberts
  * \date   Mon Feb 14 14:18:27 2000
  * \brief  SortPermutation class definition.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_SortPermutation_hh

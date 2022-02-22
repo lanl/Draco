@@ -4,7 +4,7 @@
  * \author Geoffrey Furnish, Thomas Evans
  * \date   Tue Feb  4 11:27:53 2003
  * \brief  Smart Point class file.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef RTT_ds_SP_HH

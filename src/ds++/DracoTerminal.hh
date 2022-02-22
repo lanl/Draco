@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Sat Oct 05 2019
  * \brief  Wrapper for a Terminal class that provides colored output.
- * \note   Copyright (C) 2019-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
  *
  * \sa https://github.com/certik/terminal/blob/master/terminal.h
  *

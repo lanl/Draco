@@ -4,7 +4,7 @@
  * \author Kendra Keady
  * \date   2017 Feb 10
  * \brief  Implementation file for tCSK_Interface_interfaces
- * \note   Copyright (C) 2017-2020 Triad National Security, LLC. All rights reserved.
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

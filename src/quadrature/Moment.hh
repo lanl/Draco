@@ -3,7 +3,7 @@
  * \file   quadrature/Moment.hh
  * \author Kent Budge
  * \brief  Declaration file for the class rtt_quadrature::Moment.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_Moment_hh

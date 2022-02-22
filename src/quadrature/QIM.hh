@@ -4,8 +4,8 @@
  * \author Kent Budge
  * \date   Mon Mar 26 16:11:19 2007
  * \brief  Definition of QIM enumeration
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_QIM_hh

@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Thursday, Jun 07, 2018, 15:43 pm
  * \brief  Helper class for generating test meshes.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_test_Test_Mesh_Interface_hh
