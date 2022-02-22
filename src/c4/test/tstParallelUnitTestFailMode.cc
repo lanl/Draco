@@ -4,8 +4,8 @@
  * \author Kelly Thompson
  * \date   Thu Jun 1 17:42:58 2006
  * \brief  Test the functionality of the class ParallelUnitTest
- * \note   Copyright (C) 2016-2020 Los Alamos National Securities, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 /*

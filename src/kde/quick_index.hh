@@ -5,7 +5,7 @@
  * \brief  This class generates coarse spatial indexing to quickly access near-neighbor data. This
  *         additionally provides simple interpolation schemes to map data to simple structured
  *         meshes. 
- * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

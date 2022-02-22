@@ -2,7 +2,7 @@
 /*!
  * \file  ds++/SystemCall.hh
  * \brief Wrapper for system calls. Hide differences between Unix/Windows system calls.
- * \note  Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
+ * \note  Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_SystemCall_hh

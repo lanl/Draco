@@ -5,8 +5,7 @@
  * \date   Wed Nov 06 2013
  * \brief  Windows/x86 crash handler tests
  *
- * Copyright (C) 2016-2020 Triad National Security, LLC.
- *               All rights reserved.
+ * Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved.
  *
  * See ds++/COPYING file for more copyright information.  This code is based
  * substantially on http://www.codeproject.com/Articles/207464/Exception-Handling-in-Visual-Cplusplus

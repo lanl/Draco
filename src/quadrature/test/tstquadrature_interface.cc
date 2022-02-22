@@ -4,7 +4,7 @@
  * \author Jae Chang
  * \date   Tue Feb  3 13:08:49 2012
  * \brief  Quadrature Interface test
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All  rights reserved. */
+ * \note   Copyright (C) 2015-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

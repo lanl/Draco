@@ -4,7 +4,7 @@
  * \author Rob Lowrie
  * \date   Mon Nov 19 10:09:11 2007
  * \brief  Implementation of Invert_Comm_Map
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Invert_Comm_Map.hh"

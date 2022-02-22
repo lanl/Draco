@@ -5,8 +5,8 @@
  * \date   Mon Mar  7 10:42:56 EST 2016
  * \brief  Implementation file for the class
  *         rtt_quadrature::Ordinate_Set_Mapper.
- * \note   Copyright (C)  2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "Ordinate_Set_Mapper.hh"

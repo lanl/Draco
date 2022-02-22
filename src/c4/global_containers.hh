@@ -3,7 +3,7 @@
  * \file   c4/global_containers.hh
  * \author Kent Budge
  * \brief  Define class global_containers
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_global_containers_hh

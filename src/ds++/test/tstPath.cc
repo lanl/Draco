@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Jul 12 16:00:59 2011
  * \brief  Test functions found in ds++/path.hh and path.cc
- * \note   Copyright (C) 2011-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

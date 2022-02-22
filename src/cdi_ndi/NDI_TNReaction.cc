@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2020 Feb 4
  * \brief  NDI_TNReaction member definitions.
- * \note   Copyright (C) 2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "NDI_TNReaction.hh"

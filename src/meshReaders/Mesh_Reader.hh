@@ -4,7 +4,7 @@
  * \author John McGhee
  * \date   Fri Feb 25 08:14:54 2000
  * \brief  Header file for the RTT Mesh_Reader base class.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_meshReaders_Mesh_Reader_hh

@@ -3,8 +3,8 @@
  * \file   c4/test/tstCompare.cc
  * \author Mike Buksas
  * \date   Thu May  1 14:47:00 2008
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/Compare.hh"

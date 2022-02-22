@@ -4,7 +4,7 @@
  * \author Allan Wollaber
  * \date   Mon Mar  7 16:21:45 EST 2016
  * \brief  Ordinate Set Mapper tests
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

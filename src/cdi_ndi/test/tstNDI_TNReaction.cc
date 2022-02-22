@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2019 Nov 18
  * \brief  NDI_TNReaction test
- * \note   Copyright (C) 2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi/CDI.hh"

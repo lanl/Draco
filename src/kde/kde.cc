@@ -15,7 +15,7 @@
  *         of the spatial domain. Other approaches that could be considered are quadrature based
  *         approaches that fully sample the Kernel space reducing the need for the normalization.
  *
- * \note   Copyright (C) 2021-2021 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

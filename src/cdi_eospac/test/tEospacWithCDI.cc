@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Thu Apr 19 11:00:24 2001
  * \brief  Implementation file for tEospacWithCDI
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi/CDI.hh"

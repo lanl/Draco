@@ -3,7 +3,7 @@
  * \file   c4/ofpstream.hh
  * \author Kent G. Budge
  * \brief  Define class ofpstream
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_ofpstream_hh

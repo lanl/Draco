@@ -4,8 +4,8 @@
  * \author Rob Lowrie
  * \date   Fri Jan 14 13:00:47 2005
  * \brief  Implemention for Norms_Index class.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "Comm_Traits.hh"

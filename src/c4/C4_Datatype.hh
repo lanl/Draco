@@ -2,7 +2,7 @@
 /*!
  * \file  c4/C4_Datatype.hh
  * \brief Kent G. Budge
- * \note  Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note  Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_C4_Datatype_hh

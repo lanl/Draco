@@ -3,7 +3,7 @@
 # author Kendra Keady
 # date   2017 February 28
 # brief  Generate build project files for compton/test.
-# note   Copyright (C) 2017-2021, Triad National Security, LLC. All rights reserved.
+# note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(compton_interface_test CXX)
 

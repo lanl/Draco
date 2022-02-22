@@ -4,8 +4,8 @@
   \author Rob Lowrie
   \date   Fri Jan 14 13:00:32 2005
   \brief  Header file for Norms_Labeled.
-  \note   Copyright (C) 2016-2020 Triad National Security, LLC.
-          All rights reserved. */
+  \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_norms_Norms_Labeled_hh

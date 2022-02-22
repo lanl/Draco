@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Dec 21 14:28:56 2004
  * \brief  Define an enumeration to specify supported geometric types.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef mesh_element_Geometry_hh

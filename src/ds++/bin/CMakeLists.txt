@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2013 Nov 6
 # brief  Provide a sample crash handler for Windows.
-# note   Copyright (C) 2016-2021, Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.9.0)
 project(dsxx_bin CXX)

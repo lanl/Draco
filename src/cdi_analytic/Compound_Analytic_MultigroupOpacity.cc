@@ -2,8 +2,8 @@
 /*!
  * \file   cdi_analytic/Compound_Analytic_MultigroupOpacity.cc
  * \brief  Compound_Analytic_MultigroupOpacity class member definitions.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "Compound_Analytic_MultigroupOpacity.hh"

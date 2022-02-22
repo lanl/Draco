@@ -4,7 +4,7 @@
  * \author Kendra Keady
  * \date   Mon Feb 27 2017
  * \brief  Header file for compton_interface CSK_generator interface
- * \note   Copyright (C) 2017-2020 Triad National Security, LLC. All rights reserved. */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_compton_interface_CSK_Interface_hh

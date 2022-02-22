@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for cdi
-# note   Copyright (C) 2016-2021, Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.9.0)
 project(cdi CXX)
@@ -15,9 +15,7 @@ file(GLOB sources *.cc)
 file(GLOB explicit_instantiations *_pt.cc)
 file(GLOB headers *.hh)
 
-set( include_dirs PUBLIC
-  $<BUILD_INTERFACE:${draco_src_dir_BINARY_DIR}/device>
-)
+set(include_dirs PUBLIC $<BUILD_INTERFACE:${draco_src_dir_BINARY_DIR}/device>)
 
 # ------------------------------------------------------------------------------------------------ #
 # Build package library

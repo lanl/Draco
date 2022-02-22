@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wed Nov 09 14:15:14 2011
  * \brief  Function declarations for endian conversions
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.  All rights reserved. */
+ * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Endian.hh"

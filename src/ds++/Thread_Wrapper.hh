@@ -4,7 +4,7 @@
  * \author Tim Kelley
  * \date   Thursday, Oct 12, 2017, 10:50 am
  * \brief  Header file for Thread_Wrapper
- * \note   Copyright (C) 2017-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef THREAD_WRAPPER_HH

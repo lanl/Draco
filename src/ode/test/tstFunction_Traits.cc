@@ -3,8 +3,8 @@
  * \file   ode/test/tstFunction_Traits.cc
  * \author Kent Budge
  * \date   Wed Aug 18 10:28:16 2004
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

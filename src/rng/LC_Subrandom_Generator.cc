@@ -3,7 +3,7 @@
  * \file   rng/LC_Subrandom_Generator.cc
  * \author Kent Budge
  * \brief  Define methods of class LC_Subrandom_Generator
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All  rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "LC_Subrandom_Generator.hh"

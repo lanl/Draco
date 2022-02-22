@@ -4,7 +4,7 @@
  * \author John McGhee
  * \date   Sun Jan 30 14:57:09 2000 *
  * \brief  Provides some utilities to check containers of strings.
- * \note Copyright (C) 2016-2020 Triad National Security, LLC.  All rights reserved.
+ * \note Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
  *
  * Functions are provided to examine a container of strings: 1) for the occurrence of certain
  * characters, 2) for the length of each string outside of high and low limits, and 3) to determine

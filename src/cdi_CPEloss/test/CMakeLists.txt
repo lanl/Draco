@@ -3,7 +3,7 @@
 # author Ben. R. Ryan <brryan@lanl.gov>
 # date   2019 Nov 4
 # brief  Generate build project files for cdi_CPEloss/test.
-# note   Copyright (C) 2019-2021, Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(cdi_CPEloss_test CXX)
 

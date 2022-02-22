@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Friday, Nov 29, 2019, 18:56 pm
  * \brief  A singleton, light-weight wrapper around Quo (github.com/lanl/libquo)
- * \note   Copyright (C) 2019-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_quowrapper_hh

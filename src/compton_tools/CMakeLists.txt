@@ -3,7 +3,7 @@
 # author Andrew Till
 # date   2020 May 11
 # brief  Generate build project files for compton_tools
-# note   Copyright (C) 2020-2021 Triad National Security, LLC. All rights reserved.
+# note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.17.0)
 project(compton_tools CXX)

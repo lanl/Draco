@@ -1,7 +1,7 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   src/c4/bin/CMakeLists.txt
 # brief  Instructions for building xthi Makefiles
-# note   Copyright (C) 2017-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.5.0)
 project(c4_bin CXX)

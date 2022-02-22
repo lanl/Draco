@@ -4,7 +4,7 @@
  * \author Timothy Kelley
  * \date   Tue Jun  9 15:03:08 2020
  * \brief  Demonstrate basic OMP API with OpenMP present
- * \note   Copyright (C) 2020-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/c4_omp.h"

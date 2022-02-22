@@ -3,7 +3,7 @@
  * \file   rng/test/ut_carray.hh
  * \author Gabriel M. Rockefeller
  * \brief  ut_carray header file.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rng_test_ut_carray_hh

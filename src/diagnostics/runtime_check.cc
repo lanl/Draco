@@ -4,7 +4,7 @@
  * \author Kent Grimmett Budge
  * \date   Wed Mar 28 07:58:48 2018
  * \brief  Member definitions of class runtime_check
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "diagnostics/runtime_check.hh"

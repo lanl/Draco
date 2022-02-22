@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \brief  Define a parse routine for quadrature interpolation model
  *         specifications.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "QIM.hh"

@@ -4,7 +4,7 @@
  * \author Mike Buksas
  * \date   Tue Oct 23 14:15:55 2007
  * \brief  Function declarations for endian conversions
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC. All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_Endian_hh

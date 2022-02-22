@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Sep 18 08:22:09 2007
  * \brief  Member definitions of class L2norm
- * \note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef norms_L2norm_i_hh

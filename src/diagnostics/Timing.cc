@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Dec 13 10:44:29 2005
  * \brief  Timing class member definitions.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Timing.hh"

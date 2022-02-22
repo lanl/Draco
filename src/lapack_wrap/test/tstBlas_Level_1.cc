@@ -2,7 +2,7 @@
 /*!
 * \file   lapack_wrap/test/tstBlas_Level_1.cc
 * \brief  Test Blas level 1 wrap.
-* \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+* \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "lapack_wrap/Blas.hh"

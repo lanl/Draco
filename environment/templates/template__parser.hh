@@ -3,8 +3,8 @@
  * \file   <pkg>/<class>__parser.hh
  * \author <user>
  * \brief  Define parse table for <class>
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2015-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 // clang-format off

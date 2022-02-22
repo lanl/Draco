@@ -3,7 +3,7 @@
 # author Kendra Keady
 # date   2017 February 28
 # brief  Instructions for building CSK_Interface and its tests
-# note   Copyright (C) 2017-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.9.0)
 project(compton_interface CXX)
@@ -37,7 +37,8 @@ if(TARGET COMPTON::compton)
       TARGET Lib_compton_interface
       POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:COMPTON::compton>
-              $<TARGET_FILE_DIR:Lib_compton_interface>)
+              $<TARGET_FILE_DIR:Lib_compton_interface>
+      COMMENT "")
   endif()
 
   # Install

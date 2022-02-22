@@ -4,8 +4,8 @@
  * \author Mike Buksas
  * \date   Thu Feb  6 12:10:56 2003
  * \brief  Header file for Range_finder
- * \note   Copyright C 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_Range_finder_hh

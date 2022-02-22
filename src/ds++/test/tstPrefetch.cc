@@ -2,8 +2,8 @@
 /*!
  * \file   ds++/test/tstPrefetch.cc
  * \brief  Demonstrate/Test the prefetch function.
- * \note   Copyright (C) 2018-2020 Triad National Security, LLC.
- *         All rights reserved */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Prefetch.hh"

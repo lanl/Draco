@@ -4,7 +4,7 @@
  * \author Kendra Long
  * \date   Mon Jan 19 13:41:01 2001
  * \brief  Datatypes needed in CPEloss classes
- * \note   Copyright (C) 2016-2019 Los Alamos National Securty, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPCommon_hh

@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   18 Feb 2003
  * \brief  Definitions of parsing utility functions.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "utilities.hh"

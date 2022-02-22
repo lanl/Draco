@@ -4,8 +4,7 @@
  * \author Tim M. Kelley <tkelley@lanl.gov>, Kelly G. Thompson <kgt@lanl.gov>
  * \date   Wednesday, May 24, 2017, 11:06 am
  * \brief  Demonstrate proper and improper use of std::move
- * \note   Copyright (C) 2017-2020 Triad National Security, LLC.
- *         All rights reserved.
+ * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved.
  *
  * \sa http://blog.smartbear.com/c-plus-plus/c11-tutorial-introducing-the-move-constructor-and-the-move-assignment-operator/
  */

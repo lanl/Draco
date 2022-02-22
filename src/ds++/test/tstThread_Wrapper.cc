@@ -3,8 +3,8 @@
  * \file   ds++/test/tstThread_Wrapper.cc
  * \author Tim Kelley
  * \date   Thursday, Oct 12, 2017, 10:51 am
- * \note   Copyright (C) 2017-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved.
+ */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

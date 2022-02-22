@@ -4,8 +4,7 @@
  * \author Kelly Thompson <kgt@lanl.gov>
  * \date   Thursday, Feb 09, 2017, 08:11 am
  * \brief  FMA features test.
- * \note   Copyright (C) 2017-2020 Triad National Security, LLC.
- *         All rights reserved.
+ * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved.
  *
  * Supporting functions:
  *
@@ -35,8 +34,7 @@ int check_4th_gen_intel_core_features(int const mode = 0) {
     return _may_i_use_cpu_feature(_FEATURE_FMA);
   else {
     const int the_4th_gen_features =
-        (_FEATURE_AVX2 | _FEATURE_FMA | _FEATURE_BMI | _FEATURE_LZCNT |
-         _FEATURE_MOVBE);
+        (_FEATURE_AVX2 | _FEATURE_FMA | _FEATURE_BMI | _FEATURE_LZCNT | _FEATURE_MOVBE);
     return _may_i_use_cpu_feature(the_4th_gen_features);
   }
 }
@@ -88,8 +86,7 @@ int check_xcr0_ymm() {
    */
   __asm__(".byte 0x0F, 0x01, 0xd0" : "=a"(xcr0) : "c"(0) : "%edx");
 #endif
-  return ((xcr0 & 6) ==
-          6); /* checking if xmm and ymm state are enabled in XCR0 */
+  return ((xcr0 & 6) == 6); /* checking if xmm and ymm state are enabled in XCR0 */
 }
 
 //------------------------------------------------------------------------------------------------//

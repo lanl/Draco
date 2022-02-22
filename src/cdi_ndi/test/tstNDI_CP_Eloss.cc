@@ -4,8 +4,8 @@
  * \author Ben R. Ryan
  * \date   2020 Jun 3
  * \brief  NDI_CP_Eloss test
- * \note   Copyright (C) 2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+ */
 //----------------------------------------------------------------------------//
 
 #include "cdi/CDI.hh"

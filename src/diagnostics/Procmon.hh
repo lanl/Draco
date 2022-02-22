@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Monday, Apr 22, 2013, 10:10 am
  * \brief  Procmon class for printing runtime system diagnostics (free memory per node, etc).
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved.
  *
  * A file with the same name lives in wedgehog_components and provided the macros \c PROCMON_START
  * and \c PROCMON_STOP.  These command would provide a one line system summary (including timing

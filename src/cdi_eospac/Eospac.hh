@@ -3,7 +3,7 @@
  * \file   cdi_eospac/Eospac.hh
  * \author Kelly Thompson
  * \date   Mon Apr  2 14:14:29 2001
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_eospac_Eospac_hh
