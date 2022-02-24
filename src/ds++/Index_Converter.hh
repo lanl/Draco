@@ -12,6 +12,7 @@
 
 #include "Index_Counter.hh"
 #include <array>
+#include <limits>
 
 namespace rtt_dsxx {
 
