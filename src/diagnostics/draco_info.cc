@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wednesday, Nov 07, 2012, 18:49 pm
  * \brief  Small executable that prints the version and copyright strings.
- * \note   Copyright (C) 2012-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "draco_info.hh"
@@ -98,7 +98,7 @@ void print_text_with_word_wrap(std::string const &longstring, size_t const inden
   std::vector<std::string> const tokens = rtt_dsxx::tokenize(longstring, delimiters);
   std::string const delimiter(delimiters.substr(0, 1));
   size_t i(indent_column);
-  for (auto item : tokens) {
+  for (auto const &item : tokens) {
     if (i + rtt_dsxx::remove_color(item).length() + 1 > max_width) {
       msg << "\n" << std::string(indent_column, ' ');
       i = indent_column;

@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
   std::string const hostname = rtt_dsxx::draco_gethostname();
   unsigned const num_cpus = omp_get_num_procs();
 
-#pragma omp parallel
+#pragma omp parallel default(none) shared(num_cpus, hostname, rank, std::cout)
   {
     int thread = omp_get_thread_num();
     std::string cpuset = rtt_c4::cpuset_to_string(num_cpus);

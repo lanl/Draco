@@ -222,7 +222,7 @@ void test_fetch_sub_atomic_1e6(UnitTest &ut) {
 using t_func = std::function<void(UnitTest &)>;
 
 //------------------------------------------------------------------------------------------------//
-void run_a_test(UnitTest &u, t_func f, std::string const &msg) {
+void run_a_test(UnitTest &u, t_func const &f, std::string const &msg) {
   f(u);
   if (u.numFails == 0) {
     u.passes(msg);

@@ -140,9 +140,8 @@ SP<Bar> get_bar() {
 
 //------------------------------------------------------------------------------------------------//
 
-void test_foobar(rtt_dsxx::UnitTest &ut, SP<Foo> f, int v) {
-  if (f->vf() != v)
-    ITFAILS;
+void test_foobar(rtt_dsxx::UnitTest &ut, SP<Foo> const &f, int v) {
+  FAIL_IF_NOT(f->vf() == v);
   return;
 }
 

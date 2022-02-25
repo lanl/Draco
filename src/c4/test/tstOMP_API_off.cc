@@ -4,8 +4,7 @@
  * \author Timothy Kelley
  * \date   Tue Jun  9 15:03:08 2020
  * \brief  Demonstrate basic OMP API.
- * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -24,11 +23,9 @@
 using namespace rtt_c4;
 using rtt_dsxx::UnitTest;
 
-/* If OpenMP is available, we will pretend that it's not, but still use the
- * OpenMP runtime to check that the funtions do not change OpenMP state.
- * If OpenMP truly is not available, we will still check that the bypass
- * versions behave as expected.
- */
+// If OpenMP is available, we will pretend that it's not, but still use the OpenMP runtime to check
+// that the funtions do not change OpenMP state.  If OpenMP truly is not available, we will still
+// check that the bypass versions behave as expected.
 
 #ifdef ORIG_OPENMP_FOUND
 #include <omp.h>
@@ -69,7 +66,7 @@ void check_set_get(UnitTest &ut) {
 
 using t_func = std::function<void(UnitTest &)>;
 
-void run_a_test(UnitTest &u, t_func f, std::string const &msg) {
+void run_a_test(UnitTest &u, t_func const &f, std::string const &msg) {
   f(u);
   if (u.numFails == 0) {
     u.passes(msg);

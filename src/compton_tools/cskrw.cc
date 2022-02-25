@@ -68,17 +68,17 @@ struct Dense_Compton_Data {
   // [eval, moment, T, gfrom, gto]
   std::vector<FP> derivatives;
 
-  void resize(UINT64 numfiles, std::string filename);
-  void read_from_file(UINT64 eval, std::string filename, bool isnonlin);
+  void resize(UINT64 numfiles, std::string const &filename);
+  void read_from_file(UINT64 eval, std::string const &filename, bool isnonlin);
   void compute_nonlinear_difference();
   void compute_temperature_derivatives();
-  void write_sparse_binary(std::string fileout);
+  void write_sparse_binary(std::string const &fileout);
   void print_contents(int verbosity, int precision);
 
 private:
   Sparse_Compton_Data copy_to_sparse();
   void print_sparse(const Sparse_Compton_Data &sd);
-  void write_binary(std::string fileout, Sparse_Compton_Data &sd);
+  void write_binary(std::string const &fileout, Sparse_Compton_Data &sd);
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -87,7 +87,7 @@ private:
  * \param[in] numfiles is number of Compton files
  * \param[in] filename is one such file
  */
-void Dense_Compton_Data::resize(UINT64 numfiles, std::string filename) {
+void Dense_Compton_Data::resize(UINT64 numfiles, std::string const &filename) {
   // Reserve space for nl difference
   UINT64 numderived = (numfiles >= 4) ? 1 : 0;
   numEvals = numfiles + numderived;
@@ -115,7 +115,7 @@ void Dense_Compton_Data::resize(UINT64 numfiles, std::string filename) {
 
 //------------------------------------------------------------------------------------------------//
 // read the entire contents of one file
-void Dense_Compton_Data::read_from_file(UINT64 eval, std::string filename, bool isnonlin) {
+void Dense_Compton_Data::read_from_file(UINT64 eval, std::string const &filename, bool isnonlin) {
   Insist(eval < numEvals, "eval must be < numEvals");
   std::ifstream f(filename);
   Insist(f.is_open(), "Unable to open " + filename);
@@ -466,7 +466,7 @@ void Dense_Compton_Data::compute_temperature_derivatives() {
 
 //------------------------------------------------------------------------------------------------//
 // Sparsify data and print to binary
-void Dense_Compton_Data::write_sparse_binary(std::string fileout) {
+void Dense_Compton_Data::write_sparse_binary(std::string const &fileout) {
   Sparse_Compton_Data sd = copy_to_sparse();
   print_sparse(sd);
   write_binary(fileout, sd);
@@ -677,7 +677,7 @@ void Dense_Compton_Data::print_sparse(const Sparse_Compton_Data &sd) {
 
 //------------------------------------------------------------------------------------------------//
 // Write to binary
-void Dense_Compton_Data::write_binary(std::string fileout, Sparse_Compton_Data &sd) {
+void Dense_Compton_Data::write_binary(std::string const &fileout, Sparse_Compton_Data &sd) {
   auto fout = std::ofstream(fileout, std::ios::out | std::ios::binary);
 
   // binary type
@@ -849,13 +849,14 @@ void read_csk_files(std::string const &basename, int verbosity) {
 
   // Fill
   UINT64 counter = 0;
-  for (std::string lin : lins) {
-    for (std::string inout : inouts) {
+  for (std::string const &lin : lins) {
+    for (std::string const &inout : inouts) {
 
       ++counter;
       UINT64 eval = counter - 1U;
 
-      std::string const filename = basename + '_' + inout + '_' + lin;
+      std::string filename = basename;
+      filename.append(std::string(1, '_')).append(inout).append(std::string(1, '_')).append(lin);
       cout << "Reading file: " << filename << endl;
 
       bool isnonlin = lin.compare("nonlin") == 0;

@@ -1,0 +1,48 @@
+# ---------------------------------------------*-yaml-*------------------------------------------- #
+# File:    .clang-tidy
+# Author:  Kelly Thompson <kgt@lanl.gov>
+# Date:    Friday, Feb 18, 2022, 07:08 am
+# Purpose: Configurations settings for clang-tidy
+# Note:    Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
+#
+# Recommneded settings are borrowed from
+# https://github.com/cpp-best-practices/cpp_starter_project/blob/main/.clang-tidy
+# which recommends that we enable this list of checks (but our code
+# isn't ready):
+#
+# hicpp-*
+# readability-*
+# cppcoreguidelines-*
+# cert-*
+# bugprone-*
+# concurrency-*
+# ------------------------------------------------------------------------------------------------ #
+
+---
+Checks: "*,
+        -concurrency-*,
+        -bugprone-*,
+        -hicpp-*,
+        -readability-*,
+        -cppcoreguidelines-*,
+        -cert-*,
+        -abseil-*,
+        -altera-*,
+        -android-*,
+        -fuchsia-*,
+        -google-*,
+        -llvm*,
+        -modernize-use-trailing-return-type,
+        -zircon-*,
+        -readability-else-after-return,
+        -readability-static-accessed-through-instance,
+        -readability-avoid-const-params-in-decls,
+        -cppcoreguidelines-non-private-member-variables-in-classes,
+        -misc-non-private-member-variables-in-classes,
+        -misc-no-recursion,
+        -misc-definitions-in-headers,
+"
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*[.]hh'
+HeaderFilterRegex: '.*[.]hh'
+FormatStyle:     none

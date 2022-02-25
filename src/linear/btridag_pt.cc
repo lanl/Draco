@@ -11,11 +11,10 @@
 #include <vector>
 
 namespace rtt_linear {
-using namespace std;
 
-template void btridag(vector<double> const &a, vector<double> const &b, vector<double> const &c,
-                      vector<double> const &r, unsigned const n, unsigned const m,
-                      vector<double> &u);
+template void btridag(std::vector<double> const &a, std::vector<double> const &b,
+                      std::vector<double> const &c, std::vector<double> const &r, unsigned const n,
+                      unsigned const m, std::vector<double> &u);
 
 } // end namespace rtt_linear
 

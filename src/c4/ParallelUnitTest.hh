@@ -100,7 +100,7 @@ public:
  * \return EXIT_SUCCESS or EXIT_FAILURE as appropriate.
  */
 template <typename... Lambda, typename Release>
-int do_parallel_unit_test(int argc, char **argv, Release release, Lambda const &... lambda);
+int do_parallel_unit_test(int argc, char **argv, Release release, Lambda const &...lambda);
 
 } // end namespace rtt_c4
 

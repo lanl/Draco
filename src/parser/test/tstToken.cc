@@ -122,11 +122,13 @@ void token_test(UnitTest &ut) {
     ut.passes("unlike token equality test returned false");
   }
 
-  if (real_token == real_token) {
-    ut.passes("like token equality test did returned true");
-  } else {
-    ut.failure("like token equality test did NOT return true");
-  }
+  // Can only be true? clang-tidy misc-redundant-expression
+  //
+  // if (real_token == real_token) {
+  //   ut.passes("like token equality test did returned true");
+  // } else {
+  //   ut.failure("like token equality test did NOT return true");
+  // }
 
   return;
 }

@@ -19,7 +19,7 @@ namespace rtt_mesh {
  *
  * \param[in] filename_ name of file to be parsed
  */
-RTT_Draco_Mesh_Reader::RTT_Draco_Mesh_Reader(const std::string filename_) : filename(filename_) {
+RTT_Draco_Mesh_Reader::RTT_Draco_Mesh_Reader(const std::string &filename_) : filename(filename_) {
   // check for valid file name
   Insist(filename_.size() > 0, "No file name supplied.");
 

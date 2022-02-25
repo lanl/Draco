@@ -15,9 +15,6 @@
 
 namespace rtt_cdi_ndi {
 
-// Protect actual NDI calls with NDI_FOUND macro:
-#ifdef NDI_FOUND
-
 //------------------------------------------------------------------------------------------------//
 // CONSTRUCTORS
 //------------------------------------------------------------------------------------------------//
@@ -31,11 +28,11 @@ namespace rtt_cdi_ndi {
  * \param[in] mg_e_bounds_in energy boundaries of multigroup bins (keV)
  */
 NDI_TNReaction::NDI_TNReaction(const std::string &gendir_in, const std::string &library_in,
-                               const std::string reaction_in,
-                               const std::vector<double> mg_e_bounds_in)
+                               std::string reaction_in, std::vector<double> mg_e_bounds_in)
     : NDI_Base(gendir_in, "tn", library_in), reaction(std::move(reaction_in)),
-      mg_e_bounds(mg_e_bounds_in) {
+      mg_e_bounds(std::move(mg_e_bounds_in)) {
 
+#ifdef NDI_FOUND
   Require(reaction.length() > 0);
   Require(mg_e_bounds.size() > 0);
 
@@ -48,6 +45,7 @@ NDI_TNReaction::NDI_TNReaction(const std::string &gendir_in, const std::string &
   Insist(mg_e_bounds.back() > 0, "Negative product multigroup bounds!");
 
   load_ndi();
+#endif
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -63,9 +61,18 @@ NDI_TNReaction::NDI_TNReaction(const std::string &gendir_in, const std::string &
  */
 NDI_TNReaction::NDI_TNReaction(const std::string &library_in, const std::string &reaction_in,
                                const std::vector<double> &mg_e_bounds_in)
+#ifdef NDI_FOUND
     : NDI_TNReaction(rtt_dsxx::get_env_val<std::string>("NDI_GENDIR_PATH").second, library_in,
-                     reaction_in, mg_e_bounds_in) { /* empty */
+                     reaction_in, mg_e_bounds_in)
+#else
+    : NDI_Base("tn", library_in), reaction(std::move(reaction_in)),
+      mg_e_bounds(std::move(mg_e_bounds_in))
+#endif
+{
 }
+
+// Protect actual NDI calls with NDI_FOUND macro:
+#ifdef NDI_FOUND
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -318,39 +325,8 @@ std::vector<double> NDI_TNReaction::get_PDF(const int product_zaid,
 
   return pdf;
 }
+
 #else
-
-//------------------------------------------------------------------------------------------------//
-// CONSTRUCTORS
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief Constructor for NDI reader -- base class constructor will throw because NDI is not
- *        available.
- *
- * \param[in] gendir_in path to gendir file
- * \param[in] library_in name of requested NDI data library
- * \param[in] reaction_in name of requested reaction
- * \param[in] mg_e_bounds_in energy boundaries of multigroup bins (keV)
- */
-NDI_TNReaction::NDI_TNReaction(const std::string &gendir_in, const std::string &library_in,
-                               const std::string /*reaction_in*/,
-                               const std::vector<double> /*mg_e_bounds_in*/)
-    : NDI_Base(gendir_in, "tn", library_in) { /* ... */
-}
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief Constructor for NDI reader -- base class constructor will throw because NDI is not
- *        available.
- *
- * \param[in] library_in name of requested NDI data library
- * \param[in] reaction_in name of requested reaction
- * \param[in] mg_e_bounds_in energy boundaries of multigroup bins (keV)
- */
-NDI_TNReaction::NDI_TNReaction(const std::string &library_in, const std::string & /*reaction_in*/,
-                               const std::vector<double> & /*mg_e_bounds_in*/)
-    : NDI_Base("tn", library_in) { /* ... */
-}
 
 std::vector<double> NDI_TNReaction::get_PDF(const int /*product_zaid*/,
                                             const double /*temperature*/) const {

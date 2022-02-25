@@ -11,15 +11,14 @@
 #include <vector>
 
 namespace rtt_linear {
-using std::vector;
 
 //------------------------------------------------------------------------------------------------//
 // T=vector<double>
 //------------------------------------------------------------------------------------------------//
 
-template void svbksb(const vector<double> &u, const vector<double> &w, const vector<double> &v,
-                     const unsigned m, const unsigned n, const vector<double> &b,
-                     vector<double> &x);
+template void svbksb(const std::vector<double> &u, const std::vector<double> &w,
+                     const std::vector<double> &v, const unsigned m, const unsigned n,
+                     const std::vector<double> &b, std::vector<double> &x);
 
 } // end namespace rtt_linear
 

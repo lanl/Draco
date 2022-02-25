@@ -105,7 +105,8 @@ void topo_report(rtt_dsxx::UnitTest &ut, bool &one_mpi_rank_per_node) {
   if (maxthreads > 16)
     omp_set_num_threads(16);
 
-#pragma omp parallel private(tid)
+#pragma omp parallel default(none) private(tid)                                                    \
+    shared(nthreads, std::cout, maxthreads, procname, num_dynamic_threads, ut)
   {
     nthreads = omp_get_num_threads();
     tid = omp_get_thread_num();
@@ -190,7 +191,7 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
     t1_omp_build.start();
 
     int nthreads(-1);
-#pragma omp parallel
+#pragma omp parallel default(none) shared(nthreads, std::cout, N, result, foo)
     {
       if (node() == 0 && omp_get_thread_num() == 0) {
         nthreads = omp_get_num_threads();
@@ -198,7 +199,7 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
       }
     }
 
-#pragma omp parallel for shared(foo, bar)
+#pragma omp parallel for shared(foo, bar, N, result) default(none)
     for (int i = 0; i < N; ++i) {
       foo[i] = 99.00 + i;
       bar[i] = 0.99 * i;
@@ -213,7 +214,7 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
 
 // clang-format adds spaces around this colon.
 // clang-format off
-#pragma omp parallel for reduction(+: omp_sum)
+#pragma omp parallel for reduction(+: omp_sum) default(none) shared(N, foo, nthreads, std::cout)
     // clang-format on
     for (int i = 0; i < N; ++i)
       omp_sum += foo[i];
@@ -296,7 +297,7 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
   if (maxthreads > 16)
     omp_set_num_threads(16);
 
-#pragma omp parallel
+#pragma omp parallel default(none) shared(nthreads, std::cout)
   {
     if (node() == 0 && omp_get_thread_num() == 0) {
       nthreads = omp_get_num_threads();
@@ -304,7 +305,8 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
     }
   }
 
-#pragma omp parallel for ordered schedule(dynamic)
+#pragma omp parallel for ordered schedule(dynamic) default(none)                                   \
+    shared(num_pixels, begin, span, image1)
   for (int pix = 0; pix < num_pixels; ++pix) {
     const int x = pix % width;
     const int y = pix / width;

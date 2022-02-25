@@ -18,13 +18,13 @@ template <typename Lambda> void implement_do_unit_test(UnitTest &ut, Lambda cons
 
 template <typename First_Lambda, typename... More_Lambdas>
 void implement_do_unit_test(UnitTest &ut, First_Lambda const &first_lambda,
-                            More_Lambdas const &... more_lambdas) {
+                            More_Lambdas const &...more_lambdas) {
   first_lambda(ut);
   implement_do_unit_test(ut, more_lambdas...);
 }
 
 template <typename... Lambda, typename Release>
-int do_scalar_unit_test(int argc, char **argv, Release release, Lambda const &... lambda) {
+int do_scalar_unit_test(int argc, char **argv, Release release, Lambda const &...lambda) {
   ScalarUnitTest ut(argc, argv, release);
   try {
     implement_do_unit_test(ut, lambda...);

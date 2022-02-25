@@ -81,7 +81,7 @@ void test_index_converter(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(box.get_next_index(index, 5) == 18);
     FAIL_IF_NOT(box.get_next_index(index, 6) == 42);
 
-    Index_Converter<3, 0> copy(box);
+    Index_Converter<3, 0> copy(box); // NOLINT
     FAIL_IF_NOT(copy == box);
   }
 

@@ -33,12 +33,12 @@ class NDI_TNReaction : public NDI_Base {
 
 public:
   //! Constructor (default gendir path)
-  NDI_TNReaction(const std::string &library_in, const std::string &reaction_in,
-                 const std::vector<double> &mg_e_bounds_in);
+  NDI_TNReaction(const std::string &library_in, std::string const &reaction_in,
+                 std::vector<double> const &mg_e_bounds_in);
 
   //! Constructor (overridden gendir path)
   NDI_TNReaction(const std::string &gendir_in, const std::string &library_in,
-                 const std::string reaction_in, const std::vector<double> mg_e_bounds_in);
+                 std::string reaction_in, std::vector<double> mg_e_bounds_in);
 
   //! Disable default constructor
   NDI_TNReaction() = delete;

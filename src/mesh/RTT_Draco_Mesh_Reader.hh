@@ -33,7 +33,7 @@ private:
 
 public:
   //! Constructor
-  explicit RTT_Draco_Mesh_Reader(const std::string filename_);
+  explicit RTT_Draco_Mesh_Reader(const std::string &filename_);
 
   // >>> SERVICES
 

@@ -13,7 +13,6 @@
 #include <c4/config.h>
 
 namespace rtt_c4 {
-using std::vector;
 
 //------------------------------------------------------------------------------------------------//
 // EXPLICIT INSTANTIATIONS OF NON-BLOCKING SEND/RECEIVE

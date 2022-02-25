@@ -1,12 +1,11 @@
-//----------------------------------*-C++-*-----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   cdi_ndi/NDI_CP_Eloss.cc
  * \author Ben R. Ryan
  * \date   2020 Jun 3
  * \brief  NDI_CP_Eloss member definitions.
- * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
- */
-//----------------------------------------------------------------------------//
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
+//------------------------------------------------------------------------------------------------//
 
 #include "NDI_CP_Eloss.hh"
 #include "ds++/DracoStrings.hh"
@@ -20,8 +19,8 @@ namespace rtt_cdi_ndi {
 /*!
  * \brief Do a 3D linear interpolation between vertices of a rectangular prism.
  *
- * Algorithm from wikipedia's Trilinear Interpolation article, hat tip to E.
- * Norris for the reference.
+ * Algorithm from wikipedia's Trilinear Interpolation article, hat tip to E.  Norris for the
+ * reference.
  *
  * \param[in] x0   lower x coordinate of lattice
  * \param[in] x1   upper x coordinate of lattice
@@ -81,8 +80,7 @@ inline double linear_interpolate_3(double const x0, double const x1, double cons
 // CONSTRUCTORS
 //----------------------------------------------------------------------------//
 /*!
- * \brief Constructor for NDI reader specific to TN DEDX data with provided path
- *        to gendir file.
+ * \brief Constructor for NDI reader specific to TN DEDX data with provided path to gendir file.
  *
  * \param[in] gendir_in path to gendir file
  * \param[in] library_in name of requested NDI data library
@@ -99,8 +97,7 @@ NDI_CP_Eloss::NDI_CP_Eloss(const std::string &gendir_in, const std::string &libr
   load_ndi();
 }
 /*!
- * \brief Constructor for NDI reader specific to TN DEDX data using default
- *        gendir file.
+ * \brief Constructor for NDI reader specific to TN DEDX data using default gendir file.
  *
  * \param[in] library_in name of requested NDI data library
  * \param[in] target_in Target CParticle object
@@ -115,13 +112,14 @@ NDI_CP_Eloss::NDI_CP_Eloss(const std::string &library_in, rtt_cdi::CParticle tar
 
   load_ndi();
 }
-//----------------------------------------------------------------------------//
+
+//------------------------------------------------------------------------------------------------//
 /*!
  * \brief Load NDI dataset
  *
- * This function opens an NDI file, navigates to the appropriate dataset, reads
- * the data into internal buffers, and closes the file. For more details on NDI,
- * see https://xweb.lanl.gov/projects/data/nuclear/ndi/ndi.html
+ * This function opens an NDI file, navigates to the appropriate dataset, reads the data into
+ * internal buffers, and closes the file. For more details on NDI, see
+ * https://xweb.lanl.gov/projects/data/nuclear/ndi/ndi.html
  */
 void NDI_CP_Eloss::load_ndi() {
 #if NDI_DEDX_SUPPORT
@@ -250,10 +248,10 @@ void NDI_CP_Eloss::load_ndi() {
          "NDI version " + std::string(NDI_VERSION_STRING) + " does not support stopping powers!");
 #endif // NDI_DEDX_SUPPORT
 }
-//----------------------------------------------------------------------------//
+
+//------------------------------------------------------------------------------------------------//
 /*!
- * \brief Interpolate the tabulated stopping power for a given material and
- *        projectile state.
+ * \brief Interpolate the tabulated stopping power for a given material and projectile state.
  * \param[in] temperature Material temperature [keV]
  * \param[in] density Material density [g cm^-3]
  * \param[in] partSpeed Particle speed [cm shk^-1]
@@ -302,9 +300,9 @@ double NDI_CP_Eloss::getEloss(const double temperature, const double density,
 //----------------------------------------------------------------------------//
 // CONSTRUCTORS
 //----------------------------------------------------------------------------//
+
 /*!
- * \brief Constructor for NDI reader specific to TN DEDX data with provided path
- *        to gendir file.
+ * \brief Constructor for NDI reader specific to TN DEDX data with provided path to gendir file.
  *
  * \param[in] gendir_in path to gendir file
  * \param[in] library_in name of requested NDI data library
@@ -317,8 +315,7 @@ NDI_CP_Eloss::NDI_CP_Eloss(const std::string &gendir_in, const std::string &libr
                        rtt_cdi::CPModelAngleCutoff::NONE),
       NDI_Base(gendir_in, "dedx", library_in) {}
 /*!
- * \brief Constructor for NDI reader specific to TN DEDX data using default
- *        gendir file.
+ * \brief Constructor for NDI reader specific to TN DEDX data using default gendir file.
  *
  * \param[in] library_in name of requested NDI data library
  * \param[in] target_in name of requested reaction
@@ -332,8 +329,8 @@ NDI_CP_Eloss::NDI_CP_Eloss(const std::string &library_in, rtt_cdi::CParticle tar
 
 //----------------------------------------------------------------------------//
 /*!
- * \brief Interpolate the tabulated stopping power for a given material and
- *        projectile state.
+ * \brief Interpolate the tabulated stopping power for a given material and projectile state.
+ *
  * \param[in] temperature Material temperature [keV]
  * \param[in] density Material density [g cm^-3]
  * \param[in] partSpeed Particle speed [cm shk^-1]

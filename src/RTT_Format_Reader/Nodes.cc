@@ -49,7 +49,7 @@ int Nodes::readNextInt(ifstream &meshfile) {
   bool commentLine = true;
   while (commentLine) {
     meshfile >> dummyString;
-    if (dummyString.rfind("!") == string::npos) {
+    if (dummyString.rfind('!') == string::npos) {
       commentLine = false;
       retVal = atoi(dummyString.c_str());
     } else { // Dump everything from here to the end of the line.

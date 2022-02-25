@@ -39,7 +39,7 @@ class Flags {
   vector_str flag_names;
 
 public:
-  Flags(size_t nflags_, const string name_)
+  Flags(size_t nflags_, string name_)
       : nflags(nflags_), name(std::move(name_)), flag_nums(nflags), flag_names(nflags) { /* empty */
   }
   ~Flags() = default;
