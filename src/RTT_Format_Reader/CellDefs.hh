@@ -50,7 +50,7 @@ class CellDef {
   vector_uint node_map;
 
 public:
-  CellDef(const CellDefs &cellDefs_, const string name_)
+  CellDef(const CellDefs &cellDefs_, string name_)
       : cellDefs(cellDefs_), name(std::move(name_)), nnodes(0), nsides(0),
         side_types(vector_uint()), sides(vector_vector_uint()), ordered_sides(0),
         node_map() { /* empty */

@@ -237,7 +237,7 @@ public:
    *
    * \post <code> get_side_nodes(i)==side_nodes_[i]  </code>
    */
-  Element_Definition(std::string name_, unsigned dimension_, unsigned number_of_nodes_,
+  Element_Definition(std::string const &name_, unsigned dimension_, unsigned number_of_nodes_,
                      unsigned number_of_sides_, std::vector<Element_Definition> const &elem_defs_,
                      std::vector<unsigned> const &side_type_,
                      std::vector<std::vector<unsigned>> const &side_nodes_);

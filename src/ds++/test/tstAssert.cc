@@ -481,8 +481,7 @@ void t_catch_bad_alloc(rtt_dsxx::UnitTest &ut) {
 
   try {
     // instead of 'int * big = new int(999999999999999);'
-    std::bad_alloc exception;
-    throw exception;
+    throw std::bad_alloc();
     //FAILMSG("failed to catch std::bad_alloc exception.");
   } catch (std::bad_alloc & /*err*/) {
     PASSMSG("caught a manually thrown std::bad_alloc exception.");

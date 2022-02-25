@@ -53,7 +53,7 @@ public:
   explicit Termination_Detector(int tag);
 
   //! Destructor.
-  ~Termination_Detector();
+  ~Termination_Detector(); // NOLINT(performance-trivially-destructible) bc optional debug behavior.
 
   //! Copy/Move assignment/construction operators not implemented.
   Termination_Detector &operator=(const Termination_Detector &rhs) = delete;

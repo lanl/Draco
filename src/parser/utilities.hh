@@ -91,7 +91,7 @@ std::shared_ptr<Expression> parse_temperature(Token_Stream &, unsigned number_of
  * the specification is not valid.
  */
 template <typename Class, typename... Context>
-std::shared_ptr<Class> parse_class(Token_Stream &tokens, Context const &... context);
+std::shared_ptr<Class> parse_class(Token_Stream &tokens, Context const &...context);
 
 } // namespace rtt_parser
 

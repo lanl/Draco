@@ -45,7 +45,7 @@ std::map<KT, std::vector<VT>> X3D_Draco_Mesh_Reader::map_x3d_block(const std::st
     size_t i = 0;
 
     // convert value types from string to VT
-    for (auto j : (*it).second) {
+    for (auto const &j : (*it).second) {
 
       // try to convert value type to VT, throw if impossible
       try {

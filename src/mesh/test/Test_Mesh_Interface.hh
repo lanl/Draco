@@ -50,7 +50,7 @@ public:
 public:
   //! Constructor.
   Test_Mesh_Interface(const size_t num_xdir_, const size_t num_ydir_,
-                      const std::vector<unsigned> global_node_number_ = {},
+                      std::vector<unsigned> global_node_number_ = {},
                       const double xdir_offset_ = 0.0, const double ydir_offset_ = 0.0);
 
   // >>> SERVICES
@@ -66,7 +66,7 @@ public:
 //------------------------------------------------------------------------------------------------//
 
 Test_Mesh_Interface::Test_Mesh_Interface(const size_t num_xdir_, const size_t num_ydir_,
-                                         const std::vector<unsigned> global_node_number_,
+                                         std::vector<unsigned> global_node_number_,
                                          const double xdir_offset_, const double ydir_offset_)
     : dim(2), num_cells(num_xdir_ * num_ydir_), num_nodes((num_xdir_ + 1) * (num_ydir_ + 1)),
       num_sides(2 * (num_xdir_ + num_ydir_)), num_nodes_per_cell(4), num_faces_per_cell(4),

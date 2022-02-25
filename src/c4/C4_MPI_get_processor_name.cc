@@ -24,7 +24,7 @@ std::string get_processor_name() {
   // char processor_name[DRACO_MAX_PROCESSOR_NAME];
   std::array<char, DRACO_MAX_PROCESSOR_NAME> processor_name;
   MPI_Get_processor_name(processor_name.data(), &namelen);
-  std::string const pname(processor_name.begin(), processor_name.begin() + namelen);
+  std::string pname(processor_name.begin(), processor_name.begin() + namelen);
   Ensure(pname.size() == static_cast<size_t>(namelen));
   return pname;
 }

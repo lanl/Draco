@@ -52,7 +52,7 @@ unsigned safe_convert_from_size_t(size_t const in_) {
  */
 Draco_Mesh::Draco_Mesh(
     unsigned dimension_, Geometry geometry_, const std::vector<unsigned> &num_faces_per_cell_,
-    const std::vector<unsigned> &cell_to_node_linkage_, const std::vector<unsigned> side_set_flag_,
+    const std::vector<unsigned> &cell_to_node_linkage_, std::vector<unsigned> side_set_flag_,
     const std::vector<unsigned> &side_node_count_,
     const std::vector<unsigned> &side_to_node_linkage_, const std::vector<double> &coordinates_,
     const std::vector<unsigned> &global_node_number_,

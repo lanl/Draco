@@ -63,7 +63,7 @@ private:
 
 public:
   //! Constructor
-  explicit RTT_Format_Reader(string RTT_File);
+  explicit RTT_Format_Reader(string const &RTT_File);
 
   //! Destructor
   ~RTT_Format_Reader() = default;

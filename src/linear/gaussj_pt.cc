@@ -11,10 +11,9 @@
 #include <vector>
 
 namespace rtt_linear {
-using std::vector;
 
-template void gaussj(vector<double> &A, unsigned n, vector<double> &b, unsigned m);
-template void gaussj(vector<vector<double>> &A, vector<double> &b);
+template void gaussj(std::vector<double> &A, unsigned n, std::vector<double> &b, unsigned m);
+template void gaussj(std::vector<std::vector<double>> &A, std::vector<double> &b);
 
 } // end namespace rtt_linear
 

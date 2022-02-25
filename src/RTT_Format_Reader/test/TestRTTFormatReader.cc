@@ -1071,7 +1071,7 @@ bool check_cell_defs(RTT_Format_Reader const &mesh, Meshes const &meshtype, Unit
 
   // Check cell definition access
   {
-    rtt_RTT_Format_Reader::CellDef const myCellDef(mesh.get_cell_defs_cell_def(0));
+    rtt_RTT_Format_Reader::CellDef const myCellDef(mesh.get_cell_defs_cell_def(0)); // NOLINT
     if (myCellDef.get_name() == std::string("point") && myCellDef.get_nnodes() == 1 &&
         myCellDef.get_nsides() == 0 && myCellDef.get_all_side_types().size() == 0 &&
         myCellDef.get_all_sides().size() == 0 && myCellDef.get_all_ordered_sides().size() == 0) {
@@ -1083,7 +1083,7 @@ bool check_cell_defs(RTT_Format_Reader const &mesh, Meshes const &meshtype, Unit
 
   // Check get_cell_defs_node_map(int)
   {
-    std::vector<unsigned> const myNodes = mesh.get_cell_defs_node_map(0);
+    std::vector<unsigned> const myNodes = mesh.get_cell_defs_node_map(0); // NOLINT
     size_t mySize = myNodes.size();
     // std::cout << "mySize = " << mySize << std::endl;
     if (mySize == 0) {

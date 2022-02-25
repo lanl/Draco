@@ -49,7 +49,9 @@ void test_array(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(dt.access() == &dt[0]);
 
     {
-      Data_Table<int> dt3(dt);
+      // Suppress clang-tidy warning since we don't care about performance and really want to test
+      // this form of the ctor.
+      Data_Table<int> dt3(dt); // NOLINT(performance-unnecessary-copy-initialization)
       FAIL_IF_NOT(dt3.size() == dt.size());
       FAIL_IF_NOT(dt3.begin() == dt.begin());
       FAIL_IF_NOT(dt3.end() == dt.end());

@@ -166,10 +166,11 @@ void draco_walk_directory_tree(std::string const &dirname, T const &myOperator) 
         continue;
 
       std::string itemPath;
+      std::string const uds(1, UnixDirSep);
       if (dirname[dirname.length() - 1] == UnixDirSep)
-        itemPath = dirname + d_name;
+        itemPath.append(dirname).append(d_name);
       else
-        itemPath = dirname + UnixDirSep + d_name;
+        itemPath.append(dirname).append(uds).append(d_name);
 
       // if the entry is a directory, recursively delete it, otherwise, delete the file
       if (draco_getstat(itemPath).isdir())

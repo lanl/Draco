@@ -4,8 +4,7 @@
  * \author Kendra P. Long
  * \date   Fri Aug  2 14:28:08 2019
  * \brief  Analytic_CP_Eloss test.
- * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi/CDI.hh"
@@ -21,7 +20,6 @@
 
 using namespace std;
 
-using rtt_cdi::CDI;
 using rtt_cdi_cpeloss::Analytic_CP_Eloss;
 using rtt_cdi_cpeloss::Analytic_Eloss_Model;
 //------------------------------------------------------------------------------------------------//

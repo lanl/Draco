@@ -4,8 +4,7 @@
  * \author Allan Wollaber
  * \date   Fri Oct 12 15:39:39 2001
  * \brief  Basic reader to print info in IPCRESS files.
- * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "IpcressFile.hh"
@@ -22,8 +21,6 @@
 #include <sstream>
 #include <vector>
 
-using rtt_cdi::GrayOpacity;
-using rtt_cdi::MultigroupOpacity;
 using rtt_cdi_ipcress::IpcressFile;
 using rtt_cdi_ipcress::IpcressGrayOpacity;
 using rtt_cdi_ipcress::IpcressMultigroupOpacity;
@@ -36,13 +33,13 @@ using std::string;
 /*!
  * \brief Basic reader to print info in IPCRESS files.
  *
- * Information about the IPCRESS IPCRESS Interface Library may be found on
- * X-Division's Physical Data Team web site:
+ * Information about the IPCRESS IPCRESS Interface Library may be found on X-Division's Physical
+ * Data Team web site:
  *
  * http://velvet.lanl.gov/PROJECTS/DATA/atomic/ipcress/intro.lasso
  *
- * We have a slightly modified copy of the ipcress libraries (explicitly added
- * compiler libraries) located at:
+ * We have a slightly modified copy of the ipcress libraries (explicitly added compiler libraries)
+ * located at:
  *
  * /radtran/vendors/ipcress
  *
@@ -83,10 +80,9 @@ void ipcress_file_read(std::string const &op_data_file) {
   cout.setf(ios::scientific);
 
 #if defined(MSVC) && MSVC_VERSION < 1900
-  // [2015-02-06 KT]: By default, MSVC uses a 3-digit exponent (presumably
-  // because numeric_limits<double>::max() has a 3-digit exponent.)  Enable
-  // two-digit exponent format to stay consistent with GNU and Intel on
-  // Linux.(requires <stdio.h>).
+  // [2015-02-06 KT]: By default, MSVC uses a 3-digit exponent (presumably because
+  // numeric_limits<double>::max() has a 3-digit exponent.)  Enable two-digit exponent format to
+  // stay consistent with GNU and Intel on Linux.(requires <stdio.h>).
   unsigned old_exponent_format = _set_output_format(_TWO_DIGIT_EXPONENT);
 #endif
 

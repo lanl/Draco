@@ -11,10 +11,9 @@
 #include <vector>
 
 namespace rtt_linear {
-using std::vector;
 
-template void svdcmp(vector<double> &a, const unsigned m, const unsigned n, vector<double> &w,
-                     vector<double> &v);
+template void svdcmp(std::vector<double> &a, const unsigned m, const unsigned n,
+                     std::vector<double> &w, std::vector<double> &v);
 
 } // end namespace rtt_linear
 

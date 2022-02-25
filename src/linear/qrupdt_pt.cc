@@ -11,14 +11,13 @@
 #include <vector>
 
 namespace rtt_linear {
-using std::vector;
 
 //------------------------------------------------------------------------------------------------//
 // T = RandomContainer = vector<double>
 //------------------------------------------------------------------------------------------------//
 
-template void qrupdt(vector<double> &r, vector<double> &qt, const unsigned n, vector<double> &u,
-                     vector<double> &v);
+template void qrupdt(std::vector<double> &r, std::vector<double> &qt, const unsigned n,
+                     std::vector<double> &u, std::vector<double> &v);
 
 } // end namespace rtt_linear
 

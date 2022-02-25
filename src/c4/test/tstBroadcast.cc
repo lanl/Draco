@@ -15,8 +15,6 @@
 using namespace std;
 
 using rtt_c4::broadcast;
-using rtt_c4::C4_Req;
-using rtt_c4::C4_Traits;
 using rtt_dsxx::soft_equiv;
 
 //------------------------------------------------------------------------------------------------//

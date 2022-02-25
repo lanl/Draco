@@ -190,7 +190,7 @@ Token Parse_Table::parse(Token_Stream &tokens) const {
   // these to the keyword table.
 
   for (;;) {
-    Token const token = tokens.shift();
+    Token token = tokens.shift();
 
     // The END, EXIT, and ERROR tokens are terminating tokens.  EXIT means the end of the token
     // stream has been reached.  END is used to flag the end of a nested parse, where the result of
@@ -330,7 +330,7 @@ Token Parse_Table::parseforkeyword(Token_Stream &tokens) const {
   // these to the keyword table.
 
   for (;;) {
-    Token const token = tokens.shift();
+    Token token = tokens.shift();
 
     // The END, EXIT, and ERROR tokens are terminating tokens.  EXIT means the end of the token
     // stream has been reached.  END is used to flag the end of a nested parse, where the result of

@@ -104,7 +104,7 @@ Pseudo_Line_Analytic_MultigroupOpacity::Pseudo_Line_Analytic_MultigroupOpacity(
 //! \bug No unit tests so commenting out until a test can be added.
 
 Analytic_MultigroupOpacity::sf_char Pseudo_Line_Analytic_MultigroupOpacity::pack() const {
-  sf_char const pdata = Analytic_MultigroupOpacity::pack();
+  sf_char pdata = Analytic_MultigroupOpacity::pack();
   Insist(false, "Please add a Draco Unit Test before restoring this code.");
   //   sf_char const pdata2 = Pseudo_Line_Base::pack();
   //   sf_char Result(pdata.size() + pdata2.size());

@@ -90,7 +90,7 @@ void X3D_Draco_Mesh_Reader::read_mesh() {
 
   // STEP 4: split strings in value at whitespace
 
-  for (auto rpair : raw_pairs) {
+  for (auto const &rpair : raw_pairs) {
 
     // split the string value into a vector
     std::vector<std::string> tmp_vec = rtt_dsxx::tokenize(rpair.second);
@@ -339,7 +339,7 @@ void X3D_Draco_Mesh_Reader::read_bdy_files() {
   const size_t num_bdy = bdy_filenames.size();
 
   size_t bdy_key = 0;
-  for (auto bdy_fname : bdy_filenames) {
+  for (auto const &bdy_fname : bdy_filenames) {
 
     // open file
     std::ifstream bdy_file(bdy_fname.c_str());

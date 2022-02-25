@@ -232,7 +232,7 @@ std::string XGetopt::display_help(std::string const &appName) const {
 
       // pad longopt so that they are all of the same length.
       if (longopt.length() < max_len)
-        longopt = longopt + std::string(max_len - longopt.length(), ' ');
+        longopt += std::string(max_len - longopt.length(), ' ');
 
       if (!hasarg)
         msg << "   -" << shortopt << " | --" << longopt << " : " << helpmsg << "\n";

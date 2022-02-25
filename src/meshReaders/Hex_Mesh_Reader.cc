@@ -18,7 +18,7 @@ namespace rtt_meshReaders {
 using rtt_mesh_element::Element_Definition;
 
 //------------------------------------------------------------------------------------------------//
-Hex_Mesh_Reader::Hex_Mesh_Reader(std::string filename)
+Hex_Mesh_Reader::Hex_Mesh_Reader(std::string const &filename)
     : meshfile_name(filename), version("unknown"), npoints(0), ncells(0), nvrtx(0), nvrpf(0),
       ndim(0), nvb_faces(0), nrb_faces(0), nmat(0), point_coords(), ipar(), imat_index(),
       irgn_vb_index(), ipar_vb(), ipar_rb(), node_sets() {

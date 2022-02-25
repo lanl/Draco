@@ -27,8 +27,8 @@
 namespace rtt_dsxx {
 
 //! Character used as path separator.
-char const WinDirSep = '\\';
-char const UnixDirSep = '/';
+char constexpr WinDirSep = '\\';
+char constexpr UnixDirSep = '/';
 #ifdef _MSC_VER
 char const dirSep = WinDirSep;
 std::string const exeExtension(".exe");

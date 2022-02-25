@@ -3,7 +3,7 @@
  *  \author Kelly Thompson
  *  \brief  This file contains enums, conversion factors and labels that help define a UnitSystem.
  *  \date   Mon Nov 03 20:54:05 2003
- *  \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "UnitSystemEnums.hh"
@@ -40,7 +40,7 @@ std::string setUnitLabel(size_t const pos, std::string const &labels) {
   // idx is the index for the first character of the lable.  numChars is the length of the label.
   std::string::size_type idx(0), numChars(0);
   word_positions.push_back(0);
-  while ((idx = labels.find(",", idx)) != std::string::npos)
+  while ((idx = labels.find(',', idx)) != std::string::npos)
     word_positions.push_back(++idx);
 
   // append one past the end the string.  This lets us compute the label length without using if

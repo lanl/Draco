@@ -171,7 +171,7 @@ std::map<std::string, unsigned> get_word_count(std::ostringstream const &msg, bo
     cout << "The messages from the message stream contained the following "
          << "words/occurrences." << endl;
     // print the word_list
-    for (auto it : word_list)
+    for (auto const &it : word_list)
       cout << it.first << ": " << it.second << endl;
   }
 

@@ -4,8 +4,7 @@
  * \author Ben R. Ryan
  * \date   2019 Nov 4
  * \brief  Tabular_CP_Eloss member definitions.
- * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Tabular_CP_Eloss.hh"
@@ -14,7 +13,6 @@
 
 namespace rtt_cdi_cpeloss {
 
-namespace stdex = std::experimental;
 using std::experimental::basic_mdspan;
 using std::experimental::dynamic_extent;
 using std::experimental::extents;
@@ -24,8 +22,8 @@ using std::experimental::layout_left;
 /*!
  * \brief Do a 3D linear interpolation between vertices of a rectangular prism.
  *
- * Algorithm from wikipedia's Trilinear Interpolation article, hat tip to E.
- * Norris for the reference.
+ * Algorithm from wikipedia's Trilinear Interpolation article, hat tip to E.  Norris for the
+ * reference.
  *
  * \param[in] x0   lower x coordinate of lattice
  * \param[in] x1   upper x coordinate of lattic
@@ -85,19 +83,17 @@ inline double linear_interpolate_3(double const x0, double const x1, double cons
 /*!
  * \brief Constructor for an analytic tabular eloss model.
  *
- * This constructor builds an eloss model defined by the
- * rtt_cdi_cpeloss::Tabular_Eloss_Model derived class argument.
+ * This constructor builds an eloss model defined by the rtt_cdi_cpeloss::Tabular_Eloss_Model
+ * derived class argument.
  *
- * The path to an eloss datafile is passed to the constructor, which opens and
- * parses the file. The file format is the usual LANL format for stopping
- * powers.
+ * The path to an eloss datafile is passed to the constructor, which opens and parses the file. The
+ * file format is the usual LANL format for stopping powers.
  *
  * \param[in] filename_in path to eloss file
  * \param[in] target_in target particle zaid
  * \param[in] projectile_in transporting particle zaid
- * \param[in] model_angle_cutoff_in rtt_cdi::CPModelAngleCutoff the angle
- *                 separating the stopping power approximation from analog
- *                 scattering
+ * \param[in] model_angle_cutoff_in rtt_cdi::CPModelAngleCutoff the angle separating the stopping
+ *                 power approximation from analog scattering
  */
 Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle target_in,
                                    rtt_cdi::CParticle projectile_in,
@@ -112,8 +108,7 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
   Insist(file.is_open(), "Error opening DEDX file \"" + filename + "\"");
 
   constexpr uint32_t max_entries =
-      6; // This is a statement about the file format, maximum of six entries
-         // per row
+      6; // This is a statement about the file format, maximum of six entries per row
 
   std::vector<std::string> line_entries = read_line(); // ZAID
   int32_t projectile_zaid_file = stoi(line_entries[0]);
@@ -174,15 +169,14 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
 
   bool target_found = false;
   nlines = (n_energy * n_density * n_temperature + max_entries - 1) /
-           max_entries; // The number of lines taken up by stopping power data for
-                        // one target
+           max_entries; // The number of lines taken up by stopping power data for one target
   if (target.get_zaid() == -1) {
     // Target is free electrons
     target_found = true;
     uint32_t nentry = 0;
     for (uint32_t n = 0; n < nlines; n++) {
       line_entries = read_line();
-      for (std::string entry : line_entries) {
+      for (std::string const &entry : line_entries) {
         stopping_data_1d[nentry++] = stod(entry);
       }
     }
@@ -201,7 +195,7 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
         uint32_t nentry = 0;
         for (uint32_t n = 0; n < nlines; n++) {
           line_entries = read_line();
-          for (std::string entry : line_entries) {
+          for (std::string const &entry : line_entries) {
             stopping_data_1d[nentry] = stod(entry);
             nentry++;
           }
@@ -223,13 +217,15 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
           stopping_data_1d.data(), n_energy, n_density, n_temperature);
 
   // Convert units on table to match those of getEloss:
-  //   energy:      MeV -> cm/shk (using target particle mass)
+  //
+  // energy:      MeV -> cm/shk (using target particle mass)
   double energy_cgs = exp(min_log_energy) * (1.e6 * pc.electronVolt());
   min_log_energy = log(sqrt(2. * energy_cgs / target.get_mass()) * 1.e-8);
   d_log_energy = d_log_energy / 2.;
-  //   density:     cm^-3 -> g cm^-3
+  // density:     cm^-3 -> g cm^-3
   min_log_density = log(exp(min_log_density) * target.get_mass());
-  //   temperature: keV -> keV
+  // temperature: keV -> keV
+  //
   // Note that d log x = dx / x is not affected by unit conversion factors
   for (auto &energy : energies) {
     energy = sqrt(2. * (energy * 1.e6 * pc.electronVolt()) / target.get_mass()) * 1.e-8;
@@ -272,8 +268,7 @@ std::vector<std::string> const Tabular_CP_Eloss::read_line() {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Interpolate the tabulated stopping power for a given material and
- *        projectile state.
+ * \brief Interpolate the tabulated stopping power for a given material and projectile state.
  * \param[in] temperature Material temperature [keV]
  * \param[in] density Material density [g cm^-3]
  * \param[in] partSpeed Particle speed [cm shk^-1]

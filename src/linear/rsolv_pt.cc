@@ -12,13 +12,11 @@
 
 namespace rtt_linear {
 
-using std::vector;
-
 //------------------------------------------------------------------------------------------------//
 // T=vector<double> const &
 //------------------------------------------------------------------------------------------------//
 
-template void rsolv(const vector<double> &R, const unsigned n, vector<double> &b);
+template void rsolv(const std::vector<double> &R, const unsigned n, std::vector<double> &b);
 
 } // end namespace rtt_linear
 

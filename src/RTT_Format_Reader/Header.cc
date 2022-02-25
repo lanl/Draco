@@ -46,31 +46,31 @@ void Header::readData(ifstream &meshfile) {
   Insist(dummyString == "version", "Invalid mesh file: Header block missing version");
   std::getline(meshfile, dummyString);
   // strip leading blanks and trailing comments and blanks from the version.
-  if (dummyString.rfind("!") != string::npos)
-    dummyString.erase(dummyString.rfind("!"));
-  version = dummyString.substr(dummyString.find_first_not_of(" "),
-                               dummyString.find_last_not_of(" ") -
-                                   dummyString.find_first_not_of(" ") + 1);
+  if (dummyString.rfind('!') != string::npos)
+    dummyString.erase(dummyString.rfind('!'));
+  version = dummyString.substr(dummyString.find_first_not_of(' '),
+                               dummyString.find_last_not_of(' ') -
+                                   dummyString.find_first_not_of(' ') + 1);
   Insist(version == "v1.0.0", "Invalid mesh file: Wrong version");
 
   meshfile >> dummyString;
   Insist(dummyString == "title", "Invalid mesh file: Header block missing title");
   std::getline(meshfile, dummyString);
   // strip leading blanks and trailing comments and blanks from the title.
-  if (dummyString.rfind("!") != string::npos)
-    dummyString.erase(dummyString.rfind("!"));
-  title = dummyString.substr(dummyString.find_first_not_of(" "),
-                             dummyString.find_last_not_of(" ") -
-                                 dummyString.find_first_not_of(" ") + 1);
+  if (dummyString.rfind('!') != string::npos)
+    dummyString.erase(dummyString.rfind('!'));
+  title = dummyString.substr(dummyString.find_first_not_of(' '),
+                             dummyString.find_last_not_of(' ') -
+                                 dummyString.find_first_not_of(' ') + 1);
 
   meshfile >> dummyString;
   Insist(dummyString == "date", "Invalid mesh file: Header block missing date");
   std::getline(meshfile, dummyString);
   // strip leading blanks and trailing comments and blanks from the date.
-  if (dummyString.rfind("!") != string::npos)
-    dummyString.erase(dummyString.rfind("!"));
-  date = dummyString.substr(dummyString.find_first_not_of(" "),
-                            dummyString.find_last_not_of(" ") - dummyString.find_first_not_of(" ") +
+  if (dummyString.rfind('!') != string::npos)
+    dummyString.erase(dummyString.rfind('!'));
+  date = dummyString.substr(dummyString.find_first_not_of(' '),
+                            dummyString.find_last_not_of(' ') - dummyString.find_first_not_of(' ') +
                                 1);
 
   meshfile >> dummyString >> cycle;
@@ -88,11 +88,11 @@ void Header::readData(ifstream &meshfile) {
   for (int i = 0; i < ncomments; ++i) {
     std::getline(meshfile, comments[i]);
     // strip leading blanks and trailing comments and blanks from the comment lines.
-    if (comments[i].rfind("!") != string::npos)
-      comments[i].erase(comments[i].rfind("!"));
-    comments[i] = comments[i].substr(comments[i].find_first_not_of(" "),
-                                     comments[i].find_last_not_of(" ") -
-                                         comments[i].find_first_not_of(" ") + 1);
+    if (comments[i].rfind('!') != string::npos)
+      comments[i].erase(comments[i].rfind('!'));
+    comments[i] = comments[i].substr(comments[i].find_first_not_of(' '),
+                                     comments[i].find_last_not_of(' ') -
+                                         comments[i].find_first_not_of(' ') + 1);
   }
 }
 
