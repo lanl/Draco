@@ -3,7 +3,7 @@
 # file  src/mesh/python/mesh_types.py
 # date  Monday, Jul 19, 2021, 12:14 pm
 # brief This script provides mesh classes that calculate and contain unstructred mesh data.
-# note  Copyright (C) 2021 Triad National Security, LLC., All rights reserved.
+# note  Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import numpy as np
 
@@ -688,6 +688,128 @@ class vor_2d_mesh(base_mesh):
                     bdy_nodes.append(node)
             self.nodes_per_side.append(np.unique(bdy_nodes))
 
+
+# ------------------------------------------------------------------------------------------------ #
+# random 1D mesh type: orthogonal 1D mesh type with vertices randomly sampled in a ball
+# centered at original (orthogonal) vertices
+class rnd_1d_mesh(orth_1d_mesh):
+    '''
+    Class for mesh with randomly resampled vertices from orthogonally structured 1D mesh.
+    The randomization currently only operates on interior vertices of the mesh.
+    '''
+
+    def __init__(self, bounds_per_dim, num_cells_per_dim, eps, rng_seed):
+        assert (eps >= 0.0), 'eps < 0.0'
+        assert (eps <= 1.0), 'eps > 1.0'
+        # -- import pseudorandom number generator functions
+        from random import seed, random
+        # -- invoke base mesh constructor to generate initial mesh form
+        orth_1d_mesh.__init__(self, bounds_per_dim, num_cells_per_dim)
+        # -- short-cuts
+        nx = num_cells_per_dim[0]
+        # -- initial cell dimensions
+        dx = (bounds_per_dim[0][1] - bounds_per_dim[0][0]) / nx
+        # -- calculate radius of ball centered at original vertices
+        r = 0.5 * dx * eps
+        # -- set random number seed
+        seed(rng_seed)
+        # -- resample interior vertex coordinates
+        for i in range(1, nx):
+            node = i
+            # -- sample displacements
+            dx0 = r * (1.0 - 2.0 * random())
+            # -- add displacement to coordinates
+            self.coordinates_per_node[node, 0] += dx0
+
+
+# ------------------------------------------------------------------------------------------------ #
+# random 2D mesh type: orthogonal 2D mesh type with vertices randomly sampled in a ball
+# centered at original (orthogonal) vertices
+class rnd_2d_mesh(orth_2d_mesh):
+    '''
+    Class for mesh with randomly resampled vertices from orthogonally structured 2D mesh.
+    The randomization currently only operates on interior vertices of the mesh.
+    '''
+
+    def __init__(self, bounds_per_dim, num_cells_per_dim, eps, rng_seed):
+        assert (eps >= 0.0), 'eps < 0.0'
+        assert (eps <= 1.0), 'eps > 1.0'
+        # -- import pseudorandom number generator functions
+        from random import seed, random
+        # -- invoke base mesh constructor to generate initial mesh form
+        orth_2d_mesh.__init__(self, bounds_per_dim, num_cells_per_dim)
+        # -- short-cuts
+        nx = num_cells_per_dim[0]
+        ny = num_cells_per_dim[1]
+        # -- initial cell dimensions
+        dx = (bounds_per_dim[0][1] - bounds_per_dim[0][0]) / nx
+        dy = (bounds_per_dim[1][1] - bounds_per_dim[1][0]) / ny
+        # -- calculate radius of ball centered at original vertices
+        r = 0.5 * min(dx, dy) * eps
+        # -- set random number seed
+        seed(rng_seed)
+        # -- resample interior vertex coordinates
+        for j in range(1, ny):
+            j_offset = (nx + 1) * j
+            for i in range(1, nx):
+                node = i + j_offset
+                # -- sample displacements
+                dr = r * random()
+                om = 2.0 * np.pi * random()
+                dx0 = dr * np.cos(om)
+                dy0 = dr * np.sin(om)
+                # -- add displacement to coordinates
+                self.coordinates_per_node[node, 0] += dx0
+                self.coordinates_per_node[node, 1] += dy0
+
+
+# ------------------------------------------------------------------------------------------------ #
+# random 3D mesh type: orthogonal 3D mesh type with vertices randomly sampled in a ball
+# centered at original (orthogonal) vertices
+class rnd_3d_mesh(orth_3d_mesh):
+    '''
+    Class for mesh with randomly resampled vertices from orthogonally structured 3D mesh.
+    The randomization currently only operates on interior vertices of the mesh.
+    '''
+
+    def __init__(self, bounds_per_dim, num_cells_per_dim, eps, rng_seed):
+        assert (eps >= 0.0), 'eps < 0.0'
+        assert (eps <= 1.0), 'eps > 1.0'
+        # -- import pseudorandom number generator functions
+        from random import seed, random
+        # -- invoke base mesh constructor to generate initial mesh form
+        orth_3d_mesh.__init__(self, bounds_per_dim, num_cells_per_dim)
+        # -- short-cuts
+        nx = num_cells_per_dim[0]
+        ny = num_cells_per_dim[1]
+        nz = num_cells_per_dim[2]
+        # -- initial cell dimensions
+        dx = (bounds_per_dim[0][1] - bounds_per_dim[0][0]) / nx
+        dy = (bounds_per_dim[1][1] - bounds_per_dim[1][0]) / ny
+        dz = (bounds_per_dim[2][1] - bounds_per_dim[2][0]) / nz
+        # -- calculate radius of ball centered at original vertices
+        r = 0.5 * min(dx, min(dy, dz)) * eps
+        # -- set random number seed
+        seed(rng_seed)
+        # -- resample interior vertex coordinates
+        for k in range(1, nz):
+            k_offset = (nx + 1) * (ny + 1) * k
+            for j in range(1, ny):
+                j_offset = (nx + 1) * j
+                for i in range(1, nx):
+                    node = i + j_offset + k_offset
+                    # -- sample displacements
+                    dr = r * random()
+                    mu = 1.0 - 2.0 * random()
+                    om = 2.0 * np.pi * random()
+                    xi = np.sqrt(1.0 - mu * mu)
+                    dx0 = dr * mu
+                    dy0 = dr * xi * np.cos(om)
+                    dz0 = dr * xi * np.sin(om)
+                    # -- add displacement to coordinates
+                    self.coordinates_per_node[node, 0] += dx0
+                    self.coordinates_per_node[node, 1] += dy0
+                    self.coordinates_per_node[node, 2] += dz0
 
 # ------------------------------------------------------------------------------------------------ #
 # end of mesh_types.py

@@ -390,6 +390,53 @@ void build_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
+// Parse and build a 3D random mesh
+void build_x3d_rnd_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
+
+  // use Cartesian geometry
+  const Draco_Mesh::Geometry geometry = Draco_Mesh::Geometry::CARTESIAN;
+
+  // >>> PARSE MESH
+
+  const std::string inputpath = ut.getTestSourcePath();
+  const std::string filename = inputpath + "x3d.rnd_mesh3d.in";
+  const std::vector<std::string> bdy_filenames = {
+      inputpath + "x3d.rnd_mesh3d.bdy1.in", inputpath + "x3d.rnd_mesh3d.bdy2.in",
+      inputpath + "x3d.rnd_mesh3d.bdy3.in", inputpath + "x3d.rnd_mesh3d.bdy4.in",
+      inputpath + "x3d.rnd_mesh3d.bdy5.in", inputpath + "x3d.rnd_mesh3d.bdy6.in"};
+  const std::vector<unsigned> bdy_flags = {3, 1, 0, 2, 1, 5};
+
+  // construct reader
+  std::shared_ptr<X3D_Draco_Mesh_Reader> x3d_reader(
+      new X3D_Draco_Mesh_Reader(filename, bdy_filenames, bdy_flags));
+
+  // read mesh
+  x3d_reader->read_mesh();
+
+  // instantiate a mesh builder and build the mesh
+  Draco_Mesh_Builder<X3D_Draco_Mesh_Reader> mesh_builder(x3d_reader);
+  std::shared_ptr<Draco_Mesh> mesh = mesh_builder.build_mesh(geometry);
+
+  // check that the scalar data is correct
+  FAIL_IF(mesh->get_dimension() != 3);
+  FAIL_IF(mesh->get_geometry() != Draco_Mesh::Geometry::CARTESIAN);
+  FAIL_IF(mesh->get_num_cells() != 64);
+  FAIL_IF(mesh->get_num_nodes() != 125);
+
+  // check layout sizes
+  FAIL_IF((mesh->get_cc_linkage()).size() != 64);
+  FAIL_IF((mesh->get_cs_linkage()).size() != 56);
+  FAIL_IF((mesh->get_cg_linkage()).size() > 0);
+
+  // \todo: add more testing here
+
+  // successful test output
+  if (ut.numFails == 0)
+    PASSMSG("3D X3D_Draco_Mesh_Reader random mesh build tests ok.");
+  return;
+}
+
+//------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
@@ -399,6 +446,7 @@ int main(int argc, char *argv[]) {
     read_voronoi_mesh(ut);
     read_x3d_mesh_3d(ut);
     build_x3d_mesh_3d(ut);
+    build_x3d_rnd_mesh_3d(ut);
   }
   UT_EPILOG(ut);
 }
