@@ -22,6 +22,7 @@ stages:
   - slowtest
   - optional
   - deploy
+  - deploy-downstream
 
 include:
   - local: /.gitlab/ci/tt-jobs.yml
