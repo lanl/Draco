@@ -305,8 +305,13 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
     }
   }
 
+#if defined(__GNUC__) && __GNUC__ == 8 && __GNUC_MINOR__ == 3 && __GNUC_PATCHLEVEL__ == 1
+  // gcc-8.3.1 complains about normal syntax (rzansel).
+#pragma omp parallel for ordered schedule(dynamic) default(none) shared(image1)
+#else
 #pragma omp parallel for ordered schedule(dynamic) default(none)                                   \
     shared(num_pixels, begin, span, image1)
+#endif
   for (int pix = 0; pix < num_pixels; ++pix) {
     const int x = pix % width;
     const int y = pix / width;

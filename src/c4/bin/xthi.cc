@@ -20,7 +20,12 @@ int main(int argc, char *argv[]) {
   std::string const hostname = rtt_dsxx::draco_gethostname();
   unsigned const num_cpus = omp_get_num_procs();
 
+#if defined(__GNUC__) && __GNUC__ == 8 && __GNUC_MINOR__ == 3 && __GNUC_PATCHLEVEL__ == 1
+  // gcc-8.3.1 complains about normal syntax (rzansel).
+#pragma omp parallel default(none) shared(hostname, std::cout)
+#else
 #pragma omp parallel default(none) shared(num_cpus, hostname, rank, std::cout)
+#endif
   {
     int thread = omp_get_thread_num();
     std::string cpuset = rtt_c4::cpuset_to_string(num_cpus);
