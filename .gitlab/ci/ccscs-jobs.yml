@@ -107,6 +107,15 @@ ccs4_deb_gcc_1020_deploy:
     DRACO_ENV: gcc1020-ompi4
     SITE_ID: ccscs4
 
+ccs4_rel_gcc_1020_deploy:
+  tags:
+    - CCSCS4-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs4
+
 ccs1_c4_scalar_deploy:
   tags:
     - CCSCS1-setuid-shared
