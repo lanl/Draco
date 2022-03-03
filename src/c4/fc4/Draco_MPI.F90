@@ -3,7 +3,7 @@
 ! \author Allan Wollaber
 ! \date   Mon Jul 30 07:06:24 MDT 2012
 ! \brief  Helper functions to support scalar vs. distributed MPI tests.
-! \note   Copyright (c) 2016-2021 Triad National Security, LLC., All rights reserved.
+! \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
 !--------------------------------------------------------------------------------------------------!
 
 module draco_mpi
@@ -12,7 +12,7 @@ module draco_mpi
 
   integer, public, save :: fc4_rank, fc4_num_ranks
 
-  ! Don't pollute the global namespace with the MPI stuff
+  ! Do not pollute the global namespace with the MPI stuff
   private
 #ifdef C4_MPI
   include 'mpif.h'
@@ -27,10 +27,10 @@ module draco_mpi
 
   interface
 
-     ! Set c4's global 'initialized' boolean.
-     subroutine setMpiInit() bind(C, name="setMpiInit")
-       implicit none
-     end subroutine setMpiInit
+    ! Set c4's global 'initialized' boolean.'
+    subroutine setMpiInit() bind(C, name="setMpiInit")
+      implicit none
+    end subroutine setMpiInit
 
   end interface
 
@@ -48,10 +48,10 @@ contains
     external mpi_error_string, MPI_Abort
 
     ! Check and report a nonzero error code
-    if (error .ne. 0) then
-       call mpi_error_string(error, error_string, error_string_len, ierror)
-       write (*, "('*** mpi error = ',i18, ' (', a, ')')") error, trim(error_string)
-       call MPI_Abort(MPI_COMM_WORLD, 1, ierror)
+    if (error /= 0) then
+      call mpi_error_string(error, error_string, error_string_len, ierror)
+      write (*, "('*** mpi error = ',i18, ' (', a, ')')") error, trim(error_string)
+      call MPI_Abort(MPI_COMM_WORLD, 1, ierror)
     end if
 #endif
   end subroutine check_mpi_error

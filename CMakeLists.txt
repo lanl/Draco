@@ -31,7 +31,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 #
 #   * Fortran only: $ENV{FC} is not set (e.g. clang on Linux)
 #   * Cuda only   : $ENV{CUDADIR} is not set (e.g. cuda module not loaded)
-if(${CMAKE_GENERATOR} MATCHES "Unix Makefiles")
+if(${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ninja")
   if(DEFINED ENV{FC} OR DEFINED CMAKE_Fortran_COMPILER)
     enable_language(Fortran OPTIONAL)
   endif()

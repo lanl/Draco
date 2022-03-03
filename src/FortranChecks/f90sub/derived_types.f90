@@ -4,7 +4,7 @@
 ! author Kelly Thompson, Allan Wollaber
 ! date   Tuesday, Jun 12, 2012, 16:03 pm
 ! brief  Test F90 derived types passed into a C++ function
-! note   Copyright (c) 2016-2020 Triad National Security, LLC., All rights reserved.
+! note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved.
 !-------------------------------------------------------------------------------------------------!
 
 !-------------------------------------------------------------------------------------------------!
@@ -15,30 +15,30 @@
 module rtt_test_derived_types
   use iso_c_binding, only: c_double, c_int, c_int64_t, c_ptr, c_null_ptr
   implicit none
-  ! Proper enumeration types don't work in F2003, but this is close.  Enumerations with bind(C) are
+  ! Proper enumeration types do not work in F2003, but this is close.  Enumerations with bind(C) are
   ! just integers anyway.  See:
   ! http://www.rhinocerus.net/forum/lang-fortran/92750-no-enumeration-data-type-fortran.html
   integer(c_int), parameter :: GREY = 0, MULTIGROUP = 1, ODF = 2
 
   ! Create a derived type that contains some "extra" information
   type, bind(C)  :: my_informative_type
-     real(c_double)       :: some_double
-     integer(c_int)       :: some_int
-     integer(c_int64_t)   :: some_large_int
-     type(c_ptr)          :: some_pointer = C_NULL_PTR
-     integer(c_int)       :: some_enum
+    real(c_double)       :: some_double
+    integer(c_int)       :: some_int
+    integer(c_int64_t)   :: some_large_int
+    type(c_ptr)          :: some_pointer = C_NULL_PTR
+    integer(c_int)       :: some_enum
   end type my_informative_type
 
   ! Now create an interface to the C routine that accepts that type
   interface
-     subroutine rtt_test_derived_type(dt_in, err_code) bind(C, &
-          name="rtt_test_derived_type")
-       use iso_c_binding, only: c_int
-       import my_informative_type  ! F2003 standard, brings in host scope
-       implicit none
-       type(my_informative_type), intent(in)  :: dt_in
-       integer(c_int), intent(out) :: err_code
-     end subroutine rtt_test_derived_type
+    subroutine rtt_test_derived_type(dt_in, err_code) bind(C, &
+                                                           name="rtt_test_derived_type")
+      use iso_c_binding, only: c_int
+      import my_informative_type  ! F2003 standard, brings in host scope
+      implicit none
+      type(my_informative_type), intent(in)  :: dt_in
+      integer(c_int), intent(out) :: err_code
+    end subroutine rtt_test_derived_type
   end interface
 
 end module rtt_test_derived_types
@@ -87,20 +87,20 @@ subroutine test_derived_types() bind(c)
 
   deallocate (int_array)
 
-  if (error_code .eq. 0) then
-     print '(a)', "Test: passed"
-     print '(a)', "     error code is equal to zero"
+  if (error_code == 0) then
+    print '(a)', "Test: passed"
+    print '(a)', "     error code is equal to zero"
   else
-     print '(a)', "Test: failed"
-     print '(a,i5)', "     error code not equal to zero; it's ", error_code
+    print '(a)', "Test: failed"
+    print '(a,i5)', "     error code not equal to zero; it's ", error_code
   endif
 
   print '(a)', " "
   print '(a)', "*********************************************"
-  if (error_code .ne. 0) then
-     print '(a)', "**** test_derived_types Test: FAILED."
+  if (error_code /= 0) then
+    print '(a)', "**** test_derived_types Test: FAILED."
   else
-     print '(a)', "**** test_derived_types Test: PASSED."
+    print '(a)', "**** test_derived_types Test: PASSED."
   endif
   print '(a)', "*********************************************"
 
