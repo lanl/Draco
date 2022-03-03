@@ -454,15 +454,15 @@ for file in $modifiedfiles; do
     exit 1
   fi
   if [[ "${create_date}" -gt "${today}" ]] || [[ "${create_date}" -lt "1990" ]]; then
-    echo "Existing copyright date range is corrupt. Please fix $filename manually."
+    echo "Existing copyright date range is corrupt. Please fix $file manually."
     exit 1
   fi
   if [[ "${git_create_date}" -gt "${today}" ]] || [[ "${git_create_date}" -lt "1990" ]]; then
-    echo "Existing copyright date range is corrupt. Please fix $filename manually."
+    echo "Existing copyright date range is corrupt. Please fix $file manually."
     exit 1
   fi
   if [[ "${create_date}" -gt "${today}" ]] || [[ "${create_date}" -lt "1990" ]]; then
-    echo "Existing copyright date range is corrupt. Please fix $filename manually."
+    echo "Existing copyright date range is corrupt. Please fix $file manually."
     exit 1
   fi
 
@@ -480,13 +480,13 @@ for file in $modifiedfiles; do
   ecrl+="${today} Triad National Security, LLC., All rights reserved."
 
   # If existing copyright spans two lines, reduce it to one line.
-  twolines=$(grep -A 1 Copyright "${filename}" | tail -n 1 | grep -c reserved)
-  twolines_closes_cpp_comment=$(grep -A 1 Copyright "${filename}" | tail -n 1 | grep -c '[*]/')
+  twolines=$(grep -A 1 Copyright "${file}" | tail -n 1 | grep -c reserved)
+  twolines_closes_cpp_comment=$(grep -A 1 Copyright "${file}" | tail -n 1 | grep -c '[*]/')
   if [[ $twolines -gt 0 ]]; then
     if [[ $twolines_closes_cpp_comment -gt 0 ]]; then
-      sed -i 's%^.*All [Rr]ights [Rr]eserved[.]*.*[*]/$% */%' "${filename}"
+      sed -i 's%^.*All [Rr]ights [Rr]eserved[.]*.*[*]/$% */%' "${file}"
     else
-      sed -i '/All rights reserved/d' "${filename}"
+      sed -i '/All rights reserved/d' "${file}"
     fi
   fi
 

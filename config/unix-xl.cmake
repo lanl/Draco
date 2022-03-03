@@ -3,13 +3,16 @@
 # author Gabriel Rockefeller, Kelly Thompson <kgt@lanl.gov>
 # date   2012 Nov 1
 # brief  Establish flags for Linux64 - IBM XL C++
-# note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
 
-# Ref:
-# https://www.ibm.com/support/knowledgecenter/en/SSXVZZ_16.1.1/com.ibm.xlcpp1611.lelinux.doc/compiler_ref/rucmpopt.html
+# cmake-lint: disable=C0301
+# ~~~
+# Ref:https://www.ibm.com/support/knowledgecenter/en/SSXVZZ_16.1.1/com.ibm.xlcpp1611.lelinux.doc/compiler_ref/rucmpopt.html
+# ~~~
+
 #
 # Compiler flag checks
 #
