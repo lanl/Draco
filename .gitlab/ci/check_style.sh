@@ -215,6 +215,9 @@ if [[ -x "${CMF}" ]]; then
     # extensions specified in $FILE_EXTS
     if ! matches_extension "$file"; then continue; fi
 
+    # ignore file if it no longer exists
+    if ! [[ -f "${file}" ]]; then continue; fi
+
     file_nameonly=$(basename "${file}")
     tmpfile1="/tmp/$USER/cmf-${file_nameonly}"
     echo "==> cmake-format ${file}"
@@ -288,6 +291,9 @@ if [[ -x $CML ]]; then
     # extensions specified in $FILE_EXTS
     if ! matches_extension "$file"; then continue; fi
 
+    # ignore file if it no longer exists
+    if ! [[ -f "${file}" ]]; then continue; fi
+
     printf "==> cmake-lint %s\n" "$file"
     $CML --suppress-decoration "${file}" && echo -ne "==> cmake-lint ${file} ... OK\n" || cml_issues=1
 
@@ -345,6 +351,9 @@ if [[ -x "$FPY" ]]; then
     # ignore file if we do check for file extensions and the file does not match any of the
     # extensions specified in $FILE_EXTS
     if ! matches_extension "$file"; then continue; fi
+
+    # ignore file if it no longer exists
+    if ! [[ -f "${file}" ]]; then continue; fi
 
     file_nameonly=$(basename "${file}")
     tmpfile1="/tmp/$USER/f90-format-${file_nameonly}"
@@ -413,6 +422,7 @@ for file in $modifiedfiles; do
   # ignore file if we do check for file extensions and the file does not match any of the
   # extensions specified in $FILE_EXTS
   if ! matches_extension "$file"; then continue; fi
+
   # If this PR deletes a file, skip it
   if ! [[ -f "${file}" ]]; then continue; fi
   # Gold files, python test inputs, and python run files don't have a copyright line
