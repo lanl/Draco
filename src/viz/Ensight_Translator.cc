@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 16:36:10 2000
  * \brief  Ensight_Translator implementation file (non-templated code).
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Ensight_Translator.hh"
@@ -186,17 +186,17 @@ void Ensight_Translator::initialize(const bool graphics_continue) {
   using std::endl;
   using std::strerror;
 
-  d_num_cell_types = 16;
+  d_num_cell_types = 17;
 
   // Assign values to d_cell_names. These are the official "Ensight" names that must be used in the
   // Ensight file.
   d_cell_names = {"point",  "bar2",   "bar3",    "tria3",    "tria6",     "quad4",
                   "quad8",  "tetra4", "tetra10", "pyramid5", "pyramid13", "hexa8",
-                  "hexa20", "penta6", "penta15", "nsided"};
+                  "hexa20", "penta6", "penta15", "nsided",   "nfaced"};
   Check(d_cell_names.size() == d_num_cell_types);
 
   // Assign values to vrtx_count, the number of vertices in a cell.
-  d_vrtx_cnt = {1, 2, 3, 3, 6, 4, 8, 4, 10, 5, 13, 8, 20, 6, 15, -1};
+  d_vrtx_cnt = {1, 2, 3, 3, 6, 4, 8, 4, 10, 5, 13, 8, 20, 6, 15, -1, -1};
   Check(d_vrtx_cnt.size() == d_num_cell_types);
 
   // Assign values to d_cell_type_index. The user will use these to identify cell types.
@@ -215,7 +215,8 @@ void Ensight_Translator::initialize(const bool graphics_continue) {
                        twenty_node_hexahedron,
                        six_node_wedge,
                        fifteen_node_wedge,
-                       unstructured};
+                       unstructured,
+                       unstructured_3d};
   Check(d_cell_type_index.size() == d_num_cell_types);
 
   if (rtt_c4::node() == 0) {

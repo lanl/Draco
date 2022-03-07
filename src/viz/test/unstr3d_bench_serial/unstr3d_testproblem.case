@@ -1,0 +1,19 @@
+FORMAT
+type: ensight gold
+
+GEOMETRY
+model: 1   ./geo/data.****
+
+VARIABLE
+scalar per node:    1  Densities           ./Densities/data.****
+scalar per node:    1  Temperatures        ./Temperatures/data.****
+scalar per element: 1  Velocity            ./Velocity/data.****
+scalar per element: 1  Pressure            ./Pressure/data.****
+
+TIME
+time set:                 1
+number of steps:          1
+filename start number:    1
+filename increment:       1
+time values:           
+ 1.00000e-02
