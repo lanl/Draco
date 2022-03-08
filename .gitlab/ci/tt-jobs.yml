@@ -19,7 +19,7 @@
     SITE_ID: trinitite
     CTEST_NPROC: 32
     slurmJID: "-J re-git-draco"
-    SCHEDULER_PARAMETERS: "-N 1 --reservation=debug ${slurmJID}"
+    SCHEDULER_PARAMETERS: "-N 1 --reservation=debug --exclude=nid00160 ${slurmJID}"
     # SCHEDULER_PARAMETERS: "-N 1 --reservation=DAT-175329-haswell"
     # Special reservation 175329 has fixes that allow us to pack a node.
     # --reservation=DAT-175329-knl
