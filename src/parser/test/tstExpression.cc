@@ -4,8 +4,7 @@
  * \author Kent Budge
  * \date   Wed Jul 26 08:15:18 2006
  * \brief  Test the Expression class and expression parsing.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/DracoMath.hh"
@@ -13,6 +12,7 @@
 #include "ds++/ScalarUnitTest.hh"
 #include "parser/Expression.hh"
 #include "parser/String_Token_Stream.hh"
+#include "parser/utilities.hh"
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -56,8 +56,7 @@ void tstExpression(UnitTest &ut) {
   expression->write(vars, expression_text_copy);
 
   char const *expression_text_raw = "((1&&1.3||!(y<-m))/5+(2>1)*r/m*pow(2.7-1.1*z/m,2))*t/s";
-  // changes slightly due to stripping of extraneous whitespace, parentheses,
-  // and positive prefix
+  // changes slightly due to stripping of extraneous whitespace, parentheses, and positive prefix
   if (expression_text_copy.str() == expression_text_raw) {
     PASSMSG("expression successfully rendered as text");
   } else {
@@ -151,8 +150,7 @@ void tstExpression(UnitTest &ut) {
     expression->write(vars, lexpression_text_copy);
 
     char const *lexpression_text_raw = "20*(r>=1.1*m&&z<=1.5*m||r>=2*m&&r<=7*m)";
-    // changes slightly due to stripping of extraneous whitespace, parentheses,
-    // and positive prefix
+    // changes slightly due to stripping of extraneous whitespace, parentheses, and positive prefix
     if (lexpression_text_copy.str() == lexpression_text_raw) {
       PASSMSG("expression successfully rendered as text");
     } else {
@@ -204,8 +202,7 @@ void tstExpression(UnitTest &ut) {
     expression->write(vars, lexpression_text_copy);
 
     char const *lexpression_text_raw = "exp(-0.5*r/m)*(3*cos(2*y/m)+5*sin(3*y/m))";
-    // changes slightly due to stripping of extraneous whitespace, parentheses,
-    // and positive prefix
+    // changes slightly due to stripping of extraneous whitespace, parentheses, and positive prefix
     if (lexpression_text_copy.str() == lexpression_text_raw) {
       PASSMSG("expression successfully rendered as text");
     } else {
@@ -234,8 +231,7 @@ void tstExpression(UnitTest &ut) {
     expression->write(vars, lexpression_text_copy);
 
     char const *lexpression_text_raw = "log(1)";
-    // changes slightly due to stripping of extraneous whitespace, parentheses,
-    // and positive prefix
+    // changes slightly due to stripping of extraneous whitespace, parentheses, and positive prefix
     if (lexpression_text_copy.str() == lexpression_text_raw) {
       PASSMSG("expression successfully rendered as text");
     } else {
@@ -278,8 +274,7 @@ void tstExpression(UnitTest &ut) {
     cout << lexpression_text_copy.str() << endl;
 
     char const *lexpression_text_raw = "(log(1)+cos(2)+exp(3)+sin(4))/(m*s)";
-    // changes slightly due to stripping of extraneous whitespace, parentheses,
-    // and positive prefix
+    // changes slightly due to stripping of extraneous whitespace, parentheses, and positive prefix
     if (lexpression_text_copy.str() == lexpression_text_raw) {
       PASSMSG("expression successfully rendered as text");
     } else {
@@ -303,6 +298,9 @@ void tstExpression(UnitTest &ut) {
     ut.check(soft_equiv((*lexpression)(xs), (cos(2.0) + exp(3.0) + sin(4.0)) / (1e9 * 1e-8)),
              "parse of exotic units");
   }
+
+  // Clean up memory
+  free_internal_unit_system();
 }
 
 //------------------------------------------------------------------------------------------------//
