@@ -18,8 +18,8 @@
     DEPLOY: "FALSE"
     SITE_ID: trinitite
     CTEST_NPROC: 32
-    slurmJID: "-J re-git-draco"
-    SCHEDULER_PARAMETERS: "-N 1 --reservation=debug --exclude=nid00160 ${slurmJID}"
+    SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --partition=ci --qos=ci --reservation=ci --exclude=nid00160"
+    # SCHEDULER_PARAMETERS: "-N 1 --reservation=debug --exclude=nid00160"
     # SCHEDULER_PARAMETERS: "-N 1 --reservation=DAT-175329-haswell"
     # Special reservation 175329 has fixes that allow us to pack a node.
     # --reservation=DAT-175329-knl
@@ -118,7 +118,6 @@ tt_rel_i1904_mr:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-intel"
-    slurmJID: "-J re-git-draco-i19rel"
 
 # ----- slow -----
 
@@ -128,7 +127,6 @@ tt_deb_oneapi_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/oneapi2140"
-    slurmJID: "-J re-git-draco-oneapi"
 
 tt_deb_cce_mr:
   stage: slowtest
@@ -136,7 +134,6 @@ tt_deb_cce_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/cce1101"
-    slurmJID: "-J re-git-draco-cce11"
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
