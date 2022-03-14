@@ -4,7 +4,7 @@
 # Date:    Monday, Jun 01, 2020, 15:00 pm
 # Purpose: gitlab suid runner commands for LANL ccs-net machines. This script will be run to test
 #          pull requests.
-# Note:    Copyright (C) 2020-2021 Triad National Security, LLC.,  All rights reserved.
+# Note:    Copyright (C) 2020-2022 Triad National Security, LLC.,  All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------#
@@ -124,7 +124,7 @@ ccs1_c4_scalar_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1020-ompi4
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
-    EXTRA_CMAKE_ARGS: -DDRACO_C4=SCALAR
+    EXTRA_CMAKE_ARGS: -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
     SITE_ID: ccscs1
 
 ccs3_deb_llvm_deploy:
@@ -218,6 +218,7 @@ ccs2_valgrind_deploy:
   extends: .ccscs
   variables:
     CTEST_MODE: Experimental
+    EXTRA_CMAKE_ARGS: -GNinja
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
@@ -239,6 +240,7 @@ ccs3_deb_gcc_1020:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1020-ompi4
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=2
     CTEST_NPROC: 32
     SITE_ID: ccscs3
 
@@ -250,7 +252,7 @@ ccs1_c4_scalar:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1020-ompi4
-    EXTRA_CMAKE_ARGS: -DDRACO_C4=SCALAR
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
     CTEST_NPROC: 40
     SITE_ID: ccscs1
     #TEST_EXCLUSIONS: mcgrid_cylindrical_mg_mgrztp04
@@ -314,7 +316,7 @@ ccs1_fulldiag:
     DRACO_ENV: gcc1020-ompi4
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
-    EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     CTEST_NPROC: 32
     SITE_ID: ccscs1
 
@@ -327,7 +329,7 @@ ccs2_gcov:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1020-ompi4
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
-    EXTRA_CMAKE_ARGS: -DCODE_COVERAGE=ON
+    EXTRA_CMAKE_ARGS: -GNinja -DCODE_COVERAGE=ON
     CTEST_NPROC: 20
     SITE_ID: ccscs2
     #TEST_EXCLUSIONS: mcgrid_cylindrical_mg_mgrztp04
@@ -340,7 +342,7 @@ ccs2_valgrind:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1020-ompi4
-    EXTRA_CMAKE_ARGS: -DENABLE_MEMORYCHECK=ON
+    EXTRA_CMAKE_ARGS: -GNinja -DENABLE_MEMORYCHECK=ON
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
     EXTRA_CTEST_ARGS: -L memcheck -LE nomemcheck
     CTEST_NPROC: 40
@@ -358,6 +360,7 @@ ccs2_valgrind:
   variables:
     CTEST_MODE: Nightly
     CTEST_BUILD_NAME: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+    EXTRA_CMAKE_ARGS: -GNinja
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh"
   rules:
@@ -417,7 +420,7 @@ clangtidy_regress:
     DRACO_ENV: llvm11
     MAKEFILE_FLAGS: -j -l 80
     CTEST_NPROC: 40
-    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_STATIC_ANALYZER=clang-tidy
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
     CTEST_BUILD_NAME: clang-tidy
 
@@ -430,7 +433,7 @@ deb_gcc_scalar_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1020-ompi4
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
-    EXTRA_CMAKE_ARGS: -DDRACO_C4=SCALAR
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_C4=SCALAR
     MAKEFILE_FLAGS: -j -l 80
     CTEST_NPROC: 40
     CTEST_BUILD_NAME: c4-scalar
@@ -446,7 +449,7 @@ fulldiag_regress:
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
-    EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     MAKEFILE_FLAGS: -j -l 80
     CTEST_NPROC: 40
     CTEST_BUILD_NAME: fulldiag-static
@@ -460,7 +463,7 @@ gcov_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1020-ompi4
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
-    EXTRA_CMAKE_ARGS: -DCODE_COVERAGE=ON
+    EXTRA_CMAKE_ARGS: -GNinja -DCODE_COVERAGE=ON
     MAKEFILE_FLAGS: -j -l 40
     CTEST_NPROC: 40
     CTEST_BUILD_NAME: gcov
@@ -475,7 +478,7 @@ valgrind_regress:
     DRACO_ENV: gcc1020-ompi4
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
     MEMCHECK_CONFIGURATION: "ON"
-    # EXTRA_CMAKE_ARGS: -DENABLE_MEMORYCHECK=ON
+    # EXTRA_CMAKE_ARGS: -GNinja -DENABLE_MEMORYCHECK=ON
     CTEST_MEMORYCHECK_SUPPRESSIONS_FILE: "${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
     MAKEFILE_FLAGS: -j 40 -l 40
     # EXTRA_CTEST_ARGS: "INCLUDE_LABEL memcheck EXCLUDE_LABEL nomemcheck"

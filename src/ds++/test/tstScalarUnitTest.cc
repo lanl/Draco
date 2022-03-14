@@ -4,8 +4,7 @@
  * \author Kelly Thompson
  * \date   Thu May 18 17:17:24 2006
  * \brief  Unit test for the ds++ classes UnitTest and ScalarUnitTest.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/DracoStrings.hh"
@@ -20,8 +19,8 @@
 using namespace std;
 using namespace rtt_dsxx;
 
-// Provide old style call to pass/fail macros.  Use object name unitTest for
-// this unit test. (remove the defines found in ScalarUnitTest.hh).
+// Provide old style call to pass/fail macros.  Use object name unitTest for this unit test. (remove
+// the defines found in ScalarUnitTest.hh).
 #undef PASSMSG
 #undef ITFAILS
 #undef FAILURE
@@ -235,6 +234,7 @@ void tstVersion(UnitTest &unitTest, char *test) {
 
   char **argv = &vc[0];
   try {
+    std::cout << "Testing ctor... ScalarUnitTest(argc, argv, release)" << std::endl;
     ScalarUnitTest(argc, argv, release);
     FAILMSG("version construction NOT correct");
   } catch (assertion &err) {
@@ -256,6 +256,8 @@ void tstVersion(UnitTest &unitTest, char *test) {
 void tstPaths(UnitTest &unitTest, char *test) {
 
   using std::string;
+
+  std::cout << "Begin testing tstPaths(ut)..." << std::endl;
 
   // Checkpoint
   size_t const nf = unitTest.numFails;
@@ -284,11 +286,15 @@ void tstPaths(UnitTest &unitTest, char *test) {
       rtt_dsxx::getFilenameComponent(string(test), rtt_dsxx::FC_NATIVE), rtt_dsxx::FC_REALPATH);
   FAIL_IF_NOT(stest == testBinaryDir + testName);
   FAIL_IF_NOT(testName == string("tstScalarUnitTest") + rtt_dsxx::exeExtension);
-  if (thisFile != testSourceDir + testName_wo_suffix + ".cc") {
-    // 2nd chance for case-insensitive file systems
-    string const lc_thisFile = string_tolower(thisFile);
-    string const lc_gold = string_tolower(testSourceDir + testName_wo_suffix + ".cc");
-    FAIL_IF_NOT(lc_thisFile == lc_gold);
+  if (rtt_dsxx::fileExists(thisFile)) {
+    // For some generators (ninja), the logic of this test fails because the __FILE__ CPP macro is
+    // relative to the top level source directory.
+    if (thisFile != testSourceDir + testName_wo_suffix + ".cc") {
+      // 2nd chance for case-insensitive file systems
+      string const lc_thisFile = string_tolower(thisFile);
+      string const lc_gold = string_tolower(testSourceDir + testName_wo_suffix + ".cc");
+      FAIL_IF_NOT(lc_thisFile == lc_gold);
+    }
   }
 
   // CMake should provide cmake_install.cmake at testBinaryInputDir.
@@ -319,8 +325,7 @@ void tstPaths(UnitTest &unitTest, char *test) {
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   try {
-    // Test ctor for ScalarUnitTest (also tests UnitTest ctor and member
-    // function setTestName).
+    // Test ctor for ScalarUnitTest (also tests UnitTest ctor and member function setTestName).
     ScalarUnitTest ut(argc, argv, release);
 
     // Try to print the copyright and author list

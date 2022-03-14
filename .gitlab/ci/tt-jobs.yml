@@ -118,6 +118,7 @@ tt_rel_i1904_mr:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-intel"
+    EXTRA_CMAKE_ARGS: -GNinja
 
 # ----- slow -----
 
@@ -159,6 +160,7 @@ tt_rel_i1904_regress:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-intel"
     CTEST_BUILD_NAME: "lapse18-intel-Release"
+    EXTRA_CMAKE_ARGS: -GNinja
 
 tt_deb_i1904_regress:
   stage: test
@@ -167,6 +169,7 @@ tt_deb_i1904_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-intel"
     CTEST_BUILD_NAME: "lapse18-intel-Debug"
+    EXTRA_CMAKE_ARGS: -GNinja
 
 tt_rel_cce1101_regress:
   stage: test

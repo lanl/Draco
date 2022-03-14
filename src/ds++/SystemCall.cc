@@ -227,9 +227,11 @@ std::string draco_getrealpath(std::string const &path) {
   std::string retVal(buffer.data());
 #else
   Insist((realpath(path.c_str(), &buffer[0])) != nullptr, "Invalid path.");
-  // realpath trims the trailing slash, append now.
   std::string retVal(buffer.data());
-  retVal += std::string(&dirSep, 1);
+  if (draco_getstat(retVal).isdir()) {
+    // realpath trims the trailing slash, append now.
+    retVal += std::string(&dirSep, 1);
+  }
 #endif
   return retVal;
 }
