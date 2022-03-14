@@ -26,8 +26,8 @@ void test_currentPath(ScalarUnitTest &ut) {
 
   // if we got here, currentPath didn't throw.
 
-  // Note, we have no idea where the this test was run from so we can say
-  // nothing about what the path string should contain.
+  // Note, we have no idea where the this test was run from so we can say nothing about what the
+  // path string should contain.
 
   if (fileExists(cp))
     PASSMSG(string("Retrieved current path exists. cp = ") + cp);
@@ -57,8 +57,7 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
   // test the FC_PATH mode
   // ------------------------------------------------------------
 
-  // 4 possible cases: ./tstPath, ../test/tstPath,
-  // tstPath.exe or test/tstPath.exe
+  // 4 possible cases: ./tstPath, ../test/tstPath, tstPath.exe or test/tstPath.exe
 
   // Does the provided path use unix or windows directory separator?
   string::size_type idx = fqpn.find(rtt_dsxx::UnixDirSep);
@@ -68,12 +67,12 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
   // retrieve the path w/o the filename.
   string mypath = getFilenameComponent(fqpn, rtt_dsxx::FC_PATH);
   if (usesUnixDirSep) {
-    // If we are using UnixDirSep, we have 2 cases (./tstPath or
-    // ../test/tstPath).  Look for the case with 'test' first:
+    // If we are using UnixDirSep, we have 2 cases (./tstPath or ../test/tstPath).  Look for the
+    // case with 'test' first:
     idx = mypath.find(string("test") + rtt_dsxx::UnixDirSep);
 
-    // If the return string does not have 'test/' then we also need to
-    // check for './' as a pass condition
+    // If the return string does not have 'test/' then we also need to check for './' as a pass
+    // condition
     if (idx == string::npos)
       idx = mypath.find(rtt_dsxx::UnixDirSep);
 
@@ -83,12 +82,12 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
     else
       FAILMSG("Did not find expected partial path. Expected path = " + mypath);
   } else {
-    // If we are using WinDirSep, we have 2 cases (.\tstPath.exe or
-    // ...\test\tstPath.exe).  Look for the case with 'test' first:
+    // If we are using WinDirSep, we have 2 cases (.\tstPath.exe or ...\test\tstPath.exe).  Look for
+    // the case with 'test' first:
     idx = mypath.find(string("test") + rtt_dsxx::WinDirSep);
 
-    // If the return string does not have 'test\' then we also need to
-    // check for './' as a pass condition
+    // If the return string does not have 'test\' then we also need to check for './' as a pass
+    // condition
     if (idx == string::npos)
       idx = mypath.find(rtt_dsxx::WinDirSep);
 
@@ -166,8 +165,7 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
 
       draco_getstat rpstatus(realpath);
 
-      // string realpath2 = getFilenameComponent( "Makefile",
-      //                    rtt_dsxx::FC_REALPATH );
+      // string realpath2 = getFilenameComponent( "Makefile", rtt_dsxx::FC_REALPATH );
       // draco_getstat rpstatus2( realpath2 );
       // bool exebit = rpstatus2.has_permission_bit( 0100 );
 
@@ -184,20 +182,12 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
   }
 #endif
 
+  string absolutepath = getFilenameComponent(fqp, rtt_dsxx::FC_ABSOLUTE);
+
   // These are not implemented yet
   // ------------------------------------------------------------
 
   bool caught = false;
-  try {
-    string absolutepath = getFilenameComponent(fqp, rtt_dsxx::FC_ABSOLUTE);
-  } catch (...) {
-    caught = true;
-    PASSMSG("FC_ABSOLUTE throws.");
-  }
-  if (!caught)
-    FAILMSG("FC_ABSOLUTE failed to throw.");
-
-  caught = false;
   try {
     string extension = getFilenameComponent(fqp, rtt_dsxx::FC_EXT);
   } catch (...) {

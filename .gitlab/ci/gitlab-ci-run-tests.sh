@@ -109,11 +109,13 @@ run "cmake ${EXTRA_CMAKE_ARGS} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} ${DRACO_SO
 echo " "
 echo -e "\n========\n"
 if [[ "${AUTODOC}" == "ON" ]]; then
-  run "make -j -l $MAXLOAD autodoc"
+  # run "make -j -l $MAXLOAD autodoc"
+  run "cmake --build . --target autodoc -- -j $MAXLOAD -l $MAXLOAD"
   # Run one test so that the CDash report isn't empty.
   run "ctest -R draco_release_tIMCInfo_a_d"
 else
-  run "make -j -l $MAXLOAD" #  VERBOSE=1
+  # run "make -j -l $MAXLOAD" #  VERBOSE=1
+  run "cmake --build . --target all -- -j $MAXLOAD -l $MAXLOAD"
   echo -e "\n========\n"
   if [[ "${TEST_EXCLUSIONS:-no}" != "no"  ]]; then
     EXTRA_CTEST_ARGS+=" -E ${TEST_EXCLUSIONS}"
@@ -129,20 +131,23 @@ else
       run "chmod g+rwX,o+rX ${DRACO_INSTALL_DIR}"
       run "chmod g+s ${DRACO_INSTALL_DIR}"
     fi
-    run "make -j -l $MAXLOAD install"
+    # run "make -j -l $MAXLOAD install"
+    run "cmake --build . --target install --  -j $MAXLOAD -l $MAXLOAD"
 
     # Double check permissions for installed (deployed) files
     run "chgrp -R ccsrad ${DRACO_INSTALL_DIR}"
     run "chmod -R g+rwX,o+rX ${DRACO_INSTALL_DIR}"
 
   else
-    run "ctest ${EXTRA_CTEST_ARGS} -j ${CTEST_NPROC} --test-load ${MAXLOAD} --output-on-failure --stop-on-failure"
+    EXTRA_CTEST_ARGS+=" --output-on-failure --repeat until-pass:2"
+    run "ctest ${EXTRA_CTEST_ARGS} -j ${CTEST_NPROC} --test-load ${MAXLOAD}"
   fi
 fi
 
 # Generate a coverage report (text and html)
 if [[ "${CODECOV}" == "ON" && "${DEPLOY}" != "TRUE" ]]; then
-  run "make covrep"
+  # run "make covrep"
+  run "cmake --build . --target covrep"
 fi
 
 if [[ ${CTEST_MODE} == "Nightly" ]]; then

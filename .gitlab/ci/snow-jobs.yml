@@ -47,6 +47,7 @@ sn_rel_i1904_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-intel"
     FLAVOR: lapse18-intel-Release
+    EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_i1904_deploy:
   extends: .snow_deploy
@@ -54,6 +55,7 @@ sn_deb_i1904_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-intel"
     FLAVOR: lapse18-intel-Debug
+    EXTRA_CMAKE_ARGS: -GNinja
 
 sn_rel_i1913_deploy:
   extends: .snow_deploy
@@ -68,6 +70,7 @@ sn_deb_g930_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-gnu"
     FLAVOR: lapse18-gnu-Debug
+    EXTRA_CMAKE_ARGS: -GNinja
 
 sn_rel_g930_deploy:
   extends: .snow_deploy
@@ -75,13 +78,14 @@ sn_rel_g930_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-gnu"
     FLAVOR: lapse18-gnu-Release
+    EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_fulldiag_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-intel"
-    EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     FLAVOR: intel-fulldiag-static
 
 #--------------------------------------------------------------------------------------------------#
@@ -110,6 +114,7 @@ sn_rel_i1904_mr:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-intel"
+    EXTRA_CMAKE_ARGS: -GNinja
 
 # ----- regular test -----
 
@@ -119,6 +124,7 @@ sn_deb_i1904_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-intel"
+    EXTRA_CMAKE_ARGS: -GNinja
 
 sn_rel_i1913_mr:
   stage: test
@@ -133,6 +139,7 @@ sn_deb_g930_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-gnu"
+    EXTRA_CMAKE_ARGS: -GNinja
 
 # ----- slow -----
 
@@ -142,7 +149,7 @@ sn_deb_fulldiag_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-intel"
-    EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -168,6 +175,7 @@ sn_rel_i1904_regress:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/1.8-intel"
     CTEST_BUILD_NAME: "lapse18-intel-Release"
+    EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_i1904_regress:
   stage: test
@@ -176,6 +184,7 @@ sn_deb_i1904_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-intel"
     CTEST_BUILD_NAME: "lapse18-intel-Debug"
+    EXTRA_CMAKE_ARGS: -GNinja
 
 sn_rel_i1913_regress:
   extends: .snow_nightly
@@ -190,6 +199,7 @@ sn_deb_g830_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-gnu"
     CTEST_BUILD_NAME: "lapse18-gnu-Debug"
+    EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_fulldiag_regress:
   extends: .snow_nightly
@@ -197,7 +207,7 @@ sn_deb_fulldiag_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-intel"
     FLAVOR: intel-fulldiag-static
-    EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     CTEST_BUILD_NAME: intel-fulldiag-static
 
 #--------------------------------------------------------------------------------------------------#

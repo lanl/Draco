@@ -29,8 +29,7 @@ namespace rtt_dsxx {
  *    FC_EXT         not implemented.
  *    FC_NAME_WE     not implemented.
  *    FC_REALPATH    resolve all symlinks
- *    FC_NATIVE      convert path to use native slashes for the current
- *                   filesystem
+ *    FC_NATIVE      convert path to use native slashes for the current filesystem
  *    FC_LASTVALUE
  */
 std::string getFilenameComponent(std::string const &fqName, FilenameComponent fc) {
@@ -40,7 +39,7 @@ std::string getFilenameComponent(std::string const &fqName, FilenameComponent fc
   std::string fullName(fqName);
 
   switch (fc) {
-  case FC_PATH:
+  case FC_PATH: {
     // if fqName is a directory and ends with "/", trim the trailing dirSep.
     if (fqName.rfind(rtt_dsxx::UnixDirSep) == fqName.length() - 1)
       fullName = fqName.substr(0, fqName.length() - 1);
@@ -58,8 +57,9 @@ std::string getFilenameComponent(std::string const &fqName, FilenameComponent fc
     else
       retVal = fullName.substr(0, idx + 1);
     break;
+  }
 
-  case FC_NAME:
+  case FC_NAME: {
     // if fqName is a directory and ends with "/", trim the trailing dirSep.
     if (fqName.rfind(rtt_dsxx::UnixDirSep) == fqName.length() - 1)
       fullName = fqName.substr(0, fqName.length() - 1);
@@ -77,37 +77,52 @@ std::string getFilenameComponent(std::string const &fqName, FilenameComponent fc
     else
       retVal = fullName.substr(idx + 1);
     break;
+  }
 
   case FC_REALPATH: {
     std::string path(getFilenameComponent(fqName, FC_PATH));
     std::string name(getFilenameComponent(fqName, FC_NAME));
     if (!draco_getstat(path).valid()) {
-      // On error, return empty string.
-      retVal = std::string();
-      // retVal = draco_getcwd();
+      retVal = std::string(); // On error, return empty string.
     } else {
       retVal = draco_getrealpath(path) + name;
     }
     break;
   }
-  case FC_ABSOLUTE:
-    Insist(false, "case for FC_ABSOLUTE not implemented.");
+
+  case FC_ABSOLUTE: {
+    // Same as FC_REALPATH?
+    std::string path(getFilenameComponent(fqName, FC_PATH));
+    std::string name(getFilenameComponent(fqName, FC_NAME));
+    if (!draco_getstat(path).valid()) {
+      retVal = std::string(); // On error, return empty string.
+    } else {
+      retVal = draco_getrealpath(path) + name;
+    }
     break;
-  case FC_EXT:
+  }
+
+  case FC_EXT: {
     Insist(false, "case for FC_EXT not implemented.");
     break;
-  case FC_NAME_WE:
+  }
+
+  case FC_NAME_WE: {
     Insist(false, "case for FC_NAME_WE not implemented.");
     break;
-  case FC_NATIVE:
+  }
+
+  case FC_NATIVE: {
     // This is always done before returning (see implementation found after the case statement)
     retVal = fullName;
     break;
+  }
 
-  default:
+  default: {
     std::ostringstream msg;
     msg << "Unknown mode for rtt_dsxx::setName(). fc = " << fc;
     Insist(false, msg.str());
+  }
   }
 
   // Always convert paths to use native format.
