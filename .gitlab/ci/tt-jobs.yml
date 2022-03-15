@@ -76,6 +76,20 @@ tt_rel_cce1101_deploy:
     DRACO_ENV: "draco/cce1101"
     FLAVOR: cce1101-${CMAKE_BUILD_TYPE}
 
+tt_deb_cce1301_deploy:
+  extends: .tt_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/cce1301"
+    FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
+
+tt_rel_cce1301_deploy:
+  extends: .tt_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "draco/cce1301"
+    FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
+
 tt_deb_oneapi2140_deploy:
   extends: .tt_deploy
   variables:
@@ -134,7 +148,7 @@ tt_deb_cce_mr:
   extends: .tt_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/cce1101"
+    DRACO_ENV: "draco/cce1301"
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -171,21 +185,23 @@ tt_deb_i1904_regress:
     CTEST_BUILD_NAME: "lapse18-intel-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
 
-tt_rel_cce1101_regress:
+tt_rel_cce1301_regress:
   stage: test
   extends: .tt_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/cce1101"
-    CTEST_BUILD_NAME: "cce1101-Release"
+    DRACO_ENV: "draco/cce1301"
+    CTEST_BUILD_NAME: "cce1301-Release"
+    EXTRA_CMAKE_ARGS: -GNinja
 
-tt_deb_cce1101_regress:
+tt_deb_cce1301_regress:
   stage: test
   extends: .tt_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/cce1101"
-    CTEST_BUILD_NAME: "cce1101-Debug"
+    DRACO_ENV: "draco/cce1301"
+    CTEST_BUILD_NAME: "cce1301-Debug"
+    EXTRA_CMAKE_ARGS: -GNinja
 
 tt_rel_oneapi2140_regress:
   stage: test
