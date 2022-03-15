@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-cuda.cmake
 # brief  Establish flags for Unix/Linux - Cuda
-# note   Copyright (C) 2020-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -58,7 +58,7 @@ if(NOT CUDA_FLAGS_INITIALIZED)
     string(APPEND CMAKE_CUDA_FLAGS " -DCUB_IGNORE_DEPRECATED_CPP_DIALECT"
            " -DTHRUST_IGNORE_DEPRECATED_CPP_DIALECT")
     string(APPEND CMAKE_CUDA_FLAGS " -ccbin ${CMAKE_CXX_COMPILER} -Xcompiler -std=c++14"
-      " -Xcompiler -qxflag=disable__cplusplusOverride")
+           " -Xcompiler -qxflag=disable__cplusplusOverride")
     if(EXISTS /usr/gapps)
       # ATS-2
       string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler --gcc-toolchain=/usr/tce/packages/gcc/gcc-8.3.1"

@@ -79,7 +79,7 @@ do
   # Only check cmake-files specified by FILE_EXTS and FILE_ENDINGS_INCLUDE
   if ! matches_extension "$file"; then continue; fi
 
-  $CML --suppress-decoration "${file}" &> "$patch"
+  $CML --suppress-decoration --max-branches 20 "${file}" &> "$patch"
   if [[ -s "$patch" ]]; then
     printf "==> cmake-lint %s\n" "${file}"
     # shellcheck disable=SC2030

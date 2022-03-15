@@ -299,7 +299,7 @@ if [[ -x $CML ]]; then
     if ! [[ -f "${file}" ]]; then continue; fi
 
     printf "==> cmake-lint %s\n" "$file"
-    $CML --suppress-decoration "${file}" && echo -ne "==> cmake-lint ${file} ... OK\n" || cml_issues=1
+    $CML --suppress-decoration --max-branches 20 "${file}" && echo -ne "==> cmake-lint ${file} ... OK\n" || cml_issues=1
 
   done
 

@@ -68,6 +68,7 @@ add_dir_if_exists(rng) #< needs ds++, device
 add_dir_if_exists(roots) #< needs linear
 add_dir_if_exists(VendorChecks) #< needs c4
 add_dir_if_exists(viz) #< needs c4
+add_dir_if_exists(predict)
 
 # Level 4
 message(" ")

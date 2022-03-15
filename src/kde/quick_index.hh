@@ -72,6 +72,10 @@ public:
   void collect_ghost_data(const std::vector<double> &local_data,
                           std::vector<double> &local_ghost_data) const;
 
+  //! Override function for integer vectors
+  void collect_ghost_data(const std::vector<int> &local_data,
+                          std::vector<int> &local_ghost_data) const;
+
   //! Override function of 3D array ghost data.
   void collect_ghost_data(const std::vector<std::array<double, 3>> &local_data,
                           std::vector<std::array<double, 3>> &local_ghost_data) const;
@@ -104,8 +108,7 @@ public:
 
   //! Calculate the orthogonal distance between to locations
   std::array<double, 3> calc_orthogonal_distance(const std::array<double, 3> &r0,
-                                                 const std::array<double, 3> &r,
-                                                 const double arch_radius) const;
+                                                 const std::array<double, 3> &r) const;
 
   // PUBLIC DATA
   // Quick index initialization data
