@@ -203,7 +203,8 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
 #ifdef C4_MPI
 //------------------------------------------------------------------------------------------------//
 // call MPI_put using a chunk style write to avoid error in MPI_put with large local buffers.
-auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win) {
+auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win,
+                     MPI_Datatype mpi_data_type) {
   // temporary work around until RMA is available in c4
   // loop over all ranks we need to send this buffer too.
   for (auto &putv : put.second) {
@@ -218,8 +219,8 @@ auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win) {
     for (int c = 0; c < nchunks; c++) {
       chunk_size = std::min(chunk_size, static_cast<int>(put_size) - nput);
       Check(chunk_size > 0);
-      MPI_Put(&put_buffer[nput], chunk_size, MPI_DOUBLE, put_rank, put_offset, chunk_size,
-              MPI_DOUBLE, win);
+      MPI_Put(&put_buffer[nput], chunk_size, mpi_data_type, put_rank, put_offset, chunk_size,
+              mpi_data_type, win);
       nput += chunk_size;
     }
   }
@@ -267,7 +268,7 @@ void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &l
         put_buffer[putIndex] = local_data[l][d];
         putIndex++;
       }
-      put_lambda(put, put_buffer, putIndex, win);
+      put_lambda(put, put_buffer, putIndex, win, MPI_DOUBLE);
     }
     Remember(errorcode =) MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
     Check(errorcode == MPI_SUCCESS);
@@ -331,7 +332,7 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
         put_buffer[putIndex] = local_data[d][l];
         putIndex++;
       }
-      put_lambda(put, put_buffer, putIndex, win);
+      put_lambda(put, put_buffer, putIndex, win, MPI_DOUBLE);
     }
     Remember(errorcode =) MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
     Check(errorcode == MPI_SUCCESS);
@@ -383,7 +384,52 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
       put_buffer[putIndex] = local_data[l];
       putIndex++;
     }
-    put_lambda(put, put_buffer, putIndex, win);
+    put_lambda(put, put_buffer, putIndex, win, MPI_DOUBLE);
+  }
+  Remember(errorcode =) MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+  Check(errorcode == MPI_SUCCESS);
+  MPI_Win_free(&win);
+#endif
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Collect ghost data for a vector<int>
+ * 
+ * Collect ghost data for a single vector. This function uses RMA and the local put_window_map to
+ * allow each rank to independently fill in its data to ghost cells of other ranks.
+ *
+ * \param[in] local_data the local vector data that is required to be available as ghost cell data
+ * on other processors.
+ * \param[in,out] local_ghost_data the resulting ghost data
+ */
+void quick_index::collect_ghost_data(const std::vector<int> &local_data,
+                                     std::vector<int> &local_ghost_data) const {
+  Require(local_data.size() == n_locations);
+  Insist(domain_decomposed, "Calling collect_ghost_data with a quick_index object that specified "
+                            "domain_decomposed=.false.");
+  Insist(local_ghost_data.size() == local_ghost_buffer_size,
+         "ghost_data input must be sized via quick_index.local_ghost_buffer_size");
+#ifdef C4_MPI // temporary work around until RMA is available in c4
+  std::vector<int> local_ghost_buffer(local_ghost_buffer_size, 0);
+  std::vector<int> put_buffer(max_put_buffer_size, 0);
+  MPI_Win win;
+  MPI_Win_create(local_ghost_data.data(), local_ghost_buffer_size * sizeof(int), sizeof(int),
+                 MPI_INFO_NULL, MPI_COMM_WORLD, &win);
+
+  // working from my local data put the ghost data on the other ranks
+  Remember(int errorcode =) MPI_Win_fence(MPI_MODE_NOSTORE, win);
+  Check(errorcode == MPI_SUCCESS);
+  for (auto put : put_window_map) {
+    // use map.at() to allow const access
+    Check((coarse_index_map.at(put.first)).size() <= max_put_buffer_size);
+    // fill up the current ghost cell data for this dimension
+    int putIndex = 0;
+    for (auto &l : coarse_index_map.at(put.first)) {
+      put_buffer[putIndex] = local_data[l];
+      putIndex++;
+    }
+    put_lambda(put, put_buffer, putIndex, win, MPI_INT);
   }
   Remember(errorcode =) MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
   Check(errorcode == MPI_SUCCESS);
@@ -532,15 +578,17 @@ auto get_window_bin = [](auto spherical, const auto dim, const auto &grid_bins,
       valid = false;
       break;
     } else {
+      const double delta = window_max[d] - window_min[d];
+      Check(delta > 0.0);
       bin_id[d] = static_cast<size_t>(bin_value);
       // catch any values exactly on the edge of the top bin
       bin_id[d] = std::min(grid_bins[d] - 1, bin_id[d]);
       const double bin_center =
           window_min[d] + (static_cast<double>(bin_id[d]) / static_cast<double>(grid_bins[d]) +
                            0.5 / static_cast<double>(grid_bins[d])) *
-                              (window_max[d] - window_min[d]);
+                              delta;
       // approximate in spherical geometry;
-      distance_to_bin_center += (bin_center - loc) * (bin_center - loc);
+      distance_to_bin_center += (bin_center - loc) * (bin_center - loc) / delta;
     }
   }
   distance_to_bin_center =
@@ -734,15 +782,25 @@ void quick_index::map_data_to_grid_window(
     }
   }
   if (fill) {
-    double last_val = 0.0;
-    int last_data_count = 0;
+    double left_val = 0.0;
+    int left_data_count = 0;
+    double right_val = 0.0;
+    int right_data_count = 0;
     for (size_t i = 0; i < n_map_bins; i++) {
+      size_t ri = n_map_bins - 1 - i;
       if (data_count[i] > 0) {
-        last_val = grid_data[i];
-        last_data_count = data_count[i];
-      } else {
-        grid_data[i] = last_val;
-        data_count[i] = last_data_count;
+        left_val = grid_data[i];
+        left_data_count = data_count[i];
+      } else if (i > static_cast<size_t>(std::floor(n_map_bins / 2))) {
+        grid_data[i] = left_val;
+        data_count[i] = left_data_count;
+      }
+      if (data_count[ri] > 0) {
+        right_val = grid_data[ri];
+        right_data_count = data_count[ri];
+      } else if (ri <= static_cast<size_t>(std::floor(n_map_bins / 2))) {
+        grid_data[ri] = right_val;
+        data_count[ri] = right_data_count;
       }
     }
   }
@@ -966,17 +1024,28 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
     }
   }
   if (fill) {
-    std::vector<double> last_val(vsize, 0.0);
-    int last_data_count = 0;
+    std::vector<double> left_val(vsize, 0.0);
+    int left_data_count = 0;
+    std::vector<double> right_val(vsize, 0.0);
+    int right_data_count = 0;
     for (size_t i = 0; i < n_map_bins; i++) {
       for (size_t v = 0; v < vsize; v++) {
+        size_t ri = n_map_bins - 1 - i;
         if (data_count[i] > 0) {
-          last_val[v] = grid_data[v][i];
-          last_data_count = data_count[i];
-        } else {
-          grid_data[v][i] = last_val[v];
+          left_val[v] = grid_data[v][i];
+          left_data_count = data_count[i];
+        } else if (i > static_cast<size_t>(std::floor(n_map_bins / 2))) {
+          grid_data[v][i] = left_val[v];
           if (v == vsize - 1)
-            data_count[i] = last_data_count;
+            data_count[i] = left_data_count;
+        }
+        if (data_count[ri] > 0) {
+          right_val[v] = grid_data[v][ri];
+          right_data_count = data_count[ri];
+        } else if (ri <= static_cast<size_t>(std::floor(n_map_bins / 2))) {
+          grid_data[v][ri] = right_val[v];
+          if (v == vsize - 1)
+            data_count[ri] = right_data_count;
         }
       }
     }
@@ -1027,16 +1096,12 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
  *
  * \param[in] r0 initial position
  * \param[in] r final position
- * \param[in] arch_radius this is used for spherical geometry to determine at what radial point the
- * orthognal archlength is measured. This point must be bound by the initial and final point radius.
  * \return orthognal distance between the initial and final point in each direction
  */
 std::array<double, 3> quick_index::calc_orthogonal_distance(const std::array<double, 3> &r0,
-                                                            const std::array<double, 3> &r,
-                                                            const double arch_radius) const {
+                                                            const std::array<double, 3> &r) const {
   Require(spherical ? dim == 2 : true);
-  Require(spherical ? !(arch_radius < 0.0) : true);
-  return {r[0] - r0[0], spherical ? arch_radius * (r[1] - r0[1]) : r[1] - r0[1], r[2] - r0[2]};
+  return {r[0] - r0[0], r[1] - r0[1], r[2] - r0[2]};
 }
 
 } // namespace rtt_kde

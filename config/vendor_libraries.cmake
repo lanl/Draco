@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 June 6
 # brief  Look for any libraries which are required at the top level.
-# note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -192,9 +192,9 @@ macro(setupGSL)
       find_program(GSL_CONFIG gsl-config)
       if(EXISTS "${GSL_CONFIG}")
         exec_program(
-          "${GSL_CONFIG}" ARGS
-          --prefix OUTPUT_VARIABLE
-          GSL_ROOT_DIR)
+          "${GSL_CONFIG}" "."
+          ARGS --prefix
+          OUTPUT_VARIABLE GSL_ROOT_DIR)
       endif()
     endif()
 
@@ -446,6 +446,7 @@ macro(SetupVendorLibrariesUnix)
   setupqt()
   setuplibquo()
   setupcaliper()
+  setuptorch()
 
   # Doxygen ------------------------------------------------------------------
   message(STATUS "Looking for Doxygen...")
@@ -643,6 +644,24 @@ endmacro()
 ")
 
   message(" ")
+
+endmacro()
+
+# ------------------------------------------------------------------------------
+# Setup LibTorch (https://github.com/pytorch/pytorch)
+# ------------------------------------------------------------------------------
+macro(setuptorch)
+
+  if(NOT TARGET TORCH::torch)
+    message(STATUS "Looking for Torch...")
+    find_package(Torch)
+    if(TORCH_FOUND)
+      add_definitions(-DLIBTORCH)
+      message(STATUS "Looking for Torch...${TORCH_LIBRARY}")
+    else()
+      message(STATUS "Looking for Torch...not found")
+    endif()
+  endif()
 
 endmacro()
 
