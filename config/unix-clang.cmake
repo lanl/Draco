@@ -87,9 +87,12 @@ if(NOT CXX_FLAGS_INITIALIZED)
     # ld.lld: error: corrupt input file: version definition index 0 for symbol mpiprivc_ is out of
     # bounds
     #
-    # As of 2021-08-10, this is required on Capulin/Thunder when using cce@11, but must be ommitted
-    # on rznevada when using cce@12.
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 12.0.0)
+    # As of 2021-08-10, this is required on Capulin/Thunder/Trinitite, but must be ommitted on
+    # rznevada when using cce@12.
+    if(EXISTS /usr/gapps)
+      # ATS-2: no-op
+    else()
+      # trinitite/trinity/capulin/thunder
       string(APPEND CMAKE_EXE_LINKER_FLAGS " -fuse-ld=bfd")
     endif()
   elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13.0.0)
