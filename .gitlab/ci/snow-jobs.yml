@@ -200,7 +200,6 @@ sn_deb_g930_regress:
     DRACO_ENV: "lapse/1.8-gnu"
     CTEST_BUILD_NAME: "lapse18-gnu-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
-    MAKEFILE_FLAGS: -j -l 36
 
 sn_deb_fulldiag_regress:
   extends: .snow_nightly

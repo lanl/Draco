@@ -28,22 +28,22 @@ endif()
 set(CTEST_UPDATE_COMMAND "git")
 set(CTEST_GIT_UPDATE_CUSTOM "${CMAKE_COMMAND}" "-E" "echo" "Skipping git update (no-op).")
 
-message(
-  "==> Starting a regression build...
-CTEST_SOURCE_DIRECTORY = ${CTEST_SOURCE_DIRECTORY}
-CTEST_BINARY_DIRECTORY = ${CTEST_BINARY_DIRECTORY}
-CTEST_PROJECT_NAME     = ${CTEST_PROJECT_NAME}
-CTEST_NIGHTLY_START_TIME = ${CTEST_NIGHTLY_START_TIME}
-CTEST_CMAKE_GENERATOR  = ${CTEST_CMAKE_GENERATOR}
-")
+# message(
+#   "==> Starting a regression build...
+# CTEST_SOURCE_DIRECTORY = ${CTEST_SOURCE_DIRECTORY}
+# CTEST_BINARY_DIRECTORY = ${CTEST_BINARY_DIRECTORY}
+# CTEST_PROJECT_NAME     = ${CTEST_PROJECT_NAME}
+# CTEST_NIGHTLY_START_TIME = ${CTEST_NIGHTLY_START_TIME}
+# CTEST_CMAKE_GENERATOR  = ${CTEST_CMAKE_GENERATOR}
+# ")
 
 # ------------------------------------------------------------------------------------------------ #
 # Collect information about this system
 # - MPI_PHYSCIAL_CORES
 # ------------------------------------------------------------------------------------------------ #
 cmake_host_system_information(RESULT MPI_PHYSICAL_CORES QUERY NUMBER_OF_PHYSICAL_CORES)
-message("==> MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}")
-message("==> MAXLOAD            = $ENV{MAXLOAD}")
+# message("==> MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}")
+# message("==> MAXLOAD            = $ENV{MAXLOAD}")
 if( (${MPI_PHYSICAL_CORES} LESS 2) AND ($ENV{MAXLOAD} GREATER 1))
   # for power9, the cmake command returns 1, so revert to the shell script value.
   set(MPI_PHYSICAL_CORES $ENV{MAXLOAD})
@@ -87,18 +87,18 @@ if(DEFINED ENV{CTEST_MEMORYCHECK_SUPPRESSIONS_FILE})
   endif()
 endif()
 
-message(
-  " ==> Job specification from yml
-CI_PROJECT_DIR = ${CI_PROJECT_DIR}
-CTEST_BUILD_NAME = ${CTEST_BUILD_NAME}
-CTEST_BUILD_TYPE = ${CTEST_BUILD_TYPE}
-CTEST_MODE       = ${CTEST_MODE}
-CTEST_SITE       = ${CTEST_SITE}
-EXTRA_CMAKE_ARGS = ${EXTRA_CMAKE_ARGS}
-EXTRA_CTEST_ARGS = ${EXTRA_CTEST_ARGS}
-CTEST_NPROC      = $ENV{CTEST_NPROC}
-MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}
-")
+# message(
+#   " ==> Job specification from yml
+# CI_PROJECT_DIR = ${CI_PROJECT_DIR}
+# CTEST_BUILD_NAME = ${CTEST_BUILD_NAME}
+# CTEST_BUILD_TYPE = ${CTEST_BUILD_TYPE}
+# CTEST_MODE       = ${CTEST_MODE}
+# CTEST_SITE       = ${CTEST_SITE}
+# EXTRA_CMAKE_ARGS = ${EXTRA_CMAKE_ARGS}
+# EXTRA_CTEST_ARGS = ${EXTRA_CTEST_ARGS}
+# CTEST_NPROC      = $ENV{CTEST_NPROC}
+# MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}
+# ")
 
 # ------------------------------------------------------------------------------------------------ #
 # Options that control the build (but not set by yaml)
@@ -200,7 +200,9 @@ ctest_configure(
 
   if(configure_failure)
     message("${ctest_configure_errors}")
-    ctest_submit()
+    if(${CTEST_SCRIPT_ARG} MATCHES Submit)
+      ctest_submit()
+    endif()
     message(FATAL_ERROR "configuration error")
   endif()
 
@@ -212,7 +214,7 @@ endif()
 if(${CTEST_SCRIPT_ARG} MATCHES Build)
 
   if( DEFINED ENV{MAKEFILE_FLAGS} )
-    set(CTB_FLAGS "FLAGS $ENV{MAKEFILE_FLAGS}")
+    set(CTB_FLAGS FLAGS "$ENV{MAKEFILE_FLAGS}")
   endif()
 
   if(DEFINED ENV{AUTODOCDIR})
@@ -242,7 +244,9 @@ ctest_build( ${CTB_FLAGS}
       CAPTURE_CMAKE_ERROR ctest_build_errors)
     if(build_failure OR (NOT "${ctest_build_errors}" STREQUAL "0") )
       message("${ctest_build_errors}")
-      ctest_submit()
+      if(${CTEST_SCRIPT_ARG} MATCHES Submit)
+        ctest_submit()
+      endif()
       message(FATAL_ERROR "build error")
     endif()
   else()
@@ -256,7 +260,9 @@ ctest_build( ${CTB_FLAGS}
       # cmake-3.21 -- PARALLEL_LEVEL ${CMAKE_BUILD_PARALLEL_LEVEL}
       CAPTURE_CMAKE_ERROR ctest_build_errors)
     if(build_failure OR (NOT "${ctest_build_errors}" STREQUAL "0") )
-      ctest_submit()
+      if(${CTEST_SCRIPT_ARG} MATCHES Submit)
+        ctest_submit()
+      endif()
       message(FATAL_ERROR "build error")
       file(WRITE "${CTEST_BINARY_DIRECTORY}/build_error.txt"
         "ctest_build_errors = ${ctest_build_errors}")
@@ -290,7 +296,9 @@ ctest_test( RETURN_VALUE test_failure ${EXTRA_CTEST_ARGS})
       CAPTURE_CMAKE_ERROR ctest_test_errors)
 
     if(test_failure OR (NOT "${ctest_test_errors}" STREQUAL "0") )
-      ctest_submit()
+      if(${CTEST_SCRIPT_ARG} MATCHES Submit)
+        ctest_submit()
+      endif()
       message(FATAL_ERROR "test errors")
       file(WRITE "${CTEST_BINARY_DIRECTORY}/test_error.txt"
         "ctest_test_errors = ${ctest_test_errors}")

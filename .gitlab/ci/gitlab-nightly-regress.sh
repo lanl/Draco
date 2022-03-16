@@ -48,28 +48,28 @@ if [[ -z "${MEMCHECK_CONFIGURATION}" ]] && [[ "${EXTRA_CMAKE_ARGS}" =~ "ENABLE_M
 fi
 export CODECOV MEMCHECK_CONFIGURATION MAXLOAD
 
-echo -e "\n========== printenv ==========\n"
-[[ -z "${SLURM_NODELIST}" ]] || echo "SLURM_NODELIST = ${SLURM_NODELIST}"
-echo "HOSTNAME       = ${HOSTNAME}"
-echo -e "NPROC       = ${NPROC}\n"
-echo -e "CTEST_NPROC = ${CTEST_NPROC}\n"
-echo -e "MAXLOAD     = ${MAXLOAD}\n"
-echo -e "EXTRA_CMAKE_ARGS = ${EXTRA_CMAKE_ARGS}\n"
-echo -e "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}\n"
-echo -e "EXTRA_CTEST_ARGS = ${EXTRA_CTEST_ARGS}\n"
-echo -e "CODECOV          = ${CODECOV}\n"
-echo -e "MEMCHECK_CONFIGURATION = ${MEMCHECK_CONFIGURATION}\n"
-if [[ "${AUTODOC}" == "ON" ]]; then
-  run "which doxygen"
-  run "which latex"
-  run "which pdflatex"
-  echo "TEXINPUTS = ${TEXINPUTS}"
-fi
-if [[ "${EXTRA_CTEST_ARGS}" =~ memcheck ]]; then
-  run "which valgrind"
-fi
+#echo -e "\n========== printenv ==========\n"
+#[[ -z "${SLURM_NODELIST}" ]] || echo "SLURM_NODELIST = ${SLURM_NODELIST}"
+#echo "HOSTNAME       = ${HOSTNAME}"
+# echo -e "NPROC       = ${NPROC}\n"
+# echo -e "CTEST_NPROC = ${CTEST_NPROC}\n"
+# echo -e "MAXLOAD     = ${MAXLOAD}\n"
+# echo -e "EXTRA_CMAKE_ARGS = ${EXTRA_CMAKE_ARGS}\n"
+# echo -e "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}\n"
+# echo -e "EXTRA_CTEST_ARGS = ${EXTRA_CTEST_ARGS}\n"
+# echo -e "CODECOV          = ${CODECOV}\n"
+# echo -e "MEMCHECK_CONFIGURATION = ${MEMCHECK_CONFIGURATION}\n"
+# if [[ "${AUTODOC}" == "ON" ]]; then
+#   run "which doxygen"
+#   run "which latex"
+#   run "which pdflatex"
+#   echo "TEXINPUTS = ${TEXINPUTS}"
+# fi
+# if [[ "${EXTRA_CTEST_ARGS}" =~ memcheck ]]; then
+#   run "which valgrind"
+# fi
 printenv >& environment.log
-run "pwd"
+# run "pwd"
 
 #--------------------------------------------------------------------------------------------------#
 # Setup compiler flags
@@ -112,32 +112,32 @@ export CTEST_NPROC
 # Build and run the tests for draco; post results to CDash.
 #--------------------------------------------------------------------------------------------------#
 
-echo "To rerun manually, cd to CI directory (pwd), set these variables, run ctest."
-echo " "
-run "pwd"
-echo " "
-echo "ARCH               = ${ARCH}"
-echo "AUTODOCDIR         = ${AUTODOCDIR}"
-echo "BUILD_FLAGS        = ${BUILD_FLAGS}"
-echo "CI_PROJECT_DIR     = ${CI_PROJECT_DIR}"
-echo "CMAKE_BUILD_TYPE   = ${CMAKE_BUILD_TYPE}"
-echo "CTEST_BUILD_NAME   = ${CTEST_BUILD_NAME}"
-echo "CTEST_MODE         = ${CTEST_MODE}"
-echo "CTEST_NPROC        = ${CTEST_NPROC}"
-echo "EXTRA_CMAKE_ARGS   = ${EXTRA_CMAKE_ARGS}"
-echo "DRACO_BINARY_DIR   = ${DRACO_BINARY_DIR}"
-echo "DRACO_SOURCE_DIR   = ${DRACO_SOURCE_DIR}"
-echo "PROJECT            = ${PROJECT}"
-echo "SITE_ID            = ${SITE_ID}"
-echo "TEST_EXCLUSIONS    = ${TEST_EXCLUSIONS}"
-echo " "
-echo "CMAKE_TOOLCHAIN_FILE     = ${CMAKE_TOOLCHAINFILE}"
-echo "CODECOV                  = ${CODECOV}"
-#echo "MEMCHECK_COMMAND_OPTIONS = ${MEMCHECK_COMMAND_OPTIONS}"
-echo "MEMCHECK_CONFIGURATION   = ${MEMCHECK_CONFIGURATION}"
-#echo "MEMORYCHECK_TYPE         = ${MEMORYCHECK_TYPE}"
-echo " "
-echo "modes = ${modes}"
+# echo "To rerun manually, cd to CI directory (pwd), set these variables, run ctest."
+# echo " "
+# run "pwd"
+# echo " "
+# echo "ARCH               = ${ARCH}"
+# echo "AUTODOCDIR         = ${AUTODOCDIR}"
+# echo "BUILD_FLAGS        = ${BUILD_FLAGS}"
+# echo "CI_PROJECT_DIR     = ${CI_PROJECT_DIR}"
+# echo "CMAKE_BUILD_TYPE   = ${CMAKE_BUILD_TYPE}"
+# echo "CTEST_BUILD_NAME   = ${CTEST_BUILD_NAME}"
+# echo "CTEST_MODE         = ${CTEST_MODE}"
+# echo "CTEST_NPROC        = ${CTEST_NPROC}"
+# echo "EXTRA_CMAKE_ARGS   = ${EXTRA_CMAKE_ARGS}"
+# echo "DRACO_BINARY_DIR   = ${DRACO_BINARY_DIR}"
+# echo "DRACO_SOURCE_DIR   = ${DRACO_SOURCE_DIR}"
+# echo "PROJECT            = ${PROJECT}"
+# echo "SITE_ID            = ${SITE_ID}"
+# echo "TEST_EXCLUSIONS    = ${TEST_EXCLUSIONS}"
+# echo " "
+# echo "CMAKE_TOOLCHAIN_FILE     = ${CMAKE_TOOLCHAINFILE}"
+# echo "CODECOV                  = ${CODECOV}"
+# #echo "MEMCHECK_COMMAND_OPTIONS = ${MEMCHECK_COMMAND_OPTIONS}"
+# echo "MEMCHECK_CONFIGURATION   = ${MEMCHECK_CONFIGURATION}"
+# #echo "MEMORYCHECK_TYPE         = ${MEMORYCHECK_TYPE}"
+# echo " "
+# echo "modes = ${modes}"
 echo " "
 
 run "ctest -V -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
