@@ -654,7 +654,7 @@ macro(setuptorch)
 
   if(NOT TARGET TORCH::torch)
     message(STATUS "Looking for Torch...")
-    find_package(Torch)
+    find_package(Torch QUIET)
     if(TORCH_FOUND)
       add_definitions(-DLIBTORCH)
       message(STATUS "Looking for Torch...${TORCH_LIBRARY}")
