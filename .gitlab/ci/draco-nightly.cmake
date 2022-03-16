@@ -7,6 +7,11 @@
 # ------------------------------------------------------------------------------------------------ #
 # Ref: http://www.cmake.org/Wiki/CMake_Scripting_Of_CTest
 
+# Avoid adding '-i' when using ninja
+if(POLICY CMP0061)
+  cmake_policy(SET CMP0061 NEW)
+endif()
+
 set(CTEST_SOURCE_DIRECTORY "$ENV{DRACO_SOURCE_DIR}")
 set(CTEST_BINARY_DIRECTORY "$ENV{DRACO_BINARY_DIR}")
 set(CTEST_PROJECT_NAME "$ENV{PROJECT}")
@@ -224,6 +229,8 @@ ctest_build(
     # build autodoc target.
     message(
       "
+CTEST_BUILD_COMMAND = ${CTEST_BUILD_COMMAND}
+MAKECOMMAND         = ${MAKECOMMAND}
 ctest_build(
   TARGET autodoc
   FLAGS $ENV{MAKEFILE_FLAGS}
