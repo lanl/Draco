@@ -7,6 +7,11 @@
 # ------------------------------------------------------------------------------------------------ #
 # Ref: http://www.cmake.org/Wiki/CMake_Scripting_Of_CTest
 
+# Avoid adding '-i' when using ninja
+if(POLICY CMP0061)
+  cmake_policy(SET CMP0061 NEW)
+endif()
+
 set(CTEST_SOURCE_DIRECTORY "$ENV{DRACO_SOURCE_DIR}")
 set(CTEST_BINARY_DIRECTORY "$ENV{DRACO_BINARY_DIR}")
 set(CTEST_PROJECT_NAME "$ENV{PROJECT}")
@@ -241,18 +246,20 @@ ctest_build(
       message(FATAL_ERROR "build error")
     endif()
   else()
+    if( DEFINED ENV{MAKEFILE_FLAGS} )
+      set(CTB_FLAGS "FLAGS \"$ENV{MAKEFILE_FLAGS}\"")
+    endif()
     message(
       "
-ctest_build(
-  FLAGS $ENV{MAKEFILE_FLAGS}
+ctest_build( ${CTB_FLAGS}
   RETURN_VALUE build_failure
   CAPTURE_CMAKE_ERROR ctest_build_errors)")
     ctest_build(
-      FLAGS "$ENV{MAKEFILE_FLAGS}"
+      ${CTB_FLAGS}
       RETURN_VALUE build_failure
       # cmake-3.21 -- PARALLEL_LEVEL ${CMAKE_BUILD_PARALLEL_LEVEL}
       CAPTURE_CMAKE_ERROR ctest_build_errors)
-
+    unset(CTB_FLAGS)
     if(build_failure)
       message("${ctest_build_errors}")
       ctest_submit()

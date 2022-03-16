@@ -374,7 +374,6 @@ rel_gcc_10.2.0_regress:
     SITE_ID: ccscs1
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1020-ompi4
-    MAKEFILE_FLAGS: -j -l 80
     CTEST_NPROC: 40
 
 deb_gcc_10.2.0_regress:
@@ -385,7 +384,6 @@ deb_gcc_10.2.0_regress:
     SITE_ID: ccscs2
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1020-ompi4
-    MAKEFILE_FLAGS: -j -l 40
     CTEST_NPROC: 40
 
 deb_llvm_regress:
@@ -396,7 +394,6 @@ deb_llvm_regress:
     SITE_ID: ccscs3
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm11
-    MAKEFILE_FLAGS: -j -l 40
     CTEST_NPROC: 40
 
 rel_llvm_regress:
@@ -407,7 +404,6 @@ rel_llvm_regress:
     SITE_ID: ccscs3
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: llvm11
-    MAKEFILE_FLAGS: -j -l 40
     CTEST_NPROC: 40
 
 clangtidy_regress:
@@ -418,7 +414,6 @@ clangtidy_regress:
     SITE_ID: ccscs1
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm11
-    MAKEFILE_FLAGS: -j -l 80
     CTEST_NPROC: 40
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_STATIC_ANALYZER=clang-tidy
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
@@ -434,7 +429,6 @@ deb_gcc_scalar_regress:
     DRACO_ENV: gcc1020-ompi4
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_C4=SCALAR
-    MAKEFILE_FLAGS: -j -l 80
     CTEST_NPROC: 40
     CTEST_BUILD_NAME: c4-scalar
 
@@ -450,7 +444,6 @@ fulldiag_regress:
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
-    MAKEFILE_FLAGS: -j -l 80
     CTEST_NPROC: 40
     CTEST_BUILD_NAME: fulldiag-static
 
@@ -464,7 +457,6 @@ gcov_regress:
     DRACO_ENV: gcc1020-ompi4
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
     EXTRA_CMAKE_ARGS: -GNinja -DCODE_COVERAGE=ON
-    MAKEFILE_FLAGS: -j -l 40
     CTEST_NPROC: 40
     CTEST_BUILD_NAME: gcov
 
@@ -480,7 +472,6 @@ valgrind_regress:
     MEMCHECK_CONFIGURATION: "ON"
     # EXTRA_CMAKE_ARGS: -GNinja -DENABLE_MEMORYCHECK=ON
     CTEST_MEMORYCHECK_SUPPRESSIONS_FILE: "${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
-    MAKEFILE_FLAGS: -j 40 -l 40
     # EXTRA_CTEST_ARGS: "INCLUDE_LABEL memcheck EXCLUDE_LABEL nomemcheck"
     EXTRA_CTEST_ARGS: "EXCLUDE_LABEL nomemcheck"
     CTEST_NPROC: 40
