@@ -241,23 +241,21 @@ ctest_build(
       message(FATAL_ERROR "build error")
     endif()
   else()
-    message(
-      "
-CTEST_BUILD_FLAGS          = ${CTEST_BUILD_FLAGS}
-CMAKE_BUILD_PARALLEL_LEVEL = ${CMAKE_BUILD_PARALLEL_LEVEL}
-ctest_build(
-  FLAGS $ENV{MAKEFILE_FLAGS}
-  RETURN_VALUE build_failure
-  CAPTURE_CMAKE_ERROR ctest_build_errors)")
     if( DEFINED ENV{MAKEFILE_FLAGS} )
       set(CTB_FLAGS "FLAGS \"$ENV{MAKEFILE_FLAGS}\"")
     endif()
+    message(
+      "
+ctest_build(
+  ${CTB_FLAGS}
+  RETURN_VALUE build_failure
+  CAPTURE_CMAKE_ERROR ctest_build_errors)")
     ctest_build(
       ${CTB_FLAGS}
       RETURN_VALUE build_failure
       # cmake-3.21 -- PARALLEL_LEVEL ${CMAKE_BUILD_PARALLEL_LEVEL}
       CAPTURE_CMAKE_ERROR ctest_build_errors)
-
+    unset(CTB_FLAGS)
     if(build_failure)
       message("${ctest_build_errors}")
       ctest_submit()

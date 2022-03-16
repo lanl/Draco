@@ -506,25 +506,25 @@ rel_gcc_10.2.0_regress:
 # Re-deploy dependent projects
 #--------------------------------------------------------------------------------------------------#
 
-downstream-deploy:
-  extends: .ccscs
-  stage: deploy-downstream
-  variables:
-    DEPLOY: 'TRUE'
-    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-    DRACO_INSTALL_DIR: "/scratch/regress/deploy/draco/${FLAVOR}"
-  trigger:
-    project: capsaicin/cta
-    branch: develop
-    strategy: depend
-  rules:
-    # Don't deploy if this is a forked repository.
-    - if: '$CI_PROJECT_NAMESPACE != "draco"'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: never
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - if: '$CI_PIPELINE_SOURCE == "web"'
+# downstream-deploy:
+#   extends: .ccscs
+#   stage: deploy-downstream
+#   variables:
+#     DEPLOY: 'TRUE'
+#     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+#     DRACO_INSTALL_DIR: "/scratch/regress/deploy/draco/${FLAVOR}"
+#   trigger:
+#     project: capsaicin/cta
+#     branch: develop
+#     strategy: depend
+#   rules:
+#     # Don't deploy if this is a forked repository.
+#     - if: '$CI_PROJECT_NAMESPACE != "draco"'
+#       when: never
+#     - if: '$CI_PIPELINE_SOURCE == "schedule"'
+#       when: never
+#     - if: '$CI_COMMIT_BRANCH == "develop"'
+#     - if: '$CI_PIPELINE_SOURCE == "web"'
 
 
 #--------------------------------------------------------------------------------------------------#
