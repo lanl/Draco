@@ -159,7 +159,6 @@ sn_deb_fulldiag_mr:
   extends: .snow
   variables:
     CTEST_MODE: Nightly
-    MAKEFILE_FLAGS: -j -l 36
     CTEST_NPROC: 36
   script:
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m "Configure,Build,Test"
@@ -192,14 +191,16 @@ sn_rel_i1913_regress:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/intel1913"
     CTEST_BUILD_NAME: "intel1913-Release"
+    MAKEFILE_FLAGS: -j -l 36
 
-sn_deb_g830_regress:
+sn_deb_g930_regress:
   extends: .snow_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/1.8-gnu"
     CTEST_BUILD_NAME: "lapse18-gnu-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
+    MAKEFILE_FLAGS: -j -l 36
 
 sn_deb_fulldiag_regress:
   extends: .snow_nightly

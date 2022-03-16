@@ -260,6 +260,8 @@ ctest_build( ${CTB_FLAGS}
       # cmake-3.21 -- PARALLEL_LEVEL ${CMAKE_BUILD_PARALLEL_LEVEL}
       CAPTURE_CMAKE_ERROR ctest_build_errors)
     unset(CTB_FLAGS)
+    message("==> build_failure      = ${build_failure}")
+    message("==> ctest_build_errors = ${ctest_build_errors}")
     if(build_failure)
       message("${ctest_build_errors}")
       ctest_submit()

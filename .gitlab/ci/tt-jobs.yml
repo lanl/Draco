@@ -158,7 +158,6 @@ tt_deb_cce_mr:
   extends: .tt
   variables:
     CTEST_MODE: Nightly
-    MAKEFILE_FLAGS: -j -l 32
     CTEST_NPROC: 32
   script:
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m "Configure,Build,Test"
@@ -210,6 +209,7 @@ tt_rel_oneapi2140_regress:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/oneapi2140"
     CTEST_BUILD_NAME: "oneapi2140-Release"
+    MAKEFILE_FLAGS: -j -l 32
 
 tt_deb_oneapi2140_regress:
   stage: test
@@ -218,6 +218,7 @@ tt_deb_oneapi2140_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/oneapi2140"
     CTEST_BUILD_NAME: "oneapi2140-Debug"
+    MAKEFILE_FLAGS: -j -l 32
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/tt-jobs.yml
