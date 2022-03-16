@@ -211,64 +211,58 @@ endif()
 # ------------------------------------------------------------------------------------------------ #
 if(${CTEST_SCRIPT_ARG} MATCHES Build)
 
+  if( DEFINED ENV{MAKEFILE_FLAGS} )
+    set(CTB_FLAGS "FLAGS $ENV{MAKEFILE_FLAGS}")
+  endif()
+
   if(DEFINED ENV{AUTODOCDIR})
     # build one unit test
     message(
       "
-ctest_build(
+ctest_build( ${CTB_FLAGS}
   TARGET Ut_dsxx_tstAssert_exe
-  FLAGS $ENV{MAKEFILE_FLAGS}
   RETURN_VALUE build_failure
   CAPTURE_CMAKE_ERROR ctest_build_errors)
 ")
-    ctest_build(
+    ctest_build( ${CTB_FLAGS}
       TARGET Ut_dsxx_tstAssert_exe
-      FLAGS "$ENV{MAKEFILE_FLAGS}"
       RETURN_VALUE build_failure
       CAPTURE_CMAKE_ERROR ctest_build_errors)
     # build autodoc target.
     message(
       "
-ctest_build(
+ctest_build( ${CTB_FLAGS}
   TARGET autodoc
-  FLAGS $ENV{MAKEFILE_FLAGS}
   RETURN_VALUE build_failure
   CAPTURE_CMAKE_ERROR ctest_build_errors)
 ")
-    ctest_build(
+    ctest_build( ${CTB_FLAGS}
       TARGET autodoc
-      FLAGS "$ENV{MAKEFILE_FLAGS}"
       RETURN_VALUE build_failure
       CAPTURE_CMAKE_ERROR ctest_build_errors)
-    if(build_failure)
+    if(build_failure OR (NOT "${ctest_build_errors}" STREQUAL "0") )
       message("${ctest_build_errors}")
       ctest_submit()
       message(FATAL_ERROR "build error")
     endif()
   else()
-    if( DEFINED ENV{MAKEFILE_FLAGS} )
-      set(CTB_FLAGS "FLAGS \"$ENV{MAKEFILE_FLAGS}\"")
-    endif()
     message(
       "
 ctest_build( ${CTB_FLAGS}
   RETURN_VALUE build_failure
   CAPTURE_CMAKE_ERROR ctest_build_errors)")
-    ctest_build(
-      ${CTB_FLAGS}
+    ctest_build( ${CTB_FLAGS}
       RETURN_VALUE build_failure
       # cmake-3.21 -- PARALLEL_LEVEL ${CMAKE_BUILD_PARALLEL_LEVEL}
       CAPTURE_CMAKE_ERROR ctest_build_errors)
-    unset(CTB_FLAGS)
-    message("==> build_failure      = ${build_failure}")
-    message("==> ctest_build_errors = ${ctest_build_errors}")
-    if(build_failure)
-      message("${ctest_build_errors}")
+    if(build_failure OR (NOT "${ctest_build_errors}" STREQUAL "0") )
       ctest_submit()
       message(FATAL_ERROR "build error")
+      file(WRITE "${CTEST_BINARY_DIRECTORY}/build_error.txt"
+        "ctest_build_errors = ${ctest_build_errors}")
     endif()
   endif()
-
+  unset(CTB_FLAGS)
 endif()
 
 # ------------------------------------------------------------------------------------------------ #
@@ -292,7 +286,15 @@ ctest_test( RETURN_VALUE test_failure INCLUDE dsxx_tstAssert ${EXTRA_CTEST_ARGS}
     message("
 ctest_test( RETURN_VALUE test_failure ${EXTRA_CTEST_ARGS})
 ")
-    ctest_test(RETURN_VALUE test_failure ${EXTRA_CTEST_ARGS})
+    ctest_test(RETURN_VALUE test_failure ${EXTRA_CTEST_ARGS}
+      CAPTURE_CMAKE_ERROR ctest_test_errors)
+
+    if(test_failure OR (NOT "${ctest_test_errors}" STREQUAL "0") )
+      ctest_submit()
+      message(FATAL_ERROR "test errors")
+      file(WRITE "${CTEST_BINARY_DIRECTORY}/test_error.txt"
+        "ctest_test_errors = ${ctest_test_errors}")
+    endif()
 
     if(DEFINED ENV{CODECOV} AND "$ENV{CODECOV}" MATCHES "ON")
       set(CODE_COVERAGE "ON")
@@ -447,8 +449,9 @@ if(${CTEST_SCRIPT_ARG} MATCHES Submit)
   message("ctest_submit()")
   ctest_submit()
 
-  if(test_failure)
-    message(FATAL_ERROR "test failure")
+  if(EXISTS "${CTEST_BINARY_DIRECTORY}/build_error.txt" OR
+      EXISTS "${CTEST_BINARY_DIRECTORY}/test_error.txt")
+    message(FATAL_ERROR "build and/or test failures found")
   endif()
 
 endif()
