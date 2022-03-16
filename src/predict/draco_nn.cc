@@ -80,10 +80,9 @@ void draco_nn::load_network(const std::string &net_file) {
  * \return prediction for each input signal
  */
 //================================================================================================//
-std::vector<float> draco_nn::predict(std::vector<float> &signal,
-                                     const long int Remember(input_size),
-                                     const long int output_size) {
-  Require(signal.size() == static_cast<size_t>(input_size * output_size));
+std::vector<float> draco_nn::predict(std::vector<float> &signal, const size_t Remember(input_size),
+                                     const size_t output_size) {
+  Require(signal.size() == (input_size * output_size));
   std::vector<float> input = signal;
   std::vector<float> result;
   for (size_t n = 0; n < n_layers; n++) {
