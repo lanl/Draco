@@ -38,8 +38,8 @@ public:
   void load_network(const std::string &net_file);
 
   //! Prediction call
-  std::vector<float> predict(std::vector<float> &signal, const long int input_size,
-                             const long int output_size);
+  std::vector<float> predict(std::vector<float> &signal, const size_t input_size,
+                             const size_t output_size);
 
   //! Check if the network is valid
   bool valid() { return valid_; }
