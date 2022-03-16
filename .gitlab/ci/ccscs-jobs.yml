@@ -89,126 +89,126 @@ ccs2_deb_gcc_1020_deploy:
     DRACO_ENV: gcc1020-ompi4
     SITE_ID: ccscs2
 
-# ccs3_deb_gcc_1020_deploy:
-#   tags:
-#     - CCSCS3-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: gcc1020-ompi4
-#     SITE_ID: ccscs3
+ccs3_deb_gcc_1020_deploy:
+  tags:
+    - CCSCS3-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs3
 
-# ccs4_deb_gcc_1020_deploy:
-#   tags:
-#     - CCSCS4-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: gcc1020-ompi4
-#     SITE_ID: ccscs4
+ccs4_deb_gcc_1020_deploy:
+  tags:
+    - CCSCS4-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs4
 
-# ccs4_rel_gcc_1020_deploy:
-#   tags:
-#     - CCSCS4-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: gcc1020-ompi4
-#     SITE_ID: ccscs4
+ccs4_rel_gcc_1020_deploy:
+  tags:
+    - CCSCS4-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs4
 
-# ccs1_c4_scalar_deploy:
-#   tags:
-#     - CCSCS1-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: gcc1020-ompi4
-#     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
-#     EXTRA_CMAKE_ARGS: -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
-#     SITE_ID: ccscs1
+ccs1_c4_scalar_deploy:
+  tags:
+    - CCSCS1-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
+    EXTRA_CMAKE_ARGS: -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
+    SITE_ID: ccscs1
 
-# ccs3_deb_llvm_deploy:
-#   tags:
-#     - CCSCS3-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: llvm11
-#     SITE_ID: ccscs3
+ccs3_deb_llvm_deploy:
+  tags:
+    - CCSCS3-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: llvm11
+    SITE_ID: ccscs3
 
-# ccs3_rel_llvm_deploy:
-#   tags:
-#     - CCSCS3-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: llvm11
-#     SITE_ID: ccscs3
+ccs3_rel_llvm_deploy:
+  tags:
+    - CCSCS3-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: llvm11
+    SITE_ID: ccscs3
 
-# ccs1_clangtidy_deploy:
-#   tags:
-#     - CCSCS1-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: llvm11
-#     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
-#     EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
-#     SITE_ID: ccscs1
+ccs1_clangtidy_deploy:
+  tags:
+    - CCSCS1-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: llvm11
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
+    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
+    SITE_ID: ccscs1
 
-# ccs2_rel_gcc_1020_deploy:
-#   tags:
-#     - CCSCS2-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: gcc1020-ompi4
-#     SITE_ID: ccscs2
+ccs2_rel_gcc_1020_deploy:
+  tags:
+    - CCSCS2-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs2
 
-# ccs3_rel_gcc_1020_deploy:
-#   tags:
-#     - CCSCS3-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: gcc1020-ompi4
-#     SITE_ID: ccscs3
+ccs3_rel_gcc_1020_deploy:
+  tags:
+    - CCSCS3-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs3
 
-# ccs1_fulldiag_deploy:
-#   tags:
-#     - CCSCS1-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: gcc1020-ompi4
-#     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
-#     # DRACO_TIMING=1 enables caliper timers.
-#     # DRACO_DIAGNOSTICS=7 enables FPE traps.
-#     EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
-#     SITE_ID: ccscs1
+ccs1_fulldiag_deploy:
+  tags:
+    - CCSCS1-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
+    # DRACO_TIMING=1 enables caliper timers.
+    # DRACO_DIAGNOSTICS=7 enables FPE traps.
+    EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    SITE_ID: ccscs1
 
-# ccs2_gcov_deploy:
-#   tags:
-#     - CCSCS2-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: gcc1020-ompi4
-#     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
-#     EXTRA_CMAKE_ARGS: -DCODE_COVERAGE=ON
-#     SITE_ID: ccscs2
+ccs2_gcov_deploy:
+  tags:
+    - CCSCS2-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
+    EXTRA_CMAKE_ARGS: -DCODE_COVERAGE=ON
+    SITE_ID: ccscs2
 
-# ccs2_valgrind_deploy:
-#   tags:
-#     - CCSCS2-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: gcc1020-ompi4
-#     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
-#     EXTRA_CMAKE_ARGS: -DENABLE_MEMORYCHECK=ON
-#       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
-#     SITE_ID: ccscs2
+ccs2_valgrind_deploy:
+  tags:
+    - CCSCS2-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
+    EXTRA_CMAKE_ARGS: -DENABLE_MEMORYCHECK=ON
+      -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
+    SITE_ID: ccscs2
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
@@ -376,6 +376,7 @@ rel_gcc_10.2.0_regress:
     DRACO_ENV: gcc1020-ompi4
     CTEST_NPROC: 40
 
+<<<<<<< HEAD
 # deb_gcc_10.2.0_regress:
 #   tags:
 #     - CCSCS2-setuid-shared
@@ -501,30 +502,149 @@ rel_gcc_10.2.0_regress:
 #   artifacts:
 #     paths:
 #       - public
+=======
+deb_gcc_10.2.0_regress:
+  tags:
+    - CCSCS2-setuid-shared
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs2
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    CTEST_NPROC: 40
+
+deb_llvm_regress:
+  tags:
+    - CCSCS3-setuid-shared
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs3
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: llvm11
+    CTEST_NPROC: 40
+
+rel_llvm_regress:
+  tags:
+    - CCSCS3-setuid-shared
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs3
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: llvm11
+    CTEST_NPROC: 40
+
+clangtidy_regress:
+  tags:
+    - CCSCS1-setuid-shared
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs1
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: llvm11
+    CTEST_NPROC: 40
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_STATIC_ANALYZER=clang-tidy
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
+    CTEST_BUILD_NAME: clang-tidy
+
+deb_gcc_scalar_regress:
+  tags:
+    - CCSCS1-setuid-shared
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs1
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_C4=SCALAR
+    CTEST_NPROC: 40
+    CTEST_BUILD_NAME: c4-scalar
+
+fulldiag_regress:
+  tags:
+    - CCSCS1-setuid-shared
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs1
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
+    # DRACO_TIMING=1 enables caliper timers.
+    # DRACO_DIAGNOSTICS=7 enables FPE traps.
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    CTEST_NPROC: 40
+    CTEST_BUILD_NAME: fulldiag-static
+
+gcov_regress:
+  tags:
+    - CCSCS2-setuid-shared
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs2
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
+    EXTRA_CMAKE_ARGS: -GNinja -DCODE_COVERAGE=ON
+    CTEST_NPROC: 40
+    CTEST_BUILD_NAME: gcov
+
+valgrind_regress:
+  tags:
+    - CCSCS2-setuid-shared
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs2
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
+    MEMCHECK_CONFIGURATION: "ON"
+    # EXTRA_CMAKE_ARGS: -GNinja -DENABLE_MEMORYCHECK=ON
+    CTEST_MEMORYCHECK_SUPPRESSIONS_FILE: "${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
+    # EXTRA_CTEST_ARGS: "INCLUDE_LABEL memcheck EXCLUDE_LABEL nomemcheck"
+    EXTRA_CTEST_ARGS: "EXCLUDE_LABEL nomemcheck"
+    CTEST_NPROC: 40
+    CTEST_BUILD_NAME: valgrind
+
+pages:
+  tags:
+    - CCSCS4-setuid-shared
+  stage: test
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs4
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    DEPLOY: "TRUE"
+    AUTODOC: "ON"
+    AUTODOCDIR: "${CI_PROJECT_DIR}/public"
+    CTEST_BUILD_NAME: autodoc
+  artifacts:
+    paths:
+      - public
+>>>>>>> nd
 
 #--------------------------------------------------------------------------------------------------#
 # Re-deploy dependent projects
 #--------------------------------------------------------------------------------------------------#
 
-# downstream-deploy:
-#   extends: .ccscs
-#   stage: deploy-downstream
-#   variables:
-#     DEPLOY: 'TRUE'
-#     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-#     DRACO_INSTALL_DIR: "/scratch/regress/deploy/draco/${FLAVOR}"
-#   trigger:
-#     project: capsaicin/cta
-#     branch: develop
-#     strategy: depend
-#   rules:
-#     # Don't deploy if this is a forked repository.
-#     - if: '$CI_PROJECT_NAMESPACE != "draco"'
-#       when: never
-#     - if: '$CI_PIPELINE_SOURCE == "schedule"'
-#       when: never
-#     - if: '$CI_COMMIT_BRANCH == "develop"'
-#     - if: '$CI_PIPELINE_SOURCE == "web"'
+downstream-deploy:
+  extends: .ccscs
+  stage: deploy-downstream
+  variables:
+    DEPLOY: 'TRUE'
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+    DRACO_INSTALL_DIR: "/scratch/regress/deploy/draco/${FLAVOR}"
+  trigger:
+    project: capsaicin/cta
+    branch: develop
+    strategy: depend
+  rules:
+    # Don't deploy if this is a forked repository.
+    - if: '$CI_PROJECT_NAMESPACE != "draco"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
 
 
 #--------------------------------------------------------------------------------------------------#

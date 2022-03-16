@@ -229,8 +229,6 @@ ctest_build(
     # build autodoc target.
     message(
       "
-CTEST_BUILD_COMMAND = ${CTEST_BUILD_COMMAND}
-MAKECOMMAND         = ${MAKECOMMAND}
 ctest_build(
   TARGET autodoc
   FLAGS $ENV{MAKEFILE_FLAGS}
@@ -253,8 +251,7 @@ ctest_build(
     endif()
     message(
       "
-ctest_build(
-  ${CTB_FLAGS}
+ctest_build( ${CTB_FLAGS}
   RETURN_VALUE build_failure
   CAPTURE_CMAKE_ERROR ctest_build_errors)")
     ctest_build(
