@@ -46,7 +46,7 @@ sn_rel_i1904_deploy:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.0-intel"
-    FLAVOR: lapse18-intel-Release
+    FLAVOR: lapse20-intel-Release
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_i1904_deploy:
@@ -54,7 +54,7 @@ sn_deb_i1904_deploy:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.0-intel"
-    FLAVOR: lapse18-intel-Debug
+    FLAVOR: lapse20-intel-Debug
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_rel_i1913_deploy:
@@ -68,16 +68,16 @@ sn_deb_g930_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/1.8-gnu"
-    FLAVOR: lapse18-gnu-Debug
+    DRACO_ENV: "lapse/2.0-gnu"
+    FLAVOR: lapse20-gnu-Debug
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_rel_g930_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/1.8-gnu"
-    FLAVOR: lapse18-gnu-Release
+    DRACO_ENV: "lapse/2.0-gnu"
+    FLAVOR: lapse20-gnu-Release
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_fulldiag_deploy:
@@ -138,7 +138,7 @@ sn_deb_g930_mr:
   extends: .snow_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/1.8-gnu"
+    DRACO_ENV: "lapse/2.0-gnu"
     EXTRA_CMAKE_ARGS: -GNinja
 
 # ----- slow -----
@@ -173,7 +173,7 @@ sn_rel_i1904_regress:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.0-intel"
-    CTEST_BUILD_NAME: "lapse18-intel-Release"
+    CTEST_BUILD_NAME: "lapse20-intel-Release"
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_i1904_regress:
@@ -182,7 +182,7 @@ sn_deb_i1904_regress:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.0-intel"
-    CTEST_BUILD_NAME: "lapse18-intel-Debug"
+    CTEST_BUILD_NAME: "lapse20-intel-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_rel_i1913_regress:
@@ -197,8 +197,8 @@ sn_deb_g930_regress:
   extends: .snow_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/1.8-gnu"
-    CTEST_BUILD_NAME: "lapse18-gnu-Debug"
+    DRACO_ENV: "lapse/2.0-gnu"
+    CTEST_BUILD_NAME: "lapse20-gnu-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_fulldiag_regress:
