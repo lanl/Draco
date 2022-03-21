@@ -499,12 +499,10 @@ pages:
 #--------------------------------------------------------------------------------------------------#
 
 downstream-deploy:
-  extends: .ccscs
   stage: deploy-downstream
   variables:
     DEPLOY: 'TRUE'
-    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-    DRACO_INSTALL_DIR: "/scratch/regress/deploy/draco/${FLAVOR}"
+    PROJECT: 'CTA'
   trigger:
     project: capsaicin/cta
     branch: develop
