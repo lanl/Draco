@@ -210,6 +210,33 @@ ccs2_valgrind_deploy:
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
     SITE_ID: ccscs2
 
+ccs4_rel_gcc831_deploy:
+  tags:
+    - CCSCS4-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc831
+    SITE_ID: ccscs4
+
+ccs4_deb_gcc1120_deploy:
+  tags:
+    - CCSCS4-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1120
+    SITE_ID: ccscs4
+
+ccs5_deb_llvm12_deploy:
+  tags:
+    - CCSCS5-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: llvm12
+    SITE_ID: ccscs5
+
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
 #--------------------------------------------------------------------------------------------------#
@@ -493,6 +520,36 @@ pages:
   artifacts:
     paths:
       - public
+
+deb_gcc_11.2.0_regress:
+  tags:
+    - CCSCS4-setuid-shared
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs4
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1120
+    CTEST_NPROC: 40
+
+deb_llvm_12.0.1_regress:
+  tags:
+    - CCSCS5-setuid-shared
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs5
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: llvm12
+    CTEST_NPROC: 40
+
+rel_gcc_8.3.1_regress:
+  tags:
+    - CCSCS4-setuid-shared
+  extends: .ccscs_nightly
+  variables:
+    SITE_ID: ccscs4
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc831
+    CTEST_NPROC: 40
 
 #--------------------------------------------------------------------------------------------------#
 # Re-deploy dependent projects

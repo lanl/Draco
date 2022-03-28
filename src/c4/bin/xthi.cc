@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 
 #if defined(__GNUC__) && __GNUC__ == 8 && __GNUC_MINOR__ == 3 && __GNUC_PATCHLEVEL__ == 1
   // gcc-8.3.1 complains about normal syntax (rzansel).
-#pragma omp parallel default(none) shared(hostname, std::cout)
+#pragma omp parallel default(none) shared(std::cout)
 #else
 #pragma omp parallel default(none) shared(num_cpus, hostname, rank, std::cout)
 #endif
