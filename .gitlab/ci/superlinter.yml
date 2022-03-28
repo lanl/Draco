@@ -8,6 +8,7 @@
 # See Also: https://gitlab.com/snippets/1988376
 #--------------------------------------------------------------------------------------------------#
 
+---
 superlinter:
   tags:
     - darwin-docker-shared
