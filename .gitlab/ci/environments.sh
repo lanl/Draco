@@ -48,7 +48,7 @@ elif [[ "${SITE_ID}" =~ "ccscs" ]]; then
   run "module use --append /ccs/codes/radtran/Modules"
   export PATH=/scratch/vendors/bin:$PATH # clang-format
   case ${DRACO_ENV} in
-    gcc1020* | llvm11 ) ;;
+    gcc831* | gcc1020* | gcc1120* | llvm11 | llvm12 | oneapi* ) ;;
     *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
   esac
   run "module load draco/${DRACO_ENV}"
