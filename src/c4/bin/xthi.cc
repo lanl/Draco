@@ -21,8 +21,14 @@ int main(int argc, char *argv[]) {
   unsigned const num_cpus = omp_get_num_procs();
 
 #if defined(__GNUC__) && __GNUC__ == 8 && __GNUC_MINOR__ == 3 && __GNUC_PATCHLEVEL__ == 1
-  // gcc-8.3.1 complains about normal syntax (rzansel).
+  // gcc-8.3.1 complains about normal syntax. power9 and x86_64 have different requirements.
+#ifdef draco_isPPC
+  // rzansel/sierra
+#pragma omp parallel default(none) shared(hostname, std::cout)
+#else
+  // ccs-net with gcc-8.3.1 (RHEL 8)
 #pragma omp parallel default(none) shared(std::cout)
+#endif
 #else
 #pragma omp parallel default(none) shared(num_cpus, hostname, rank, std::cout)
 #endif

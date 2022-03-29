@@ -93,6 +93,10 @@ cmake_host_system_information(RESULT HAVE_HARDWARE_SSE2 QUERY HAS_SSE2)
 cmake_host_system_information(RESULT HAVE_HARDWARE_SSE_FP QUERY HAS_SSE_FP)
 cmake_host_system_information(RESULT HAVE_HARDWARE_SSE_MMX QUERY HAS_SSE_MMX)
 
+if(COMPILED_OS_PLATFORM MATCHES "ppc")
+  set(draco_isPPC 1)
+endif()
+
 # Create ds++/config.h
 configure_file(config.h.in ${PROJECT_BINARY_DIR}/ds++/config.h)
 

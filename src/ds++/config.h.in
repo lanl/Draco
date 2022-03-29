@@ -38,6 +38,7 @@
  * __GNUC__
  * __clang__
  * __ICC
+ * __ibmxl__
  * NVCC
  * APPLE
  * _MSC_FULL_VER, _MSC_VER
@@ -67,6 +68,7 @@
 #cmakedefine draco_isPGI
 #cmakedefine draco_isKNL
 #cmakedefine draco_is64bit
+#cmakedefine draco_isPPC
 #cmakedefine DRACO_UNAME @DRACO_UNAME@
 #cmakedefine HAVE_CUDA @HAVE_CUDA@
 #cmakedefine USE_CUDA @USE_CUDA@
