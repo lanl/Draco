@@ -80,6 +80,15 @@ ccs1_clangtidy:
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
+ccs1_deb_gcc_1020_deploy:
+  tags:
+    - CCSCS1-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs1
+
 ccs2_deb_gcc_1020_deploy:
   tags:
     - CCSCS2-setuid-shared
