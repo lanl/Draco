@@ -89,51 +89,6 @@ ccs1_deb_gcc_1020_deploy:
     DRACO_ENV: gcc1020-ompi4
     SITE_ID: ccscs1
 
-ccs2_deb_gcc_1020_deploy:
-  tags:
-    - CCSCS2-setuid-shared
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1020-ompi4
-    SITE_ID: ccscs2
-
-ccs3_deb_gcc_1020_deploy:
-  tags:
-    - CCSCS3-setuid-shared
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1020-ompi4
-    SITE_ID: ccscs3
-
-ccs4_deb_gcc_1020_deploy:
-  tags:
-    - CCSCS4-setuid-shared
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1020-ompi4
-    SITE_ID: ccscs4
-
-ccs9_rwdi_gcc_1020_deploy:
-  tags:
-    - CCSCS9-setuid-shared
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: gcc1020-ompi4
-    SITE_ID: ccscs9
-
-ccs4_rel_gcc_1020_deploy:
-  tags:
-    - CCSCS4-setuid-shared
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1020-ompi4
-    SITE_ID: ccscs4
-
 ccs1_c4_scalar_deploy:
   tags:
     - CCSCS1-setuid-shared
@@ -144,6 +99,35 @@ ccs1_c4_scalar_deploy:
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
     EXTRA_CMAKE_ARGS: -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
     SITE_ID: ccscs1
+
+ccs1_clangtidy_deploy:
+  tags:
+    - CCSCS1-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: llvm11
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
+    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
+    SITE_ID: ccscs1
+
+ccs2_deb_gcc_1020_deploy:
+  tags:
+    - CCSCS2-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs2
+
+ccs2_rel_gcc_1020_deploy:
+  tags:
+    - CCSCS2-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs2
 
 ccs3_deb_llvm_deploy:
   tags:
@@ -163,25 +147,14 @@ ccs3_rel_llvm_deploy:
     DRACO_ENV: llvm11
     SITE_ID: ccscs3
 
-ccs1_clangtidy_deploy:
+ccs3_deb_gcc_1020_deploy:
   tags:
-    - CCSCS1-setuid-shared
+    - CCSCS3-setuid-shared
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm11
-    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
-    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
-    SITE_ID: ccscs1
-
-ccs2_rel_gcc_1020_deploy:
-  tags:
-    - CCSCS2-setuid-shared
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1020-ompi4
-    SITE_ID: ccscs2
+    SITE_ID: ccscs3
 
 ccs3_rel_gcc_1020_deploy:
   tags:
@@ -191,6 +164,60 @@ ccs3_rel_gcc_1020_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1020-ompi4
     SITE_ID: ccscs3
+
+ccs4_deb_gcc_1020_deploy:
+  tags:
+    - CCSCS4-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs4
+
+ccs4_rel_gcc_1020_deploy:
+  tags:
+    - CCSCS4-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs4
+
+ccs4_rwdi_gcc_1020_deploy:
+  tags:
+    - CCSCS4-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: RelWithDebInfo
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs4
+
+ccs9_rwdi_gcc_1020_deploy:
+  tags:
+    - CCSCS9-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: RelWithDebInfo
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs9
+
+ccs9_deb_gcc_1020_deploy:
+  tags:
+    - CCSCS9-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs9
+
+ccs9_rel_gcc_1020_deploy:
+  tags:
+    - CCSCS9-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1020-ompi4
+    SITE_ID: ccscs9
 
 ccs1_fulldiag_deploy:
   tags:
