@@ -29,6 +29,11 @@ int main(int argc, char *argv[]) {
   // ccs-net with gcc-8.3.1 (RHEL 8)
 #pragma omp parallel default(none) shared(std::cout)
 #endif
+
+#elif defined(__GNUC__) && __GNUC__ == 8 && __GNUC_MINOR__ == 5 && __GNUC_PATCHLEVEL__ == 0
+  // ccs-net with gcc-8.5.0 (RHEL 8)
+#pragma omp parallel default(none) shared(std::cout)
+
 #else
 #pragma omp parallel default(none) shared(num_cpus, hostname, rank, std::cout)
 #endif
