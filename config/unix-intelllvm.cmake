@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Wednesday, May 26, 2021, 13:44 pm
 # brief  Establish flags for Linux64 - Intel C++ (LLVM)
-# note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
 # -------------------------------------------------------------------------------------------------#
 
 #
@@ -29,7 +29,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
   string(CONCAT CMAKE_C_FLAGS_RELWITHDEBINFO "-O3 ")
 
   string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS}")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wno-tautological-constant-compare")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")

@@ -71,13 +71,17 @@ for i in C CXX Fortran CUDA; do
   if [[ "${DRACO_ENV}" =~ "xl16" ]]; then
     eval export ${i}_FLAGS+=\" -qhalt=w\"
   else
-    if [[ "${i}" == "Fortran" ]] && [[ "${FC}" =~ "ifort" ]]; then
-      # do not add the flag
-      echo "Skip adding -Werror to ${i}_FLAGS (FC = ${FC})"
+    if [[ "${i}" == "Fortran" ]]; then
+      if [[ "${FC}" =~ "ifort" ]] || [[ "${FC}" =~ "ifx" ]] ; then
+        # do not add the flag
+        echo "Skip adding -Werror to ${i}_FLAGS (FC = ${FC})"
+      else
+        eval export ${i}_FLAGS+=\" -Werror\"
+      fi
     elif [[ "${i}" == "CUDA" ]]; then
       eval export ${i}_FLAGS+=\" -Werror all-warnings\"
     else
-      # Works for gcc, llvm, and icpc (not ifort).
+      # Works for gcc, llvm, and icpc (not ifort or ifx).
       eval export ${i}_FLAGS+=\" -Werror\"
     fi
   fi

@@ -138,14 +138,14 @@ ccs3_deb_llvm_deploy:
     DRACO_ENV: llvm11
     SITE_ID: ccscs3
 
-ccs3_rel_llvm_deploy:
-  tags:
-    - CCSCS3-setuid-shared
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: llvm11
-    SITE_ID: ccscs3
+# ccs3_rel_llvm_deploy:
+#   tags:
+#     - CCSCS3-setuid-shared
+#   extends: .ccscs_deploy
+#   variables:
+#     CMAKE_BUILD_TYPE: Release
+#     DRACO_ENV: llvm11
+#     SITE_ID: ccscs3
 
 ccs3_deb_gcc_1020_deploy:
   tags:
@@ -255,13 +255,13 @@ ccs2_valgrind_deploy:
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
     SITE_ID: ccscs2
 
-ccs4_rel_gcc831_deploy:
+ccs4_rel_gcc850_deploy:
   tags:
     - CCSCS4-setuid-shared
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc831
+    DRACO_ENV: gcc850
     SITE_ID: ccscs4
 
 ccs4_deb_gcc1120_deploy:
@@ -356,14 +356,14 @@ ccs2_autodoc:
 
 # ---------- SLOW TEST (only starts if all regular TEST pass) ---------- #
 
-ccs3_rel_llvm11:
+ccs3_rel_llvm12:
   tags:
     - CCSCS3-setuid-shared
   stage: slowtest
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: llvm11
+    DRACO_ENV: llvm12
     CTEST_NPROC: 32
     SITE_ID: ccscs3
 
@@ -475,7 +475,7 @@ rel_llvm_regress:
   variables:
     SITE_ID: ccscs3
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: llvm11
+    DRACO_ENV: llvm12
     CTEST_NPROC: 40
 
 clangtidy_regress:
@@ -576,24 +576,14 @@ deb_gcc_11.2.0_regress:
     DRACO_ENV: gcc1120
     CTEST_NPROC: 40
 
-deb_llvm_12.0.1_regress:
-  tags:
-    - CCSCS5-setuid-shared
-  extends: .ccscs_nightly
-  variables:
-    SITE_ID: ccscs5
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm12
-    CTEST_NPROC: 40
-
-rel_gcc_8.3.1_regress:
+rel_gcc_8.5.0_regress:
   tags:
     - CCSCS4-setuid-shared
   extends: .ccscs_nightly
   variables:
     SITE_ID: ccscs4
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc831
+    DRACO_ENV: gcc850
     CTEST_NPROC: 40
 
 #--------------------------------------------------------------------------------------------------#

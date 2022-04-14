@@ -139,6 +139,7 @@ tt_rel_i1904_mr:
 tt_deb_oneapi_mr:
   stage: slowtest
   extends: .tt_merge
+  allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/oneapi2140"
