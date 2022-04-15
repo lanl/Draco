@@ -138,14 +138,14 @@ ccs3_deb_llvm_deploy:
     DRACO_ENV: llvm11
     SITE_ID: ccscs3
 
-# ccs3_rel_llvm_deploy:
-#   tags:
-#     - CCSCS3-setuid-shared
-#   extends: .ccscs_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: llvm11
-#     SITE_ID: ccscs3
+ccs3_rel_llvm_deploy:
+   tags:
+     - CCSCS3-setuid-shared
+   extends: .ccscs_deploy
+   variables:
+     CMAKE_BUILD_TYPE: Release
+     DRACO_ENV: llvm12
+     SITE_ID: ccscs3
 
 ccs3_deb_gcc_1020_deploy:
   tags:
