@@ -78,6 +78,7 @@ template void global_min<unsigned long>(unsigned long &);
 template void global_min<float>(float &);
 template void global_min<double>(double &);
 template void global_min<long double>(long double &);
+template void global_min<long long>(long long &);
 template void global_min<unsigned long long>(unsigned long long &);
 
 template void global_and<bool>(bool &);

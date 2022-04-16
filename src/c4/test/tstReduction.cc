@@ -534,9 +534,9 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(xunsigned == unsigned_answer);
 
     // test min
-    // xunsigned = static_cast<long long>(rtt_c4::node() + 1);
-    // global_min(xunsigned);
-    // FAIL_IF_NOT(xunsigned == 1);
+    xunsigned = static_cast<long long>(rtt_c4::node() + 1);
+    global_min(xunsigned);
+    FAIL_IF_NOT(xunsigned == 1);
 
     // test max
     xunsigned = static_cast<long long>(rtt_c4::node() + 1);
