@@ -6,9 +6,13 @@
 # note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
 # -------------------------------------------------------------------------------------------------#
 
+# cmake-lint: disable=C0301
+
 #
 # Compiler Flags
 #
+# * https://www.intel.com/content/www/us/en/develop/documentation/oneapi-dpcpp-cpp-compiler-dev-guide-and-reference/top/compiler-reference/macros/use-predefined-macros-for-intel-compilers.html
+# * https://community.intel.com/t5/Intel-C-Compiler/Cause-for-remark-11074-Inlining-inhibited-by-limit-max-size/m-p/1073635
 
 if(NOT CXX_FLAGS_INITIALIZED)
   set(CXX_FLAGS_INITIALIZED
