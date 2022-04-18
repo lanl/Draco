@@ -4,7 +4,7 @@
 # File  : environment/bashrc/.bashrc_ccsnet
 # Date  : Friday, Aug 28, 2020, 16:10 pm
 # Author: Kelly Thompson <kgt@lanl.gov>
-# Note  : Copyright (C) 2020, Triad National Security, LLC., All rights are reserved.
+# Note  : Copyright (C) 2020-2022, Triad National Security, LLC., All rights are reserved.
 #
 # Bash configuration file upon bash shell startup
 #--------------------------------------------------------------------------------------------------#
@@ -20,7 +20,7 @@ case $target in
     [[ -z "${MODULEPATH}" ]] && export MODULEPATH=/ccs/opt/modulefiles
     module unuse /usr/share/Modules/modulefiles /usr/local/lmod/lmod/modulefiles/Core
     module use --append /ccs/codes/radtran/Modules
-    module load draco/gcc1020-ompi4
+    module load draco/gcc1120
     ;;
   ccsnet[23]*|rtt*) module use --append /ccs/codes/radtran/Modules ;;
   *) die "I don't know how to setup modules for $target" ;;

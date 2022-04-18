@@ -3,7 +3,7 @@
 # File  : environment/bashrc/.bashrc_cray
 # Date  : Tuesday, May 31, 2016, 14:48 pm
 # Author: Kelly Thompson
-# Note  : Copyright (C) 2016-2021, Triad National Security, LLC., All rights are reserved.
+# Note  : Copyright (C) 2016-2022, Triad National Security, LLC., All rights are reserved.
 #
 # Bash configuration file for Cray HPC machines.
 #--------------------------------------------------------------------------------------------------#
@@ -30,8 +30,7 @@ shopt -u progcomp
 
 add_to_path $VENDOR_DIR/bin
 
-# If LESS is set, is should include '-R' so that git diff's color
-# displays correctly.
+# If LESS is set, is should include '-R' so that git diff's color displays correctly.
 if [[ -n "${LESS}" ]]; then
   unset LESS
 fi
@@ -77,7 +76,7 @@ case $sysname in
     module load draco
     ;;
   trinitite | trinity )
-    module load lapse/1.8-intel
+    module load lapse/2.0-intel
     if [[ ${SLURM_JOB_PARTITION} =~ "knl" ]]; then
       module swap craype-haswell craype-mic-knl
     fi
