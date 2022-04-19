@@ -106,7 +106,7 @@ ccs1_clangtidy_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm11
+    DRACO_ENV: llvm12
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
     EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
     SITE_ID: ccscs1
