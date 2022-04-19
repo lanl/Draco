@@ -72,7 +72,8 @@ for i in C CXX Fortran CUDA; do
     eval export ${i}_FLAGS+=\" -qhalt=w\"
   else
     if [[ "${i}" == "Fortran" ]]; then
-      if [[ "${FC}" =~ "ifort" ]] || [[ "${FC}" =~ "ifx" ]] ; then
+      if [[ "${FC}" =~ "ifort" ]] || [[ "${FC}" =~ "ifx" ]] || \
+           [[ "${INTEL_COMPILER_TYPE}" == "ONEAPI" ]] ; then
         # do not add the flag
         echo "Skip adding -Werror to ${i}_FLAGS (FC = ${FC})"
       else

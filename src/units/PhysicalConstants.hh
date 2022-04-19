@@ -50,7 +50,6 @@ public:
   /*!
    * \brief Default constructor provides physical constants with SI units (kg, m, seconds, degree K,
    *        amp, radian, mole).
-   * \return A PhysicalConstants object.
    */
   constexpr PhysicalConstants()
       : d_avogadro(AVOGADRO), d_planck(planckSI), d_gasConstant(gasConstantSI),

@@ -515,7 +515,7 @@ macro(dbsSetupStaticAnalyzers)
     #
     # Example:
     #
-    # * cmake -DDRACO_STATIC_ANALYZER=clang-tidy -DCLANG_TIDY_CHECKS="-checks=generate-*"  ...
+    # * cmake -DDRACO_STATIC_ANALYZER=clang-tidy
     if("${DRACO_STATIC_ANALYZER}" MATCHES "clang-tidy")
       if(NOT CMAKE_CXX_CLANG_TIDY)
         find_program(CMAKE_CXX_CLANG_TIDY clang-tidy)
@@ -526,24 +526,10 @@ macro(dbsSetupStaticAnalyzers)
       endif()
 
       if(CMAKE_CXX_CLANG_TIDY)
-        if(NOT CLANG_TIDY_OPTIONS)
-          set(CLANG_TIDY_OPTIONS "-header-filter=.*[.]hh")
-          # Only run clang tidy on src, test, examples and skip 3rd party libraries
-          #
-          # set(CLANG_TIDY_OPTIONS "\"-header-filter=.*\\b(src|test|examples)\\b\\/(?!lib).*\"")
-        endif()
-        set(CLANG_TIDY_OPTIONS
-            "${CLANG_TIDY_OPTIONS}"
-            CACHE STRING "clang-tidy extra options (eg: -header-filter=.*[.]hh;-fix)" FORCE)
-
         if(NOT CLANG_TIDY_CHECKS)
-          # * -checks=mpi-*,bugprone-*,performance-*,modernize-*
-          # * See full list: `clang-tidy -check=* -list-checks'
-          # * Default: all modernize checks; except use-trailing-return-type.
-          set(CLANG_TIDY_CHECKS "-checks=modernize-*,-modernize-use-trailing-return-type")
+          set(CLANG_TIDY_CHECKS "--config-file=${PROJECT_SOURCE_DIR}/.clang-tidy")
           if(DEFINED ENV{CI})
-            string(REPLACE "-checks=" "--warnings-as-errors=" tmp ${CLANG_TIDY_CHECKS})
-            string(APPEND CLANG_TIDY_CHECKS ";${tmp}")
+            string(APPEND CLANG_TIDY_CHECKS ";--warnings-as-errors=*")
           endif()
         endif()
         set(CLANG_TIDY_CHECKS
@@ -553,16 +539,18 @@ macro(dbsSetupStaticAnalyzers)
         set(CLANG_TIDY_IPATH
             "${CLANG_TIDY_IPATH}"
             CACHE STRING "clang-tidy extra include directories" FORCE)
-        if(NOT "${CLANG_TIDY_CHECKS}" MATCHES "[-]checks[=]")
+        if(NOT ("${CLANG_TIDY_CHECKS}" MATCHES "[-]checks[=]" OR "${CLANG_TIDY_CHECKS}" MATCHES
+                                                                 "[-]config-file[=]"))
           message(FATAL_ERROR "Option CLANG_TIDY_CHECKS string must start with the string "
-                              "'-check='")
+                              "'-check=' or '--config='")
         endif()
         # re-create clang-tidy command
-        if("${CMAKE_CXX_CLANG_TIDY}" MATCHES "[-]checks[=]")
+        if("${CMAKE_CXX_CLANG_TIDY}" MATCHES "[-]checks[=]" OR "${CLANG_TIDY_CHECKS}" MATCHES
+                                                               "[-]config-file[=]")
           list(GET CMAKE_CXX_CLANG_TIDY 0 CMAKE_CXX_CLANG_TIDY)
         endif()
         set(CMAKE_CXX_CLANG_TIDY
-            "${CMAKE_CXX_CLANG_TIDY};${CLANG_TIDY_CHECKS};${CLANG_TIDY_OPTIONS}"
+            "${CMAKE_CXX_CLANG_TIDY};${CLANG_TIDY_CHECKS}"
             CACHE STRING "Run clang-tidy on each source file before compile." FORCE)
       else()
         unset(CMAKE_CXX_CLANG_TIDY)
@@ -732,8 +720,8 @@ macro(dbsSetupFortran)
       elseif(${my_fc_compiler} MATCHES "ftn")
         message(
           FATAL_ERROR
-            "I think the C++ compiler is a Cray compiler wrapper, but I don't know"
-            " what compiler is wrapped. CMAKE_Fortran_COMPILER_ID = ${CMAKE_Fortran_COMPILER_ID}")
+            "I think the C++ compiler is a Cray compiler wrapper, but I don't know what compiler"
+            " is wrapped. CMAKE_Fortran_COMPILER_ID = ${CMAKE_Fortran_COMPILER_ID}")
       elseif(${my_fc_compiler} MATCHES "ifort")
         include(unix-ifort)
       elseif(${my_fc_compiler} MATCHES "xl")

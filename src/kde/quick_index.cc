@@ -395,7 +395,7 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Collect ghost data for a vector<int>
- * 
+ *
  * Collect ghost data for a single vector. This function uses RMA and the local put_window_map to
  * allow each rank to independently fill in its data to ghost cells of other ranks.
  *
@@ -879,7 +879,6 @@ auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_da
  * Maps multiple local+ghost data vectors to a fixed mesh grid based on a specified weighting type.
  * This data can additionally be normalized and positively biased on the grid.
  *
- *
  * \param[in] local_data the local data on the processor to be mapped to the window
  * \param[in] ghost_data the ghost data on the processor to be mapped to the window
  * \param[in,out] grid_data the resulting data map
@@ -888,10 +887,11 @@ auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_da
  * \param[in] grid_bins number of equally spaced bins in each dir
  * \param[in] map_type_in string indicating the mapping (max, min, ave)
  * \param[in] normalize bool operator to specify if the data should be normalized to a pdf
- * (independent of each data vector)
+ *               (independent of each data vector)
  * \param[in] bias bool operator to specify if the data should be moved to the positive domain space
- * (independent of each data vector)
- * \return bin_list list of global bins requested for the current window.
+ *               (independent of each data vector)
+ *
+ * Return the updated bin_list list of global bins requested for the current window.
  */
 void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>> &local_data,
                                           const std::vector<std::vector<double>> &ghost_data,

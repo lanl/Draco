@@ -102,8 +102,7 @@ void Eospac::printTableInformation(EOS_INTEGER const tableType, std::ostream &ou
 
   out << "\nEOSPAC information for Table " << SesTabs.tableName[tableType] << " ("
       << SesTabs.tableDescription[tableType] << ")\n"
-      << "---------------------------------------------------------------------"
-      << "-----------------\n";
+      << "------------------------------------------------------------------------------------\n";
 
   // There are 11 descriptions available for all tables.
   size_t numItems(infoItems.size());
