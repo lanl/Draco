@@ -6,6 +6,12 @@
 cmake_minimum_required(VERSION 3.9.0)
 project(cdi_eospac CXX)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "11.2.0")
+  # Suppress build warning: "lto1: error: potential null pointer dereference"
+  string(APPEND CMAKE_C_FLAGS " -Wno-null-dereference")
+  string(APPEND CMAKE_CXX_FLAGS " -Wno-null-dereference")
+endif()
+
 if(EOSPAC_FOUND AND NOT DEFINED ENV{TRAVIS})
 
   # ---------------------------------------------------------------------------------------------- #

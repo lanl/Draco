@@ -125,7 +125,6 @@ void GPU_Device::printDeviceSummary(int const idevice, std::ostream &out) const 
  * \brief Convert a CUDA return enum value into a descriptive string.
  *
  * \param errorCode CUDA enum return value
- * \return descriptive string associated with
  *
  * For optimized builds with DRACO_DBC_LEVEL=0, this function will be empty and any decent compiler
  * will optimize this call away.
@@ -138,10 +137,7 @@ void GPU_Device::checkForCudaError(cudaError_t const errorCode) {
 
 #else
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Convert a CUDA return enum value into a descriptive string.
- * \return descriptive string associated with
- */
+//! Convert a CUDA return enum value into a descriptive string.
 void GPU_Device::checkForCudaError(cudaError_t const) { /* empty */
 }
 #endif

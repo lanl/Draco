@@ -4,7 +4,7 @@
  *  \brief  Provide a single place where physical constants (pi, speed of light, etc) are defined
  *          for the local UnitSystem.
  *  \date   Mon Nov 10 09:24:55 2003
- *  \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "PhysicalConstants.hh"
@@ -20,7 +20,6 @@ namespace rtt_units {
  *        rtt_units::UnitSystem.
  * \param[in] u A complete UnitSystem.  PhysicalConstants will be formed and returned using these
  *        units (CGS, SI, etc.)
- * \return A PhysicalConstants object.
  */
 PhysicalConstants::PhysicalConstants(UnitSystem const &u)
     : d_avogadro(AVOGADRO * u.Q()), d_planck(planckSI * u.e() * u.t()),

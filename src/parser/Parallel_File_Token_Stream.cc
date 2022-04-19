@@ -191,13 +191,11 @@ void Parallel_File_Token_Stream::fill_character_buffer_() {
   if (comm_buffer[0] == '\0' || comm_buffer[0] == static_cast<char>(-1)) {
     character_push_back_('\0');
   } else {
-    // Set i to point to the end of the valid sequence of characters in the
-    // communications buffer.
+    // Set i to point to the end of the valid sequence of characters in the communications buffer.
     unsigned i = 1 + comm_buffer[0];
 
-    // Make sure this is not past the end of the buffer. This should not be
-    // possible unless the data has somewhow become corrupted during
-    // transmission.
+    // Make sure this is not past the end of the buffer. This should not be possible unless the data
+    // has somewhow become corrupted during transmission.
     if (i > static_cast<unsigned>(numeric_limits<signed char>::max() + 1)) {
       throw runtime_error("interprocessor communications corrupted");
     }
@@ -214,30 +212,26 @@ void Parallel_File_Token_Stream::fill_character_buffer_() {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * Only the I/O processor actually reads from the file.  Up to
- * numeric_limits<signed char>::max() characters are read by this processor.
- * The I/O processor then broadcasts a message consisting of a status character
- * and the characters that were read. If the I/O processor has reached the end
- * of the file, the status character is 0. If the I/O processor has encountered
- * some kind of stream error, the status character is set to \c
- * static_cast<char>(-1).  Otherwise the status character is the number of
- * characters to be transmitted.
+ * Only the I/O processor actually reads from the file.  Up to numeric_limits<signed char>::max()
+ * characters are read by this processor.  The I/O processor then broadcasts a message consisting of
+ * a status character and the characters that were read. If the I/O processor has reached the end of
+ * the file, the status character is 0. If the I/O processor has encountered some kind of stream
+ * error, the status character is set to \c static_cast<char>(-1).  Otherwise the status character
+ * is the number of characters to be transmitted.
  *
- * \return The next character in the text stream.
+ * Return The next character in the text stream.
  *
- * \throw rtt_dsxx::assert If a received message has a length greater than the
- * maximum expected.
+ * \throw rtt_dsxx::assert If a received message has a length greater than the maximum expected.
  */
 void Parallel_File_Token_Stream::letter::fill_character_buffer_(vector<char> &comm_buffer) {
   using rtt_c4::broadcast;
 
-  // The first value in the communications buffer will be a status code, which
-  // if positive is the number of valid characters ini the buffer. This dictates
-  // the maximum size needed for the buffer to be the maximum positive character
-  // value, plus one (for the status code itself).
+  // The first value in the communications buffer will be a status code, which if positive is the
+  // number of valid characters ini the buffer. This dictates the maximum size needed for the buffer
+  // to be the maximum positive character value, plus one (for the status code itself).
 
-  // i points to the current position in the communications buffer. We
-  // initialize it to 1 to reserve the first character for the status code.
+  // i points to the current position in the communications buffer. We initialize it to 1 to reserve
+  // the first character for the status code.
   unsigned i = 1;
   if (is_io_processor_) {
     // Read up to numeric_limits<signed char>::max() characters from the input
@@ -250,10 +244,9 @@ void Parallel_File_Token_Stream::letter::fill_character_buffer_(vector<char> &co
     }
 
     if (i > 1) {
-      // If there is an end or error condition, but one or more characters were
-      // successfully read prior to encountering the end or error condition,
-      // wait to transmit the end or error until the next call to
-      // fill_character_buffer.
+      // If there is an end or error condition, but one or more characters were successfully read
+      // prior to encountering the end or error condition, wait to transmit the end or error until
+      // the next call to fill_character_buffer.
 
       // Set the status code to the number of valid characters read.
       comm_buffer[0] = static_cast<char>(i - 1);

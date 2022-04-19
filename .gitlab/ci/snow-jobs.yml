@@ -57,12 +57,12 @@ sn_deb_i1904_deploy:
     FLAVOR: lapse20-intel-Debug
     EXTRA_CMAKE_ARGS: -GNinja
 
-sn_rel_i1913_deploy:
-  extends: .snow_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/intel1913"
-    FLAVOR: intel1913-Release
+# sn_rel_i1913_deploy:
+#   extends: .snow_deploy
+#   variables:
+#     CMAKE_BUILD_TYPE: Release
+#     DRACO_ENV: "draco/intel1913"
+#     FLAVOR: intel1913-Release
 
 sn_deb_g930_deploy:
   extends: .snow_deploy
@@ -126,12 +126,12 @@ sn_deb_i1904_mr:
     DRACO_ENV: "lapse/2.0-intel"
     EXTRA_CMAKE_ARGS: -GNinja
 
-sn_rel_i1913_mr:
-  stage: test
-  extends: .snow_merge
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/intel1913"
+# sn_rel_i1913_mr:
+#   stage: test
+#   extends: .snow_merge
+#   variables:
+#     CMAKE_BUILD_TYPE: Release
+#     DRACO_ENV: "draco/intel1913"
 
 sn_deb_g930_mr:
   stage: test
@@ -185,13 +185,13 @@ sn_deb_i1904_regress:
     CTEST_BUILD_NAME: "lapse20-intel-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
 
-sn_rel_i1913_regress:
-  extends: .snow_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/intel1913"
-    CTEST_BUILD_NAME: "intel1913-Release"
-    MAKEFILE_FLAGS: -j -l 36
+# sn_rel_i1913_regress:
+#   extends: .snow_nightly
+#   variables:
+#     CMAKE_BUILD_TYPE: Release
+#     DRACO_ENV: "draco/intel1913"
+#     CTEST_BUILD_NAME: "intel1913-Release"
+#     MAKEFILE_FLAGS: -j -l 36
 
 sn_deb_g930_regress:
   extends: .snow_nightly

@@ -35,9 +35,18 @@ template <typename T> bool isFinite(T a) { return _finite(a); }
 
 #else
 
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-constant-compare"
+#endif
+
 template <typename T> bool isNan(T a) { return std::isnan(a); }
 template <typename T> bool isInf(T a) { return std::isinf(a); }
 template <typename T> bool isFinite(T a) { return std::isfinite(a); }
+
+#if defined(__INTEL_LLVM_COMPILER)
+#pragma clang diagnostic pop
+#endif
 
 #endif
 
