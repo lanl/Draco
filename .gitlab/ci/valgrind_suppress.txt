@@ -2308,6 +2308,49 @@
    ...
 }
 
+{
+  openmpi/411/001
+  Memcheck:Param
+  writev(vector[...])
+  fun:writev
+  fun:pmix_ptl_base_send_handler
+  fun:event_persist_closure
+  fun:event_process_active_single_queue
+  fun:event_process_active
+  fun:event_base_loop
+  ...
+  fun:clone
+}
+{
+   openmpi/411/002
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   ...
+   fun:pmix_output_init
+   ...
+   fun:ompi_mpi_finalize
+   ...
+}
+{
+   openmpi/411/003
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   ...
+   fun:PMPI_Init
+   ...
+}
+{
+   openmpi/411/004
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   ...
+   fun:PMPI_Init
+   ...
+}
+
 #------------------------------------------------------------------------------#
 # Python 2.7
 #------------------------------------------------------------------------------#
