@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Sep 24 12:08:55 2001
  * \brief  Analytic_Gray_Opacity test.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_analytic_test.hh"
@@ -33,8 +32,7 @@ using std::dynamic_pointer_cast;
 //------------------------------------------------------------------------------------------------//
 
 void constant_test(rtt_dsxx::UnitTest &ut) {
-  // make an analytic gray opacity that returns the total opacity for a constant
-  // model
+  // make an analytic gray opacity that returns the total opacity for a constant model
   const double constant_opacity = 5.0;
 
   shared_ptr<Analytic_Opacity_Model> model(new Constant_Analytic_Opacity_Model(constant_opacity));
@@ -45,32 +43,22 @@ void constant_test(rtt_dsxx::UnitTest &ut) {
   GrayOpacity *grayp = &anal_opacity;
 
   // Some basic tests
-  if (grayp->data_in_tabular_form())
-    ITFAILS;
-  if (grayp->getEnergyPolicyDescriptor() != "gray")
-    ITFAILS;
-  if (grayp->getDataDescriptor() != "Analytic Gray Total")
-    ITFAILS;
-  if (grayp->getReactionType() != rtt_cdi::TOTAL)
-    ITFAILS;
-  if (grayp->getModelType() != rtt_cdi::ANALYTIC)
-    ITFAILS;
-  if (grayp->getOpacityModelType() != rtt_cdi::ANALYTIC_TYPE)
-    ITFAILS;
-  if (typeid(grayp) != typeid(GrayOpacity *))
-    ITFAILS;
-  if (typeid(*grayp) != typeid(Analytic_Gray_Opacity))
-    ITFAILS;
+  FAIL_IF(grayp->data_in_tabular_form());
+  FAIL_IF_NOT(grayp->getEnergyPolicyDescriptor() == "gray");
+  FAIL_IF_NOT(grayp->getDataDescriptor() == "Analytic Gray Total");
+  FAIL_IF_NOT(grayp->getReactionType() == rtt_cdi::TOTAL);
+  FAIL_IF_NOT(grayp->getModelType() == rtt_cdi::ANALYTIC);
+  FAIL_IF_NOT(grayp->getOpacityModelType() == rtt_cdi::ANALYTIC_TYPE);
+  FAIL_IF_NOT(typeid(grayp) == typeid(GrayOpacity *));
+  FAIL_IF_NOT(typeid(*grayp) == typeid(Analytic_Gray_Opacity));
 
   {
     Analytic_Gray_Opacity analyt_opacity(model, rtt_cdi::ABSORPTION);
-    if (analyt_opacity.getDataDescriptor() != "Analytic Gray Absorption")
-      ITFAILS;
+    FAIL_IF_NOT(analyt_opacity.getDataDescriptor() == "Analytic Gray Absorption");
   }
   {
     Analytic_Gray_Opacity analyt_opacity(model, rtt_cdi::TOTAL);
-    if (analyt_opacity.getDataDescriptor() != "Analytic Gray Total")
-      ITFAILS;
+    FAIL_IF_NOT(analyt_opacity.getDataDescriptor() == "Analytic Gray Total");
   }
 
   // check the output
@@ -106,19 +94,8 @@ void user_defined_test(rtt_dsxx::UnitTest &ut) {
   Analytic_Gray_Opacity anal_opacity(model, rtt_cdi::TOTAL);
   GrayOpacity *grayp = &anal_opacity;
 
-  vector<double> T(6);
-  vector<double> rho(6);
-  {
-    T[0] = .993;
-    T[1] = .882;
-    T[2] = .590;
-    T[3] = .112;
-    T[4] = .051;
-    T[5] = .001;
-
-    std::fill(rho.begin(), rho.end(), 3.0);
-  }
-
+  vector<double> T = {0.993, 0.882, 0.590, 0.112, 0.051, 0.001};
+  vector<double> rho = {3.0, 3.0, 3.0, 3.0, 3.0, 3.0};
   vector<double> opacities = grayp->getOpacity(T, rho[0]);
   if (opacities.size() != 6)
     ITFAILS;
@@ -317,34 +294,30 @@ void type_test(rtt_dsxx::UnitTest &ut) {
   shared_ptr<GrayOpacity> op(new Analytic_Gray_Opacity(model, rtt_cdi::TOTAL));
   shared_ptr<Analytic_Gray_Opacity> opac;
 
-  if (typeid(*op) == typeid(rtt_cdi_analytic::Analytic_Gray_Opacity)) {
-    PASSMSG("RTTI type info is correct for shared_ptr to GrayOpacity.");
-    opac = dynamic_pointer_cast<Analytic_Gray_Opacity>(op);
+  if (op.get()) {
+    auto &r = *op.get();
+    FAIL_IF_NOT(typeid(r) == typeid(rtt_cdi_analytic::Analytic_Gray_Opacity));
   }
+
+  opac = dynamic_pointer_cast<Analytic_Gray_Opacity>(op);
 
   vector<double> parm = opac->get_Analytic_Model()->get_parameters();
 
-  if (parm.size() != 1)
-    ITFAILS;
-  if (!soft_equiv(constant_opacity, parm.front()))
-    ITFAILS;
+  FAIL_IF_NOT(parm.size() == 1);
+  FAIL_IF_NOT(soft_equiv(constant_opacity, parm.front()));
 
   // another way to do this
   auto *m = dynamic_cast<Compound_Analytic_MultigroupOpacity *>(&*op);
   auto *o = dynamic_cast<Analytic_Gray_Opacity *>(&*op);
 
-  if (m)
-    ITFAILS;
-  if (!o)
-    ITFAILS;
-  if (typeid(*o) != typeid(rtt_cdi_analytic::Analytic_Gray_Opacity))
-    ITFAILS;
+  FAIL_IF(m);
+  FAIL_IF_NOT(o);
+  FAIL_IF_NOT(typeid(*o) == typeid(rtt_cdi_analytic::Analytic_Gray_Opacity));
 }
 
 //------------------------------------------------------------------------------------------------//
 void default_behavior_tests(rtt_dsxx::UnitTest &ut) {
-  // make an analytic gray opacity that returns the total opacity for a constant
-  // model
+  // make an analytic gray opacity that returns the total opacity for a constant model
   const double constant_opacity = 5.0;
 
   shared_ptr<Analytic_Opacity_Model> model(new Constant_Analytic_Opacity_Model(constant_opacity));

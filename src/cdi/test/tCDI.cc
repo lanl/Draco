@@ -43,31 +43,70 @@ void check_CDI(rtt_dsxx::UnitTest &ut, CDI const &cdi) {
   // Work around an MSVC ICE in MSC_VER 1925 (VS 2019, 16.5.0 preview 2)
 #if !defined(_MSC_VER) || _MSC_VER < 1900 || _MSC_VER > 1925
   // check for gray
-  if (typeid(*cdi.gray(rtt_cdi::PLANCK, rtt_cdi::ABSORPTION)) == typeid(DummyGrayOpacity))
-    PASSMSG("CDI gray() returned the correct type!");
-  else
-    FAILMSG("CDI gray() did not return the correct type!");
-
-  if (typeid(*cdi.gray(rtt_cdi::ISOTROPIC, rtt_cdi::SCATTERING)) == typeid(DummyGrayOpacity))
-    PASSMSG("CDI gray() returned the correct type!");
-  else
-    FAILMSG("CDI gray() did not return the correct type!");
+  {
+    auto sp = cdi.gray(rtt_cdi::PLANCK, rtt_cdi::ABSORPTION);
+    if (sp.get()) {
+      auto &r = *sp.get();
+      if (typeid(r) == typeid(DummyGrayOpacity))
+        PASSMSG("CDI gray() returned the correct type!");
+      else
+        FAILMSG("CDI gray() did not return the correct type!");
+    } else {
+      FAILMSG("Unable to retrieve cdi.gray(PLANK, ABSORPTION).");
+    }
+  }
+  {
+    auto sp = cdi.gray(rtt_cdi::ISOTROPIC, rtt_cdi::SCATTERING);
+    if (sp.get()) {
+      auto &r = *sp.get();
+      if (typeid(r) == typeid(DummyGrayOpacity))
+        PASSMSG("CDI gray() returned the correct type!");
+      else
+        FAILMSG("CDI gray() did not return the correct type!");
+    } else {
+      FAILMSG("Unable to retrieve cdi.gray(ISOTROPIC, SCATTERING).");
+    }
+  }
 
   // check for multigroup
-  if (typeid(*cdi.mg(rtt_cdi::PLANCK, rtt_cdi::ABSORPTION)) == typeid(DummyMultigroupOpacity))
-    PASSMSG("CDI mg() returned the correct type!");
-  else
-    FAILMSG("CDI mg() did not return the correct type!");
+  {
+    auto sp = cdi.mg(rtt_cdi::PLANCK, rtt_cdi::ABSORPTION);
+    if (sp.get()) {
+      auto &r = *sp.get();
+      if (typeid(r) == typeid(DummyMultigroupOpacity))
+        PASSMSG("CDI mg() returned the correct type!");
+      else
+        FAILMSG("CDI mg() did not return the correct type!");
+    } else {
+      FAILMSG("Unable to retrieve cdi.mg(PLANK, ABSORPTION).");
+    }
+  }
+  {
+    auto sp = cdi.mg(rtt_cdi::ISOTROPIC, rtt_cdi::SCATTERING);
+    if (sp.get()) {
+      auto &r = *sp.get();
+      if (typeid(r) == typeid(DummyMultigroupOpacity))
+        PASSMSG("CDI mg() returned the correct type!");
+      else
+        FAILMSG("CDI mg() did not return the correct type!");
+    } else {
+      FAILMSG("Unable to retrieve cdi.mg(ISOTROPIC, SCATTERING).");
+    }
+  }
 
-  if (typeid(*cdi.mg(rtt_cdi::ISOTROPIC, rtt_cdi::SCATTERING)) == typeid(DummyMultigroupOpacity))
-    PASSMSG("CDI mg() returned the correct type!");
-  else
-    FAILMSG("CDI mg() did not return the correct type!");
-
-  if (typeid(*cdi.eos()) == typeid(DummyEoS))
-    PASSMSG("CDI eos() returned the correct type!");
-  else
-    FAILMSG("CDI eos() did not return the correct type!");
+  // eos
+  {
+    auto sp = cdi.eos();
+    if (sp.get()) {
+      auto &r = *sp.get();
+      if (typeid(r) == typeid(DummyEoS))
+        PASSMSG("CDI eos() returned the correct type!");
+      else
+        FAILMSG("CDI eos() did not return the correct type!");
+    } else {
+      FAILMSG("Unable to retrieve cdi.eos().");
+    }
+  }
 #endif
 
   // gray test case: Find the value of opacity at T=0.35 keV and rho = 27.2 g/cm^3.  For
