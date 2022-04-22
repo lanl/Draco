@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Thu Oct  4 11:45:19 2001
  * \brief  Analytic_EoS test.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi/CDI.hh"
@@ -233,8 +232,7 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
     double Te = 4.0088e43;
 
     double T_new = so_analytic.getElectronTemperature(rho, Ue0, Te);
-    if (!soft_equiv(T_new, 0.56598102556928676))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(T_new, 0.56598102556928676));
   }
 
   return;
@@ -255,15 +253,18 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
 
   // EoS object
   shared_ptr<const EoS> eos = analytic_eos;
-  if (typeid(*eos) != typeid(Analytic_EoS))
-    ITFAILS;
+  if (eos.get()) {
+    auto &r = *eos.get();
+    FAIL_IF_NOT(typeid(r) == typeid(Analytic_EoS));
+  } else {
+    FAILMSG("Unable to retrieve analytic_eos.");
+  }
 
   // Assign the object to cdi
   eosdata.setEoS(eos);
 
   // check
-  if (!eosdata.eos())
-    FAILMSG("Can't reference EoS smart pointer");
+  FAIL_IF_NOT(eosdata.eos());
 
   // make temperature and density fields
   vector<double> T = {0.993, 0.882, 0.590, 0.112, 0.051, 0.001};
@@ -338,10 +339,16 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
 
   // now assign the analytic eos to CDI directly
   eosdata.setEoS(analytic_eos);
-  if (!eosdata.eos())
-    ITFAILS;
-  if (typeid(*eosdata.eos()) != typeid(Analytic_EoS))
-    ITFAILS;
+  FAIL_IF_NOT(eosdata.eos());
+  {
+    auto sp = eosdata.eos();
+    if (sp.get()) {
+      auto &r = *sp.get();
+      FAIL_IF_NOT(typeid(r) == typeid(Analytic_EoS));
+    } else {
+      FAILMSG("Unable to retrieve eosdta.eos().");
+    }
+  }
 
   // now test the data again
 
