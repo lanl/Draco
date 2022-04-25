@@ -41,6 +41,29 @@ with section("parse"):  # noqa: F821
             "kwargs": {"PROJECT": '*', "ARCHIVE_DIR": '*', "RUNTIME_DIR": '*', "LIBRARIES": '*',
                        "TARGET_NAMES": '*', "DEPENDS": '*', "CMAKE_COMMAND_LINE": '*'}},
 
+        "cmake_parse_arguments": {
+            "pargs": 5,
+            "flags": ["VERBOSE"],
+            "kwargs": {"FOOBAR": '*'}},
+
+        "register_parallel_test": {
+            "pargs": 0,
+            "flags": ["FOO_PROPERTIES", "NO_EXTERNAL_INSTALL"],
+            "kwargs": {"CMD_ARGS": '*', "COMMAND": '*', "NUMPE": '*', "TARGET": '*'}},
+
+        "register_scalar_test": {
+            "pargs": 0,
+            "flags": ["FOO_PROPERTIES", "NO_EXTERNAL_INSTALL"],
+            "kwargs": {"TARGET": '*', "COMMAND": '*', "CMD_ARGS": '*'}},
+
+        "set_tests_properties": {
+            "pargs": 1,
+            "flags": ["FOO_PROPERTIES", "NO_EXTERNAL_INSTALL"],
+            "kwargs": {"DEPENDS": '*', "ENVIRONMENT": '*',
+                       "FAIL_REGULAR_EXPRESSION": '*', "LABELS": '*',
+                       "PASS_REGULAR_EXPRESSION": '*',
+                       "PROCESSORS": '*', "RESOURCE_LOCK": '*', "WORKING_DIRECTORY": '*'}},
+
     }
 
     # Specify variable tags.

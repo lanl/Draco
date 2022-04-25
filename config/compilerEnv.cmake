@@ -869,8 +869,8 @@ function(dbsSetupProfilerTools)
     endif()
     if("${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}notset" STREQUAL "notset")
       string(CONCAT CMAKE_MEMORYCHECK_COMMAND_OPTIONS
-                    "-q --tool=memcheck --trace-children=yes --leak-check=full --num-callers=20 "
-                    "--gen-suppressions=all ") # --show-reachable=yes
+                    "--error-exitcode=1 -q --tool=memcheck --trace-children=yes --leak-check=full "
+                    "--num-callers=20 --gen-suppressions=all ") # --show-reachable=yes
       if(EXISTS "${CTEST_MEMORYCHECK_SUPPRESSIONS_FILE}")
         string(APPEND CMAKE_MEMORYCHECK_COMMAND_OPTIONS
                " --suppressions=${CTEST_MEMORYCHECK_SUPPRESSIONS_FILE} ")
