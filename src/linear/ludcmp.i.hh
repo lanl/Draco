@@ -50,7 +50,7 @@ void ludcmp(FieldVector &a, IntVector &indx, typename FieldVector::value_type &d
       }
     }
     vv[i] = 1.0 / big;
-    if (!rtt_dsxx::isFinite(vv[i])) {
+    if (std::isinf(vv[i])) {
       throw std::domain_error("ludcmp:  singular matrix");
     }
   }
@@ -88,7 +88,7 @@ void ludcmp(FieldVector &a, IntVector &indx, typename FieldVector::value_type &d
     indx[j] = imax;
     if (j != n - 1) {
       Field dum = 1.0 / a[j + n * j];
-      if (!rtt_dsxx::isFinite(dum)) {
+      if (std::isinf(dum)) {
         throw std::domain_error("ludcmp:  singular matrix");
       }
       for (unsigned i = j + 1; i < n; ++i)

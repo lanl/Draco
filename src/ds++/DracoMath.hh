@@ -20,37 +20,6 @@
 namespace rtt_dsxx {
 
 //------------------------------------------------------------------------------------------------//
-// isFinite.hh
-//
-// Try to use the C++11/C99 functions isinf, isnan and isfinite defined in <cmath> instead of
-// defining our own.  I would like to use C++11 implemenations which are true functions in the std::
-// namespace.  The problem here is that PGI/13.7 does not have these language features.  However,
-// PGI does provide the C99 _macros_ of the same name (w/o namespace qualifier).
-//------------------------------------------------------------------------------------------------//
-#if defined _MSC_VER || defined __CYGWIN__
-
-template <typename T> bool isNan(T a) { return _isnan(a); }
-template <typename T> bool isInf(T a) { return !_finite(a); }
-template <typename T> bool isFinite(T a) { return _finite(a); }
-
-#else
-
-#if defined(__INTEL_LLVM_COMPILER)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-constant-compare"
-#endif
-
-template <typename T> bool isNan(T a) { return std::isnan(a); }
-template <typename T> bool isInf(T a) { return std::isinf(a); }
-template <typename T> bool isFinite(T a) { return std::isfinite(a); }
-
-#if defined(__INTEL_LLVM_COMPILER)
-#pragma clang diagnostic pop
-#endif
-
-#endif
-
-//------------------------------------------------------------------------------------------------//
 /*!
  * \brief Return the conjugate of a quantity.
  *
@@ -176,7 +145,7 @@ template <typename Ordered_Group> inline Ordered_Group sign(Ordered_Group a, Ord
  * \param[in] x  x coordinate associated with requested y value.
  * \return The y value associated with x based on linear interpolation between (x1,y1) and (x2,y2).
  *
- * Given two points (x1,y1) and (x2,y2), use linaer interpolation to find the y value associated
+ * Given two points (x1,y1) and (x2,y2), use linear interpolation to find the y value associated
  * with the provided x value.
  *
  *          y2-y1

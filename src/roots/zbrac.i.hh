@@ -63,7 +63,7 @@ template <typename Function, typename Real> void zbrac(Function func, Real &x1, 
       }
       try {
         Real f0 = func(x0);
-        if (!rtt_dsxx::isFinite(f0))
+        if (!std::isfinite(f0))
           throw std::runtime_error("");
         f1 = f0;
         af1 = (f1 > 0. ? f1 : -f1);
@@ -79,12 +79,11 @@ template <typename Function, typename Real> void zbrac(Function func, Real &x1, 
       //
       // if (rtt_dsxx::soft_equiv(x2, x3, eps))
       // if( x2 == x3 ) {
-      //   throw std::domain_error("zbrac: "
-      //                           "could not find search interval");
+      //   throw std::domain_error("zbrac: could not find search interval");
       // }
       try {
         Real const ff3 = func(x3);
-        if (!rtt_dsxx::isFinite(ff3))
+        if (!std::isfinite(ff3))
           throw std::runtime_error("");
         f2 = ff3;
         af2 = (f2 > 0. ? f2 : -f2);
@@ -98,12 +97,11 @@ template <typename Function, typename Real> void zbrac(Function func, Real &x1, 
       Real x0 = x1 - 0.5 * scale * (x2 - x1);
       Real x3 = x2 + scale * (x2 - x1);
       if (rtt_dsxx::soft_equiv(x0, x1, eps) || rtt_dsxx::soft_equiv(x2, x3, eps)) {
-        throw std::domain_error("zbrac: "
-                                "could not find search interval");
+        throw std::domain_error("zbrac: could not find search interval");
       }
       try {
         Real f0 = func(x0);
-        if (!rtt_dsxx::isFinite(f0))
+        if (!std::isfinite(f0))
           throw std::runtime_error("");
         f3 = func(x3);
         f1 = f0;

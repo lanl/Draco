@@ -115,13 +115,12 @@ bool is_strict_monotonic_decreasing(Forward_Iterator first, Forward_Iterator con
  * \return \c true if <code>A[i+n*j]==A[j+n*i]</code> for all \c i and \c j; \c false otherwise.
  */
 template <typename Random_Access_Container>
-bool is_symmetric_matrix(Random_Access_Container const &A, unsigned const n,
-                         double const tolerance) {
+bool is_symmetric_matrix(Random_Access_Container const &A, size_t const n, double const tolerance) {
   Require(A.size() == n * n);
   Require(tolerance >= 0.0);
 
-  for (unsigned i = 1; i < n; ++i) {
-    for (unsigned j = 0; j < i; ++j) {
+  for (size_t i = 1; i < n; ++i) {
+    for (size_t j = 0; j < i; ++j) {
       if (!rtt_dsxx::soft_equiv(A[i + n * j], A[j + n * i], tolerance)) {
         return false;
       }
@@ -133,6 +132,7 @@ bool is_symmetric_matrix(Random_Access_Container const &A, unsigned const n,
 } // namespace rtt_dsxx
 
 #endif // rtt_dsxx_dbc_i_hh
+
 //------------------------------------------------------------------------------------------------//
 // end of dbc.i.hh
 //------------------------------------------------------------------------------------------------//

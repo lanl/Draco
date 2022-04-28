@@ -2,10 +2,8 @@
 /*!
  * \file   predict/nnetwork_wrapper.hh
  * \author Mathew Cleveland
- * \brief  Definition of the neural network backend to enable build
- * specific implementations.
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \brief  Definition of the neural network backend to enable build specific implementations.
+ * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef predict_nnetwork_wrapper_hh
@@ -22,14 +20,12 @@
 #endif
 
 namespace rtt_predict {
+
 //================================================================================================//
 /*!
  * \class nnetwork_wrapper
- * \brief
- *
- * This supports both a simple draco (when libtorch is not available) and a full libtorch
- * implementation of the neural network backend
- * 
+ * \brief This supports both a simple draco (when libtorch is not available) and a full libtorch
+ *        implementation of the neural network backend
  */
 //================================================================================================//
 
