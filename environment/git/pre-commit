@@ -18,8 +18,8 @@ HOOKS="pre-commit-clang-format pre-commit-copyright"
 
 # only run autopep8 if the tool is available
 [[ $(which autopep8 2> /dev/null | wc -w) -gt 0 ]] && HOOKS+=" pre-commit-autopep8"
-# only run flake8 if the tool is available.
-[[ $(which flake8 2> /dev/null | wc -w) -gt 0 ]] && HOOKS+=" pre-commit-flake8"
+# only run flake8 if the tool is available and version is old enough to support install-hooks.
+[[ $(which flake8 2> /dev/null | wc -w) -gt 0 ]] && [[ $(flake8 --version | head -n 1 | cut -c1) -lt 4 ]] && HOOKS+=" pre-commit-flake8"
 # only run cmake-format if the tool is available.
 [[ $(which cmake-format 2> /dev/null | wc -w) -gt 0 ]] && HOOKS+=" pre-commit-cmake-format"
 # only run cmake-lint if the tool is available.
