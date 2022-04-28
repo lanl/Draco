@@ -24,8 +24,10 @@ superlinter:
   #     ls /action/lib
   #     ls /action/lib/linter.sh
   #     /action/lib/linter.sh
-  only:
-    - merge_requests
+  rules:
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   variables:
     RUN_LOCAL: "true"
     DEFAULT_WORKSPACE: $CI_PROJECT_DIR

@@ -26,10 +26,9 @@ namespace rtt_roots {
  *
  * \param[in] func Function whose zero is to be found.
  * \param[in] x1 Lower limit of search range
- * \param[in] x2 Upper limit of search range.  \c x1 and \c x2 must bracket a
- *           root; that is, the value of \c func(x1) must differ in sign from
- *           the value of \c func(x2).  rtt_roots::zbrac may be helpful for
- *           bracketing a root.
+ * \param[in] x2 Upper limit of search range.  \c x1 and \c x2 must bracket a root; that is, the
+ *           value of \c func(x1) must differ in sign from the value of \c func(x2).
+ *           rtt_roots::zbrac may be helpful for bracketing a root.
  * \param[in] itmax Maximum number of iterations to try.
  * \param[in,out] tol On entry, the desired absolute tolerance in the argument. On return, this is
  *           replaced with the tolerance actually achieved.
@@ -137,13 +136,11 @@ Real zbrent(Function func, Real x1, Real x2, unsigned itmax, Real &tol, Real &ft
     }
     try {
       fb = func(b);
-      if (!rtt_dsxx::isFinite(fb)) {
-        throw std::domain_error("function is not analytic "
-                                "in the search interval");
+      if (std::isinf(fb)) {
+        throw std::domain_error("function is not analytic in the search interval");
       }
     } catch (...) {
-      throw std::domain_error("function is not analytic "
-                              "in the search interval");
+      throw std::domain_error("function is not analytic in the search interval");
     }
   }
   tol = fabs(xm);

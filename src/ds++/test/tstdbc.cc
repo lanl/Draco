@@ -103,8 +103,8 @@ void dbc_test(UnitTest &ut) {
   else
     PASSMSG("std::bind2nd or std::greater function templates ok");
 
-// The preceeding tests whether binders are present in the C++ implementation. The binders in
-// <functional> supercede the old rtt_utils::exceeds predicate.
+// The preceding tests whether binders are present in the C++ implementation. The binders in
+// <functional> supersede the old rtt_utils::exceeds predicate.
 
 // Test badly formed numbers.
 // Note: VS2013 with Nov 2013 CTP will not compile an explicit division by zero.
@@ -112,14 +112,14 @@ void dbc_test(UnitTest &ut) {
   if (!ut.fpe_trap_active) {
     double const Zero = 0.0;
     double const Infinity = 1.0 / Zero;
-    if (rtt_dsxx::isInf(Infinity))
+    if (std::isinf(Infinity))
       PASSMSG("isInfinity works on this platform");
     else
       FAILMSG("isInfinity is problematic on this platform.");
     // This is optimized to double Nan(0.0) by Intel.
     // double Nan = Zero*Infinity;
     double const Nan = std::sqrt(-1.0);
-    if (rtt_dsxx::isNan(Nan))
+    if (std::isnan(Nan))
       PASSMSG("isNaN works on this platform");
     else
       FAILMSG("isNaN is problematic on this platform.");
@@ -132,7 +132,7 @@ void dbc_test(UnitTest &ut) {
   A[0 + 2 * 1] = 3.8;
   A[1 + 2 * 0] = 4.5;
   A[1 + 2 * 1] = 3.3;
-  UT_MSG(!is_symmetric_matrix(A, 2), "detected nonsymmetric matrix");
+  UT_MSG(!is_symmetric_matrix(A, 2), "detected asymmetric matrix");
 
   A[1 + 2 * 0] = A[0 + 2 * 1];
   UT_MSG(is_symmetric_matrix(A, 2), "passed symmetric matrix");
@@ -141,17 +141,10 @@ void dbc_test(UnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
-void isFinite_test(UnitTest &ut) {
-  UT_MSG(rtt_dsxx::isFinite(15.0), "Correctly found 15.0 to be finite.");
-  return;
-}
-
-//------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   ScalarUnitTest ut(argc, argv, release);
   try {
     dbc_test(ut);
-    isFinite_test(ut);
   }
   UT_EPILOG(ut);
 }

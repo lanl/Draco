@@ -15,6 +15,8 @@
 #ifndef rtt_dsxx_dbc_hh
 #define rtt_dsxx_dbc_hh
 
+#include <cstddef>
+
 namespace rtt_dsxx {
 
 //! Check whether a sequence is monotonically increasing.
@@ -31,7 +33,7 @@ bool is_strict_monotonic_decreasing(Forward_Iterator first, Forward_Iterator con
 
 //! Check whether a matrix is symmetric.
 template <typename Random_Access_Container>
-bool is_symmetric_matrix(Random_Access_Container const &A, unsigned const n,
+bool is_symmetric_matrix(Random_Access_Container const &A, size_t const n,
                          double const tolerance = 1.0e-12);
 
 //! Return the positive difference of the arguments.
@@ -44,6 +46,7 @@ inline Ordered_Group_Element dim(Ordered_Group_Element a, Ordered_Group_Element 
 #include "dbc.i.hh"
 
 #endif // rtt_dsxx_dbc_hh
+
 //------------------------------------------------------------------------------------------------//
 // end of dbc.hh
 //------------------------------------------------------------------------------------------------//

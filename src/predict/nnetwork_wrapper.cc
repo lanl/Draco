@@ -2,10 +2,8 @@
 /*!
  * \file   predict/nnetwork_wrapper.cc
  * \author Mathew Cleveland
- * \brief  Definition of the neural network backend to enable build
- * specific implementations.
- * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
- */
+ * \brief Definition of the neural network backend to enable build specific implementations.
+ * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "nnetwork_wrapper.hh"
@@ -23,7 +21,7 @@ namespace rtt_predict {
  * \brief Load a py-torch neural network file (*.pt)
  *
  * \param[in] net_file py-torch NN file name
- * 
+ *
  */
 //================================================================================================//
 void nnetwork_wrapper::load_network(const std::string &net_file) {
@@ -39,8 +37,8 @@ void nnetwork_wrapper::load_network(const std::string &net_file) {
  * \param[in,out] signal strided input data used to generate a prediction (input_size*output_size)
  * \param[in] input_size number of input nodes per prediction
  * \param[in] output_size number of input signals included in the signal vector
- * 
- * \return prediction for each input signal 
+ *
+ * \return prediction for each input signal
  */
 //================================================================================================//
 std::vector<float> nnetwork_wrapper::predict(std::vector<float> &signal, const size_t input_size,
@@ -72,7 +70,7 @@ bool nnetwork_wrapper::valid() { return is_valid_; }
  * \brief Load a draco neural network file (*.nnb)
  *
  * \param[in] net_file draco NN binary file
- * 
+ *
  */
 //================================================================================================//
 void nnetwork_wrapper::load_network(const std::string &net_file) {
@@ -86,7 +84,7 @@ void nnetwork_wrapper::load_network(const std::string &net_file) {
  * \param[in,out] signal strided input data used to generate a prediction (input_size*output_size)
  * \param[in] input_size number of input nodes per prediction
  * \param[in] output_size number of input signals included in the signal vector
- * 
+ *
  * \return prediction for each input signal
  */
 //================================================================================================//
