@@ -2350,6 +2350,28 @@
    fun:PMPI_Init
    ...
 }
+{
+   openmpi/411/005
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   ...
+   fun:find_device_name
+   ...
+   fun:PMPI_Init
+   ...
+}
+{
+   openmpi/411/006
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   ...
+   fun:orte_ess_base_proc_binding
+   ...
+   fun:PMPI_Init
+   ...
+}
 
 #------------------------------------------------------------------------------#
 # Python 2.7

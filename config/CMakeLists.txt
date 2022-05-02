@@ -59,9 +59,13 @@ write_basic_package_version_file(
 
 # Install scripts and macros to make them available by other projects.
 set(file_list
-    ${CMake_src} ${CMake_in} ${Python_src} ${CMAKE_CURRENT_BINARY_DIR}/draco-config.cmake
+    ${CMake_src}
+    ${CMake_in}
+    ${Python_src}
+    ${CMAKE_CURRENT_BINARY_DIR}/draco-config.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/draco-config-version.cmake
-    ${Draco_SOURCE_DIR}/autodoc/html/doxygen.css)
+    ${Draco_SOURCE_DIR}/autodoc/html/doxygen.css
+    ${Draco_SOURCE_DIR}/.gitlab/ci/valgrind_suppress.txt)
 
 install(FILES ${file_list} DESTINATION cmake)
 install(FILES ${CMake_AFSD} DESTINATION cmake/CMakeAddFortranSubdirectory)
