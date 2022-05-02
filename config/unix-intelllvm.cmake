@@ -19,7 +19,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
       "yes"
       CACHE INTERNAL "using draco settings.")
 
-  string(APPEND CMAKE_C_FLAGS " -g")
+  string(APPEND CMAKE_C_FLAGS " -g -Wno-tautological-constant-compare")
   if(DBS_GENERATE_OBJECT_LIBRARIES)
     string(APPEND CMAKE_C_FLAGS " -ipo")
   endif()
