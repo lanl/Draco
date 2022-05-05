@@ -24,6 +24,8 @@
 #-------------------------------------------------------------------------------------------------#
 # Machine-wide default job settings
 #-------------------------------------------------------------------------------------------------#
+
+---
 .msvc:
   tags:
     - win64-msvc2019-shell
@@ -90,7 +92,8 @@ x64_deb_msvc_19_mr:
 #    CMAKE_BUILD_TYPE: Debug
 #    COMPILER: msvc-2019
 # for now, these options are set in csk-nightly.cmake
-#    EXTRA_CMAKE_ARGS: -G"Visual Studio 16 2019" -A x64 -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" -DCSK_LIBRARY_TYPE=SHARED
+#    EXTRA_CMAKE_ARGS: -G"Visual Studio 16 2019" -A x64
+#       -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" -DCSK_LIBRARY_TYPE=SHARED
 #    SCHEDULER_PARAMETERS: ${SP_x86_64}
 
 #-------------------------------------------------------------------------------------------------#

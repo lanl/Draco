@@ -1,6 +1,7 @@
 # Results posted at https://codecov.io/gh/lanl/Draco
 # Validate with 'curl --data-binary @.codecov.yml https://codecov.io/validate'
 
+---
 codecov:
   token: d51a6207-27aa-4b7f-8399-7dd5ce4991d2
   notify:
@@ -17,12 +18,12 @@ coverage:
     changes: no
 
   parsers:
-     gcov:
-       branch_detection:
-         conditional: yes
-         loop: yes
-         method: no
-         macro: no
+    gcov:
+      branch_detection:
+        conditional: yes
+        loop: yes
+        method: no
+        macro: no
 
   ignore:
     - "src/.*/test/.*"

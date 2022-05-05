@@ -1,3 +1,6 @@
+# -*-yaml-*-
+
+---
 extends: default
 
 rules:
