@@ -56,7 +56,7 @@ superlinter:
     VALIDATE_RUBY: "true"
     VALIDATE_SHELL_SHFMT: "true"
     VALIDATE_XML: "true"
-    VALIDATE_YAML: "true"
+    # VALIDATE_YAML: "true"
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/superlinter.yml

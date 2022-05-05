@@ -1,9 +1,0 @@
-packages:
-  graphviz:
-    variants: [+graphviz+mscgen]
-  all:
-    compiler: [gcc, clang]
-    providers:
-      blas: [openblas]
-      lapack: [openblas]
-      mpi: [openmpi]

@@ -275,7 +275,7 @@ macro(dbsSetupCompilers)
               COMMAND ${LCOV} ${lcovopts2} --capture --directory .
               COMMAND ${LCOV} ${lcovopts2} --remove coverage.info ${lcov_ignore}
               COMMAND genhtml coverage.info --demangle-cpp --output-directory cov-html
-              COMMAND "${captureLcov}" -g "${GCOV}" -l "${LCOV}"
+              COMMAND "${captureLcov}" -g "${GCOV}" -l "${LCOV}" -b "${PROJECT_SOURCE_DIR}"
               COMMENT "Lcov is processing gcov data files...")
             unset(captureLcov)
             add_custom_target(

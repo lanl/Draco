@@ -10,6 +10,7 @@
 # Machine-wide default job settings
 #--------------------------------------------------------------------------------------------------#
 
+---
 .tt:
   tags:
     - trinitite
@@ -18,13 +19,10 @@
     DEPLOY: "FALSE"
     SITE_ID: trinitite
     CTEST_NPROC: 32
-    SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --partition=ci --qos=ci --reservation=ci --exclude=nid00160"
-    # SCHEDULER_PARAMETERS: "-N 1 --reservation=debug --exclude=nid00160"
-    # SCHEDULER_PARAMETERS: "-N 1 --reservation=DAT-175329-haswell"
+    SCHEDULER_PARAMETERS: -N 1 -A asc-ci --partition=ci --qos=ci --reservation=ci
+      --exclude=nid00160
     # Special reservation 175329 has fixes that allow us to pack a node.
     # --reservation=DAT-175329-knl
-    # --reservation=debug
-    # -A asc-ci --reservation=ci
     # CI_DEBUG_TRACE: "true"
 
 #--------------------------------------------------------------------------------------------------#
@@ -161,7 +159,8 @@ tt_deb_cce_mr:
     CTEST_MODE: Nightly
     CTEST_NPROC: 32
   script:
-    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m "Configure,Build,Test"
+    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m \
+      "Configure,Build,Test"
   after_script:
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m "Submit"
   rules:

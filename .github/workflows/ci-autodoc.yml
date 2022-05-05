@@ -1,10 +1,11 @@
+---
 name: CI autodoc
 
-#
+# yamllint disable rule:line-length
+
 # Documentation:
 # - https://help.github.com/en/articles/workflow-syntax-for-github-actions
 # - https://github.com/lanl/Draco/new/develop?filename=.github%2Fworkflows%2Fmain.yml&workflow_template=blank
-#
 
 #############################
 # Start the job on all push #
@@ -12,9 +13,9 @@ name: CI autodoc
 on:
   # Triggers the workflow on push or pull request events but only for the develop branch
   push:
-    branches: [ develop ]
+    branches: [develop]
   pull_request:
-    branches: [ develop ]
+    branches: [develop]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -49,7 +50,3 @@ jobs:
         run: |
           echo "docker run -v ${GITHUB_WORKSPACE}:/home/travis/Draco -e COMPILER=${COMPILER} -e VENDOR_DIR=/vendors  -e BUILD_DIR=/home/travis/Draco/build -e SOURCE_DIR=/home/travis/Draco -e STYLE=${STYLE} -e COVERAGE=${COVERAGE} -e WERROR=${WERROR} -e DRACO_C4=${DRACO_C4} -e AUTODOC=${AUTODOC} -e CLANGTIDY=${CLANGTIDY} -e CI=${CI} kinetictheory/draco-ci-2020nov:${DOCKER_TAG} /bin/bash -l -c /home/travis/Draco/tools/travis-run-tests.sh"
           docker run -v ${GITHUB_WORKSPACE}:/home/travis/Draco -e COMPILER=${COMPILER} -e VENDOR_DIR=/vendors -e BUILD_DIR=/home/travis/Draco/build -e SOURCE_DIR=/home/travis/Draco -e STYLE=${STYLE} -e COVERAGE=${COVERAGE} -e WERROR=${WERROR} -e DRACO_C4=${DRACO_C4} -e AUTODOC=${AUTODOC} -e CLANGTIDY=${CLANGTIDY} -e CI=${CI} kinetictheory/draco-ci-2020nov:${DOCKER_TAG} /bin/bash -l -c '/home/travis/Draco/tools/travis-run-tests.sh'
-
-# cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-# cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-# ctest -C ${{env.BUILD_TYPE}}

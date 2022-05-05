@@ -24,10 +24,11 @@ function run ()
 function print_use()
 {
   echo " "
-  echo "Usage: ${0##*/} -g /path/to/gcov -l /path/to/lcov -r repname"
+  echo "Usage: ${0##*/} -g /path/to/gcov -l /path/to/lcov -r repname -b directory"
   echo " "
   echo "All arguments are optional,  The first value listed is the default value."
   echo "  -h  help    prints this message and exits."
+  echo "  -d  dir     Use directory as a base directory."
   echo "  -g  gcov    path to the gcov executable."
   echo "  -l  lcov    path to the lcov executable."
   echo "  -r  repname {coverage.txt}"
@@ -37,8 +38,9 @@ function print_use()
 # Process command line arguments
 repname="coverage.txt"
 
-while getopts ":g:l:r:" opt; do
+while getopts ":b:g:l:r:" opt; do
 case $opt in
+b) basediropt="--base-directory ${OPTARG}" ;;
 g) GCOV="${OPTARG}" ;;
 l) LCOV="${OPTARG}" ;;
 r) repname="${OPTARG}" ;;
@@ -63,8 +65,11 @@ fi
 
 # Ask lcov to generate the text report:
 # - generate the text report at the same location as coverage.info (top level of build tree).
-echo "$LCOV --gcov-tool $GCOV --quiet --list coverage.info --> ${repname}"
-${LCOV} --gcov-tool "${GCOV}" --quiet --list coverage.info &> "${repname}"
+echo "$LCOV --gcov-tool $GCOV --quiet ${basediropt} --list coverage.info --> ${repname}"
+
+# We actually want word splitting in this case.
+# shellcheck disable=SC2086
+${LCOV} --gcov-tool "${GCOV}" --quiet ${basediropt} --list coverage.info &> "${repname}"
 # also print the report to stdout.
 cat "${repname}"
 

@@ -11,6 +11,7 @@
 # Machine-wide default job settings
 #--------------------------------------------------------------------------------------------------#
 
+---
 .darwin:
   tags:
     - darwin-slurm-shared
