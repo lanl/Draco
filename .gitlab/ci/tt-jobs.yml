@@ -159,7 +159,7 @@ tt_deb_cce_mr:
     CTEST_MODE: Nightly
     CTEST_NPROC: 32
   script:
-    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m \
+    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
       "Configure,Build,Test"
   after_script:
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m "Submit"
