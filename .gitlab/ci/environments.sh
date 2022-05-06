@@ -25,14 +25,16 @@ echo "    ARCH     = ${ARCH}"
 if [[ "${SITE_ID}" == "darwin" ]]; then
   DRACO_ARCH=$(/usr/projects/draco/vendors/bin/target_arch)
   run "module use --append /projects/draco/Modules"
-  case ${DRACO_ENV} in
-    arm-gcc930 | power9-gcc930-smpi | power9-xl16117 | x64-gcc930* | x64-intel1905) ;;
-    *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
-  esac
-  if [[ "${MPIARCH:-notset}" == "openmpi" ]]; then
-    disable_openib=$(sinfo -N -n "${HOSTNAME}" -o %all | grep -c ib:none)
-    if [[ ${disable_openib} != 0 ]]; then
-      export MPI_PREFLAGS="--mca btl ^openib"
+  if ! [[ -f "/projects/draco/Modules/draco/${DRACO_ENV}.lua" ]]; then
+    case ${DRACO_ENV} in
+      arm-gcc930 | power9-gcc930-smpi | power9-xl16117 | x64-gcc930* | x64-intel1905) ;;
+      *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
+    esac
+    if [[ "${MPIARCH:-notset}" == "openmpi" ]]; then
+      disable_openib=$(sinfo -N -n "${HOSTNAME}" -o %all | grep -c ib:none)
+      if [[ ${disable_openib} != 0 ]]; then
+        export MPI_PREFLAGS="--mca btl ^openib"
+      fi
     fi
   fi
   export DRACO_ARCH
