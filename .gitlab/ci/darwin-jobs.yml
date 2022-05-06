@@ -128,6 +128,28 @@ darm_rel_gcc930_deploy:
     SCHEDULER_PARAMETERS: ${SP_arm}
 
 #--------------------------------------------------------------------------------------------------#
+# MRs - linters
+#--------------------------------------------------------------------------------------------------#
+
+darwin_style_cxx:
+  stage: lint
+  extends: .darwin
+  variables:
+    CTEST_MODE: Experimental
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: haswell-gcc841
+    ARCH: haswell
+    CTEST_NPROC: 32
+    MAXLOAD: 64
+    SCHEDULER_PARAMETERS: ${SP_x86_64}
+  script:
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-style-checks.sh"
+  rules:
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+#--------------------------------------------------------------------------------------------------#
 # Merge Requests
 #--------------------------------------------------------------------------------------------------#
 
