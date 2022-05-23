@@ -406,7 +406,6 @@ ccs2_gcov:
     EXTRA_CMAKE_ARGS: -GNinja -DCODE_COVERAGE=ON
     CTEST_NPROC: 20
     SITE_ID: ccscs2
-    #TEST_EXCLUSIONS: mcgrid_cylindrical_mg_mgrztp04
 
 ccs2_valgrind:
   tags:

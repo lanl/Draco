@@ -21,6 +21,7 @@ stages:
   - test
   - slowtest
   - optional
+  - metrics
   - deploy
   - deploy-downstream
 
@@ -29,7 +30,7 @@ include:
   - local: /.gitlab/ci/snow-jobs.yml
   - local: /.gitlab/ci/ccscs-jobs.yml
   - local: /.gitlab/ci/darwin-jobs.yml
-  - local: /.gitlab/ci/superlinter.yml
+  - local: /.gitlab/ci/docker-jobs.yml
   - local: /.gitlab/ci/msvc-jobs.yml
 
 #--------------------------------------------------------------------------------------------------#
