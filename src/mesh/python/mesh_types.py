@@ -353,7 +353,343 @@ class orth_3d_mesh(base_mesh):
 
 
 # ------------------------------------------------------------------------------------------------ #
+# face-centered cubic (fcc) 3D mesh type
+class fcc_3d_mesh(base_mesh):
+    '''
+    Class for structured 3D mesh data with face-centered cubic vertex configurations.
+    '''
+
+    def __init__(self, bounds_per_dim, num_cells_per_dim):
+
+        # -- short-cuts
+        nx = num_cells_per_dim[0]
+        ny = num_cells_per_dim[1]
+        nz = num_cells_per_dim[2]
+
+        # -- number of dimensions
+        ndim = len(num_cells_per_dim)
+        self.ndim = ndim
+        assert (ndim == 3), 'ndim != 3, exiting...'
+        assert (len(bounds_per_dim) == ndim), 'len(bounds_per_dim) != ndim, exiting...'
+
+        # -- create grid arrays along each dimension
+        grid_per_dim = [np.linspace(bounds_per_dim[i][0], bounds_per_dim[i][1],
+                                    2 * num_cells_per_dim[i] + 1) for i in range(ndim)]
+
+        # -- create node indices ...
+        # ... number of simple cubic nodes
+        num_sc_nodes = (nx + 1) * (ny + 1) * (nz + 1)
+        # ... number of face-centered nodes
+        num_fc_nodes = (nz + 1) * nx * ny + (ny + 1) * nz * nx + (nx + 1) * ny * nz
+        # ... total number of nodes
+        num_nodes = num_sc_nodes + num_fc_nodes
+        self.num_nodes = num_nodes
+        self.coordinates_per_node = np.zeros((num_nodes, ndim))
+        # ... populate node coordinates for simple nodes
+        for k in range(nz + 1):
+            k_offset = (nx + 1) * (ny + 1) * k
+            for j in range(ny + 1):
+                j_offset = (nx + 1) * j
+                for i in range(nx + 1):
+                    node = i + j_offset + k_offset
+                    self.coordinates_per_node[node, 0] = grid_per_dim[0][2 * i]
+                    self.coordinates_per_node[node, 1] = grid_per_dim[1][2 * j]
+                    self.coordinates_per_node[node, 2] = grid_per_dim[2][2 * k]
+        # ... populate nodes on z-normal (xy-plane) faces
+        for k in range(nz + 1):
+            k_offset = nx * ny * k
+            for j in range(ny):
+                j_offset = nx * j
+                for i in range(nx):
+                    node = i + j_offset + k_offset + num_sc_nodes
+                    self.coordinates_per_node[node, 0] = grid_per_dim[0][2 * i + 1]
+                    self.coordinates_per_node[node, 1] = grid_per_dim[1][2 * j + 1]
+                    self.coordinates_per_node[node, 2] = grid_per_dim[2][2 * k]
+        # ... populate nodes on y-normal (zx-plane) faces
+        for k in range(nz):
+            k_offset = nx * (ny + 1) * k
+            for j in range(ny + 1):
+                j_offset = nx * j
+                for i in range(nx):
+                    sc_offset = num_sc_nodes + (nz + 1) * nx * ny
+                    node = i + j_offset + k_offset + sc_offset
+                    self.coordinates_per_node[node, 0] = grid_per_dim[0][2 * i + 1]
+                    self.coordinates_per_node[node, 1] = grid_per_dim[1][2 * j]
+                    self.coordinates_per_node[node, 2] = grid_per_dim[2][2 * k + 1]
+        # ... populate nodes on x-normal (yz-plane) faces
+        for k in range(nz):
+            k_offset = (nx + 1) * ny * k
+            for j in range(ny):
+                j_offset = (nx + 1) * j
+                for i in range(nx + 1):
+                    sc_offset = num_sc_nodes + (nz + 1) * nx * ny + (ny + 1) * nz * nx
+                    node = i + j_offset + k_offset + sc_offset
+                    self.coordinates_per_node[node, 0] = grid_per_dim[0][2 * i]
+                    self.coordinates_per_node[node, 1] = grid_per_dim[1][2 * j + 1]
+                    self.coordinates_per_node[node, 2] = grid_per_dim[2][2 * k + 1]
+
+        # -- set total number of cells and faces
+        num_cells = nx * ny * nz
+        self.num_cells = num_cells
+        self.num_faces = 24 * num_cells
+
+        # -- constants for this mesh
+        self.num_faces_per_cell = 24 * np.ones((num_cells), dtype=int)
+        self.num_nodes_per_face = 3 * np.ones((24 * num_cells), dtype=int)
+
+        # -- set nodes per face and faces per cell
+        self.faces_per_cell = np.zeros((num_cells, 24), dtype=int)
+        self.nodes_per_face = np.zeros((24 * num_cells, 3), dtype=int)
+        for k in range(nz):
+            kno = k * (ny + 1) * (nx + 1)
+            knop1 = (k + 1) * (ny + 1) * (nx + 1)
+            for j in range(ny):
+                jno = j * (nx + 1)
+                jnop1 = (j + 1) * (nx + 1)
+                for i in range(nx):
+                    # -- cell index
+                    cell = i + nx * j + nx * ny * k
+                    # -- faces per cell
+                    for ll in range(24):
+                        self.faces_per_cell[cell, ll] = 24 * cell + ll
+                    # -- nodes per face (per cell, counterclockwise around face normals) ...
+                    # ... bottom faces (min z)
+                    fc_node = i + nx * j + nx * ny * k + num_sc_nodes
+                    f = 0
+                    self.nodes_per_face[24 * cell + f, 0] = i + jno + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 1
+                    self.nodes_per_face[24 * cell + f, 0] = i + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 2
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jno + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 3
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jno + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + jno + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    # ... top face (max z)
+                    fc_node = i + nx * j + nx * ny * (k + 1) + num_sc_nodes
+                    f = 4
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 5
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 6
+                    self.nodes_per_face[24 * cell + f, 0] = i + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 7
+                    self.nodes_per_face[24 * cell + f, 0] = i + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    # ... down face (min y)
+                    sc_offset = num_sc_nodes + (nz + 1) * nx * ny
+                    fc_node = i + nx * j + nx * (ny + 1) * k + sc_offset
+                    f = 8
+                    self.nodes_per_face[24 * cell + f, 0] = i + jno + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jno + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 9
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jno + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 10
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 11
+                    self.nodes_per_face[24 * cell + f, 0] = i + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + jno + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    # ... up face (max y)
+                    sc_offset = num_sc_nodes + (nz + 1) * nx * ny
+                    fc_node = i + nx * (j + 1) + nx * (ny + 1) * k + sc_offset
+                    f = 12
+                    self.nodes_per_face[24 * cell + f, 0] = i + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 13
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 14
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 15
+                    self.nodes_per_face[24 * cell + f, 0] = i + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    # ... strange face (min x)
+                    sc_offset = num_sc_nodes + (nz + 1) * nx * ny + (ny + 1) * nz * nx
+                    fc_node = i + (nx + 1) * j + (nx + 1) * ny * k + sc_offset
+                    f = 16
+                    self.nodes_per_face[24 * cell + f, 0] = i + jno + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 17
+                    self.nodes_per_face[24 * cell + f, 0] = i + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 18
+                    self.nodes_per_face[24 * cell + f, 0] = i + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 19
+                    self.nodes_per_face[24 * cell + f, 0] = i + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + jno + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    # ... charm face (max x)
+                    sc_offset = num_sc_nodes + (nz + 1) * nx * ny + (ny + 1) * nz * nx
+                    fc_node = i + 1 + (nx + 1) * j + (nx + 1) * ny * k + sc_offset
+                    f = 20
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 21
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jnop1 + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 22
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jno + knop1
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jno + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+                    f = 23
+                    self.nodes_per_face[24 * cell + f, 0] = i + 1 + jno + kno
+                    self.nodes_per_face[24 * cell + f, 1] = i + 1 + jnop1 + kno
+                    self.nodes_per_face[24 * cell + f, 2] = fc_node
+
+        # -- enumerate boundary nodes per face ("side")
+
+        # -- faces at x extrema
+        nodes_per_side_xlow = np.zeros((4 * nz * ny, 3), dtype=int)
+        nodes_per_side_xhig = np.zeros((4 * nz * ny, 3), dtype=int)
+        for k in range(nz):
+            kno = k * (ny + 1) * (nx + 1)
+            knop1 = (k + 1) * (ny + 1) * (nx + 1)
+            for j in range(ny):
+                f = j + ny * k
+                sc_offset = num_sc_nodes + (nz + 1) * nx * ny + (ny + 1) * nz * nx
+                fc_node_xlow = (nx + 1) * j + (nx + 1) * ny * k + sc_offset
+                fc_node_xhig = nx + (nx + 1) * j + (nx + 1) * ny * k + sc_offset
+                # -- low boundary
+                nodes_per_side_xlow[4 * f, 0] = (nx + 1) * j + kno
+                nodes_per_side_xlow[4 * f, 1] = (nx + 1) * j + knop1
+                nodes_per_side_xlow[4 * f, 2] = fc_node_xlow
+                nodes_per_side_xlow[4 * f + 1, 0] = (nx + 1) * j + knop1
+                nodes_per_side_xlow[4 * f + 1, 1] = (nx + 1) * (j + 1) + knop1
+                nodes_per_side_xlow[4 * f + 1, 2] = fc_node_xlow
+                nodes_per_side_xlow[4 * f + 2, 0] = (nx + 1) * (j + 1) + knop1
+                nodes_per_side_xlow[4 * f + 2, 1] = (nx + 1) * (j + 1) + kno
+                nodes_per_side_xlow[4 * f + 2, 2] = fc_node_xlow
+                nodes_per_side_xlow[4 * f + 3, 0] = (nx + 1) * (j + 1) + kno
+                nodes_per_side_xlow[4 * f + 3, 1] = (nx + 1) * j + kno
+                nodes_per_side_xlow[4 * f + 3, 2] = fc_node_xlow
+                # -- high boundary
+                nodes_per_side_xhig[4 * f, 0] = nx + (nx + 1) * (j + 1) + kno
+                nodes_per_side_xhig[4 * f, 1] = nx + (nx + 1) * (j + 1) + knop1
+                nodes_per_side_xhig[4 * f, 2] = fc_node_xhig
+                nodes_per_side_xhig[4 * f + 1, 0] = nx + (nx + 1) * (j + 1) + knop1
+                nodes_per_side_xhig[4 * f + 1, 1] = nx + (nx + 1) * j + knop1
+                nodes_per_side_xhig[4 * f + 1, 2] = fc_node_xhig
+                nodes_per_side_xhig[4 * f + 2, 0] = nx + (nx + 1) * j + knop1
+                nodes_per_side_xhig[4 * f + 2, 1] = nx + (nx + 1) * j + kno
+                nodes_per_side_xhig[4 * f + 2, 2] = fc_node_xhig
+                nodes_per_side_xhig[4 * f + 3, 0] = nx + (nx + 1) * j + kno
+                nodes_per_side_xhig[4 * f + 3, 1] = nx + (nx + 1) * (j + 1) + kno
+                nodes_per_side_xhig[4 * f + 3, 2] = fc_node_xhig
+
+        # -- faces at y extrema
+        nodes_per_side_ylow = np.zeros((4 * nx * nz, 3), dtype=int)
+        nodes_per_side_yhig = np.zeros((4 * nx * nz, 3), dtype=int)
+        for k in range(nz):
+            kno = k * (ny + 1) * (nx + 1)
+            knop1 = (k + 1) * (ny + 1) * (nx + 1)
+            for i in range(nx):
+                f = i + nx * k
+                sc_offset = num_sc_nodes + (nz + 1) * nx * ny
+                fc_node_ylow = i + nx * (ny + 1) * k + sc_offset
+                fc_node_yhig = i + nx * ny + nx * (ny + 1) * k + sc_offset
+                # -- low boundary
+                nodes_per_side_ylow[4 * f, 0] = i + kno
+                nodes_per_side_ylow[4 * f, 1] = i + 1 + kno
+                nodes_per_side_ylow[4 * f, 2] = fc_node_ylow
+                nodes_per_side_ylow[4 * f + 1, 0] = i + 1 + kno
+                nodes_per_side_ylow[4 * f + 1, 1] = i + 1 + knop1
+                nodes_per_side_ylow[4 * f + 1, 2] = fc_node_ylow
+                nodes_per_side_ylow[4 * f + 2, 0] = i + 1 + knop1
+                nodes_per_side_ylow[4 * f + 2, 1] = i + knop1
+                nodes_per_side_ylow[4 * f + 2, 2] = fc_node_ylow
+                nodes_per_side_ylow[4 * f + 3, 0] = i + knop1
+                nodes_per_side_ylow[4 * f + 3, 1] = i + kno
+                nodes_per_side_ylow[4 * f + 3, 2] = fc_node_ylow
+                # -- high boundary
+                nodes_per_side_yhig[4 * f, 0] = i + (nx + 1) * ny + knop1
+                nodes_per_side_yhig[4 * f, 1] = i + 1 + (nx + 1) * ny + knop1
+                nodes_per_side_yhig[4 * f, 2] = fc_node_yhig
+                nodes_per_side_yhig[4 * f + 1, 0] = i + 1 + (nx + 1) * ny + knop1
+                nodes_per_side_yhig[4 * f + 1, 1] = i + 1 + (nx + 1) * ny + kno
+                nodes_per_side_yhig[4 * f + 1, 2] = fc_node_yhig
+                nodes_per_side_yhig[4 * f + 2, 0] = i + 1 + (nx + 1) * ny + kno
+                nodes_per_side_yhig[4 * f + 2, 1] = i + (nx + 1) * ny + kno
+                nodes_per_side_yhig[4 * f + 2, 2] = fc_node_yhig
+                nodes_per_side_yhig[4 * f + 3, 0] = i + (nx + 1) * ny + kno
+                nodes_per_side_yhig[4 * f + 3, 1] = i + (nx + 1) * ny + knop1
+                nodes_per_side_yhig[4 * f + 3, 2] = fc_node_yhig
+
+        # -- faces at z extrema
+        nodes_per_side_zlow = np.zeros((4 * ny * nx, 3), dtype=int)
+        nodes_per_side_zhig = np.zeros((4 * ny * nx, 3), dtype=int)
+        for j in range(ny):
+            jno = j * (nx + 1)
+            jnop1 = (j + 1) * (nx + 1)
+            for i in range(nx):
+                f = i + nx * j
+                fc_node_zlow = i + nx * j + num_sc_nodes
+                fc_node_zhig = i + nx * j + nx * ny * nz + num_sc_nodes
+                # -- low boundary
+                nodes_per_side_zlow[4 * f, 0] = i + jno
+                nodes_per_side_zlow[4 * f, 1] = i + jnop1
+                nodes_per_side_zlow[4 * f, 2] = fc_node_zlow
+                nodes_per_side_zlow[4 * f + 1, 0] = i + jnop1
+                nodes_per_side_zlow[4 * f + 1, 1] = i + 1 + jnop1
+                nodes_per_side_zlow[4 * f + 1, 2] = fc_node_zlow
+                nodes_per_side_zlow[4 * f + 2, 0] = i + 1 + jnop1
+                nodes_per_side_zlow[4 * f + 2, 1] = i + 1 + jno
+                nodes_per_side_zlow[4 * f + 2, 2] = fc_node_zlow
+                nodes_per_side_zlow[4 * f + 3, 0] = i + 1 + jno
+                nodes_per_side_zlow[4 * f + 3, 1] = i + jno
+                nodes_per_side_zlow[4 * f + 3, 2] = fc_node_zlow
+                # -- high boundary
+                nodes_per_side_zhig[4 * f, 0] = i + 1 + jno + nz * (ny + 1) * (nx + 1)
+                nodes_per_side_zhig[4 * f, 1] = i + 1 + jnop1 + nz * (ny + 1) * (nx + 1)
+                nodes_per_side_zhig[4 * f, 2] = fc_node_zhig
+                nodes_per_side_zhig[4 * f + 1, 0] = i + 1 + jnop1 + nz * (ny + 1) * (nx + 1)
+                nodes_per_side_zhig[4 * f + 1, 1] = i + jnop1 + nz * (ny + 1) * (nx + 1)
+                nodes_per_side_zhig[4 * f + 1, 2] = fc_node_zhig
+                nodes_per_side_zhig[4 * f + 2, 0] = i + jnop1 + nz * (ny + 1) * (nx + 1)
+                nodes_per_side_zhig[4 * f + 2, 1] = i + jno + nz * (ny + 1) * (nx + 1)
+                nodes_per_side_zhig[4 * f + 2, 2] = fc_node_zhig
+                nodes_per_side_zhig[4 * f + 3, 0] = i + jno + nz * (ny + 1) * (nx + 1)
+                nodes_per_side_zhig[4 * f + 3, 1] = i + 1 + jno + nz * (ny + 1) * (nx + 1)
+                nodes_per_side_zhig[4 * f + 3, 2] = fc_node_zhig
+
+        # -- compile into one side face array list
+        self.nodes_per_side = [nodes_per_side_xlow, nodes_per_side_xhig,
+                               nodes_per_side_ylow, nodes_per_side_yhig,
+                               nodes_per_side_zlow, nodes_per_side_zhig]
+
+# ------------------------------------------------------------------------------------------------ #
 # Voronoi 2D mesh type
+
+
 class vor_2d_mesh(base_mesh):
     '''
     Class for randomly generated 2D Voronoi mesh data.
@@ -764,9 +1100,9 @@ class rnd_2d_mesh(orth_2d_mesh):
 
 
 # ------------------------------------------------------------------------------------------------ #
-# random 3D mesh type: orthogonal 3D mesh type with vertices randomly sampled in a ball
+# random 3D mesh type: face-centered cubic 3D mesh type with vertices randomly sampled in a ball
 # centered at original (orthogonal) vertices
-class rnd_3d_mesh(orth_3d_mesh):
+class rnd_3d_mesh(fcc_3d_mesh):
     '''
     Class for mesh with randomly resampled vertices from orthogonally structured 3D mesh.
     The randomization currently only operates on interior vertices of the mesh.
@@ -778,7 +1114,7 @@ class rnd_3d_mesh(orth_3d_mesh):
         # -- import pseudorandom number generator functions
         from random import seed, random
         # -- invoke base mesh constructor to generate initial mesh form
-        orth_3d_mesh.__init__(self, bounds_per_dim, num_cells_per_dim)
+        fcc_3d_mesh.__init__(self, bounds_per_dim, num_cells_per_dim)
         # -- short-cuts
         nx = num_cells_per_dim[0]
         ny = num_cells_per_dim[1]

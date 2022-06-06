@@ -11,9 +11,9 @@ import argparse
 
 # -- mesh class dictionary
 mesh_type_dict = {'orth_1d_mesh': mesh_types.orth_1d_mesh, 'orth_2d_mesh': mesh_types.orth_2d_mesh,
-                  'orth_3d_mesh': mesh_types.orth_3d_mesh, 'vor_2d_mesh': mesh_types.vor_2d_mesh,
-                  'rnd_1d_mesh': mesh_types.rnd_1d_mesh, 'rnd_2d_mesh': mesh_types.rnd_2d_mesh,
-                  'rnd_3d_mesh': mesh_types.rnd_3d_mesh}
+                  'orth_3d_mesh': mesh_types.orth_3d_mesh, 'fcc_3d_mesh': mesh_types.fcc_3d_mesh,
+                  'vor_2d_mesh': mesh_types.vor_2d_mesh, 'rnd_1d_mesh': mesh_types.rnd_1d_mesh,
+                  'rnd_2d_mesh': mesh_types.rnd_2d_mesh, 'rnd_3d_mesh': mesh_types.rnd_3d_mesh}
 
 # ------------------------------------------------------------------------------------------------ #
 # -- create argument parser
@@ -61,7 +61,7 @@ assert(len(args.reg_bnd_per_dim) == 2 * ndim * len(args.reg_ids)), \
 bnd_per_dim = [[args.bnd_per_dim[2 * i], args.bnd_per_dim[2 * i + 1]] for i in range(ndim)]
 
 # -- instantiate the class for the mesh type selected
-if args.mesh_type in ['orth_1d_mesh', 'orth_2d_mesh', 'orth_3d_mesh']:
+if args.mesh_type in ['orth_1d_mesh', 'orth_2d_mesh', 'orth_3d_mesh', 'fcc_3d_mesh']:
     mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim)
 elif args.mesh_type in ['vor_2d_mesh']:
     mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_cells)
