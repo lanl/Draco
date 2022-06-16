@@ -8,7 +8,7 @@ export VENDOR_DIR=/usr/projects/draco/vendors
 # symlinks will be generated for each machine that point to the correct
 # installation directory.
 if [[ $(df | grep yellow | grep -c jayenne) -gt 0 ]]; then
-  export siblings="snow badger kodiak grizzly"
+  export siblings="snow badger kodiak"
 else
   export siblings="fire ice cyclone"
 fi

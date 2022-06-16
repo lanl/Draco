@@ -739,7 +739,7 @@ matches_extension() {
 # Creates symlinks to an installation to satisfy requests from clients.  For example:
 #
 #   cts1-openmpi-2.1.2-gcc-7.4.0    -> snow-openmpi-2.1.2-gcc-7.4.0
-#   grizzly-openmpi-2.1.2-gcc-7.4.0 -> snow-openmpi-2.1.2-gcc-7.4.0
+#   badger-openmpi-2.1.2-gcc-7.4.0 -> snow-openmpi-2.1.2-gcc-7.4.0
 #
 # This function is designed to be called from release-<machine>.sh.  The following variables should
 # be set in the environment:
