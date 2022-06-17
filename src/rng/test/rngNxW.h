@@ -39,6 +39,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma clang diagnostic ignored "-Wexpansion-to-defined"
 #endif
 
+#ifdef _MSC_FULL_VER
+#pragma warning(push)
+#pragma warning(disable : 6031 6054)
+#endif
+
 RNGNxW_TPL(philox, 2, 32) RNGNxW_TPL(philox, 4, 32) RNGNxW_TPL(threefry, 2, 32)
     RNGNxW_TPL(threefry, 4, 32)
 #if R123_USE_64BIT
@@ -49,6 +54,10 @@ RNGNxW_TPL(philox, 2, 32) RNGNxW_TPL(philox, 4, 32) RNGNxW_TPL(threefry, 2, 32)
 #endif
 #if R123_USE_AES_NI
                 RNGNxW_TPL(ars, 4, 32) RNGNxW_TPL(aesni, 4, 32)
+#endif
+
+#ifdef _MSC_FULL_VER
+#pragma warning(pop)
 #endif
 
 #ifdef __clang__

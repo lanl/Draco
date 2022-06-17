@@ -11,12 +11,13 @@ rem set
 
 echo ---------------------------------------
 echo VCVARS       = %VCVARS%
-echo CMAKE_TOOLCHAIN_FILE = %CMAKE_TOOLCHAIN_FILE%
 echo MINGW64PATH  = %MINGW64PATH%
-echo VCPKGLOC     = %VCPKGLOC%
-echo DRACO_SOURCE_DIR   = %DRACO_SOURCE_DIR%
-echo DRACO_BINARY_DIR   = %DRACO_BINARY_DIR%
-echo NUMBER_OF_PROCS    = %NUMBER_OF_PROCESSORS%
+rem echo VCPKGLOC     = %VCPKGLOC%
+echo DRACO_SOURCE_DIR = %DRACO_SOURCE_DIR%
+echo DRACO_BINARY_DIR = %DRACO_BINARY_DIR%
+echo NUMBER_OF_PROCS  = %NUMBER_OF_PROCESSORS%
+echo GENERATOR        = %GENERATOR%
+echo CMAKE_TOOLCHAIN_FILE = %CMAKE_TOOLCHAIN_FILE%
 echo ---------------------------------------
 
 rem Fix LANL proxy issues
@@ -28,7 +29,8 @@ set HTTP_PROXY=
 set HTTPS_PROXY=
 
 rem gfortran runtimes
-set PATH=%PATH%;C:\msys64\mingw64\bin;=%
+set PATH=%PATH%;%MINGW64PATH%;=%
+rem set PATH=%PATH%;C:\msys64\mingw64\bin;=%
 rem numdiff
 set PATH=%PATH%;C:\work\vendors64\bin;=%
 
@@ -65,8 +67,8 @@ echo .
 if not exist %DRACO_BINARY_DIR% mkdir %DRACO_BINARY_DIR%
 cd /d %DRACO_BINARY_DIR%
 
-echo cmake -G"Visual Studio 16 2019" -A x64 -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" -DDRACO_LIBRARY_TYPE=SHARED "%DRACO_SOURCE_DIR%"
-cmake -G"Visual Studio 16 2019" -A x64 -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" -DDRACO_LIBRARY_TYPE=SHARED "%DRACO_SOURCE_DIR%"
+echo cmake -G "%GENERATOR%" -A x64 -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" -DDRACO_LIBRARY_TYPE=SHARED "%DRACO_SOURCE_DIR%"
+cmake -G "%GENERATOR%" -A x64 -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" -DDRACO_LIBRARY_TYPE=SHARED "%DRACO_SOURCE_DIR%"
 if %errorlevel% NEQ 0 exit /b 255
 
 echo cmake --build . --target all_build --config %CMAKE_BUILD_TYPE% -j %NUMBER_OF_PROCESSORS%

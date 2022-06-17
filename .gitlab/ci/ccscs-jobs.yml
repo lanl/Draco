@@ -21,23 +21,6 @@
 # MRs - linters
 #--------------------------------------------------------------------------------------------------#
 
-ccs1_style_cxx:
-  tags:
-    - CCSCS1-setuid-shared
-  stage: lint
-  extends: .ccscs
-  variables:
-    CTEST_MODE: Experimental
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1120
-    SITE_ID: ccscs1
-  script:
-    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-style-checks.sh"
-  rules:
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_ccsnet/'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-
 ccs1_clangtidy:
   tags:
     - CCSCS1-setuid-shared

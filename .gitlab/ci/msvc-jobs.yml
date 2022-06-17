@@ -26,26 +26,29 @@
 #-------------------------------------------------------------------------------------------------#
 
 ---
-.msvc:
+.msvc22:
   tags:
     - win64-msvc2019-shell
   variables:
+    DRACO_BINARY_DIR: ${CI_PROJECT_DIR}\build
     SITE_ID: Win10
+    GENERATOR: "Visual Studio 17 2022"
     DEPLOY: "FALSE"
-    # CI_DEBUG_TRACE: "true"
-    VCVARS: "C:\\PROGRA~2\\MIB055~1\\2019\\Preview\\VC\\Auxiliary\\Build\\vcvars64.bat"
-    CMAKE_TOOLCHAIN_FILE: "c:\\work\\vendors64\\vs2019-toolchain.cmake"
+    VCVARS: "C:\\PROGRA~1\\MIB055~1\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"
+    CMAKE_TOOLCHAIN_FILE: "${CI_PROJECT_DIR}\\.gitlab\\ci\\vs2022-toolchain.cmake"
     MINGW64PATH: "C:\\msys64\\mingw64\\bin"
-    VCPKGLOC: "C:\\work\\KineticTheory\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
     CMAKE_C_FLAGS: "/WX"
     CMAKE_Fortran_FLAGS: "-Werror"
+  artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/glr.log
 
 #-------------------------------------------------------------------------------------------------#
 # Build Templates
 #-------------------------------------------------------------------------------------------------#
 
 .msvc_merge:
-  extends: .msvc
+  extends: .msvc22
   variables:
     CTEST_MODE: Experimental
   script:
@@ -73,12 +76,12 @@
 # Merge Requests
 #-------------------------------------------------------------------------------------------------#
 
-x64_deb_msvc_19_mr:
+x64_deb_msvc_22_mr:
   stage: slowtest
   extends: .msvc_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    COMPILER: msvc-2019
+    COMPILER: msvc-2022
   allow_failure: true
 
 #-------------------------------------------------------------------------------------------------#
