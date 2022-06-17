@@ -14,12 +14,13 @@
 #include "rng/config.h"
 
 #ifdef _MSC_FULL_VER
+// - 4267: Conversion from size_t to unsigned int, possible loss of data.
 // - 4521: Engines have multiple copy constructors, quite legal C++, disable MSVC complaint.
 // - 4244: possible loss of data when converting between int types.
 // - 4204: nonstandard extension used - non-constant aggregate initializer
 // - 4127: conditional expression is constant
 #pragma warning(push)
-#pragma warning(disable : 4521 4244 4204 4127)
+#pragma warning(disable : 4267 4521 4244 4204 4127)
 #endif
 
 #if defined(__ICC)

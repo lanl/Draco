@@ -124,7 +124,8 @@ char *nameclean(char *s) {
    Mnemonic:  "ntcs" = "nul-terminated character string" */
 char *ntcsdup(const char *s) {
   char *p = (char *)malloc(strlen(s) + 1);
-  strcpy(p, s);
+  if(p != 0) 
+      strcpy(p, s);
   return p;
 }
 

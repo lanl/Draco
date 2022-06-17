@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // - 4127: conditional expression is constant
 // - 4100: unreferenced formal parameter
 #pragma warning(push)
-#pragma warning(disable : 4521 4244 4127 4100)
+#pragma warning(disable : 4267 4521 4244 4127 4100)
 #endif
 
 #include "kat_main.h"

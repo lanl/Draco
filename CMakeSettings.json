@@ -4,7 +4,7 @@
       "BuildDir": "${env.work_dir}",
       "projectname": "draco",
       "install_subdir": "install",
-      "cmakeToolchain": "C:/work/vendors64/vs2019-toolchain.cmake",
+      "cmakeToolchain": "${projectDir}/.gitlab/ci/vs2022-toolchain.cmake",
       "bdir": "${env.BuildDir}/${name}/${env.projectname}",
       "idir": "${env.BuildDir}/${name}/${env.install_subdir}",
       "cba": "-verbosity:minimal -m:${env.NUMBER_OF_PROCESSORS}",
@@ -14,7 +14,7 @@
   "configurations": [
     {
       "name": "x64-Debug",
-      "generator": "Visual Studio 16 2019 Win64",
+      "generator": "Visual Studio 17 2022 Win64",
       "configurationType": "Debug",
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${env.bdir}",
@@ -27,7 +27,7 @@
     },
     {
       "name": "x64-Release",
-      "generator": "Visual Studio 16 2019 Win64",
+      "generator": "Visual Studio 17 2022 Win64",
       "configurationType": "Release",
       "buildRoot": "${env.bdir}",
       "installRoot": "${env.idir}",
@@ -40,7 +40,7 @@
     },
     {
       "name": "x64-Debug-scalar",
-      "generator": "Visual Studio 16 2019 Win64",
+      "generator": "Visual Studio 17 2022 Win64",
       "configurationType": "Debug",
       "buildRoot": "${env.bdir}",
       "installRoot": "${env.idir}",
@@ -48,20 +48,6 @@
       "buildCommandArgs": "${env.cba}",
       "ctestCommandArgs": "${env.cta}",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "cmakeToolchain": "${env.cmakeToolchain}",
-      "variables": []
-    },
-    {
-      "name": "x64-Clang-Debug",
-      "generator": "Visual Studio 16 2019 Win64",
-      "configurationType": "Debug",
-      "buildRoot": "${env.bdir}",
-      "installRoot": "${env.idir}",
-      "cmakeCommandArgs": "-DCMAKE_C_COMPILER:FILEPATH=\"C:/PROGRAM FILES (X86)/MICROSOFT VISUAL STUDIO/2019/PREVIEW/VC/Tools/llvm/x64/bin/clang-cl.exe\"",
-      "buildCommandArgs": "${env.cba}",
-      "ctestCommandArgs": "${env.cta}",
-      "inheritEnvironments": [ "clang_cl_x64_x64" ],
-      "intelliSenseMode": "windows-clang-x64",
       "cmakeToolchain": "${env.cmakeToolchain}",
       "variables": []
     }

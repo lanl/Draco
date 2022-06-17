@@ -61,7 +61,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    One final complication:  in order to fully "bake" the source code
    into the binary at compile-time, dev_execute_tests for opencl is implemented in
    kat_opencl_kernel.ocl, which is processed by gencl.sh into
-   kat_opencl_kernel.i, which is thein #include-ed by kat_opencl.c.
+   kat_opencl_kernel.i, which is then #include-ed by kat_opencl.c.
 
 */
 #include "kat.h"
@@ -77,6 +77,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-variable-declarations"
 #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
+
+#ifdef _MSC_FULL_VER
+#pragma warning(push)
+#pragma warning(disable : 6031 6308)
 #endif
 
 #define LINESIZE 1024
@@ -328,6 +333,10 @@ int main(int argc, char **argv) {
     return 0;
   }
 }
+
+#ifdef _MSC_FULL_VER
+#pragma warning(pop)
+#endif
 
 #if defined(__clang__) && !defined(__ibmxl__)
 #pragma clang diagnostic pop
