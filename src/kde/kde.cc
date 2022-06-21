@@ -545,7 +545,6 @@ kde::log_reconstruction(const std::vector<double> &distribution,
       }
     }
   } else { // local reconstruction only
-
     // if the log bias is zero the answer must be zero everywhere
     if (!(log_bias > 0.0))
       return result;
@@ -616,6 +615,7 @@ void kde::apply_conservation(const std::vector<double> &original_distribution,
                              std::vector<double> &new_distribution,
                              const bool domain_decomposed) const {
 
+  Require(maskids.size() > 0);
   const size_t local_size = original_distribution.size();
   Insist(new_distribution.size() == local_size,
          "Original and new distributions must be the same size");
