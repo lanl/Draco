@@ -117,7 +117,6 @@ public:
   const bool spherical;
   const std::array<double, 3> sphere_center;
   const size_t coarse_bin_resolution;
-  const double max_window_size;
   const std::vector<std::array<double, 3>> locations;
   const size_t n_locations;
 
@@ -126,6 +125,8 @@ public:
   std::array<double, 3> bounding_box_max;
   // Local Data map
   std::map<size_t, std::vector<size_t>> coarse_index_map;
+  std::map<size_t, std::array<double, 3>> coarse_index_center;
+  std::map<size_t, std::array<double, 3>> coarse_index_size;
 
   // DOMAIN DECOMPOSED DATA
   // Local bounds
@@ -148,6 +149,7 @@ private:
   std::map<size_t, std::vector<std::array<int, 2>>> put_window_map;
   // max put buffer size;
   size_t max_put_buffer_size;
+  double max_window_size;
 };
 
 } // end namespace  rtt_kde

@@ -38,9 +38,8 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
                          const std::array<double, 3> &sphere_center_)
     : dim(dim_), domain_decomposed(domain_decomposed_), spherical(spherical_),
       sphere_center(sphere_center_), coarse_bin_resolution(bins_per_dimension_),
-      max_window_size(max_window_size_),
       locations(spherical ? transform_spherical(dim_, sphere_center_, locations_) : locations_),
-      n_locations(locations_.size()) {
+      n_locations(locations_.size()), max_window_size(max_window_size_) {
   Require(dim > 0);
   Require(coarse_bin_resolution > 0);
 
@@ -66,12 +65,21 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
     // Store the local bounding box and extend to maximum non-local data size
     local_bounding_box_min = bounding_box_min;
     local_bounding_box_max = bounding_box_max;
+    // Global reduce to get the global min and max
+    rtt_c4::global_min(&bounding_box_min[0], 3);
+    rtt_c4::global_max(&bounding_box_max[0], 3);
+    double max_bin_size = 0.0;
     for (size_t d = 0; d < dim; d++) {
-      double wsize = max_window_size * 0.5;
+      // pad by one coarse index
+      const double coarse_bin_size =
+          (bounding_box_max[d] - bounding_box_min[d]) / static_cast<double>(coarse_bin_resolution);
+      max_bin_size = std::max(max_bin_size, coarse_bin_size);
+      double wsize = coarse_bin_size + max_window_size * 0.5;
       if (spherical && d == 1) {
         // Transform to dtheta via arch_lenght=r*dtheta
         // enforce a 90 degree maximum angle
-        wsize = std::min(rtt_units::PI / 2, 0.5 * max_window_size / local_bounding_box_max[0]);
+        wsize = std::min(rtt_units::PI / 2,
+                         0.5 * (max_window_size + coarse_bin_size) / local_bounding_box_max[0]);
       }
       local_bounding_box_min[d] -= wsize;
       local_bounding_box_max[d] += wsize;
@@ -79,35 +87,54 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
       if (spherical && d == 0)
         local_bounding_box_min[d] = std::max(0.0, local_bounding_box_min[d]);
     }
-    // Global reduce to get the global min and max
-    rtt_c4::global_min(&bounding_box_min[0], 3);
-    rtt_c4::global_max(&bounding_box_max[0], 3);
+
+    // increase the max window size to reflect the coarse index padding
+    max_window_size += max_bin_size;
+
     if (!spherical) {
       // spherical theta bounds can exceed global bounds because the window wraps around theta=0.
       for (size_t d = 0; d < dim; d++) {
         local_bounding_box_min[d] = std::max(local_bounding_box_min[d], bounding_box_min[d]);
         local_bounding_box_max[d] = std::min(local_bounding_box_max[d], bounding_box_max[d]);
       }
+    } else if (spherical && local_bounding_box_min[1] < 0.0 &&
+               local_bounding_box_max[1] > 2.0 * rtt_units::PI) {
+      // if the domain contains the full sphere hard code the bounds
+      local_bounding_box_min[1] = 0.0;
+      local_bounding_box_max[1] = 2.0 * rtt_units::PI;
     }
   }
 
   // temp cast corse_bin_resolution to double for interpolation
   const auto crd = static_cast<double>(coarse_bin_resolution);
+  const auto inv_crd = 1.0 / crd;
 
   // build up the local hash table of into global bins
   size_t locIndex = 0;
   for (auto &loc : locations) {
     std::array<size_t, 3> index{0UL, 0UL, 0UL};
+    std::array<double, 3> index_center{0.0, 0.0, 0.0};
+    std::array<double, 3> index_size{0.0, 0.0, 0.0};
     for (size_t d = 0; d < dim; d++) {
+      if (rtt_dsxx::soft_equiv(bounding_box_min[d], bounding_box_max[d])) {
+        index[d] = 0;
+        index_size[d] = 1;
+        index_center[d] = bounding_box_min[d];
+        continue;
+      }
       Check(bounding_box_min[d] < bounding_box_max[d]);
       index[d] = static_cast<size_t>(std::floor(crd * (loc[d] - bounding_box_min[d]) /
                                                 (bounding_box_max[d] - bounding_box_min[d])));
       index[d] = std::min(index[d], coarse_bin_resolution - 1);
+      index_size[d] = (bounding_box_max[d] - bounding_box_min[d]) * inv_crd;
+      index_center[d] = index_size[d] * (static_cast<double>(index[d]) + 0.5);
     }
     // build up the local index hash
     const size_t global_index = index[0] + index[1] * coarse_bin_resolution +
                                 index[2] * coarse_bin_resolution * coarse_bin_resolution;
     coarse_index_map[global_index].push_back(locIndex);
+    coarse_index_center[global_index] = index_center;
+    coarse_index_size[global_index] = index_size;
     locIndex++;
   }
 
@@ -130,7 +157,7 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
 
     std::vector<int> global_index_per_bin_per_proc(nbins * nodes, 0UL);
     for (auto &map : coarse_index_map) {
-      size_t gipbpp_index = map.first + nbins * node;
+      const size_t gipbpp_index = map.first + nbins * node;
       // must cast to an int to accomidate mpi int types.
       global_index_per_bin_per_proc[gipbpp_index] = static_cast<int>(map.second.size());
     }
@@ -141,7 +168,7 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
     for (size_t proc = 0; proc < nodes; proc++) {
       for (auto &bin : local_bins) {
         if (node != proc) {
-          size_t gipbpp_index = bin + nbins * proc;
+          const size_t gipbpp_index = bin + nbins * proc;
           // build up the local ghost index map
           for (int i = 0; i < global_index_per_bin_per_proc[gipbpp_index]; i++)
             local_ghost_index_map[bin].push_back(local_ghost_buffer_size + i);
@@ -177,7 +204,7 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
       }
       for (auto &map : coarse_index_map) {
         if (rtt_c4::node() != rec_proc) {
-          size_t gipbpp_index = map.first + nbins * rec_proc;
+          const size_t gipbpp_index = map.first + nbins * rec_proc;
           if (global_need_bins_per_proc[gipbpp_index] > 0) {
             // capture the largest put buffer on this rank
             if (map.second.size() > max_put_buffer_size)
@@ -471,6 +498,11 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
     double wmax = window_max[d];
     if (spherical && d == 1 && window_max[d] > bounding_box_max[d])
       wmax = bounding_box_max[d]; // truncate to standard theta space
+    if (rtt_dsxx::soft_equiv(bounding_box_min[d], bounding_box_max[d])) {
+      index_min[d] = 0;
+      index_max[d] = 0;
+      continue;
+    }
     index_min[d] = static_cast<size_t>(std::floor(std::max(
         crd * (wmin - bounding_box_min[d]) / (bounding_box_max[d] - bounding_box_min[d]), 0.0)));
     index_max[d] = static_cast<size_t>(std::floor(crd * (wmax - bounding_box_min[d]) /
@@ -478,11 +510,13 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
     // because local bounds can extend beyond the mesh we need to floor to
     // the max bin size
     index_max[d] = std::min(index_max[d], coarse_bin_resolution - 1);
+    index_min[d] = std::min(index_min[d], coarse_bin_resolution - 1);
 
     // Use multiplicity to accumulate total bins;
     if ((index_max[d] - index_min[d]) > 0)
       nbins *= index_max[d] - index_min[d] + 1;
   }
+  Check(nbins > 0);
 
   // Fill up bin list
   size_t count = 0;
@@ -497,6 +531,7 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
       }
     }
   }
+  Check(bin_list.size() > 0);
   // Fill in the overflow around theta=0.0
   if (spherical && (window_min[1] < 0.0 || window_max[1] > 2.0 * rtt_units::PI)) {
     // Only one bound of the window should every overshoot zero
@@ -562,6 +597,11 @@ auto get_window_bin = [](auto spherical, const auto dim, const auto &grid_bins,
   std::array<size_t, 3> bin_id{0, 0, 0};
   double distance_to_bin_center = 0.0;
   for (size_t d = 0; d < dim; d++) {
+    if (rtt_dsxx::soft_equiv(window_max[d], window_min[d])) {
+      bin_id[d] = 0;
+      distance_to_bin_center = 0.0;
+      continue;
+    }
     Check((window_max[d] - window_min[d]) > 0.0);
     double loc = location[d];
     // transform location for zero theta overshoot
