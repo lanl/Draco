@@ -60,7 +60,7 @@ rem ----------------------------------------------------------------------------
 
 :maintests
 
-set modes="Configure,Build,Test,Submit"
+set modes=Configure,Build,Test,Submit
 set script=%DRACO_SOURCE_DIR%\.gitlab\ci\draco-nightly.cmake
 
 echo ctest -VV -C %CMAKE_BUILD_TYPE% -S %script%,%modes%
@@ -90,6 +90,10 @@ goto:eof
 
 :errnocmake
 echo FATAL ERROR :: cmake was not found in PATH.
+goto:eof
+
+:errnonumdiff
+echo FATAL ERROR :: numdiff was not found in PATH.
 goto:eof
 
 :done

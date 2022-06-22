@@ -39,8 +39,8 @@
     MINGW64PATH: "C:\\msys64\\mingw64\\bin"
     CMAKE_C_FLAGS: "/WX"
     CMAKE_Fortran_FLAGS: "-Werror"
-    MAXLOAD: 22
-    CTEST_NPROC: 22
+    MAXLOAD: 24
+    CTEST_NPROC: 24
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/glr.log
@@ -115,6 +115,7 @@ x64_rel_msvc_22_deploy:
     CTEST_MODE: Nightly
     CTEST_BUILD_NAME: ${COMPILER}-${CMAKE_BUILD_TYPE}
     COMPILER: msvc-2022
+    GENERATOR: Visual Studio 17 2022
   script:
     - cmd.exe /c "%CI_PROJECT_DIR%\.gitlab\ci\gitlab-nightly-regress.bat"
   rules:

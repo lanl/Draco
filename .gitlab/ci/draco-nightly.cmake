@@ -21,7 +21,7 @@ set(CTEST_CURL_OPTIONS CURLOPT_SSL_VERIFYPEER_OFF CURLOPT_SSL_VERIFYHOST_OFF)
 set(CTEST_NIGHTLY_START_TIME "22:00:00 MDT")
 
 if(WIN32)
-  set(CTEST_CMAKE_GENERATOR "Visual Studio 16 2019")
+  set(CTEST_CMAKE_GENERATOR $ENV{GENERATOR})
 else()
   set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
 endif()
@@ -29,7 +29,7 @@ set(CTEST_UPDATE_COMMAND "git")
 set(CTEST_GIT_UPDATE_CUSTOM "${CMAKE_COMMAND}" "-E" "echo" "Skipping git update (no-op).")
 
 # message(
-#   "==> Starting a regression build...
+# "==> Starting a regression build...
 # CTEST_SOURCE_DIRECTORY = ${CTEST_SOURCE_DIRECTORY}
 # CTEST_BINARY_DIRECTORY = ${CTEST_BINARY_DIRECTORY}
 # CTEST_PROJECT_NAME     = ${CTEST_PROJECT_NAME}
@@ -42,11 +42,15 @@ set(CTEST_GIT_UPDATE_CUSTOM "${CMAKE_COMMAND}" "-E" "echo" "Skipping git update 
 # - MPI_PHYSCIAL_CORES
 # ------------------------------------------------------------------------------------------------ #
 cmake_host_system_information(RESULT MPI_PHYSICAL_CORES QUERY NUMBER_OF_PHYSICAL_CORES)
-message("==> MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}")
-message("==> MAXLOAD            = $ENV{MAXLOAD}")
+# message("==> MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}")
+# message("==> MAXLOAD            = $ENV{MAXLOAD}")
 
 if( (${MPI_PHYSICAL_CORES} LESS 2) AND ($ENV{MAXLOAD} GREATER 1))
   # for power9, the cmake command returns 1, so revert to the shell script value.
+  set(MPI_PHYSICAL_CORES $ENV{MAXLOAD})
+endif()
+if(WIN32)
+  # For Windows, just use the specified ${MAXLOAD}
   set(MPI_PHYSICAL_CORES $ENV{MAXLOAD})
 endif()
 
@@ -88,18 +92,18 @@ if(DEFINED ENV{CTEST_MEMORYCHECK_SUPPRESSIONS_FILE})
   endif()
 endif()
 
-# message(
-#   " ==> Job specification from yml
-# CI_PROJECT_DIR = ${CI_PROJECT_DIR}
-# CTEST_BUILD_NAME = ${CTEST_BUILD_NAME}
-# CTEST_BUILD_TYPE = ${CTEST_BUILD_TYPE}
-# CTEST_MODE       = ${CTEST_MODE}
-# CTEST_SITE       = ${CTEST_SITE}
-# EXTRA_CMAKE_ARGS = ${EXTRA_CMAKE_ARGS}
-# EXTRA_CTEST_ARGS = ${EXTRA_CTEST_ARGS}
-# CTEST_NPROC      = $ENV{CTEST_NPROC}
-# MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}
-# ")
+message(
+  " ==> Job specification from yml
+CI_PROJECT_DIR   = ${CI_PROJECT_DIR}
+CTEST_BUILD_NAME = ${CTEST_BUILD_NAME}
+CTEST_BUILD_TYPE = ${CTEST_BUILD_TYPE}
+CTEST_MODE       = ${CTEST_MODE}
+CTEST_SITE       = ${CTEST_SITE}
+EXTRA_CMAKE_ARGS = ${EXTRA_CMAKE_ARGS}
+EXTRA_CTEST_ARGS = ${EXTRA_CTEST_ARGS}
+CTEST_NPROC      = $ENV{CTEST_NPROC}
+MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}
+")
 
 # ------------------------------------------------------------------------------------------------ #
 # Options that control the build (but not set by yaml)
@@ -149,6 +153,8 @@ list(
 # Start the build (clone, prep the build directory)
 # ------------------------------------------------------------------------------------------------ #
 
+# message("==> CTEST_SCRIPT_ARG = ${CTEST_SCRIPT_ARG}")
+
 if(${CTEST_SCRIPT_ARG} MATCHES Configure)
   if( EXISTS "${CTEST_BINARY_DIRECTORY}")
     ctest_empty_binary_directory("${CTEST_BINARY_DIRECTORY}")
@@ -169,17 +175,17 @@ if(${CTEST_SCRIPT_ARG} MATCHES Configure)
 
   # create the comnand used to configure the build:
 
-  file(TO_CMAKE_PATH $ENV{CI_PROJECT_DIR} CI_PROJECT_DIR) 
+  file(TO_CMAKE_PATH $ENV{CI_PROJECT_DIR} CI_PROJECT_DIR)
   set(CTEST_CONFIGURE_COMMAND "cmake")
-  if(DEFINED ENV{GENERATOR})    
-    string(APPEND CTEST_CONFIGURE_COMMAND " -G $ENV{GENERATOR}")
-  endif()
+  #if(DEFINED ENV{GENERATOR})
+  #  string(APPEND CTEST_CONFIGURE_COMMAND " -G $ENV{GENERATOR}")
+  #endif()
   string(APPEND CTEST_CONFIGURE_COMMAND " -DCMAKE_INSTALL_PREFIX=${CI_PROJECT_DIR}/install"
     " ${EXTRA_CMAKE_ARGS}")
   if(WIN32)
     file(TO_CMAKE_PATH "${CTEST_SOURCE_DIRECTORY}" CTEST_SOURCE_DIRECTORY)
     file(TO_CMAKE_PATH "$ENV{CMAKE_TOOLCHAIN_FILE}" CMAKE_TOOLCHAIN_FILE)
-    string(APPEND CTEST_CONFIGURE_COMMAND 
+    string(APPEND CTEST_CONFIGURE_COMMAND
        " -A x64 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
     string(APPEND CTEST_CONFIGURE_COMMAND " -DDRACO_LIBRARY_TYPE=SHARED")
   else()
@@ -226,8 +232,8 @@ if(${CTEST_SCRIPT_ARG} MATCHES Build)
   if(WIN32)
     set(CTEST_BUILD_FLAGS "-m:${MPI_PHYSICAL_CORES}")
   endif()
-  
-  if( DEFINED ENV{MAKEFILE_FLAGS} )
+
+  if(DEFINED ENV{MAKEFILE_FLAGS})
     set(CTB_FLAGS FLAGS "$ENV{MAKEFILE_FLAGS}")
   endif()
 
@@ -263,6 +269,7 @@ ctest_build( ${CTB_FLAGS}
       endif()
       message(FATAL_ERROR "build error")
     endif()
+
   else()
     message(
       "
