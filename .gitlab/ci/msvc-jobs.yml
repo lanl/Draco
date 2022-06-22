@@ -78,11 +78,12 @@ x64_deb_msvc_22_mr:
 
 .msvc_deploy:
   extends: .msvc22
+  stage: deploy
   variables:
     DEPLOY: 'TRUE'
     FLAVOR: msvc22-${CMAKE_BUILD_TYPE}
-    DRACO_INSTALL_DIR: ${HOMEDRIVE}/regress/work/draco/deploy/${FLAVOR}
-    EXTRA_CMAKE_ARGS: -DCMAKE_BUILD_TESTING=NO
+    DRACO_INSTALL_DIR: ${HOMEDRIVE}/regress/deployment/draco/${FLAVOR}
+    EXTRA_CMAKE_ARGS: -DBUILD_TESTING=OFF
   script:
     - cmd.exe /c "%CI_PROJECT_DIR%\.gitlab\ci\gitlab-ci-run-tests.bat"
   rules:
