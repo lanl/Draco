@@ -31,7 +31,7 @@
     - win64-msvc2019-shell
   variables:
     DRACO_BINARY_DIR: ${CI_PROJECT_DIR}\build
-    SITE_ID: Win10
+    SITE_ID: ${COMPUTERNAME}-Win10
     GENERATOR: "Visual Studio 17 2022"
     DEPLOY: "FALSE"
     VCVARS: "C:\\PROGRA~1\\MIB055~1\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"
@@ -39,12 +39,14 @@
     MINGW64PATH: "C:\\msys64\\mingw64\\bin"
     CMAKE_C_FLAGS: "/WX"
     CMAKE_Fortran_FLAGS: "-Werror"
+    MAXLOAD: 22
+    CTEST_NPROC: 22
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/glr.log
 
 #-------------------------------------------------------------------------------------------------#
-# Build Templates
+# Merge Requests
 #-------------------------------------------------------------------------------------------------#
 
 .msvc_merge:
@@ -62,20 +64,6 @@
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
-#.msvc_nightly:
-#  extends: .msvc
-#  variables:
-#    CTEST_MODE: Nightly
-#    CTEST_BUILD_NAME: ${COMPILER}-${CMAKE_BUILD_TYPE}
-#  script:
-#    - cmd.exe /c "%CI_PROJECT_DIR%\.gitlab\ci\gitlab-nightly-regress.bat"
-#  only:
-#    - schedules
-
-#-------------------------------------------------------------------------------------------------#
-# Merge Requests
-#-------------------------------------------------------------------------------------------------#
-
 x64_deb_msvc_22_mr:
   stage: slowtest
   extends: .msvc_merge
@@ -85,19 +73,63 @@ x64_deb_msvc_22_mr:
   allow_failure: true
 
 #-------------------------------------------------------------------------------------------------#
+# Deploy
+#-------------------------------------------------------------------------------------------------#
+
+.msvc_deploy:
+  extends: .msvc22
+  variables:
+    DEPLOY: 'TRUE'
+    FLAVOR: msvc22-${CMAKE_BUILD_TYPE}
+    DRACO_INSTALL_DIR: ${HOMEDRIVE}/regress/work/draco/deploy/${FLAVOR}
+    EXTRA_CMAKE_ARGS: -DCMAKE_BUILD_TESTING=NO
+  script:
+    - cmd.exe /c "%CI_PROJECT_DIR%\.gitlab\ci\gitlab-ci-run-tests.bat"
+  rules:
+    # Don't deploy if this is a forked repository.
+    - if: '$CI_PROJECT_NAMESPACE != "draco"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+x64_deb_msvc_22_deploy:
+  extends: .msvc_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+
+x64_rel_msvc_22_deploy:
+  extends: .msvc_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+
+#-------------------------------------------------------------------------------------------------#
 # Nightly Regression
 #-------------------------------------------------------------------------------------------------#
 
-#x86_deb_msvc_19_regress:
-#  stage: test
-#  extends: .msvc_nightly
-#  variables:
-#    CMAKE_BUILD_TYPE: Debug
-#    COMPILER: msvc-2019
-# for now, these options are set in csk-nightly.cmake
-#    EXTRA_CMAKE_ARGS: -G"Visual Studio 16 2019" -A x64
-#       -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" -DCSK_LIBRARY_TYPE=SHARED
-#    SCHEDULER_PARAMETERS: ${SP_x86_64}
+.msvc_nightly:
+  extends: .msvc22
+  variables:
+    CTEST_MODE: Nightly
+    CTEST_BUILD_NAME: ${COMPILER}-${CMAKE_BUILD_TYPE}
+    COMPILER: msvc-2022
+  script:
+    - cmd.exe /c "%CI_PROJECT_DIR%\.gitlab\ci\gitlab-nightly-regress.bat"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+
+x64_deb_msvc_22_regress:
+  stage: test
+  extends: .msvc_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+
+x64_rel_msvc_22_regress:
+  stage: test
+  extends: .msvc_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
 
 #-------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/nmsvc-jobs.yml
