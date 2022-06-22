@@ -69,7 +69,10 @@ if not exist %DRACO_BINARY_DIR% mkdir %DRACO_BINARY_DIR%
 cd /d %DRACO_BINARY_DIR%
 
 set buildtarget=all_build
-if %DEPLOY% == TRUE set buildtarget=install
+if %DEPLOY% == TRUE (
+  set buildtarget=install
+  set EXTRA_CMAKE_ARGS=%EXTRA_CMAKE_ARGS% -DCMAKE_INSTALL_PREFIX=%DRACO_INSTALL_DIR%
+)
 
 echo cmake -G "%GENERATOR%" -A x64 -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" ^
   -DDRACO_LIBRARY_TYPE=SHARED %EXTRA_CMAKE_ARGS% "%DRACO_SOURCE_DIR%"
