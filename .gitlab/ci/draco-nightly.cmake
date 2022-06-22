@@ -225,7 +225,7 @@ if(${CTEST_SCRIPT_ARG} MATCHES Build)
 
   if(WIN32)
     set(CTEST_BUILD_FLAGS "-m:${MPI_PHYSICAL_CORES}")
-  endif
+  endif()
   
   if( DEFINED ENV{MAKEFILE_FLAGS} )
     set(CTB_FLAGS FLAGS "$ENV{MAKEFILE_FLAGS}")
