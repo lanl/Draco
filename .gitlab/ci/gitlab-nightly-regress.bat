@@ -29,10 +29,10 @@ set HTTP_PROXY=
 set HTTPS_PROXY=
 
 rem gfortran runtimes
-rem set PATH=%PATH%;%MINGW64PATH%;=%
+set PATH=%PATH%;%MINGW64PATH%;=%
 rem set PATH=%PATH%;C:\msys64\mingw64\bin;=%
 rem numdiff
-rem set PATH=%PATH%;C:\work\vendors64\bin;=%
+set PATH=%PATH%;C:\work\vendors64\bin;=%
 
 echo %PATH%
 
