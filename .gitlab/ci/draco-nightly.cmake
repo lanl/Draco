@@ -42,8 +42,9 @@ set(CTEST_GIT_UPDATE_CUSTOM "${CMAKE_COMMAND}" "-E" "echo" "Skipping git update 
 # - MPI_PHYSCIAL_CORES
 # ------------------------------------------------------------------------------------------------ #
 cmake_host_system_information(RESULT MPI_PHYSICAL_CORES QUERY NUMBER_OF_PHYSICAL_CORES)
-# message("==> MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}")
-# message("==> MAXLOAD            = $ENV{MAXLOAD}")
+message("==> MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}")
+message("==> MAXLOAD            = $ENV{MAXLOAD}")
+
 if( (${MPI_PHYSICAL_CORES} LESS 2) AND ($ENV{MAXLOAD} GREATER 1))
   # for power9, the cmake command returns 1, so revert to the shell script value.
   set(MPI_PHYSICAL_CORES $ENV{MAXLOAD})
@@ -149,7 +150,9 @@ list(
 # ------------------------------------------------------------------------------------------------ #
 
 if(${CTEST_SCRIPT_ARG} MATCHES Configure)
-  ctest_empty_binary_directory("${CTEST_BINARY_DIRECTORY}")
+  if( EXISTS "${CTEST_BINARY_DIRECTORY}")
+    ctest_empty_binary_directory("${CTEST_BINARY_DIRECTORY}")
+  endif()
   message("ctest_start( ${CTEST_MODE} )")
   ctest_start(${CTEST_MODE})
 else()
@@ -165,12 +168,19 @@ ctest_update(SOURCE ${CTEST_SOURCE_DIRECTORY})
 if(${CTEST_SCRIPT_ARG} MATCHES Configure)
 
   # create the comnand used to configure the build:
-  string(CONCAT CTEST_CONFIGURE_COMMAND "cmake"
-    " -DCMAKE_INSTALL_PREFIX=$ENV{CI_PROJECT_DIR}/install" " ${EXTRA_CMAKE_ARGS}")
+
+  file(TO_CMAKE_PATH $ENV{CI_PROJECT_DIR} CI_PROJECT_DIR) 
+  set(CTEST_CONFIGURE_COMMAND "cmake")
+  if(DEFINED ENV{GENERATOR})    
+    string(APPEND CTEST_CONFIGURE_COMMAND " -G $ENV{GENERATOR}")
+  endif()
+  string(APPEND CTEST_CONFIGURE_COMMAND " -DCMAKE_INSTALL_PREFIX=${CI_PROJECT_DIR}/install"
+    " ${EXTRA_CMAKE_ARGS}")
   if(WIN32)
     file(TO_CMAKE_PATH "${CTEST_SOURCE_DIRECTORY}" CTEST_SOURCE_DIRECTORY)
     file(TO_CMAKE_PATH "$ENV{CMAKE_TOOLCHAIN_FILE}" CMAKE_TOOLCHAIN_FILE)
-    string(APPEND CTEST_CONFIGURE_COMMAND " -A x64 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
+    string(APPEND CTEST_CONFIGURE_COMMAND 
+       " -A x64 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
     string(APPEND CTEST_CONFIGURE_COMMAND " -DDRACO_LIBRARY_TYPE=SHARED")
   else()
     string(APPEND CTEST_CONFIGURE_COMMAND " -DCMAKE_BUILD_TYPE=${UPPER_CTEST_BUILD_TYPE}")
@@ -213,6 +223,10 @@ endif()
 # ------------------------------------------------------------------------------------------------ #
 if(${CTEST_SCRIPT_ARG} MATCHES Build)
 
+  if(WIN32)
+    set(CTEST_BUILD_FLAGS "-m:${MPI_PHYSICAL_CORES}")
+  endif
+  
   if( DEFINED ENV{MAKEFILE_FLAGS} )
     set(CTB_FLAGS FLAGS "$ENV{MAKEFILE_FLAGS}")
   endif()

@@ -3,7 +3,7 @@ rem ----------------------------------------------------------------------------
 rem File  : gitlab-ci-run-tests.bat
 rem Date  : Thursday, Jun 11, 2020, 15:53 pm
 rem Author: Kelly Thompson <kgt@lanl.gov>
-rem Note  : Copyright (C) 2021, Triad National Security, LLC., All rights are reserved.
+rem Note  : Copyright (C) 2021-2022, Triad National Security, LLC., All rights are reserved.
 rem -----------------------------------------------------------------------------------------------
 
 echo This is windows...
@@ -18,6 +18,7 @@ echo DRACO_BINARY_DIR = %DRACO_BINARY_DIR%
 echo NUMBER_OF_PROCS  = %NUMBER_OF_PROCESSORS%
 echo GENERATOR        = %GENERATOR%
 echo CMAKE_TOOLCHAIN_FILE = %CMAKE_TOOLCHAIN_FILE%
+echo EXTRA_CMAKE_ARGS     = %EXTRA_CMAKE_ARGS%
 echo ---------------------------------------
 
 rem Fix LANL proxy issues
@@ -67,17 +68,29 @@ echo .
 if not exist %DRACO_BINARY_DIR% mkdir %DRACO_BINARY_DIR%
 cd /d %DRACO_BINARY_DIR%
 
-echo cmake -G "%GENERATOR%" -A x64 -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" -DDRACO_LIBRARY_TYPE=SHARED "%DRACO_SOURCE_DIR%"
-cmake -G "%GENERATOR%" -A x64 -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" -DDRACO_LIBRARY_TYPE=SHARED "%DRACO_SOURCE_DIR%"
+set buildtarget=all_build
+if %DEPLOY% == TRUE set buildtarget=install
+
+echo cmake -G "%GENERATOR%" -A x64 -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" ^
+  -DDRACO_LIBRARY_TYPE=SHARED %EXTRA_CMAKE_ARGS% "%DRACO_SOURCE_DIR%"
+cmake -G "%GENERATOR%" -A x64 -DCMAKE_TOOLCHAIN_FILE="%CMAKE_TOOLCHAIN_FILE%" ^
+  -DDRACO_LIBRARY_TYPE=SHARED %EXTRA_CMAKE_ARGS% "%DRACO_SOURCE_DIR%"
 if %errorlevel% NEQ 0 exit /b 255
 
-echo cmake --build . --target all_build --config %CMAKE_BUILD_TYPE% -j %NUMBER_OF_PROCESSORS%
-cmake --build . --target all_build --config %CMAKE_BUILD_TYPE% -j %NUMBER_OF_PROCESSORS%
+echo cmake --build . --target %buildtarget% --config %CMAKE_BUILD_TYPE% ^
+  -j %NUMBER_OF_PROCESSORS%
+cmake --build . --target %buildtarget% --config %CMAKE_BUILD_TYPE% -j %NUMBER_OF_PROCESSORS%
 if %errorlevel% NEQ 0 exit /b 255
 
-echo ctest -j %NUMBER_OF_PROCESSORS% --output-on-failure --stop-on-failure -C %CMAKE_BUILD_TYPE%
+rem Do not run tests for deployment builds.
+if %DEPLOY% == TRUE goto:postctest
+
+echo ctest -j %NUMBER_OF_PROCESSORS% --output-on-failure --stop-on-failure ^
+  -C %CMAKE_BUILD_TYPE%
 ctest -j %NUMBER_OF_PROCESSORS% --output-on-failure --stop-on-failure -C %CMAKE_BUILD_TYPE%
 if %errorlevel% NEQ 0 exit /b 255
+
+:postctest
 
 goto:eof
 
