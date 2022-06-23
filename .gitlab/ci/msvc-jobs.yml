@@ -31,7 +31,8 @@
     - win64-msvc2019-shell
   variables:
     DRACO_BINARY_DIR: ${CI_PROJECT_DIR}\build
-    SITE_ID: ${COMPUTERNAME}-Win10
+    SITE_ID: pn1809804
+    # ${COMPUTERNAME} doesn't seem to work.
     GENERATOR: "Visual Studio 17 2022"
     DEPLOY: "FALSE"
     VCVARS: "C:\\PROGRA~1\\MIB055~1\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"
@@ -113,7 +114,7 @@ x64_rel_msvc_22_deploy:
   extends: .msvc22
   variables:
     CTEST_MODE: Nightly
-    CTEST_BUILD_NAME: ${COMPILER}-${CMAKE_BUILD_TYPE}
+    CTEST_BUILD_NAME: Win10-${COMPILER}-${CMAKE_BUILD_TYPE}
     COMPILER: msvc-2022
     GENERATOR: Visual Studio 17 2022
   script:
