@@ -28,14 +28,14 @@ endif()
 set(CTEST_UPDATE_COMMAND "git")
 set(CTEST_GIT_UPDATE_CUSTOM "${CMAKE_COMMAND}" "-E" "echo" "Skipping git update (no-op).")
 
-# message(
-# "==> Starting a regression build...
-# CTEST_SOURCE_DIRECTORY = ${CTEST_SOURCE_DIRECTORY}
-# CTEST_BINARY_DIRECTORY = ${CTEST_BINARY_DIRECTORY}
-# CTEST_PROJECT_NAME     = ${CTEST_PROJECT_NAME}
-# CTEST_NIGHTLY_START_TIME = ${CTEST_NIGHTLY_START_TIME}
-# CTEST_CMAKE_GENERATOR  = ${CTEST_CMAKE_GENERATOR}
-# ")
+message(
+"==> Starting a regression build...
+CTEST_SOURCE_DIRECTORY = ${CTEST_SOURCE_DIRECTORY}
+CTEST_BINARY_DIRECTORY = ${CTEST_BINARY_DIRECTORY}
+CTEST_PROJECT_NAME     = ${CTEST_PROJECT_NAME}
+CTEST_NIGHTLY_START_TIME = ${CTEST_NIGHTLY_START_TIME}
+CTEST_CMAKE_GENERATOR  = ${CTEST_CMAKE_GENERATOR}
+")
 
 # ------------------------------------------------------------------------------------------------ #
 # Collect information about this system
