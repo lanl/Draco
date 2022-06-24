@@ -10,14 +10,20 @@ echo This is windows...
 rem set
 
 echo ---------------------------------------
+echo SITE_ID      = %SITE_ID%
+echo DEPLOY       = %DEPLOY%
 echo VCVARS       = %VCVARS%
 echo MINGW64PATH  = %MINGW64PATH%
-rem echo VCPKGLOC     = %VCPKGLOC%
 echo DRACO_SOURCE_DIR = %DRACO_SOURCE_DIR%
 echo DRACO_BINARY_DIR = %DRACO_BINARY_DIR%
 echo NUMBER_OF_PROCS  = %NUMBER_OF_PROCESSORS%
 echo GENERATOR        = %GENERATOR%
+echo CTEST_BUILD_NAME     = %CTEST_BUILD_NAME%
 echo CMAKE_TOOLCHAIN_FILE = %CMAKE_TOOLCHAIN_FILE%
+echo DEPLOY_DIR           = %DEPLOY_DIR%
+echo DRACO_INSTALL_DIR    = %DRACO_INSTALL_DIR%
+echo CMAKE_C_FLAGS        = %CMAKE_C_FLAGS%
+echo CMAKE_Fortran_FLAGS  = %CMAKE_Fortran_FLAGS%
 echo ---------------------------------------
 
 rem Fix LANL proxy issues
@@ -34,7 +40,7 @@ rem set PATH=%PATH%;C:\msys64\mingw64\bin;=%
 rem numdiff
 set PATH=%PATH%;C:\work\vendors64\bin;=%
 
-echo %PATH%
+echo PATH = %PATH%
 
 rem -----------------------------------------------------------------------------------------------
 rem Environment setup and checking
