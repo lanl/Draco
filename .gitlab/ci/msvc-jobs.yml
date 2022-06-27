@@ -30,7 +30,7 @@
   tags:
     - win64-msvc2019-shell
   variables:
-    DRACO_BINARY_DIR: ${CI_PROJECT_DIR}\build
+    DRACO_BINARY_DIR: ${CI_PROJECT_DIR}\${CMAKE_BUILD_TYPE}\build
     SITE_ID: pn1809804
     # ${COMPUTERNAME} doesn't seem to work.
     GENERATOR: "Visual Studio 17 2022"
