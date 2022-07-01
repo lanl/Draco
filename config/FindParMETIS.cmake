@@ -152,15 +152,22 @@ if(WIN32)
 endif()
 
 if(ParMETIS_FOUND AND NOT TARGET ParMETIS::parmetis)
-  if(EXISTS "${ParMETIS_LIBRARY_DLL}")
+  if(WIN32)
+    if(EXISTS "${ParMETIS_LIBRARY_DLL}")
+      set(libtype SHARED)
+      set(ilr "${ParMETIS_LIBRARY_DLL}")
+      set(ild "${ParMETIS_LIBRARY_DEBUG_DLL}")
+    else()
+      set(libtype STATIC)
+      set(ilr "${ParMETIS_LIBRARY}")
+      set(ild "${ParMETIS_LIBRARY_DEBUG}")
+    endif()
 
-    # Windows systems with dll libraries.
-    add_library(ParMETIS::parmetis SHARED IMPORTED)
+    add_library(ParMETIS::parmetis ${libtype} IMPORTED)
 
-    # Windows with dlls, but only Release libraries.
     set_target_properties(
       ParMETIS::parmetis
-      PROPERTIES IMPORTED_LOCATION_RELEASE "${ParMETIS_LIBRARY_DLL}"
+      PROPERTIES IMPORTED_LOCATION_RELEASE "${ilr}"
                  IMPORTED_IMPLIB "${ParMETIS_LIBRARY}"
                  INTERFACE_INCLUDE_DIRECTORIES "${ParMETIS_INCLUDE_DIRS}"
                  IMPORTED_CONFIGURATIONS Release
@@ -168,17 +175,20 @@ if(ParMETIS_FOUND AND NOT TARGET ParMETIS::parmetis)
                  INTERFACE_LINK_LIBRARIES METIS::metis)
 
     # If we have both Debug and Release libraries
-    if(EXISTS "${ParMETIS_LIBRARY_DEBUG_DLL}")
+    if(EXISTS "${ild}")
       set_property(
         TARGET ParMETIS::parmetis
         APPEND
         PROPERTY IMPORTED_CONFIGURATIONS Debug)
       set_target_properties(
-        ParMETIS::parmetis PROPERTIES IMPORTED_LOCATION_DEBUG "${ParMETIS_LIBRARY_DEBUG_DLL}"
-                                      IMPORTED_IMPLIB_DEBUG "${ParMETIS_LIBRARY_DEBUG}")
+        ParMETIS::parmetis PROPERTIES IMPORTED_LOCATION_DEBUG "${ild}" IMPORTED_IMPLIB_DEBUG
+                                                                       "${ParMETIS_LIBRARY_DEBUG}")
     endif()
+    unset(libytpe)
+    unset(ilr)
+    unset(ild)
 
-  else()
+  else() # Linux
 
     # For all other environments (ones without dll libraries), create the imported library targets.
     add_library(ParMETIS::parmetis UNKNOWN IMPORTED)

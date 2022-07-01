@@ -90,7 +90,7 @@ endmacro()
 # --------------------------------------------------------------------------------------------------
 function(setupLAPACKLibraries)
   message(STATUS "Looking for LAPACK {netlib, mkl, openblas}...")
-  set(QUIET QUIET)
+  set(QUIET "QUIET")
   if(CMAKE_CXX_COMPILER_ID STREQUAL XLClang)
     # If xlc++, we need to use netlib-lapack to avoid weird issues,
     # https://re-git.lanl.gov/draco/draco/-/issues/1361
@@ -138,6 +138,8 @@ function(setupLAPACKLibraries)
     PURPOSE "Required for building the lapack_wrap component.")
   message(STATUS "Looking for LAPACK {netlib, mkl, openblas}...found ${LAPACK_LIBRARIES} "
                  "${BLAS_LIBRARIES}")
+  unset(QUIET)
+  unset(lapack_url)
 endfunction()
 
 # --------------------------------------------------------------------------------------------------
@@ -182,7 +184,6 @@ macro(setupGSL)
   if(NOT TARGET GSL::gsl)
 
     message(STATUS "Looking for GSL...")
-    set(QUIET "QUIET")
 
     # There are 3 ways to find gsl:
 
@@ -191,7 +192,7 @@ macro(setupGSL)
     # If CMAKE_PREFIX_PATH contains a GSL install prefix directory and the file gsl-config.cmake is
     # found somewhere in this installation tree, then the targets defined by gsl-config.cmake will
     # be used.
-    find_package(GSL CONFIG ${QUIET})
+    find_package(GSL CONFIG QUIET)
 
   endif()
 
@@ -248,7 +249,6 @@ macro(setupGSL)
       TYPE REQUIRED
       PURPOSE "Required for rng and quadrature components.")
   endif()
-  unset(QUIET)
 
 endmacro()
 
@@ -332,7 +332,7 @@ endmacro()
 # ------------------------------------------------------------------------------
 macro(setupLIBQUO)
 
-  if(NOT TARGET LIBQUO::libquo AND MPI_C_FOUND)
+  if(NOT TARGET LIBQUO::libquo AND TARGET MPI::MPI_C)
     message(STATUS "Looking for LIBQUO...")
 
     find_package(Libquo QUIET)
@@ -349,11 +349,11 @@ macro(setupLIBQUO)
       URL "https://github.com/lanl/libquo"
       DESCRIPTION
         "A runtime library that aids in accommodating thread-level heterogeneity in dynamic,
-phased MPI+X appliations comprising single- and multi-threaded libraries."
+phased MPI+X applications comprising single- and multi-threaded libraries."
       TYPE RECOMMENDED
       PURPOSE
         "Required for allowing draco-clients to switch MPI+X bindings and thread affinities when a
-library is called instead of at program ivokation.")
+library is called instead of at program invocation.")
   endif()
 
 endmacro()
@@ -397,7 +397,7 @@ macro(setupEOSPAC)
       URL "https://laws.lanl.gov/projects/data/eos.html"
       DESCRIPTION "Access SESAME thermodynamic and transport data."
       TYPE OPTIONAL
-      PURPOSE "Required for bulding the cdi_eospac component.")
+      PURPOSE "Required for building the cdi_eospac component.")
   endif()
 
 endmacro()
