@@ -15,8 +15,8 @@ project(lapack_wrap CXX)
 if(HAVE_Fortran)
 
   if(NOT TARGET LAPACK::LAPACK OR ${CMAKE_GENERATOR} MATCHES Xcode)
-    message(STATUS "NOTE: Skipping lapack_wrap component because LAPACK is not found
-        (or maybe you are targeting an Xcode solution.")
+    message(STATUS "NOTE: Skipping lapack_wrap component because LAPACK is not found (or maybe "
+                   "you are targeting an Xcode solution).")
     return()
   endif()
 
@@ -51,8 +51,7 @@ if(HAVE_Fortran)
     endif()
 
   else()
-
-    # --------------------------------------------------------------------------#
+    # -------------------------------------------------------------------------------------------- #
     # Linux solution (main path)
 
     # This module automatically detects the API by which C and Fortran languages interact.
@@ -83,27 +82,31 @@ if(HAVE_Fortran)
   # Omit this package if the mangling was not found by FortranCInterface.cmake
   if(EXISTS ${PROJECT_BINARY_DIR}/lapack_wrap/config.h)
 
-    # ------------------------------------------------------------------------ # Source files
-    # ------------------------------------------------------------------------ #
+    # -------------------------------------------------------------------------------------------- #
+    # Source files
+    # -------------------------------------------------------------------------------------------- #
 
     file(GLOB sources *.cc)
     file(GLOB headers *.hh)
     list(APPEND headers ${PROJECT_BINARY_DIR}/lapack_wrap/config.h)
 
-    # ------------------------------------------------------------------------ # Installation
-    # instructions ------------------------------------------------------------------------ #
+    # -------------------------------------------------------------------------------------------- #
+    # Installation instructions
+    # -------------------------------------------------------------------------------------------- #
 
     install(FILES ${headers} DESTINATION ${DBSCFGDIR}include/lapack_wrap)
 
-    # ------------------------------------------------------------------------ # Unit tests
-    # ------------------------------------------------------------------------ #
+    # -------------------------------------------------------------------------------------------- #
+    # Unit tests
+    # -------------------------------------------------------------------------------------------- #
 
     if(BUILD_TESTING)
       add_subdirectory(test)
     endif()
 
-    # ------------------------------------------------------------------------ # Autodoc
-    # ------------------------------------------------------------------------ #
+    # -------------------------------------------------------------------------------------------- #
+    # Autodoc
+    # -------------------------------------------------------------------------------------------- #
 
     process_autodoc_pages()
 
