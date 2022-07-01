@@ -25,7 +25,11 @@ endif()
 #   -vcpkgs-toolchain-file
 #
 if(EXISTS "C:/work/vcpkg22/scripts/buildsystems/vcpkg.cmake")
+  # set(VCPKG_VERBOSE TRUE CACHE BOOL "opt")
   include("C:/work/vcpkg22/scripts/buildsystems/vcpkg.cmake")
+  list(REMOVE_ITEM CMAKE_PREFIX_PATH "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug")
+  set(ParMETIS_ROOT_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
+  set(EOSPAC_ROOT_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
 endif()
 
 # Add sanity checks here?

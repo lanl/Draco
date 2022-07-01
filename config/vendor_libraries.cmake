@@ -90,18 +90,32 @@ endmacro()
 # --------------------------------------------------------------------------------------------------
 function(setupLAPACKLibraries)
   message(STATUS "Looking for LAPACK {netlib, mkl, openblas}...")
+  set(QUIET QUIET)
   if(CMAKE_CXX_COMPILER_ID STREQUAL XLClang)
-    # If xlc++, we need to use netlib-lapack to avoid wierd issues,
+    # If xlc++, we need to use netlib-lapack to avoid weird issues,
     # https://re-git.lanl.gov/draco/draco/-/issues/1361
     set(BLA_VENDOR "Generic")
   endif()
   if(NOT TARGET BLAS::BLAS)
-    find_package(BLAS QUIET)
+    find_package(BLAS ${QUIET})
   endif()
   if(NOT TARGET LAPACK::LAPACK)
-    find_package(LAPACK QUIET)
+    if(DEFINED VCPKG_INSTALLED_DIR)
+      find_package(OpenBLAS CONFIG ${QUIET})
+      if(TARGET OpenBLAS::OpenBLAS)
+        add_library(LAPACK::LAPACK ALIAS OpenBLAS::OpenBLAS)
+        foreach(config RELEASE NOCONFIG DEBUG RELWITHDEBINFO)
+          get_target_property(tmp OpenBLAS::OpenBLAS IMPORTED_LOCATION_${config})
+          if(EXISTS ${tmp} AND NOT LAPACK_LIBRARIES)
+            set(LAPACK_LIBRARIES ${tmp})
+          endif()
+        endforeach()
+      endif()
+    else()
+      find_package(LAPACK ${QUIET})
+    endif()
   endif()
-  if(TARGET LAPACK::LAPACK)
+  if(TARGET LAPACK::LAPACK AND NOT TARGET OpenBLAS::OpenBLAS)
     target_link_libraries(LAPACK::LAPACK INTERFACE BLAS::BLAS)
   endif()
   set(lapack_url "http://www.netlib.org/lapack")
@@ -243,38 +257,48 @@ endmacro()
 # ------------------------------------------------------------------------------------------------ #
 macro(setupParMETIS)
 
+  if(VCPKG_INSTALLED_DIR)
+    set(thispkg "metis")
+  else()
+    set(thispkg "METIS")
+  endif()
+
   set(QUIET "QUIET")
-  if(NOT TARGET METIS::metis)
+  if(NOT TARGET METIS::metis AND NOT TARGET metis)
     message(STATUS "Looking for METIS...")
+    find_package(${thispkg} CONFIG ${QUIET})
 
-    find_package(METIS CONFIG ${QUIET})
-    if(NOT TARGET METIS::metis)
-      find_package(METIS ${QUIET})
-    endif()
-    if(TARGET METIS::metis)
-      if(TARGET METIS::metis AND NOT METIS_LIBRARY)
-        foreach(config NOCONFIG DEBUG RELEASE RELWITHDEBINFO)
-          get_target_property(tmp METIS::metis IMPORTED_LOCATION_${config})
-          if(EXISTS ${tmp} AND NOT METIS_LIBRARY)
-            set(METIS_LIBRARY ${tmp})
-          endif()
-        endforeach()
-      endif()
-      message(STATUS "Looking for METIS.....found ${METIS_LIBRARY}")
-    else()
-      message(STATUS "Looking for METIS.....not found")
-    endif()
-
-    # Include some information that can be printed by the build system.
-    set_package_properties(
-      METIS PROPERTIES
-      DESCRIPTION "METIS"
-      TYPE RECOMMENDED
-      URL "http://glaros.dtc.umn.edu/gkhome/metis/metis/overview"
-      PURPOSE
-        "METIS is a set of serial programs for partitioning graphs, partitioning finite element
+    if(TARGET ${thispkg})
+      # Include some information that can be printed by the build system.
+      set_package_properties(
+        ${thispkg} PROPERTIES
+        DESCRIPTION "METIS"
+        TYPE RECOMMENDED
+        URL "http://glaros.dtc.umn.edu/gkhome/metis/metis/overview"
+        PURPOSE
+          "METIS is a set of serial programs for partitioning graphs, partitioning finite element
 meshes, and producing fill reducing orderings for sparse matrices.")
+    endif()
+  endif()
 
+  if(VCPKG_INSTALLED_DIR AND TARGET metis)
+    add_library(METIS::metis ALIAS metis)
+  endif()
+
+  # Set METIS_LIBRARY variable
+  if(TARGET METIS::metis AND NOT METIS_LIBRARY)
+    foreach(config RELEASE NOCONFIG DEBUG RELWITHDEBINFO)
+      get_target_property(tmp ${thispkg} IMPORTED_LOCATION_${config})
+      if(EXISTS ${tmp} AND NOT METIS_LIBRARY)
+        set(METIS_LIBRARY ${tmp})
+      endif()
+    endforeach()
+  endif()
+
+  if(EXISTS "${METIS_LIBRARY}")
+    message(STATUS "Looking for METIS.....found ${METIS_LIBRARY}")
+  else()
+    message(STATUS "Looking for METIS.....not found")
   endif()
 
   if(NOT TARGET ParMETIS::parmetis)
@@ -300,6 +324,7 @@ matrices.")
 
   endif()
   unset(QUIET)
+  unset(thispkg)
 endmacro()
 
 # ------------------------------------------------------------------------------
