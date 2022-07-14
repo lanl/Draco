@@ -68,6 +68,7 @@ checkCoverage_MR:
   stage: metrics
   image:
     name: alpine:latest
+  allow_failure: true
   before_script:
     - apk add --quiet --update --no-cache curl jq
   dependencies:

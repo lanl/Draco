@@ -37,7 +37,7 @@ if [[ ! ${modcmd} ]]; then
   echo "ERROR: The module command was not found. No modules will be loaded (ats-4 e02)."
 else
   module use --append /usr/gapps/jayenne/Modules/rznevada
-  module load lapse/1.8.1-cce
+  module load lapse/2.2.0-cce
   module unuse /opt/cray/pe/lmod/modulefiles/compiler/crayclang/10.0
   module unuse /opt/cray/pe/lmod/modulefiles/perftools/21.05.0
   module unuse /opt/cray/pe/lmod/modulefiles/cpu/x86-rome/1.0

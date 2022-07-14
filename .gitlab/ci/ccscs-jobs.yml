@@ -382,6 +382,8 @@ ccs2_gcov:
     - CCSCS2-setuid-shared
   stage: slowtest
   extends: .ccscs_merge
+  # https://regex101.com/
+  coverage: '/Total:\|\d+\.\d+%/'
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
@@ -507,6 +509,7 @@ gcov_regress:
   tags:
     - CCSCS2-setuid-shared
   extends: .ccscs_nightly
+  coverage: '/Coverage:\s\d+\.\d+%/'
   variables:
     SITE_ID: ccscs2
     CMAKE_BUILD_TYPE: Debug

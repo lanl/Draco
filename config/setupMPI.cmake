@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2016 Sep 22
 # brief  Setup MPI Vendors
-# note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved.
 #
 # Try to find MPI in the default locations (look for mpic++ in PATH)
 #
@@ -218,6 +218,12 @@ macro(query_topology)
           32
           CACHE STRING "Max procs on node." FORCE)
     endif()
+  elseif(SITENAME MATCHES "rznevada")
+    set(MPI_CORES_PER_CPU 2)
+    set(MPI_PHYSICAL_CORES 64)
+    set(MPIEXEC_MAX_NUMPROCS
+        64
+        CACHE STRING "Max procs on node." FORCE)
   elseif(EXISTS "/proc/cpuinfo")
     # read the system's cpuinfo...
     file(READ "/proc/cpuinfo" cpuinfo_data)
