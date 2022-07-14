@@ -96,11 +96,10 @@ void quo_hw_report(rtt_dsxx::UnitTest &ut) {
       // get_job_num_nodes == max nodes available to this process.
       // num_nodes         == num nodes actually used by this process.
       FAIL_IF_NOT(rtt_c4::QuoWrapper::num_nodes() <= sti.get_job_num_nodes());
-      if (using_hyperthreads) {
-        FAIL_IF_NOT(rtt_c4::QuoWrapper::num_hw_threads() == sti.get_cpus_on_node());
-      } else {
-        FAIL_IF_NOT(rtt_c4::QuoWrapper::num_cores() == sti.get_cpus_on_node());
-      }
+      // SLURM_CPUS_ON_NODE is not set consistently across all machines so it is nearly impossible
+      // to compare Quo values to SLURM values.  Use inequality checks instead.
+      FAIL_IF_NOT(rtt_c4::QuoWrapper::num_hw_threads() >= sti.get_cpus_on_node());
+      FAIL_IF_NOT(rtt_c4::QuoWrapper::num_cores() <= sti.get_cpus_on_node());
       FAIL_IF_NOT(rtt_c4::QuoWrapper::num_mpi_ranks_per_node() <= sti.get_cpus_on_node());
 
       if (rtt_c4::rank() == 0) {

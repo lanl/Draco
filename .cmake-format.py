@@ -46,6 +46,10 @@ with section("parse"):  # noqa: F821
             "flags": ["VERBOSE"],
             "kwargs": {"FOOBAR": '*'}},
 
+        "fortrancinterface_header": {
+            "pargs": 1,
+            "kwargs": {"MACRO_NAMESPACE": '*', "SYMBOLS": '*', "SYMBOL_NAMESPACE": '*'}},
+
         "register_parallel_test": {
             "pargs": 0,
             "flags": ["FOO_PROPERTIES", "NO_EXTERNAL_INSTALL"],

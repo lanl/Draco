@@ -259,14 +259,16 @@ macro(setupParMETIS)
 
   if(VCPKG_INSTALLED_DIR)
     set(thispkg "metis")
+    set(thispkgmode CONFIG)
   else()
     set(thispkg "METIS")
+    set(thispkgmode MODULE)
   endif()
 
   set(QUIET "QUIET")
   if(NOT TARGET METIS::metis AND NOT TARGET metis)
     message(STATUS "Looking for METIS...")
-    find_package(${thispkg} CONFIG ${QUIET})
+    find_package(${thispkg} ${thispkgmode} ${QUIET})
 
     if(TARGET ${thispkg})
       # Include some information that can be printed by the build system.
@@ -325,6 +327,7 @@ matrices.")
   endif()
   unset(QUIET)
   unset(thispkg)
+  unset(thispkgmode)
 endmacro()
 
 # ------------------------------------------------------------------------------
