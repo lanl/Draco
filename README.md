@@ -66,7 +66,6 @@ Spack - Draco can be installed via the [spack package manager](https:://github.c
 * kde - KDE are a natural extension of quadrature. They reconstruct a smooth representation of a
   sampled field based on a specified Kernel shape. This populates the initial KDE infrastructure and
   some simple 1D reconstructions.
-* lapack_wrap - C++ wrapper for BLAS and LAPACK.
 * linear - direct solvers for small linear systems of equations.
 * mesh - Encapsulate mesh definition and accessors.
 * mesh_element - defines fundamental mesh element types used by mesh, meshReaders and
@@ -93,6 +92,7 @@ Spack - Draco can be installed via the [spack package manager](https:://github.c
 
 ## Deprecated packages
 
+* lapack_wrap - C++ wrapper for BLAS and LAPACK (removed 2022 July 12).
 * plot2d - C++ interface to XMGrace 2-dimensional plotting (removed 2020 Dec 3).
 * shared_lib - Dynamically load/unload shared object libraries via dl load (removed 2020 Sep 7).
 * traits - A traits class used by viz.
