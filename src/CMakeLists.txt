@@ -40,7 +40,6 @@ add_dir_if_exists(c4) #< needs ds++
 add_dir_if_exists(cdi) #< needs ds++
 add_dir_if_exists(device) #< needs ds++
 add_dir_if_exists(FortranChecks) #< needs ds++
-add_dir_if_exists(lapack_wrap) #< needs ds++
 add_dir_if_exists(linear) #< needs ds++
 add_dir_if_exists(memory) #< needs ds++
 add_dir_if_exists(mesh_element) #< needs ds++
