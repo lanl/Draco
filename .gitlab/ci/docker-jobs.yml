@@ -66,6 +66,7 @@ checkCoverage_MR:
   tags:
     - darwin-docker-shared
   stage: metrics
+  allow_failure: true
   image:
     name: alpine:latest
   allow_failure: true

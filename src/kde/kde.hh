@@ -38,6 +38,12 @@ public:
                                      const std::vector<std::array<double, 3>> &one_over_band_width,
                                      const quick_index &qindex,
                                      const double discontinuity_cutoff = 1.0) const;
+  std::vector<double>
+  weighted_reconstruction(const std::vector<double> &distribution,
+                          const std::vector<double> &bandwidthweights,
+                          const std::vector<int> &reconstruction_mask,
+                          const std::vector<std::array<double, 3>> &one_over_band_width,
+                          const quick_index &qindex, const double discontinuity_cutoff = 1.0) const;
 
   //! Reconstruct distribution by sampling the surrounding distribution to a fixed integration grid
   std::vector<double>
@@ -73,7 +79,8 @@ private:
   //! Private function to calculate kernel weight
   double calc_weight(const std::array<double, 3> &r0, const std::array<double, 3> &one_over_h0,
                      const std::array<double, 3> &r, const std::array<double, 3> &one_over_h,
-                     const quick_index &qindex, const double &discontinuity_cutoff) const;
+                     const quick_index &qindex, const double &discontinuity_cutoff,
+                     const double scale = 1.0) const;
 
   //! Private function to calculate the window bounds
   void calc_win_min_max(const quick_index &qindex, const std::array<double, 3> &position,
