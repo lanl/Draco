@@ -46,6 +46,7 @@ void test_replication(ParallelUnitTest &ut) {
     std::vector<double> shell_data(data_size, 0.0);
     std::vector<double> spoke_data(data_size, 0.0);
     std::vector<double> const_data(data_size, 1.0);
+    std::vector<double> shell_weights(data_size, 0.0);
     size_t point_i = 0;
     size_t ri = 0;
     for (auto &r : radial_edges) {
@@ -53,6 +54,10 @@ void test_replication(ParallelUnitTest &ut) {
       for (auto &mu : cosine_edges) {
         spoke_data[point_i] = static_cast<double>(mui) + 1.0;
         shell_data[point_i] = static_cast<double>(ri) + 1.0;
+        if (ri < 4)
+          shell_weights[point_i] = 1e3;
+        else
+          shell_weights[point_i] = 1.0;
         double rel_y = r * mu;
         position_array[point_i][0] =
             rtt_dsxx::soft_equiv(r * r, rel_y * rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
@@ -249,6 +254,49 @@ void test_replication(ParallelUnitTest &ut) {
       if (!rtt_dsxx::soft_equiv(
               std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
               std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
+        ITFAILS;
+    }
+
+    // spoke smoothing on shell array with weights
+    {
+      // relative weights are used to reduce the smearing between shells <= 4 and shells > 4
+
+      std::vector<double> spoke_weighted_smoothed_shells{
+          2.49765, 2.49765, 2.49765, 2.49765, 2.49765, 2.49765, 2.49765, 2.49765, 2.49765,
+          2.49922, 2.49922, 2.49922, 2.49922, 2.49922, 2.49922, 2.49922, 2.49922, 2.49922,
+          2.50078, 2.50078, 2.50079, 2.50078, 2.50078, 2.50078, 2.50078, 2.50078, 2.50078,
+          2.50235, 2.50235, 2.50235, 2.50236, 2.50235, 2.50235, 2.50235, 2.50235, 2.50235,
+          6.2,     6.2,     6.2,     6.2,     6.2,     6.2,     6.2,     6.2,     6.2,
+          6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379,
+          6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621,
+          6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8};
+      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+          data_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
+      const bool dd = false;
+      // two bins per point
+      const size_t n_coarse_bins = 5;
+      const double max_window_size = 1.0;
+      const size_t dim = 2;
+      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
+
+      std::vector<int> maskids(1, 1);
+      std::vector<int> reconstruction_mask(data_size, 1);
+      std::vector<double> smooth_result = sphere_kde.weighted_reconstruction(
+          shell_data, shell_weights, reconstruction_mask, one_over_bandwidth_array, qindex);
+      // Apply Conservation
+      sphere_kde.apply_conservation(shell_data, maskids, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+
+      // Check smooth result
+      for (size_t i = 0; i < data_size; i++) {
+        if (!rtt_dsxx::soft_equiv(smooth_result[i], spoke_weighted_smoothed_shells[i], 1e-3))
+          ITFAILS;
+      }
+
+      // Energy conservation
+      if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
         ITFAILS;
     }
 
@@ -1204,6 +1252,7 @@ void test_decomposition(ParallelUnitTest &ut) {
 
     std::vector<double> shell_data(data_size, 0.0);
     std::vector<double> spoke_data(data_size, 0.0);
+    std::vector<double> shell_weights(data_size, 0.0);
     size_t point_i = 0;
     size_t ri = 0;
     for (auto &r : radial_edges) {
@@ -1211,6 +1260,10 @@ void test_decomposition(ParallelUnitTest &ut) {
       for (auto &mu : cosine_edges) {
         spoke_data[point_i] = static_cast<double>(mui) + 1.0;
         shell_data[point_i] = static_cast<double>(ri) + 1.0;
+        if (ri < 4)
+          shell_weights[point_i] = 1e3;
+        else
+          shell_weights[point_i] = 1.0;
         double rel_y = r * mu;
         position_array[point_i][0] =
             rtt_dsxx::soft_equiv(r * r, rel_y * rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
@@ -1260,11 +1313,22 @@ void test_decomposition(ParallelUnitTest &ut) {
         1.32325, 2.5489, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.4511, 8.67675,
         1.32325, 2.5489, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.4511, 8.67675,
         1.32325, 2.5489, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.4511, 8.67675};
+    std::vector<double> spoke_weighted_smoothed_shells{
+        2.49765, 2.49765, 2.49765, 2.49765, 2.49765, 2.49765, 2.49765, 2.49765, 2.49765,
+        2.49922, 2.49922, 2.49922, 2.49922, 2.49922, 2.49922, 2.49922, 2.49922, 2.49922,
+        2.50078, 2.50078, 2.50079, 2.50078, 2.50078, 2.50078, 2.50078, 2.50078, 2.50078,
+        2.50235, 2.50235, 2.50235, 2.50236, 2.50235, 2.50235, 2.50235, 2.50235, 2.50235,
+        6.2,     6.2,     6.2,     6.2,     6.2,     6.2,     6.2,     6.2,     6.2,
+        6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379,
+        6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621,
+        6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8};
 
     std::vector<double> dd_const_data(local_size, 1.0);
     std::vector<double> dd_spoke_data(local_size);
     std::vector<double> dd_shell_data(local_size);
+    std::vector<double> dd_shell_weights(local_size);
     std::vector<double> dd_spoke_smoothed_shells(local_size);
+    std::vector<double> dd_spoke_weighted_smoothed_shells(local_size);
     std::vector<double> dd_shell_smoothed_spoke(local_size);
     std::vector<double> dd_masked_shell_smoothed_spoke(local_size);
     std::vector<int> dd_shell_mask(local_size);
@@ -1273,7 +1337,10 @@ void test_decomposition(ParallelUnitTest &ut) {
     for (size_t i = 0; i < local_size; i++) {
       dd_spoke_data[i] = spoke_data[i + rtt_c4::node() * local_size];
       dd_shell_data[i] = shell_data[i + rtt_c4::node() * local_size];
+      dd_shell_weights[i] = shell_weights[i + rtt_c4::node() * local_size];
       dd_spoke_smoothed_shells[i] = spoke_smoothed_shells[i + rtt_c4::node() * local_size];
+      dd_spoke_weighted_smoothed_shells[i] =
+          spoke_weighted_smoothed_shells[i + rtt_c4::node() * local_size];
       dd_shell_smoothed_spoke[i] = shell_smoothed_spoke[i + rtt_c4::node() * local_size];
       dd_masked_shell_smoothed_spoke[i] =
           masked_shell_smoothed_spoke[i + rtt_c4::node() * local_size];
@@ -1478,6 +1545,41 @@ void test_decomposition(ParallelUnitTest &ut) {
         ITFAILS;
       if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
                                 log_smooth_conservation))
+        ITFAILS;
+    }
+
+    // spoke smoothing on shell array with shell weights
+    {
+      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+          local_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
+      const bool dd = true;
+      // two bins per point
+      const size_t n_coarse_bins = 5;
+      const double max_window_size = 2.0;
+      const size_t dim = 2;
+      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
+                         sphere_center);
+
+      std::vector<int> maskids = {1};
+      std::vector<int> reconstruction_mask(local_size, 1);
+      std::vector<double> smooth_result = sphere_kde.weighted_reconstruction(
+          dd_shell_data, dd_shell_weights, reconstruction_mask, one_over_bandwidth_array, qindex);
+      // Apply Conservation
+      sphere_kde.apply_conservation(dd_shell_data, maskids, reconstruction_mask, smooth_result,
+                                    qindex.domain_decomposed);
+
+      // Check smooth result
+      for (size_t i = 0; i < local_size; i++) {
+        if (!rtt_dsxx::soft_equiv(smooth_result[i], dd_spoke_weighted_smoothed_shells[i], 1e-3))
+          ITFAILS;
+      }
+
+      double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
+      rtt_c4::global_sum(smooth_conservation);
+
+      // Energy conservation
+      if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+                                smooth_conservation))
         ITFAILS;
     }
 
