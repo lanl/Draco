@@ -178,7 +178,7 @@ function findsymbol()
   for lib in $libs; do
     gres=$(nm "$nm_opt" "$lib" | grep "$1" | grep "$symbol")
     if ! [[ "$gres" == "" ]]; then
-      echo-e "\nFound \"$symbol\" in $lib:\n     $gres"
+      echo -e "\nFound \"$symbol\" in $lib:\n     $gres"
     fi
   done
   echo " "
