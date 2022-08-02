@@ -5,7 +5,7 @@
 # date   Monday, December 15, 2014, 5:44 pm
 # brief  This script uses the functions in ipcress_reader.py to generate an interactive plot for
 #        multigroup opacity data.
-# note   Copyright (C) 2016, Triad National Security, LLC.,  All rights reserved.
+# note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 # import block
@@ -267,9 +267,9 @@ def plot_op():
     # use label for Planck or Rosseland
     if (op_type.get() == 1 and mgr_valid):
         a.plot(hnu_data, opr_data, 'b-', label="{0} Rosseland Absorption".format(name))
-    elif(op_type.get() == 2 and mgp_valid):
+    elif (op_type.get() == 2 and mgp_valid):
         a.plot(hnu_data, opp_data, 'g-', label="{0} Planckian Absorption".format(name))
-    elif(op_type.get() == 3 and mgr_valid and mgp_valid):
+    elif (op_type.get() == 3 and mgr_valid and mgp_valid):
         a.plot(hnu_data, opr_data, 'b-', label="{0} Rosseland Absorption".format(name))
         a.plot(hnu_data, opp_data, 'g-', label="{0} Planckian Absorption".format(name))
     else:

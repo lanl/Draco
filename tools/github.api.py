@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # ------------------------------------------------------------------------------------------------ #
 # File: github.api.py
-# Note: Copyright 2020 Triad National Security, LLC., All rights reserved.
+# Note: Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
 #
 # Sample use:
 # ---------------------------------------
@@ -129,7 +129,7 @@ for entry in result_json:
             number_date = 10000 * int(str_result[0]) + 100 * int(str_result[1]) + int(str_result[2])
             if (number_date > start_date):
                 labels = entry["labels"]
-                if(labels):
+                if (labels):
                     print("* [Github {0} #{1} {2}]({3})".format(labels[0]["name"], entry["number"],
                                                                 entry["title"], entry["html_url"]))
                 else:

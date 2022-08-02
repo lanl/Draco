@@ -4,7 +4,7 @@
 # date     Monday, August 12, 2016, 5:44 pm
 # brief    Provide a python class that aids in creating unit tests that run interactive user codes
 #                (i.e.: run a binary that reads an input file and diff the resulting output file).
-# note     Copyright (C) 2016-2020, Triad National Security, LLC., All rights reserved.
+# note     Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved.
 # -------------------------------------------------------------------------------------------------#
 
 import platform
@@ -365,7 +365,7 @@ class UnitTest:
             # continue_on_error=True, print a message and continue running checks.
             if (test_process.returncode):
                 # we have a non-zero return code.
-                if(continue_on_error):
+                if (continue_on_error):
                     print("Non-zero return code detected, but continue_on_error=True.")
                 else:
                     if test_err:
@@ -494,7 +494,7 @@ class UnitTest:
     # print unit test footer and output pass/fail messages
     def aut_report(self):
         print("*****************************************************************")
-        if(self.numpasses and not self.numfails):
+        if (self.numpasses and not self.numfails):
             print("**** {0}: PASSED.".format(self.testname))
         else:
             print("**** {0}: FAILED.".format(self.testname))
