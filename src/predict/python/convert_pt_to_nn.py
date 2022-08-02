@@ -18,7 +18,7 @@ def simple_write(model, filename, binary=False):
     info = summary(model, verbose=2, col_names=["kernel_size"])
     n_layers = 0
     for layer in info.summary_list[1:]:
-        if('weight' in layer.inner_layers):
+        if ('weight' in layer.inner_layers):
             n_layers += 1
 
     if binary:
@@ -29,7 +29,7 @@ def simple_write(model, filename, binary=False):
         file.write(bytearray(struct.pack("i", n_layers)))
         last_activation = "None"
         for layer in info.summary_list[1:]:
-            if('weight' not in layer.inner_layers):
+            if ('weight' not in layer.inner_layers):
                 last_activation = layer.class_name
             else:
                 file.write(bytearray(struct.pack("i", Activations[last_activation])))
@@ -55,7 +55,7 @@ def simple_write(model, filename, binary=False):
         file.write("Layers: " + str(n_layers) + "\n")
         last_activation = "None"
         for layer in info.summary_list[1:]:
-            if('weight' not in layer.inner_layers):
+            if ('weight' not in layer.inner_layers):
                 last_activation = layer.class_name
             else:
                 file.write(last_activation + " " + layer.class_name + " "

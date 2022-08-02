@@ -54,7 +54,7 @@ assert (ndim < 4), 'len(args.num_per_dim) >= 4'
 assert (len(args.bnd_per_dim) == 2 * ndim), 'len(args.bnd_per_dim) != 2 * ndim'
 
 # -- sanity check optional region input
-assert(len(args.reg_bnd_per_dim) == 2 * ndim * len(args.reg_ids)), \
+assert (len(args.reg_bnd_per_dim) == 2 * ndim * len(args.reg_ids)), \
     'len(args.reg_bnd_per_dim) != 2 * ndim * len(args.reg_ids)'
 
 # -- de-serialize spatial bound list
