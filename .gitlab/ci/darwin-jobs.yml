@@ -87,21 +87,21 @@ dp9_deb_xl16_deploy:
     MAXLOAD: 40
     SCHEDULER_PARAMETERS: ${SP_power9}
 
-dp9_deb_volta_deploy:
+dx64_deb_volta_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: x64-gcc930-centos8
+    DRACO_ENV: haswell-gcc1120
     ARCH: x86_64
     CTEST_NPROC: 10
     MAXLOAD: 40
     SCHEDULER_PARAMETERS: ${SP_volta_x86}
 
-dp9_rel_volta_deploy:
+dx64_rel_volta_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: x64-gcc930-centos8
+    DRACO_ENV: haswell-gcc1120
     ARCH: x86_64
     CTEST_NPROC: 10
     MAXLOAD: 40
@@ -111,7 +111,7 @@ darm_deb_gcc930_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: arm-gcc930
+    DRACO_ENV: arm-gcc831
     ARCH: arm
     CTEST_NPROC: 40
     MAXLOAD: 40
@@ -121,7 +121,7 @@ darm_rel_gcc930_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: arm-gcc930
+    DRACO_ENV: arm-gcc831
     ARCH: arm
     CTEST_NPROC: 40
     MAXLOAD: 40
@@ -137,7 +137,7 @@ darwin_style_cxx:
   variables:
     CTEST_MODE: Experimental
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: haswell-gcc841
+    DRACO_ENV: haswell-gcc1120
     ARCH: haswell
     CTEST_NPROC: 32
     MAXLOAD: 64
@@ -202,7 +202,7 @@ dx86_deb_volta_mr:
   extends: .darwin_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: x64-gcc930-centos8
+    DRACO_ENV: haswell-gcc1120
     ARCH: x86_64
     CTEST_NPROC: 10
     SCHEDULER_PARAMETERS: ${SP_volta_x86}
@@ -301,7 +301,7 @@ dx86_deb_volta_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: x64-gcc930-centos8
+    DRACO_ENV: haswell-gcc1120
     ARCH: x86_64
     CTEST_NPROC: 10
     SCHEDULER_PARAMETERS: ${SP_volta_x86}
@@ -311,7 +311,7 @@ dx86_rel_volta_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: x64-gcc930-centos8
+    DRACO_ENV: haswell-gcc1120
     ARCH: x86_64
     CTEST_NPROC: 10
     SCHEDULER_PARAMETERS: ${SP_volta_x86}
@@ -321,7 +321,7 @@ darm_deb_gcc930_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: arm-gcc930
+    DRACO_ENV: arm-gcc831
     ARCH: arm
     CTEST_NPROC: 40
     SCHEDULER_PARAMETERS: ${SP_arm}
@@ -330,7 +330,7 @@ darm_rel_arm930_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: arm-gcc930
+    DRACO_ENV: arm-gcc831
     ARCH: arm
     CTEST_NPROC: 40
     SCHEDULER_PARAMETERS: ${SP_arm}
