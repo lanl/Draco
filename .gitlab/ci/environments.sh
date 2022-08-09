@@ -17,7 +17,6 @@ case ${SITE_ID} in
 esac
 
 echo "    DRACO_ENV = ${DRACO_ENV}"
-echo "    ARCH     = ${ARCH}"
 
 #------------------------------------------------------------------------------#
 # Darwin
@@ -26,21 +25,21 @@ if [[ "${SITE_ID}" == "darwin" ]]; then
   DRACO_ARCH=$(/usr/projects/draco/vendors/bin/target_arch)
   run "module use --append /projects/draco/Modules"
   if ! [[ -f "/projects/draco/Modules/draco/${DRACO_ENV}.lua" ]]; then
-    case ${DRACO_ENV} in
-      arm-gcc930 | power9-gcc930-smpi | power9-xl16117 | x64-gcc930* | x64-intel1905) ;;
-      *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
-    esac
-    if [[ "${MPIARCH:-notset}" == "openmpi" ]]; then
-      disable_openib=$(sinfo -N -n "${HOSTNAME}" -o %all | grep -c ib:none)
-      if [[ ${disable_openib} != 0 ]]; then
-        export MPI_PREFLAGS="--mca btl ^openib"
-      fi
+    # Look for TCL version of the module.
+    if ! [[ -f "/projects/draco/Modules/draco/${DRACO_ENV}" ]]; then
+      die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}"
     fi
+    # if [[ "${MPIARCH:-notset}" == "openmpi" ]]; then
+    #   disable_openib=$(sinfo -N -n "${HOSTNAME}" -o %all | grep -c ib:none)
+    #   if [[ ${disable_openib} != 0 ]]; then
+    #     export MPI_PREFLAGS="--mca btl ^openib"
+    #   fi
+    # fi
   fi
   export DRACO_ARCH
   run "module load draco/${DRACO_ENV}"
   if [[ "${SLURM_JOB_PARTITION}" =~ "volta" || "${SLURM_JOB_PARTITION}" =~ "gpu" ]]; then
-    module load cuda/11.0
+    module load cuda
   fi
 
 #------------------------------------------------------------------------------#
