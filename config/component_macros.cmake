@@ -550,23 +550,6 @@ macro(register_parallel_test)
   endif()
   unset(RUN_CMD)
 
-  # Attempt of fix issues on Darwin related to /tmp permission errors, #2359.
-  if(DEFINED ENV{SLURM_CLUSTER_NAME}
-     AND "$ENV{SLURM_CLUSTER_NAME}" STREQUAL "darwin"
-     AND MPI_FLAVOR STREQUAL "openmpi"
-     AND NOT "${MPIEXEC_EXECUTABLE}" MATCHES "smpi")
-    if(NOT DEFINED orte_tmpdir_base_enum)
-      set(orte_tmpdir_base_enum 0)
-    else()
-      math(EXPR orte_tmpdir_base_enum "${orte_tmpdir_base_enum} + 1")
-    endif()
-    set(orte_tmpdir_base_enum
-        ${orte_tmpdir_base_enum}
-        CACHE INTERNAL "help openmpi")
-    set(MPIEXEC_EXTRA_OPTS --mca orte_tmpdir_base
-                           /tmp/$ENV{SLURMD_NODENAME}-$ENV{USER}-${orte_tmpdir_base_enum})
-  endif()
-
   if(addparalleltest_MPI_PLUS_OMP)
     string(REPLACE " " ";" mpiexec_omp_preflags_list "${MPIEXEC_OMP_PREFLAGS}")
     add_test(
