@@ -4,7 +4,7 @@
 ## File  : environment/bashrc/bashrc_aliases.sh
 ## Date  : Tuesday, Sep 01, 2020, 19:01 pm
 ## Author: Kelly Thompson <kgt@lanl.gov>
-## Note  : Copyright (C) 2020, Triad National Security, LLC., All rights are reserved.
+## Note  : Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
 ##
 ## bashrc_aliases is sourced by interactive shells from .bash_profile and .bashrc
 #--------------------------------------------------------------------------------------------------#
@@ -46,6 +46,7 @@ alias msh='module show'
 # machines
 # alias sierra='ssh -t redcap ssh sierra.llnl.gov'
 alias rzansel='ssh -t ihpc-gate.lanl.gov ssh rzansel.llnl.gov'
+alias rznevada='ssh -t ihpc-gate.lanl.gov ssh rznevada.llnl.gov'
 
 #--------------------------------------------------------------------------------------------------#
 # Color Prompt
