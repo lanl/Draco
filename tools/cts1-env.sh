@@ -14,7 +14,7 @@ else
 fi
 
 # The following toolchains will be used when releasing code
-environments="intel1904env gcc930env lapse18intelenv"
+environments="lapse20intelenv lapse20gccenv eapintelenv"
 
 # Extra cmake options
 export CONFIG_BASE+=" -DCMAKE_VERBOSE_MAKEFILE=ON"

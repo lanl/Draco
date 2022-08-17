@@ -24,7 +24,7 @@ else
 fi
 
 # The following toolchains will be used when releasing code
-environments="cce11env lapse18intelenv lapse18intelenv-knl"
+environments="cce13env lapse20intelenv lapse20intelenv-knl"
 
 # Extra cmake options
 export CONFIG_BASE+=" -DCMAKE_VERBOSE_MAKEFILE=ON"

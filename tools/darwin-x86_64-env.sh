@@ -10,7 +10,7 @@ source "${draco_script_dir:-unknown}/darwin-env.sh"
 export siblings="darwin-x86_64"
 
 # The following toolchains will be used when releasing code:
-environments="x86gcc930env x86intel1905env"
+environments="x86gcc1120env"
 
 # Special setup for CTS-1: replace the 'draco-latest' symlink
 pushd "/usr/projects/${package:-notset}" || exit
