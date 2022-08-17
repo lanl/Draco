@@ -25,6 +25,28 @@ popd || exit
 case "${ddir:=notset}" in
 
   #---------------------------------------------------------------------------#
+  draco-7_14*)
+    # gcc-11.2.0 + openmpi-4.1.1 + cuda-11.4.2
+    function x86gcc1120env()
+    {
+      export darwin_queue="-p volta-x86"
+      run "module purge"
+      run "module use --append /projects/draco/Modules"
+      run "module load draco/haswell-gcc1120"
+      run "module list"
+
+      CXX=$(which g++)
+      CC=$(which gcc)
+      FC=$(which gfortran)
+      MPIEXEC_EXECUTABLE=$(which mpirun)
+      unset MPI_ROOT
+      export CXX
+      export CC
+      export FC
+      export MPIEXEC_EXECUTABLE
+    }
+    ;;
+  #---------------------------------------------------------------------------#
   draco-7_10* | draco-7_11* | draco-7_12* | draco-7_13*)
     function x86gcc930env()
     {

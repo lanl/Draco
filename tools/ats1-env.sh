@@ -49,6 +49,72 @@ fi
 case "$ddir" in
 
   #------------------------------------------------------------------------------------------------#
+  draco-7_14*)
+    function cce13env()
+    {
+      unset partition
+      unset jobnameext
+
+      sysname=$(/usr/projects/hpcsoft/utilities/bin/sys_name)
+      module use --append "/usr/projects/draco/Modules/${sysname}"
+
+      run "module unload draco"
+      run "module unload PrgEnv-intel"
+      run "module load PrgEnv-cray"
+      run "module load draco/cce1301"
+      run "module list"
+      CC=$(which cc)
+      CXX=$(which CC)
+      FC=$(which ftn)
+      # export LD_LIBRARY_PATH="$CRAY_LD_LIBRARY_PATH":"$LD_LIBRARY_PATH"
+      export CC CXX FC
+    }
+
+    function lapse20intelenv()
+    {
+      unset partition
+      unset jobnameext
+
+      sysname=$(/usr/projects/hpcsoft/utilities/bin/sys_name)
+      module use --append "/usr/projects/draco/Modules/${sysname}"
+
+      run "module unload draco lapse"
+      run "module unload PrgEnv-intel PrgEnv-cray PrgEnv-gnu"
+      run "module load PrgEnv-intel"
+      run "module load lapse/2.0-intel"
+      run "module list"
+      CC=$(which cc)
+      CXX=$(which CC)
+      FC=$(which ftn)
+      export LD_LIBRARY_PATH="$CRAY_LD_LIBRARY_PATH":"$LD_LIBRARY_PATH"
+      export CC CXX FC
+    }
+
+    function lapse20intelenv-knl()
+    {
+      export partition="-p knl --exclude=nid00192"
+      export jobnameext="-knl"
+
+      sysname=$(/usr/projects/hpcsoft/utilities/bin/sys_name)
+      module use --append "/usr/projects/draco/Modules/${sysname}"
+
+      run "module unload draco lapse"
+      run "module unload PrgEnv-intel PrgEnv-cray PrgEnv-gnu"
+      run "module load PrgEnv-intel"
+      run "module load lapse/2.0-intel"
+      # Be explicit about unloading haswell / loading the knl module!
+      run "module unload craype-haswell"
+      run "module load craype-mic-knl"
+      run "module list"
+      CC=$(which cc)
+      CXX=$(which CC)
+      FC=$(which ftn)
+      export LD_LIBRARY_PATH="$CRAY_LD_LIBRARY_PATH":"$LD_LIBRARY_PATH"
+      export CC CXX FC
+    }
+    ;;
+
+  #------------------------------------------------------------------------------------------------#
   draco-7_9* | draco-7_10* | draco-7_11* | draco-7_12* | draco-7_13*)
     function cce11env()
     {

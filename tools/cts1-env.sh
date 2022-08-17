@@ -44,6 +44,34 @@ fi
 case "${ddir}" in
 
   #--------------------------------------------------------------------------------------------------#
+  draco-7_14*)
+    function lapse20intelenv()
+    {
+      # intel-19.0.4 + openmpi-3.1.6
+      run "module purge"
+      run "module use --append /usr/projects/draco/Modules/cts1"
+      run "module load lapse/2.0-intel"
+      run "module list"
+    }
+    function lapse20gccenv()
+    {
+      # gcc-9.3.0 + openmpi-3.1.6
+      run "module purge"
+      run "module use --append /usr/projects/draco/Modules/cts1"
+      run "module load lapse/2.0-gnu"
+      run "module list"
+    }
+    function eapintelenv()
+    {
+      # intel-19.0.4 + openmpi-4.1.1
+      run "module purge"
+      run "module use --append /usr/projects/draco/Modules/cts1"
+      run "module load eapse/beta-intel-ompi4"
+      run "module list"
+    }
+    ;;
+
+  #--------------------------------------------------------------------------------------------------#
   draco-7_9* | draco-7_10* | draco-7_11* | draco-7_12* | draco-7_13*)
     function intel1904env
     {
