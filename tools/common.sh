@@ -103,14 +103,18 @@ function osName
     if ! osName=$(/usr/projects/hpcsoft/utilities/bin/sys_os); then
       osName="unknown"
     fi
-  fi
-  if [[ ${osName} == "unknown" ]]; then
+    # Darwin apparently has the bin/sys_os file as of 8/2022,
+    # so move the darwiAn-specific logic here to be sure
+    # the target_arch info gets appended properly
     if [[ -d /projects/darwin ]] ; then
       osName=darwin
       if [[ -f /projects/draco/vendors/bin/target_arch ]]; then
         osName=darwin-$(/projects/draco/vendors/bin/target_arch)
       fi
-    elif [[ -d /usr/gapps/jayenne ]]; then
+    fi
+  fi
+  if [[ ${osName} == "unknown" ]]; then
+    if [[ -d /usr/gapps/jayenne ]]; then
       osName=$(uname -p)
     fi
   fi
