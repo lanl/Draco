@@ -331,6 +331,24 @@ matrices.")
 endmacro()
 
 # ------------------------------------------------------------------------------
+# Setup VTune
+# ------------------------------------------------------------------------------
+macro(setupVTune)
+
+  if(NOT TARGET VTune::vtune)
+
+    message(STATUS "Looking for VTune...")
+
+    find_package(VTune QUIET)
+    if(VTune_FOUND)
+      message(STATUS "Looking for VTune...found ${VTune_LIBRARIES}")
+    else()
+      message(STATUS "Looking for VTune...not found")
+    endif()
+  endif()
+endmacro()
+
+# ------------------------------------------------------------------------------
 # Setup Libquo (https://github.com/lanl/libquo
 # ------------------------------------------------------------------------------
 macro(setupLIBQUO)
@@ -472,6 +490,7 @@ macro(SetupVendorLibrariesUnix)
   setuprandom123()
   setuppython()
   setupqt()
+  setupvtune()
   setuplibquo()
   setupcaliper()
   setuptorch()
