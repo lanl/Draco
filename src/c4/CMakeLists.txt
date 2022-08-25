@@ -13,7 +13,12 @@ project(c4 CXX)
 # ------------------------------------------------------------------------------------------------ #
 if(TARGET LIBQUO::libquo AND DRACO_C4 STREQUAL MPI)
   set(HAVE_LIBQUO 1)
+else()
+  set(HAVE_LIBQUO 0)
 endif()
+set(HAVE_LIBQUO
+    ${HAVE_LIBQUO}
+    CACHE BOOL "Does Draco require the libquo library?" FORCE)
 
 # ------------------------------------------------------------------------------------------------ #
 # Generate config.h (only occurs when cmake is run) many c4 and MPI values are set in
