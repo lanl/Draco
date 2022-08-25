@@ -26,16 +26,6 @@ if( CMAKE_CONFIGURATION_TYPES ) # multi-config project files (not Makefiles)
   endif()
 endif()
 
-# Provide some pretty print information during configure
-include( FeatureSummary )
-set_package_properties( draco PROPERTIES
-   URL "https://re-git.lanl.gov/draco/draco"
-   DESCRIPTION "Draco is a comprehensive, radiation transport framework that provides key, reusable
- components for serial and parallel computational physics codes."
-   TYPE REQUIRED
-   PURPOSE "Provides underlying capabilities required by TRT codes (smart pointers, data access,
- random number generators, etc.)" )
-
 #--------------------------------------------------------------------------------------------------#
 # Basic build information
 #--------------------------------------------------------------------------------------------------#
@@ -70,7 +60,7 @@ set( Draco_CMAKE_CUDA_FLAGS_DEBUG "@CMAKE_CUDA_FLAGS_DEBUG@")
 set( Draco_CMAKE_CUDA_FLAGS_RELWITHDEBINFO "@CMAKE_CUDA_FLAGS_RELWITHDEBINFO@")
 set( Draco_CMAKE_CUDA_FLAGS_RELEASE "@CMAKE_CUDA_FLAGS_RELEASE@")
 set( CUDA_ARCHITECTURES "@CUDA_ARCHITECTURES@")
-if( ${CMAKE_GENERATOR} MATCHES "Unix Makefiles" AND USE_CUDA)
+if( (${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ninja") AND USE_CUDA)
   include(CheckLanguage)
   check_language(CUDA)
   if(CMAKE_CUDA_COMPILER)
@@ -97,9 +87,6 @@ set( Python_EXECUTABLE "@Python_EXECUTABLE@" )
 # Set useful general variables
 #--------------------------------------------------------------------------------------------------#
 
-# Draco vendor's for this machine
-set(VENDOR_DIR "@VENDOR_DIR@")
-
 # The TPLs enabled for this project
 set(Draco_TPL_LIST "@Draco_TPL_LIST@")
 
@@ -114,12 +101,32 @@ set(Draco_TPL_LIST "@Draco_TPL_LIST@")
 # - Optionally we could use 'include(CMakeFindDependencyMacro)'
 #--------------------------------------------------------------------------------------------------#
 
-# CMake macros to query the availability of TPLs.
 include( vendor_libraries )
 
-# If DRACO_CALIPER is 1, then this build of Draco requires the CALIPER::caliper target. If the
-# CALIPER::caliper target is not defined, then create it.
-set( DRACO_CALIPER @DRACO_CALIPER@ )
-if( DRACO_CALIPER AND NOT TARGET CALIPER::caliper)
+# If DRACO_CALIPER is 1, then this build of Draco requires the CALIPER::caliper target. If this
+# target is not defined, then create it.
+set(DRACO_CALIPER @DRACO_CALIPER@)
+if(DRACO_CALIPER AND NOT TARGET CALIPER::caliper)
   setupCaliper()
 endif()
+
+set(NDI_FOUND @NDI_FOUND@)
+if(NDI_FOUND AND NOT TARGET NDI::ndi)
+  setupndi()
+endif()
+
+
+# If HAVE_LIBQUO is 1, then this build of Draco requires the LIBQUO::libquo target. If this
+# target is not defined, then create it.
+set(HAVE_LIBQUO @HAVE_LIBQUO@)
+#if( HAVE_LIBQUO AND NOT TARGET LIBQUO::libquo)
+#  setupLIBQUO()
+#endif()
+
+set(METIS_FOUND @METIS_FOUND@)
+set(ParMETIS_FOUND @ParMETIS_FOUND@)
+set(COMPTON_FOUND @COMPTON_FOUND@)
+
+# ------------------------------------------------------------------------------------------------ #
+# End draco-config.cmake
+# ------------------------------------------------------------------------------------------------ #
