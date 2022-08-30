@@ -1,10 +1,12 @@
 # ------------------------------------------------------------------------------------------------ #
 # file   : platform_checks.cmake
 # brief  : Platform Checks for Draco Build System
-# note   : Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved
+# note   : Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
+
+# cmake-lint: disable=R0912,R0915
 
 # ------------------------------------------------------------------------------------------------ #
 # Identify machine and save name in ds++/config.h
@@ -22,16 +24,7 @@ function(dbs_set_sitename)
   site_name(SITENAME)
   string(REGEX REPLACE "([A-z0-9]+).*" "\\1" SITENAME ${SITENAME})
   set(SITENAME_FAMILY "unknown")
-  if(${SITENAME} MATCHES "ba")
-    set(SITENAME "Badger")
-    set(SITENAME_FAMILY "CTS-1")
-  elseif(
-    ${SITENAME} MATCHES "cp-rfe"
-    OR ${SITENAME} MATCHES "cp-login"
-    OR ${SITENAME} MATCHES "cp-rlogin")
-    set(SITENAME "Capulin")
-    set(SITENAME_FAMILY "IC-ARM")
-  elseif(${SITENAME} MATCHES "ccscs[0-9]+")
+  if(${SITENAME} MATCHES "ccscs[0-9]+")
     set(SITENAME_FAMILY "CCS-NET")
   elseif(${SITENAME} MATCHES "fi")
     set(SITENAME "Fire")
@@ -43,9 +36,6 @@ function(dbs_set_sitename)
     if("$ENV{SLURM_CLUSTER_NAME}" MATCHES "trinity")
       set(SITENAME "Trinity")
       set(SITENAME_FAMILY "ATS-1")
-    elseif("$ENV{SLURM_CLUSTER_NAME}" MATCHES "capulin")
-      set(SITENAME "Capulin")
-      set(SITENAME_FAMILY "IC-ARM")
     else()
       set(SITENAME "Trinitite")
       set(SITENAME_FAMILY "ATS-1")

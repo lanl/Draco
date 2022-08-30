@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 
 // KPL: See https://gcc.gnu.org/gcc-9/porting_to.html#ompdatasharing for info on the following
 // version-specific gcc macro.
-#if defined(__GNUC__) && __GNUC__ < 9
+#if defined(__GNUC__) && !defined(__clang__) && __GNUC__ < 9
   // gcc-8.X complains about normal syntax. ATS-2 requires different code from all the other
   // machines - these systems must handle const strings differently.
 #ifdef draco_isATS2

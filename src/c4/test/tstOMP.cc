@@ -307,7 +307,7 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
 
   // gcc-8.X complains about the normal syntax since some variables are automatically marked as
   // shared.
-#if defined(__GNUC__) && __GNUC__ < 9
+#if defined(__GNUC__) && !defined(__clang__) && __GNUC__ < 9
 #pragma omp parallel for ordered schedule(dynamic) default(none) shared(image1)
 #else
 #pragma omp parallel for ordered schedule(dynamic) default(none)                                   \
