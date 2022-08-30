@@ -59,6 +59,15 @@ function(dbs_set_sitename)
   elseif(${SITENAME} MATCHES "tt")
     set(SITENAME "Trinitite")
     set(SITENAME_FAMILY "ATS-1")
+  elseif(${SITENAME} MATCHES "cn")
+    set(SITENAME "Darwin")
+    set(SITENAME_FAMILY "None")
+  elseif(${SITENAME} MATCHES "sierra")
+    set(SITENAME "Sierra")
+    set(SITENAME_FAMILY "ATS-2")
+  elseif(${SITENAME} MATCHES "rzansel")
+    set(SITENAME "RZAnsel")
+    set(SITENAME_FAMILY "ATS-2")
   endif()
   set(SITENAME
       ${SITENAME}
@@ -73,7 +82,6 @@ message("
 Platform Checks...
 ")
 dbs_set_sitename()
-
 # ------------------------------------------------------------------------------------------------ #
 # Determine System Type and System Names
 #
