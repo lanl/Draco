@@ -305,13 +305,9 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
     }
   }
 
-  // gcc-8.3.1, 8.4.1 and 8.5.0 complain about the normal syntax since some variables are
-  // automatically marked as shared.
-#if defined(__GNUC__) && __GNUC__ == 8 && __GNUC_MINOR__ == 3 && __GNUC_PATCHLEVEL__ == 1
-#pragma omp parallel for ordered schedule(dynamic) default(none) shared(image1)
-#elif defined(__GNUC__) && __GNUC__ == 8 && __GNUC_MINOR__ == 4 && __GNUC_PATCHLEVEL__ == 1
-#pragma omp parallel for ordered schedule(dynamic) default(none) shared(image1)
-#elif defined(__GNUC__) && __GNUC__ == 8 && __GNUC_MINOR__ == 5 && __GNUC_PATCHLEVEL__ == 0
+  // gcc-8.X complains about the normal syntax since some variables are automatically marked as
+  // shared.
+#if defined(__GNUC__) && !defined(__clang__) && __GNUC__ < 9
 #pragma omp parallel for ordered schedule(dynamic) default(none) shared(image1)
 #else
 #pragma omp parallel for ordered schedule(dynamic) default(none)                                   \
