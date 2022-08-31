@@ -68,7 +68,7 @@
 #cmakedefine draco_isPGI
 #cmakedefine draco_isKNL
 #cmakedefine draco_is64bit
-#cmakedefine draco_isPPC
+#cmakedefine draco_isATS2
 #cmakedefine DRACO_UNAME @DRACO_UNAME@
 #cmakedefine HAVE_CUDA @HAVE_CUDA@
 #cmakedefine USE_CUDA @USE_CUDA@
