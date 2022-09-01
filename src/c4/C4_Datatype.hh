@@ -8,9 +8,7 @@
 #ifndef c4_C4_Datatype_hh
 #define c4_C4_Datatype_hh
 
-// C4 package configure
 #include "c4/config.h"
-
 #ifdef C4_MPI
 #include "c4_mpi.h"
 #endif
@@ -21,7 +19,7 @@ namespace rtt_c4 {
 using C4_Datatype = MPI_Datatype;
 #else
 
-// If serial, make this a brain-dead type. It won't actually be used.
+//! If serial, make this a brain-dead type. It won't actually be used.
 using C4_Datatype = void *;
 #endif
 

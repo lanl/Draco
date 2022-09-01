@@ -35,20 +35,20 @@ class C4_Req;
 //------------------------------------------------------------------------------------------------//
 /*!
  * C4 unit tests.
- */
-/*! \example c4/test/tstAbort.cc
+ *
+ * \example c4/test/tstAbort.cc
  * Example of MPI abort functions.
- */
-/*! \example c4/test/tstBroadcast.cc
+ *
+ * \example c4/test/tstBroadcast.cc
  * Example of MPI broadcast-like functions
- */
-/*! \example c4/test/tstComm_Dup.cc
+ *
+ * \example c4/test/tstComm_Dup.cc
  * Example
- */
-/*! \example c4/test/tstPingPong.cc
+ *
+ * \example c4/test/tstPingPong.cc
  * Example of point-to-point communications
- */
-/*! \example c4/test/tstReduction.cc
+ *
+ * \example c4/test/tstReduction.cc
  * Example of many-to-one communications
  */
 //------------------------------------------------------------------------------------------------//
@@ -65,27 +65,19 @@ DLL_PUBLIC_c4 extern const int proc_null;
 //------------------------------------------------------------------------------------------------//
 // SETUP FUNCTIONS
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Initialize a parallel job.
- */
+//! Initialize a parallel job.
 int initialize(int &argc, char **&argv, int required = DRACO_MPI_THREAD_SINGLE);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Finish a parallel job.
- */
+//! Finish a parallel job.
 void finalize();
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Inherit a communicator from another application.
- */
+//! Inherit a communicator from another application.
 template <typename Comm> void inherit(const Comm &);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Free an inherited communicator from another application.
- */
+//! Free an inherited communicator from another application.
 void free_inherited_comm();
 
 //------------------------------------------------------------------------------------------------//

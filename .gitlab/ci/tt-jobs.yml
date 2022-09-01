@@ -60,19 +60,19 @@ tt_deb_i1904_deploy:
     DRACO_ENV: "lapse/2.0-intel"
     FLAVOR: lapse20-intel-${CMAKE_BUILD_TYPE}
 
-# tt_deb_cce1301_deploy:
-#   extends: .tt_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: "draco/cce1301"
-#     FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
+tt_deb_cce1301_deploy:
+  extends: .tt_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/cce1301"
+    FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
 
-# tt_rel_cce1301_deploy:
-#   extends: .tt_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: "draco/cce1301"
-#     FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
+tt_rel_cce1301_deploy:
+  extends: .tt_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "draco/cce1301"
+    FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
 
 tt_deb_oneapi2140_deploy:
   extends: .tt_deploy
@@ -128,12 +128,12 @@ tt_deb_oneapi_mr:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/oneapi2140"
 
-# tt_deb_cce_mr:
-#   stage: slowtest
-#   extends: .tt_merge
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: "draco/cce1301"
+tt_deb_cce_mr:
+  stage: slowtest
+  extends: .tt_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/cce1301"
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
