@@ -4,7 +4,7 @@
 # File  : environment/bashrc/.bashrc
 # Date  : Tuesday, May 31, 2016, 14:48 pm
 # Author: Kelly Thompson
-# Note  : Copyright (C) 2016-2020, Triad National Security, LLC., All rights are reserved.
+# Note  : Copyright (C) 2016-2022, Triad National Security, LLC., All rights are reserved.
 #
 # Bash configuration file upon bash shell startup
 #
@@ -43,9 +43,6 @@ case ${-} in
     # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
     HISTSIZE=1000
     HISTFILESIZE=2000
-
-    # Prevent creation of core files (ulimit -a to see all limits).
-    # ulimit -c 0
 
     # colored GCC warnings and errors
     export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
@@ -121,8 +118,6 @@ if [[ ${INTERACTIVE} == true ]]; then
   # trac.lanl.gov/cgi-bin/ctn/trac.cgi/wiki/SelfHelpCenter/ProxyUsage)
   # export http_proxy=http://wpad.lanl.gov/wpad.dat
   current_domain=$(awk '/^domain/ {print $2}' /etc/resolv.conf)
-  #  found=`nslookup proxyout.lanl.gov | grep -c Name`
-  #  if test ${found} == 1; then
   if [[ ${current_domain} == "lanl.gov" ]]; then
     export http_proxy=http://proxyout.lanl.gov:8080
     export https_proxy=$http_proxy
@@ -169,8 +164,8 @@ if [[ ${INTERACTIVE} == true ]]; then
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_darwin_fe" ;;
 
-    # Badger | Cyclone | Fire | Grizzly | Ice | Snow
-    ba* | cy* | fi* | gr* | ic* | sn* )
+    # Cyclone | Fire | Ice | Snow
+    cy* | fi* | ic* | sn* )
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_cts1" ;;
 
@@ -179,8 +174,8 @@ if [[ ${INTERACTIVE} == true ]]; then
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_rfta" ;;
 
-    # capulin, thunder, trinitite (tt-rfe) | trinity (tr-fe)
-    cp-rfe* | cp-rlogin* | th-login* |tt-fey* | tt-rfe* | tt-login* | tr-fe* | tr-login* | nid* )
+    # trinitite (tt-rfe) | trinity (tr-fe)
+    tt-rfe* | tt-login* | tr-fe* | tr-login* | nid* )
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_cray" ;;
 
@@ -214,8 +209,7 @@ if [[ ${INTERACTIVE} == true ]]; then
 
 fi
 
-# provide some bash functions (dracoenv, rmdracoenv) for non-interactive
-# sessions.
+# provide some bash functions (dracoenv, rmdracoenv) for non-interactive sessions.
 
 # shellcheck source=/dev/null
 [[ -f "${DRACO_ENV_DIR}/bashrc/bash_functions2.sh" ]] && \
