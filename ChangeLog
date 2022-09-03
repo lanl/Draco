@@ -1,3 +1,7 @@
+2022-09-01 Kendra P. Long <keadyk@lanl.gov>
+	* Draco has been updated to version 7_14_1. This is a patch release to fix certain
+      builds for gcc versions <9.0.0. There are no code behavior changes.
+
 2022-08-16 Kendra P. Long <keadyk@lanl.gov>
 	* Draco has been updated to version 7_14_0 and is tied to the release of Jayenne-8_12_0
       and Capsaicin-1_12_0.
