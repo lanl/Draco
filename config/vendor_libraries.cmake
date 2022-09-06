@@ -52,32 +52,6 @@ function(setupRandom123)
 endfunction()
 
 # --------------------------------------------------------------------------------------------------
-# Setup QT (any)
-# --------------------------------------------------------------------------------------------------
-function(setupQt)
-  message(STATUS "Looking for Qt SDK....")
-
-  if(CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
-    option(USE_QT "Build QT support for Draco" OFF)
-  else()
-    option(USE_QT "Build QT support for Draco" ON)
-  endif()
-
-  if(USE_QT)
-    # Find the QtWidgets library
-    find_package(Qt5 COMPONENTS Widgets QUIET)
-
-    if(Qt5Core_DIR)
-      mark_as_advanced(Qt5Core_DIR Qt5Gui_DIR Qt5Gui_EGL_LIBRARY Qt5Widgets_DIR QTDIR)
-      message(STATUS "Looking for Qt SDK....found ${Qt5Core_DIR}")
-    else()
-      message(STATUS "Looking for Qt SDK....not found.")
-    endif()
-  endif()
-
-endfunction()
-
-# --------------------------------------------------------------------------------------------------
 # Setup GSL (any)
 # --------------------------------------------------------------------------------------------------
 function(setupGSL)
@@ -334,7 +308,6 @@ macro(setupVendorLibraries)
   setupeospac()
   setupndi()
   setuppython()
-  setupqt()
   setupvtune()
   if(UNIX)
     # These are not supported on Windows yet.

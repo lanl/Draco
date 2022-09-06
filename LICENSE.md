@@ -93,15 +93,15 @@ packages may are listed below:
 
 5. [CUDA](http://docs.nvidia.com/cuda/eula/index.html#nvidia-cuda-toolkit-license-agreement)
 
-6. [Qt](http://doc.qt.io/qt-5/opensourcelicense.html) - GNU Lesser General Public License (LGPL)
-   version 3,
-
-7. [Metis](http://glaros.dtc.umn.edu/gkhome/metis/metis/overview)
+6. [Metis](http://glaros.dtc.umn.edu/gkhome/metis/metis/overview)
 
    METIS is a set of serial programs for partitioning graphs, partitioning finite element meshes,
    and producing fill reducing orderings for sparse matrices. The algorithms implemented in METIS
    are based on the multilevel recursive-bisection, multilevel k-way, and multi-constraint
    partitioning schemes.
+
+7. experimental/mdspan - [link](https://github.com/kokkos/mdspan) Kokkos v. 2.0, Copyright (2019)
+   Sandia Corporation, BSD-3 License Git version hash: a7990884f090365787a90cdc12e689822d642c65
 
 8. [ParMetis](http://glaros.dtc.umn.edu/gkhome/metis/parmetis/overview)
 
@@ -111,6 +111,3 @@ packages may are listed below:
 
 9. `ds++/terminal.h` and `ds++/terminal_base.h` developed by Ondřej Čertík,
    [link](https://github.com/certik/terminal) MIT License
-
-10. experimental/mdspan - [link](https://github.com/kokkos/mdspan) Kokkos v. 2.0, Copyright (2019)
-    Sandia Corporation, BSD-3 License Git version hash: a7990884f090365787a90cdc12e689822d642c65
