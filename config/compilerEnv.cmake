@@ -741,10 +741,6 @@ macro(dbsSetupFortran)
       endif()
     endif()
 
-    if(_LANGUAGES_ MATCHES "^C$" OR _LANGUAGES_ MATCHES CXX)
-      include(FortranCInterface)
-    endif()
-
   else()
     # If CMake doesn't know about a Fortran compiler, $ENV{FC}, then also look for a compiler to use
     # with CMakeAddFortranSubdirectory.
