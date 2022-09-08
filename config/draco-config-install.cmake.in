@@ -30,12 +30,13 @@ endif()
 # Basic build information
 #--------------------------------------------------------------------------------------------------#
 
-set( DRACO_LIBRARY_TYPE "@DRACO_LIBRARY_TYPE@" )
-set( DRACO_TIMING "@DRACO_TIMING@")
-set( DRACO_DIAGNOSTICS "@DRACO_DIAGNOSTICS@")
-set( DRACO_STATIC_ANALYZER "@DRACO_STATIC_ANALYZER@")
-set( Draco_VERSION "@Draco_VERSION@")
-set( DRACO_ROUNDOFF_MODE "@DRACO_ROUNDOFF_MODE@")
+set(DRACO_LIBRARY_TYPE "@DRACO_LIBRARY_TYPE@")
+set(DRACO_TIMING "@DRACO_TIMING@")
+set(DRACO_DIAGNOSTICS "@DRACO_DIAGNOSTICS@")
+set(DRACO_STATIC_ANALYZER "@DRACO_STATIC_ANALYZER@")
+set(Draco_VERSION "@Draco_VERSION@")
+set(DRACO_ROUNDOFF_MODE "@DRACO_ROUNDOFF_MODE@")
+set(DRACO_DBC_LEVEL "@DRACO_DBC_LEVEL@")
 
 #--------------------------------------------------------------------------------------------------#
 # MPI specific variables
@@ -51,15 +52,15 @@ set(Draco_MPI_C_WORKS "@MPI_C_WORKS@") # Used to help CAFS setup on Win32
 set(Draco_MPI_LANG_LIST "@Draco_MPI_LANG_LIST@")
 
 # CUDA
-option( HAVE_CUDA "Should we build Cuda parts of the project?" @HAVE_CUDA@ )
-set( USE_CUDA "@USE_CUDA@" )
-set( COMPILE_WITH_CUDA "@COMPILE_WITH_CUDA@" )
-set( CUDA_DBS_STRING "@CUDA_DBS_STRING@")
-set( Draco_CMAKE_CUDA_FLAGS "@CMAKE_CUDA_FLAGS@")
-set( Draco_CMAKE_CUDA_FLAGS_DEBUG "@CMAKE_CUDA_FLAGS_DEBUG@")
-set( Draco_CMAKE_CUDA_FLAGS_RELWITHDEBINFO "@CMAKE_CUDA_FLAGS_RELWITHDEBINFO@")
-set( Draco_CMAKE_CUDA_FLAGS_RELEASE "@CMAKE_CUDA_FLAGS_RELEASE@")
-set( CUDA_ARCHITECTURES "@CUDA_ARCHITECTURES@")
+option(HAVE_CUDA "Should we build Cuda parts of the project?" @HAVE_CUDA@)
+set(USE_CUDA "@USE_CUDA@")
+set(COMPILE_WITH_CUDA "@COMPILE_WITH_CUDA@")
+set(CUDA_DBS_STRING "@CUDA_DBS_STRING@")
+set(Draco_CMAKE_CUDA_FLAGS "@CMAKE_CUDA_FLAGS@")
+set(Draco_CMAKE_CUDA_FLAGS_DEBUG "@CMAKE_CUDA_FLAGS_DEBUG@")
+set(Draco_CMAKE_CUDA_FLAGS_RELWITHDEBINFO "@CMAKE_CUDA_FLAGS_RELWITHDEBINFO@")
+set(Draco_CMAKE_CUDA_FLAGS_RELEASE "@CMAKE_CUDA_FLAGS_RELEASE@")
+set(CUDA_ARCHITECTURES "@CUDA_ARCHITECTURES@")
 if( (${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ninja") AND USE_CUDA)
   include(CheckLanguage)
   check_language(CUDA)
