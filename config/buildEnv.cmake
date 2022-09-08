@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 June 5
 # brief  Default CMake build parameters
-# note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
 #------------------------------------------------------------------------------------------------- #
 
 include_guard(GLOBAL)
@@ -11,6 +11,7 @@ include_guard(GLOBAL)
 # ------------------------------------------------------------------------------------------------ #
 # Build Parameters
 # ------------------------------------------------------------------------------------------------ #
+# cmake-lint: disable=R0912,R0915
 macro(dbsSetDefaults)
 
   # Work around for cmake-3.19+. Should be fixed in cmake-3.20+
@@ -79,7 +80,7 @@ macro(dbsSetDefaults)
   endif()
 
   # Design-by-Contract
-  if(NOT DEFINED DRACO_DBC_LEVEL)
+  if(NOT DEFINED DRACO_DBC_LEVEL AND DEFINED Draco_SOURCE_DIR)
 
     # Default is on (7), except for Makefile based Release builds.
     #
