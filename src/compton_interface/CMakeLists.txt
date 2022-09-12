@@ -29,17 +29,8 @@ if(TARGET COMPTON::compton)
     INCLUDE_DIRS "PUBLIC;$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>"
     LIBRARY_NAME compton_interface
     SOURCES "${sources}"
-    HEADERS "${headers}")
-
-  # Copy necessary dll files to the build directory
-  if(MSVC AND DRACO_LIBRARY_TYPE STREQUAL SHARED)
-    add_custom_command(
-      TARGET Lib_compton_interface
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:COMPTON::compton>
-              $<TARGET_FILE_DIR:Lib_compton_interface>
-      COMMENT "")
-  endif()
+    HEADERS "${headers}"
+    PROVIDE_DLL_DEPS)
 
   # Install
   install(FILES ${headers} DESTINATION ${DBSCFGDIR}include/compton_interface)
