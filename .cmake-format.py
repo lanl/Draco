@@ -13,7 +13,7 @@ with section("parse"):  # noqa: F821
 
         "add_component_library": {
             "pargs": 1,
-            "flags": ["NOEXPORT"],
+            "flags": ["NOEXPORT", "PROVIDE_DLL_DEPS"],
             "kwargs": {"TARGET": '*', "LIBRARY_NAME": '*', "SOURCES": '*', "HEADERS": '*',
                        "INCLUDE_DIRS": '*', "TARGET_DEPS": '*', "LINK_LANGUAGE": '*',
                        "LIBRARY_TYPE": '*'}},

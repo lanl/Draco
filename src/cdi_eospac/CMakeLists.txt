@@ -30,22 +30,13 @@ if(EOSPAC_FOUND AND NOT DEFINED ENV{TRAVIS})
     INCLUDE_DIRS "PUBLIC;${EOSPAC_INCLUDE_DIR}"
     LIBRARY_NAME cdi_eospac
     SOURCES "${sources}"
-    HEADERS "${headers}")
+    HEADERS "${headers}"
+    PROVIDE_DLL_DEPS)
 
   add_component_executable(
     TARGET Exe_QueryEospac
     TARGET_DEPS Lib_cdi_eospac
     SOURCES ${PROJECT_SOURCE_DIR}/QueryEospac.cc)
-
-  # Copy necessary dll files to the build directory
-  if(MSVC AND DRACO_LIBRARY_TYPE STREQUAL SHARED)
-    add_custom_command(
-      TARGET Lib_cdi_eospac
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:EOSPAC::eospac>
-              $<TARGET_FILE_DIR:Lib_cdi_eospac>
-      COMMENT "")
-  endif()
 
   # ---------------------------------------------------------------------------------------------- #
   # Installation instructions

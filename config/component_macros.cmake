@@ -64,8 +64,8 @@ function(dbs_std_tgt_props target)
   if("${DRACO_STATIC_ANALYZER}" MATCHES "clang-tidy" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS
                                                          9.0)
     if(NOT CLANG_TIDY_IPATH)
-      message(FATAL_ERROR "Unable to configure clang-tidy build because"
-                          " CLANG_TIDY_IPATH is empty.")
+      message(FATAL_ERROR "Unable to configure clang-tidy build because CLANG_TIDY_IPATH is "
+                          "empty.")
     endif()
     get_target_property(tgt_sources ${target} SOURCES)
     set_source_files_properties(${tgt_sources} PROPERTIES INCLUDE_DIRECTORIES ${CLANG_TIDY_IPATH})
@@ -277,6 +277,7 @@ endmacro()
 #   VENDOR_LIBS  "${MPI_CXX_LIBRARIES};${GSL_LIBRARIES}"
 #   VENDOR_INCLUDE_DIRS "${MPI_CXX_INCLUDE_DIR};${GSL_INCLUDE_DIR}"
 #   NOEXPORT
+#   PROVIDE_DLL_DEPS
 #   )
 #
 # Example:
@@ -298,7 +299,8 @@ macro(add_component_library)
 
   # These become variables of the form ${acl_NAME}, etc.
   cmake_parse_arguments(
-    acl "NOEXPORT" "EXPORT_NAME;TARGET;LIBRARY_NAME;LIBRARY_NAME_PREFIX;LIBRARY_TYPE;LINK_LANGUAGE"
+    acl "NOEXPORT;PROVIDE_DLL_DEPS"
+    "EXPORT_NAME;TARGET;LIBRARY_NAME;LIBRARY_NAME_PREFIX;LIBRARY_TYPE;LINK_LANGUAGE"
     "HEADERS;SOURCES;INCLUDE_DIRS;TARGET_DEPS;VENDOR_LIST;VENDOR_LIBS;VENDOR_INCLUDE_DIRS" ${ARGV})
 
   #
@@ -400,6 +402,19 @@ macro(add_component_library)
   if(acl_VENDOR_INCLUDE_DIRS)
     set_property(TARGET ${acl_TARGET} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
                                                       "${acl_VENDOR_INCLUDE_DIRS}")
+  endif()
+
+  # Copy necessary dll files to the build directory
+  if(acl_PROVIDE_DLL_DEPS
+     AND MSVC
+     AND DRACO_LIBRARY_TYPE STREQUAL SHARED)
+    add_custom_command(
+      TARGET ${acl_TARGET}
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:${acl_TARGET}>
+              $<TARGET_FILE_DIR:${acl_TARGET}>
+      COMMAND_EXPAND_LISTS
+      COMMENT "Copying dll libraries needed by ${acl_TARGET}.")
   endif()
 
   #
