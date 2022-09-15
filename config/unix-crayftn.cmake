@@ -3,7 +3,7 @@
 # author Kelly Thompson
 # date   2008 May 30
 # brief  Establish flags for Unix - Cray Fortran
-# note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2015-2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -39,9 +39,8 @@ endif()
 # ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
 deduplicate_flags(CMAKE_Fortran_FLAGS)
-force_compiler_flags_to_cache("Fortran")
-
 toggle_compiler_flag(OPENMP_FOUND ${OpenMP_Fortran_FLAGS} "Fortran" "")
+force_compiler_flags_to_cache("Fortran")
 
 # ------------------------------------------------------------------------------------------------ #
 # End config/unix-crayftn.cmake

@@ -3,7 +3,7 @@
 # author Kelly Thompson
 # date   2010 Nov 1
 # brief  Establish flags for Linux64 - Intel C++
-# note   Copyright (C) 2016-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 # Compiler Flags
@@ -53,11 +53,10 @@ endif()
 find_library(INTEL_LIBM m)
 mark_as_advanced(INTEL_LIBM)
 
-# -------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
 deduplicate_flags(CMAKE_C_FLAGS)
 deduplicate_flags(CMAKE_CXX_FLAGS)
-force_compiler_flags_to_cache("C;CXX")
 
 # Exceptions for -xHost
 #
@@ -69,7 +68,8 @@ if(NOT CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv AND NOT IS_DIRECTORY "/ccs
   toggle_compiler_flag(HAS_XHOST "-xHost" "C;CXX" "")
 endif()
 toggle_compiler_flag(OPENMP_FOUND ${OpenMP_C_FLAGS} "C;CXX" "")
+force_compiler_flags_to_cache("C;CXX")
 
-# -------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # End config/unix-intel.cmake
-# -------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #

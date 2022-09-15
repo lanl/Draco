@@ -67,16 +67,14 @@ endif()
 
 # ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
-
-# deduplicate_flags(CMAKE_C_FLAGS)
-
-# deduplicate_flags(CMAKE_CXX_FLAGS)
-
-force_compiler_flags_to_cache("C;CXX")
+#
+# * deduplicate_flags(CMAKE_C_FLAGS)
+# * deduplicate_flags(CMAKE_CXX_FLAGS)
 
 if(NOT "${OpenMP_C_FLAGS}x" STREQUAL "x")
   toggle_compiler_flag(OPENMP_FOUND "${OpenMP_C_FLAGS}" "C;CXX;EXE_LINKER" "")
 endif()
+force_compiler_flags_to_cache("C;CXX")
 
 # ------------------------------------------------------------------------------------------------ #
 # End config/unix-pgi.cmake

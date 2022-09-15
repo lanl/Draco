@@ -3,7 +3,7 @@
 # author Kelly Thompson
 # date   Sunday, Apr 29, 2018, 19:56 pm
 # brief  Establish flags for Unix/Linux - Gnu Fortran
-# note   Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 if(NOT Fortran_FLAGS_INITIALIZED)
@@ -28,12 +28,12 @@ endif()
 # ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
 deduplicate_flags(CMAKE_Fortran_FLAGS)
-force_compiler_flags_to_cache("Fortran")
 
 # Toggle compiler flags for optional features
 if(OpenMP_Fortran_FLAGS)
   toggle_compiler_flag(OPENMP_FOUND ${OpenMP_Fortran_FLAGS} "Fortran" "")
 endif()
+force_compiler_flags_to_cache("Fortran")
 
 # ------------------------------------------------------------------------------------------------ #
 # End config/unix-flang.cmake

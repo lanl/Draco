@@ -5,7 +5,7 @@
 # brief  Generate build project files for Fortran.
 # note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.17.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(c4_ftest C Fortran)
 
 # ------------------------------------------------------------------------------------------------ #
@@ -24,10 +24,6 @@ if(NOT TARGET Lib_dsxx)
     set(fc4_BINARY_DIR "${draco_BINARY_DIR}/src/c4/fc4")
   endif()
   cafs_create_imported_targets(Lib_c4_fc4 "librtt_fc4" "${fc4_BINARY_DIR}" CXX)
-
-  # Vendor discovery is not needed for this package
-  #
-  # setupVendorLibraries()
 endif()
 
 # ------------------------------------------------------------------------------------------------ #

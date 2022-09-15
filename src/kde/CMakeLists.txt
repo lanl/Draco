@@ -6,7 +6,7 @@
 # brief  CMake build environment for KDE
 # note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.9.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(kde CXX)
 
 # ------------------------------------------------------------------------------------------------ #

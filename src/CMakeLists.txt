@@ -5,7 +5,7 @@
 # brief  Instructions for building src level Makefile.
 # note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.17.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(draco_src_dir)
 
 # Provide helper functions used by component CMakeLists.txt files
@@ -18,6 +18,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   string(REPLACE "/W2" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
   string(REPLACE "/W2" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()
+force_compiler_flags_to_cache("C;CXX")
 
 # <experimental/mdspan> doesn't work with some tool chains...
 option(USE_MDSPAN "Use experimental/mdspan" ON)

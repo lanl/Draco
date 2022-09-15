@@ -6,7 +6,7 @@
 #        standard to 14.
 # note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.9.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(experimental CXX)
 
 # These are header only implementations...

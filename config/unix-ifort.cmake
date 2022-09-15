@@ -3,7 +3,7 @@
 # author Kelly Thompson
 # date   2008 May 30
 # brief  Establish flags for Unix - Intel Fortran
-# note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 #
@@ -46,13 +46,13 @@ endif()
 # ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
 deduplicate_flags(CMAKE_Fortran_FLAGS)
-force_compiler_flags_to_cache("Fortran")
 
 # Optional compiler flags
 if(NOT ${SITENAME} STREQUAL "Trinitite")
   toggle_compiler_flag(ENABLE_SSE "-mia32 -axSSSE3" "Fortran" "") # sse3, ssse3
 endif()
 toggle_compiler_flag(OPENMP_FOUND ${OpenMP_Fortran_FLAGS} "Fortran" "")
+force_compiler_flags_to_cache("Fortran")
 
 # ------------------------------------------------------------------------------------------------ #
 # End config/unix-ifort.cmake

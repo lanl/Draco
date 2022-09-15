@@ -1,10 +1,10 @@
-# -------------------------------------------*-cmake-*---------------------------------------------#
+# -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-intelllvm.cmake
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Wednesday, May 26, 2021, 13:44 pm
 # brief  Establish flags for Linux64 - Intel C++ (LLVM)
 # note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
-# -------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 
 # cmake-lint: disable=C0301
 
@@ -43,11 +43,10 @@ if(NOT CXX_FLAGS_INITIALIZED)
 
 endif()
 
-# -------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
 deduplicate_flags(CMAKE_C_FLAGS)
 deduplicate_flags(CMAKE_CXX_FLAGS)
-force_compiler_flags_to_cache("C;CXX")
 
 # Exceptions for -xHost
 #
@@ -59,7 +58,8 @@ if(NOT CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv AND NOT IS_DIRECTORY "/ccs
   toggle_compiler_flag(HAS_XHOST "-xHost" "C;CXX" "")
 endif()
 toggle_compiler_flag(OPENMP_FOUND ${OpenMP_C_FLAGS} "C;CXX" "")
+force_compiler_flags_to_cache("C;CXX")
 
-# -------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # End config/unix-intelllvm.cmake
-# -------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #

@@ -21,7 +21,6 @@ if((DEFINED ENV{SESAMEPATH} AND EXISTS "$ENV{SESAMEPATH}")
    OR IS_DIRECTORY "/usr/projects/data/eos")
 
   # These tests require a datafile to be defined in the environment.
-
   add_scalar_tests(SOURCES "${test_sources}" DEPS "Lib_cdi_eospac")
 
   include(ApplicationUnitTest)

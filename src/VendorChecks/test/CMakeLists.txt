@@ -11,17 +11,15 @@ project(VendorsChecks_test CXX)
 # Build Unit tests
 # ------------------------------------------------------------------------------------------------ #
 
-if(METIS_FOUND)
+if(TARGET METIS::metis)
   add_scalar_tests(SOURCES "tstMetis.cc" DEPS "Lib_dsxx;METIS::metis")
 endif()
 
 if(TARGET ParMETIS::parmetis AND ${DRACO_C4} STREQUAL "MPI")
-
   add_parallel_tests(
     SOURCES "tstParmetis.cc"
     DEPS "Lib_c4;ParMETIS::parmetis"
     PE_LIST "3")
-
 endif()
 
 # ------------------------------------------------------------------------------------------------ #

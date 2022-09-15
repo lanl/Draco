@@ -5,7 +5,7 @@
 # brief  Generate a Fortran testing library for quadrature
 # note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.17.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(quadrature_ftest C Fortran)
 
 # ------------------------------------------------------------------------------------------------ #

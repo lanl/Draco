@@ -100,7 +100,6 @@ endif()
 # Ensure cache values always match current selection
 deduplicate_flags(CMAKE_C_FLAGS)
 deduplicate_flags(CMAKE_CXX_FLAGS)
-force_compiler_flags_to_cache("C;CXX")
 
 # Toggle for OpenMP support
 if(OpenMP_C_FLAGS)
@@ -116,6 +115,7 @@ endif()
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13.0)
   toggle_compiler_flag(OPENMP_FOUND "-qsmp=omp" "C;CXX;EXE_LINKER" "")
 endif()
+force_compiler_flags_to_cache("C;CXX")
 
 # ------------------------------------------------------------------------------------------------ #
 # End config/unix-xl.cmake

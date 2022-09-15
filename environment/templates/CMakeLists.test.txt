@@ -4,10 +4,9 @@
 # author <user>
 # date   <date>
 # brief  <start>
-# note   Copyright (C) 2018-2020 Triad National Security, LLC.
-#        All rights reserved.
+# note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.9.0)
+cmake_minimum_required(VERSION 3.21.0)
 project( <spkg> CXX )
 
 #--------------------------------------------------------------------------------------------------#

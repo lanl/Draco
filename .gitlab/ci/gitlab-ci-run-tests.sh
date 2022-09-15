@@ -73,7 +73,8 @@ for i in C CXX Fortran CUDA; do
   else
     if [[ "${i}" == "Fortran" ]]; then
       if [[ "${FC}" =~ "ifort" ]] || [[ "${FC}" =~ "ifx" ]] || \
-           [[ "${INTEL_COMPILER_TYPE}" == "ONEAPI" ]] ; then
+           [[ "${INTEL_COMPILER_TYPE}" == "ONEAPI" ]] || \
+           [[ "${PE_ENV}" == "INTEL" ]] ; then
         # do not add the flag
         echo "Skip adding -Werror to ${i}_FLAGS (FC = ${FC})"
       else

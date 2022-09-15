@@ -60,14 +60,32 @@ with section("parse"):  # noqa: F821
             "flags": ["FOO_PROPERTIES", "NO_EXTERNAL_INSTALL"],
             "kwargs": {"TARGET": '*', "COMMAND": '*', "CMD_ARGS": '*'}},
 
+        "set_target_properties": {
+            "pargs": 1,
+            "flags": ["FOO_PROPERTIES", "NO_EXTERNAL_INSTALL"],
+            "kwargs": {"COMPILE_DEFINITIONS": '*', "DEPENDS": '*', "FOLDER": '*',
+                       "IMPORTED_CONFIGURATIONS": '*',
+                       "IMPORTED_IMPLIB": '*',
+                       "IMPORTED_IMPLIB_DEBUG": '*',
+                       "IMPORTED_IMPLIB_RELEASE": '*',
+                       "IMPORTED_LINK_INTERFACE_LANGUAGES": '*',
+                       "IMPORTED_LOCATION_DEBUG": '*',
+                       "IMPORTED_LOCATION_RELEASE": '*', "IMPORTED_LINK_INTERFACE_LIBRARIES": '*',
+                       "IMPORTED_LINK_INTERFACE_LANGUAGES": '*',
+                       "IMPORTED_LINK_INTERFACE_LIBRARIES_NOCONFIG": '*',
+                       "IMPORTED_LOCATION": '*',
+                       "INTERFACE_INCLUDE_DIRECTORIES": '*',
+                       "OUTPUT_NAME": '*',
+                       "RUNTIME_OUTPUT_DIRECTORY": '*',
+                       "VS_KEYWORD": '*',
+                       "XCODE_ATTRIBUTE_ENABLE_OPENMP_SUPPORT": '*'}},
+
         "set_tests_properties": {
             "pargs": 1,
             "flags": ["FOO_PROPERTIES", "NO_EXTERNAL_INSTALL"],
-            "kwargs": {"DEPENDS": '*', "ENVIRONMENT": '*',
-                       "FAIL_REGULAR_EXPRESSION": '*', "LABELS": '*',
-                       "PASS_REGULAR_EXPRESSION": '*',
-                       "PROCESSORS": '*', "RESOURCE_LOCK": '*', "WORKING_DIRECTORY": '*'}},
-
+            "kwargs": {"DEPENDS": '*', "ENVIRONMENT": '*', "FAIL_REGULAR_EXPRESSION": '*',
+                       "LABELS": '*', "PASS_REGULAR_EXPRESSION": '*', "PROCESSORS": '*',
+                       "RESOURCE_LOCK": '*', "WORKING_DIRECTORY": '*'}},
     }
 
     # Specify variable tags.

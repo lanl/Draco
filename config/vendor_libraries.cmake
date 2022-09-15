@@ -92,7 +92,7 @@ function(setupGSL)
     #
     # Locate GSL by using the value of GSL_ROOT_DIR or by looking in standard locations. We add
     # 'REQUIRED' here because if this fails, then we abort the built.
-    find_package(GSL REQUIRED ${QUIET})
+    find_package(GSL REQUIRED QUIET)
 
   endif()
 
