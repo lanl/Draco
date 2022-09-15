@@ -42,6 +42,7 @@
     CMAKE_Fortran_FLAGS: "-Werror"
     MAXLOAD: 24
     CTEST_NPROC: 24
+    SESAMEPATH: "C:\\work\\vendors-ec\\physical_data\\eos"
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/glr.log

@@ -5,7 +5,7 @@
 # brief  Install the config directory in the target directory
 # note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.17.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(config)
 
 include(CMakePackageConfigHelpers)

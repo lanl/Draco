@@ -5,7 +5,7 @@
 # brief  Small test of Vendors libraries (if found)
 # note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.9.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(VendorsChecks CXX)
 
 # This component only has tests.

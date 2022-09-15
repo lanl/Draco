@@ -50,36 +50,29 @@ endif()
 # <platform>-<compiler>.cmake files (e.g.:  unix-g++.cmake) call this macro.
 # ------------------------------------------------------------------------------------------------ #
 macro(query_openmp_availability)
-  if(NOT PLATFORM_CHECK_OPENMP_DONE)
-    set(PLATFORM_CHECK_OPENMP_DONE
-        TRUE
-        CACHE BOOL "Is check for OpenMP done?")
-    mark_as_advanced(PLATFORM_CHECK_OPENMP_DONE)
-    message(STATUS "Looking for OpenMP...")
-    if(WIN32)
-      set(OpenMP_C_FLAGS "/openmp:experimental")
-      set(OPENMP_FOUND TRUE)
-      set(OpenMP_C_VERSION "3.1")
-    else()
-      find_package(OpenMP QUIET)
+  message(STATUS "Looking for OpenMP...")
+  if(WIN32)
+    set(OpenMP_C_FLAGS "/openmp:experimental")
+    set(OPENMP_FOUND TRUE)
+    set(OpenMP_C_VERSION "3.1")
+  else()
+    find_package(OpenMP QUIET)
+  endif()
+  if(OPENMP_FOUND)
+    message(STATUS "Looking for OpenMP... ${OpenMP_C_FLAGS} (supporting the ${OpenMP_C_VERSION} "
+                   "standard)")
+    if(OpenMP_C_VERSION VERSION_LESS 3.0)
+      message(STATUS "OpenMP standard support is too old (< 3.0). Disabling OpenMP build features.")
+      set(OPENMP_FOUND FALSE)
+      set(OpenMP_C_FLAGS
+          ""
+          CACHE BOOL "OpenMP disabled (too old)." FORCE)
     endif()
-    if(OPENMP_FOUND)
-      message(STATUS "Looking for OpenMP... ${OpenMP_C_FLAGS} (supporting the "
-                     "${OpenMP_C_VERSION} standard)")
-      if(OpenMP_C_VERSION VERSION_LESS 3.0)
-        message(STATUS "OpenMP standard support is too old (< 3.0). Disabling OpenMP build "
-                       "features.")
-        set(OPENMP_FOUND FALSE)
-        set(OpenMP_C_FLAGS
-            ""
-            CACHE BOOL "OpenMP disabled (too old)." FORCE)
-      endif()
-      set(OPENMP_FOUND
-          ${OPENMP_FOUND}
-          CACHE BOOL "Is OpenMP available?" FORCE)
-    else()
-      message(STATUS "Looking for OpenMP... not found")
-    endif()
+    set(OPENMP_FOUND
+        ${OPENMP_FOUND}
+        CACHE BOOL "Is OpenMP available?" FORCE)
+  else()
+    message(STATUS "Looking for OpenMP... not found")
   endif()
 endmacro()
 
@@ -915,19 +908,13 @@ macro(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build_mo
     string(REPLACE "+" "x" safe_CMAKE_${comp}_FLAGS "${CMAKE_${comp}_FLAGS}")
 
     if("${build_modes}x" STREQUAL "x") # set flags for all build modes
-
       if(${switch})
         if(NOT "${safe_CMAKE_${comp}_FLAGS}" MATCHES "${safe_compiler_flag}")
-          set(CMAKE_${comp}_FLAGS
-              "${CMAKE_${comp}_FLAGS} ${compiler_flag} "
-              CACHE STRING "compiler flags" FORCE)
+          set(CMAKE_${comp}_FLAGS "${CMAKE_${comp}_FLAGS} ${compiler_flag} ")
         endif()
       else()
         if("${safe_CMAKE_${comp}_FLAGS}" MATCHES "${safe_compiler_flag}")
           string(REPLACE "${compiler_flag}" "" CMAKE_${comp}_FLAGS ${CMAKE_${comp}_FLAGS})
-          set(CMAKE_${comp}_FLAGS
-              "${CMAKE_${comp}_FLAGS}"
-              CACHE STRING "compiler flags" FORCE)
         endif()
       endif()
 
@@ -939,17 +926,12 @@ macro(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build_mo
 
         if(${switch})
           if(NOT "${safe_CMAKE_${comp}_FLAGS_${bm}}" MATCHES "${safe_compiler_flag}")
-            set(CMAKE_${comp}_FLAGS_${bm}
-                "${CMAKE_${comp}_FLAGS_${bm}} ${compiler_flag} "
-                CACHE STRING "compiler flags" FORCE)
+            set(CMAKE_${comp}_FLAGS_${bm} "${CMAKE_${comp}_FLAGS_${bm}} ${compiler_flag} ")
           endif()
         else()
           if("${safe_CMAKE_${comp}_FLAGS_${bm}}" MATCHES "${safe_compiler_flag}")
             string(REPLACE "${compiler_flag}" "" CMAKE_${comp}_FLAGS_${bm}
                            ${CMAKE_${comp}_FLAGS_${bm}})
-            set(CMAKE_${comp}_FLAGS_${bm}
-                "${CMAKE_${comp}_FLAGS_${bm}}"
-                CACHE STRING "compiler flags" FORCE)
           endif()
         endif()
 

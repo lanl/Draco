@@ -3,7 +3,7 @@
 # brief  Instructions for building cdi_ndi Makefiles.
 # note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.17.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(cdi_ndi CXX)
 
 # ------------------------------------------------------------------------------------------------ #

@@ -5,7 +5,7 @@
 # brief  Instructions for building device Makefile.
 # note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.11.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(device CXX ${CUDA_DBS_STRING})
 
 # ------------------------------------------------------------------------------------------------ #

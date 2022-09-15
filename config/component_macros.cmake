@@ -28,14 +28,8 @@ set(Draco_std_target_props_C C_STANDARD 11 # Force strict ANSI-C 11 standard
 set(Draco_std_target_props_CXX CXX_STANDARD 14 # Force strict C++ 14 standard
                                CXX_EXTENSIONS OFF CXX_STANDARD_REQUIRED ON)
 set(Draco_std_target_props_CUDA
-    CUDA_STANDARD
-    14 # Force strict C++ 14 standard
-    CUDA_EXTENSIONS
-    OFF
-    CUDA_STANDARD_REQUIRED
-    ON
-    CUDA_ARCHITECTURES
-    ${CUDA_ARCHITECTURES})
+    CUDA_STANDARD;14 # Force strict C++ 14 standard
+    CUDA_EXTENSIONS;OFF CUDA_STANDARD_REQUIRED;ON CUDA_ARCHITECTURES;${CUDA_ARCHITECTURES})
 # CUDA_SEPARABLE_COMPILATION ON) CUDA_RESOLVE_DEVICE_SYMBOLS ON ) target_include_directories (my lib
 # PUBLIC $<BUILD_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}> )
 set(Draco_std_target_props INTERPROCEDURAL_OPTIMIZATION_RELEASE ${USE_IPO}
@@ -50,7 +44,10 @@ function(dbs_std_tgt_props target)
   get_property(project_enabled_languages GLOBAL PROPERTY ENABLED_LANGUAGES)
   foreach(lang ${project_enabled_languages})
     if(${lang} STREQUAL "C")
-      set_target_properties(${target} PROPERTIES ${Draco_std_target_props_C})
+      set_target_properties(
+        ${target}
+        PROPERTIES
+        ${Draco_std_target_props_C})
     elseif(${lang} STREQUAL "CXX")
       set_target_properties(${target} PROPERTIES ${Draco_std_target_props_CXX})
     elseif(${lang} STREQUAL "CUDA")
@@ -61,8 +58,8 @@ function(dbs_std_tgt_props target)
 
   # Helper for clang-tidy that points to very old gcc STL files.  We need STL files from clang (at
   # least for llvm-6.  llvm-9 doesn't need this and it actually causes issues).
-  if("${DRACO_STATIC_ANALYZER}" MATCHES "clang-tidy" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS
-                                                         9.0)
+  if(("${DRACO_STATIC_ANALYZER}" MATCHES "clang-tidy") AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS
+                                                            9.0))
     if(NOT CLANG_TIDY_IPATH)
       message(FATAL_ERROR "Unable to configure clang-tidy build because CLANG_TIDY_IPATH is "
                           "empty.")
@@ -209,10 +206,10 @@ macro(add_component_executable)
   endif()
   dbs_std_tgt_props(${ace_TARGET})
   set_target_properties(
-    ${ace_TARGET}
-    PROPERTIES
-      OUTPUT_NAME ${ace_EXE_NAME} FOLDER ${ace_FOLDER}
-      COMPILE_DEFINITIONS
+    ${ace_TARGET} PROPERTIES
+    OUTPUT_NAME ${ace_EXE_NAME}
+    FOLDER ${ace_FOLDER}
+    COMPILE_DEFINITIONS
       "PROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\";PROJECT_BINARY_DIR=\"${PROJECT_BINARY_DIR}\"")
   if(DEFINED ace_PROJECT_LABEL)
     set_target_properties(${ace_TARGET} PROPERTIES PROJECT_LABEL ${ace_PROJECT_LABEL})
@@ -345,8 +342,9 @@ macro(add_component_library)
   add_library(${acl_TARGET} ${acl_LIBRARY_TYPE} ${acl_SOURCES})
   dbs_std_tgt_props(${acl_TARGET})
   set_target_properties(
-    ${acl_TARGET} PROPERTIES OUTPUT_NAME ${acl_LIBRARY_NAME_PREFIX}${acl_LIBRARY_NAME}
-                             FOLDER ${folder_name} WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    ${acl_TARGET} PROPERTIES
+    OUTPUT_NAME ${acl_LIBRARY_NAME_PREFIX}${acl_LIBRARY_NAME}
+    FOLDER ${folder_name} WINDOWS_EXPORT_ALL_SYMBOLS ON)
   if(DEFINED DRACO_LINK_OPTIONS AND NOT "${DRACO_LINK_OPTIONS}x" STREQUAL "x")
     set_property(TARGET ${acl_TARGET} APPEND PROPERTY LINK_OPTIONS ${DRACO_LINK_OPTIONS})
   endif()
@@ -386,8 +384,6 @@ macro(add_component_library)
 
       # Create the actual dependency.
       target_link_libraries(${acl_objlib_TARGET} ${${acl_objlib_TARGET}_TARGET_DEPS})
-    else()
-      target_link_libraries(${acl_TARGET} ${acl_TARGET_DEPS})
     endif()
   endif()
   if(DEFINED acl_INCLUDE_DIRS)
@@ -928,19 +924,20 @@ macro(add_parallel_tests)
     add_executable(Ut_${compname}_${testname}_exe ${file})
     dbs_std_tgt_props(Ut_${compname}_${testname}_exe)
     set_target_properties(
-      Ut_${compname}_${testname}_exe
-      PROPERTIES
-        OUTPUT_NAME ${testname} VS_KEYWORD ${testname} FOLDER ${compname}_test
-        COMPILE_DEFINITIONS
+      Ut_${compname}_${testname}_exe PROPERTIES
+      OUTPUT_NAME ${testname}
+      VS_KEYWORD ${testname}
+      FOLDER ${compname}_test
+      COMPILE_DEFINITIONS
         "PROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\";PROJECT_BINARY_DIR=\"${PROJECT_BINARY_DIR}\"")
     if(DEFINED DRACO_LINK_OPTIONS AND NOT "${DRACO_LINK_OPTIONS}x" STREQUAL "x")
       set_target_properties(Ut_${compname}_${testname}_exe PROPERTIES LINK_OPTIONS
-                                                                      ${DRACO_LINK_OPTIONS})
+                            ${DRACO_LINK_OPTIONS})
     endif()
     if(addparalleltest_MPI_PLUS_OMP)
       if(${CMAKE_GENERATOR} MATCHES Xcode)
-        set_target_properties(Ut_${compname}_${testname}_exe
-                              PROPERTIES XCODE_ATTRIBUTE_ENABLE_OPENMP_SUPPORT YES)
+        set_target_properties(Ut_${compname}_${testname}_exe PROPERTIES
+                              XCODE_ATTRIBUTE_ENABLE_OPENMP_SUPPORT YES)
       endif()
     endif()
     # Do we need to use the Fortran compiler as the linker?

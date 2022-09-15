@@ -5,7 +5,7 @@
 # brief  Generate build project files for Fortran.
 # note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.17.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(FortranChecks_f90sub C Fortran)
 
 # ------------------------------------------------------------------------------------------------ #

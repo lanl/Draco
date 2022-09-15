@@ -49,7 +49,6 @@ set(random123_known_answer_tests ${PROJECT_SOURCE_DIR}/kat_c.cc ${PROJECT_SOURCE
 # ------------------------------------------------------------------------------------------------ #
 # Build Unit tests
 # ------------------------------------------------------------------------------------------------ #
-
 add_scalar_tests(SOURCES "${test_sources}" DEPS "Lib_rng")
 
 add_scalar_tests(

@@ -4,11 +4,11 @@
 # author Mathew Cleveland
 # date   Jan. 12 2020
 # brief  CMake configuration for nnetwork_interface tests
-# note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
 #
 #--------------------------------------------------------------------------------------------------#
 
-cmake_minimum_required(VERSION 3.9.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(predict_test CXX)
 
 # ------------------------------------------------------------------------------------------------ #

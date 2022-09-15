@@ -1,10 +1,10 @@
-#--------------------------------------------*-cmake-*---------------------------------------------#
+# --------------------------------------------*-cmake-*------------------------------------------- #
 # file   config/unix-ifx.cmake
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Wednesday, May 26, 2021, 14:12 pm
 # brief  Establish flags for Unix - Intel OneAPI Fortran (ifx)
-# note   Copyright (C) 2021 Triad National Security, LLC., All rights reserved.
-#--------------------------------------------------------------------------------------------------#
+# note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# ------------------------------------------------------------------------------------------------ #
 
 #
 # Compiler flags:
@@ -38,17 +38,17 @@ if("${CMAKE_Fortran_FLAGS}" MATCHES "Werror")
   message(STATUS "CMAKE_Fortran_FLAGS  = ${CMAKE_Fortran_FLAGS}")
 endif()
 
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
 deduplicate_flags(CMAKE_Fortran_FLAGS)
-force_compiler_flags_to_cache("Fortran")
 
 # Optional compiler flags
 if(NOT ${SITENAME} STREQUAL "Trinitite")
   toggle_compiler_flag(ENABLE_SSE "-mia32 -axSSSE3" "Fortran" "") # sse3, ssse3
 endif()
 toggle_compiler_flag(OPENMP_FOUND ${OpenMP_Fortran_FLAGS} "Fortran" "")
+force_compiler_flags_to_cache("Fortran")
 
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # End config/unix-ifx.cmake
-# --------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #

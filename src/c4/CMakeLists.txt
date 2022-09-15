@@ -5,7 +5,7 @@
 # brief  Generate build project files for c4
 # note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.17.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(c4 CXX)
 
 # ------------------------------------------------------------------------------------------------ #
@@ -81,7 +81,6 @@ if(HAVE_Fortran)
     LIBRARIES rtt_fc4 #< new library will have this name. --> librtt_fc4.dll.
     TARGET_NAMES Lib_c4_fc4
     DEPENDS "${deplist}"
-    # NO_EXTERNAL_INSTALL
     CMAKE_COMMAND_LINE "${build_system_state}"
     # VERBOSE
   )

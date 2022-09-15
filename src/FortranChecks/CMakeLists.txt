@@ -5,7 +5,7 @@
 # brief  Generate build project files for FortranChecks.
 # note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.17.0)
+cmake_minimum_required(VERSION 3.21.0)
 project(FortranChecks CXX)
 
 # When using CXX/Fortran cross language linking and function calling the CMake module
@@ -30,7 +30,10 @@ add_component_library(
   LIBRARY_NAME FC_Derived_Type
   SOURCES "${Csources}"
   NOEXPORT)
-set_target_properties(Lib_FC_Derived_Type PROPERTIES FOLDER FortranChecks)
+set_target_properties(
+  Lib_FC_Derived_Type
+  PROPERTIES
+  FOLDER FortranChecks)
 
 # ------------------------------------------------------------------------------------------------ #
 # Build a library from Fortran sources

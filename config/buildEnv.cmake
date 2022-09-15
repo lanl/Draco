@@ -51,7 +51,7 @@ macro(dbsSetDefaults)
 
   # For win32 platforms avoid copying all dependent dll libraries into the test directories by using
   # a common runtime directory.
-  if(WIN32)
+  if(WIN32 AND NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     if(CMAKE_CONFIGURATION_TYPES)
       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
     else() # nmake or mingw32-make
@@ -243,15 +243,6 @@ macro(dbsInitExportTargets PREFIX)
   set(${PREFIX}_PACKAGE_LIST
       ""
       CACHE INTERNAL "List of known package targets" FORCE)
-  set(${PREFIX}_TPL_LIST
-      ""
-      CACHE INTERNAL "List of third party libraries known by this package" FORCE)
-  set(${PREFIX}_TPL_INCLUDE_DIRS
-      ""
-      CACHE INTERNAL "List of include paths used by this package to find TPL header files." FORCE)
-  set(${PREFIX}_TPL_LIBRARIES
-      ""
-      CACHE INTERNAL "List of third party libraries used by this package." FORCE)
 endmacro()
 
 # ------------------------------------------------------------------------------------------------ #
