@@ -16,6 +16,7 @@
 #include <iostream>
 #include <iterator>
 #include <string>
+#include <utility>
 #include <vector>
 
 // forward declaration
@@ -69,10 +70,8 @@ struct Banana {
  * \brief Demonstration of move semantics
  *
  * 1. Create a vector
- * 2. Attempt to construct a class (Apple), demonstrate that ownership is not
- *    transferred.
- * 3. Attempt to construct another class (Banana), demonstrate that ownership is
- *    transferred.
+ * 2. Attempt to construct a class (Apple), demonstrate that ownership is not transferred.
+ * 3. Attempt to construct another class (Banana), demonstrate that ownership is transferred.
  */
 //------------------------------------------------------------------------------------------------//
 void move_semantics_example(rtt_dsxx::UnitTest &ut) {
@@ -88,11 +87,9 @@ void move_semantics_example(rtt_dsxx::UnitTest &ut) {
   auto const v1_loc = &v1;
   auto v1_data_loc = &v1[0];
 
-  // Case 1:
-  // Create an object, attempt to transfer ownership from v1 to a.
-  // This will fail.
+  // Case 1: Create an object, attempt to transfer ownership from v1 to a. This will fail.
   cout << "\nCreate an instantiation of Apple that owns a copy of v1.";
-  Apple a(move(v1));
+  Apple a(std::move(v1));
   cout << "\nAfter call to Apple::ctor\n";
   report_memory_locations(v1, "v1");
   report_memory_locations(a.v_, "a.v_");
@@ -127,20 +124,15 @@ void move_semantics_example(rtt_dsxx::UnitTest &ut) {
   // a.v_ should be the memory location of v1's original data.
   FAIL_IF_NOT(v1_data_loc == &a.v_[0]);
 
-  // The v1 vector's data store may have changed location when we used
-  // 'push_back' above.
+  // The v1 vector's data store may have changed location when we used 'push_back' above.
   v1_data_loc = &v1[0];
 
-  // location of v1 remains unchanged (even though it's underlying data
-  // container may be new).
+  // location of v1 remains unchanged (even though it's underlying data container may be new).
   FAIL_IF_NOT(v1_loc == &v1);
 
-  // Case 2:
-  // Create an object, attempt to transfer ownership from v1 to b.
-  // This works.
-  cout << "\nCreate an instantiation of Banana that takes ownership of v1's "
-       << "data.";
-  Banana b(move(v1));
+  // Case 2: Create an object, attempt to transfer ownership from v1 to b. This works.
+  cout << "\nCreate an instantiation of Banana that takes ownership of v1's data.";
+  Banana b(std::move(v1));
   cout << "\nAfter call to Banana::ctor\n";
   report_memory_locations(v1, "v1");
   report_memory_locations(b.v_, "b.v_");
@@ -171,8 +163,8 @@ void report_memory_locations(std::vector<double> const &v, std::string const &na
   using namespace std;
   cout << name << " @ " << &v << ", " << name << " data @ ";
   if (!v.empty())
-    cout << &v[0] << endl; // NOLINT - clang-tidy warns about possibly accessing
-                           // moved-from data location.
+    cout << &v[0] << endl; // NOLINT - clang-tidy warns about possibly accessing moved-from data
+                           // location.
   else
     cout << "nullptr" << endl;
   cout << name << " = {";
