@@ -103,17 +103,17 @@ deduplicate_flags(CMAKE_CXX_FLAGS)
 
 # Toggle for OpenMP support
 if(OpenMP_C_FLAGS)
-  toggle_compiler_flag(OPENMP_FOUND "${OpenMP_C_FLAGS}" "C" "")
+  toggle_compiler_flag(OpenMP_FOUND "${OpenMP_C_FLAGS}" "C" "")
 endif()
 if(OpenMP_CXX_FLAGS)
-  toggle_compiler_flag(OPENMP_FOUND "${OpenMP_CXX_FLAGS}" "CXX" "")
+  toggle_compiler_flag(OpenMP_FOUND "${OpenMP_CXX_FLAGS}" "CXX" "")
 endif()
 
 # CMake will set OpenMP_C_FLAGS to '-qsmp.'  This option turns on OpenMP but also activates the
 # auto-parallelizer.  We don't want to enable the 2nd feature so we need to specify the OpenMP flag
 # to be '-qsmp=omp.'
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13.0)
-  toggle_compiler_flag(OPENMP_FOUND "-qsmp=omp" "C;CXX;EXE_LINKER" "")
+  toggle_compiler_flag(OpenMP_FOUND "-qsmp=omp" "C;CXX;EXE_LINKER" "")
 endif()
 force_compiler_flags_to_cache("C;CXX")
 

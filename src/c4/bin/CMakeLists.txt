@@ -11,7 +11,7 @@ project(c4_bin CXX)
 # -------------------------------------------------------------------------------------------------#
 
 # xthi depends on OpenMP, don't attempt to build it if we don't have it
-if(OPENMP_FOUND)
+if(OpenMP_FOUND)
   add_component_executable(
     TARGET Exe_xthi
     TARGET_DEPS Lib_c4

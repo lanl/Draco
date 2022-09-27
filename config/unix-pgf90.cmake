@@ -29,7 +29,7 @@ endif()
 deduplicate_flags(CMAKE_Fortran_FLAGS)
 
 # Toggle compiler flags for optional features
-toggle_compiler_flag(OPENMP_FOUND ${OpenMP_Fortran_FLAGS} "Fortran" "")
+toggle_compiler_flag(OpenMP_FOUND ${OpenMP_Fortran_FLAGS} "Fortran" "")
 force_compiler_flags_to_cache("Fortran")
 
 # ------------------------------------------------------------------------------------------------ #

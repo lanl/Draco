@@ -50,7 +50,7 @@ endif()
 deduplicate_flags(CMAKE_C_FLAGS)
 deduplicate_flags(CMAKE_CXX_FLAGS)
 
-toggle_compiler_flag(OPENMP_FOUND ${OpenMP_C_FLAGS} "C;CXX" "")
+toggle_compiler_flag(OpenMP_FOUND ${OpenMP_C_FLAGS} "C;CXX" "")
 force_compiler_flags_to_cache("C;CXX")
 
 # ------------------------------------------------------------------------------------------------ #

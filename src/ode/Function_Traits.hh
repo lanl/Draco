@@ -4,8 +4,7 @@
  * \author Kent Budge
  * \date   Wed Aug 18 10:31:24 2004
  * \brief  Definition of class template Function_Traits
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef ode_Function_Traits_hh
@@ -21,15 +20,21 @@ namespace rtt_ode {
  * \class Function_Traits
  * \brief Traits of Function category
  *
- * The Function category includes all types that behave like a function of a
- * single value that returns a value.  Examples include <code> double
- * (*)(double)</code>, <code> double (*)(int)</code>, or <code> complex<double>
- * (*)(double)</code>. Many functor classes are also included in this category.
+ * The Function category includes all types that behave like a function of a single value that
+ * returns a value.  Examples include
+ *
+ * - <code>double (*)(double)</code>,
+ * - <code>double (*)(int)</code>, or
+ * - <code>complex<double> (*)(double)</code>.
+ *
+ * Many functor classes are also included in this category.
  *
  * The default implementation takes its traits from the Function type itself.
  * Specializations must be defined for built-in types.  There are
- * specializations in rtt_ode for <code>double (*)(double)</code> and
- * <code>complex<double> (*)(double)</code>.
+ * specializations in rtt_ode for
+ *
+ * - <code>double (*)(double)</code> and
+ * - <code>complex<double> (*)(double)</code>.
  *
  * \arg \a Function A function type.
  */
@@ -54,8 +59,8 @@ public:
 //------------------------------------------------------------------------------------------------//
 /*! Traits for ordinary function mapping const double to double
  *
- * AIX considers top const qualifiers significant in function signatures.
- * Everyone else, including the ISO standard, disregards top const qualifiers.
+ * AIX considers top const qualifiers significant in function signatures. Everyone else, including
+ * the ISO standard, disregards top const qualifiers.
  */
 template <> class Function_Traits<double (*)(double const)> {
 public:

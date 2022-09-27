@@ -59,7 +59,7 @@ else()
 endif()
 foreach(omptest ${special_tests})
   list(REMOVE_ITEM test_sources ${omptest})
-  if(OPENMP_FOUND)
+  if(OpenMP_FOUND)
     add_parallel_tests(
       MPI_PLUS_OMP
       SOURCES "${omptest}"
@@ -96,7 +96,10 @@ if(NOT ${DRACO_C4} STREQUAL "SCALAR")
   # Override PROCESSORS property.  Use 'mpirun -np 4 ...' but reserve half of the cores. The test
   # will actually use all of the cores, but only very briefly.
   math(EXPR half_of_all_cores "${MPI_MAX_NUMPROCS_PHYSICAL} / 2")
-  set_tests_properties(c4_tstQuoWrapper_4 PROPERTIES PROCESSORS "${half_of_all_cores}")
+  set_tests_properties(
+    c4_tstQuoWrapper_4
+    PROPERTIES
+    PROCESSORS "${half_of_all_cores}")
 endif()
 
 # Exclude tstTime from valgrind checks.
@@ -118,7 +121,7 @@ add_parallel_tests(
 # Python based test runners
 # ------------------------------------------------------------------------------------------------ #
 include(ApplicationUnitTest)
-if(OPENMP_FOUND AND TARGET Exe_xthi)
+if(OpenMP_FOUND AND TARGET Exe_xthi)
   # xthi depends on OpenMP.  If OpenMP is not found, xthi will not be compiled.
   add_app_unit_test(
     DRIVER ${CMAKE_CURRENT_SOURCE_DIR}/tstXthi.py
