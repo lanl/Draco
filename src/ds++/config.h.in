@@ -155,7 +155,10 @@
 #endif
 
 /* OpenMP Setup */
-#cmakedefine OPENMP_FOUND
+#cmakedefine OpenMP_FOUND
+#ifdef OpenMP_FOUND
+#define OPENMP_FOUND
+#endif
 
 /* ---------------------------------------- */
 /* FPE_TRAP Settings */

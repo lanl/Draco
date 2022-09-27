@@ -109,10 +109,10 @@ endif()
 # ------------------------------------------------------------------------------------------------ #
 # Toggle for OpenMP support
 if(OpenMP_C_FLAGS)
-  toggle_compiler_flag(OPENMP_FOUND "${OpenMP_C_FLAGS}" "C" "")
+  toggle_compiler_flag(OpenMP_FOUND "${OpenMP_C_FLAGS}" "C" "")
 endif()
 if(OpenMP_CXX_FLAGS)
-  toggle_compiler_flag(OPENMP_FOUND "${OpenMP_CXX_FLAGS}" "CXX" "")
+  toggle_compiler_flag(OpenMP_FOUND "${OpenMP_CXX_FLAGS}" "CXX" "")
 endif()
 # Note: adding openmp option to EXE_LINKER will break MPI detection for gfortran when running with
 # clang++/clang/gfortran.

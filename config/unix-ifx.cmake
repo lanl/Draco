@@ -46,7 +46,7 @@ deduplicate_flags(CMAKE_Fortran_FLAGS)
 if(NOT ${SITENAME} STREQUAL "Trinitite")
   toggle_compiler_flag(ENABLE_SSE "-mia32 -axSSSE3" "Fortran" "") # sse3, ssse3
 endif()
-toggle_compiler_flag(OPENMP_FOUND ${OpenMP_Fortran_FLAGS} "Fortran" "")
+toggle_compiler_flag(OpenMP_FOUND ${OpenMP_Fortran_FLAGS} "Fortran" "")
 force_compiler_flags_to_cache("Fortran")
 
 # ------------------------------------------------------------------------------------------------ #

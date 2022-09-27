@@ -53,23 +53,23 @@ macro(query_openmp_availability)
   message(STATUS "Looking for OpenMP...")
   if(WIN32)
     set(OpenMP_C_FLAGS "/openmp:experimental")
-    set(OPENMP_FOUND TRUE)
+    set(OpenMP_FOUND TRUE)
     set(OpenMP_C_VERSION "3.1")
   else()
     find_package(OpenMP QUIET)
   endif()
-  if(OPENMP_FOUND)
+  if(OpenMP_FOUND)
     message(STATUS "Looking for OpenMP... ${OpenMP_C_FLAGS} (supporting the ${OpenMP_C_VERSION} "
                    "standard)")
     if(OpenMP_C_VERSION VERSION_LESS 3.0)
       message(STATUS "OpenMP standard support is too old (< 3.0). Disabling OpenMP build features.")
-      set(OPENMP_FOUND FALSE)
+      set(OpenMP_FOUND FALSE)
       set(OpenMP_C_FLAGS
           ""
           CACHE BOOL "OpenMP disabled (too old)." FORCE)
     endif()
-    set(OPENMP_FOUND
-        ${OPENMP_FOUND}
+    set(OpenMP_FOUND
+        ${OpenMP_FOUND}
         CACHE BOOL "Is OpenMP available?" FORCE)
   else()
     message(STATUS "Looking for OpenMP... not found")
