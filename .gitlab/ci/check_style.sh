@@ -295,7 +295,8 @@ if [[ -x $CML ]]; then
     if ! [[ -f "${file}" ]]; then continue; fi
 
     printf "==> cmake-lint %s\n" "$file"
-    $CML --suppress-decoration --max-branches 20 "${file}" && echo -ne "==> cmake-lint ${file} ... OK\n" || cml_issues=1
+    $CML --suppress-decoration --max-branches 20 "${file}" \
+      && echo -ne "==> cmake-lint ${file} ... OK\n" || cml_issues=1
 
   done
 
@@ -414,7 +415,7 @@ patchfile_cb=$(mktemp "/tmp/$USER/copyright_block.patch.XXXXXXXX")
 FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .txt"
 #FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
 FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc Release.hh check_style.sh imc_info.cc .in kat_main.h"
-FILE_ENDINGS_EXCLUDE+=" rngNxW.h util.h"
+FILE_ENDINGS_EXCLUDE+=" rngNxW.h util.h terminal.h"
 export FILE_EXTS FILE_ENDINGS_EXCLUDE
 
 # Loop over all modified files.  Create one patch containing all changes to these files
@@ -427,7 +428,8 @@ for file in $modifiedfiles; do
   # If this PR deletes a file, skip it
   if ! [[ -f "${file}" ]]; then continue; fi
   # Gold files, python test inputs, and python run files don't have a copyright line
-  if [[ "${file}" =~ "golds/" || "${file}" =~ "mcgrid/test/" || "${file}" =~ "ncpd/test/" || "${file}" =~ "run/" ]]; then
+  if [[ "${file}" =~ "golds/" || "${file}" =~ "mcgrid/test/" || "${file}" =~ "ncpd/test/" \
+        || "${file}" =~ "run/" ]]; then
     continue;
   fi
 
