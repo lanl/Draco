@@ -38,9 +38,12 @@
 #endif
 
 #ifdef __CUDACC__
-// https://stackoverflow.com/questions/14831051/how-to-disable-a-specific-nvcc-compiler-warnings
-// http://www.ssl.berkeley.edu/~jimm/grizzly_docs/SSL/opt/intel/cc/9.0/lib/locale/en_US/mcpcom.msg
+#ifdef __NVCC_DIAG_PRAGMA_SUPPORT__
+#pragma nv_diagnostic push
+#pragma nv_diag_suppress 177
+#else
 #pragma diag_suppress unsigned_compare_with_negative
+#endif
 #endif
 
 //------------------------------------------------------------------------------------------------//
@@ -767,7 +770,11 @@ public:
 #undef B0
 
 #ifdef __CUDACC__
+#ifdef __NVCC_DIAG_PRAGMA_SUPPORT__
+#pragma nv_diagnostic pop
+#else
 #pragma diag_default unsigned_compare_with_negative
+#endif
 #endif
 
 #if defined(__clang__) && !defined(__ibmxl__)
