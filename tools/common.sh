@@ -27,7 +27,6 @@ function dracohelp()
   echo "establish_permissions - Change group to othello, dacodes or draco and change permissions to g+rwX,o-rwX"
   echo "flavor        - build a string that looks like fire-openmpi-2.0.2-intel-17.0.1"
   echo "fn_exists     - return true if named bash function is defined"
-  echo "install_verions - helper for doing releases (see release_toss2.sh)"
   echo "lookupppn     - return PE's per node."
   echo "machineName   - return a string to represent the current machine."
   echo "matches_extension - Does the provided filename have a matching extension?"
@@ -35,7 +34,6 @@ function dracohelp()
   echo "npes_test     - return PE's to be used for testing."
   echo "osName        - return a string to represent the current machine's OS."
   echo "proxy         - toggle the status of the LANL proxy variables."
-  echo "publish_release - helper for doing releases (see release_toss2.sh)"
   echo "qrm           - quick rm for directories located in lustre scratch spaces."
   echo "rdde          - more agressive reset of the draco environment."
   echo "run           - echo a command and then run it."
@@ -441,179 +439,6 @@ function npes_test
   esac
   echo "$np"
 }
-
-#--------------------------------------------------------------------------------------------------#
-# Configure, Build and Run the Tests
-#--------------------------------------------------------------------------------------------------#
-function install_versions
-{
-  local config_step
-  local build_step
-  local test_step
-  config_step=0
-  build_step=0
-  test_step=0
-
-  # shellcheck disable=2154
-  if [[ -z ${steps} ]]; then
-    echo "You must provide variable steps."
-    echo "E.g.: steps=\"configure build test\""
-    return
-  else
-    for s in $steps; do
-      case $s in
-        config) config_step=1 ;;
-        build)  build_step=1  ;;
-        test)   test_step=1   ;;
-      esac
-    done
-  fi
-  if [[ -z ${buildflavor} ]]; then
-    buildflavor=$(flavor)
-  fi
-  # shellcheck disable=2154
-  if [[ -z ${rttversion} ]]; then
-    echo "You must provide variable rttversion."
-    # echo "E.g.: VERSIONS=( \"debug\" \"opt\" )"
-    return
-  fi
-  # shellcheck disable=2154
-  if [[ -z "${options}" ]]; then
-    echo "You must provide variable option."
-    return
-  fi
-  # shellcheck disable=2154
-  if [[ -z "${package}" ]]; then
-    echo "You must provide variable package."
-    echo "E.g.: package=\"draco\""
-    return
-  fi
-  # shellcheck disable=2154
-  if [[ -z "${install_prefix}" ]]; then
-    echo "You must provide variable install_prefix."
-    echo "E.g.: install_prefix=/usr/projects/draco/${pdir:-notset}/$buildflavor"
-    return
-  fi
-  if ! [[ ${build_pe} ]]; then
-    build_pe=$(npes_build)
-  fi
-  if ! [[ ${test_pe} ]]; then
-    test_pe=$(npes_test)
-  fi
-
-  # Echo environment before we start:
-  echo
-  echo
-  echo "# Environment"
-  echo "# ------------"
-  echo
-  run "module list"
-  run "printenv"
-  echo "---"
-  echo "Environment size = $(printenv | wc -c)"
-
-  echo
-  echo
-  echo "# Begin release: $buildflavor/$rttversion"
-  echo "# ------------"
-  echo
-
-  # Create install directory
-  install_dir="$install_prefix/$rttversion"
-  if ! [[ -d $install_dir ]]; then
-    run "mkdir -p $install_dir" || (echo "Could not create $install_dir" && return 1)
-  fi
-
-  # try to locate the souce directory
-  if ! [[ -d "${source_prefix:=notset}" ]]; then
-    echo "You must set the variable 'source_prefix'"
-    return
-  fi
-  if [[ -f "${source_prefix}/source/ChangeLog" ]]; then
-    source_dir="$source_prefix/source"
-  else
-    local possible_source_dirs
-    possible_source_dirs=$(/bin/ls -1 "$source_prefix/source")
-    for dir in $possible_source_dirs; do
-      if [[ -f "$source_prefix/source/$dir/ChangeLog" ]]; then
-        source_dir="$source_prefix/source/$dir"
-        break
-      fi
-    done
-  fi
-  if ! [[ -f "$source_dir/CMakeLists.txt" ]]; then
-    echo "Could not find sources. Tried looking at $source_prefix/source/"
-    exit 1
-  fi
-  # source_dir="$source_prefix/source/$package"
-  build_dir="${build_prefix:=notset}/${rttversion:=notset}/${package:0:1}"
-
-  # Purge any existing files before running cmake to configure the build directory.
-  if [[ "$config_step" == 1 ]]; then
-    if [[ -d "${build_dir}" ]]; then
-      run "rm -rf ${build_dir}"
-    fi
-    run "mkdir -p $build_dir" || (echo "Could not create directory $build_dir." && return 2)
-  fi
-
-  run "cd $build_dir"
-  if [[ "$config_step" == 1 ]]; then
-    run "cmake -DCMAKE_INSTALL_PREFIX=$install_dir $options $CONFIG_EXTRA $source_dir" \
-      || (echo "Could not configure in $build_dir from source at $source_dir" && return 3)
-  fi
-  if [[ "$build_step" == 1 ]]; then
-    run "${MAKE_COMMAND:-make} -j $build_pe -l $build_pe install"  \
-      || (echo "Could not build code/tests in $build_dir" && return 4)
-  fi
-  if [[ "$test_step" == 1 ]]; then
-    # run all tests
-    run "${CTEST_COMMAND:-ctest} -j $test_pe --output-on-failure" \
-      || run "${CTEST_COMMAND:-ctest} -j $test_pe --output-on-failure --rerun-failed"
-  fi
-  wait
-  if ! [[ "${build_permissions:-notset}" = "notset" ]]; then
-    run "chmod -R $build_permissions $build_dir"
-  fi
-}
-
-#--------------------------------------------------------------------------------------------------#
-# If $jobids is set, wait for those jobs to finish before setting groups and permissions.
-function publish_release()
-{
-  echo " "
-  echo "Waiting batch jobs to finish ..."
-  echo "   Running jobs = ${jobids:-no jobs}"
-
-  case $(osName) in
-    toss* | cle* ) SHOWQ=squeue ;;
-    darwin| ppc64) SHOWQ=squeue ;;
-    ppc64le )      SHOWQ=bjobs  ;;
-  esac
-
-  # wait for jobs to finish
-  for jobid in $jobids; do
-    while [[ $("${SHOWQ}" | grep -c "$jobid") -gt 0 ]]; do
-      "${SHOWQ}" | grep "$jobid"
-      sleep 5m
-    done
-    echo "   Job $jobid is complete."
-  done
-
-  echo " "
-  echo "Updating file permissions ..."
-  echo " "
-
-  # shellcheck disable=2154
-  if [[ -n $install_permissions ]]; then
-    # Set access to top level install dir.
-    if [[ -d $install_prefix ]]; then
-      run "chgrp -R ${install_group:-ccsrad} $source_prefix"
-      run "chmod -R $install_permissions $source_prefix"
-      run "find $source_prefix -type d -exec chmod g+s {} +"
-    fi
-  fi
-}
-
 #--------------------------------------------------------------------------------------------------#
 # Pause until the 'last modified' timestamp of file $1 to be $2 seconds old.
 function allow_file_to_age
@@ -737,84 +562,16 @@ matches_extension() {
   return 1
 }
 
-#--------------------------------------------------------------------------------------------------#
-# relcreatesymlinks
-#
-# Creates symlinks to an installation to satisfy requests from clients.  For example:
-#
-#   cts1-openmpi-2.1.2-gcc-7.4.0    -> snow-openmpi-2.1.2-gcc-7.4.0
-#   badger-openmpi-2.1.2-gcc-7.4.0 -> snow-openmpi-2.1.2-gcc-7.4.0
-#
-# This function is designed to be called from release-<machine>.sh.  The following variables should
-# be set in the environment:
-#
-# - source_prefix :: e.g. /usr/projects/draco/draco-NN_NN_NN
-# - evironments   :: a list of bash function names. These functiosn should establish build
-#                    environments (see cts1-env.sh, etc.)
-# - siblings      :: a space delimited list of machine names that are considered to be equivalent
-#                    (e.g.: "fire ice cyclone")
-#
-#--------------------------------------------------------------------------------------------------#
-function relcreatesymlinks() {
-
-  OLDPWD=$(pwd)
-  machfam=$(machineFamily)
-
-  if ! [[ -d $source_prefix ]]; then
-    echo "relcreatesymlinks:: Expected variable source_prefix to be set" && return 1
-  fi
-  if [[ ${siblings:=notset} == "notset" ]]; then
-    echo "relcreatesymlinks:: Expected variable siblings to be set" && return 2
-  fi
-  if [[ ${environments:=notset} == "notset" ]]; then
-    echo "relcreatesymlinks:: Expected variable environments to be set" && return 3
-  fi
-
-  run "cd $source_prefix"
-
-  for env in $environments; do
-
-    if ! [[ $(fn_exists "$env") ]]; then
-      echo -n "relcreatesymlinks:: Attempted to load environment $env, but this function is "
-      echo "not defined". && return 4
-    fi
-    # establish environment
-    $env
-    buildflavor=$(flavor)
-
-    # create symlinks
-    me="${buildflavor//-*/}"
-    familymatch="${siblings// /|}"
-    case $me in
-      @($familymatch) )
-        linkname="${buildflavor//${me}/${machfam}}"
-        run "ln -s $buildflavor $linkname"
-        for m in $siblings; do
-          linkname="${buildflavor//${me}/${m}}"
-          linkname="${linkname//yellow/}"
-          if ! [[ -d $source_prefix/$linkname ]]; then
-            run "ln -s $buildflavor $linkname"
-          fi
-        done
-        ;;
-      esac
-    done
-
-  run "cd $OLDPWD"
-}
-
  #--------------------------------------------------------------------------------------------------#
  export canonicalize_filename
  export die
  export flavor
- export install_versions
  export job_launch_sanity_checks
  export machineName
  export matches_extension
  export npes_build
  export npes_test
  export osName
- export relcreatesymlinks
  export run
  export selectscratchdir
  export version_gt
