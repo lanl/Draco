@@ -23,7 +23,7 @@
 
 ccs1_clangtidy:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS1-setuid-shared
   extends: .ccscs
   stage: lint
   variables:
@@ -65,7 +65,7 @@ ccs1_clangtidy:
 
 ccs1_deb_gcc_1120_deploy:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS1-setuid-shared
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -74,7 +74,7 @@ ccs1_deb_gcc_1120_deploy:
 
 ccs1_c4_scalar_deploy:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS1-setuid-shared
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -85,7 +85,7 @@ ccs1_c4_scalar_deploy:
 
 ccs1_clangtidy_deploy:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS1-setuid-shared
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -114,7 +114,7 @@ ccs2_rel_gcc_1120_deploy:
 
 ccs3_deb_llvm_deploy:
   tags:
-    - CCSCS4-setuid-shared
+    - CCSCS3-setuid-shared
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -123,7 +123,7 @@ ccs3_deb_llvm_deploy:
 
 ccs3_rel_llvm_deploy:
   tags:
-    - CCSCS4-setuid-shared
+    - CCSCS3-setuid-shared
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
@@ -132,7 +132,7 @@ ccs3_rel_llvm_deploy:
 
 ccs3_deb_gcc_1120_deploy:
   tags:
-    - CCSCS4-setuid-shared
+    - CCSCS3-setuid-shared
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -141,7 +141,7 @@ ccs3_deb_gcc_1120_deploy:
 
 ccs3_rel_gcc_1120_deploy:
   tags:
-    - CCSCS4-setuid-shared
+    - CCSCS3-setuid-shared
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
@@ -204,7 +204,7 @@ ccs9_rel_gcc_1120_deploy:
 
 ccs1_fulldiag_deploy:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS1-setuid-shared
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -280,7 +280,7 @@ ccs5_deb_llvm12_deploy:
 
 ccs3_deb_gcc_1120:
   tags:
-    - CCSCS4-setuid-shared
+    - CCSCS3-setuid-shared
   stage: fasttest
   extends: .ccscs_merge
   variables:
@@ -292,7 +292,7 @@ ccs3_deb_gcc_1120:
 
 ccs1_c4_scalar:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS1-setuid-shared
   stage: fasttest
   extends: .ccscs_merge
   variables:
@@ -307,7 +307,7 @@ ccs1_c4_scalar:
 
 ccs3_deb_llvm12:
   tags:
-    - CCSCS4-setuid-shared
+    - CCSCS3-setuid-shared
   stage: test
   extends: .ccscs_merge
   variables:
@@ -343,7 +343,7 @@ ccs2_autodoc:
 
 ccs3_rel_llvm12:
   tags:
-    - CCSCS4-setuid-shared
+    - CCSCS3-setuid-shared
   stage: slowtest
   extends: .ccscs_merge
   variables:
@@ -354,7 +354,7 @@ ccs3_rel_llvm12:
 
 ccs3_rel_gcc_1120:
   tags:
-    - CCSCS4-setuid-shared
+    - CCSCS3-setuid-shared
   stage: slowtest
   extends: .ccscs_merge
   variables:
@@ -365,7 +365,7 @@ ccs3_rel_gcc_1120:
 
 ccs1_fulldiag:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS1-setuid-shared
   stage: slowtest
   extends: .ccscs_merge
   variables:
@@ -426,7 +426,7 @@ ccs2_valgrind:
 
 rel_gcc_11.2.0_regress:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS1-setuid-shared
   extends: .ccscs_nightly
   variables:
     SITE_ID: ccscs1
@@ -446,7 +446,7 @@ deb_gcc_11.2.0_regress:
 
 deb_llvm_regress:
   tags:
-    - CCSCS4-setuid-shared
+    - CCSCS3-setuid-shared
   extends: .ccscs_nightly
   variables:
     SITE_ID: ccscs3
@@ -456,7 +456,7 @@ deb_llvm_regress:
 
 rel_llvm_regress:
   tags:
-    - CCSCS4-setuid-shared
+    - CCSCS3-setuid-shared
   extends: .ccscs_nightly
   variables:
     SITE_ID: ccscs3
@@ -466,7 +466,7 @@ rel_llvm_regress:
 
 clangtidy_regress:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS1-setuid-shared
   extends: .ccscs_nightly
   variables:
     SITE_ID: ccscs1
@@ -479,7 +479,7 @@ clangtidy_regress:
 
 deb_gcc_scalar_regress:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS1-setuid-shared
   extends: .ccscs_nightly
   variables:
     SITE_ID: ccscs1
@@ -492,7 +492,7 @@ deb_gcc_scalar_regress:
 
 fulldiag_regress:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS1-setuid-shared
   extends: .ccscs_nightly
   variables:
     SITE_ID: ccscs1
