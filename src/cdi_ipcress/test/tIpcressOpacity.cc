@@ -278,8 +278,7 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   try {
     spOp_Analytic_ragray = std::make_shared<IpcressGrayOpacity>(
         spGFAnalytic, matid, rtt_cdi::ROSSELAND, rtt_cdi::ABSORPTION);
-  } catch (rtt_dsxx::assertion const &error)
-  {
+  } catch (rtt_dsxx::assertion const &error) {
     ostringstream message;
     message << "Failed to create shared_ptr to new IpcressOpacity object for "
             << "analyticOpacities.ipcress data.\n\t" << error.what();
@@ -975,41 +974,37 @@ void gray_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
 
   cout << "\nStarting test \"gray_opacity_packing_test\"...\n";
 
-  vector<char> packed;
   // Ipcress data filename (IPCRESS format required)
   string const op_data_file = ut.getTestSourcePath() + "analyticOpacities.ipcress";
   FAIL_IF_NOT(rtt_dsxx::fileExists(op_data_file));
 
-  {
-    // ------------------------- //
-    // Create IpcressFile object //
-    // ------------------------- //
+  // ------------------------- //
+  // Create IpcressFile object //
+  // ------------------------- //
 
-    // Create a smart pointer to a IpcressFile object
-    shared_ptr<IpcressFile> spGFAnalytic;
+  // Create a smart pointer to a IpcressFile object
+  shared_ptr<IpcressFile> spGFAnalytic;
 
-    // Try to instantiate the object.
-    try {
-      spGFAnalytic = std::make_shared<rtt_cdi_ipcress::IpcressFile>(op_data_file);
-    } catch (rtt_dsxx::assertion const &error) {
-      ostringstream message;
-      FAILMSG(error.what());
-      FAILMSG("Aborting tests.");
-      return;
-    }
-
-    // Create a smart pointer to an Opacity object.
-    shared_ptr<GrayOpacity> spOp_Analytic_ragray;
-
-    // material ID
-    int const matid = 10001;
-
-    spOp_Analytic_ragray = std::make_shared<IpcressGrayOpacity>(
-        spGFAnalytic, matid, rtt_cdi::ROSSELAND, rtt_cdi::ABSORPTION);
-
-    // pack up the opacity
-    packed = spOp_Analytic_ragray->pack();
+  // Try to instantiate the object.
+  try {
+    spGFAnalytic = std::make_shared<rtt_cdi_ipcress::IpcressFile>(op_data_file);
+  } catch (rtt_dsxx::assertion const &error) {
+    ostringstream message;
+    FAILMSG(error.what());
+    FAILMSG("Aborting tests.");
+    return;
   }
+
+  // Create a smart pointer to an Opacity object.
+  shared_ptr<GrayOpacity> spOp_Analytic_ragray;
+
+  // material ID
+  int const matid = 10001;
+
+  spOp_Analytic_ragray = std::make_shared<IpcressGrayOpacity>(
+      spGFAnalytic, matid, rtt_cdi::ROSSELAND, rtt_cdi::ABSORPTION);
+  // pack up the opacity
+  vector<char> packed = spOp_Analytic_ragray->pack();
 
   // make a new IpcressGrayOpacity from packed data
   shared_ptr<GrayOpacity> unpacked_opacity;
@@ -1065,44 +1060,40 @@ void mg_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
 
   cout << "\nStarting test \"mg_opacity_packing_test\"...\n";
 
-  vector<char> packed;
   // Ipcress data filename (IPCRESS format required)
   string const op_data_file = ut.getTestSourcePath() + "analyticOpacities.ipcress";
   FAIL_IF_NOT(rtt_dsxx::fileExists(op_data_file));
 
-  {
-    // ------------------------- //
-    // Create IpcressFile object //
-    // ------------------------- //
+  // ------------------------- //
+  // Create IpcressFile object //
+  // ------------------------- //
 
-    // Create a smart pointer to a IpcressFile object
-    shared_ptr<IpcressFile> spGFAnalytic;
+  // Create a smart pointer to a IpcressFile object
+  shared_ptr<IpcressFile> spGFAnalytic;
 
-    // Try to instantiate the object.
-    try {
-      spGFAnalytic = std::make_shared<rtt_cdi_ipcress::IpcressFile>(op_data_file);
-    } catch (rtt_dsxx::assertion const &error) {
-      ostringstream message;
-      FAILMSG(error.what());
-      FAILMSG("Aborting tests.");
-      return;
-    }
-
-    // material ID
-    const int matid = 10001;
-
-    //---------------- //
-    // MG Opacity test //
-    //---------------- //
-
-    // Create a smart pointer to an Opacity object.
-    shared_ptr<MultigroupOpacity> spOp_Analytic_pmg;
-
-    spOp_Analytic_pmg = std::make_shared<IpcressMultigroupOpacity>(
-        spGFAnalytic, matid, rtt_cdi::PLANCK, rtt_cdi::ABSORPTION);
-
-    packed = spOp_Analytic_pmg->pack();
+  // Try to instantiate the object.
+  try {
+    spGFAnalytic = std::make_shared<rtt_cdi_ipcress::IpcressFile>(op_data_file);
+  } catch (rtt_dsxx::assertion const &error) {
+    ostringstream message;
+    FAILMSG(error.what());
+    FAILMSG("Aborting tests.");
+    return;
   }
+
+  // material ID
+  const int matid = 10001;
+
+  //---------------- //
+  // MG Opacity test //
+  //---------------- //
+
+  // Create a smart pointer to an Opacity object.
+  shared_ptr<MultigroupOpacity> spOp_Analytic_pmg;
+
+  spOp_Analytic_pmg = std::make_shared<IpcressMultigroupOpacity>(
+      spGFAnalytic, matid, rtt_cdi::PLANCK, rtt_cdi::ABSORPTION);
+  vector<char> packed = spOp_Analytic_pmg->pack();
 
   // make a new IpcressGrayOpacity from packed data
   shared_ptr<MultigroupOpacity> unpacked_opacity;
@@ -1110,8 +1101,7 @@ void mg_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
   // Try to instantiate the Opacity object.
   try {
     unpacked_opacity = std::make_shared<IpcressMultigroupOpacity>(packed);
-  } catch (rtt_dsxx::assertion const &error)
-  {
+  } catch (rtt_dsxx::assertion const &error) {
     ostringstream message;
     message << "Failed to create shared_ptr to unpacked IpcressOpacity object for "
             << "analyticOpacities.ipcress data.\n\t" << error.what();

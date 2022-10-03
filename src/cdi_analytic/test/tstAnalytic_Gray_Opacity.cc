@@ -234,16 +234,13 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
 
 void packing_test(rtt_dsxx::UnitTest &ut) {
   // test the packing
-  vector<char> packed;
-  {
-    // lets make two models
-    shared_ptr<Analytic_Opacity_Model> amodel(
-        new Polynomial_Analytic_Opacity_Model(0.0, 100.0, -3.0, 0.0));
+  // lets make two models
+  shared_ptr<Analytic_Opacity_Model> amodel(
+      new Polynomial_Analytic_Opacity_Model(0.0, 100.0, -3.0, 0.0));
 
-    Analytic_Gray_Opacity absorption(amodel, rtt_cdi::ABSORPTION);
+  Analytic_Gray_Opacity absorption(amodel, rtt_cdi::ABSORPTION);
 
-    packed = absorption.pack();
-  }
+  vector<char> packed = absorption.pack();
 
   // now unpack and test
   Analytic_Gray_Opacity ngray(packed);

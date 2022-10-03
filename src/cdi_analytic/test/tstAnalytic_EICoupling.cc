@@ -208,7 +208,6 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
   using Constant_Model = Constant_Analytic_EICoupling_Model;
 
   vector<char> packed;
-
   {
     // make an analytic model (polynomial specific heats)
     shared_ptr<Constant_Model> model(new Constant_Model(1.1));
@@ -216,7 +215,9 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
     // make an analtyic electron-ion coupling
     shared_ptr<EICoupling> ei_coupling(new Analytic_EICoupling(model));
 
-    packed = ei_coupling->pack();
+    vector<char> internal_pack = ei_coupling->pack();
+    packed.resize(internal_pack.size());
+    packed = internal_pack;
   }
 
   Analytic_EICoupling n_ei_coupling(packed);
