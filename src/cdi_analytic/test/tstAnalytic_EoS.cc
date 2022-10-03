@@ -402,17 +402,13 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
 void packing_test(rtt_dsxx::UnitTest &ut) {
   using Polynomial_Model = Polynomial_Specific_Heat_Analytic_EoS_Model;
 
-  vector<char> packed;
+  // make an analytic model (polynomial specific heats)
+  shared_ptr<Polynomial_Model> model(new Polynomial_Model(0.0, 1.0, 3.0, 0.2, 0.0, 0.0));
 
-  {
-    // make an analytic model (polynomial specific heats)
-    shared_ptr<Polynomial_Model> model(new Polynomial_Model(0.0, 1.0, 3.0, 0.2, 0.0, 0.0));
+  // make an analtyic eos
+  shared_ptr<EoS> eos(new Analytic_EoS(model));
 
-    // make an analtyic eos
-    shared_ptr<EoS> eos(new Analytic_EoS(model));
-
-    packed = eos->pack();
-  }
+  vector<char> packed = eos->pack();
 
   Analytic_EoS neos(packed);
 

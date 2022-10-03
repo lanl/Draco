@@ -59,8 +59,7 @@ void tstString_Token_Stream(UnitTest &ut) {
   }
 
   {
-    set<char> ws;
-    ws.insert(':');
+    set<char> ws({':'});
     String_Token_Stream tokens(contents, ws);
     if (tokens.whitespace() != ws)
       FAILMSG("whitespace characters are NOT correctly specified");
@@ -310,25 +309,25 @@ void tstString_Token_Stream(UnitTest &ut) {
 
     // Now test assignment of new string and dipthong OTHER tokens
 
-    tokens = string("<= >= && ||");
+    String_Token_Stream tokens2 = string("<= >= && ||");
 
-    Token token = tokens.shift();
+    Token token = tokens2.shift();
     if (token.text() != "<=")
       ITFAILS;
 
-    token = tokens.shift();
+    token = tokens2.shift();
     if (token.text() != ">=")
       ITFAILS;
 
-    token = tokens.shift();
+    token = tokens2.shift();
     if (token.text() != "&&")
       ITFAILS;
 
-    token = tokens.shift();
+    token = tokens2.shift();
     if (token.text() != "||")
       ITFAILS;
 
-    token = tokens.shift();
+    token = tokens2.shift();
     if (token.type() != EXIT)
       ITFAILS;
   }
