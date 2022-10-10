@@ -57,6 +57,7 @@ elseif(CODE_COVERAGE)
 else()
   set(omp_test_pe_list "1;2")
 endif()
+
 foreach(omptest ${special_tests})
   list(REMOVE_ITEM test_sources ${omptest})
   if(OpenMP_FOUND)

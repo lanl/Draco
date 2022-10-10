@@ -19,34 +19,32 @@
 #include <iostream>
 #include <signal.h> // SIGABRT
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-value"
+#pragma clang diagnostic ignored "-Winfinite-recursion"
+#pragma clang diagnostic ignored "-Wformat-security"
+#endif
+
 //------------------------------------------------------------------------------------------------//
 void sigfpe_test() {
   // Code taken from http://www.devx.com/cplus/Article/34993/1954
 
-  //Set the x86 floating-point control word according to what exceptions you
-  //want to trap.
-  _clearfp(); //Always call _clearfp before setting the control
-  //word
-  //Because the second parameter in the following call is 0, it
-  //only returns the floating-point control word
+  //Set the x86 floating-point control word according to what exceptions you want to trap.
+  _clearfp(); //Always call _clearfp before setting the control word
+  // Because the second parameter in the following call is 0, it only returns the floating-point
+  // control word
   unsigned int cw;
-  _controlfp_s(&cw, 0, 0); //Get the default control
-  //word
-  //Set the exception masks off for exceptions that you want to
-  //trap.  When a mask bit is set, the corresponding floating-point
-  //exception is //blocked from being generating.
+  _controlfp_s(&cw, 0, 0); //Get the default control word
+  // Set the exception masks off for exceptions that you want to trap.  When a mask bit is set, the
+  // corresponding floating-point exception is blocked from being generating.
   cw &= ~(EM_OVERFLOW | EM_UNDERFLOW | EM_ZERODIVIDE | EM_DENORMAL | EM_INVALID);
-  //For any bit in the second parameter (mask) that is 1, the
-  //corresponding bit in the first parameter is used to update
-  //the control word.
+  // For any bit in the second parameter (mask) that is 1, the corresponding bit in the first
+  // parameter is used to update the control word.
   unsigned int cwOriginal;
   _controlfp_s(&cwOriginal, cw, MCW_EM); //Set it.
-  //MCW_EM is defined in float.h.
-  //Restore the original value when done:
-  //_controlfp(cwOriginal, MCW_EM);
 
   // Divide by zero
-
   float a = 1;
   float b = 0;
   float c = a / b;
@@ -150,7 +148,8 @@ int main(int argc, char *argv[]) {
     // Call printf_s with invalid parameters.
     formatString = NULL;
 #pragma warning(                                                                                   \
-    disable : 6387) // warning C6387: 'argument 1' might be '0': this does not adhere to the specification for the function 'printf'
+    disable : 6387) // warning C6387: 'argument 1' might be '0': this does not adhere to the       \
+                    // specification for the function 'printf'
     printf(formatString);
 #pragma warning(default : 6387)
     break;
@@ -214,6 +213,11 @@ int main(int argc, char *argv[]) {
   }
   return 0;
 }
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+
 //------------------------------------------------------------------------------------------------//
 // end of ds++/bin/testCrashHandler.cc
 //------------------------------------------------------------------------------------------------//

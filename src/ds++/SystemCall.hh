@@ -53,10 +53,10 @@ std::string draco_getcwd();
 //! Return the stat value for a file
 class draco_getstat {
 private:
-  int stat_return_code;
+  int stat_return_code{0};
 #ifdef _MSC_VER
   struct _stat buf;
-  bool filefound;
+  bool filefound{false};
   WIN32_FIND_DATA FileInformation; // Additional file information
 #else
   struct stat buf;

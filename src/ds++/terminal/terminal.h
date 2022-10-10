@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------------------------//
-// Draco supressions
+// Draco suppressions
 //------------------------------------------------------------------------------------------------//
 // clang-format off
 
@@ -51,13 +51,12 @@
 #ifndef TERMINAL_H
 #define TERMINAL_H
 
-/* This file is all platform independent, it contains the logic to build
- * the features that users need in a terminal application.
+/* This file is all platform independent, it contains the logic to build the features that users
+ * need in a terminal application.
  *
- * The ANSI escape sequences used here are supported by all terminals (Linux,
- * macOS, Windows). All the functionality here must work on all platforms. The
- * Windows terminal is probably the most limiting, and so we restrict to the
- * capabilities that it supports, as documented at:
+ * The ANSI escape sequences used here are supported by all terminals (Linux, macOS, Windows). All
+ * the functionality here must work on all platforms. The Windows terminal is probably the most
+ * limiting, and so we restrict to the capabilities that it supports, as documented at:
  *
  * https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
  */
@@ -148,22 +147,21 @@ inline std::string cursor_on()
     return "\x1b[?25h";
 }
 
-// If an attempt is made to move the cursor out of the window, the result is
-// undefined.
+// If an attempt is made to move the cursor out of the window, the result is undefined.
 inline std::string move_cursor(size_t row, size_t col)
 {
     return "\x1b[" + std::to_string(row) + ";" + std::to_string(col) + "H";
 }
 
-// If an attempt is made to move the cursor to the right of the right margin,
-// the cursor stops at the right margin.
+// If an attempt is made to move the cursor to the right of the right margin, the cursor stops at
+// the right margin.
 inline std::string move_cursor_right(int col)
 {
     return "\x1b[" + std::to_string(col) + "C";
 }
 
-// If an attempt is made to move the cursor below the bottom margin, the cursor
-// stops at the bottom margin.
+// If an attempt is made to move the cursor below the bottom margin, the cursor stops at the bottom
+// margin.
 inline std::string move_cursor_down(int row)
 {
     return "\x1b[" + std::to_string(row) + "B";
@@ -254,9 +252,8 @@ public:
         return key;
     }
 
-    // If there was a key press, returns the translated key from escape codes,
-    // otherwise returns 0. If the escape code is not supported, returns a
-    // negative number.
+    // If there was a key press, returns the translated key from escape codes, otherwise returns 0.
+    // If the escape code is not supported, returns a negative number.
     int read_key0() const
     {
         char c;
@@ -388,9 +385,6 @@ public:
                     return Key::F4;
                 }
             }
-
-            //std::cout << "Unsupported escape sequence:" << std::endl;
-            //std::cout << seq[0] << seq[1] << seq[2] << seq[3] << std::endl;
             return -4;
         } else {
             switch (c) {
@@ -558,7 +552,6 @@ inline std::u32string utf8_to_utf32(const std::string &s) {
     return r;
 }
 
-
 // Converts an UTF32 string to UTF8.
 inline std::string utf32_to_utf8(const std::u32string &s) {
     std::string r;
@@ -568,17 +561,14 @@ inline std::string utf32_to_utf8(const std::u32string &s) {
     return r;
 }
 
-
-
-
-/* Represents a rectangular window, as a 2D array of characters and their
- * attributes. The render method can convert this internal representation to a
- * string that when printed will show the Window on the screen.
+/* Represents a rectangular window, as a 2D array of characters and their attributes. The render
+ * method can convert this internal representation to a string that when printed will show the
+ * Window on the screen.
  *
- * Note: the characters are represented by char32_t, representing their UTF-32
- * code point. The natural way to represent a character in a terminal would be
- * a "unicode grapheme cluster", but due to a lack of a good library for C++
- * that could handle those, we simply use a Unicode code point as a character.
+ * Note: the characters are represented by char32_t, representing their UTF-32 code point. The
+ * natural way to represent a character in a terminal would be a "unicode grapheme cluster", but due
+ * to a lack of a good library for C++ that could handle those, we simply use a Unicode code point
+ * as a character.
  */
 class Window
 {
@@ -735,10 +725,9 @@ public:
                     current_style = get_style(i,j);
                     update_style = true;
                     if (current_style == style::reset) {
-                        // style::reset resets fg and bg colors too, we have to
-                        // set them again if they are non-default, but if fg or
-                        // bg colors are reset, we do not update them, as
-                        // style::reset already did that.
+                        // style::reset resets fg and bg colors too, we have to set them again if
+                        // they are non-default, but if fg or bg colors are reset, we do not update
+                        // them, as style::reset already did that.
                         update_fg = (current_fg != fg::reset);
                         update_bg = (current_bg != bg::reset);
                     }
@@ -763,7 +752,7 @@ public:
 #endif // TERMINAL_H
 
 //------------------------------------------------------------------------------------------------//
-// Draco supressions
+// Draco suppressions
 //------------------------------------------------------------------------------------------------//
 
 // This is defined by <termios.h> but causes conflicts with some TRT code.

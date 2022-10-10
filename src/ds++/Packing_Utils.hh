@@ -49,7 +49,7 @@ namespace rtt_dsxx {
  * that these char * streams are \e continuous \e data byte-streams.  The pointers that are used to
  * "iterate" through the streams are real pointers, not an abstract iterator class.  So one could
  * think of these as iterators (they act like iterators) but they are real pointers into a
- * continguous memory \c char* stream.
+ * contiguous memory \c char* stream.
  *
  * Data can be unpacked using the Unpacker class.
  *
@@ -91,8 +91,8 @@ public:
     size_mode = true;
   }
 
-  //! In pack mode, pack values into the buffer.  In size mode, adds the size of
-  // the type into the total buffer size required.
+  /*! In pack mode, pack values into the buffer.  In size mode, adds the size of the type into the
+   *  total buffer size required. */
   template <typename T> inline void pack(const T &);
 
   //! Accept data from another character stream.
@@ -301,11 +301,16 @@ template <typename T> inline Packer &operator<<(Packer &p, const T &value) {
  * that these char * streams are \e continuous \e data byte-streams.  The pointers that are used to
  * "iterate" through the streams are real pointers, not an abstract iterator class.  So one could
  * think of these as iterators (they act like iterators) but they are real pointers into a
- * continguous memory char * stream.
+ * contiguous memory char * stream.
  *
  * This class is the complement to the Packer class.
  */
 //================================================================================================//
+
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-private-field"
+#endif
 
 class Unpacker {
 public:
@@ -314,28 +319,28 @@ public:
   using const_pointer = const char *;
 
 private:
-  // !Size of packed stream.
+  //! Size of packed stream.
   uint64_t stream_size{0};
 
-  // !Pointer (mutable) into data stream.
+  //! Pointer (mutable) into data stream.
   const_pointer ptr{nullptr};
 
-  // !Pointers to begin and end of buffers.
+  //! Pointers to begin and end of buffers.
   const_pointer begin_ptr{nullptr};
   const_pointer end_ptr{nullptr};
 
-  // !Should we convert the endian nature of the data?
-  bool do_byte_swap;
+  //! Should we convert the endian nature of the data?
+  bool do_byte_swap{false};
 
 public:
   //! Constructor.
-  Unpacker(bool byte_swap = false) : do_byte_swap(byte_swap) { /*...*/
+  explicit Unpacker(bool byte_swap = false) : do_byte_swap(byte_swap) { /*...*/
   }
 
-  // Set the buffer.
+  //! Set the buffer.
   inline void set_buffer(uint64_t, const_pointer);
 
-  // Unpack value from buffer.
+  //! Unpack value from buffer.
   template <typename T> inline void unpack(T &);
 
   // >>> ACCESSORS
@@ -359,6 +364,10 @@ public:
   uint64_t size() const { return stream_size; }
 };
 
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Set an allocated buffer to read data from.
@@ -373,7 +382,7 @@ public:
  * Unpacker::set_buffer again; at this point the Unpacker no longer has any knowledge about the old
  * buffer.
  *
- * Note, there is no memory allocation performed by the Unacker class.  Also, the client must know
+ * Note, there is no memory allocation performed by the Unpacker class.  Also, the client must know
  * how much data to read from the stream (of course checks can be made telling where the end of the
  * stream is located using the Unpacker::get_ptr, Unpacker::begin, and Unpacker::end functions).
  *
@@ -481,7 +490,7 @@ template <typename T> inline Unpacker &operator>>(Unpacker &u, T &value) {
  * \arg FT::end() returns an iterator to the end of the field
  * \arg FT::empty() determines if a container is empty
  *
- * Given these contraints, the function cannot be used to pack up a pointer array; however, this is
+ * Given these constraints, the function cannot be used to pack up a pointer array; however, this is
  * accomplished easily enough with the Packer class alone.
  *
  * The data in the field is packed into a \c vector<char>. The \c vector<char> passed to the
@@ -626,7 +635,7 @@ void pack_data(std::map<keyT, std::vector<dataT>> const &map, std::vector<char> 
  * \arg FT::end() returns an iterator to the end of the field
  * \arg FT::empty() determines if a container is empty
  *
- * Given these contraints, the function cannot be used to unpack a pointer array; however, this is
+ * Given these constraints, the function cannot be used to unpack a pointer array; however, this is
  * accomplished easily enough with the Unpacker class alone.
  *
  * The data in the field is unpacked from a vector<char>. The data in the vector<char> must be

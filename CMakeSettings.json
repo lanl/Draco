@@ -22,8 +22,7 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "${env.cba}",
       "ctestCommandArgs": "${env.cta}",
-      "cmakeToolchain": "${env.cmakeToolchain}",
-      "variables": []
+      "cmakeToolchain": "${env.cmakeToolchain}"
     },
     {
       "name": "x64-Release",
@@ -35,8 +34,7 @@
       "buildCommandArgs": "${env.cba}",
       "ctestCommandArgs": "${env.cta}",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "cmakeToolchain": "${env.cmakeToolchain}",
-      "variables": []
+      "cmakeToolchain": "${env.cmakeToolchain}"
     },
     {
       "name": "x64-Debug-scalar",
@@ -48,6 +46,18 @@
       "buildCommandArgs": "${env.cba}",
       "ctestCommandArgs": "${env.cta}",
       "inheritEnvironments": [ "msvc_x64_x64" ],
+      "cmakeToolchain": "${env.cmakeToolchain}"
+    },
+    {
+      "name": "x64-Clang-Debug",
+      "generator": "Visual Studio 17 2022 Win64",
+      "configurationType": "Debug",
+      "buildRoot": "${env.bdir}",
+      "installRoot": "${env.idir}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "${env.cba}",
+      "ctestCommandArgs": "${env.cta}",
+      "inheritEnvironments": [ "clang_cl_x64_x64" ],
       "cmakeToolchain": "${env.cmakeToolchain}",
       "variables": []
     }

@@ -4,8 +4,7 @@
  * \author John M. McGhee
  * \date   Sun Jan 30 14:57:09 2000
  * \brief  Test code for the Check_Strings utility functions.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Check_Strings.hh"
@@ -41,7 +40,7 @@ void Check_Strings_test(rtt_dsxx::UnitTest &ut) {
     FAILMSG("Failed to find bad characters in string definition.");
   } else {
     PASSMSG("Successfully found bad characters in string definition.");
-    for (const auto bad_entry : result)
+    for (const auto &bad_entry : result)
       cout << "Found disallowed character(s) in string: \"" << *bad_entry << "\"" << endl;
     cout << "The following characters are forbidden:\n"
          << " \"" << bad_chars << "\","
@@ -70,7 +69,7 @@ void Check_Strings_test(rtt_dsxx::UnitTest &ut) {
     FAILMSG("Failed to find bad characters in string definition.");
   } else {
     PASSMSG("Successfully found bad characters in string definition.");
-    for (const auto bad_entry : result2)
+    for (const auto &bad_entry : result2)
       cout << "Size of string is not in allowable range: \"" << *bad_entry << "\"" << endl;
     cout << "Strings lengths must be greater than " << low << " and less than " << high << "."
          << endl;
