@@ -193,7 +193,7 @@ install(FILES ${dsxx_terminal_headers} ${PROJECT_SOURCE_DIR}/terminal/LICENSE
 if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
-if(WIN32)
+if(WIN32 AND (NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
   add_subdirectory(bin)
 endif()
 

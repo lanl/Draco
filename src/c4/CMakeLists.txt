@@ -48,6 +48,14 @@ if("${DRACO_C4}" STREQUAL "MPI")
   list(APPEND target_deps MPI::MPI_CXX MPI::MPI_C)
 endif()
 
+# Manually link to the OpenMP runtime for cl-clang under MSVC.  This is work-around for a cmake bug
+# and hopefully can be removed once the bug is fixed.
+if(WIN32
+   AND (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+   AND OpenMP_FOUND)
+  list(APPEND target_deps OpenMP::OpenMP_C)
+endif()
+
 add_component_library(
   ${c4_extra_VENDORS}
   TARGET Lib_c4

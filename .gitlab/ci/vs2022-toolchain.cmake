@@ -1,12 +1,11 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   .gitlab/ci/vs2022-toolchain.cmake
 # author Kelly Thompson <kgt@lanl.gov>
-# date   Tuesday, Jun 07, 2022, 13:35 pme
+# date   Tuesday, Jun 07, 2022, 13:35 pm
 # brief  Toolchian settings for MSVC 2022 used by CI/regression
 # note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
-# set(VENDOR_DIR c:/work/vendors64 CACHE PATH "Location of TPL installations")
 set(VSCMD_DEBUG 0)
 
 # CSK support

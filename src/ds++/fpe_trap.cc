@@ -4,14 +4,7 @@
  * \author Rob Lowrie, Kelly Thompson
  * \date   Thu Oct 13 16:52:05 2005
  * \brief  platform dependent implementation of fpe_trap functions.
- *
- * Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved.
- * Copyright (C) 1994-2001  K. Scott Hunziker.
- * Copyright (C) 1990-1994  The Boeing Company.
- *
- * See COPYING file for more copyright information.  This code is based substantially on
- * fpe/i686-pc-linux-gnu.c from algae-4.3.6, which is available at http://algae.sourceforge.net/.
- */
+ * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "fpe_trap.hh"
@@ -205,7 +198,9 @@ void fpe_trap::disable() {
 #include <dbghelp.h> // minidump_exception_information
 #pragma warning(pop)
 
+#if !defined(__clang__)
 #pragma fenv_access(on)
+#endif
 
 /* Signal handler for floating point exceptions. */
 extern "C" void trans_func(unsigned int u, PEXCEPTION_POINTERS /*pExp*/) {
@@ -554,10 +549,10 @@ void __cdecl CCrashHandler::PureCallHandler() {
 void __cdecl CCrashHandler::InvalidParameterHandler(const wchar_t * /*expression*/,
                                                     const wchar_t * /*function*/,
                                                     const wchar_t * /*file*/, unsigned int /*line*/,
-                                                    uintptr_t pReserved) {
+                                                    uintptr_t /*pReserved*/) {
 
   std::cout << "In CCrashHandler::InvalidParameterHandler" << std::endl;
-  pReserved;
+  // pReserved;
 
   // Invalid parameter exception
 

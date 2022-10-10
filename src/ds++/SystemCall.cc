@@ -55,9 +55,9 @@ std::string draco_gethostname() {
   hostname.fill('x');
   int err = gethostname(&hostname[0], sizeof(hostname));
   if (err) {
-    return std::string("gethostname() failed!");
+    return "gethostname() failed!";
   }
-  return std::string(hostname.data());
+  return hostname.data();
 
 #else
 
@@ -134,8 +134,7 @@ std::string draco_getcwd() {
  *    http://en.wikipedia.org/wiki/Stat_%28system_call%29
  */
 #ifdef _MSC_VER
-draco_getstat::draco_getstat(std::string const &fqName)
-    : stat_return_code(0), buf(), FileInformation({0}) {
+draco_getstat::draco_getstat(std::string const &fqName) {
   filefound = true;
   /*! \note If path contains the location of a directory, it cannot contain a trailing backslash. If
    * it does, -1 will be returned and errno will be set to ENOENT. */

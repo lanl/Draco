@@ -51,7 +51,7 @@ endif()
 # ------------------------------------------------------------------------------------------------ #
 macro(query_openmp_availability)
   message(STATUS "Looking for OpenMP...")
-  if(WIN32)
+  if(WIN32 AND (NOT CMAKE_C_COMPILER_ID STREQUAL "Clang"))
     set(OpenMP_C_FLAGS "/openmp:experimental")
     set(OpenMP_FOUND TRUE)
     set(OpenMP_C_VERSION "3.1")
@@ -91,7 +91,7 @@ function(force_compiler_flags_to_cache lang_list)
     endforeach()
   endforeach()
   set(DRACO_LINK_OPTIONS
-      "${DRACO_LINK_OPTIONS}"
+      ${DRACO_LINK_OPTIONS}
       CACHE STRING "link flags" FORCE)
 endfunction()
 
