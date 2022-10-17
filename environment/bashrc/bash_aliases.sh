@@ -47,6 +47,7 @@ alias msh='module show'
 # alias sierra='ssh -t redcap ssh sierra.llnl.gov'
 alias rzansel='ssh -t ihpc-gate.lanl.gov ssh rzansel.llnl.gov'
 alias rznevada='ssh -t ihpc-gate.lanl.gov ssh rznevada.llnl.gov'
+alias rzvernal='ssh -t ihpc-gate.lanl.gov ssh rzvernal.llnl.gov'
 
 #--------------------------------------------------------------------------------------------------#
 # Color Prompt

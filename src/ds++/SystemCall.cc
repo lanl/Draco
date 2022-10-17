@@ -170,7 +170,7 @@ draco_getstat::draco_getstat(std::string const &fqName) {
   }
 }
 #else
-draco_getstat::draco_getstat(std::string const &fqName) : stat_return_code(0), buf() {
+draco_getstat::draco_getstat(std::string const &fqName) {
   stat_return_code = stat(fqName.c_str(), &buf);
 }
 #endif
