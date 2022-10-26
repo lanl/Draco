@@ -218,7 +218,7 @@ macro(query_topology)
           32
           CACHE STRING "Max procs on node." FORCE)
     endif()
-  elseif(SITENAME MATCHES "rznevada")
+  elseif(SITENAME MATCHES "rznevada" OR SITENAME MATCHES "rzvernal")
     set(MPI_CORES_PER_CPU 2)
     set(MPI_PHYSICAL_CORES 64)
     set(MPIEXEC_MAX_NUMPROCS
@@ -749,11 +749,12 @@ macro(setupMPILibrariesWindows)
     # Windows with dlls, but only Release libraries.
     set_target_properties(
       MPI::MPI_CXX
-      PROPERTIES IMPORTED_LOCATION_RELEASE "${MPI_C_LIBRARIES}"
-                 IMPORTED_IMPLIB "${MPI_C_LIBRARIES}"
-                 INTERFACE_INCLUDE_DIRECTORIES "${MPI_C_INCLUDE_DIRS}"
-                 IMPORTED_CONFIGURATIONS Release
-                 IMPORTED_LINK_INTERFACE_LANGUAGES "CXX")
+      PROPERTIES
+      IMPORTED_LOCATION_RELEASE "${MPI_C_LIBRARIES}"
+      IMPORTED_IMPLIB "${MPI_C_LIBRARIES}"
+      INTERFACE_INCLUDE_DIRECTORIES "${MPI_C_INCLUDE_DIRS}"
+      IMPORTED_CONFIGURATIONS Release
+      IMPORTED_LINK_INTERFACE_LANGUAGES "CXX")
 
   endif()
 
