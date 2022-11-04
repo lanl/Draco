@@ -56,8 +56,16 @@
 #endif
 #endif
 
+#ifdef __NVCOMPILER
+#pragma diag_suppress 550 // set_but_not_used
+#endif
+
 #include "Random123/threefry.h"
 #include "uniform.hpp"
+
+#ifdef __NVCOMPILER
+#pragma diag_warning 550 // set_but_not_used
+#endif
 
 #if defined(__clang__) && !defined(__ibmxl__)
 // Restore clang diagnostics to previous state.

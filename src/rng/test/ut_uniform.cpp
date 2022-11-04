@@ -91,6 +91,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
+#ifdef __NVCOMPILER
+#pragma diag_suppress 550 // set_but_not_used
+#endif
+
 #include "uniform.hpp"
 #include <Random123/threefry.h>
 #include <map>
@@ -205,6 +209,10 @@ int main(int argc, char **argv) {
 
   return !!nfail;
 }
+
+#ifdef __NVCOMPILER
+#pragma diag_warning 550 // set_but_not_used
+#endif
 
 #if defined(__clang__) && !defined(__ibmxl__)
 // Restore clang diagnostics to previous state.

@@ -30,7 +30,7 @@ void Check_Strings_test(rtt_dsxx::UnitTest &ut) {
     cout << "\"" << name << "\"\n";
   cout << endl;
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   // Test for illegal characters.
 
   cout << "Illegal character utility test:" << endl;
@@ -58,7 +58,7 @@ void Check_Strings_test(rtt_dsxx::UnitTest &ut) {
   else
     FAILMSG("*** Illegal character function test: FAILED ***");
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   // Test for acceptable lengths.
 
   cout << "String length utility test:" << endl;
@@ -84,7 +84,7 @@ void Check_Strings_test(rtt_dsxx::UnitTest &ut) {
   else
     FAILMSG("*** String length function test: FAILED ***");
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   // Test for unique names.
 
   cout << "Unique strings utility test:" << endl;

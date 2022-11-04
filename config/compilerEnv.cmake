@@ -59,6 +59,13 @@ macro(query_openmp_availability)
     find_package(OpenMP QUIET)
   endif()
   if(OpenMP_FOUND)
+    # [2022-10-27 KT] cmake/3.22 doesn't report OpenMP_C_VERSION for nvc++. Fake it for now.
+    if("${OpenMP_C_VERSION}x" STREQUAL "x" AND CMAKE_CXX_COMPILER_ID MATCHES "NVHPC")
+      set(OpenMP_C_VERSION
+          "5.0"
+          CACHE BOOL "OpenMP version." FORCE)
+      set(OpenMP_FOUND TRUE)
+    endif()
     message(STATUS "Looking for OpenMP... ${OpenMP_C_FLAGS} (supporting the ${OpenMP_C_VERSION} "
                    "standard)")
     if(OpenMP_C_VERSION VERSION_LESS 3.0)
@@ -364,6 +371,8 @@ macro(dbsSetupCxx)
   elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "XLClang" OR "${CMAKE_C_COMPILER_ID}" STREQUAL
                                                           "XLCLang")
     include(unix-xl)
+  elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "NVHPC" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "NVHPC")
+    include(Linux-NVHPC) # ${CMAKE_HOST_SYSTEM_NAME}-${CMAKE_C_COMPILER_ID}
   else()
     # missing CMAKE_CXX_COMPILER_ID? - try to match the compiler path+name to a string.
     if("${my_cxx_compiler}" MATCHES "pgCC" OR "${my_cxx_compiler}" MATCHES "pgc[+][+]")
@@ -712,6 +721,8 @@ macro(dbsSetupFortran)
       include(unix-flang)
     elseif("${CMAKE_Fortran_COMPILER_ID}" STREQUAL "GNU")
       include(unix-gfortran)
+    elseif("${CMAKE_Fortran_COMPILER_ID}" STREQUAL "NVHPC")
+      include(Linux-NVHPC-Fortran)
     else()
       # missing CMAKE_Fortran_COMPILER_ID? - try to match the compiler path+name to a string.
       if(${my_fc_compiler} MATCHES "pgf9[05]" OR ${my_fc_compiler} MATCHES "pgfortran")

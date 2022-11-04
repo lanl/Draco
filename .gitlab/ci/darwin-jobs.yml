@@ -5,6 +5,9 @@
 # Purpose: gitlab suid runner commands for Darwin (LANL). This script wil be run to test pull
 #          requests
 # Note:    Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+#
+# * Use https://hardware-darwin.lanl.gov/ to discover darwin partition names, max cores, etc.
+# * Draco environments are at /projects/draco/Modules/draco.
 #--------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------#
@@ -126,6 +129,16 @@ darm_rel_gcc831_deploy:
     CTEST_NPROC: 40
     MAXLOAD: 40
     SCHEDULER_PARAMETERS: ${SP_arm}
+
+darm_deb_nvhpc229_deploy:
+  extends: .darwin_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: haswell-nvhpc229
+    ARCH: x86_64
+    CTEST_NPROC: 20
+    MAXLOAD: 20
+    SCHEDULER_PARAMETERS: ${SP_x86_64}
 
 #--------------------------------------------------------------------------------------------------#
 # MRs - linters
@@ -334,6 +347,15 @@ darm_rel_gcc831_regress:
     ARCH: arm
     CTEST_NPROC: 40
     SCHEDULER_PARAMETERS: ${SP_arm}
+
+darwin_deb_nvhpc229_regress:
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: haswell-nvhpc229
+    ARCH: x86_64
+    CTEST_NPROC: 20
+    SCHEDULER_PARAMETERS: ${SP_x86_64}
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/darwin-jobs.yml

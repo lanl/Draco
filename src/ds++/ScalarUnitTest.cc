@@ -61,12 +61,10 @@ ScalarUnitTest::ScalarUnitTest(int &argc, char **&argv, string_fp_void release_,
     switch (c) {
     case 'v': // --version
       throw rtt_dsxx::assertion(string("Success"));
-      return;
 
     case 'h': // --help
       std::cout << program_options.display_help("tstXGetopt") << std::endl;
       return;
-      break;
 
     default:
       break; // nothing to do.

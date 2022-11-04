@@ -3,8 +3,7 @@
  * \file    rng/Random_Inline.cc
  * \author  Paul Henning
  * \brief   Specializations of Random
- * \note    Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note    Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Random_Inline.hh"
