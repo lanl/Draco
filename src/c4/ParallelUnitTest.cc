@@ -78,7 +78,6 @@ ParallelUnitTest::ParallelUnitTest(int &argc, char **&argv, string_fp_void relea
     case 'v': // --version
       finalize();
       throw rtt_dsxx::assertion(string("Success"));
-      break;
 
     default:
       return; // nothing to do.

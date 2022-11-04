@@ -4,8 +4,7 @@
  * \author Kent Budge
  * \date   Tue Aug 17 15:30:23 2004
  * \brief  Find minimum of a function.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef min_brent_hh
@@ -19,8 +18,7 @@ namespace rtt_min {
 /*!
  * Find minimum of a function.
  *
- * \arg \a Function A function type supporting <code>double
- * operator()(double)</code>.
+ * \arg \a Function A function type supporting <code>double operator()(double)</code>.
  *
  * \param[in] ax Lower bound of bracket interval.
  * \param[in] bx Upper bound of bracket interval.

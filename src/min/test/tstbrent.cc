@@ -3,17 +3,14 @@
  * \file   min/test/tstbrent.cc
  * \author Kent G. Budge
  * \date   Tue Nov 16 17:26:03 2010
- * \brief  
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
-//------------------------------------------------------------------------------------------------//
-
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
 #include "ds++/ScalarUnitTest.hh"
 #include "ds++/Soft_Equivalence.hh"
 #include "min/brent.hh"
+#include <iomanip>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -26,10 +23,12 @@ using namespace rtt_min;
 double f(double x) { return cos(x); }
 
 void tstbrent(UnitTest &ut) {
-  double xmin;
-  double root = brent(0.0, 6.28, 2.0, f, 1.0e-12, xmin);
+  double xmin(0.0);
+  double constexpr tol(1.0e-12);
+  double root = brent(0.0, 6.28, 2.0, f, tol, xmin);
 
-  cout << xmin << " " << root << endl;
+  cout << "Found    xmin = " << setprecision(16) << xmin << ", root = " << root << endl;
+  cout << "Expected xmin = " << M_PI << endl;
 
   if (soft_equiv(xmin, M_PI)) {
     ut.passes("correctly found first minimum of cos");
@@ -39,7 +38,6 @@ void tstbrent(UnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
-
 int main(int argc, char *argv[]) {
   ScalarUnitTest ut(argc, argv, release);
   try {

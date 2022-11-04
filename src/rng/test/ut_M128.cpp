@@ -59,6 +59,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #endif
 
+#ifdef __NVCOMPILER
+#pragma diag_suppress 550 // set_but_not_used
+#endif
+
 #include <Random123/features/compilerfeatures.h>
 #if !R123_USE_SSE
 #include <stdio.h>
@@ -192,6 +196,10 @@ int main(int, char **) {
   return 0;
 }
 
+#endif
+
+#ifdef __NVCOMPILER
+#pragma diag_warning 550 // set_but_not_used
 #endif
 
 #if defined(__INTEL_LLVM_COMPILER)
