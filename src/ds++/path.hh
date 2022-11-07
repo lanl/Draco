@@ -159,7 +159,7 @@ void draco_walk_directory_tree(std::string const &dirname, T const &myOperator) 
 
     // Loop over all entries in the current directory.
     while ((entry = readdir(dir)) != nullptr) {
-      std::string d_name(entry->d_name);
+      std::string d_name(entry->d_name); // NOLINT [hicpp-no-array-decay]
 
       // Don't include "." or ".." entries.
       if (d_name[0] == '.')

@@ -63,8 +63,9 @@ void fetch_add_atomic_core(UnitTest &ut, size_t const n_threads, size_t const n_
   // check and report
   bool const passed = rtt_dsxx::soft_equiv(result, expected);
   if (!passed) {
-    printf("%s:%i tsum = %.0f, isum = %.0f, result = %.0f\n", __FUNCTION__, __LINE__, tsum, sum,
-           result);
+    std::cout << __FUNCTION__ // NOLINT
+              << ":" << __LINE__ << " tsum = " << tsum << ", isum = " << sum
+              << ", result = " << result << std::endl;
   }
   FAIL_IF_NOT(passed);
   return;
@@ -138,13 +139,12 @@ void test_fetch_add_not_atomic(UnitTest & /*ut*/) {
   if (!passed) {
     double diff = (expected - result);
     double rel_diff = 100 * diff / expected;
-    printf("%s:%i Expected these to differ: tsum = %.0f, isum = %.0f, result = "
-           "%.0f, diff = %.0f, rel. "
-           "diff = %.2f %% \n",
-           __FUNCTION__, __LINE__, tsum, sum, result, diff, rel_diff);
+    std::cout << __FUNCTION__ // NOLINT
+              << ":" << __LINE__ << " Expected these to differ: tsum = " << tsum
+              << ", isum = " << sum << ", result = " << result << ", diff = " << diff
+              << ", rel. diff = " << rel_diff << std::endl;
   }
-  /* This does not fail on all platforms: on 4 April 2019 failed on appVeyor CI.
-   * So, hmmm... */
+  /* This does not fail on all platforms: on 4 April 2019 failed on appVeyor CI. So, hmmm... */
   // FAIL_IF_NOT(passed);
   return;
 } // test_fetch_add_not_atomic
@@ -197,9 +197,9 @@ void fetch_sub_atomic_core(UnitTest &ut, size_t const n_threads, size_t const n_
   // check and report
   bool const passed = rtt_dsxx::soft_equiv(result, expected);
   if (!passed) {
-    printf("%s:%i tsum = %.0f, isum = %.0f, result = %.0f, "
-           "expected = %.0f\n",
-           __FUNCTION__, __LINE__, tsum, sum, result, expected);
+    std::cout << __FUNCTION__ // NOLINT
+              << ":" << __LINE__ << " tsum = " << tsum << ", isum = " << sum
+              << ", result = " << result << ", expected = " << expected << std::endl;
   }
   FAIL_IF_NOT(passed);
   return;

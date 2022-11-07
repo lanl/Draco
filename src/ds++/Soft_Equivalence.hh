@@ -45,7 +45,7 @@ namespace rtt_dsxx {
  */
 template <typename T>
 constexpr inline typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type
-soft_equiv(const T &value, const T &reference, const T precision = static_cast<T>(1.0e-12f)) {
+soft_equiv(const T &value, const T &reference, const T precision = static_cast<T>(1.0e-12F)) {
   using std::fabs;
   bool passed = false;
 

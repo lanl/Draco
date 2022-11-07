@@ -15,31 +15,39 @@
 # cert-*
 # bugprone-*
 # concurrency-*
+#
+# How checks are set:
+#
+# * line 1: '*' enables all checks
+# * next lines: -check-* disables whole groups of checks
+# * next lines: -check-full-name disables more specific checks from group previously enabled.
+# * next lines: check-full-name enables specific checks for groups that are disabled.
+#
+# Trying to add hicpp-*
 # ------------------------------------------------------------------------------------------------ #
 
 ---
 Checks: "*,
-        -concurrency-*,
-        -bugprone-*,
-        -hicpp-*,
-        -readability-*,
-        -cppcoreguidelines-*,
-        -cert-*,
         -abseil-*,
         -altera-*,
         -android-*,
+        -bugprone-*,
+        -cert-*,
+        -concurrency-*,
+        -cppcoreguidelines-*,
         -fuchsia-*,
         -google-*,
+        -hicpp-*,
         -llvm*,
-        -modernize-use-trailing-return-type,
+        -readability-*,
         -zircon-*,
-        -readability-else-after-return,
-        -readability-static-accessed-through-instance,
-        -readability-avoid-const-params-in-decls,
-        -cppcoreguidelines-non-private-member-variables-in-classes,
+        -hicpp-braces-around-statements,
+        -misc-definitions-in-headers,
         -misc-non-private-member-variables-in-classes,
         -misc-no-recursion,
-        -misc-definitions-in-headers,
+        -modernize-use-trailing-return-type,
+        bugprone-argument-comment,
+        bugprone-assert-side-effect,
 "
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*[.]hh'

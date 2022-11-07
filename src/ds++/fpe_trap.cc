@@ -75,7 +75,7 @@ namespace rtt_dsxx {
  * A \b false return value is typically because the platform is not supported.
  */
 bool fpe_trap::enable() {
-  struct sigaction act;
+  struct sigaction act {};
 
   // Choose to use Draco's DbC Insist.  If set to false, the compiler should print a stack trace
   // instead of the pretty print message defined above in catch_sigfpe.
@@ -91,7 +91,7 @@ bool fpe_trap::enable() {
   // The feenableexcept function is new for glibc 2.2.  See its description in the man page for
   // fenv(3).
 
-  (void)feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
+  (void)feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW); // NOLINT [hicpp-signed-bitwise]
 
   // Toggle the state.
   fpeTrappingActive = true;
@@ -108,8 +108,8 @@ bool fpe_trap::enable() {
 
   // FE_ALL_EXCEPT            bitwise OR of all supported exceptions
 
-  // The next macros are defined iff the appropriate rounding mode is
-  // supported by the implementation.
+  // The next macros are defined iff the appropriate rounding mode is supported by the
+  // implementation.
   // FE_TONEAREST             round to nearest
   // FE_UPWARD                round toward +Inf
   // FE_DOWNWARD              round toward -Inf
@@ -121,7 +121,7 @@ bool fpe_trap::enable() {
 //------------------------------------------------------------------------------------------------//
 //! Disable trapping of floating point errors.
 void fpe_trap::disable() {
-  (void)fedisableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
+  (void)fedisableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW); // NOLINT [hicpp-signed-bitwise]
   fpeTrappingActive = false;
   return;
 }

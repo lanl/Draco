@@ -42,7 +42,7 @@ bool has_ieee_float_representation() {
   double d_two(2.0);
   size_t constexpr size(sizeof(double));
   // Generate a bit-by-bit view of the double precision value:
-  std::array<char, size> char_two;
+  std::array<char, size> char_two{'\0'};
   std::memcpy(&char_two, &d_two, size);
 
   // IEEE reference value:
@@ -51,6 +51,7 @@ bool has_ieee_float_representation() {
     char_byte_swap(&ieee64_two[0], size);
 
   // Cray reference value:
+  //
   // Note The 5th value of the actual Cray representation causes overflow warnings on IEEE machines:
   // char cray64_two[size] = {0x00,0x00,0x00,0x00,0x00,0x80,0x02,0x40};
 

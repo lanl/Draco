@@ -20,8 +20,7 @@ namespace rtt_dsxx {
  * \class Index_Set
  * \brief Represents a D-dimensional set if indices.
  * \sa Index_Set.cc for detailed descriptions.
- */
-/*!
+ *
  * \example ds++/test/tstIndex_Set.cc
  */
 //================================================================================================//
@@ -41,6 +40,14 @@ public:
   //! Copy constructor
   Index_Set(Index_Set const &rhs)
       : m_array_size(rhs.m_array_size), m_dimensions(rhs.m_dimensions) {}
+
+  //! Move constructor
+  Index_Set(Index_Set const &&rhs) noexcept
+      : m_array_size(rhs.m_array_size), m_dimensions(rhs.m_dimensions) {}
+
+  //! Assignment operator
+  Index_Set &operator=(Index_Set const &rhs) = delete;
+  Index_Set &operator=(Index_Set &&rhs) noexcept = delete;
 
   //! Destructor
   virtual ~Index_Set() = default;
@@ -93,13 +100,13 @@ public:
 private:
   void compute_size();
 
-  unsigned m_array_size{0};             //!< Sizes of the whole index range
-  std::array<unsigned, D> m_dimensions; //!< Sizes of each dimension
+  unsigned m_array_size{0};               //!< Sizes of the whole index range
+  std::array<unsigned, D> m_dimensions{}; //!< Sizes of each dimension
 
 protected:
   // Make sure the index sizes are all positive when creating or resizing:
   bool sizes_okay() const {
-    return (std::find(m_dimensions.begin(), m_dimensions.begin() + D, 0u) ==
+    return (std::find(m_dimensions.begin(), m_dimensions.begin() + D, 0U) ==
             m_dimensions.begin() + D);
   }
 

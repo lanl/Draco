@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Wed Nov  7 15:55:54 2001
  * \brief  Soft_Equiv header testing utilities.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -29,36 +28,24 @@ void test_soft_equiv_scalar(rtt_dsxx::ScalarUnitTest &ut) {
   double x = 0.9876543212345678;
   double y = 0.9876543212345678;
 
-  if (!soft_equiv(x, y, 1.e-16))
-    ITFAILS;
-  if (!soft_equiv(x, y))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(x, y, 1.e-16));
+  FAIL_IF_NOT(soft_equiv(x, y));
 
   double z = 0.9876543212345679;
-
-  if (soft_equiv(x, z, 1.e-16))
-    ITFAILS;
+  FAIL_IF(soft_equiv(x, z, 1.e-16));
 
   double a = 0.987654321234;
-
-  if (!soft_equiv(x, a))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(x, a));
 
   a = 0.987654321233;
-
-  if (soft_equiv(x, a))
-    ITFAILS;
+  FAIL_IF(soft_equiv(x, a));
 
   // checks for the new "reference=zero" coding 4aug00
   double zero = 0.0;
-  if (soft_equiv(1.0e-10, zero))
-    ITFAILS;
-  if (soft_equiv(-1.0e-10, zero))
-    ITFAILS;
-  if (!soft_equiv(-1.0e-35, zero))
-    ITFAILS;
-  if (!soft_equiv(1.0e-35, zero))
-    ITFAILS;
+  FAIL_IF(soft_equiv(1.0e-10, zero));
+  FAIL_IF(soft_equiv(-1.0e-10, zero));
+  FAIL_IF_NOT(soft_equiv(-1.0e-35, zero));
+  FAIL_IF_NOT(soft_equiv(1.0e-35, zero));
 
   return;
 }
@@ -81,10 +68,7 @@ void test_soft_equiv_container(rtt_dsxx::ScalarUnitTest &ut) {
     ITFAILS;
 
   // Tests that compare 1D vector data to 1D array data.
-  array<double, 3> v;
-  v[0] = reference[0];
-  v[1] = reference[1];
-  v[2] = reference[2];
+  array<double, 3> v = {reference[0], reference[1], reference[2]};
 
   if (soft_equiv(v.begin(), v.end(), reference.begin(), reference.end()))
     PASSMSG("Passed vector-pointer equivalence test.");
@@ -111,7 +95,7 @@ void test_soft_equiv_container(rtt_dsxx::ScalarUnitTest &ut) {
     ITFAILS;
 
   // Try with a std::deque
-  deque<double> d;
+  deque<double> d{};
   d.push_back(reference[0]);
   d.push_back(reference[1]);
   d.push_back(reference[2]);
@@ -131,19 +115,13 @@ void test_soft_equiv_deep_container(rtt_dsxx::ScalarUnitTest &ut) {
                                    {0.3247333292470, 0.3224333222471, 0.3324333523912},
                                    {0.3247333293470, 0.3224333223471, 0.3324333524912}};
   vector<vector<double>> const reference = values;
-
-  if (soft_equiv_deep<2>().equiv(values.begin(), values.end(), reference.begin(), reference.end()))
-    PASSMSG("Passed vector<vector<double>> equivalence test.");
-  else
-    ITFAILS;
+  FAIL_IF_NOT(
+      soft_equiv_deep<2>().equiv(values.begin(), values.end(), reference.begin(), reference.end()));
 
   // Soft_Equiv should still pass
   values[0][1] += 1.0e-13;
-  if (!soft_equiv_deep<2>().equiv(values.begin(), values.end(), reference.begin(), reference.end(),
-                                  1.e-13))
-    PASSMSG("Passed vector<vector<double>> equivalence precision test.");
-  else
-    ITFAILS;
+  FAIL_IF(soft_equiv_deep<2>().equiv(values.begin(), values.end(), reference.begin(),
+                                     reference.end(), 1.e-13));
 
   // Compare C++ array to vector<vector<double>> data.
   // This cannot work because the C++ array is fundamentally a 1-D container.
@@ -186,8 +164,7 @@ void test_vector_specialization(rtt_dsxx::ScalarUnitTest &ut) {
     // 1-d vector comparison.
     std::vector<double> v(27, epsilon);
     std::vector<double> r(27, epsilon);
-    if (!soft_equiv(v, r))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(v, r));
   }
   {
     // 2-d vector comparison.
@@ -197,8 +174,7 @@ void test_vector_specialization(rtt_dsxx::ScalarUnitTest &ut) {
       v[i] = std::vector<double>(i * 2, epsilon);
       r[i] = std::vector<double>(i * 2, epsilon);
     }
-    if (!soft_equiv(v, r))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(v, r));
   }
   {
     // 3-d vector comparison.
@@ -212,16 +188,14 @@ void test_vector_specialization(rtt_dsxx::ScalarUnitTest &ut) {
         r[i][j] = std::vector<double>(j * 2, epsilon);
       }
     }
-    if (!soft_equiv(v, r))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(v, r));
   }
   {
     // expect a failure for mismatched data.
     std::vector<double> v(27, 42.42);
     std::vector<double> r(27, 42.42);
     r[5] = 42.44; // mismatch value
-    if (soft_equiv(v, r))
-      ITFAILS;
+    FAIL_IF(soft_equiv(v, r));
   }
   {
     // expect a failure for mismatched size.

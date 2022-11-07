@@ -3,8 +3,7 @@
  * \file   ds++/Index_Counter.hh
  * \author Mike Buksas
  * \date   Tue Jan 31 16:45:39 2006
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_Index_Counter_hh
@@ -24,8 +23,7 @@ template <unsigned D, int OFFSET> class Index_Converter;
  * \class Index_Counter
  * \brief Facilitates iterating over a multi-dimensional range of indices.
  * \sa Index_Counter.cc for detailed descriptions.
- */
-/*!
+ *
  * \example ds++/test/tstIndex_Counter.cc
  */
 //================================================================================================//
@@ -42,6 +40,10 @@ public:
   Index_Counter(Index_Counter const &rhs)
       : index_set(rhs.index_set), indices(rhs.indices), index(rhs.index), in_range(rhs.in_range) {}
 
+  //! Move constructor
+  Index_Counter(Index_Counter const &&rhs) noexcept
+      : index_set(rhs.index_set), indices(rhs.indices), index(rhs.index), in_range(rhs.in_range) {}
+
   //! Destructor.
   ~Index_Counter() = default;
 
@@ -49,6 +51,7 @@ public:
 
   //! Assignment operator for Index_Counter.
   Index_Counter &operator=(const Index_Counter &rhs);
+  Index_Counter &operator=(Index_Counter &&rhs) noexcept = delete;
 
   // ACCESSORS
 

@@ -83,7 +83,7 @@ public:
   Packer() = default;
 
   // Sets the buffer and puts the packer into pack mode.
-  inline void set_buffer(uint64_t, pointer);
+  inline void set_buffer(uint64_t size_in, pointer buffer);
 
   //! Put the packer into compute buffer size mode.
   void compute_buffer_size_mode() {
@@ -93,7 +93,7 @@ public:
 
   /*! In pack mode, pack values into the buffer.  In size mode, adds the size of the type into the
    *  total buffer size required. */
-  template <typename T> inline void pack(const T &);
+  template <typename T> inline void pack(const T &value);
 
   //! Accept data from another character stream.
   template <typename IT> void accept(uint64_t bytes, IT data);
@@ -338,10 +338,10 @@ public:
   }
 
   //! Set the buffer.
-  inline void set_buffer(uint64_t, const_pointer);
+  inline void set_buffer(uint64_t size_in, const_pointer buffer);
 
   //! Unpack value from buffer.
-  template <typename T> inline void unpack(T &);
+  template <typename T> inline void unpack(T &value);
 
   // >>> ACCESSORS
 

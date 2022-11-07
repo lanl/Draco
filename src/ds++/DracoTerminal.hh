@@ -97,8 +97,9 @@ template <typename T> std::string ccolor(T const value) {
   // Access the singleton wrapper for Term::Terminal
   Term::DracoTerminal &term_inst = Term::DracoTerminal::getInstance();
   std::string retVal;
-  if (term_inst.use_color())
+  if (term_inst.use_color()) {
     retVal += "\033[" + std::to_string(static_cast<int>(value)) + "m";
+  }
   return retVal;
 }
 

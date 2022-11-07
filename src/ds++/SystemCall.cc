@@ -63,7 +63,7 @@ std::string draco_gethostname() {
 
 // Linux: gethostname from <unistd.h>
 #ifdef HAVE_GETHOSTNAME
-  std::array<char, HOST_NAME_MAX> hostname;
+  std::array<char, HOST_NAME_MAX> hostname{};
   hostname.fill('y');
   int err = gethostname(&hostname[0], HOST_NAME_MAX);
   if (err)
@@ -111,7 +111,7 @@ std::string draco_getcwd() {
   std::string cwd(buffer, buffer + strnlen(buffer, MAXPATHLEN));
   free(buffer);
 #else
-  std::array<char, MAXPATHLEN> curr_path;
+  std::array<char, MAXPATHLEN> curr_path{};
   curr_path.fill('z');
   Insist(getcwd(&curr_path[0], MAXPATHLEN) != nullptr,
          "getcwd failed: " + std::string(strerror(errno)));
@@ -182,7 +182,7 @@ bool draco_getstat::isreg() {
   bool b = FileInformation.dwFileAttributes & FILE_ATTRIBUTE_NORMAL;
   return filefound && b;
 #else
-  bool b = S_ISREG(buf.st_mode);
+  bool b = S_ISREG(buf.st_mode); // NOLINT [hicpp-signed-bitwise]
   return b;
 #endif
 }
@@ -194,7 +194,7 @@ bool draco_getstat::isdir() {
   bool b = FileInformation.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
   return filefound && b;
 #else
-  bool b = S_ISDIR(buf.st_mode);
+  bool b = S_ISDIR(buf.st_mode); // NOLINT [hicpp-signed-bitwise]
   return b;
 #endif
 }
@@ -211,14 +211,14 @@ bool draco_getstat::has_permission_bit(int /*mask*/) {
 bool draco_getstat::has_permission_bit(int mask) {
   Insist(isreg(), "Can only check permission bit for regular files.");
   // check execute bit (buf.st_mode & 0111)
-  return (buf.st_mode & mask);
+  return (buf.st_mode & mask); // NOLINT [hicpp-signed-bitwise]
 }
 #endif
 
 //------------------------------------------------------------------------------------------------//
 //! Wrapper for system dependent realpath call.
 std::string draco_getrealpath(std::string const &path) {
-  std::array<char, MAXPATHLEN> buffer; // _MAX_PATH
+  std::array<char, MAXPATHLEN> buffer{}; // _MAX_PATH
   buffer.fill('a');
 #ifdef _MSC_VER
   // http://msdn.microsoft.com/en-us/library/506720ff%28v=vs.100%29.aspx

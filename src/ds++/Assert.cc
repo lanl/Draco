@@ -66,8 +66,9 @@ void toss_cookies_ptr(char const *const cond, char const *const file, int const 
  */
 void check_cookies(bool const cond, char const *const cond_text, char const *const file,
                    int const line) {
-  if (!cond)
+  if (!cond) {
     throw assertion(cond_text, file, line);
+  }
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -147,10 +148,11 @@ std::string verbose_error(std::string const &message) {
   int pid = draco_getpid();
   std::ostringstream errstr;
   errstr << "Host " << draco_gethostname() << ", PID ";
-  if (pid < 0)
+  if (pid < 0) {
     errstr << "(unknown)";
-  else
+  } else {
     errstr << pid;
+  }
   errstr << ": " << message;
   return errstr.str();
 } // verbose_error

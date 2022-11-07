@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Wed Nov  7 15:58:08 2001
  * \brief  Test the routines used for serializing and de-serializing C++ objects
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Packing_Utils.hh"
@@ -247,7 +246,7 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
 
   // unpack
   {
-    array<char, 4> cc;
+    array<char, 4> cc{'\0', '\0', '\0', '\0'};
     vector<double> lx(100, 0.0);
 
     Unpacker u;
@@ -268,7 +267,7 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
 
   // Skip some data and unpack
   {
-    array<char, 2> cc;
+    array<char, 2> cc = {'\0', '\0'};
     vector<double> lx(100, 0.0);
 
     Unpacker u;
@@ -561,7 +560,7 @@ void endian_conversion_test(rtt_dsxx::UnitTest &ut) {
   constexpr int length = sizeof(int);
 
   // Pack
-  array<char, length> data;
+  array<char, length> data{};
   p.set_buffer(length, data.data());
   p << moo;
 
@@ -578,13 +577,13 @@ void endian_conversion_test(rtt_dsxx::UnitTest &ut) {
   uint32_t constexpr letter_length = 7;
 
   // Pack
-  array<char, letter_length> letter_data;
+  array<char, letter_length> letter_data{};
   p.set_buffer(letter_length, letter_data.data());
   for (char const letter : letters)
     p << letter;
 
   // Unpack
-  array<char, letter_length> unpacked_letters;
+  array<char, letter_length> unpacked_letters{};
   up.set_buffer(letter_length, letter_data.data());
   for (char &unpacked_letter : unpacked_letters)
     up >> unpacked_letter;

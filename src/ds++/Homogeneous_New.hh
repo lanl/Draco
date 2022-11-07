@@ -79,9 +79,9 @@ public:
 
   // CREATORS
 
-  //! Create an allocator for objects of the specified size, using the specified
-  //! block byte count (defaulting to a system-tuned value.)
-  Homogeneous_New(unsigned object_size, unsigned default_block_size = DEFAULT_BLOCK_SIZE);
+  //! Create an allocator for objects of the specified size, using the specified block byte count
+  //! (defaulting to a system-tuned value.)
+  explicit Homogeneous_New(unsigned object_size, unsigned default_block_size = DEFAULT_BLOCK_SIZE);
 
   //! Copy constructor: not implemented
   Homogeneous_New(const Homogeneous_New &rhs) = delete;
@@ -101,7 +101,7 @@ public:
   void *allocate();
 
   // Release an object's storage.
-  void deallocate(void *);
+  void deallocate(void *ptr);
 
   // Reserve storage for the specified number of objects.
   void reserve(unsigned object_count);
