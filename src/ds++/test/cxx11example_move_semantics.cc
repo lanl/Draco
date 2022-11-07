@@ -91,7 +91,7 @@ void move_semantics_example(rtt_dsxx::UnitTest &ut) {
   cout << "\nCreate an instantiation of Apple that owns a copy of v1.";
   Apple a(std::move(v1));
   cout << "\nAfter call to Apple::ctor\n";
-  report_memory_locations(v1, "v1");
+  report_memory_locations(v1, "v1"); // NOLINT [hicpp-invalid-access-moved]
   report_memory_locations(a.v_, "a.v_");
 
   // v1 remains unchanged! (not the behavior we want)
@@ -134,7 +134,7 @@ void move_semantics_example(rtt_dsxx::UnitTest &ut) {
   cout << "\nCreate an instantiation of Banana that takes ownership of v1's data.";
   Banana b(std::move(v1));
   cout << "\nAfter call to Banana::ctor\n";
-  report_memory_locations(v1, "v1");
+  report_memory_locations(v1, "v1"); // NOLINT [hicpp-invalid-access-moved]
   report_memory_locations(b.v_, "b.v_");
 
   // v1 remains unchanged! (not the behavior we want)
@@ -163,8 +163,7 @@ void report_memory_locations(std::vector<double> const &v, std::string const &na
   using namespace std;
   cout << name << " @ " << &v << ", " << name << " data @ ";
   if (!v.empty())
-    cout << &v[0] << endl; // NOLINT - clang-tidy warns about possibly accessing moved-from data
-                           // location.
+    cout << &v[0] << endl; // NOLINT [hicpp-invalid-access-moved]
   else
     cout << "nullptr" << endl;
   cout << name << " = {";

@@ -101,7 +101,7 @@ public:
   bool failure(int line, char const *file);
   bool failure(std::string const &failmsg);
   bool passes(std::string const &passmsg);
-  bool check(bool, std::string const &checkmsg, bool fatal = false);
+  bool check(bool good, std::string const &checkmsg, bool fatal = false);
   virtual bool check_all(bool good, std::string const &checkmsg, bool fatal = false) {
     return check(good, checkmsg, fatal);
   }

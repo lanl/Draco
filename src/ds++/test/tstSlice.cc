@@ -4,8 +4,7 @@
  * \author Kent Budge
  * \date   Thu Jul  8 08:02:51 2004
  * \brief  Test the Slice subset container class.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -23,146 +22,57 @@ using namespace rtt_dsxx;
 void tstSlice(UnitTest &ut) {
   vector<unsigned> v = {0, 1, 2, 3, 4};
   Slice<vector<unsigned>::iterator> s = slice(v.begin() + 1, 2, 2);
-  if (s.size() == 2)
-    PASSMSG("size of vector Slice is correct");
-  else
-    FAILMSG("size of vector Slice is NOT correct");
-  if (s[1] == 3)
-    PASSMSG("indexing of Slice is correct");
-  else
-    FAILMSG("size of Slice is NOT correct");
-  if (s.begin() < s.end())
-    PASSMSG("ordering of Slice is correct");
-  else
-    FAILMSG("ordering of Slice is NOT correct");
-  if (!(s.end() < s.begin()))
-    PASSMSG("ordering of Slice is correct");
-  else
-    FAILMSG("ordering of Slice is NOT correct");
+  FAIL_IF_NOT(s.size() == 2);
+  FAIL_IF_NOT(s[1] == 3);
+  FAIL_IF_NOT(s.begin() < s.end());
+  FAIL_IF_NOT(!(s.end() < s.begin()));
 
   Slice<vector<unsigned>::iterator>::iterator i = s.begin();
-  if (*i == 1)
-    PASSMSG("deref of begin is correct");
-  else
-    FAILMSG("deref of begin is NOT correct");
-  if (i[0] == 1)
-    PASSMSG("operator[] of begin is correct");
-  else
-    FAILMSG("operator[] of begin is NOT correct");
-  if (*(i + 1) == 3)
-    PASSMSG("operator+ is correct");
-  else
-    FAILMSG("operator+ is NOT correct");
+  FAIL_IF_NOT(*i == 1);
+  FAIL_IF_NOT(i[0] == 1);
+  FAIL_IF_NOT(*(i + 1) == 3);
   ++i;
-  if (*i == 3)
-    PASSMSG("deref of ++begin is correct");
-  else
-    FAILMSG("deref of ++begin is NOT correct");
-  if (i - s.begin() == 1)
-    PASSMSG("operator- is correct");
-  else
-    FAILMSG("operator- is NOT correct");
+  FAIL_IF_NOT(*i == 3);
+  FAIL_IF_NOT(i - s.begin() == 1);
   i++;
-  if (i != s.end())
-    FAILMSG("++ past end is NOT correct");
-  else
-    PASSMSG("++ past end is correct");
+  FAIL_IF(i != s.end());
 
   Slice<vector<unsigned>::iterator>::const_iterator ci = s.begin();
-  if (ci.first() == v.begin() + 1)
-    PASSMSG("first is correct");
-  else
-    FAILMSG("first is NOT correct");
-  if (ci.offset() == 0)
-    PASSMSG("offset is correct");
-  else
-    FAILMSG("offset is NOT correct");
-  if (ci.stride() == 2)
-    PASSMSG("stride is correct");
-  else
-    FAILMSG("stride is NOT correct");
-  if (*ci == 1)
-    PASSMSG("deref of begin is correct");
-  else
-    FAILMSG("deref of begin is NOT correct");
-  if (ci[0] == 1)
-    PASSMSG("operator[] of begin is correct");
-  else
-    FAILMSG("operator[] of begin is NOT correct");
-  if (*(ci + 1) == 3)
-    PASSMSG("operator+ is correct");
-  else
-    FAILMSG("operator+ is NOT correct");
+  FAIL_IF_NOT(ci.first() == v.begin() + 1);
+  FAIL_IF_NOT(ci.offset() == 0);
+  FAIL_IF_NOT(ci.stride() == 2);
+  FAIL_IF_NOT(*ci == 1);
+  FAIL_IF_NOT(ci[0] == 1);
+  FAIL_IF_NOT(*(ci + 1) == 3);
   ++ci;
-  if (*ci == 3)
-    PASSMSG("deref of ++begin is correct");
-  else
-    FAILMSG("deref of ++begin is NOT correct");
-  if (s.begin() < ci)
-    PASSMSG("correct const iterator ordering");
-  else
-    FAILMSG("NOT correct const iterator ordering");
-  if (ci - s.begin() == 1)
-    PASSMSG("operator- is correct");
-  else
-    FAILMSG("operator- is NOT correct");
+  FAIL_IF_NOT(*ci == 3);
+  FAIL_IF_NOT(s.begin() < ci);
+  FAIL_IF_NOT(ci - s.begin() == 1);
   ci++;
-  if (ci != s.end())
-    FAILMSG("++ past end is NOT correct");
-  else
-    PASSMSG("++ past end is correct");
+  FAIL_IF(ci != s.end());
 
   Slice<vector<unsigned>::iterator> s2(v.begin(), 3, 2);
-  if (s2.size() == 3)
-    PASSMSG("size of Slice is correct");
-  else
-    FAILMSG("size of Slice is NOT correct");
-  if (s2[1] == 2)
-    PASSMSG("indexing of Slice is correct");
-  else
-    FAILMSG("size of Slice is NOT correct");
+  FAIL_IF_NOT(s2.size() == 3);
+  FAIL_IF_NOT(s2[1] == 2);
 
-  array<double, 6> da;
+  array<double, 6> da = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   Slice<double *> das(da.data(), 2, 3);
-  if (das.size() == 2)
-    PASSMSG("size of Slice is correct");
-  else
-    FAILMSG("size of Slice is NOT correct");
+  FAIL_IF_NOT(das.size() == 2);
 
   vector<double> db_vector(6);
   double *const db = &db_vector[0];
   db[0] = 0;
   Slice<vector<double>::iterator> dbs(db_vector.begin(), 2, 3);
-  if (dbs.size() == 2)
-    PASSMSG("size of Slice is correct");
-  else
-    FAILMSG("size of Slice is NOT correct");
+  FAIL_IF_NOT(dbs.size() == 2);
 
   Slice<vector<unsigned>::iterator> const cs = s;
-  if (cs[1] == 3)
-    PASSMSG("indexing of const Slice is correct");
-  else
-    FAILMSG("size of const Slice is NOT correct");
-  if (cs.front() == 1)
-    PASSMSG("front of const Slice is correct");
-  else
-    FAILMSG("front of const Slice is NOT correct");
-  if (cs.back() == 3)
-    PASSMSG("back of const Slice is correct");
-  else
-    FAILMSG("back of const Slice is NOT correct");
-  if (cs.begin() < cs.end())
-    PASSMSG("ordering of const Slice is correct");
-  else
-    FAILMSG("ordering of const Slice is NOT correct");
-  if (!(cs.end() < cs.begin()))
-    PASSMSG("ordering of const Slice is correct");
-  else
-    FAILMSG("ordering of const Slice is NOT correct");
-  if (!cs.empty())
-    PASSMSG("emptiness of const Slice is correct");
-  else
-    FAILMSG("emptiness of const Slice is NOT correct");
+  FAIL_IF_NOT(cs[1] == 3);
+  FAIL_IF_NOT(cs.front() == 1);
+  FAIL_IF_NOT(cs.back() == 3);
+  FAIL_IF_NOT(cs.begin() < cs.end());
+  FAIL_IF_NOT(!(cs.end() < cs.begin()));
+  FAIL_IF_NOT(!cs.empty());
+  PASSMSG("Done with tests.");
 }
 
 //------------------------------------------------------------------------------------------------//

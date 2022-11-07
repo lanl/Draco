@@ -415,7 +415,7 @@ patchfile_cb=$(mktemp "/tmp/$USER/copyright_block.patch.XXXXXXXX")
 FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .txt"
 #FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
 FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc Release.hh check_style.sh imc_info.cc .in kat_main.h"
-FILE_ENDINGS_EXCLUDE+=" rngNxW.h util.h terminal.h util_cpu.h"
+FILE_ENDINGS_EXCLUDE+=" rngNxW.h util.h terminal.h util_cpu.h fpe_trap.hh"
 export FILE_EXTS FILE_ENDINGS_EXCLUDE
 
 # Loop over all modified files.  Create one patch containing all changes to these files

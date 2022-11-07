@@ -11,6 +11,7 @@
 #include <array>
 #include <iostream>
 #include <sstream>
+#include <string>
 
 //------------------------------------------------------------------------------------------------//
 // Stack trace feature is only available on Unix-based systems when compiled with Intel or GNU C++.
@@ -46,7 +47,7 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
 
   // Now read the symbolic link (process name)
   unsigned constexpr buf_size(512);
-  std::array<char, buf_size> buf;
+  std::array<char, buf_size> buf{};
 #ifdef APPLE
   int ret = -1; // This scheme won't work on OSX: no /proc fs
 #else
@@ -61,7 +62,7 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
 
   // retrieve current stack addresses
   int constexpr max_frames = 64;
-  std::array<void *, max_frames> addrlist;
+  std::array<void *, max_frames> addrlist{};
   uint32_t constexpr sizeofvoidptr = sizeof(void *);
   int const stack_depth = backtrace(addrlist.data(), sizeofvoidptr * addrlist.size());
 
@@ -117,7 +118,7 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
       int status(1); // assume failure
       char *ret01 = nullptr;
 #ifndef draco_isPGI
-      ret01 = abi::__cxa_demangle(begin_name, funcname, &funcnamesize, &status);
+      { ret01 = abi::__cxa_demangle(begin_name, funcname, &funcnamesize, &status); }
 #endif
       if (status == 0) {
         funcname = ret01; // use possibly realloc()-ed string
@@ -133,19 +134,16 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
     }
   }
 
-  free(funcname);
-  free(symbollist);
+  free(funcname);   // NOLINT [hicpp-no-malloc]
+  free(symbollist); // NOLINT [hicpp-no-malloc]
 
 #ifdef draco_isPGI
-  msg << "\n==> Draco's StackTrace feature is not currently implemented for "
-         "PGI."
+  msg << "\n==> Draco's StackTrace feature is not currently implemented for PGI."
       << "\n    The StackTrace is known to work under Intel or GCC compilers." << std::endl;
 #else
   msg << "\n==> Try to run 'addr2line -e " << process_name << " 0x99999' "
-      << "\n    to find where each part of the stack relates to your source "
-         "code."
-      << "\n    Replace the 0x99999 with the actual address from the stack "
-         "trace above."
+      << "\n    to find where each part of the stack relates to your source code."
+      << "\n    Replace the 0x99999 with the actual address from the stack trace above."
       << std::endl;
 #endif
   return msg.str();

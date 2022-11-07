@@ -157,16 +157,16 @@ template <> inline uint32_t byte_swap_copy<uint32_t>(uint32_t const input) {
 #else
   uint32_t byte, output;
   byte = input & 255U;
-  output = (byte << 24);
+  output = (byte << 24U);
 
   byte = input & 65280U; // 255 << 8
-  output = output | (byte << 8);
+  output = output | (byte << 8U);
 
   byte = input & 16711680U; // 255 << 16
-  output = output | (byte >> 8);
+  output = output | (byte >> 8U);
 
-  byte = input & 4278190080U;     // 255 << 24
-  output = output | (byte >> 24); // look out--algebraic shift r.
+  byte = input & 4278190080U;      // 255 << 24
+  output = output | (byte >> 24U); // look out--algebraic shift r.
 
 #endif // __use_x86_asm
   return output;
@@ -193,40 +193,42 @@ template <> inline double byte_swap_copy<double>(double const input) {
   union {
     double d;
     uint64_t u;
-  } b64;
+  } b64 = {0.0};
 
-  uint64_t byte, tmp, uinput;
+  uint64_t byte{0};
+  uint64_t tmp{0};
+  uint64_t uinput{0};
 
   // change meaning of input bits to uint64_t:
   b64.d = input;
   uinput = b64.u;
 
   // 1
-  byte = uinput & 255;
-  tmp = (byte << 56);
+  byte = uinput & 255U;
+  tmp = (byte << 56U);
   // 2
-  byte = uinput & 65280; // 255 << 8
-  tmp = tmp | (byte << 40);
+  byte = uinput & 65280U; // 255 << 8
+  tmp = tmp | (byte << 40U);
   // 3
-  byte = uinput & 16711680; // 255 << 16
-  tmp = tmp | (byte << 24);
+  byte = uinput & 16711680U; // 255 << 16
+  tmp = tmp | (byte << 24U);
   // 4
   byte = uinput & 4278190080U; // 255 << 24
-  tmp = tmp | (byte << 8);
+  tmp = tmp | (byte << 8U);
   // 5
   byte = uinput & 1095216660480ULL; // 255 << 32
   // byte = uinput & 1095216660480; // 255 << 32
-  tmp = tmp | (byte >> 8);
+  tmp = tmp | (byte >> 8U);
   // 6
   byte = uinput & 280375465082880ULL; // 255 << 40
-  tmp = tmp | (byte >> 24);
+  tmp = tmp | (byte >> 24U);
   // 7
   byte = uinput & 71776119061217280ULL; // 255 << 48
-  tmp = tmp | (byte >> 40);
+  tmp = tmp | (byte >> 40U);
   // 8
   byte = uinput & 18374686479671623680ULL; // 255 << 56
   // byte = uinput & 0xff00000000000000; // 255 << 56
-  tmp = tmp | (byte >> 56);
+  tmp = tmp | (byte >> 56U);
 
   // change meaning of bits in b64.
   b64.u = tmp;

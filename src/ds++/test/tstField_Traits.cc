@@ -3,8 +3,7 @@
  * \file   ds++/test/tstField_Traits.cc
  * \author Kent Budge
  * \date   Tue Aug 26 12:18:55 2008
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Field_Traits.hh"
@@ -20,31 +19,17 @@ using namespace rtt_dsxx;
 //------------------------------------------------------------------------------------------------//
 
 void tstFT(UnitTest &ut) {
-  if (Field_Traits<complex<double>>::zero() == 0.0)
-    PASSMSG("complex zero good");
-  else
-    FAILMSG("complex zero NOT good");
-  if (Field_Traits<complex<double>>::one() == 1.0)
-    PASSMSG("complex zero good");
-  else
-    FAILMSG("complex zero NOT good");
+  FAIL_IF_NOT(Field_Traits<complex<double>>::zero() == 0.0);
+  FAIL_IF_NOT(Field_Traits<complex<double>>::one() == 1.0);
   double const x = 3.7;
-  if (rtt_dsxx::soft_equiv(value(x), 3.7))
-    PASSMSG("complex zero good");
-  else
-    FAILMSG("complex zero NOT good");
+  FAIL_IF_NOT(rtt_dsxx::soft_equiv(value(x), 3.7));
 
   double const eps = std::numeric_limits<double>::epsilon();
   double const mrv = std::numeric_limits<double>::min();
 
-  if (rtt_dsxx::soft_equiv(Field_Traits<double const>::zero(), 0.0, mrv))
-    PASSMSG("double zero good");
-  else
-    FAILMSG("double zero NOT good");
-  if (rtt_dsxx::soft_equiv(Field_Traits<double const>::one(), 1.0, eps))
-    PASSMSG("double zero good");
-  else
-    FAILMSG("double zero NOT good");
+  FAIL_IF_NOT(rtt_dsxx::soft_equiv(Field_Traits<double const>::zero(), 0.0, mrv));
+  FAIL_IF_NOT(rtt_dsxx::soft_equiv(Field_Traits<double const>::one(), 1.0, eps));
+  PASSMSG("done with tstFT");
   return;
 }
 
@@ -56,10 +41,10 @@ struct unlabeled {
 struct labeled {
   unlabeled s;
   int j;
-
-  operator unlabeled &() { return s; }
+  operator unlabeled &() { return s; } // NOLINT [hicpp-explicit-conversions]
 };
 
+//------------------------------------------------------------------------------------------------//
 namespace rtt_dsxx {
 
 template <> class Field_Traits<labeled> {
@@ -70,22 +55,14 @@ public:
 
 bool operator==(unlabeled const &a, labeled const &b) { return a.i == b.s.i; }
 
+//------------------------------------------------------------------------------------------------//
 void tstvalue(UnitTest &ut) {
   double x = 3;
   double const cx = 4;
-
-  if (rtt_dsxx::soft_equiv(x, value(x)) && rtt_dsxx::soft_equiv(cx, value(cx)))
-    PASSMSG("value strips double correctly");
-  else
-    FAILMSG("value does NOT strip double correctly");
-
+  FAIL_IF_NOT(rtt_dsxx::soft_equiv(x, value(x)) && rtt_dsxx::soft_equiv(cx, value(cx)));
   labeled s = {{1}, 2};
-
-  if (value(s) == s)
-    PASSMSG("value strips struct correctly");
-  else
-    FAILMSG("value does NOT strip struct correctly");
-
+  FAIL_IF_NOT(value(s) == s);
+  PASSMSG("Done with tstvalue");
   return;
 }
 

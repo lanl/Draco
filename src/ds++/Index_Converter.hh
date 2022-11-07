@@ -36,14 +36,21 @@ public:
   Index_Converter() = default;
 
   //! Construct with just a pointer to the sizes
-  Index_Converter(const unsigned *dimensions) { set_size(dimensions); }
+  explicit Index_Converter(const unsigned *dimensions) { set_size(dimensions); }
 
   //! Construct a with all dimensions equal
-  Index_Converter(const unsigned dimension) { set_size(dimension); }
+  explicit Index_Converter(const unsigned dimension) { set_size(dimension); }
 
   //! Copy constructor
   Index_Converter(Index_Converter const &rhs)
       : Index_Set<D, OFFSET>(rhs), sub_sizes(rhs.sub_sizes) {}
+  //! Move constructor
+  Index_Converter(Index_Converter const &&rhs) noexcept
+      : Index_Set<D, OFFSET>(rhs), sub_sizes(rhs.sub_sizes) {}
+
+  //! Disable assignment operator
+  Index_Converter &operator=(Index_Converter const &rhs) = delete;
+  Index_Converter &operator=(Index_Converter &&rhs) noexcept = delete;
 
   //! Destructor
   ~Index_Converter() override = default;
@@ -85,7 +92,7 @@ private:
   // DATA
 
   //! Sizes of sub-grids of increasing dimension.
-  std::array<unsigned, D> sub_sizes;
+  std::array<unsigned, D> sub_sizes{};
 
   // IMPLEMENTATION
 

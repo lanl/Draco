@@ -55,17 +55,17 @@ public:
 
   //! The copy constructor is disabled.
   ScalarUnitTest(const ScalarUnitTest &rhs) = delete;
+  ScalarUnitTest(const ScalarUnitTest &&rhs) = delete;
+
+  //! Disabled assignment operator
+  ScalarUnitTest &operator=(const ScalarUnitTest &rhs) = delete;
+  ScalarUnitTest &operator=(ScalarUnitTest &&rhs) noexcept = delete;
 
   //! Destructor.
   ~ScalarUnitTest() override {
     out << resultMessage() << std::endl;
     return;
   }
-
-  // MANIPULATORS
-
-  //! The assignment operator for ScalarUnitTest is disabled.
-  ScalarUnitTest &operator=(const ScalarUnitTest &rhs) = delete;
 };
 
 //------------------------------------------------------------------------------------------------//

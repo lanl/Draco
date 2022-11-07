@@ -30,7 +30,7 @@ namespace rtt_dsxx {
 
 struct char_in_string {
   std::string str2;
-  char_in_string(std::string s) : str2(std::move(s)) {}
+  explicit char_in_string(std::string s) : str2(std::move(s)) {}
   bool operator()(const std::string &str1) const {
     size_t out = str1.find_first_of(str2);
     return out != std::string::npos;
@@ -51,7 +51,7 @@ struct string_length_out_of_range {
 
 struct strings_equal {
   std::string str2;
-  strings_equal(std::string s) : str2(std::move(s)) {}
+  explicit strings_equal(std::string s) : str2(std::move(s)) {}
   bool operator()(const std::string &str1) const { return str1 == str2; }
 };
 

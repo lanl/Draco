@@ -4,8 +4,7 @@
  * \author Kelly G. Thompson <kgt@lanl.gov>
  * \date   Wednesday, Aug 23, 2017, 13:30 pm
  * \brief  Test functions defined in ds++/DracoStrings.hh
- * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/DracoStrings.hh"
@@ -115,17 +114,17 @@ void test_parse_number(UnitTest &ut) {
   float const feps = numeric_limits<float>::epsilon();
 
   FAIL_IF_NOT(parse_number<int>(case1) == 1);
-  FAIL_IF_NOT(parse_number<long>(case1) == 1l);
-  FAIL_IF_NOT(parse_number<unsigned long>(case1) == 1ul);
+  FAIL_IF_NOT(parse_number<long>(case1) == 1L);
+  FAIL_IF_NOT(parse_number<unsigned long>(case1) == 1UL);
   FAIL_IF_NOT(parse_number<int32_t>(case1) == 1);
-  FAIL_IF_NOT(parse_number<int64_t>(case1) == 1l);
-  FAIL_IF_NOT(parse_number<uint32_t>(case1) == 1u);
-  FAIL_IF_NOT(parse_number<uint64_t>(case1) == 1ul);
-  FAIL_IF_NOT(soft_equiv(parse_number<float>(case1), 1.0f, feps));
+  FAIL_IF_NOT(parse_number<int64_t>(case1) == 1L);
+  FAIL_IF_NOT(parse_number<uint32_t>(case1) == 1U);
+  FAIL_IF_NOT(parse_number<uint64_t>(case1) == 1UL);
+  FAIL_IF_NOT(soft_equiv(parse_number<float>(case1), 1.0F, feps));
   FAIL_IF_NOT(soft_equiv(parse_number<double>(case1), 1.0, deps));
 
   FAIL_IF_NOT(parse_number<int>(case3) == 3);
-  FAIL_IF_NOT(soft_equiv(parse_number<float>(case3), 3.1415f, feps));
+  FAIL_IF_NOT(soft_equiv(parse_number<float>(case3), 3.1415F, feps));
   FAIL_IF_NOT(soft_equiv(parse_number<double>(case3), 3.1415, deps));
 
   try {
@@ -198,8 +197,8 @@ void test_tostring(UnitTest &ut) {
 
   double const foo(2.11111111);
   unsigned int const p(23);
-  // Must be careful to use rtt_dsxx::to_string and avoid std::to_string --
-  // especially after 'using namespace std.'
+  // Must be careful to use rtt_dsxx::to_string and avoid std::to_string -- especially after 'using
+  // namespace std.'
   string s1(rtt_dsxx::to_string(foo, p));
   string s2(rtt_dsxx::to_string(foo));
   if (s1 == s2)

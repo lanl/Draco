@@ -59,7 +59,7 @@ private:
   bool filefound{false};
   WIN32_FIND_DATA FileInformation; // Additional file information
 #else
-  struct stat buf;
+  struct stat buf {};
 #endif
 
 public:
@@ -142,9 +142,9 @@ private:
    * .
    */
   struct CPUData {
-    std::string cpu;
-    size_t num_cpus;
-    std::array<size_t, cpudata_num_values> times;
+    std::string cpu{};
+    size_t num_cpus{0};
+    std::array<size_t, cpudata_num_values> times{};
   };
 
   /* Maniulators */
@@ -164,8 +164,9 @@ private:
         ss >> cpu_all_entry.cpu;
         // read times
         if (cpu_all_entry.cpu == "cpu") {
-          for (auto &t : cpu_all_entry.times)
+          for (auto &t : cpu_all_entry.times) {
             ss >> t;
+          }
         } else {
           num_cpu++;
         }
@@ -185,13 +186,14 @@ private:
 
   //! Read /proc/loadavg data.
   std::array<float, 3> ReadLoadAvg() {
-    std::array<float, 3> retvalue;
+    std::array<float, 3> retvalue{0.0, 0.0, 0.0};
     std::ifstream fileStat("/proc/loadavg");
     std::string line("");
     while (std::getline(fileStat, line)) { // Read a line
       std::istringstream ss(line);
-      for (auto &t : retvalue)
+      for (auto &t : retvalue) {
         ss >> t;
+      }
     }
     return retvalue;
   }
@@ -210,7 +212,7 @@ public:
     float const totalTime = activeTime + idleTime;
     std::cout.width(6);
     std::cout.precision(2);
-    std::cout << "Average CPU Utilization      : " << 100.0f * activeTime / totalTime << "%\n"
+    std::cout << "Average CPU Utilization      : " << 100.0F * activeTime / totalTime << "%\n"
               << "Number of cores (hw threads) :" << entry1.num_cpus << std::endl;
   }
 

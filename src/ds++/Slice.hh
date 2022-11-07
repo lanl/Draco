@@ -136,7 +136,7 @@ public:
       return ((first_ - i.first_) + offset_ - i.offset_) / stride_;
     }
 
-    const_iterator(iterator const &i)
+    const_iterator(iterator const &i) // NOLINT [hicpp-explicit-conversions]
         : first_(i.first()), offset_(i.offset()), stride_(i.stride()) {}
 
   private:

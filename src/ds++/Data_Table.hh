@@ -32,7 +32,11 @@ public:
 
 public:
   //! copy constructor
-  constexpr inline Data_Table(Data_Table const &);
+  constexpr inline Data_Table(Data_Table const &rhs);
+  constexpr inline Data_Table(Data_Table const &&rhs) = delete;
+  //! assignment operator
+  constexpr Data_Table &operator=(Data_Table const &rhs);
+  constexpr Data_Table &operator=(Data_Table const &&rhs) noexcept = delete;
   //! Constructor
   constexpr inline explicit Data_Table(std::vector<T> const &v);
   //! Constructor
@@ -41,6 +45,8 @@ public:
   constexpr inline explicit Data_Table(T const &value);
   //! Default constructor
   constexpr inline Data_Table();
+  //! Destructor
+  inline ~Data_Table() = default;
   //! Access operator
   constexpr inline T const &operator[](const unsigned i) const;
   //! begin iterator
@@ -51,8 +57,6 @@ public:
   constexpr inline T const &front() const;
   constexpr inline T const &back() const;
   constexpr inline T *access();
-  //! equality operator
-  constexpr Data_Table &operator=(Data_Table const &);
 
 private:
   const_iterator const d_begin;

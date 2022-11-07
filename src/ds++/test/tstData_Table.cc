@@ -160,13 +160,11 @@ int main(int argc, char *argv[]) {
     }
 
     catch (...) {
-      cout << "ERROR: While testing " << argv[0] << ", "
-           << "An unknown exception was thrown" << endl;
+      cout << "ERROR: While testing " << argv[0] << ", An unknown exception was thrown" << endl;
       ut.numFails++;
     }
   } else {
-    PASSMSG(std::string("Unit tests only works if DBC is on and the ") +
-            std::string("DBC nothrow option is off."));
+    PASSMSG("Unit tests only works if DBC is on and the DBC nothrow option is off.");
   }
   return ut.numFails;
 }

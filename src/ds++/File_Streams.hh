@@ -4,8 +4,7 @@
  * \author Rob Lowrie
  * \date   Fri Nov 19 12:42:18 2004
  * \brief  Header for File_Output and File_Input.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_File_Streams_hh
@@ -187,7 +186,7 @@ template <class T> File_Output &File_Output::operator<<(const T i) {
   Require(d_stream.is_open());
 
   if (d_binary) {
-    std::array<char, sizeof(T)> buffer;
+    std::array<char, sizeof(T)> buffer{};
     std::memcpy(buffer.data(), const_cast<T *>(&i), sizeof(T));
     d_stream.write(buffer.data(), sizeof(T));
   } else // ascii mode
@@ -215,7 +214,7 @@ template <class T> File_Input &File_Input::operator>>(T &i) {
   Require(d_stream.is_open());
 
   if (d_binary) {
-    std::array<char, sizeof(T)> buffer;
+    std::array<char, sizeof(T)> buffer{};
     d_stream.read(buffer.data(), sizeof(T));
     std::memcpy(&i, buffer.data(), sizeof(T));
   } else // ascii mode

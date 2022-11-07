@@ -65,8 +65,7 @@ void t2(rtt_dsxx::UnitTest &ut) {
 
   if (!std::regex_search(error_message, match, rgx)) {
     ITFAILS;
-    std::cout << "compare_value = \"" << compare_value << "\"\n"
-              << "match = \"" << match[1] << "\n"
+    std::cout << "compare_value = \"" << compare_value << "\"\nmatch = \"" << match[1] << "\n"
               << std::endl;
   }
 
@@ -80,7 +79,7 @@ void t2(rtt_dsxx::UnitTest &ut) {
 void t3(rtt_dsxx::UnitTest &ut) {
   std::cout << "t3 test: ";
   try {
-    throw "hello";
+    throw "hello"; // NOLINT [hicpp-exception-baseclass]
   } catch (rtt_dsxx::assertion const & /*error*/) {
     FAILMSG("Should not have caught an rtt_dsxx::assertion");
   } catch (const char * /*message*/) {
@@ -134,7 +133,7 @@ void tcheck_cookies(rtt_dsxx::UnitTest &ut) {
     std::cout << "tcheck_cookies test: ";
     try {
       rtt_dsxx::check_cookies(false, "testing check_cookies()", "DummyFile.ext", 55);
-      throw "Bogus!";
+      throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
     } catch (rtt_dsxx::assertion const & /* error */) {
       PASSMSG("Caught assertion thrown by check_cookies with false condition.");
     } catch (...) {
@@ -166,10 +165,9 @@ void tshow_cookies(rtt_dsxx::UnitTest &ut) {
       string const msg("testing show_cookies()");
       string const file("DummyFile.ext");
       int const line(55);
-      cout << "The following line should be an error "
-           << "message...\n\t";
+      cout << "The following line should be an error message...\n\t";
       rtt_dsxx::show_cookies(msg, file, line);
-      throw "Bogus!";
+      throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
     } catch (rtt_dsxx::assertion const & /* error */) {
       ITFAILS;
     } catch (...) {
@@ -187,24 +185,22 @@ void trequire(rtt_dsxx::UnitTest &ut) {
   std::cout << "t-Require test: \n";
   try {
     if (ut.dbcNothrow()) {
-      std::cout << "(NOTHROW=ON) The next line should be the output "
-                << "from Require(0) w/o an exception thrown." << std::endl;
+      std::cout << "(NOTHROW=ON) The next line should be the output from Require(0) w/o an "
+                << "exception thrown." << std::endl;
     }
     Require(0);
     if (!ut.dbcNothrow())
-      throw "Bogus!";
+      throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
   } catch (rtt_dsxx::assertion const &a) {
     // The nothrow option should never get here.
-    if (ut.dbcNothrow())
-      ITFAILS;
+    FAIL_IF(ut.dbcNothrow());
     if (ut.dbcRequire()) {
       PASSMSG("trequire: caught rtt_dsxx::assertion");
       std::cout << "t-Require message value test: ";
       std::string msg(a.what());
       std::string expected_value("Assertion: 0, failed in");
       string::size_type idx = msg.find(expected_value);
-      if (idx == string::npos)
-        ITFAILS;
+      FAIL_IF(idx == string::npos);
     }
     // If require is off we should never get here.
     else {
@@ -225,32 +221,29 @@ void tcheck(rtt_dsxx::UnitTest &ut) {
   std::cout << "t-Check test: \n";
   try {
     if (ut.dbcNothrow()) {
-      std::cout << "(NOTHROW=ON) The next line should be the output "
-                << "from Check(false) w/o an exception thrown." << std::endl;
+      std::cout << "(NOTHROW=ON) The next line should be the output from Check(false) w/o an "
+                << "exception thrown." << std::endl;
     }
     Check(false);
     if (!ut.dbcNothrow())
       throw std::runtime_error(std::string("tstAssert: tcheck()"));
   } catch (rtt_dsxx::assertion const &a) {
     // The nothrow option should never get here.
-    if (ut.dbcNothrow())
-      ITFAILS;
+    FAIL_IF(ut.dbcNothrow());
     if (ut.dbcCheck()) {
       PASSMSG("tcheck: caught rtt_dsxx::assertion");
       std::cout << "t-Check message value test: ";
       std::string msg(a.what());
       std::string expected_value("Assertion: false, failed in");
       string::size_type idx = msg.find(expected_value);
-      if (idx == string::npos)
-        ITFAILS;
+      FAIL_IF(idx == string::npos);
     }
     // If check is off we should never get here.
     else {
       ITFAILS;
     }
   } catch (...) {
-    if (ut.dbcCheck())
-      ITFAILS;
+    FAIL_IF(ut.dbcCheck());
   }
   return;
 }
@@ -263,16 +256,15 @@ void tensure(rtt_dsxx::UnitTest &ut) {
   std::cout << "t-Ensure test: \n";
   try {
     if (ut.dbcNothrow()) {
-      std::cout << "(NOTHROW=ON) The next line should be the output "
-                << "from Ensure(0) w/o an exception thrown." << std::endl;
+      std::cout << "(NOTHROW=ON) The next line should be the output from Ensure(0) w/o an "
+                << "exception thrown." << std::endl;
     }
     Ensure(0);
     if (!ut.dbcNothrow())
-      throw "Bogus!";
+      throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
   } catch (rtt_dsxx::assertion const &a) {
     // The nothrow option should never get here.
-    if (ut.dbcNothrow())
-      ITFAILS;
+    FAIL_IF(ut.dbcNothrow());
 
     if (ut.dbcEnsure()) {
       PASSMSG("tensure: caught rtt_dsxx::assertion");
@@ -286,8 +278,7 @@ void tensure(rtt_dsxx::UnitTest &ut) {
       ITFAILS;
     }
   } catch (...) {
-    if (ut.dbcEnsure())
-      ITFAILS;
+    FAIL_IF(ut.dbcEnsure());
   }
   return;
 }
@@ -300,11 +291,9 @@ void tremember(rtt_dsxx::UnitTest &ut) {
   int x = 0;
   Remember(x = 5);
   if (ut.dbcEnsure()) {
-    if (x != 5)
-      ITFAILS;
+    FAIL_IF_NOT(x == 5);
   } else {
-    if (x != 0)
-      ITFAILS;
+    FAIL_IF_NOT(x == 0);
   }
   return;
 }
@@ -317,16 +306,15 @@ void tassert(rtt_dsxx::UnitTest &ut) {
   std::cout << "t-Assert test: \n";
   try {
     if (ut.dbcNothrow()) {
-      std::cout << "(NOTHROW=ON) The next line should be the output "
-                << "from Assert(0) w/o an exception thrown." << std::endl;
+      std::cout << "(NOTHROW=ON) The next line should be the output from Assert(0) w/o an "
+                << "exception thrown." << std::endl;
     }
     Assert(0);
     if (!ut.dbcNothrow())
-      throw "Bogus!";
+      throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
   } catch (rtt_dsxx::assertion const &a) {
     // The nothrow option should never get here.
-    if (ut.dbcNothrow())
-      ITFAILS;
+    FAIL_IF(ut.dbcNothrow());
     if (ut.dbcCheck()) {
       PASSMSG("tassert: caught rtt_dsxx::assertion");
       std::cout << "t-Assert message value test: ";
@@ -339,8 +327,7 @@ void tassert(rtt_dsxx::UnitTest &ut) {
       ITFAILS;
     }
   } catch (...) {
-    if (ut.dbcCheck())
-      ITFAILS;
+    FAIL_IF(ut.dbcCheck());
   }
   return;
 }
@@ -355,7 +342,7 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
     std::string insist_message("You must be kidding!");
     try {
       Insist(0, insist_message);
-      throw "Bogus!";
+      throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
     } catch (rtt_dsxx::assertion const &a) {
       PASSMSG("tinsist: caught rtt_dsxx::assertion");
       std::cout << "t-Insist message value test: ";
@@ -369,8 +356,7 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
         idx = msg.find(insist_message);
         if (idx == string::npos)
           passed = false;
-        if (!passed)
-          ITFAILS;
+        FAIL_IF_NOT(passed);
       }
     } catch (...) {
       ITFAILS;
@@ -382,7 +368,7 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
     char const *const insist_message("You must be kidding!");
     try {
       Insist_ptr(0, insist_message);
-      throw "Bogus!";
+      throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
     } catch (rtt_dsxx::assertion const &a) {
       PASSMSG("tinsist_ptr: caught rtt_dsxx::assertion");
       std::cout << "t-Insist ptr message value test: ";
@@ -396,8 +382,7 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
         idx = msg.find(insist_message);
         if (idx == string::npos)
           passed = false;
-        if (!passed)
-          ITFAILS;
+        FAIL_IF_NOT(passed);
       }
     } catch (...) {
       ITFAILS;
@@ -410,7 +395,7 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
     char const *const insist_message("You must be kidding!");
     try {
       Insist_device(0, insist_message);
-      throw "Bogus!";
+      throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
     } catch (rtt_dsxx::assertion const &a) {
       PASSMSG("tinsist_device: caught rtt_dsxx::assertion");
       std::cout << "t-Insist device message value test: ";
@@ -424,8 +409,7 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
         idx = msg.find(insist_message);
         if (idx == string::npos)
           passed = false;
-        if (!passed)
-          ITFAILS;
+        FAIL_IF_NOT(passed);
       }
     } catch (...) {
       ITFAILS;
@@ -442,7 +426,7 @@ void tinsist_ptr(rtt_dsxx::UnitTest &ut) {
   std::cout << "t-Insist test: ";
   try {
     Insist(0, "You must be kidding!");
-    throw "Bogus!";
+    throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
   } catch (rtt_dsxx::assertion const &a) {
     PASSMSG("tinsist_ptr: caught  rtt_dsxx::assertion");
     std::cout << "t-Insist_ptr message value test: ";
@@ -450,8 +434,7 @@ void tinsist_ptr(rtt_dsxx::UnitTest &ut) {
       std::string msg(a.what());
       std::string expected_value("You must be kidding!");
       string::size_type idx(msg.find(expected_value));
-      if (idx == string::npos)
-        ITFAILS;
+      FAIL_IF(idx == string::npos);
     }
   } catch (...) {
     ITFAILS;
@@ -466,9 +449,8 @@ void tinsist_ptr(rtt_dsxx::UnitTest &ut) {
 void tverbose_error(rtt_dsxx::UnitTest &ut) {
   std::string const message(rtt_dsxx::verbose_error(std::string("This is an error.")));
   std::cout << "verbose_error() test: ";
-  if (message.find(std::string("Host")) == std::string::npos ||
-      message.find(std::string("PID")) == std::string::npos)
-    ITFAILS;
+  FAIL_IF(message.find(std::string("Host")) == std::string::npos ||
+          message.find(std::string("PID")) == std::string::npos);
   return;
 }
 
@@ -509,7 +491,7 @@ void tnoexcept(rtt_dsxx::UnitTest &ut) {
 
 //------------------------------------------------------------------------------------------------//
 int unused(int i) {
-  switch (i) {
+  switch (i) { // NOLINT [hicpp-multiway-paths-covered]
   case 0:
     return 0;
 

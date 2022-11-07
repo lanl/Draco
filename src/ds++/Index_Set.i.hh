@@ -85,7 +85,7 @@ inline bool Index_Set<D, OFFSET>::index_in_range(int index, unsigned dimension) 
 //------------------------------------------------------------------------------------------------//
 template <unsigned D, int OFFSET> inline void Index_Set<D, OFFSET>::compute_size() {
 
-  m_array_size = std::accumulate(m_dimensions.begin(), m_dimensions.end(), 1u, std::multiplies<>());
+  m_array_size = std::accumulate(m_dimensions.begin(), m_dimensions.end(), 1U, std::multiplies<>());
   Ensure(m_array_size > 0);
 }
 
