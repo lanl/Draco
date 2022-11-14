@@ -76,6 +76,9 @@ elif [[ "${SITE_ID}" =~ "trinitite" ]]; then
     *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
   esac
   run "module unload draco lapse"
+  case ${DRACO_ENV} in
+    draco/cce*) run "module swap PrgEnv-intel PrgEnv-cray" ;;
+  esac
   run "module load ${DRACO_ENV}"
 
 fi
