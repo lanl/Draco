@@ -34,7 +34,13 @@ C4_Req::C4_Req(const C4_Req &req) : p(nullptr) {
     p = new C4_ReqRefRep;
   ++p->n;
 }
-
+C4_Req::C4_Req(C4_Req &&req) noexcept : p(nullptr) {
+  if (req.inuse())
+    p = req.p;
+  else
+    p = new C4_ReqRefRep;
+  ++p->n;
+}
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Destructor.
@@ -64,7 +70,18 @@ C4_Req &C4_Req::operator=(const C4_Req &req) {
 
   return *this;
 }
+C4_Req &C4_Req::operator=(C4_Req &&req) noexcept {
+  this->free_();
 
+  if (req.inuse())
+    p = req.p;
+  else
+    p = new C4_ReqRefRep;
+
+  ++p->n;
+
+  return *this;
+}
 //------------------------------------------------------------------------------------------------//
 /*!
  * Utility for cleaning up letter in letter/envelope idiom

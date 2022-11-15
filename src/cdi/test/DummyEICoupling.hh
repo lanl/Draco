@@ -43,14 +43,23 @@ public:
    * The constructor assigns fixed values for all of the member data.  Every instance of this object
    * has the same member data.
    */
-  DummyEICoupling();
+  DummyEICoupling() = default;
 
   /*!
    * \brief Default DummyEICoupling() destructor.
    *
    * This is required to correctly release memory when a DummyEICoupling object is destroyed.
    */
-  ~DummyEICoupling() override;
+  ~DummyEICoupling() override = default;
+
+  //! Disable copy construction
+  DummyEICoupling(DummyEICoupling const &rhs) = delete;
+  //! Disable move construction
+  DummyEICoupling(DummyEICoupling &&rhs) noexcept = delete;
+  //! Disable assignment
+  DummyEICoupling &operator=(DummyEICoupling const &rhs) = delete;
+  //! Disable move-assignment
+  DummyEICoupling &operator=(DummyEICoupling &&rhs) noexcept = delete;
 
   // --------- //
   // Accessors //

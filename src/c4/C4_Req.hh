@@ -58,9 +58,9 @@ private:
 public:
   // Disallowed assignment, move assignment, copy ctor and move ctor methods.
   C4_ReqRefRep(const C4_ReqRefRep &rep) = delete;
-  C4_ReqRefRep(const C4_ReqRefRep &&rep) = delete;
+  C4_ReqRefRep(C4_ReqRefRep &&rep) noexcept = delete;
   C4_ReqRefRep &operator=(const C4_ReqRefRep &rep) = delete;
-  C4_ReqRefRep &operator=(const C4_ReqRefRep &&rep) = delete;
+  C4_ReqRefRep &operator=(C4_ReqRefRep &&rep) noexcept = delete;
 
   void wait(C4_Status *status = nullptr);
   bool complete(C4_Status *status = nullptr);
@@ -102,8 +102,10 @@ class C4_Req {
 public:
   C4_Req();
   C4_Req(const C4_Req &req);
+  C4_Req(C4_Req &&req) noexcept;
   ~C4_Req();
   C4_Req &operator=(const C4_Req &req);
+  C4_Req &operator=(C4_Req &&req) noexcept;
 
   //! \brief Equivalence operator
   bool operator==(const C4_Req &right) { return (p == right.p); }

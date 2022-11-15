@@ -79,7 +79,7 @@ void broadcast(ForwardIterator first, ForwardIterator last, OutputIterator resul
   if (node() == 0)
     size = std::distance(first, last);
 
-  Remember(int check =) broadcast(&size, 1u, root);
+  Remember(int check =) broadcast(&size, 1U, root);
   Check(check == MPI_SUCCESS);
 
   if (size > 0) {

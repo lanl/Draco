@@ -689,7 +689,16 @@ public:
   // ------------
 
   explicit CDI(std_string id = std::string());
-  virtual ~CDI();
+  //! Default constructor
+  virtual ~CDI() = default;
+  //! Disable copy construction
+  CDI(CDI const &rhs) = delete;
+  //! Disable move constrution
+  CDI(CDI &&rhs) noexcept = delete;
+  //! Disable assignment
+  CDI &operator=(CDI const &rhs) = delete;
+  //! Disable move-assignment
+  CDI &operator=(CDI &&rhs) noexcept = delete;
 
   // SETTERS
   // -------
@@ -726,22 +735,17 @@ public:
 
   //! Collapse Multigroup data to single-interval data with Planck weighting.
   static double collapseMultigroupOpacitiesPlanck(std::vector<double> const &groupBounds,
-                                                  // double              const & T,
                                                   std::vector<double> const &opacity,
                                                   std::vector<double> const &planckSpectrum,
                                                   std::vector<double> &emission_group_cdf);
 
-  //! Collapse Multigroup data to single-interval data with Planck weighting
-  // (without setting the emission CDF)
+  //! Collapse Multigroup data to single-interval data with Planck weighting (without setting the
+  //! emission CDF)
   static double collapseMultigroupOpacitiesPlanck(std::vector<double> const &groupBounds,
-                                                  // double              const & T,
                                                   std::vector<double> const &opacity,
                                                   std::vector<double> const &planckSpectrum);
 
-  /*!
-   * \brief Collapse Multigroup data to single-interval reciprocal data with
-   *        Planck weighting.
-   */
+  //! Collapse Multigroup data to single-interval reciprocal data with Planck weighting.
   static double
   collapseMultigroupReciprocalOpacitiesPlanck(std::vector<double> const &groupBounds,
                                               std::vector<double> const &opacity,
@@ -755,8 +759,8 @@ public:
   //! Return material ID string.
   const std_string &getMatID() const { return matID; }
 
-  bool isGrayOpacitySet(rtt_cdi::Model, rtt_cdi::Reaction) const;
-  bool isMultigroupOpacitySet(rtt_cdi::Model, rtt_cdi::Reaction) const;
+  bool isGrayOpacitySet(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
+  bool isMultigroupOpacitySet(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
   bool isCPElossSet(rtt_cdi::CPModelAngleCutoff mAC, int32_t pz, int32_t tz) const;
   bool isEoSSet() const;
   bool isEICouplingSet() const;

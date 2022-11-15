@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Apr  2 15:57:11 2002
  * \brief  Demonstrate send/receive of user defined type.
- * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/C4_Functions.hh"
@@ -32,7 +31,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
   // try sending a couple
 
-  array<double, 4 * 6> myarray;
+  array<double, 4 * 6> myarray{};
 
   unsigned proc = node();
 

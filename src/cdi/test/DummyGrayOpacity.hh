@@ -68,14 +68,8 @@ public:
    * The constructor assigns fixed values for all of the member data.  Every instance of this object
    * has the same member data.
    */
-  DummyGrayOpacity(rtt_cdi::Reaction = rtt_cdi::TOTAL, rtt_cdi::Model = rtt_cdi::ANALYTIC);
-
-  /*!
-   * \brief Default DummyGrayOpacity() destructor.
-   *
-   * This is required to correctly release memory when a DummyGrayOpacity object is destroyed.
-   */
-  ~DummyGrayOpacity() override = default;
+  explicit DummyGrayOpacity(rtt_cdi::Reaction reaction = rtt_cdi::TOTAL,
+                            rtt_cdi::Model model = rtt_cdi::ANALYTIC);
 
   // --------- //
   // Accessors //

@@ -74,7 +74,7 @@ void finalize();
 
 //------------------------------------------------------------------------------------------------//
 //! Inherit a communicator from another application.
-template <typename Comm> void inherit(const Comm &);
+template <typename Comm> void inherit(const Comm &comm);
 
 //------------------------------------------------------------------------------------------------//
 //! Free an inherited communicator from another application.
@@ -148,7 +148,7 @@ template <typename T> int receive_custom(T *buffer, int size, int source, int ta
 //------------------------------------------------------------------------------------------------//
 //! Do a point-to-point, blocking send of a user-defined type.
 template <typename T>
-int send_udt(const T *buffer, int size, int destination, C4_Datatype &,
+int send_udt(const T *buffer, int size, int destination, C4_Datatype &data_type,
              int tag = C4_Traits<T *>::tag);
 
 //------------------------------------------------------------------------------------------------//
@@ -161,7 +161,8 @@ int send_receive(TS *sendbuf, int sendcount, int destination, TR *recvbuf, int r
 //------------------------------------------------------------------------------------------------//
 //! Do a point-to-point, blocking receive of a user-defined type.
 template <typename T>
-int receive_udt(T *buffer, int size, int source, C4_Datatype &, int tag = C4_Traits<T *>::tag);
+int receive_udt(T *buffer, int size, int source, C4_Datatype &data_type,
+                int tag = C4_Traits<T *>::tag);
 
 //------------------------------------------------------------------------------------------------//
 // NON-BLOCKING SEND/RECEIVE OPERATIONS

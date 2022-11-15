@@ -46,14 +46,23 @@ public:
    * The constructor assigns fixed values for all of the member data.  Every instance of this object
    * has the same member data.
    */
-  DummyEoS();
+  DummyEoS() = default;
 
   /*!
    * \brief Default DummyEoS() destructor.
    *
    * This is required to correctly release memory when a DummyEoS object is destroyed.
    */
-  ~DummyEoS() override;
+  ~DummyEoS() override = default;
+
+  //! Disable copy construction
+  DummyEoS(DummyEoS const &rhs) = delete;
+  //! Disable move construction
+  DummyEoS(DummyEoS &&rhs) noexcept = delete;
+  //! Disable assignment
+  DummyEoS &operator=(DummyEoS const &rhs) = delete;
+  //! Disable move-assignment
+  DummyEoS &operator=(DummyEoS &&rhs) noexcept = delete;
 
   // --------- //
   // Accessors //

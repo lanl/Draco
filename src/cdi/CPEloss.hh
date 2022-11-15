@@ -46,6 +46,14 @@ public:
    * This is required to correctly release memory when any object derived from CPEloss is destroyed.
    */
   virtual ~CPEloss() = default;
+  //! Disable copy construction
+  CPEloss(CPEloss const &rhs) = delete;
+  //! Disable move construction
+  CPEloss(CPEloss &&rhs) noexcept = delete;
+  //! Disable assignment
+  CPEloss &operator=(CPEloss const &rhs) = delete;
+  //! Disable move-assignment
+  CPEloss &operator=(CPEloss &&rhs) noexcept = delete;
 
   // --------- //
   // Accessors //

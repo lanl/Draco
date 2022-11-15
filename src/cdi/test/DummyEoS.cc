@@ -12,27 +12,6 @@
 
 namespace rtt_cdi_test {
 
-// -------------------------- //
-// Constructors & Destructors //
-// -------------------------- //
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief Constructor for DummyEoS object.
- *
- * The constructor assigns fixed values for all of the member data.  Every instance of this object
- * has the same member data.
- */
-DummyEoS::DummyEoS() = default;
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief Default DummyEoS() destructor.
- *
- * This is required to correctly release memory when a DummyEoS object is destroyed.
- */
-DummyEoS::~DummyEoS() = default;
-
 // --------- //
 // Accessors //
 // --------- //

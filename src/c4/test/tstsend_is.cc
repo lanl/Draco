@@ -24,16 +24,11 @@ using rtt_dsxx::soft_equiv;
 class Custom {
 
 public:
-  Custom(int rank) {
-    my_ints[0] = rank;
-    my_ints[1] = rank * 1000;
-    my_ints[2] = rank * 10000;
-    my_doubles[0] = static_cast<double>(rank);
-    my_doubles[1] = my_doubles[0] * 1000.0;
-    my_longs[0] = rank + 100000000l;
-    my_longs[1] = rank + 1000000000l;
-  }
-  ~Custom() = default;
+  explicit Custom(int rank)
+      : my_ints({rank, rank * 1000, rank * 10000}),
+        my_doubles({static_cast<double>(rank), static_cast<double>(rank) * 1000.0}),
+        my_longs({rank + 100000000L, rank + 1000000000L}) {}
+  //~Custom() = default;
 
 public:
   static const int mpi_tag = 512;
@@ -118,7 +113,7 @@ void test_zerocount_and_inactive(rtt_dsxx::UnitTest &ut) {
     bool zerocount_failed = false;
 
     // result output from source version of wait_all:
-    std::vector<int> result;
+    vector<int> result;
 
     try {
       wait_all(count, comm);
@@ -143,10 +138,10 @@ void test_zerocount_and_inactive(rtt_dsxx::UnitTest &ut) {
   // Inactive request case:
   {
     // C4_Req communication handles.
-    std::array<rtt_c4::C4_Req, 2> comm;
+    array<rtt_c4::C4_Req, 2> comm;
 
     // Result from wait_all_with_source call
-    std::vector<int> result;
+    vector<int> result;
 
     // Test a null op -- I didn't actually send anything, so the MPI requests should be set to
     // MPI_REQUEST_NULL and the wait_all should return immediately,
@@ -175,6 +170,7 @@ void test_zerocount_and_inactive(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(result.size() == 2);
 #endif
   }
+  PASSMSG("Done with test_zerocount_and_inactive.");
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -186,8 +182,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
   if (pid == 0)
     cout << "Test send_is() by sending data to processor myid+1..." << endl;
 
-  // for point-to-point communication we need to know neighbor's identifiers:
-  // left, right.
+  // for point-to-point communication we need to know neighbor's identifiers: left, right.
   int right = (pid + 1) % rtt_c4::nodes();
   int left = pid - 1;
   if (left < 0)
@@ -197,7 +192,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
   { // T = int
 
     if (pid == 0)
-      std::cout << "\nStarting send_is<int> tests..." << std::endl;
+      cout << "\nStarting send_is<int> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -256,7 +251,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<double> tests..." << std::endl;
+      cout << "\nStarting send_is<double> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -306,7 +301,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<float> tests..." << std::endl;
+      cout << "\nStarting send_is<float> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -333,7 +328,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = static_cast<float>(1000 * left + i);
       }
 
-      float const eps = 1.0e-6f;
+      float const eps = 1.0e-6F;
       if (soft_equiv(expected.begin(), expected.end(), buffer2.begin(), buffer2.end(), eps)) {
         ostringstream msg;
         msg << "Expected float data found after send_is() on node " << pid << ".";
@@ -357,7 +352,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<long double> tests..." << std::endl;
+      cout << "\nStarting send_is<long double> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -384,7 +379,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = static_cast<long double>(1000 * left + i);
       }
 
-      auto const eps = static_cast<long double>(1.0e-6f);
+      auto const eps = static_cast<long double>(1.0e-6F);
       if (soft_equiv(expected.begin(), expected.end(), buffer2.begin(), buffer2.end(), eps)) {
         ostringstream msg;
         msg << "Expected long double data found after send_is() on node " << pid << ".";
@@ -408,7 +403,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<unsigned int> tests..." << std::endl;
+      cout << "\nStarting send_is<unsigned int> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -435,7 +430,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = static_cast<unsigned int>(1000 * left + i);
       }
 
-      if (std::equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
         ostringstream msg;
         msg << "Expected unsigned int data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -458,7 +453,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<unsigned long> tests..." << std::endl;
+      cout << "\nStarting send_is<unsigned long> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -492,7 +487,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 #pragma GCC diagnostic pop
 #endif
 
-      if (std::equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
         ostringstream msg;
         msg << "Expected unsigned long data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -503,8 +498,8 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use "
-              "send_is<unsigned long>() in a C4_SCALAR build.");
+      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<unsigned long>() in"
+              " a C4_SCALAR build.");
 #else
       FAILMSG("Encountered a ds++ exception while testing send_is<unsigned long>().");
 #endif
@@ -515,7 +510,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<unsigned short> tests..." << std::endl;
+      cout << "\nStarting send_is<unsigned short> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -542,7 +537,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = static_cast<unsigned short>(1000 * left + i);
       }
 
-      if (std::equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
         ostringstream msg;
         msg << "Expected unsigned short data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -565,7 +560,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<unsigned long long> tests..." << std::endl;
+      cout << "\nStarting send_is<unsigned long long> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -592,7 +587,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = 1000 * static_cast<unsigned long long>(left) + i;
       }
 
-      if (std::equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
         ostringstream msg;
         msg << "Expected unsigned long long data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -615,7 +610,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<long> tests..." << std::endl;
+      cout << "\nStarting send_is<long> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -642,7 +637,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = static_cast<long>(1000 * left + i);
       }
 
-      if (std::equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
         ostringstream msg;
         msg << "Expected long data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -664,7 +659,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<short> tests..." << std::endl;
+      cout << "\nStarting send_is<short> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -691,7 +686,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = static_cast<short>(1000 * left + i);
       }
 
-      if (std::equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
         ostringstream msg;
         msg << "Expected short data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -714,7 +709,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<long long> tests..." << std::endl;
+      cout << "\nStarting send_is<long long> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -741,7 +736,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = 1000 * static_cast<long long>(left) + i;
       }
 
-      if (std::equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
         ostringstream msg;
         msg << "Expected long long data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -764,14 +759,14 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<bool> tests..." << std::endl;
+      cout << "\nStarting send_is<bool> tests..." << endl;
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
 
     // create some size 10 data to send/receive.
-    std::array<bool, 10> buffer2;
-    std::array<bool, 10> buffer1;
+    array<bool, 10> buffer2{};
+    array<bool, 10> buffer1{};
     for (unsigned i = 0; i < 10; ++i) {
       buffer1[i] = i > 5;
     }
@@ -791,7 +786,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = i > 5;
       }
 
-      if (std::equal(begin(expected), end(expected), begin(buffer2), end(buffer2))) {
+      if (equal(begin(expected), end(expected), begin(buffer2), end(buffer2))) {
         ostringstream msg;
         msg << "Expected bool data found after send_is<bool>() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -814,10 +809,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<char> tests..." << std::endl;
+      cout << "\nStarting send_is<char> tests..." << endl;
 
     vector<char> alphabet(static_cast<size_t>(bsize) + rtt_c4::nranks());
-    std::iota(alphabet.begin(), alphabet.end(), 'A');
+    iota(alphabet.begin(), alphabet.end(), 'A');
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -844,7 +839,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = alphabet[left + i];
       }
 
-      if (std::equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
         ostringstream msg;
         msg << "Expected char data found after send_is<char>() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -867,10 +862,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      std::cout << "\nStarting send_is<unsigned char> tests..." << std::endl;
+      cout << "\nStarting send_is<unsigned char> tests..." << endl;
 
     vector<unsigned char> alphabet(static_cast<size_t>(bsize) + rtt_c4::nranks());
-    std::iota(alphabet.begin(), alphabet.end(), 'A');
+    iota(alphabet.begin(), alphabet.end(), 'A');
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -897,7 +892,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = alphabet[left + i];
       }
 
-      if (std::equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
         ostringstream msg;
         msg << "Expected unsigned char data found after send_is<unsigned char>() on node " << pid
             << ".";
@@ -924,6 +919,9 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
 //------------------------------------------------------------------------------------------------//
 void test_send_custom(rtt_dsxx::UnitTest &ut) {
+
+  using namespace std;
+
   // borrowed from http://mpi.deino.net/mpi_functions/MPI_Issend.html.
 
   // commit the MPI type for the Custom class. This must be done before send_is_custom is called.
@@ -932,23 +930,20 @@ void test_send_custom(rtt_dsxx::UnitTest &ut) {
   Custom::commit_mpi_type();
 
 #ifdef C4_SCALAR
-  std::cout << "\nSERIAL TEST: This should just end in a try block catching ";
-  std::cout << "an insist failure" << std::endl;
+  cout << "\nSERIAL TEST: This should just end in a try block catching an insist failure" << endl;
 #else
   if (rtt_c4::node() == 0) {
-    std::cout << "\nTest send_is_custom() by sending data to processor "
-              << "myid+1..." << std::endl;
+    cout << "\nTest send_is_custom() by sending data to processor myid+1..." << endl;
     int custom_mpi_type_size(0);
     MPI_Type_size(Custom::MPI_Type, &custom_mpi_type_size);
-    std::cout << " Size of custom type: " << sizeof(Custom) << std::endl;
-    std::cout << " Size of custom MPI type: " << custom_mpi_type_size << std::endl;
-
+    cout << " Size of custom type: " << sizeof(Custom)
+         << "\nSize of custom MPI type: " << custom_mpi_type_size << endl;
     FAIL_IF_NOT(custom_mpi_type_size == sizeof(Custom));
   }
 #endif
 
   // C4_Req communication handles.
-  std::vector<rtt_c4::C4_Req> comm_int(2);
+  vector<rtt_c4::C4_Req> comm_int(2);
 
 #ifndef __clang_analyzer__
 
@@ -987,18 +982,17 @@ void test_send_custom(rtt_dsxx::UnitTest &ut) {
     // check that the expected results match the custom type from the left rank
     Custom expected_custom(left);
 
-    std::cout << "Expected integers: " << expected_custom.get_int1() << " "
-              << expected_custom.get_int2() << " " << expected_custom.get_int3() << std::endl;
-    std::cout << "Received integers: " << recv_custom_object.get_int1() << " "
-              << recv_custom_object.get_int2() << " " << recv_custom_object.get_int3() << std::endl;
+    cout << "Expected integers: " << expected_custom.get_int1() << " " << expected_custom.get_int2()
+         << " " << expected_custom.get_int3() << endl;
+    cout << "Received integers: " << recv_custom_object.get_int1() << " "
+         << recv_custom_object.get_int2() << " " << recv_custom_object.get_int3() << endl;
 
     FAIL_IF_NOT(expected_custom.get_int1() == recv_custom_object.get_int1());
     FAIL_IF_NOT(expected_custom.get_int2() == recv_custom_object.get_int2());
     FAIL_IF_NOT(expected_custom.get_int3() == recv_custom_object.get_int3());
 
-    std::cout << "Expected double 1: " << expected_custom.get_double1() << " ";
-    std::cout << "Received double 1: " << recv_custom_object.get_double1();
-    std::cout << std::endl;
+    cout << "Expected double 1: " << expected_custom.get_double1() << " ";
+    cout << "Received double 1: " << recv_custom_object.get_double1() << endl;
 
     FAIL_IF_NOT(soft_equiv(expected_custom.get_double1(), recv_custom_object.get_double1()));
     FAIL_IF_NOT(soft_equiv(expected_custom.get_double2(), recv_custom_object.get_double2()));
@@ -1006,8 +1000,8 @@ void test_send_custom(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(expected_custom.get_long2() == recv_custom_object.get_long2());
   } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-    PASSMSG("Successfully caught a ds++ exception while trying to use "
-            "send_is_custom() in a C4_SCALAR build.");
+    PASSMSG("Successfully caught a ds++ exception while trying to use send_is_custom() in a "
+            "C4_SCALAR build.");
 #else
     FAILMSG("Encountered a ds++ exception while testing send_is_custom().");
 #endif
@@ -1045,25 +1039,23 @@ void test_send_custom(rtt_dsxx::UnitTest &ut) {
     }
 
     // make sure only one object was received
-    if (recv_size != 1)
-      ITFAILS;
+    FAIL_IF_NOT(recv_size == 1);
 
     // check that the expected results match the custom type from the left rank
     Custom expected_custom(left);
 
-    std::cout << "Expected integers: " << expected_custom.get_int1() << " "
-              << expected_custom.get_int2() << " " << expected_custom.get_int3() << std::endl;
-    std::cout << "Received integers: " << recv_custom_object_block.get_int1() << " "
-              << recv_custom_object_block.get_int2() << " " << recv_custom_object_block.get_int3()
-              << std::endl;
+    cout << "Expected integers: " << expected_custom.get_int1() << " " << expected_custom.get_int2()
+         << " " << expected_custom.get_int3() << endl;
+    cout << "Received integers: " << recv_custom_object_block.get_int1() << " "
+         << recv_custom_object_block.get_int2() << " " << recv_custom_object_block.get_int3()
+         << endl;
 
     FAIL_IF_NOT(expected_custom.get_int1() == recv_custom_object_block.get_int1());
     FAIL_IF_NOT(expected_custom.get_int2() == recv_custom_object_block.get_int2());
     FAIL_IF_NOT(expected_custom.get_int3() == recv_custom_object_block.get_int3());
 
-    std::cout << "Expected double 1: " << expected_custom.get_double1() << " ";
-    std::cout << "Received double 1: " << recv_custom_object_block.get_double1();
-    std::cout << std::endl;
+    cout << "Expected double 1: " << expected_custom.get_double1() << " "
+         << "Received double 1: " << recv_custom_object_block.get_double1() << endl;
 
     FAIL_IF_NOT(soft_equiv(expected_custom.get_double1(), recv_custom_object_block.get_double1()));
     FAIL_IF_NOT(soft_equiv(expected_custom.get_double2(), recv_custom_object_block.get_double2()));

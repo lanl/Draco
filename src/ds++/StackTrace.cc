@@ -84,7 +84,7 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
 
   // allocate string which will be filled with the demangled function name
   size_t funcnamesize = 256;
-  auto *funcname = static_cast<char *>(malloc(funcnamesize));
+  auto *funcname = static_cast<char *>(malloc(funcnamesize)); // NOLINT [hicpp-no-malloc]
 
   // iterate over the returned symbol lines. skip first two, (addresses of this function and
   // handler)

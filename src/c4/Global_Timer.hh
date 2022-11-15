@@ -114,7 +114,7 @@ public:
   static void reset_all();
 
   //! Print a report that contains all timer information
-  static void report_all(std::ostream &);
+  static void report_all(std::ostream &out);
 };
 
 } // end namespace rtt_c4
