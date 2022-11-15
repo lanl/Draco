@@ -51,6 +51,16 @@ public:
    * destroyed.
    */
   virtual ~MultigroupOpacity() = default;
+  //! Default constructor
+  MultigroupOpacity() = default;
+  //! Disable copy construction
+  MultigroupOpacity(MultigroupOpacity const &rhs) = delete;
+  //! Disable move construction
+  MultigroupOpacity(MultigroupOpacity &&rhs) noexcept = delete;
+  //! Disable assignment
+  MultigroupOpacity &operator=(MultigroupOpacity const &rhs) = delete;
+  //! Disable move-assignment
+  MultigroupOpacity &operator=(MultigroupOpacity &&rhs) noexcept = delete;
 
   // --------- //
   // Accessors //

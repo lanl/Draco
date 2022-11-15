@@ -39,7 +39,7 @@ namespace rtt_c4 {
 class ifpstream : public std::stringstream {
 public:
   //! Constructor -- default to standard output mode (ASCII)
-  ifpstream(std::string const &filename, ios_base::openmode const mode = ios_base::out);
+  explicit ifpstream(std::string const &filename, ios_base::openmode const mode = ios_base::out);
 
   //! Fill buffer for every rank
   void fill_buffers(unsigned const buffer_size);

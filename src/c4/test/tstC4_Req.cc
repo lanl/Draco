@@ -4,8 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Nov  1 15:49:44 2005
  * \brief  Unit test for C4_Req class.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"
@@ -84,8 +83,7 @@ void tstWait(rtt_dsxx::UnitTest &ut) {
 
   if (rtt_c4::node() > 0) {
     cout << "sending from processor " << get_processor_name() << ':' << endl;
-    array<int, 1> buffer;
-    // int buffer[1]{};
+    array<int, 1> buffer{0};
     buffer[0] = node();
     C4_Req outgoing = send_async(buffer.data(), 1U, 0);
     unsigned result = wait_any(1U, &outgoing);
@@ -96,8 +94,7 @@ void tstWait(rtt_dsxx::UnitTest &ut) {
     array<C4_Req, 4> requests;
     array<bool, 4> done = {false, false, false, false};
     for (int p = 1; p < nodes(); ++p) {
-      array<array<int, 1>, 4> buffer;
-      //int buffer[4][1];
+      array<array<int, 1>, 4> buffer{};
       requests[p] = receive_async(buffer[p].data(), 1U, p);
       done[p] = false;
     }

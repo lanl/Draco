@@ -3,8 +3,7 @@
  * \file   ds++/test/tstThread_Wrapper.cc
  * \author Tim Kelley
  * \date   Thursday, Oct 12, 2017, 10:51 am
- * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -73,14 +72,12 @@ void testInstantiation2(UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 /**\brief Exercise two arg ctor with the detach action.
  *
- * This test is a bit bogus: the calling thread will detach from the worker
- * thread. The worker thread will continue to run, i.e. sleep then write a
- * message to the stream. Meanwhile, the caller will print a message, then
- * sleep. So barring some sort of 2000 msec catastrophe, the writes shd be
- * ordered. If that fails, it's not clear it says anything about Thread_Wrapper;
- * it may just be that something odd happened in the execution. So if this test
- * starts failing, it might need to be retired or modified. It's a weak concept
- * for a test...
+ * This test is a bit bogus: the calling thread will detach from the worker thread. The worker
+ * thread will continue to run, i.e. sleep then write a message to the stream. Meanwhile, the caller
+ * will print a message, then sleep. So barring some sort of 2000 msec catastrophe, the writes shd
+ * be ordered. If that fails, it's not clear it says anything about Thread_Wrapper; it may just be
+ * that something odd happened in the execution. So if this test starts failing, it might need to be
+ * retired or modified. It's a weak concept for a test...
  */
 void testDetach(UnitTest &ut) {
   std::stringstream s;
@@ -97,8 +94,9 @@ void testDetach(UnitTest &ut) {
   std::this_thread::sleep_for(so_long);
   bool ok = s.str() == "host thread: done\nslow_action: done\n";
   if (!ok) {
-    printf("%s:%i s.str = '%s', expected '%s'\n", __FUNCTION__, __LINE__, s.str().c_str(),
-           "host thread: done\nslow_action: done\n");
+    std::cout << __FUNCTION__ //NOLINT
+              << ":" << __LINE__ << ", expected " << s.str()
+              << " host thread: done\nslow_action: done" << std::endl;
   }
   FAIL_IF_NOT(ok);
   return;

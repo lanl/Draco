@@ -50,11 +50,8 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
   for (int i = 0; i < rtt_c4::nodes(); i++)
     int_answer += i + 1;
 
-  if (xint != int_answer)
-    ITFAILS;
-
-  if (xint_recv != int_answer)
-    ITFAILS;
+  FAIL_IF_NOT(xint == int_answer);
+  FAIL_IF_NOT(xint_recv == int_answer);
   if (!rtt_c4::node())
     cout << "int: Global non-blocking sum: " << xint_recv << " answer: " << int_answer << endl;
 
@@ -65,7 +62,7 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
     ITFAILS;
 
   // test longs for blocking and non-blocking sums
-  long const max_long(std::numeric_limits<long>::max());
+  long const max_long(numeric_limits<long>::max());
   int64_t const ten_billion(10000000000L); // 1e10 > MAX_INT
   int32_t const one_billion(1000000000L);  // 1e9 < MAX_INT
 
@@ -115,48 +112,39 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
   long_answer = 1;
   for (int i = 0; i < rtt_c4::nodes(); i++)
     long_answer *= (i + 1);
-
-  if (xlong != long_answer)
-    ITFAILS;
+  FAIL_IF_NOT(xlong == long_answer);
 
   // Test with deprecated form of global_prod
   xlong = rtt_c4::node() + 1;
   global_prod(xlong);
-  if (xlong != long_answer)
-    ITFAILS;
+  FAIL_IF_NOT(xlong == long_answer);
 
   // test min
   xdbl = 0.5 + rtt_c4::node();
   global_min(xdbl);
-
-  if (!soft_equiv(xdbl, 0.5))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(xdbl, 0.5));
 
   // Test with deprecated form of global_min
   xdbl = rtt_c4::node() + 0.5;
   global_min(xdbl);
-  if (!soft_equiv(xdbl, 0.5))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(xdbl, 0.5));
 
   // test max
   xdbl = 0.7 + rtt_c4::node();
   global_max(xdbl);
-
-  if (!soft_equiv(xdbl, rtt_c4::nodes() - 0.3))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(xdbl, rtt_c4::nodes() - 0.3));
 
   // Test with deprecated form of global_max
   xdbl = 0.7 + rtt_c4::node();
   global_max(xdbl);
-  if (!soft_equiv(xdbl, rtt_c4::nodes() - 0.3))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(xdbl, rtt_c4::nodes() - 0.3));
 
   { // T = float
 
-    float xflt = static_cast<float>(rtt_c4::node()) + 0.1f;
+    float xflt = static_cast<float>(rtt_c4::node()) + 0.1F;
     global_sum(xflt);
 
-    float xfloat_send = static_cast<float>(rtt_c4::node()) + 0.1f;
+    float xfloat_send = static_cast<float>(rtt_c4::node()) + 0.1F;
     float xfloat_recv = 0;
     C4_Req float_request;
     global_isum(xfloat_send, xfloat_recv, float_request);
@@ -164,31 +152,30 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
 
     float flt_answer = 0.0;
     for (int i = 0; i < rtt_c4::nodes(); i++)
-      flt_answer += static_cast<float>(i) + 0.1f;
+      flt_answer += static_cast<float>(i) + 0.1F;
 
     FAIL_IF_NOT(soft_equiv(xflt, flt_answer));
     FAIL_IF_NOT(soft_equiv(xfloat_recv, flt_answer));
 
     // test product
-    xflt = static_cast<float>(rtt_c4::node()) + 0.1f;
+    xflt = static_cast<float>(rtt_c4::node()) + 0.1F;
     global_prod(xflt);
 
-    flt_answer = 1.0f;
+    flt_answer = 1.0F;
     for (int i = 0; i < rtt_c4::nodes(); i++)
-      flt_answer *= static_cast<float>(i) + 0.1f;
+      flt_answer *= static_cast<float>(i) + 0.1F;
     FAIL_IF_NOT(soft_equiv(xflt, flt_answer));
 
     // test min
-    xflt = static_cast<float>(rtt_c4::node()) + 0.5f;
+    xflt = static_cast<float>(rtt_c4::node()) + 0.5F;
     global_min(xflt);
-    FAIL_IF_NOT(soft_equiv(xflt, 0.5f));
+    FAIL_IF_NOT(soft_equiv(xflt, 0.5F));
 
     // test max
-    xflt = 0.7f + static_cast<float>(rtt_c4::node());
+    xflt = 0.7F + static_cast<float>(rtt_c4::node());
     global_max(xflt);
 
-    if (!soft_equiv(xflt, static_cast<float>(rtt_c4::nodes()) - 0.3f))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(xflt, static_cast<float>(rtt_c4::nodes()) - 0.3F));
   }
   { // T = double
 
@@ -247,10 +234,10 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
 #ifndef CRAYPE_CCE
   { // T = long double
 
-    long double xld = static_cast<long double>(rtt_c4::node()) + 0.1l;
+    long double xld = static_cast<long double>(rtt_c4::node()) + 0.1L;
     global_sum(xld);
 
-    long double xld_send = static_cast<long double>(rtt_c4::node()) + 0.1l;
+    long double xld_send = static_cast<long double>(rtt_c4::node()) + 0.1L;
     long double xld_recv = 0;
     C4_Req ld_request;
     global_isum(xld_send, xld_recv, ld_request);
@@ -258,30 +245,30 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
 
     auto ld_answer = static_cast<long double>(0.0);
     for (int i = 0; i < rtt_c4::nodes(); i++)
-      ld_answer += static_cast<long double>(i) + 0.1l;
+      ld_answer += static_cast<long double>(i) + 0.1L;
 
     FAIL_IF_NOT(soft_equiv(xld, ld_answer));
     FAIL_IF_NOT(soft_equiv(xld_recv, ld_answer));
 
     // test product
-    xld = static_cast<long double>(rtt_c4::node()) + 0.1l;
+    xld = static_cast<long double>(rtt_c4::node()) + 0.1L;
     global_prod(xld);
 
-    ld_answer = 1.0l;
+    ld_answer = 1.0L;
     for (int i = 0; i < rtt_c4::nodes(); i++)
-      ld_answer *= static_cast<long double>(i) + 0.1l;
+      ld_answer *= static_cast<long double>(i) + 0.1L;
     FAIL_IF_NOT(soft_equiv(xld, ld_answer));
 
     // test min
-    xld = static_cast<long double>(rtt_c4::node()) + 0.5l;
+    xld = static_cast<long double>(rtt_c4::node()) + 0.5L;
     global_min(xld);
-    FAIL_IF_NOT(soft_equiv(xld, 0.5l));
+    FAIL_IF_NOT(soft_equiv(xld, 0.5L));
 
     // test max
-    xld = 0.7l + static_cast<long double>(rtt_c4::node());
+    xld = 0.7L + static_cast<long double>(rtt_c4::node());
     global_max(xld);
 
-    FAIL_IF_NOT(soft_equiv(xld, static_cast<long double>(rtt_c4::nodes()) - 0.3l));
+    FAIL_IF_NOT(soft_equiv(xld, static_cast<long double>(rtt_c4::nodes()) - 0.3L));
   }
 #endif
   { // T = int
@@ -697,17 +684,17 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
 
     // fill it
     for (int i = 0; i < 100; i++) {
-      x[i] = static_cast<float>(rtt_c4::node()) + 0.11f;
+      x[i] = static_cast<float>(rtt_c4::node()) + 0.11F;
       for (int j = 0; j < rtt_c4::nodes(); j++) {
-        sum[i] += (static_cast<float>(j) + 0.11f);
-        prod[i] *= (static_cast<float>(j) + 0.11f);
+        sum[i] += (static_cast<float>(j) + 0.11F);
+        prod[i] *= (static_cast<float>(j) + 0.11F);
       }
-      lmin[i] = 0.11f;
-      lmax[i] = static_cast<float>(rtt_c4::nodes()) + 0.11f - 1.0f;
+      lmin[i] = 0.11F;
+      lmax[i] = static_cast<float>(rtt_c4::nodes()) + 0.11F - 1.0F;
     }
 
     vector<float> c;
-    float const eps = 1.0e-6f;
+    float const eps = 1.0e-6F;
 
     {
       c = x;
@@ -743,17 +730,17 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
 
     // fill it
     for (int i = 0; i < 100; i++) {
-      x[i] = static_cast<long double>(rtt_c4::node()) + static_cast<long double>(0.11f);
+      x[i] = static_cast<long double>(rtt_c4::node()) + static_cast<long double>(0.11F);
       for (int j = 0; j < rtt_c4::nodes(); j++) {
-        sum[i] += (static_cast<long double>(j) + static_cast<long double>(0.11f));
-        prod[i] *= (static_cast<long double>(j) + static_cast<long double>(0.11f));
+        sum[i] += (static_cast<long double>(j) + static_cast<long double>(0.11F));
+        prod[i] *= (static_cast<long double>(j) + static_cast<long double>(0.11F));
       }
-      lmin[i] = static_cast<long double>(0.11f);
-      lmax[i] = static_cast<long double>(rtt_c4::nodes()) + static_cast<long double>(0.11f - 1.0f);
+      lmin[i] = static_cast<long double>(0.11F);
+      lmax[i] = static_cast<long double>(rtt_c4::nodes()) + static_cast<long double>(0.11F - 1.0F);
     }
 
     vector<long double> c;
-    auto const eps = static_cast<long double>(1.0e-6f);
+    auto const eps = static_cast<long double>(1.0e-6F);
 
     {
       c = x;
@@ -803,23 +790,23 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
     {
       c = x;
       global_sum(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(equal(c.begin(), c.end(), sum.begin(), sum.end()));
 
       c = x;
       global_sum(&c[0], static_cast<size_t>(100));
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(equal(c.begin(), c.end(), sum.begin(), sum.end()));
 
       c = x;
       global_prod(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), prod.begin(), prod.end()));
+      FAIL_IF_NOT(equal(c.begin(), c.end(), prod.begin(), prod.end()));
 
       c = x;
       global_min(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmin.begin(), lmin.end()));
+      FAIL_IF_NOT(equal(c.begin(), c.end(), lmin.begin(), lmin.end()));
 
       c = x;
       global_max(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmax.begin(), lmax.end()));
+      FAIL_IF_NOT(equal(c.begin(), c.end(), lmax.begin(), lmax.end()));
     }
   }
   { // T = unsigned int
@@ -1157,9 +1144,8 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
 
-  // Calculate prefix sums on rank ID with MPI call and by hand and compare the
-  // output. The prefix sum on a node includes all previous node's value and the
-  // value of the current node
+  // Calculate prefix sums on rank ID with MPI call and by hand and compare the output. The prefix
+  // sum on a node includes all previous node's value and the value of the current node
 
   // test ints
   int xint = rtt_c4::node();
@@ -1174,8 +1160,7 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   std::cout << "int: Prefix sum on this node: " << xint_prefix_sum;
   std::cout << " Answer: " << int_answer << std::endl;
 
-  if (xint_prefix_sum != int_answer)
-    ITFAILS;
+  FAIL_IF_NOT(xint_prefix_sum == int_answer);
 
   // test unsigned ints (start at max of signed int)
   uint32_t xuint = rtt_c4::node();
@@ -1189,11 +1174,10 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
       uint_answer += i + 1;
   }
 
-  std::cout << "uint32_t: Prefix sum on this node: " << xuint_prefix_sum;
-  std::cout << " Answer: " << uint_answer << std::endl;
+  std::cout << "uint32_t: Prefix sum on this node: " << xuint_prefix_sum
+            << " Answer: " << uint_answer << std::endl;
 
-  if (xuint_prefix_sum != uint_answer)
-    ITFAILS;
+  FAIL_IF_NOT(xuint_prefix_sum == uint_answer);
 
   // test longs
   long xlong = rtt_c4::node() + 1000;
@@ -1205,24 +1189,23 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
       long_answer += i + 1000;
   }
 
-  std::cout << "long: Prefix sum on this node: " << xlong_prefix_sum;
-  std::cout << " Answer: " << long_answer << std::endl;
+  std::cout << "long: Prefix sum on this node: " << xlong_prefix_sum << " Answer: " << long_answer
+            << std::endl;
 
-  if (xlong_prefix_sum != long_answer)
-    ITFAILS;
+  FAIL_IF_NOT(xlong_prefix_sum == long_answer);
 
   // test long long
-  long long xllong = rtt_c4::node() + 1000l;
+  long long xllong = rtt_c4::node() + 1000L;
   long long xllong_prefix_sum = prefix_sum(xllong);
 
   long long llong_answer = 0;
   for (auto i = 0; i < rtt_c4::nodes(); i++) {
     if (i <= rtt_c4::node() || i == 0)
-      llong_answer += i + 1000l;
+      llong_answer += i + 1000L;
   }
 
-  std::cout << "long long: Prefix sum on this node: " << xllong_prefix_sum;
-  std::cout << " Answer: " << llong_answer << std::endl;
+  std::cout << "long long: Prefix sum on this node: " << xllong_prefix_sum
+            << " Answer: " << llong_answer << std::endl;
 
   FAIL_IF_NOT(xllong_prefix_sum == llong_answer);
 
@@ -1238,11 +1221,10 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
       ulong_answer += i + 1;
   }
 
-  std::cout << "uint64_t: Prefix sum on this node: " << xulong_prefix_sum;
-  std::cout << " Answer: " << ulong_answer << std::endl;
+  std::cout << "uint64_t: Prefix sum on this node: " << xulong_prefix_sum
+            << " Answer: " << ulong_answer << std::endl;
 
-  if (xulong_prefix_sum != ulong_answer)
-    ITFAILS;
+  FAIL_IF_NOT(xulong_prefix_sum == ulong_answer);
 
   // test floats
   auto xfloat = static_cast<float>(rtt_c4::node() + 0.01);
@@ -1254,11 +1236,10 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
       float_answer += static_cast<float>(i + 0.01);
   }
 
-  std::cout << "float: Prefix sum on this node: " << xfloat_prefix_sum;
-  std::cout << " Answer: " << float_answer << std::endl;
+  std::cout << "float: Prefix sum on this node: " << xfloat_prefix_sum
+            << " Answer: " << float_answer << std::endl;
 
-  if (!soft_equiv(xfloat_prefix_sum, float_answer))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(xfloat_prefix_sum, float_answer));
 
   // test doubles
   double xdbl = static_cast<double>(rtt_c4::node()) + 1.0e-9;
@@ -1271,11 +1252,10 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   std::cout.precision(16);
-  std::cout << "double: Prefix sum on this node: " << xdbl_prefix_sum;
-  std::cout << " Answer: " << dbl_answer << std::endl;
+  std::cout << "double: Prefix sum on this node: " << xdbl_prefix_sum << " Answer: " << dbl_answer
+            << std::endl;
 
-  if (!soft_equiv(xdbl_prefix_sum, dbl_answer))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(xdbl_prefix_sum, dbl_answer));
 
   if (ut.numFails == 0)
     PASSMSG("Prefix sum ok.");
@@ -1285,9 +1265,8 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
 
-  // Calculate prefix sums on rank ID with MPI call and by hand and compare the
-  // output. The prefix sum on a node includes all previous node's value and
-  // the value of the current node
+  // Calculate prefix sums on rank ID with MPI call and by hand and compare the output. The prefix
+  // sum on a node includes all previous node's value and the value of the current node
 
   const int array_size = 12;
 
@@ -1307,14 +1286,13 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   for (uint32_t i = 0; i < xint.size(); ++i) {
-    std::cout << "int: Prefix sum on this node: " << xint[i];
-    std::cout << " Answer: " << int_answer[i] << std::endl;
-    if (xint[i] != int_answer[i])
-      ITFAILS;
+    std::cout << "int: Prefix sum on this node: " << xint[i] << " Answer: " << int_answer[i]
+              << std::endl;
+    FAIL_IF_NOT(xint[i] == int_answer[i]);
   }
 
-  // test unsigned ints (use the maximum int value to make sure all types are
-  // handled correctly in the calls)
+  // test unsigned ints (use the maximum int value to make sure all types are handled correctly in
+  // the calls)
   vector<uint32_t> xuint(array_size, 0);
   for (int32_t i = 0; i < array_size; ++i)
     xuint[i] = static_cast<uint32_t>(std::numeric_limits<int>::max()) + rtt_c4::node() * 10 + i;
@@ -1330,14 +1308,13 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   for (uint32_t i = 0; i < xuint.size(); ++i) {
-    std::cout << "uint32_t: Prefix sum on this node: " << xuint[i];
-    std::cout << " Answer: " << uint_answer[i] << std::endl;
-    if (xuint[i] != uint_answer[i])
-      ITFAILS;
+    std::cout << "uint32_t: Prefix sum on this node: " << xuint[i] << " Answer: " << uint_answer[i]
+              << std::endl;
+    FAIL_IF_NOT(xuint[i] == uint_answer[i]);
   }
 
-  // test long ints (use the maximum uint32_t value to make sure all types are
-  // handled correctly in the calls)
+  // test long ints (use the maximum uint32_t value to make sure all types are handled correctly in
+  // the calls)
   vector<int64_t> xlong(array_size, 0);
   for (int32_t i = 0; i < array_size; ++i)
     xlong[i] = std::numeric_limits<uint32_t>::max() + rtt_c4::node() * 10 + i;
@@ -1353,14 +1330,13 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   for (uint32_t i = 0; i < xlong.size(); ++i) {
-    std::cout << "int64_t: Prefix sum on this node: " << xlong[i];
-    std::cout << " Answer: " << long_answer[i] << std::endl;
-    if (xlong[i] != long_answer[i])
-      ITFAILS;
+    std::cout << "int64_t: Prefix sum on this node: " << xlong[i] << " Answer: " << long_answer[i]
+              << std::endl;
+    FAIL_IF_NOT(xlong[i] == long_answer[i]);
   }
 
-  // test unsigned long ints (use the maximum int64_t value to make sure all
-  // types are handled correctly in the calls)
+  // test unsigned long ints (use the maximum int64_t value to make sure all types are handled
+  // correctly in the calls)
   vector<uint64_t> xulong(array_size, 0);
   for (int32_t i = 0; i < array_size; ++i)
     xulong[i] =
@@ -1377,10 +1353,9 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   for (uint32_t i = 0; i < xulong.size(); ++i) {
-    std::cout << "uint64_t: Prefix sum on this node: " << xulong[i];
-    std::cout << " Answer: " << ulong_answer[i] << std::endl;
-    if (xulong[i] != ulong_answer[i])
-      ITFAILS;
+    std::cout << "uint64_t: Prefix sum on this node: " << xulong[i]
+              << " Answer: " << ulong_answer[i] << std::endl;
+    FAIL_IF_NOT(xulong[i] == ulong_answer[i]);
   }
 
   // test floats
@@ -1398,17 +1373,14 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
     }
   }
 
-  // comparison between floats after operations needs soft_equiv with a loose
-  // tolerance
+  // comparison between floats after operations needs soft_equiv with a loose tolerance
   for (uint32_t i = 0; i < xfloat.size(); ++i) {
     std::cout << "float: Prefix sum on this node: " << xfloat[i];
     std::cout << " Answer: " << float_answer[i] << std::endl;
-    if (!soft_equiv(xfloat[i], float_answer[i], float(1.0e-6)))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(xfloat[i], float_answer[i], float(1.0e-6)));
   }
 
-  // test doubles, try to express precision beyond float to test type handling
-  // in function calls
+  // test doubles, try to express precision beyond float to test type handling in function calls
   vector<double> xdouble(array_size, 0);
   for (int32_t i = 0; i < array_size; ++i)
     xdouble[i] = rtt_c4::node() * 9.000000000002 + i;
@@ -1424,10 +1396,9 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   for (uint32_t i = 0; i < xdouble.size(); ++i) {
-    std::cout << "double: Prefix sum on this node: " << xdouble[i];
-    std::cout << " Answer: " << double_answer[i] << std::endl;
-    if (!soft_equiv(xdouble[i], double_answer[i]))
-      ITFAILS;
+    std::cout << "double: Prefix sum on this node: " << xdouble[i]
+              << " Answer: " << double_answer[i] << std::endl;
+    FAIL_IF_NOT(soft_equiv(xdouble[i], double_answer[i]));
   }
 
   if (ut.numFails == 0)

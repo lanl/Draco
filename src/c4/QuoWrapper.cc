@@ -192,7 +192,7 @@ std::string QuoWrapper::bindings() {
   Remember(auto retval =) QUO_stringify_cbind(quo, &cbindstr);
   Check(QUO_SUCCESS == retval);
   std::string cppbindstr(cbindstr);
-  free(cbindstr);
+  free(cbindstr); // NOLINT [hicpp-no-malloc]
 #else
   std::string cppbindstr("unknown - quo not available");
 #endif

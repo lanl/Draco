@@ -49,6 +49,17 @@ public:
    */
   virtual ~EICoupling() = default;
 
+  //! default the default constructor
+  EICoupling() = default;
+  //! Remove the copy constructor
+  EICoupling(EICoupling const &rhs) = delete;
+  //! Remove the move constructor
+  EICoupling(EICoupling &&rhs) noexcept = delete;
+  //! Remove assignment operator
+  EICoupling &operator=(EICoupling const &rhs) = delete;
+  //! Remove the move-assignment operator
+  EICoupling &operator=(EICoupling &&rhs) noexcept = delete;
+
   // --------- //
   // Accessors //
   // --------- //

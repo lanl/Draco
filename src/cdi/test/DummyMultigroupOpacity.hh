@@ -69,14 +69,15 @@ public:
    * \sa The constructor assigns fixed values for all of the member data.  Every instance of this
    *     object has the same member data.
    */
-  DummyMultigroupOpacity(rtt_cdi::Reaction = rtt_cdi::TOTAL, rtt_cdi::Model = rtt_cdi::ANALYTIC);
+  explicit DummyMultigroupOpacity(rtt_cdi::Reaction reaction = rtt_cdi::TOTAL,
+                                  rtt_cdi::Model model = rtt_cdi::ANALYTIC);
 
   /*!
    * \brief Constructor for DummyMultigroupOpacity object.
    *
    * This constructor allows the user to enter a different number of frequency boundaries.
    */
-  DummyMultigroupOpacity(rtt_cdi::Reaction, rtt_cdi::Model, size_t);
+  DummyMultigroupOpacity(rtt_cdi::Reaction reaction, rtt_cdi::Model model, size_t num_boundaries);
 
   /*!
    * \brief Default DummyMultigroupOpacity destructor.
@@ -84,6 +85,15 @@ public:
    * This is required to correctly release memory when a DummyMultigroupOpacity object is destroyed.
    */
   ~DummyMultigroupOpacity() override = default;
+
+  //! Disable copy construction
+  DummyMultigroupOpacity(DummyMultigroupOpacity const &rhs) = delete;
+  //! Disable move construction
+  DummyMultigroupOpacity(DummyMultigroupOpacity &&rhs) noexcept = delete;
+  // Disable assignment
+  DummyMultigroupOpacity &operator=(DummyMultigroupOpacity const &rhs) = delete;
+  //! Disable move-assignment
+  DummyMultigroupOpacity &operator=(DummyMultigroupOpacity &&rhs) noexcept = delete;
 
   // --------- //
   // Accessors //

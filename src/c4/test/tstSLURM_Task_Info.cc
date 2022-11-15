@@ -41,9 +41,9 @@ env_store_t clean_env() {
       store.insert({k, {true, storestr.str()}});
       int unset_ok = draco_unsetenv(k.c_str());
       if (0 != unset_ok) {
-        printf("%s:%i Failed to unset environment variable %s! errno = %d\n", __FUNCTION__,
-               __LINE__, k.c_str(), errno);
-        // throw something?
+        std::cout << __FUNCTION__ // NOLINT
+                  << ":" << __LINE__ << "Failed to unset environment variable " << k
+                  << "! errno = " << errno << std::endl;
       }
     } else {
       store.insert({k, {false, ""}});
@@ -65,16 +65,16 @@ void restore_env(env_store_t const &store) {
       std::string const &val_str{val.second};
       int set_ok = draco_setenv(key.c_str(), val_str.c_str());
       if (0 != set_ok) {
-        printf("%s:%i Failed to set environment variable %s to %s, errno = %d\n", __FUNCTION__,
-               __LINE__, key.c_str(), val_str.c_str(), errno);
-        // throw something
+        std::cout << __FUNCTION__ // NOLINT
+                  << ":" << __LINE__ << "Failed to set environment variable! errno = " << errno
+                  << std::endl;
       }
     } else {
       int unset_ok = draco_unsetenv(key.c_str());
       if (0 != unset_ok) {
-        printf("%s:%i Failed to unset environment variable %s! errno = %d\n", __FUNCTION__,
-               __LINE__, key.c_str(), errno);
-        // throw something?
+        std::cout << __FUNCTION__ // NOLINT
+                  << ":" << __LINE__ << "Failed to unset environment variable! errno = " << errno
+                  << std::endl;
       }
     }
   } // for things in store

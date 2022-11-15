@@ -22,7 +22,7 @@ namespace rtt_c4 {
 std::string get_processor_name() {
   int namelen(0);
   // char processor_name[DRACO_MAX_PROCESSOR_NAME];
-  std::array<char, DRACO_MAX_PROCESSOR_NAME> processor_name;
+  std::array<char, DRACO_MAX_PROCESSOR_NAME> processor_name{};
   MPI_Get_processor_name(processor_name.data(), &namelen);
   std::string pname(processor_name.begin(), processor_name.begin() + namelen);
   Ensure(pname.size() == static_cast<size_t>(namelen));

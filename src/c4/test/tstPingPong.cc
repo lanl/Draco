@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Apr  2 15:57:11 2002
  * \brief  Ping Pong communication test.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"
@@ -75,7 +74,7 @@ void blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(c == 'B');
     FAIL_IF_NOT(i == 2);
     FAIL_IF_NOT(l == 2000);
-    FAIL_IF_NOT(soft_equiv(f, 2.5f));
+    FAIL_IF_NOT(soft_equiv(f, 2.5F));
     FAIL_IF_NOT(soft_equiv(d, 3.5));
   }
 
@@ -94,7 +93,7 @@ void blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(c == 'A');
     FAIL_IF_NOT(i == 1);
     FAIL_IF_NOT(l == 1000);
-    FAIL_IF_NOT(soft_equiv(f, 1.5f));
+    FAIL_IF_NOT(soft_equiv(f, 1.5F));
     FAIL_IF_NOT(soft_equiv(d, 2.5));
 
     // assign new values
@@ -192,7 +191,7 @@ void non_blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
 
     // wait on receives and check
 
-    C4_Status status;
+    C4_Status status{};
 
     brr.wait(&status);
     FAIL_IF_NOT(status.get_message_size() == sizeof(bool));
@@ -223,7 +222,7 @@ void non_blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(cr == 'B');
     FAIL_IF_NOT(ir == 2);
     FAIL_IF_NOT(lr == 2000);
-    FAIL_IF_NOT(soft_equiv(fr, 2.5f));
+    FAIL_IF_NOT(soft_equiv(fr, 2.5F));
     FAIL_IF_NOT(soft_equiv(dr, 3.5));
   }
 
@@ -267,7 +266,7 @@ void non_blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(cr == 'A');
     FAIL_IF_NOT(ir == 1);
     FAIL_IF_NOT(lr == 1000);
-    FAIL_IF_NOT(soft_equiv(fr, 1.5f));
+    FAIL_IF_NOT(soft_equiv(fr, 1.5F));
     FAIL_IF_NOT(soft_equiv(dr, 2.5));
 
     // assign new values
@@ -445,7 +444,7 @@ void send_receive_ping_pong(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(cr == 'B');
     FAIL_IF_NOT(ir == 2);
     FAIL_IF_NOT(lr == 2000);
-    FAIL_IF_NOT(soft_equiv(fr, 2.5f));
+    FAIL_IF_NOT(soft_equiv(fr, 2.5F));
     FAIL_IF_NOT(soft_equiv(dr, 3.5));
   }
 
@@ -471,7 +470,7 @@ void send_receive_ping_pong(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(cr == 'A');
     FAIL_IF_NOT(ir == 1);
     FAIL_IF_NOT(lr == 1000);
-    FAIL_IF_NOT(soft_equiv(fr, 1.5f));
+    FAIL_IF_NOT(soft_equiv(fr, 1.5F));
     FAIL_IF_NOT(soft_equiv(dr, 2.5));
   }
 

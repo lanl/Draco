@@ -51,6 +51,16 @@ public:
    * destroyed.
    */
   virtual ~GrayOpacity() = default;
+  //! Default constructor
+  GrayOpacity() = default;
+  //! Disable copy construction
+  GrayOpacity(GrayOpacity const &rhs) = delete;
+  //! Disable move construction
+  GrayOpacity(GrayOpacity &&rhs) noexcept = delete;
+  //! Disable assignment
+  GrayOpacity &operator=(GrayOpacity const &rhs) = delete;
+  //! Disable move-assignment
+  GrayOpacity &operator=(GrayOpacity &&rhs) noexcept = delete;
 
   // --------- //
   // Accessors //

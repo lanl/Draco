@@ -106,7 +106,7 @@ void invert_comm_map(Invert_Comm_Map_t const &to_map, Invert_Comm_Map_t &from_ma
   }
 
   // Wait on the receives and populate the map
-  C4_Status status;
+  C4_Status status{};
   for (int i = 0; i < num_recv; ++i) {
     recvs[i].wait(&status);
     Check(status.get_message_size() == sizeof(size_t));

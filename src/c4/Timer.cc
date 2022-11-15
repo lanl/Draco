@@ -283,9 +283,9 @@ void Timer::pause(double const pauseSeconds) {
   Require(pauseSeconds > 0.0);
 
   //! POSIX tms structure for beginning time.
-  DRACO_TIME_TYPE tms_begin;
+  DRACO_TIME_TYPE tms_begin{};
   //! POSIX tms structure for ending time.
-  DRACO_TIME_TYPE tms_end;
+  DRACO_TIME_TYPE tms_end{};
 
   double begin = wall_clock_time(tms_begin);
   double elapsed(0);

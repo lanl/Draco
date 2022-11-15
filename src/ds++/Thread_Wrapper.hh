@@ -36,6 +36,11 @@ public:
   /**\brief Default ctor*/
   Thread_Wrapper() : t_(std::thread()) {}
 
+  Thread_Wrapper(Thread_Wrapper const &rhs) = delete;
+  Thread_Wrapper(Thread_Wrapper const &&rhs) noexcept = delete;
+  Thread_Wrapper &operator=(Thread_Wrapper const &rhs) = delete;
+  Thread_Wrapper &operator=(Thread_Wrapper &&rhs) noexcept = delete;
+
   /**\brief Move ctor (note: no copy ctor on std::threads. */
   Thread_Wrapper(std::thread &&t, action a) : action_(a), t_(std::move(t)) {}
 
