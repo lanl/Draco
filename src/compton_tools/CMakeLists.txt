@@ -11,8 +11,8 @@ project(compton_tools CXX)
 # ------------------------------------------------------------------------------------------------ #
 # Source files
 # ------------------------------------------------------------------------------------------------ #
-set(sources ${PROJECT_SOURCE_DIR}/Compton_Native.cc)
-set(headers ${PROJECT_SOURCE_DIR}/Compton_Native.hh)
+set(sources ${PROJECT_SOURCE_DIR}/Compton_Native.cc ${PROJECT_SOURCE_DIR}/Compton_Edep.cc)
+set(headers ${PROJECT_SOURCE_DIR}/Compton_Native.hh ${PROJECT_SOURCE_DIR}/Compton_Edep.hh)
 
 # ------------------------------------------------------------------------------------------------ #
 # Build package library

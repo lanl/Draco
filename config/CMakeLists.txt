@@ -42,9 +42,6 @@ if("${DRACO_C4}" STREQUAL "MPI")
 endif()
 
 set(Draco_TPL_LIST GSL Random123) # except MPI (which is treated separately).
-if(TARGET COMPTON::compton)
-  list(APPEND Draco_TPL_LIST COMPTON)
-endif()
 if(TARGET EOSPAC::eospac)
   list(APPEND Draco_TPL_LIST EOSPAC)
 endif()

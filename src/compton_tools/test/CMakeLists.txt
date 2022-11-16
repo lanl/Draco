@@ -11,7 +11,7 @@ project(compton_tools_test CXX)
 # ------------------------------------------------------------------------------------------------ #
 # Source files
 # ------------------------------------------------------------------------------------------------ #
-set(test_sources ${PROJECT_SOURCE_DIR}/tCompton_Native.cc)
+set(test_sources ${PROJECT_SOURCE_DIR}/tCompton_Native.cc ${PROJECT_SOURCE_DIR}/tCompton_Edep.cc)
 
 # ------------------------------------------------------------------------------------------------ #
 # Build Unit tests

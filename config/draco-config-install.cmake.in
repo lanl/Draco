@@ -126,7 +126,6 @@ set(HAVE_LIBQUO @HAVE_LIBQUO@)
 
 set(METIS_FOUND @METIS_FOUND@)
 set(ParMETIS_FOUND @ParMETIS_FOUND@)
-set(COMPTON_FOUND @COMPTON_FOUND@)
 
 # ------------------------------------------------------------------------------------------------ #
 # End draco-config.cmake

@@ -9,6 +9,7 @@
 
 #include "Tabular_CP_Eloss.hh"
 #include "ds++/DracoStrings.hh"
+#include "ds++/Interpolate.hh"
 #include <utility>
 
 namespace rtt_cdi_cpeloss {
@@ -17,65 +18,6 @@ using std::experimental::basic_mdspan;
 using std::experimental::dynamic_extent;
 using std::experimental::extents;
 using std::experimental::layout_left;
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do a 3D linear interpolation between vertices of a rectangular prism.
- *
- * Algorithm from wikipedia's Trilinear Interpolation article, hat tip to E.  Norris for the
- * reference.
- *
- * \param[in] x0   lower x coordinate of lattice
- * \param[in] x1   upper x coordinate of lattic
- * \param[in] y0   lower y coordinate of lattice
- * \param[in] y1   upper y coordinate of lattice
- * \param[in] z0   lower z coordinate of lattice
- * \param[in] z1   upper z coordinate of lattic
- * \param[in] f000 function at (x0,y0,z0)
- * \param[in] f100 function at (x1,y0,z0)
- * \param[in] f001 function at (x0,y0,z1)
- * \param[in] f101 function at (x1,y0,z1)
- * \param[in] f010 function at (x0,y1,z0)
- * \param[in] f110 function at (x1,y1,z0)
- * \param[in] f011 function at (x0,y1,z1)
- * \param[in] f111 function at (x1,y1,z1)
- * \param[in] x    x coordinate of interpolation point
- * \param[in] y    y coordinate of interpolation point
- * \param[in] z    z coordinate of interpolation point
- * \return The function value linearly interpolated to (x,y,z)
- */
-inline double linear_interpolate_3(double const x0, double const x1, double const y0,
-                                   double const y1, double const z0, double const z1,
-                                   double const f000, double const f100, double const f001,
-                                   double const f101, double const f010, double const f110,
-                                   double const f011, double const f111, double const x,
-                                   double const y, double const z) {
-  Require(std::abs(x1 - x0) > std::numeric_limits<double>::epsilon());
-  Require(std::abs(y1 - y0) > std::numeric_limits<double>::epsilon());
-  Require(std::abs(z1 - z0) > std::numeric_limits<double>::epsilon());
-  Require(x >= x0);
-  Require(x <= x1);
-  Require(y >= y0);
-  Require(y <= y1);
-  Require(z >= z0);
-  Require(z <= z1);
-
-  const double xd = (x - x0) / (x1 - x0);
-  const double yd = (y - y0) / (y1 - y0);
-  const double zd = (z - z0) / (z1 - z0);
-
-  const double f00 = f000 * (1. - xd) + f100 * xd;
-  const double f01 = f001 * (1. - xd) + f101 * xd;
-  const double f10 = f010 * (1. - xd) + f110 * xd;
-  const double f11 = f011 * (1. - xd) + f111 * xd;
-
-  const double f0 = f00 * (1. - yd) + f10 * yd;
-  const double f1 = f01 * (1. - yd) + f11 * yd;
-
-  const double f = f0 * (1. - zd) + f1 * zd;
-
-  return f;
-}
 
 //------------------------------------------------------------------------------------------------//
 // CONSTRUCTORS
@@ -306,8 +248,9 @@ double Tabular_CP_Eloss::getEloss(const double temperature, const double density
   const double f110 = stopping_data(pt1_energy, pt1_density, pt0_temperature);
   const double f011 = stopping_data(pt0_energy, pt1_density, pt1_temperature);
   const double f111 = stopping_data(pt1_energy, pt1_density, pt1_temperature);
-  const double dedx = exp(linear_interpolate_3(x0, x1, y0, y1, z0, z1, f000, f100, f001, f101, f010,
-                                               f110, f011, f111, partSpeed, density, temperature));
+  const double dedx =
+      exp(rtt_dsxx::interpolate::linear_3d(x0, x1, y0, y1, z0, z1, f000, f100, f001, f101, f010,
+                                           f110, f011, f111, partSpeed, density, temperature));
   const double number_density = density / target.get_mass();
   return dedx * 1000. * number_density * partSpeed; // MeV cm^2 -> keV shk^-1
 }

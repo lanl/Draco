@@ -79,44 +79,6 @@ void tstsquare(rtt_dsxx::UnitTest &ut) {
     FAILMSG("square function did NOT return correct double.");
   return;
 }
-
-//------------------------------------------------------------------------------------------------//
-void test_linear_interpolate(rtt_dsxx::UnitTest &ut) {
-  // function y = 2.5 * x - 1.0
-
-  // define boundary points
-  double x1 = 1.0;
-  double y1 = 2.5 * x1 - 1.0;
-  double x2 = 3.0;
-  double y2 = 2.5 * x2 - 1.0;
-
-  double x = 1.452;
-  double y = rtt_dsxx::linear_interpolate(x1, x2, y1, y2, x);
-  double ref = 2.5 * x - 1.0;
-
-  if (!rtt_dsxx::soft_equiv(y, ref))
-    ITFAILS;
-
-  // try another one
-  x1 = 1.45;
-  y1 = 2.5 * x1 - 1.0;
-  x2 = 1.1;
-  y2 = 2.5 * x2 - 1.0;
-
-  x = 1.33;
-  y = rtt_dsxx::linear_interpolate(x1, x2, y1, y2, x);
-  ref = 2.5 * x - 1.0;
-
-  if (!rtt_dsxx::soft_equiv(y, ref))
-    ITFAILS;
-
-  if (ut.numFails == 0)
-    PASSMSG("Linear interpolation checks ok.");
-  else
-    FAILMSG("test_interpolate() tests fail.");
-  return;
-}
-
 //------------------------------------------------------------------------------------------------//
 void tstceilintdiv(rtt_dsxx::UnitTest &ut) {
   using namespace rtt_dsxx;
@@ -142,7 +104,6 @@ int main(int argc, char *argv[]) {
     tstpythag(ut);
     tstsign(ut);
     tstsquare(ut);
-    test_linear_interpolate(ut);
     tstceilintdiv(ut);
   }
   UT_EPILOG(ut);

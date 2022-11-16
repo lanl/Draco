@@ -273,26 +273,6 @@ function(setupNDI)
 
 endfunction()
 
-# ------------------------------------------------------------------------------
-# Setup COMPTON (https://gitlab.lanl.gov/keadyk/CSK_generator)
-# ------------------------------------------------------------------------------
-function(setupCOMPTON)
-
-  if(NOT TARGET compton::compton)
-    message(STATUS "Looking for COMPTON...")
-    find_package(COMPTON QUIET)
-    if(COMPTON_FOUND)
-      message(STATUS "Looking for COMPTON...found ${COMPTON_LIBRARY}")
-    else()
-      message(STATUS "Looking for COMPTON...not found")
-    endif()
-  endif()
-  set(COMPTON_FOUND
-      "${COMPTON_FOUND}"
-      CACHE STRING "Was the csk library found?")
-
-endfunction()
-
 # ------------------------------------------------------------------------------------------------ #
 # This function should contain all the system libraries which are required to link the main objects.
 # ------------------------------------------------------------------------------------------------ #
@@ -304,7 +284,6 @@ macro(setupVendorLibraries)
   setupgsl()
   setupparmetis()
   setuprandom123()
-  setupcompton()
   setupeospac()
   setupndi()
   setuppython()
