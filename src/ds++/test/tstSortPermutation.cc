@@ -108,8 +108,7 @@ inline bool testit(const std::string & /*name*/, IT first, IT last, const CMP &c
 //------------------------------------------------------------------------------------------------//
 struct Foo {
   double d;
-  Foo(double d_) : d(d_) { /* empty */
-  }
+  Foo(double d_) : d(d_) {} // NOLINT [hicpp-explicit-conversions]
   bool operator<(const Foo &rhs) const { return d < rhs.d; }
   friend std::ostream &operator<<(std::ostream &os, const Foo &f) { return os << f.d; }
 };
@@ -117,8 +116,7 @@ struct Foo {
 //------------------------------------------------------------------------------------------------//
 struct FooGT {
   double d;
-  FooGT(double d_) : d(d_) { /* empty */
-  }
+  FooGT(double d_) : d(d_) {} // NOLINT [hicpp-explicit-conversions]
   bool operator>(const FooGT &rhs) const noexcept { return d > rhs.d; }
   friend std::ostream &operator<<(std::ostream &os, const FooGT &f) { return os << f.d; }
 };

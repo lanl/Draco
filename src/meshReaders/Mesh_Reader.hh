@@ -35,6 +35,21 @@ public:
 
   virtual ~Mesh_Reader() = default;
 
+  //! Default constructor
+  Mesh_Reader() = default;
+
+  //! Disable copy constructor
+  Mesh_Reader(Mesh_Reader const &rhs) = delete;
+
+  //! Disable move constructor
+  Mesh_Reader(Mesh_Reader &&rhs) noexcept = delete;
+
+  //! Disable assignment
+  Mesh_Reader &operator=(Mesh_Reader const &rhs) = delete;
+
+  //! Disable move assignment
+  Mesh_Reader &operator=(Mesh_Reader &&rhs) noexcept = delete;
+
   // ACCESSORS
 
   /*!
@@ -46,9 +61,7 @@ public:
    */
   virtual std::vector<std::vector<double>> get_node_coords() const = 0;
 
-  /*!
-   * \brief Provides the units (inches, feet, cm, meters, etc.) of the node coordinates.
-   */
+  //! Provides the units (inches, feet, cm, meters, etc.) of the node coordinates.
   virtual std::string get_node_coord_units() const = 0;
 
   /*!
@@ -62,15 +75,11 @@ public:
    */
   virtual std::vector<std::vector<unsigned>> get_element_nodes() const = 0;
 
-  /*!
-   * \brief Returns the type of all the elements in the mesh.
-   */
+  //! Returns the type of all the elements in the mesh.
   virtual std::vector<rtt_mesh_element::Element_Definition::Element_Type>
   get_element_types() const = 0;
 
-  /*!
-   * \brief Returns the unique element types that are defined in the mesh.
-   */
+  //! Returns the unique element types that are defined in the mesh.
   virtual std::vector<rtt_mesh_element::Element_Definition::Element_Type>
   get_unique_element_types() const = 0;
 

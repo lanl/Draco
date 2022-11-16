@@ -38,7 +38,7 @@ extern "C" void rtt_test_derived_type(const my_informative_type &mit, int &error
   } else if (mit.some_int != 137) {
     error_code = 2;
     return;
-  } else if (mit.some_large_int != ((2LL) << 33)) {
+  } else if (mit.some_large_int != ((2LL) << 33)) { // NOLINT [hicpp-signed-bitwise]
     error_code = 3;
     return;
   } else if (*(mit.some_pointer) != 2003 || *(mit.some_pointer + 1) != 2012) {
