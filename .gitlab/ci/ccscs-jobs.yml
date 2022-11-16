@@ -392,19 +392,19 @@ ccs2_gcov:
     CTEST_NPROC: 20
     SITE_ID: ccscs2
 
-ccs2_valgrind:
-  tags:
-    - CCSCS2-setuid-shared
-  stage: slowtest
-  extends: .ccscs_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
-    EXTRA_CMAKE_ARGS: -GNinja -DENABLE_MEMORYCHECK=ON
-      -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
-    EXTRA_CTEST_ARGS: -L memcheck -LE nomemcheck
-    CTEST_NPROC: 40
-    SITE_ID: ccscs2
+# ccs2_valgrind:
+#   tags:
+#     - CCSCS2-setuid-shared
+#   stage: slowtest
+#   extends: .ccscs_merge
+#   variables:
+#     CMAKE_BUILD_TYPE: Debug
+#     DRACO_ENV: gcc1120
+#     EXTRA_CMAKE_ARGS: -GNinja -DENABLE_MEMORYCHECK=ON
+#       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
+#     EXTRA_CTEST_ARGS: -L memcheck -LE nomemcheck
+#     CTEST_NPROC: 40
+#     SITE_ID: ccscs2
 
 # ---------- Optional ---------- #
 
