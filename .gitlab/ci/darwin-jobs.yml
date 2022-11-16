@@ -26,6 +26,7 @@
     SP_skylake: "--nodes=1 --partition=skylake --qos=debug"
     SP_volta_x86: "--nodes=1 --partition=volta-x86 --qos=debug --constraint='cpu_family:broadwell|cpu_family:haswell'"
     SP_x86_64: "--nodes=1 --partition=general --qos=debug --constraint='cpu_family:broadwell|cpu_family:haswell|cpu_family:skylake'"
+    SP_spr: "--nodes=1 --partition=crossroads-spr --qos=debug"
     # CI_DEBUG_TRACE: "true"
 
 #--------------------------------------------------------------------------------------------------#
@@ -130,7 +131,7 @@ darm_rel_gcc831_deploy:
     MAXLOAD: 40
     SCHEDULER_PARAMETERS: ${SP_arm}
 
-darm_deb_nvhpc229_deploy:
+dx64_deb_nvhpc229_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -139,6 +140,26 @@ darm_deb_nvhpc229_deploy:
     CTEST_NPROC: 20
     MAXLOAD: 20
     SCHEDULER_PARAMETERS: ${SP_x86_64}
+
+dspr_deb_oneapi_deploy:
+  extends: .darwin_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: spr-oneapi20221109-nda.lua
+    ARCH: x86_64
+    CTEST_NPROC: 112
+    MAXLOAD: 112
+    SCHEDULER_PARAMETERS: ${SP_spr}
+
+dspr_rel_oneapi_deploy:
+  extends: .darwin_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: spr-oneapi20221109-nda.lua
+    ARCH: x86_64
+    CTEST_NPROC: 112
+    MAXLOAD: 112
+    SCHEDULER_PARAMETERS: ${SP_spr}
 
 #--------------------------------------------------------------------------------------------------#
 # MRs - linters
@@ -356,6 +377,24 @@ darwin_deb_nvhpc229_regress:
     ARCH: x86_64
     CTEST_NPROC: 20
     SCHEDULER_PARAMETERS: ${SP_x86_64}
+
+darwin_deb_oneapi_regress:
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: spr-oneapi20221109-nda.lua
+    ARCH: x86_64
+    CTEST_NPROC: 112
+    SCHEDULER_PARAMETERS: ${SP_spr}
+
+darwin_rel_oneapi_regress:
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: spr-oneapi20221109-nda.lua
+    ARCH: x86_64
+    CTEST_NPROC: 112
+    SCHEDULER_PARAMETERS: ${SP_spr}
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/darwin-jobs.yml
