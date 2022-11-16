@@ -6,45 +6,11 @@
  * \brief  Interpolation functions.
  * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
-#include "ds++/Constexpr_Functions.hh"
-#include "ds++/dbc.hh"
-#include <limits>
+
+#include "ds++/Interpolate.hh"
 
 namespace rtt_dsxx {
 namespace interpolate {
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do a 1D linear interpolation between two values.
- *
- * \param[in] x1 x coordinate of first data point.
- * \param[in] y1 y coordinate of first data point.
- * \param[in] x2 x coordinate of second data point.
- * \param[in] y2 y coordinate of second data point.
- * \param[in] x  x coordinate associated with requested y value.
- * \return The y value associated with x based on linear interpolation between (x1,y1) and (x2,y2).
- *
- * Given two points (x1,y1) and (x2,y2), use linear interpolation to find the y value associated
- * with the provided x value.
- *
- *          y2-y1
- * y = y1 + ----- * (x-x1)
- *          x2-x1
- *
- * \pre  x in (x1,x2), extrapolation is not allowed.
- * \post y in (y1,y2), extrapolation is not allowed.
- */
-double linear_1d(double const x1, double const x2, double const y1, double const y2,
-                 double const x) {
-  Require(ce_fabs(x2 - x1) > std::numeric_limits<double>::epsilon());
-  Require(((x >= x1) && (x <= x2)) || ((x >= x2) && (x <= x1)));
-
-  // return value
-  double const value = (y2 - y1) / (x2 - x1) * (x - x1) + y1;
-
-  Ensure(((value >= y1) && (value <= y2)) || ((value >= y2) && (value <= y1)));
-  return value;
-}
 
 //------------------------------------------------------------------------------------------------//
 /*!
