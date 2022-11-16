@@ -207,20 +207,24 @@ int main(int argc, char *argv[]) {
   help_strings['v'] = "print version information and exit.";
   rtt_dsxx::XGetopt program_options(argc, argv, long_options, help_strings);
 
-  std::string const helpstring("\nUsage: IpcressInterpreter [-hv] "
-                               "<ipcress file>\nFollow the prompts to print opacity data to the "
-                               "screen.");
+  std::string const helpstring("\nUsage: IpcressInterpreter [-hv] <ipcress file>\nFollow the "
+                               "prompts to print opacity data to the screen.");
 
   int c(0);
   while ((c = program_options()) != -1) {
     switch (c) {
-    case 'v': // --version
+    case 'v': { // --version
       cout << argv[0] << ": version " << rtt_dsxx::release() << endl;
       return 0;
-
-    case 'h': // --help
+    }
+    case 'h': { // --help
       cout << argv[0] << ": version " << rtt_dsxx::release() << helpstring << endl;
       return 0;
+    }
+    default: {
+      cout << argv[0] << ": version " << rtt_dsxx::release() << helpstring << endl;
+      return 0;
+    }
     }
   }
 

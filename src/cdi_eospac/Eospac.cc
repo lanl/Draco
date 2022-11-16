@@ -66,7 +66,7 @@ Eospac::~Eospac() {
   if (errorCode != EOS_OK) {
     std::ostringstream outputString;
     for (size_t i = 0; i < returnTypes.size(); ++i) {
-      std::array<EOS_CHAR, EOS_MaxErrMsgLen> errorMessage;
+      std::array<EOS_CHAR, EOS_MaxErrMsgLen> errorMessage{};
       EOS_INTEGER tableHandleErrorCode = EOS_OK;
       eos_GetErrorCode(&tableHandles[i], &tableHandleErrorCode);
       eos_GetErrorMessage(&tableHandleErrorCode, errorMessage.data());
@@ -122,7 +122,7 @@ void Eospac::printTableInformation(EOS_INTEGER const tableType, std::ostream &ou
           << std::endl;
     } else if (match2 == EOS_FALSE) {
       std::ostringstream outputString;
-      std::array<EOS_CHAR, EOS_MaxErrMsgLen> errorMessage;
+      std::array<EOS_CHAR, EOS_MaxErrMsgLen> errorMessage{};
       // Ignore EOS_INVALID_INFO_FLAG since not all infoItems are currently applicable to a specific
       // tableHandle.
       eos_GetErrorMessage(&errorCode, errorMessage.data());
@@ -353,7 +353,7 @@ std::vector<double> Eospac::getF(std::vector<double> const &vdensity,
 
   if (errorCode != 0) {
     std::ostringstream outputString;
-    std::array<EOS_CHAR, EOS_MaxErrMsgLen> errorMessage;
+    std::array<EOS_CHAR, EOS_MaxErrMsgLen> errorMessage{};
     eos_GetErrorMessage(&errorCode, errorMessage.data());
 
     outputString << "\n\tAn unsuccessful request for EOSPAC data was made by eos_Interpolate() "
@@ -458,7 +458,7 @@ void Eospac::expandEosTable() const {
   // Check for errors
   if (errorCode != EOS_OK) {
     std::ostringstream outputString;
-    std::array<EOS_CHAR, EOS_MaxErrMsgLen> errorMessage;
+    std::array<EOS_CHAR, EOS_MaxErrMsgLen> errorMessage{};
     eos_GetErrorMessage(&errorCode, errorMessage.data());
     outputString << "\n   An unsuccessful request was made to initialize the EOSPAC table area by "
                  << "expandEosTable().\n  The error code returned by eos_CreateTables(...) was "
@@ -488,7 +488,7 @@ void Eospac::expandEosTable() const {
 
   if (errorCode != EOS_OK) {
     std::ostringstream outputString;
-    std::array<EOS_CHAR, EOS_MaxErrMsgLen> errorMessage;
+    std::array<EOS_CHAR, EOS_MaxErrMsgLen> errorMessage{};
     eos_GetErrorMessage(&errorCode, errorMessage.data());
     outputString << "\n   An unsuccessful request was made to load the EOSPAC table area by "
                  << "expandEosTable().\n  The error code returned by eos_LoadTables(...) was \""

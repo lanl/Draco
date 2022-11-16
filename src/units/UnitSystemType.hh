@@ -46,12 +46,20 @@ public:
 
   //! default constructor
   UnitSystemType();
+  ~UnitSystemType() = default;
 
   //! fully qualified constructor
   UnitSystemType(Ltype myL, Mtype myM, ttype myt, Ttype myT, Itype myI, Atype myA, Qtype myQ);
 
   //! Copy constructor
   UnitSystemType(UnitSystemType const &rhs);
+  //! Move constructor
+  UnitSystemType(UnitSystemType &&rhs) noexcept;
+
+  //! Assignment
+  UnitSystemType &operator=(UnitSystemType const &rhs) = delete;
+  //! Move Assignment
+  UnitSystemType &operator=(UnitSystemType &&rhs) noexcept = delete;
 
   // MANIPULATORS
 

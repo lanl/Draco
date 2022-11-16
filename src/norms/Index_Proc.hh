@@ -4,8 +4,7 @@
  * \author Rob Lowrie
  * \date   Fri Jan 14 13:57:58 2005
  * \brief  Header for Index_Proc.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_norms_Index_Proc_hh
@@ -26,16 +25,17 @@ using std::size_t;
 //================================================================================================//
 
 struct Index_Proc {
+
   //! The index.
   size_t index;
 
   //! The processor number.
   size_t processor;
 
-  // Constructor.  Allow auto-casting from index.
-  Index_Proc(const size_t index_ = 0);
+  //! Constructor.  Allow auto-casting from index.
+  explicit Index_Proc(const size_t index_ = 0);
 
-  // Equality operator.
+  //! Equality operator.
   bool operator==(const Index_Proc &rhs) const;
 };
 

@@ -152,6 +152,18 @@ public:
    */
   ~Eospac() override;
 
+  //! Disable copy construction
+  Eospac(Eospac const &rhs) = delete;
+
+  //! Disable move construction
+  Eospac(Eospac &&rhs) noexcept = delete;
+
+  //! Disable assignment
+  Eospac &operator=(Eospac const &rhs) = delete;
+
+  //! Disable move-assignment
+  Eospac &operator=(Eospac &&rhs) noexcept = delete;
+
   // --------- //
   // Accessors //
   // --------- //

@@ -90,6 +90,18 @@ public:
 
   // Disable default dtor
   ~Timing_Diagnostics() = delete;
+
+  //! Disable copy constructor
+  Timing_Diagnostics(Timing_Diagnostics const &rhs) = delete;
+
+  //! Disable move constructor
+  Timing_Diagnostics(Timing_Diagnostics &&rhs) noexcept = delete;
+
+  //! Disable assignment
+  Timing_Diagnostics &operator=(Timing_Diagnostics const &rhs) = delete;
+
+  //! Disable move assignment
+  Timing_Diagnostics &operator=(Timing_Diagnostics &&rhs) noexcept = delete;
 };
 
 } // end namespace rtt_diagnostics

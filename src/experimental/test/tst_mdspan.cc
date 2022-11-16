@@ -5,8 +5,7 @@
  * \date   Saturday, Dec 28, 2019, 15:51 pm
  * \brief  Test experimental C++ features (e.g.: mdspan)
  * \sa     https://github.com/kokkos/mdspan/wiki/A-Gentle-Introduction-to-mdspan
- * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -23,9 +22,8 @@ namespace stdex = std::experimental;
 //------------------------------------------------------------------------------------------------//
 template <class T, class ExtsA, class LayA, class AccA, class ExtsB, class LayB, class AccB>
 T dot_product(stdex::basic_mdspan<T, ExtsA, LayA, AccA> a,
-              stdex::basic_mdspan<T, ExtsB, LayB, AccB>
-                  b) //requires ExtsA::rank() == ExtsB::rank() && ExtsA::rank() == 2
-{
+              stdex::basic_mdspan<T, ExtsB, LayB, AccB> b) {
+  // requires ExtsA::rank() == ExtsB::rank() && ExtsA::rank() == 2
   T result = 0;
   for (int i = 0; i < a.extent(0); ++i) {
     for (int j = 0; j < a.extent(1); ++j) {
@@ -37,8 +35,8 @@ T dot_product(stdex::basic_mdspan<T, ExtsA, LayA, AccA> a,
 
 //------------------------------------------------------------------------------------------------//
 template <class T, class ExtsA, class LayA, class AccA>
-void fill_in_order(stdex::basic_mdspan<T, ExtsA, LayA, AccA> a) // requires ExtsA::rank() == 2
-{
+void fill_in_order(stdex::basic_mdspan<T, ExtsA, LayA, AccA> a) {
+  // requires ExtsA::rank() == 2
   T count = 0;
   for (int i = 0; i < a.extent(0); ++i) {
     for (int j = 0; j < a.extent(1); ++j) {
@@ -64,11 +62,8 @@ void t1(rtt_dsxx::UnitTest &ut) {
       stdex::basic_mdspan<int, stdex::extents<stdex::dynamic_extent, stdex::dynamic_extent>,
                           stdex::layout_left>;
 
-  // auto data_a = std::make_unique<int*>(rows * cols);
-  // auto data_b = std::make_unique<int*>(rows * cols);
-
-  std::array<int, rows * cols> data_a;
-  std::array<int, rows * cols> data_b;
+  std::array<int, rows * cols> data_a{};
+  std::array<int, rows * cols> data_b{};
 
   auto a = span_2d_dynamic(data_a.data(), rows, cols);
   auto b = span_2d_dynamic_left(data_b.data(), rows, cols);
@@ -93,8 +88,8 @@ void t2(rtt_dsxx::UnitTest &ut) {
   using span_2d_10_10_left =
       stdex::basic_mdspan<int, stdex::extents<rows, cols>, stdex::layout_right>;
 
-  std::array<int, 100> data_a;
-  std::array<int, 100> data_b;
+  std::array<int, 100> data_a{};
+  std::array<int, 100> data_b{};
 
   auto a = span_2d_10_10(data_a.data());
   auto b = span_2d_10_10_left(data_b.data());

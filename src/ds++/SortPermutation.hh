@@ -97,22 +97,27 @@ private:
   public:
     Proxy(SortPermutation::value_type pos_, const std::vector<IT> &iters_)
         : pos(pos_), iters(iters_) {}
+    ~Proxy() = default;
     Proxy(Proxy const &rhs) noexcept : pos(rhs.pos), iters(rhs.iters) {}
+    Proxy(Proxy &&rhs) noexcept : pos(rhs.pos), iters(rhs.iters) {}
     Proxy &operator=(Proxy const &rhs) {
+      pos = rhs.pos;
+      return *this;
+    }
+    Proxy &operator=(Proxy &&rhs) noexcept {
       pos = rhs.pos;
       return *this;
     }
 
     const value_type &value() const { return *iters[pos]; }
 
-    operator SortPermutation::value_type() { return pos; }
+    operator SortPermutation::value_type() { return pos; } // NOLINT [hicpp-explicit-conversions]
   };
 
   template <typename COMP> class CompareProxy {
   public:
     const COMP &comp;
-    CompareProxy(const COMP &comp_) : comp(comp_) { /* empty */
-    }
+    explicit CompareProxy(const COMP &comp_) : comp(comp_) {}
     template <typename IT> CompareProxy &operator=(CompareProxy const &comp_);
     template <typename IT> bool operator()(const Proxy<IT> &p1, const Proxy<IT> &p2) const {
       return comp(p1.value(), p2.value());

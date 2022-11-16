@@ -116,7 +116,7 @@ bool set_memory_checking(bool new_status) {
 #if DRACO_DIAGNOSTICS & 2
 void set_report_threshold(uint64_t threshold) { report_threshold = threshold; }
 #else
-void set_report_threshold(uint64_t) {}
+void set_report_threshold(uint64_t /*unused*/) {}
 #endif
 
 //------------------------------------------------------------------------------------------------//

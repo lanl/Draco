@@ -1,10 +1,9 @@
-//-----------------------------------*-C++-*----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   memory/test/tstmemory.cc
  * \author Kent G. Budge, Kelly G. Thompson
  * \brief  memory test.
- * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -132,9 +131,7 @@ void tst_memory(rtt_dsxx::UnitTest &ut) {
 void tst_bad_alloc(rtt_dsxx::UnitTest &ut) {
   size_t const num_fails_start(ut.numFails);
 
-  std::cout << "\nTesting special handler (stack trace) for "
-            << "std::bad_alloc...\n"
-            << std::endl;
+  std::cout << "\nTesting special handler (stack trace) for std::bad_alloc...\n" << std::endl;
 
   // Set a specialized memory handler.
   std::set_new_handler(rtt_memory::out_of_memory_handler);
@@ -148,8 +145,8 @@ void tst_bad_alloc(rtt_dsxx::UnitTest &ut) {
     // should never get here.
     {
       pBigArray[0] = 'a';
-      std::cout << "pBigArray[0] = " << pBigArray[0] << std::endl;
-      std::cout << "total_allocation = " << total_allocation() << std::endl;
+      std::cout << "pBigArray[0] = " << pBigArray[0]
+                << "\ntotal_allocation = " << total_allocation() << std::endl;
     }
 
     delete[] pBigArray;
@@ -167,10 +164,10 @@ void tst_bad_alloc(rtt_dsxx::UnitTest &ut) {
   return;
 }
 
-//----------------------------------------------------------------------------------------//
-void tst_report(rtt_dsxx::UnitTest &) {
-  // No good way to test automatically, alas. All we check is that the calls go in and
-  // don't crash anything.
+//------------------------------------------------------------------------------------------------//
+void tst_report(rtt_dsxx::UnitTest & /*unused*/) {
+  // No good way to test automatically, alas. All we check is that the calls go in and don't crash
+  // anything.
   {
     vector<unsigned char> d1(1000);
     rtt_memory::set_report_threshold(1500);
@@ -184,10 +181,9 @@ void tst_report(rtt_dsxx::UnitTest &) {
 
 //------------------------------------------------------------------------------------------------//
 // Some compilers are clever enough to figure out that if you pass
-// std::numeric_limits<size_t>::max() to the new operator, you will always blow
-// away member, and so they will refuse to compile the code. We have to use a
-// bit of indirection to get such compilers to swallow the huge allocation meant
-// to deliberately blow away memory.
+// std::numeric_limits<size_t>::max() to the new operator, you will always blow away member, and so
+// they will refuse to compile the code. We have to use a bit of indirection to get such compilers
+// to swallow the huge allocation meant to deliberately blow away memory.
 size_t get_really_big_size_t() { return numeric_limits<std::ptrdiff_t>::max() / sizeof(size_t); }
 
 //------------------------------------------------------------------------------------------------//
