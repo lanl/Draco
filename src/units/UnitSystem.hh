@@ -103,7 +103,7 @@ public:
   // CREATORS
 
   //! Prefered constructor
-  explicit UnitSystem(UnitSystemType ust) : d_ust(std::move(ust)) { Require(validUnits()); }
+  UnitSystem(UnitSystemType ust) : d_ust(std::move(ust)) { Require(validUnits()); }
 
   //! Default constructor provides SI Units
   UnitSystem() : d_ust(UnitSystemType().SI()) { Require(validUnits()); }

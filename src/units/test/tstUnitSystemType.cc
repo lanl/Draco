@@ -3,7 +3,7 @@
  * \file   units/test/tstUnitSystemType.cc
  * \author Kelly Thompson
  * \date   Wed Oct  8 13:50:19 2003
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -15,6 +15,73 @@
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
+
+void test_copy_ctor(rtt_dsxx::UnitTest &ut) {
+  using rtt_dsxx::soft_equiv;
+  using rtt_units::FundUnit;
+  using rtt_units::Ltype;
+  using rtt_units::UnitSystemType;
+  using std::endl;
+  using std::ostringstream;
+
+  //Let's use the default SI units to test
+
+  UnitSystemType si(UnitSystemType().SI());
+  UnitSystemType si2(si);
+
+  //Only testing one element
+  if (si.L().enumVal() == si2.L().enumVal()) {
+    ostringstream msg;
+    msg << "Copied UnitSystemType container has "
+        << "orig.L() == L_copy.L()." << endl;
+    PASSMSG(msg.str());
+  } else {
+    ostringstream msg;
+    msg << "Copied UnitSystemType container does not have "
+        << "orig.L() == L_copy.L()." << endl;
+    FAILMSG(msg.str());
+  }
+
+  if (&si != &si2) {
+    ostringstream msg;
+    msg << "Orig and copied object are seperate. " << endl;
+    PASSMSG(msg.str());
+  } else {
+    ostringstream msg;
+    msg << "Orig and copied object point to same memory. " << endl;
+    FAILMSG(msg.str());
+  }
+}
+
+void test_move_ctor(rtt_dsxx::UnitTest &ut) {
+  using rtt_dsxx::soft_equiv;
+  using rtt_units::FundUnit;
+  using rtt_units::Ltype;
+  using rtt_units::UnitSystemType;
+  using std::endl;
+  using std::ostringstream;
+
+  //Let's use the default SI units to test
+
+  UnitSystemType si(UnitSystemType().SI());
+
+  auto Ltest = si.L().enumVal();
+
+  UnitSystemType si2(std::move(si));
+
+  //Only testing one element
+  if (si2.L().enumVal() == Ltest) {
+    ostringstream msg;
+    msg << "Moved UnitSystemType container has "
+        << "orig.L() == L_copy.L()." << endl;
+    PASSMSG(msg.str());
+  } else {
+    ostringstream msg;
+    msg << "Moved UnitSystemType container does not have "
+        << "orig.L() == L_copy.L()." << endl;
+    FAILMSG(msg.str());
+  }
+}
 
 void test_default_ctor(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
@@ -740,6 +807,8 @@ int main(int argc, char *argv[]) {
     test_default_ctor(ut);
     test_qualified_ctor(ut);
     test_sust_ctor(ut); // specific UnitSystemType ctors
+    test_copy_ctor(ut);
+    test_move_ctor(ut);
   }
   UT_EPILOG(ut);
 }
