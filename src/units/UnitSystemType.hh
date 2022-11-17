@@ -57,9 +57,9 @@ public:
   UnitSystemType(UnitSystemType &&rhs) noexcept;
 
   //! Assignment
-  UnitSystemType &operator=(UnitSystemType const &rhs) = delete;
+  UnitSystemType &operator=(UnitSystemType const &rhs) = default;
   //! Move Assignment
-  UnitSystemType &operator=(UnitSystemType &&rhs) noexcept = delete;
+  UnitSystemType &operator=(UnitSystemType &&rhs) noexcept = default;
 
   // MANIPULATORS
 
