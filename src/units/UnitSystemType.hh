@@ -59,7 +59,7 @@ public:
   //! Assignment
   UnitSystemType &operator=(UnitSystemType const &rhs) = default;
   //! Move Assignment
-  UnitSystemType &operator=(UnitSystemType &&rhs) noexcept = default;
+  UnitSystemType &operator=(UnitSystemType &&rhs) = default;
 
   // MANIPULATORS
 
