@@ -116,7 +116,7 @@ GPU_HOST_DEVICE
 inline uint64_t _get_unique_num(const ctr_type::value_type *const data) {
   CBRNG hash;
   const ctr_type ctr = {{data[3], data[2]}};
-  const key_type key = {{data[1] >> 32, 0}};
+  const key_type key = {{data[1] >> 32, 0}}; // NOLINT [hicpp-signed-bitwise]
   const ctr_type result = hash(ctr, key);
   return result[0];
 }
@@ -242,23 +242,26 @@ public:
     Require(std::distance(begin, end) * sizeof(ctr_type::value_type) ==
             sizeof(ctr_type) + sizeof(key_type));
 
-    std::copy(begin, end, data);
+    std::copy(begin, end, &data[0]);
   }
 
+  //! Destructor
+  ~Counter_RNG() = default;
+
   //! Disable copy and move constructor.
-  Counter_RNG(const Counter_RNG &) = delete;
-  Counter_RNG(const Counter_RNG &&) = delete;
+  Counter_RNG(const Counter_RNG &rhs) = delete;
+  Counter_RNG(const Counter_RNG &&rhs) noexcept = delete;
 
   //! Disable copy- and move- assignment operator.
-  Counter_RNG &operator=(const Counter_RNG &) = delete;
-  Counter_RNG &operator=(const Counter_RNG &&) = delete;
+  Counter_RNG &operator=(const Counter_RNG &rhs) = delete;
+  Counter_RNG &operator=(const Counter_RNG &&rhs) noexcept = delete;
 
   //! Return a random double in the interval (0, 1).
   GPU_HOST_DEVICE
-  double ran() const { return _ran(data); }
+  double ran() const { return _ran(&data[0]); }
 
   //! Spawn a new, independent generator from this one.
-  void spawn(Counter_RNG &new_gen) const { new_gen._spawn(data); }
+  void spawn(Counter_RNG &new_gen) const { new_gen._spawn(&data[0]); }
 
   //! Return the stream number.
   GPU_HOST_DEVICE
@@ -266,15 +269,15 @@ public:
 
   //! Return a unique identifier for this generator.
   GPU_HOST_DEVICE
-  uint64_t get_unique_num() const { return _get_unique_num(data); }
+  uint64_t get_unique_num() const { return _get_unique_num(&data[0]); }
 
   //! Return an iterator to the beginning of the state block.
   GPU_HOST_DEVICE
-  const_iterator begin() const { return data; }
+  const_iterator begin() const { return &data[0]; }
 
   //! Return an iterator to the end of the state block.
   GPU_HOST_DEVICE
-  const_iterator end() const { return data + size(); }
+  const_iterator end() const { return &data[0] + size(); }
 
   //! Test for equality.
   bool operator==(Counter_RNG const &rhs) const { return std::equal(begin(), end(), rhs.begin()); }
@@ -297,7 +300,7 @@ public:
 
 private:
   //! \bug Can this be changed to std::array<ctr_type::value_type,CBRNG_DATA_SIZE> ?
-  mutable ctr_type::value_type data[CBRNG_DATA_SIZE]; // NOLINT
+  mutable ctr_type::value_type data[CBRNG_DATA_SIZE]{}; // NOLINT
 
   //! Initialize internal state from a seed and stream number.
   GPU_HOST_DEVICE
@@ -328,7 +331,7 @@ inline void Counter_RNG::initialize(const uint32_t seed, const uint64_t streamnu
   data[0] = 0;
 
   // High bits of the counter; used for the seed.
-  data[1] = static_cast<uint64_t>(seed) << 32;
+  data[1] = static_cast<uint64_t>(seed) << 32U;
 
   // Low bits of the key; used for the stream number.
   data[2] = streamnum;
@@ -390,7 +393,7 @@ inline void Counter_RNG::initialize(const uint32_t seed, const uint64_t streamnu
  */
 inline void Counter_RNG::_spawn(ctr_type::value_type *const parent_data) {
   // Initialize this generator with the seed and stream number from the parent.
-  auto seed = static_cast<uint32_t>(parent_data[1] >> 32);
+  auto seed = static_cast<uint32_t>(parent_data[1] >> 32U);
   uint64_t streamnum = parent_data[2];
   initialize(seed, streamnum);
 

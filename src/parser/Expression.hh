@@ -3,8 +3,7 @@
  * \file   parser/Expression.hh
  * \author Kent Budge
  * \brief  Definition of class Expression
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef parser_Expression_hh
@@ -27,33 +26,28 @@ using std::vector;
 //================================================================================================//
 /*!
  * \class Expression
- * \brief Represents a mathematical expression, typically parsed from user
- * input.
+ * \brief Represents a mathematical expression, typically parsed from user input.
  *
- * Test problems and numerical experiments often require that a problem domain
- * be initialized or driven in a way that varies in space and time.  For
- * example, one can imagine a radiation transport test problem in which the
- * initial temperature of a block of material is a linear function of radius.
+ * Test problems and numerical experiments often require that a problem domain be initialized or
+ * driven in a way that varies in space and time.  For example, one can imagine a radiation
+ * transport test problem in which the initial temperature of a block of material is a linear
+ * function of radius.
  *
- * We provide the Expression class to represent the kind of simple mathematical
- * expressions that might describe such initalizations or drivers.  Such
- * Expressions will typically be build based on user input using the
- * Expression::parse static function.
+ * We provide the Expression class to represent the kind of simple mathematical expressions that
+ * might describe such initalizations or drivers.  Such Expressions will typically be build based on
+ * user input using the Expression::parse static function.
  *
- * Expression itself is an abstract class representing all the kinds of
- * expressions that might be specified.  Concrete classes based on Expression
- * include Constant_Expression, Variable_Expression, Product_Expression, and so
- * forth.
+ * Expression itself is an abstract class representing all the kinds of expressions that might be
+ * specified.  Concrete classes based on Expression include Constant_Expression,
+ * Variable_Expression, Product_Expression, and so forth.
  *
- * Expression provides the means to check unit compatibility. This is kept
- * distinct from evaluation to keep the cost of evaluation down. Doing so
- * requires that we hardwire Expression to a particular choice of units;
- * naturally we choose SI.
+ * Expression provides the means to check unit compatibility. This is kept distinct from evaluation
+ * to keep the cost of evaluation down. Doing so requires that we hardwire Expression to a
+ * particular choice of units; naturally we choose SI.
  *
- * Expressions are evaluated for an arbitrary set of variables. These are
- * specified when the Expression is parsed using a map from variable name (as a
- * std::string) to variable index and units. The map can specify any number of
- * variables.
+ * Expressions are evaluated for an arbitrary set of variables. These are specified when the
+ * Expression is parsed using a map from variable name (as a std::string) to variable index and
+ * units. The map can specify any number of variables.
  */
 //================================================================================================//
 
@@ -75,9 +69,8 @@ public:
     DIFFERENCE_PRECEDENCE = SUM_PRECEDENCE,
 
     PRODUCT_PRECEDENCE,
-    QUOTIENT_PRECEDENCE, // = PRODUCT_PRECEDENCE,
-    // Quotient must have higher precedence to handle products in denominator
-    // right.
+    QUOTIENT_PRECEDENCE, // = PRODUCT_PRECEDENCE, Quotient must have higher precedence to handle
+                         // products in denominator right.
 
     NOT_PRECEDENCE,
     NEGATE_PRECEDENCE = NOT_PRECEDENCE,
@@ -89,6 +82,18 @@ public:
 
   //! Destructor.
   virtual ~Expression() = default;
+
+  //! Disable copy construction
+  Expression(Expression const &rhs) = delete;
+
+  //! Disable move construction
+  Expression(Expression &&rhs) noexcept = delete;
+
+  //! Disable assignment
+  Expression &operator=(Expression const &rhs) = delete;
+
+  //! Disable move construction
+  Expression &operator=(Expression &&rhs) noexcept = delete;
 
   // MANIPULATORS
 
@@ -121,7 +126,7 @@ public:
   }
 
   //! Write a representation of the expression in C syntax.
-  void write(Precedence p, vector<string> const &, ostream &out) const;
+  void write(Precedence p, vector<string> const &vars, ostream &out) const;
 
   //! Write a representation of the expression in C syntax.
   void write(vector<string> const &vars, ostream &out) const { write(COMMA_PRECEDENCE, vars, out); }
@@ -131,13 +136,13 @@ public:
   //! Parse an Expression from a Token_Stream.
   static std::shared_ptr<Expression> parse(unsigned number_of_variables,
                                            map<string, pair<unsigned, Unit>> const &variables,
-                                           Token_Stream &);
+                                           Token_Stream &tokens);
 
   //! Parse an Expression with specified dimensions from a Token_Stream.
   static std::shared_ptr<Expression> parse(unsigned number_of_variables,
                                            map<string, pair<unsigned, Unit>> const &variables,
                                            Unit const &expected_units,
-                                           string const &expected_units_text, Token_Stream &);
+                                           string const &expected_units_text, Token_Stream &tokens);
 
 protected:
   // IMPLEMENTATION
@@ -173,10 +178,8 @@ private:
   //! Number of distinct independent variables in the Expression.
   unsigned number_of_variables_;
 
-  /*! \brief Dimensions of the expression. The value of units_.conv is not
-   *         significant except for constant Expressions, where it represents
-   *         the value of the constant.
-   */
+  /*! \brief Dimensions of the expression. The value of units_.conv is not significant except for
+   *         constant Expressions, where it represents the value of the constant. */
   Unit units_;
 };
 

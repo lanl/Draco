@@ -3,8 +3,7 @@
  * \file   Console_Token_Stream.cc
  * \author Kent G. Budge
  * \brief  Definitions of Console_Token_Stream methods.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Console_Token_Stream.hh"
@@ -25,9 +24,8 @@ Console_Token_Stream::Console_Token_Stream() {
 /*!
  * \param ws User-defined whitespace characters.
  *
- * \param no_nonbreaking_ws Treat spaces and tabs as breaking whitespace. This
- *           has the effect of forcing all keywords to consist of a single
- *           identifier.
+ * \param no_nonbreaking_ws Treat spaces and tabs as breaking whitespace. This has the effect of
+ *           forcing all keywords to consist of a single identifier.
  */
 Console_Token_Stream::Console_Token_Stream(set<char> const &ws, bool const no_nonbreaking_ws)
     : Text_Token_Stream(ws, no_nonbreaking_ws) {
@@ -39,8 +37,8 @@ Console_Token_Stream::Console_Token_Stream(set<char> const &ws, bool const no_no
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * For a Console_Token_Stream, location is not a terribly  meaningful concept.
- * So we return "input" as the location, which is true enough.
+ * For a Console_Token_Stream, location is not a terribly  meaningful concept. So we return "input"
+ * as the location, which is true enough.
  *
  * \return The string "input".
  */
@@ -67,11 +65,10 @@ bool Console_Token_Stream::error_() const { return cin.fail(); }
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function may be used to check whether the user has typed an end of
- * file character (ctrl-D on most Unix systems).
+ * This function may be used to check whether the user has typed an end of file character (ctrl-D on
+ * most Unix systems).
  *
- * \return \c true if an end of file character has been typed; \c false
- * otherwise.
+ * \return \c true if an end of file character has been typed; \c false otherwise.
  */
 
 bool Console_Token_Stream::end_() const { return cin.eof(); }
@@ -89,8 +86,8 @@ void Console_Token_Stream::report(Token const &token, string const &message) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function sends a message by writing it to the error console stream.
- * This version assumes that the cursor gives the correct message location.
+ * This function sends a message by writing it to the error console stream. This version assumes
+ * that the cursor gives the correct message location.
  */
 
 void Console_Token_Stream::report(string const &message) {
@@ -102,8 +99,8 @@ void Console_Token_Stream::report(string const &message) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function sends a message by writing it to the error console stream.
- * This version prints no location information.
+ * This function sends a message by writing it to the error console stream. This version prints no
+ * location information.
  */
 
 void Console_Token_Stream::comment(string const &message) {
@@ -113,26 +110,11 @@ void Console_Token_Stream::comment(string const &message) {
 }
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \author Kent G. Budge
- * \date Wed Jan 22 15:35:42 MST 2003
- * \brief Rewind the token stream.
- *
- * This function flushes cin and resets the error count.
- */
+//! This function flushes cin and resets the error count.
 
 void Console_Token_Stream::rewind() {
   cin.clear(); // Must clear the error/end flag bits.
-
-  // [2015-09-01 KT] After talking to Kent about this implementation, we decided
-  // that it does not make sense to rewind an interactive standard input buffer.
-  // In fact, if this is done under an MPI environment (e.g. mpirun -np 1, aprun
-  // -n 1, etc. ), the seekg() will return an error condition.
-
-  // cin.seekg(0);
-
   Text_Token_Stream::rewind();
-
   Ensure(check_class_invariants());
   Ensure(cin.rdstate() == 0);
   Ensure(location_() == "input");
@@ -140,7 +122,7 @@ void Console_Token_Stream::rewind() {
 
 //------------------------------------------------------------------------------------------------//
 //! Console_Token_Stream does not presently support the include directive.
-void Console_Token_Stream::push_include(std::string &) {
+void Console_Token_Stream::push_include(std::string & /*include_file_name*/) {
   report_syntax_error("#include not supported for Console_Token_Stream");
 }
 

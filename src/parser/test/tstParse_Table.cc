@@ -30,12 +30,12 @@ using namespace rtt_dsxx;
 static std::array<const char *, 3> const color{"BLACK", "BLUE", "BLUE GREEN"};
 static std::array<bool, 3> color_set;
 
-static void Parse_Color(Token_Stream &, int i) {
+static void Parse_Color(Token_Stream & /*unused*/, int i) {
   cout << "You have requested " << color[i] << endl;
   color_set[i] = true;
 }
 
-static void Parse_Any_Color(Token_Stream &tokens, int) {
+static void Parse_Any_Color(Token_Stream &tokens, int /*unused*/) {
   Token token = tokens.shift();
   for (unsigned i = 0; i < sizeof(color) / sizeof(const char *); i++)
     if (!strcmp(token.text().c_str(), color[i])) {
@@ -67,7 +67,7 @@ public:
   }
 
 protected:
-  void report(Token const &, string const & /*err*/) override {
+  void report(Token const & /*token*/, string const & /*err*/) override {
     cout << "error reported to Error_Token_Stream" << endl;
   }
 
@@ -89,7 +89,7 @@ public:
   }
 
 protected:
-  void report(Token const &, string const & /*err*/) override {
+  void report(Token const & /*token*/, string const & /*err*/) override {
     cout << "error reported to Colon_Token_Stream" << endl;
   }
 

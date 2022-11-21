@@ -74,7 +74,7 @@ private:
   // IMPLEMENTATION
 
   //! Parse the child type
-  static void parse_child_(Token_Stream &, int);
+  static void parse_child_(Token_Stream &tokens, int child);
 
   // DATA
 

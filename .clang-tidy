@@ -46,6 +46,7 @@ Checks: "*,
         -misc-non-private-member-variables-in-classes,
         -misc-no-recursion,
         -modernize-use-trailing-return-type,
+        -portability-simd-intrinsics,
         bugprone-argument-comment,
         bugprone-assert-side-effect,
 "

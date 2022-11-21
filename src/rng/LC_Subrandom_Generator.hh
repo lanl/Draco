@@ -36,8 +36,10 @@ public:
   ~LC_Subrandom_Generator() override;
 
   //! Disabled
-  LC_Subrandom_Generator(LC_Subrandom_Generator const &) = delete;
-  LC_Subrandom_Generator &operator=(LC_Subrandom_Generator const &) = delete;
+  LC_Subrandom_Generator(LC_Subrandom_Generator const &rhs) = delete;
+  LC_Subrandom_Generator(LC_Subrandom_Generator &&rhs) noexcept = delete;
+  LC_Subrandom_Generator &operator=(LC_Subrandom_Generator const &rhs) = delete;
+  LC_Subrandom_Generator &operator=(LC_Subrandom_Generator &&rhs) noexcept = delete;
 
   // MANIPULATORS
 

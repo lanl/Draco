@@ -4,8 +4,7 @@
  * \author Kent Budge
  * \date   Wed Jul 26 07:53:32 2006
  * \brief  Implementation of class Expression
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Constant_Expression.hh"
@@ -19,8 +18,8 @@ using Variable_Map = map<string, pair<unsigned, Unit>>;
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * The and operator implicitly converts its operands to bool. Hence no unit
- * compatibility of the operands is required, and the result is dimensionless.
+ * The and operator implicitly converts its operands to bool. Hence no unit compatibility of the
+ * operands is required, and the result is dimensionless.
  */
 class And_Expression : public Expression {
 public:
@@ -68,7 +67,7 @@ private:
 //------------------------------------------------------------------------------------------------//
 class Cos_Expression : public Expression {
 public:
-  Cos_Expression(pE const &expression)
+  explicit Cos_Expression(pE const &expression)
       : Expression(expression->number_of_variables(), dimensionless), expression_(expression) {
     Require(expression);
     Require(is_compatible(expression_->units(), dimensionless));
@@ -157,7 +156,7 @@ private:
 //------------------------------------------------------------------------------------------------//
 class Exp_Expression : public Expression {
 public:
-  Exp_Expression(pE const &expression)
+  explicit Exp_Expression(pE const &expression)
       : Expression(expression->number_of_variables(), dimensionless), expression_(expression) {
     Require(expression);
     Require(is_compatible(expression_->units(), dimensionless));
@@ -384,7 +383,7 @@ private:
 //------------------------------------------------------------------------------------------------//
 class Log_Expression : public Expression {
 public:
-  Log_Expression(pE const &expression)
+  explicit Log_Expression(pE const &expression)
       : Expression(expression->number_of_variables(), dimensionless), expression_(expression) {
     Require(expression);
     Require(is_compatible(expression_->units(), dimensionless));
@@ -427,7 +426,7 @@ private:
 //------------------------------------------------------------------------------------------------//
 class Negate_Expression : public Expression {
 public:
-  Negate_Expression(pE const &expression)
+  explicit Negate_Expression(pE const &expression)
       : Expression(expression->number_of_variables(), expression->units()),
         expression_(expression) {
     Require(expression);
@@ -468,7 +467,7 @@ private:
 //------------------------------------------------------------------------------------------------//
 class Not_Expression : public Expression {
 public:
-  Not_Expression(pE const &expression)
+  explicit Not_Expression(pE const &expression)
       : Expression(expression->number_of_variables(), dimensionless), expression_(expression) {
     Require(expression);
     Ensure(check_class_invariant());
@@ -691,7 +690,7 @@ private:
 //------------------------------------------------------------------------------------------------//
 class Sin_Expression : public Expression {
 public:
-  Sin_Expression(pE const &expression)
+  explicit Sin_Expression(pE const &expression)
       : Expression(expression->number_of_variables(), dimensionless), expression_(expression) {
     Require(expression);
     Require(is_compatible(expression_->units(), dimensionless));
@@ -794,9 +793,9 @@ private:
 
   /*virtual*/ bool is_constant_(unsigned const i) const override { return i != index_; }
 
-  /*virtual*/ void write_(Precedence, vector<string> const &vars, ostream &out) const override {
+  /*virtual*/ void write_(Precedence /*precedence*/, vector<string> const &vars,
+                          ostream &out) const override {
     Require(index_ < vars.size());
-
     out << vars[index_];
   }
 
@@ -1091,11 +1090,10 @@ static pE parse_or(unsigned const number_of_variables, Variable_Map const &varia
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \param[in] x Variable values to apply to the expression. The values must be
- *                 in SI units.
+ * \param[in] x Variable values to apply to the expression. The values must be in SI units.
  *
- * \return Evaluated value of the expression. The dimensions of this value are
- *         specified by Expression::unit(). The value is returned in SI units.
+ * \return Evaluated value of the expression. The dimensions of this value are specified by
+ *         Expression::unit(). The value is returned in SI units.
  */
 double Expression::operator()(vector<double> const &x) const {
   Insist(x.size() > 0, std::string("Expression::operator() requires a non-zero length ") +
@@ -1106,18 +1104,13 @@ double Expression::operator()(vector<double> const &x) const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \param[in] number_of_variables Number of distinct independent variables in
- *                 the expression.
+ * \param[in] number_of_variables Number of distinct independent variables in the expression.
  *
- * \param[in] variable_map Map specifying variable names and the associated
- *                 index and units. It is acceptable to alias variable
- *                 names. The unit dimensions must be identical for aliases. The
- *                 conversion factor is ignored but should be nonzero.
- *
+ * \param[in] variable_map Map specifying variable names and the associated index and units. It is
+ *                 acceptable to alias variable names. The unit dimensions must be identical for
+ *                 aliases. The conversion factor is ignored but should be nonzero.
  * \param tokens Token stream from which to parse an Expression.
- *
- * \return Pointer to the Expression. If null, the expression was empty or
- *         grammatically ill-formed.
+ * \return Pointer to the Expression. If null, the expression was empty or grammatically ill-formed.
  *
  * \bug Doxygen doesn't like this definition
  * \cond doxygen_skip_this
@@ -1125,11 +1118,10 @@ double Expression::operator()(vector<double> const &x) const {
 std::shared_ptr<Expression> Expression::parse(unsigned const number_of_variables,
                                               Variable_Map const &variable_map,
                                               Token_Stream &tokens) {
-  // No index in the variable map can be greater than or equal to the number of
-  // variables.
+  // No index in the variable map can be greater than or equal to the number of variables.
 
-  // The top expression is the or expression, which we anticipate will be useful
-  // for piecewise functions.
+  // The top expression is the or expression, which we anticipate will be useful for piecewise
+  // functions.
 
   std::shared_ptr<Expression> Result = parse_or(number_of_variables, variable_map, tokens);
   while (tokens.lookahead().text() == "|") {
@@ -1142,38 +1134,33 @@ std::shared_ptr<Expression> Expression::parse(unsigned const number_of_variables
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \param number_of_variables Number of distinct independent variables in the
- *             expression.
+ * \param number_of_variables Number of distinct independent variables in the expression.
  *
- * \param variable_map Map specifying variable names and the associated index
- *             and units. It is acceptable to alias variable names. The unit
- *             dimensions must be identical for aliases. The conversion factor
- *             is ignored but should be nonzero.
+ * \param variable_map Map specifying variable names and the associated index and units. It is
+ *             acceptable to alias variable names. The unit dimensions must be identical for
+ *             aliases. The conversion factor is ignored but should be nonzero.
  *
- * \param expected_units Unit dimensions the final expression is expected to
- *             have. If the final expression does not have these units, and if
- *             unit checking is not disabled (as determined by a call to
- *             rtt_parser::are_units_disabled()), then a semantic error will be
- *             reported to tokens.
+ * \param expected_units Unit dimensions the final expression is expected to have. If the final
+ *             expression does not have these units, and if unit checking is not disabled (as
+ *             determined by a call to rtt_parser::are_units_disabled()), then a semantic error will
+ *             be reported to tokens.
  *
- * \param expected_units_text Human-friendly description of the units that were
- *             expected, e.g. "force", "energy density"
+ * \param expected_units_text Human-friendly description of the units that were expected, e.g.
+ *             "force", "energy density"
  *
  * \param tokens Token stream from which to parse an Expression.
  *
- * \return Pointer to the Expression. If null, the expression was empty or
- *         grammatically ill-formed.
+ * \return Pointer to the Expression. If null, the expression was empty or grammatically ill-formed.
  */
 std::shared_ptr<Expression> Expression::parse(unsigned const number_of_variables,
                                               Variable_Map const &variable_map,
                                               Unit const &expected_units,
                                               string const &expected_units_text,
                                               Token_Stream &tokens) {
-  // No index in the variable map can be greater than or equal to the number of
-  // variables.
+  // No index in the variable map can be greater than or equal to the number of variables.
 
-  // The top expression is the or expression, which we anticipate will be useful
-  // for piecewise functions.
+  // The top expression is the or expression, which we anticipate will be useful for piecewise
+  // functions.
 
   std::shared_ptr<Expression> Result = parse_or(number_of_variables, variable_map, tokens);
   while (tokens.lookahead().text() == "|") {

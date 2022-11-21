@@ -113,7 +113,7 @@ template <typename GEN> void do_test(kat_instance *ti) {
     typename GEN::ctr_type expected;
     typename GEN::ctr_type computed;
   };
-  gdata data;
+  gdata data{};
   // use memcpy.  A reinterpret_cast would violate strict aliasing.
   memcpy(&data, &ti->u, sizeof(data));
   data.computed = g(data.ctr, data.ukey);
@@ -127,8 +127,8 @@ template <typename GEN> void do_test(kat_instance *ti) {
   // MicroURNG: throws if the top 32 bits of the high word of ctr are non-zero.
   typedef typename GEN::ctr_type::value_type value_type; //NOLINT
 
-  value_type hibits =
-      data.ctr[data.ctr.size() - 1] >> (std::numeric_limits<value_type>::digits - 32);
+  value_type hibits = data.ctr[data.ctr.size() - 1] >>
+                      static_cast<unsigned>(std::numeric_limits<value_type>::digits - 32);
   try {
     r123::MicroURNG<GEN> urng(data.ctr, data.ukey);
     if (hibits)
@@ -208,40 +208,40 @@ template <typename GEN> void do_test(kat_instance *ti) {
 
 void host_execute_tests(kat_instance *tests, unsigned ntests) {
   // In C++1x, this could be staticly declared with an initializer list.
-  genmap[make_pair(threefry2x32_e, 13u)] = do_test<r123::Threefry2x32_R<13>>;
-  genmap[make_pair(threefry2x32_e, 20u)] = do_test<r123::Threefry2x32_R<20>>;
-  genmap[make_pair(threefry2x32_e, 32u)] = do_test<r123::Threefry2x32_R<32>>;
+  genmap[make_pair(threefry2x32_e, 13U)] = do_test<r123::Threefry2x32_R<13>>;
+  genmap[make_pair(threefry2x32_e, 20U)] = do_test<r123::Threefry2x32_R<20>>;
+  genmap[make_pair(threefry2x32_e, 32U)] = do_test<r123::Threefry2x32_R<32>>;
 #if R123_USE_64BIT
-  genmap[make_pair(threefry2x64_e, 13u)] = do_test<r123::Threefry2x64_R<13>>;
-  genmap[make_pair(threefry2x64_e, 20u)] = do_test<r123::Threefry2x64_R<20>>;
-  genmap[make_pair(threefry2x64_e, 32u)] = do_test<r123::Threefry2x64_R<32>>;
+  genmap[make_pair(threefry2x64_e, 13U)] = do_test<r123::Threefry2x64_R<13>>;
+  genmap[make_pair(threefry2x64_e, 20U)] = do_test<r123::Threefry2x64_R<20>>;
+  genmap[make_pair(threefry2x64_e, 32U)] = do_test<r123::Threefry2x64_R<32>>;
 #endif
 
-  genmap[make_pair(threefry4x32_e, 13u)] = do_test<r123::Threefry4x32_R<13>>;
-  genmap[make_pair(threefry4x32_e, 20u)] = do_test<r123::Threefry4x32_R<20>>;
-  genmap[make_pair(threefry4x32_e, 72u)] = do_test<r123::Threefry4x32_R<72>>;
+  genmap[make_pair(threefry4x32_e, 13U)] = do_test<r123::Threefry4x32_R<13>>;
+  genmap[make_pair(threefry4x32_e, 20U)] = do_test<r123::Threefry4x32_R<20>>;
+  genmap[make_pair(threefry4x32_e, 72U)] = do_test<r123::Threefry4x32_R<72>>;
 #if R123_USE_64BIT
-  genmap[make_pair(threefry4x64_e, 13u)] = do_test<r123::Threefry4x64_R<13>>;
-  genmap[make_pair(threefry4x64_e, 20u)] = do_test<r123::Threefry4x64_R<20>>;
-  genmap[make_pair(threefry4x64_e, 72u)] = do_test<r123::Threefry4x64_R<72>>;
+  genmap[make_pair(threefry4x64_e, 13U)] = do_test<r123::Threefry4x64_R<13>>;
+  genmap[make_pair(threefry4x64_e, 20U)] = do_test<r123::Threefry4x64_R<20>>;
+  genmap[make_pair(threefry4x64_e, 72U)] = do_test<r123::Threefry4x64_R<72>>;
 #endif
 
-  genmap[make_pair(philox2x32_e, 7u)] = do_test<r123::Philox2x32_R<7>>;
-  genmap[make_pair(philox2x32_e, 10u)] = do_test<r123::Philox2x32_R<10>>;
-  genmap[make_pair(philox4x32_e, 7u)] = do_test<r123::Philox4x32_R<7>>;
-  genmap[make_pair(philox4x32_e, 10u)] = do_test<r123::Philox4x32_R<10>>;
+  genmap[make_pair(philox2x32_e, 7U)] = do_test<r123::Philox2x32_R<7>>;
+  genmap[make_pair(philox2x32_e, 10U)] = do_test<r123::Philox2x32_R<10>>;
+  genmap[make_pair(philox4x32_e, 7U)] = do_test<r123::Philox4x32_R<7>>;
+  genmap[make_pair(philox4x32_e, 10U)] = do_test<r123::Philox4x32_R<10>>;
 
 #if R123_USE_PHILOX_64BIT
-  genmap[make_pair(philox2x64_e, 7u)] = do_test<r123::Philox2x64_R<7>>;
-  genmap[make_pair(philox2x64_e, 10u)] = do_test<r123::Philox2x64_R<10>>;
-  genmap[make_pair(philox4x64_e, 7u)] = do_test<r123::Philox4x64_R<7>>;
-  genmap[make_pair(philox4x64_e, 10u)] = do_test<r123::Philox4x64_R<10>>;
+  genmap[make_pair(philox2x64_e, 7U)] = do_test<r123::Philox2x64_R<7>>;
+  genmap[make_pair(philox2x64_e, 10U)] = do_test<r123::Philox2x64_R<10>>;
+  genmap[make_pair(philox4x64_e, 7U)] = do_test<r123::Philox4x64_R<7>>;
+  genmap[make_pair(philox4x64_e, 10U)] = do_test<r123::Philox4x64_R<10>>;
 #endif
 
 #if R123_USE_AES_NI
-  genmap[make_pair(aesni4x32_e, 10u)] = do_test<r123::AESNI4x32>;
-  genmap[make_pair(ars4x32_e, 7u)] = do_test<r123::ARS4x32_R<7>>;
-  genmap[make_pair(ars4x32_e, 10u)] = do_test<r123::ARS4x32_R<10>>;
+  genmap[make_pair(aesni4x32_e, 10U)] = do_test<r123::AESNI4x32>;
+  genmap[make_pair(ars4x32_e, 7U)] = do_test<r123::ARS4x32_R<7>>;
+  genmap[make_pair(ars4x32_e, 10U)] = do_test<r123::ARS4x32_R<10>>;
 #endif
 
   dev_execute_tests(tests, ntests);

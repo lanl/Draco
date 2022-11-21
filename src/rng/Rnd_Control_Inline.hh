@@ -36,8 +36,8 @@ private:
 
 public:
   //! Constructor.
-  Rnd_Control(const uint32_t seed, const uint64_t streamnum = 0,
-              const uint64_t max_streams = std::numeric_limits<uint64_t>::max())
+  explicit Rnd_Control(const uint32_t seed, const uint64_t streamnum = 0,
+                       const uint64_t max_streams = std::numeric_limits<uint64_t>::max())
       : d_seed(seed), d_streamnum(streamnum), d_max_streams(max_streams) {
     Require(max_streams > 0);
     Require(streamnum < max_streams);
@@ -60,9 +60,9 @@ public:
   uint64_t get_max_streams() const { return d_max_streams; }
 
   GPU_HOST_DEVICE
-  inline void initialize(const uint64_t snum, Counter_RNG &);
+  inline void initialize(const uint64_t snum, Counter_RNG &cbrng);
   GPU_HOST_DEVICE
-  inline void initialize(Counter_RNG &);
+  inline void initialize(Counter_RNG &cbrng);
 };
 
 //------------------------------------------------------------------------------------------------//
