@@ -68,7 +68,7 @@ public:
   }
 
   //! Normal constructor.
-  Halton_Sequence(unsigned const base_index, unsigned const count = 1);
+  explicit Halton_Sequence(unsigned const base_index, unsigned const count = 1);
 
   // MANIPULATORS
 

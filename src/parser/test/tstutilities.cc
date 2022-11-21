@@ -83,7 +83,7 @@ void tstutilities(UnitTest &ut) {
 
   // Try to read some vectors.
 
-  std::array<double, 3> v;
+  std::array<double, 3> v{0.0};
   parse_vector(tokens, v.data());
   Token token = tokens.shift();
   if (rtt_dsxx::soft_equiv(v[0], 3.0, eps) && rtt_dsxx::soft_equiv(v[1], 0.0, eps) &&
@@ -107,7 +107,7 @@ void tstutilities(UnitTest &ut) {
   else
     FAILMSG("3-D vector NOT successfully parsed");
 
-  std::array<unsigned, 3> w;
+  std::array<unsigned, 3> w{0};
   parse_unsigned_vector(tokens, w.data(), 3);
   token = tokens.shift();
   if (w[0] == 3 && w[1] == 2 && w[2] == 1 && token.type() == KEYWORD && token.text() == "stop")
@@ -120,152 +120,101 @@ void tstutilities(UnitTest &ut) {
   Unit one = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
 
   Unit left = parse_unit(tokens);
-  if (left != J)
-    FAILMSG("test fails");
+  FAIL_IF(left != J);
 
   left = parse_unit(tokens);
   Unit right = parse_unit(tokens);
-  if (left != right || left != C)
-    FAILMSG("test fails");
+  FAIL_IF(left != right || left != C);
 
   left = parse_unit(tokens);
   cout << left << endl;
-  if (left != 1 / s)
-    FAILMSG("test fails");
+  FAIL_IF(left != 1 / s);
 
   left = parse_unit(tokens);
   right = parse_unit(tokens);
-  if (left != right || left != N)
-    FAILMSG("test fails");
+  FAIL_IF(left != right || left != N);
 
   left = parse_unit(tokens);
-  if (left != J / K)
-    FAILMSG("test fails");
+  FAIL_IF(left != J / K);
 
   left = parse_unit(tokens);
-  if (left != J / mol)
-    FAILMSG("test fails");
+  FAIL_IF(left != J / mol);
 
   left = parse_unit(tokens);
   right = parse_unit(tokens);
-  if (left != right || left != lm)
-    FAILMSG("test fails");
+  FAIL_IF(left != right || left != lm);
 
   left = parse_unit(tokens);
-  if (left != rad / s)
-    FAILMSG("test fails");
+  FAIL_IF(left != rad / s);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("test fails");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("test fails");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("test fails");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("test fails");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("test fails");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("test fails");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("test fails");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("test fails");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("test fails");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("test fails");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("test fails");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("dyne definition did NOT check out");
-  else
-    PASSMSG("dyne definition checks out");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (left != one)
-    FAILMSG("erg definition did NOT check out");
-  else
-    PASSMSG("erg definition checks out");
+  FAIL_IF(left != one);
 
   left = parse_unit(tokens);
-  if (!is_compatible(left, cm) || !soft_equiv(left.conv, 0.0254))
-    FAILMSG("inch definition did NOT check out");
-  else
-    PASSMSG("inch definition checks out");
+  FAIL_IF(!is_compatible(left, cm) || !soft_equiv(left.conv, 0.0254));
 
   left = parse_unit(tokens);
-  if (!is_compatible(left, one) || !soft_equiv(left.conv, 12.0))
-    FAILMSG("foot definition did NOT check out");
-  else
-    PASSMSG("foot definition checks out");
+  FAIL_IF(!is_compatible(left, one) || !soft_equiv(left.conv, 12.0));
 
   left = parse_unit(tokens);
-  if (!is_compatible(left, one) || !soft_equiv(left.conv, 4.448221615))
-    FAILMSG("pound definition did NOT check out");
-  else
-    PASSMSG("pound definition checks out");
+  FAIL_IF(!is_compatible(left, one) || !soft_equiv(left.conv, 4.448221615));
 
   left = parse_unit(tokens);
-  if (!is_compatible(left, one))
-    FAILMSG("keV definition did NOT check out");
-  else
-    PASSMSG("keV definition checks out");
+  FAIL_IF(!is_compatible(left, one));
 
   left = parse_unit(tokens);
-  if (left != J)
-    FAILMSG("test fails");
+  FAIL_IF_NOT(left == J);
 
   left = parse_unit(tokens);
-  if (left != J)
-    FAILMSG("test fails");
+  FAIL_IF_NOT(left == J);
 
   left = parse_unit(tokens);
-  if (left != K)
-    FAILMSG("K definition did NOT check out");
-  else
-    PASSMSG("K definition checks out");
+  FAIL_IF(left != K);
 
   left = parse_unit(tokens);
-  if (left != sr)
-    FAILMSG("sr definition did NOT check out");
-  else
-    PASSMSG("sr definition checks out");
+  FAIL_IF(left != sr);
 
   left = parse_unit(tokens);
-  if (left != W * 1e17)
-    FAILMSG("jerk and shake definitions did NOT check out");
-  else
-    PASSMSG("jerk and shake definition checks out");
+  FAIL_IF(left != W * 1e17);
 
   left = parse_unit(tokens);
-  if (left != s * 1e-8)
-    FAILMSG("sh definitions did NOT check out");
-  else
-    PASSMSG("sh definition checks out");
+  FAIL_IF(left != s * 1e-8);
 
   // Now see if we catch a bogus unit expression.
   try {
@@ -507,7 +456,7 @@ void tstutilities(UnitTest &ut) {
   }
   {
     String_Token_Stream string("1 2 3");
-    std::array<unsigned, 4> x;
+    std::array<unsigned, 4> x{0};
     parse_unsigned_vector(string, x.data(), 4);
     if (string.error_count() == 0)
       FAILMSG("did NOT detect too short vector correctly");
@@ -744,8 +693,7 @@ void tstutilities(UnitTest &ut) {
       FAILMSG("did NOT parse bare quantity to X4 correctly");
     bare_quantity.rewind();
   }
-  // Screw around with unit expression settings, as before, but for temperature
-  // expressions in keV.
+  // Screw around with unit expression settings, as before, but for temperature expressions in keV.
   {
     using namespace rtt_units;
 

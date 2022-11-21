@@ -3,8 +3,7 @@
  * \file   Parallel_File_Token_Stream.hh
  * \author Kent G. Budge
  * \brief  Definition of class Parallel_File_Token_Stream.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Parallel_File_Token_Stream_HH
@@ -23,12 +22,11 @@ using std::string;
 /*!
  * \brief Parallel file-based token stream
  *
- * \c Parallel_File_Token_Stream is similar to \c File_Token_Stream. However, it
- * assumes an SPMD (Single Program, Multiple Data) run environment. Only the
- * designated I/O processor (normally processor 0) actually reads the file. The
- * characters read are then broadcast to the other processors. The advantage of
- * parallelism at this level is that it avoids the I/O cost of many processors
- * reading one file while communicating data that is still very flat.
+ * \c Parallel_File_Token_Stream is similar to \c File_Token_Stream. However, it assumes an SPMD
+ * (Single Program, Multiple Data) run environment. Only the designated I/O processor (normally
+ * processor 0) actually reads the file. The characters read are then broadcast to the other
+ * processors. The advantage of parallelism at this level is that it avoids the I/O cost of many
+ * processors reading one file while communicating data that is still very flat.
  */
 class Parallel_File_Token_Stream : public Text_Token_Stream {
 public:
@@ -38,7 +36,7 @@ public:
   Parallel_File_Token_Stream();
 
   //! Construct a Parallel_File_Token_Stream from a file.
-  Parallel_File_Token_Stream(string const &filename);
+  explicit Parallel_File_Token_Stream(string const &filename);
 
   //! Construct a Parallel_File_Token_Stream from a file.
   Parallel_File_Token_Stream(string const &file_name, set<char> const &ws);
@@ -85,7 +83,7 @@ private:
     // IMPLEMENTATION
 
     //! Constructor
-    letter(string file_name);
+    explicit letter(string file_name);
 
     bool check_class_invariants() const;
 

@@ -3,8 +3,7 @@
  * \file   parser/Debug_Options.cc
  * \author Kent Grimmett Budge
  * \brief  Define Debug_Options parse functions.
- * \note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved. */
 /*------------------------------------------------------------------------------------------------*/
 
 #include "Debug_Options.hh"
@@ -44,9 +43,7 @@ using std::string;
  * \brief Get a debug specification.
  *
  * \param[in] option_name A string specifying a debug option keyword.
- *
- * \return The bitmask value assigned to the keyword, or 0 if the keyword is not
- *      recognized.
+ * \return The bitmask value assigned to the keyword, or 0 if the keyword is not recognized.
  */
 unsigned get_debug_option(string const &option_name) {
   if (option_name == "SUMMARY") {
@@ -81,12 +78,11 @@ unsigned get_debug_option(string const &option_name) {
 /*!
  * \brief Parse a debug specification.
  *
- * \param[in,out] tokens Token stream from which to parse a debug
- *      specification. The specification is a set of debug keywords, each
- *      optionally prefixed with a '!', and ends with the first token that is
- *      not a recognized debug keyword.
- * \param[in] parent Optional parent mask; defaults to zero. Allows a debug mask
- *      to be based on a parent mask, with selected bits added or masked out.
+ * \param[in,out] tokens Token stream from which to parse a debug specification. The specification
+ *      is a set of debug keywords, each optionally prefixed with a '!', and ends with the first
+ *      token that is not a recognized debug keyword.
+ * \param[in] parent Optional parent mask; defaults to zero. Allows a debug mask to be based on a
+ *      parent mask, with selected bits added or masked out.
  * \return A debug options mask.
  */
 unsigned parse_debug_options(Token_Stream &tokens, unsigned const parent) {
@@ -120,8 +116,7 @@ unsigned parse_debug_options(Token_Stream &tokens, unsigned const parent) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Convert a debug mask to a string containing comma-delimited set of
- *      debug keywords.
+ * \brief Convert a debug mask to a string containing comma-delimited set of debug keywords.
  *
  * \param[in] debug_options Debug mask to be converted to a set of keywords.
  * \return A string containing a comma-delimited set of debug options.
@@ -174,8 +169,8 @@ string debug_options_as_text(unsigned debug_options) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Add a new debug option to the debug parser specific to an
- *      application. This version assigns the next available bit.
+ * \brief Add a new debug option to the debug parser specific to an application. This version
+ *      assigns the next available bit.
  *
  * \param[in] option_name Debug option keyword
  * \return Bitflag value assigned to the new debug option.
@@ -202,10 +197,9 @@ unsigned add_debug_option(string const &option_name) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Add a new debug option to the debug parser specific to an
- *      application. This version requests a specific bit and throws an
- *      exception if has already been requested elsewhere. This version will
- *      typically be called at the initial setup of an application.
+ * \brief Add a new debug option to the debug parser specific to an application. This version
+ *      requests a specific bit and throws an exception if has already been requested elsewhere.
+ *      This version will typically be called at the initial setup of an application.
  *
  * \param[in] option_name option keyword
  * \param[in] bit value to be assigned to the new debug option.

@@ -35,6 +35,10 @@ public:
   // CREATORS
 
   virtual ~Subrandom_Generator() = default;
+  Subrandom_Generator(Subrandom_Generator const &rhs) = delete;
+  Subrandom_Generator(Subrandom_Generator &&rhs) noexcept = delete;
+  Subrandom_Generator &operator=(Subrandom_Generator const &rhs) = delete;
+  Subrandom_Generator &operator=(Subrandom_Generator &&rhs) noexcept = delete;
 
   //! Advance sequence to the next vector.
   virtual void shift_vector() = 0;

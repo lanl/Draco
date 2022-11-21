@@ -23,14 +23,16 @@ namespace rtt_parser {
  * and \c int) from an \c Abstract_Class_Parse_Table.
  *
  * See test/tstAbstract_Class_Contextual_Parser.cc for an example of how it is used.
+ *
+ * \note Marking the ctor explicit will break capsaicin.
  */
 //================================================================================================//
 template <typename Abstract_Class, typename Context, Context const &get_context()>
 class Contextual_Parse_Functor {
 public:
   //! Primary constructor
-  Contextual_Parse_Functor(std::shared_ptr<Abstract_Class> parse_function(Token_Stream &,
-                                                                          Context const &))
+  /*explicit*/ Contextual_Parse_Functor( // NOLINT [hicpp-explicit-conversions]
+      std::shared_ptr<Abstract_Class> parse_function(Token_Stream &, Context const &))
       : f_(parse_function) {}
 
   //! Return handle to the parse function.

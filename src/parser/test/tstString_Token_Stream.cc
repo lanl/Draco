@@ -125,128 +125,98 @@ void tstString_Token_Stream(UnitTest &ut) {
     }
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "COLOR")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "COLOR");
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "=")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "=");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "BLACK")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "BLACK");
 
     token = tokens.shift();
-    if (token.type() != END)
-      ITFAILS;
+    FAIL_IF(token.type() != END);
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "-")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "-");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.563e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.563e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.563e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.563e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != ".563e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != ".563e+3");
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != ".")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != ".");
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "-")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "-");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.563")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.563");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.e3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.e3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1e3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1e3");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "19090")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "19090");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "01723")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "01723");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "0x1111a")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "0x1111a");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "0")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "0");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "8123")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "8123");
 
     token = tokens.shift();
-    if (token.type() != STRING || token.text() != "\"manifest string\"")
-      ITFAILS;
+    FAIL_IF(token.type() != STRING || token.text() != "\"manifest string\"");
 
     token = tokens.shift();
     FAIL_IF(token.type() != STRING || token.text() != R"("manifest \"string\"")");
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "@")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "@");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "1")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "1");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "e")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "e");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "0")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "0");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "x")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "x");
 
     token = tokens.shift();
-    if (token.type() != EXIT)
-      ITFAILS;
+    FAIL_IF(token.type() != EXIT);
     token = tokens.shift();
-    if (token.type() != EXIT)
-      ITFAILS;
+    FAIL_IF(token.type() != EXIT);
 
     tokens.rewind();
     token = tokens.lookahead();
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "BLUE")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "BLUE");
   }
 
   //-------------------------------------------------------------------------//
@@ -266,9 +236,8 @@ void tstString_Token_Stream(UnitTest &ut) {
     try {
       tokens.shift();
       ostringstream msg;
-      msg << "Token_Stream did not throw an exception when\n"
-          << "\tunbalanced quotes were read from the input\n"
-          << "\tfile, \"scanner_recover.inp\" (line 1)." << endl;
+      msg << "Token_Stream did not throw an exception when unbalanced quotes were read from the \n"
+          << "\tinput file, \"scanner_recover.inp\" (line 1)." << endl;
       FAILMSG(msg.str());
     } catch (const Syntax_Error &msg) {
       // cout << msg.what() << endl;
@@ -277,9 +246,8 @@ void tstString_Token_Stream(UnitTest &ut) {
       string expected("syntax error");
       if (errmsg == expected) {
         ostringstream message;
-        message << "Caught expected exception from Token_Stream.\n"
-                << "\tunbalanced quotes were read from the input\n"
-                << "\tfile, \"scanner_recover.inp\" (line 1)." << endl;
+        message << "Caught expected exception from Token_Stream. unbalanced quotes were read \n"
+                << "\tfrom the input file, \"scanner_recover.inp\" (line 1)." << endl;
         PASSMSG(message.str());
       } else
         ITFAILS;
@@ -288,9 +256,8 @@ void tstString_Token_Stream(UnitTest &ut) {
     try {
       tokens.shift();
       ostringstream msg;
-      msg << "Token_Stream did not throw an exception when\n"
-          << "\tunbalanced quotes were read from the input\n"
-          << "\tfile, \"scanner_recover.inp\" (line 2)." << endl;
+      msg << "Token_Stream did not throw an exception when unbalanced quotes were read from the \n"
+          << "\tinput file, \"scanner_recover.inp\" (line 2)." << endl;
       FAILMSG(msg.str());
     } catch (const Syntax_Error &msg) {
       //cout << msg.what() << endl;
@@ -299,9 +266,8 @@ void tstString_Token_Stream(UnitTest &ut) {
       string expected("syntax error");
       if (errmsg == expected) {
         ostringstream message;
-        message << "Caught expected exception from Token_Stream.\n"
-                << "\tunbalanced quotes were read from the input\n"
-                << "\tfile, \"scanner_recover.inp\" (line 2)." << endl;
+        message << "Caught expected exception from Token_Stream. unbalanced quotes were read \n"
+                << "\tfrom the input file, \"scanner_recover.inp\" (line 2)." << endl;
         PASSMSG(message.str());
       } else
         ITFAILS;
@@ -312,61 +278,46 @@ void tstString_Token_Stream(UnitTest &ut) {
     String_Token_Stream tokens2 = string("<= >= && ||");
 
     Token token = tokens2.shift();
-    if (token.text() != "<=")
-      ITFAILS;
+    FAIL_IF(token.text() != "<=");
 
     token = tokens2.shift();
-    if (token.text() != ">=")
-      ITFAILS;
+    FAIL_IF(token.text() != ">=");
 
     token = tokens2.shift();
-    if (token.text() != "&&")
-      ITFAILS;
+    FAIL_IF(token.text() != "&&");
 
     token = tokens2.shift();
-    if (token.text() != "||")
-      ITFAILS;
+    FAIL_IF(token.text() != "||");
 
     token = tokens2.shift();
-    if (token.type() != EXIT)
-      ITFAILS;
+    FAIL_IF(token.type() != EXIT);
   }
 
   {
     String_Token_Stream tokens("09");
     if (tokens.is_nb_whitespace('\t')) {
-      ut.passes("tab correctly identified as nonbreaking whitespace");
+      PASSMSG("tab correctly identified as nonbreaking whitespace");
     } else {
-      ut.failure("tab NOT correctly identified as nonbreaking "
-                 "whitespace");
+      FAILMSG("tab NOT correctly identified as nonbreaking whitespace");
     }
     Token token = tokens.shift();
     if (token.type() != INTEGER || token.text() != "0") {
-      ut.failure("did NOT scan 09 correctly");
+      FAILMSG("did NOT scan 09 correctly");
     } else {
-      ut.passes("scanned 09 correctly");
+      PASSMSG("scanned 09 correctly");
     }
   }
   {
     String_Token_Stream tokens("_, __, _ _, > < & | 1E3 0XA");
-    if (tokens.shift().text() != "_")
-      ut.failure("Did NOT correctly scan _");
-    if (tokens.shift().text() != "__")
-      ut.failure("Did NOT correctly scan __");
-    if (tokens.shift().text() != "_ _")
-      ut.failure("Did NOT correctly scan _ _");
-    if (tokens.shift().text() != ">")
-      ut.failure("Did NOT correctly scan >");
-    if (tokens.shift().text() != "<")
-      ut.failure("Did NOT correctly scan <");
-    if (tokens.shift().text() != "&")
-      ut.failure("Did NOT correctly scan &");
-    if (tokens.shift().text() != "|")
-      ut.failure("Did NOT correctly scan |");
-    if (!soft_equiv(parse_real(tokens), 1e3))
-      ut.failure("Did NOT correctly scan 1E3");
-    if (parse_integer(tokens) != 10)
-      ut.failure("Did NOT correctly scan 0XA");
+    FAIL_IF(tokens.shift().text() != "_");
+    FAIL_IF(tokens.shift().text() != "__");
+    FAIL_IF(tokens.shift().text() != "_ _");
+    FAIL_IF(tokens.shift().text() != ">");
+    FAIL_IF(tokens.shift().text() != "<");
+    FAIL_IF(tokens.shift().text() != "&");
+    FAIL_IF(tokens.shift().text() != "|");
+    FAIL_IF(!soft_equiv(parse_real(tokens), 1e3));
+    FAIL_IF(parse_integer(tokens) != 10);
   }
 
   // Test that missing closing quote is a syntax error.
@@ -374,7 +325,7 @@ void tstString_Token_Stream(UnitTest &ut) {
     String_Token_Stream tokens("\"quote");
     try {
       tokens.shift();
-      ut.failure("Did NOT correctly report missing closing quote as syntax error");
+      FAILMSG("Did NOT correctly report missing closing quote as syntax error");
     } catch (const Syntax_Error & /*msg*/) {
       PASSMSG("missing closing quote correctly thrown and caught");
     }
@@ -385,7 +336,7 @@ void tstString_Token_Stream(UnitTest &ut) {
     String_Token_Stream tokens("#include \"dummy.inp\"");
     try {
       tokens.shift();
-      ut.failure("Did NOT correctly report #include as error");
+      FAILMSG("Did NOT correctly report #include as error");
     } catch (const Syntax_Error & /*msg*/) {
       cout << "expected: " << tokens.messages() << endl;
       PASSMSG("#include not supported error correctly thrown and caught");
@@ -397,7 +348,7 @@ void tstString_Token_Stream(UnitTest &ut) {
     String_Token_Stream tokens("# !");
     try {
       tokens.shift();
-      ut.failure("Did NOT correctly report #! as error");
+      FAILMSG("Did NOT correctly report #! as error");
     } catch (const Syntax_Error & /*msg*/) {
       PASSMSG("invalid #directive correctly thrown and caught");
     }
@@ -406,7 +357,7 @@ void tstString_Token_Stream(UnitTest &ut) {
     String_Token_Stream tokens("#bad");
     try {
       tokens.shift();
-      ut.failure("Did NOT correctly report #bad as error");
+      FAILMSG("Did NOT correctly report #bad as error");
     } catch (const Syntax_Error & /*msg*/) {
       PASSMSG("invalid #bad correctly thrown and caught");
     }
@@ -415,7 +366,7 @@ void tstString_Token_Stream(UnitTest &ut) {
     String_Token_Stream tokens("#include, bad");
     try {
       tokens.shift();
-      ut.failure("Did NOT correctly report #include, bad as error");
+      FAILMSG("Did NOT correctly report #include, bad as error");
     } catch (const Syntax_Error & /*msg*/) {
       PASSMSG("invalid #insist, bad correctly thrown and caught");
     }

@@ -21,13 +21,16 @@ using namespace rtt_parser;
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
-/*
- * The following would typically be declared in a file associated with the Parent class.
- */
+
+// The following would typically be declared in a file associated with the Parent class.
 class Parent {
 public:
   virtual ~Parent() = default;
-
+  Parent() = default;
+  Parent(Parent const &rhs) = delete;
+  Parent(Parent &&rhs) noexcept = delete;
+  Parent &operator=(Parent const &rhs) = delete;
+  Parent &operator=(Parent &&rhs) noexcept = delete;
   virtual string name() = 0;
 };
 
@@ -87,9 +90,7 @@ Class_Parse_Table<Parent> *Class_Parse_Table<Parent>::current_;
 Parse_Table Class_Parse_Table<Parent>::parse_table_;
 
 //------------------------------------------------------------------------------------------------//
-/*
- * Specialization of the parse_class function for T=Parent
- */
+// Specialization of the parse_class function for T=Parent
 template <> std::shared_ptr<Parent> parse_class<Parent>(Token_Stream &tokens) {
   return parse_class_from_table<Class_Parse_Table<Parent>>(tokens);
 }
@@ -97,20 +98,17 @@ template <> std::shared_ptr<Parent> parse_class<Parent>(Token_Stream &tokens) {
 } // namespace rtt_parser
 
 //------------------------------------------------------------------------------------------------//
-/*
- * The following is what you would expect to find in a file associated with the
- * Son class.
- */
+// The following is what you would expect to find in a file associated with the Son class.
 class Son : public Parent {
 public:
   string name() override { return "son"; }
 
-  Son(double /*snip_and_snails*/) {}
+  explicit Son(double /*snip_and_snails*/) {}
 };
 
 static double parsed_snips_and_snails;
 
-void parse_snips_and_snails(Token_Stream &tokens, int) {
+void parse_snips_and_snails(Token_Stream &tokens, int /*unused*/) {
   if (parsed_snips_and_snails >= 0.0) {
     tokens.report_semantic_error("snips and snails already specified");
   }
@@ -183,28 +181,24 @@ template <> std::shared_ptr<Son> parse_class<Son>(Token_Stream &tokens) {
 } // end namespace rtt_parser
 
 //------------------------------------------------------------------------------------------------//
-/*
- * The following is what you would expect to find in a file associated with the
- * Daughter class.
- */
+// The following is what you would expect to find in a file associated with the Daughter class.
 class Daughter : public Parent {
 public:
   string name() override { return "daughter"; }
 
-  Daughter(double /*sugar_and_spice*/) {}
+  explicit Daughter(double /*sugar_and_spice*/) {}
 };
 
 static double parsed_sugar_and_spice;
 
-void parse_sugar_and_spice(Token_Stream &tokens, int) {
+void parse_sugar_and_spice(Token_Stream &tokens, int /*unused*/) {
   if (parsed_sugar_and_spice >= 0.0) {
     tokens.report_semantic_error("sugar and spice already specified");
   }
 
   parsed_sugar_and_spice = parse_real(tokens);
   if (parsed_sugar_and_spice < 0.0) {
-    tokens.report_semantic_error("sugar and spice must not be "
-                                 "negative");
+    tokens.report_semantic_error("sugar and spice must not be negative");
     parsed_sugar_and_spice = 2;
   }
 }
@@ -272,7 +266,7 @@ template <> std::shared_ptr<Daughter> parse_class<Daughter>(Token_Stream &tokens
 static std::shared_ptr<Parent> parent;
 
 //static
-void parse_parent(Token_Stream &tokens, int) { parent = parse_class<Parent>(tokens); }
+void parse_parent(Token_Stream &tokens, int /*unused*/) { parent = parse_class<Parent>(tokens); }
 
 std::array<Keyword, 1> const top_keywords{Keyword{"parent", parse_parent, 0, ""}};
 static Parse_Table top_parse_table(top_keywords.data(), top_keywords.size());

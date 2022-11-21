@@ -3,8 +3,7 @@
  * \file   parser/String_Token_Stream.hh
  * \author Kent G. Budge
  * \brief  Definition of class String_Token_Stream.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_String_Token_Stream_HH
@@ -21,19 +20,19 @@ using std::string;
 /*!
  * \brief std::string-based token stream
  *
- * String_Token_Stream is a Text_Token_Stream that obtains its text from a
- * std::string passed to the constructor. The diagnostic output is directed to
- * an internal string that can be retrieved at will.
+ * String_Token_Stream is a Text_Token_Stream that obtains its text from a std::string passed to the
+ * constructor. The diagnostic output is directed to an internal string that can be retrieved at
+ * will.
  */
 class String_Token_Stream : public Text_Token_Stream {
 public:
   // CREATORS
 
-  //! Construct a String_Token_Stream from a string.
-  String_Token_Stream(string const &text);
+  //! Construct a String_Token_Stream from a string (define a conversion path)
+  String_Token_Stream(string const &text); // NOLINT [hicpp-explicit-conversions]
 
-  //! Construct a String_Token_Stream from a string.
-  String_Token_Stream(string &&text);
+  //! Construct a String_Token_Stream from a string (define a conversion path)
+  String_Token_Stream(string &&text); // NOLINT [hicpp-explicit-conversions]
 
   //! Construct a String_Token_Stream from a string.
   String_Token_Stream(string const &text, set<char> const &whitespace,

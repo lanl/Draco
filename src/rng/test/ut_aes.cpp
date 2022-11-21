@@ -73,7 +73,7 @@ int main(int, char **) {
 
 #include "util_m128.h"
 
-int main(int, char **) {
+int main(int /*unused*/, char ** /*unused*/) {
 #if R123_USE_AES_NI || R123_USE_AES_OPENSSL
   r123array1xm128i IN, K;
 
@@ -81,7 +81,7 @@ int main(int, char **) {
   IN.v[0].m = m128i_from_charbuf("0011223344556677 8899aabbccddeeff");
 #endif
   // From FIPS-197, this is the official "right answer"
-  r123array1xm128i right_answer;
+  r123array1xm128i right_answer{};
   right_answer[0] = m128i_from_charbuf("69c4 e0d8 6a7b 0430 d8cd b780 70b4 c55a");
   (void)
       right_answer; /* don't complain about an unused variable if neither NI nor OPENSSL are enabled. */

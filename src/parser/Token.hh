@@ -3,8 +3,7 @@
  * \file   parser/Token.hh
  * \author Kent G. Budge
  * \brief  Define class Token and enum Token_Type
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Token_HH
@@ -24,45 +23,26 @@ using std::string;
  * \brief Token types recognized by a Token_Stream.
  */
 enum Token_Type {
-  END,
-  /*!< The identifier <CODE>end</CODE>, denoting that the Parse_Table should
-   *   return control to its client.  Can be used to implement nested parse
-   *   tables.*/
-
-  EXIT,
-  /*!< Denotes that the end of the Token_Stream has been reached.  The
-   *   Token_Stream will continue to return EXIT indefinitely once its end has
-   *   been reached. */
-
-  KEYWORD,
-  /*!< A sequence of one or more C++ identifiers separated by whitespace. */
-
-  REAL,
-  /*!< A valid C++ floating-point constant. */
-
-  INTEGER,
-  /*!< A valid C++ integer constant. */
-
-  STRING,
-  /*!< A valid C++ string constant. */
-
-  ERROR,
-  /*!< The error token, indicating something wrong with the token stream.  For
-   *   example, a file-based token stream would return this token if the file
-   *   failed to open. */
-
-  OTHER
-  /*! A single character or sequence of characters (such as "==") that does not
-   *  belong to one of the regular token types described above.
-   */
+  END,     /*!< The identifier <CODE>end</CODE>, denoting that the Parse_Table should return control
+            *   to its client.  Can be used to implement nested parse tables.*/
+  EXIT,    /*!< Denotes that the end of the Token_Stream has been reached.  The Token_Stream will
+            *   continue to return EXIT indefinitely once its end has been reached. */
+  KEYWORD, /*!< A sequence of one or more C++ identifiers separated by whitespace. */
+  REAL,    /*!< A valid C++ floating-point constant. */
+  INTEGER, /*!< A valid C++ integer constant. */
+  STRING,  /*!< A valid C++ string constant. */
+  ERROR,   /*!< The error token, indicating something wrong with the token stream.  For example, a
+            *   file-based token stream would return this token if the file failed to open. */
+  OTHER    /*!< A single character or sequence of characters (such as "==") that does not belong to
+            *   one of the regular token types described above. */
 };
 
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Description of a token.
  *
- * This class represents a lexical token, for use in simple parsing systems for
- * analysis codes.  The token is characterized by its type, value, and location.
+ * This class represents a lexical token, for use in simple parsing systems for analysis codes.  The
+ * token is characterized by its type, value, and location.
  */
 class Token {
 public:
@@ -120,7 +100,7 @@ bool Is_String_Text(char const *string);
 bool Is_Other_Text(char const *string);
 
 //! Test equality of two Tokens
-bool operator==(Token const &, Token const &);
+bool operator==(Token const &a, Token const &b);
 
 //------------------------------------------------------------------------------------------------//
 /*!

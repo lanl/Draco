@@ -39,9 +39,14 @@ public:
   //! Destructor
   ~Sobol_Sequence();
 
-  //! Not implemented (disable)
-  Sobol_Sequence(Sobol_Sequence const &) = delete;
-  Sobol_Sequence &operator=(Sobol_Sequence const &) = delete;
+  //! Disable copy construction
+  Sobol_Sequence(Sobol_Sequence const &rhs) = delete;
+  //! Disable move construction
+  Sobol_Sequence(Sobol_Sequence &&rhs) noexcept = delete;
+  //! Disable assignment
+  Sobol_Sequence &operator=(Sobol_Sequence const &rhs) = delete;
+  //! Disable move-assignment
+  Sobol_Sequence &operator=(Sobol_Sequence &&rhs) noexcept = delete;
 
   // MANIPULATORS
 

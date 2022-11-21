@@ -3,8 +3,7 @@
  * \file   parser/Unit.hh
  * \author Kent Budge
  * \brief  Definition the Unit struct
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_parser_Unit_hh
@@ -20,11 +19,10 @@ namespace rtt_parser {
  * \class Unit
  * \brief Define units and conversions to SI
  *
- * Unit is a POD struct describing a physical unit.  It gives the dimensions of
- * the unit in terms of the nine fundamental SI units as well as the conversion
- * factor to SI. The dimensions are specified as real numbers because there are
- * some physical quantities whose unit description requires noninteger powers of
- * the basic units.
+ * Unit is a POD struct describing a physical unit.  It gives the dimensions of the unit in terms of
+ * the nine fundamental SI units as well as the conversion factor to SI. The dimensions are
+ * specified as real numbers because there are some physical quantities whose unit description
+ * requires noninteger powers of the basic units.
  *
  * Several examples follow the struct definition.
  */
@@ -58,7 +56,7 @@ struct Unit {
  */
 
 inline Unit operator*(Unit const &a, Unit const &b) {
-  Unit Result;
+  Unit Result{};
 
   Result.m = a.m + b.m;
   Result.kg = a.kg + b.kg;
@@ -110,7 +108,7 @@ inline Unit operator*(Unit const &b, double const a) { return operator*(a, b); }
  * \return Ratio of the two factors
  */
 inline Unit operator/(Unit const &a, Unit const &b) {
-  Unit Result;
+  Unit Result{};
 
   Result.m = a.m - b.m;
   Result.kg = a.kg - b.kg;
@@ -136,7 +134,7 @@ inline Unit operator/(Unit const &a, Unit const &b) {
  * \return Reciprocal of the unit times the scalar
  */
 inline Unit operator/(double const a, Unit const &b) {
-  Unit Result;
+  Unit Result{};
 
   Result.m = -b.m;
   Result.kg = -b.kg;
@@ -191,9 +189,8 @@ inline Unit pow(Unit const &b, double const a) {
 /*!
  * \brief Test two units for equality
  *
- * Compare two Units for strict equality, in both dimensions and
- * conversion factor.  To test only the dimensions, ignoring the
- * conversion factor, use the \c is_compatible function.
+ * Compare two Units for strict equality, in both dimensions and conversion factor.  To test only
+ * the dimensions, ignoring the conversion factor, use the \c is_compatible function.
  *
  * \param a First factor
  * \param b Second factor
@@ -223,8 +220,8 @@ inline bool operator!=(Unit const &a, Unit const &b) { return !(a == b); }
 /*!
  * \brief Test two units for compatibility
  *
- * Compare two Units for equality in dimensions only.  Ignore the conversion
- * factor.  For exact test of equality, use the \c operator== function.
+ * Compare two Units for equality in dimensions only.  Ignore the conversion factor.  For exact test
+ * of equality, use the \c operator== function.
  *
  * \param a First factor
  * \param b Second factor

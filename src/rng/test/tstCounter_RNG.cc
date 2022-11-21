@@ -87,7 +87,7 @@ void test_equality(UnitTest &ut) {
 
   // Create a Counter_RNG from a data array that should match rng and rng4.
   data[0] = 0;
-  data[1] = static_cast<uint64_t>(1) << 32;
+  data[1] = static_cast<uint64_t>(1) << 32U;
   data[2] = 2;
   data[3] = 0;
   Counter_RNG rng6(&data[0], &data[0] + CBRNG_DATA_SIZE);
@@ -172,7 +172,7 @@ void test_stream(UnitTest &ut) {
   // Create a Counter_RNG from a data array.
   vector<uint64_t> data(CBRNG_DATA_SIZE);
   data[0] = 0;
-  data[1] = static_cast<uint64_t>(seed) << 32;
+  data[1] = static_cast<uint64_t>(seed) << 32U;
   data[2] = streamnum;
   data[3] = 0;
   Counter_RNG rng3(&data[0], &data[0] + CBRNG_DATA_SIZE);
@@ -277,7 +277,7 @@ void test_alias(UnitTest &ut) {
   // Create a bare data array that should match rng.
   vector<uint64_t> data(CBRNG_DATA_SIZE);
   data[0] = 1;
-  data[1] = static_cast<uint64_t>(0x1111) << 32;
+  data[1] = static_cast<uint64_t>(0x1111) << 32U;
   data[2] = 0x20202020;
   data[3] = 0;
 
@@ -285,7 +285,7 @@ void test_alias(UnitTest &ut) {
 
   // Create a Counter_RNG_Ref from a bare data array.
   data[0] = 0;
-  data[1] = static_cast<uint64_t>(0x2222) << 32;
+  data[1] = static_cast<uint64_t>(0x2222) << 32U;
   data[2] = 0x20202020;
   data[3] = 0;
   Counter_RNG_Ref ref2(&data[0], &data[0] + CBRNG_DATA_SIZE);
@@ -310,7 +310,7 @@ void test_alias(UnitTest &ut) {
 
   // The underlying data array should have changed.
   FAIL_IF_NOT(data[0] == 1);
-  FAIL_IF_NOT(data[1] == static_cast<uint64_t>(0x2222) << 32);
+  FAIL_IF_NOT(data[1] == static_cast<uint64_t>(0x2222) << 32U);
   FAIL_IF_NOT(data[2] == 0x20202020);
   FAIL_IF_NOT(data[3] == 0);
   FAIL_IF(soft_equiv(y, x));
