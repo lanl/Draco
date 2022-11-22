@@ -4,8 +4,7 @@
  * \author Kent Budge
  * \date   Tue Dec 21 14:20:03 2004
  * \brief  Declaration file for the class rtt_quadrature::Ordinate.
- * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_OrdinateSet_hh
@@ -20,8 +19,8 @@ namespace rtt_quadrature {
 /*!
  * \class Ordinate_Set
  *
- * \brief An ordered collection of Ordinates that make up a complete
- * quadrature set for a specified geometry.
+ * \brief An ordered collection of Ordinates that make up a complete quadrature set for a specified
+ *        geometry.
  */
 //================================================================================================//
 
@@ -33,9 +32,8 @@ public:
   enum Ordering {
     LEVEL_ORDERED, // Ordered xi, then mu, then eta
 
-    OCTANT_ORDERED // Ordered by xi halfsphere, then eta halfsphere, then
-                   // mu halfsphere, then absolute value of xi, then
-                   // absolute value of eta, then absolute value of mu
+    OCTANT_ORDERED // Ordered by xi halfsphere, then eta halfsphere, then mu halfsphere, then
+                   // absolute value of xi, then absolute value of eta, then absolute value of mu
   };
 
   // CREATORS
@@ -46,6 +44,9 @@ public:
                Ordering const ordering = LEVEL_ORDERED);
 
   Ordinate_Set(Ordinate_Set const &other);
+  Ordinate_Set(Ordinate_Set &&other) noexcept = delete;
+  Ordinate_Set &operator=(Ordinate_Set const &other) = delete;
+  Ordinate_Set &operator=(Ordinate_Set &&other) noexcept = delete;
 
   //! destructor
   virtual ~Ordinate_Set() = default;

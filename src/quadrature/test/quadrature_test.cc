@@ -28,72 +28,35 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
   rtt_mesh_element::Geometry const geometry = ordinate_space->geometry();
   unsigned const dimension = ordinate_space->dimension();
 
-  if (ordinate_space->moments()[0] == Moment(0, 0)) {
-    PASSMSG("first moment is correct");
-  } else {
-    FAILMSG("first moment is NOT correct");
-  }
-
-  if (number_of_ordinates == ordinate_space->alpha().size()) {
-    PASSMSG("alpha size is correct");
-  } else {
-    FAILMSG("alpha size is NOT correct");
-  }
-
-  if (ordinate_space->ordinates().size() == ordinate_space->tau().size()) {
-    PASSMSG("tau size is correct");
-  } else {
-    FAILMSG("tau size is NOT correct");
-  }
-
-  if (ordinate_space->expansion_order() == static_cast<int>(expansion_order)) {
-    PASSMSG("expansion order is correct");
-  } else {
-    FAILMSG("expansion_order is NOT correct");
-  }
+  FAIL_IF_NOT(ordinate_space->moments()[0] == Moment(0, 0));
+  FAIL_IF_NOT(number_of_ordinates == ordinate_space->alpha().size());
+  FAIL_IF_NOT(ordinate_space->ordinates().size() == ordinate_space->tau().size());
+  FAIL_IF_NOT(ordinate_space->expansion_order() == static_cast<int>(expansion_order));
 
   vector<unsigned> const &first_angles = ordinate_space->first_angles();
   unsigned const number_of_levels = quadrature.number_of_levels();
 
   if (geometry == rtt_mesh_element::Geometry::SPHERICAL) {
-    if (first_angles.size() == 1) {
-      PASSMSG("first angles is correct");
-    } else {
-      FAILMSG("first angles is NOT correct");
-    }
-
+    FAIL_IF_NOT(first_angles.size() == 1);
     Check(number_of_ordinates < UINT_MAX);
-    if (ordinate_space->bookkeeping_coefficient(static_cast<unsigned>(number_of_ordinates - 1)) <=
-        0.0) {
-      FAILMSG("bookkeeping coefficient is NOT plausible");
-    }
+    FAIL_IF(ordinate_space->bookkeeping_coefficient(
+                static_cast<unsigned>(number_of_ordinates - 1)) <= 0.0);
 
     ordinate_space->psi_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
     ordinate_space->source_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
     // check that throws no exception
   } else if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
-    if ((dimension > 1 && first_angles.size() == number_of_levels) ||
-        (dimension == 1 && 2 * first_angles.size() == number_of_levels)) {
-      PASSMSG("first angles is correct");
-    } else {
-      FAILMSG("first angles is NOT correct");
-    }
-
-    if (ordinate_space->bookkeeping_coefficient(static_cast<unsigned>(number_of_ordinates - 1)) <=
-        0.0) {
-      FAILMSG("bookkeeping coefficient is NOT plausible");
-    }
+    FAIL_IF_NOT((dimension > 1 && first_angles.size() == number_of_levels) ||
+                (dimension == 1 && 2 * first_angles.size() == number_of_levels));
+    FAIL_IF(ordinate_space->bookkeeping_coefficient(
+                static_cast<unsigned>(number_of_ordinates - 1)) <= 0.0);
 
     ordinate_space->psi_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
     ordinate_space->source_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
     // check that throws no exception
 
     vector<unsigned> const &levels = ordinate_space->levels();
-    if (levels.size() == number_of_ordinates) {
-      PASSMSG("levels size is correct");
-    } else {
-      FAILMSG("levels size is NOT correct");
-    }
+    FAIL_IF_NOT(levels.size() == number_of_ordinates);
     for (unsigned i = 0; i < number_of_ordinates; ++i) {
       if (levels[i] >= number_of_levels) {
         FAILMSG("levels is NOT in bounds");
@@ -103,11 +66,7 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
 
     vector<unsigned> const &moments_per_order = ordinate_space->moments_per_order();
 
-    if (moments_per_order.size() == expansion_order + 1) {
-      PASSMSG("moments_per_order size is correct");
-    } else {
-      FAILMSG("moments_per_order size is NOT correct");
-    }
+    FAIL_IF_NOT(moments_per_order.size() == expansion_order + 1);
     for (unsigned i = 0; i <= expansion_order; ++i) {
       if ((dimension == 1 && moments_per_order[i] != i / 2 + 1) ||
           (dimension > 1 && moments_per_order[i] != i + 1)) {
@@ -116,26 +75,14 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
       }
     }
 
-    if ((dimension == 1 && number_of_levels == 2 * ordinate_space->number_of_levels()) ||
-        (dimension > 1 && number_of_levels == ordinate_space->number_of_levels())) {
-      PASSMSG("number of levels is consistent");
-    } else {
-      FAILMSG("number of levels is NOT consistent");
-    }
+    FAIL_IF_NOT((dimension == 1 && number_of_levels == 2 * ordinate_space->number_of_levels()) ||
+                (dimension > 1 && number_of_levels == ordinate_space->number_of_levels()));
   } else {
-    if (ordinate_space->first_angles().size() == 0) {
-      PASSMSG("first angles is correct");
-    } else {
-      FAILMSG("first angles is NOT correct");
-    }
+    FAIL_IF_NOT(ordinate_space->first_angles().size() == 0);
   }
 
   vector<unsigned> const &reflect_mu = ordinate_space->reflect_mu();
-  if (reflect_mu.size() == number_of_ordinates) {
-    PASSMSG("reflect_mu is correct size");
-  } else {
-    FAILMSG("reflect_mu is NOT correct size");
-  }
+  FAIL_IF_NOT(reflect_mu.size() == number_of_ordinates);
   for (unsigned i = 0; i < number_of_ordinates; ++i) {
     if (reflect_mu[i] >= number_of_ordinates) {
       FAILMSG("reflect_mu is out of bounds");
@@ -149,11 +96,7 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
 
   if (dimension > 1) {
     vector<unsigned> const &reflect_eta = ordinate_space->reflect_eta();
-    if (reflect_eta.size() == number_of_ordinates) {
-      PASSMSG("reflect_eta is correct size");
-    } else {
-      FAILMSG("reflect_eta is NOT correct size");
-    }
+    FAIL_IF_NOT(reflect_eta.size() == number_of_ordinates);
     for (unsigned i = 0; i < number_of_ordinates; ++i) {
       if (reflect_eta[i] >= number_of_ordinates) {
         FAILMSG("reflect_eta is out of bounds");
@@ -167,11 +110,7 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
 
     if (dimension > 2) {
       vector<unsigned> const &reflect_xi = ordinate_space->reflect_xi();
-      if (reflect_xi.size() == number_of_ordinates) {
-        PASSMSG("reflect_xi is correct size");
-      } else {
-        FAILMSG("reflect_xi is NOT correct size");
-      }
+      FAIL_IF_NOT(reflect_xi.size() == number_of_ordinates);
       for (unsigned i = 0; i < number_of_ordinates; ++i) {
         if (reflect_xi[i] >= number_of_ordinates) {
           FAILMSG("reflect_xi is out of bounds");
@@ -192,27 +131,21 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
   switch (quadrature.quadrature_class()) {
   case TRIANGLE_QUADRATURE:
     if (dimension == 1) {
-      if (geometry == rtt_mesh_element::Geometry::CARTESIAN && L != Num)
-        FAILMSG("ordinate count is wrong for triangular quadrature");
+      FAIL_IF(geometry == rtt_mesh_element::Geometry::CARTESIAN && L != Num);
     } else if (dimension == 3) {
-      if (L * (L + 2) != Num)
-        FAILMSG("ordinate count is wrong for triangular quadrature");
+      FAIL_IF(L * (L + 2) != Num);
     }
     break;
 
   case SQUARE_QUADRATURE:
     if (dimension == 3) {
-      if (2 * L * L != Num) {
-        FAILMSG("ordinate count is wrong for square quadrature");
-      }
+      FAIL_IF(2 * L * L != Num);
     }
     break;
 
   default:
     if (dimension == 3) {
-      if (4 * L > Num) {
-        FAILMSG("ordinate count is too small for level count");
-      }
+      FAIL_IF(4 * L > Num);
     }
     break;
   }
@@ -237,48 +170,16 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
       Fz2 += MAGIC * ords[i].xi() * ords[i].xi() * ords[i].wt();
     }
 
-    if (soft_equiv(JJ, MAGIC)) {
-      PASSMSG("JJ okay");
-    } else {
-      FAILMSG("JJ NOT okay");
-    }
-    if (soft_equiv(Fx, 0.0)) {
-      PASSMSG("Fx okay");
-    } else {
-      std::cout << "Fx = " << Fx << std::endl;
-      FAILMSG("Fx NOT okay");
-    }
-    if (soft_equiv(Fx2, MAGIC / 3.0)) {
-      PASSMSG("Fx2 okay");
-    } else {
-      cout << "Fx2 = " << Fx2 << ", expected " << (MAGIC / 3.0) << endl;
-      FAILMSG("Fx2 NOT okay");
-    }
+    FAIL_IF_NOT(soft_equiv(JJ, MAGIC));
+    FAIL_IF_NOT(soft_equiv(Fx, 0.0));
+    FAIL_IF_NOT(soft_equiv(Fx2, MAGIC / 3.0));
     if (dimension > 1) {
-      if (soft_equiv(Fy, 0.0)) {
-        PASSMSG("Fy okay");
-      } else {
-        FAILMSG("Fy NOT okay");
-      }
-      if (soft_equiv(Fy2, MAGIC / 3.0)) {
-        PASSMSG("Fy2 okay");
-      } else {
-        cout << "Fy2 = " << Fz2 << ", expected " << (MAGIC / 3.0) << endl;
-        FAILMSG("Fy2 NOT okay");
-      }
+      FAIL_IF_NOT(soft_equiv(Fy, 0.0));
+      FAIL_IF_NOT(soft_equiv(Fy2, MAGIC / 3.0));
     }
     if (dimension > 2) {
-      if (soft_equiv(Fz, 0.0)) {
-        PASSMSG("Fz okay");
-      } else {
-        FAILMSG("Fz NOT okay");
-      }
-      if (soft_equiv(Fz2, MAGIC / 3.0)) {
-        PASSMSG("Fz2 okay");
-      } else {
-        cout << "Fz2 = " << Fz2 << ", expected " << (MAGIC / 3.0) << endl;
-        FAILMSG("Fz2 NOT okay");
-      }
+      FAIL_IF_NOT(soft_equiv(Fz, 0.0));
+      FAIL_IF_NOT(soft_equiv(Fz2, MAGIC / 3.0));
     }
 
     // Look at the moment to discrete and discrete to moment operator
@@ -288,16 +189,8 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
 
     unsigned number_of_moments = ordinate_space->number_of_moments();
 
-    if (M.size() == number_of_moments * number_of_ordinates) {
-      PASSMSG("M has right size");
-    } else {
-      FAILMSG("M does NOT have right size");
-    }
-    if (D.size() == number_of_moments * number_of_ordinates) {
-      PASSMSG("D has right size");
-    } else {
-      FAILMSG("D does NOT have right size");
-    }
+    FAIL_IF_NOT(M.size() == number_of_moments * number_of_ordinates);
+    FAIL_IF_NOT(D.size() == number_of_moments * number_of_ordinates);
 
     if ((ordinate_space->quadrature_interpolation_model() == GQ1) ||
         (ordinate_space->quadrature_interpolation_model() == GQ2)) {
@@ -326,12 +219,12 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
   // Test flux maps
 
   {
-    std::array<unsigned, 3> MtF_map;
-    std::array<double, 3> MtF_fact;
+    std::array<unsigned, 3> MtF_map{};
+    std::array<double, 3> MtF_fact{};
     ordinate_space->moment_to_flux(MtF_map, MtF_fact);
 
-    std::array<unsigned, 3> FtM_map;
-    std::array<double, 3> FtM_fact;
+    std::array<unsigned, 3> FtM_map{};
+    std::array<double, 3> FtM_fact{};
     ordinate_space->flux_to_moment(FtM_map, FtM_fact);
 
     // See that these are inverses
@@ -484,18 +377,12 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
   // Test moment comparison.
 
-  if (Moment(1, 1) == Moment(0, 0)) {
-    FAILMSG("moment comparison NOT correct");
-  }
-  if (Moment(1, 1) == Moment(1, 0)) {
-    FAILMSG("moment comparison NOT correct");
-  }
+  FAIL_IF(Moment(1, 1) == Moment(0, 0));
+  FAIL_IF(Moment(1, 1) == Moment(1, 0));
 
   // Test default moment initialization
 
-  if (Moment(1, 1) == Moment()) {
-    FAILMSG("moment comparison NOT correct");
-  }
+  FAIL_IF(Moment(1, 1) == Moment());
 
   // Test ordinate comparison.
 
@@ -510,9 +397,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
   // Test ordinate access.
 
-  if (!rtt_dsxx::soft_equiv(Ordinate(1.0, 0.0, 0.0, 0.0).cosines()[0], 1.0)) {
-    FAILMSG("Ordinate::cosines NOT right");
-  }
+  FAIL_IF(!rtt_dsxx::soft_equiv(Ordinate(1.0, 0.0, 0.0, 0.0).cosines()[0], 1.0));
 
   // Test textifying and parsing.
 
@@ -622,18 +507,8 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
                                        false, // add_extra_directions,
                                        Ordinate_Set::LEVEL_ORDERED);
 
-    if (ordinate_set->ordinates().size() >= 2) {
-      PASSMSG("Ordinate count is plausible");
-    } else {
-      FAILMSG("Ordinate count is NOT plausible");
-    }
-
-    if (soft_equiv(ordinate_set->norm(), 1.0)) {
-      PASSMSG("Ordinate norm is correct");
-    } else {
-      FAILMSG("Ordinate norm is NOT correct");
-    }
-
+    FAIL_IF_NOT(ordinate_set->ordinates().size() >= 2);
+    FAIL_IF_NOT(soft_equiv(ordinate_set->norm(), 1.0));
     ordinate_set->display();
 
     test_no_axis(ut, quadrature,

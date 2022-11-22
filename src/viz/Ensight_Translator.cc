@@ -238,7 +238,7 @@ void Ensight_Translator::initialize(const bool graphics_continue) {
     }
 
     // See if the case file exists
-    struct stat sbuf;
+    struct stat sbuf {};
     int stat_ret = stat(d_case_filename.c_str(), &sbuf);
 
     // build the ensight directory if this is not a continuation

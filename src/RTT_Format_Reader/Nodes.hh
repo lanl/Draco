@@ -21,6 +21,12 @@ namespace rtt_RTT_Format_Reader {
  */
 //================================================================================================//
 class Nodes {
+
+private:
+  void readKeyword(std::ifstream &meshfile);
+  void readData(std::ifstream &meshfile);
+  void readEndKeyword(std::ifstream &meshfile);
+
   // typedefs
   using ifstream = std::ifstream;
   using string = std::string;
@@ -39,19 +45,16 @@ public:
   Nodes(const NodeFlags &nodeFlags_, const Dims &dims_)
       : nodeFlags(nodeFlags_), dims(dims_), coords(dims.get_nnodes(), vector_dbl(dims.get_ndim())),
         parents(dims.get_nnodes()),
-        flags(dims.get_nnodes(), vector_int(dims.get_nnode_flag_types())) { /* empty */
-  }
+        flags(dims.get_nnodes(), vector_int(dims.get_nnode_flag_types())) {}
   ~Nodes() = default;
+  Nodes(Nodes const &rhs) = delete;
+  Nodes(Nodes &&rhs) noexcept = delete;
+  Nodes &operator=(Nodes const &rhs) = delete;
+  Nodes &operator=(Nodes &&rhs) noexcept = delete;
 
   void readNodes(ifstream &meshfile);
   static int readNextInt(ifstream &meshfile);
 
-private:
-  void readKeyword(ifstream &meshfile);
-  void readData(ifstream &meshfile);
-  void readEndKeyword(ifstream &meshfile);
-
-public:
   /*!
    * \brief Returns the coordinate values for each of the nodes.
    * \return The coordinate values for the nodes.

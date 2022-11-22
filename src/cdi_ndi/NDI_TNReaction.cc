@@ -59,8 +59,8 @@ NDI_TNReaction::NDI_TNReaction(const std::string &gendir_in, const std::string &
  * This is a delegating constructor. It defaults the gendir filepath to the value found in the
  * environment.
  */
-NDI_TNReaction::NDI_TNReaction(const std::string &library_in, const std::string &reaction_in,
-                               const std::vector<double> &mg_e_bounds_in)
+NDI_TNReaction::NDI_TNReaction(const std::string &library_in, std::string &reaction_in,
+                               std::vector<double> mg_e_bounds_in)
 #ifdef NDI_FOUND
     : NDI_TNReaction(rtt_dsxx::get_env_val<std::string>("NDI_GENDIR_PATH").second, library_in,
                      reaction_in, mg_e_bounds_in)

@@ -35,14 +35,13 @@ public:
   explicit CellFlags(const Dims &dims_) : dims(dims_), flagTypes(dims.get_ncell_flag_types()) {}
   ~CellFlags() = default;
 
+  CellFlags(CellFlags const &rhs) = delete;
+  CellFlags(CellFlags &&rhs) noexcept = delete;
+  CellFlags &operator=(CellFlags const &rhs) = delete;
+  CellFlags &operator=(CellFlags &&rhs) noexcept = delete;
+
   void readCellFlags(ifstream &meshfile);
 
-private:
-  void readKeyword(ifstream &meshfile);
-  void readFlagTypes(ifstream &meshfile);
-  void readEndKeyword(ifstream &meshfile);
-
-public:
   /*!
    * \brief Validates the specified cell flag type and number.
    * \param flagtype Cell flag type number.
@@ -103,6 +102,11 @@ public:
            "Invalid cell flag name index number!");
     return flagTypes[flagtype]->getFlagName(flag_index);
   }
+
+private:
+  void readKeyword(ifstream &meshfile);
+  void readFlagTypes(ifstream &meshfile);
+  void readEndKeyword(ifstream &meshfile);
 };
 
 } // end namespace rtt_RTT_Format_Reader

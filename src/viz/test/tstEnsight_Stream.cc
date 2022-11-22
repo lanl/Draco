@@ -4,7 +4,7 @@
  * \author Rob Lowrie
  * \date   Fri Nov 12 22:52:46 2004
  * \brief  Test for Ensight_Stream.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"
@@ -96,7 +96,7 @@ void test_simple(rtt_dsxx::UnitTest &ut, bool const binary, bool const geom,
     ifstream in(file.c_str(), mode);
     // read out the "C Binary" data
     if (binary && geom) {
-      std::array<char, 8> buf;
+      std::array<char, 8> buf{};
       in.read(buf.data(), sizeof(char) * buf.size());
       FAIL_IF_NOT(std::string("C Binary") == std::string(buf.begin(), buf.end()));
     }

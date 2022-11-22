@@ -32,6 +32,8 @@ namespace rtt_RTT_Format_Reader {
 //================================================================================================//
 
 class RTT_Format_Reader {
+
+private:
   // NESTED CLASSES AND TYPEDEFS
   using ifstream = std::ifstream;
   using string = std::string;
@@ -44,7 +46,6 @@ class RTT_Format_Reader {
   using vector_vector_uint = std::vector<std::vector<unsigned int>>;
 
   // DATA
-private:
   Header header;
   Dims dims;
   std::shared_ptr<NodeFlags> spNodeFlags;
@@ -67,6 +68,10 @@ public:
 
   //! Destructor
   ~RTT_Format_Reader() = default;
+  RTT_Format_Reader(RTT_Format_Reader const &rhs) = delete;
+  RTT_Format_Reader(RTT_Format_Reader &&rhs) noexcept = delete;
+  RTT_Format_Reader &operator=(RTT_Format_Reader const &rhs) = delete;
+  RTT_Format_Reader &operator=(RTT_Format_Reader &&rhs) noexcept = delete;
 
   // ACCESSORS
 
@@ -744,6 +749,9 @@ public:
 
   // IMPLEMENTATION
 
+  void reformatData(vector_vector_uint const &cell_side_types_,
+                    std::vector<vector_vector_uint> const &cell_ordered_sides_);
+
 private:
   void readMesh(const string &RTT_file);
   void readKeyword(ifstream &meshfile);
@@ -751,10 +759,6 @@ private:
   void readFlagBlocks(ifstream &meshfile);
   void readDataIDs(ifstream &meshfile);
   void readEndKeyword(ifstream &meshfile);
-
-public:
-  void reformatData(vector_vector_uint const &cell_side_types_,
-                    std::vector<vector_vector_uint> const &cell_ordered_sides_);
 };
 
 } // end namespace rtt_RTT_Format_Reader

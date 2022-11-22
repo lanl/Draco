@@ -40,16 +40,14 @@ public:
         flags(dims.get_ncells(), vector_int(dims.get_ncell_flag_types())) { /* empty */
   }
   ~Cells() = default;
+  Cells(Cells const &rhs) = delete;
+  Cells(Cells &&rhs) noexcept = delete;
+  Cells &operator=(Cells const &rhs) = delete;
+  Cells &operator=(Cells &&rhs) noexcept = delete;
 
   void readCells(ifstream &meshfile);
   void redefineCells();
 
-private:
-  void readKeyword(ifstream &meshfile);
-  void readData(ifstream &meshfile);
-  void readEndKeyword(ifstream &meshfile);
-
-public:
   /*!
    * \brief Returns the cell type associated with the specified cell.
    * \param cell_numb Cell number.
@@ -80,11 +78,16 @@ public:
 
   /*!
    * \brief Returns the cell flag for the specified cell and flag index
-   *  \param cell_numb Cell number.
+   * \param cell_numb Cell number.
    * \param flag_numb Cell flag index.
    * \return The cell flag.
    */
   int get_flags(size_t cell_numb, size_t flag_numb) const { return flags[cell_numb][flag_numb]; }
+
+private:
+  void readKeyword(ifstream &meshfile);
+  void readData(ifstream &meshfile);
+  void readEndKeyword(ifstream &meshfile);
 };
 
 } // end namespace rtt_RTT_Format_Reader

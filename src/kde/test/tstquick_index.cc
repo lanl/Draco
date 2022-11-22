@@ -4,8 +4,7 @@
  * \author Mathew Cleveland
  * \date   Aug. 10th 2021
  * \brief  quick_index testing function
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "kde/quick_index.hh"
@@ -22,7 +21,7 @@ using namespace rtt_kde;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 //
-void test_replication(ParallelUnitTest &ut) {
+void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
   {
     std::vector<double> data{0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
     std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
@@ -157,7 +156,8 @@ void test_replication_sphere(ParallelUnitTest &ut) {
   }
 }
 
-void test_decomposition(ParallelUnitTest &ut) {
+//------------------------------------------------------------------------------------------------//
+void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
   if (rtt_c4::nodes() != 3)
     ITFAILS;
 
@@ -1530,7 +1530,8 @@ void test_decomposition(ParallelUnitTest &ut) {
   }
 }
 
-void test_decomposition_sphere(ParallelUnitTest &ut) {
+//------------------------------------------------------------------------------------------------//
+void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
   if (rtt_c4::nodes() != 3)
     ITFAILS;
 

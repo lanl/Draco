@@ -87,9 +87,9 @@ private:
 
 public:
   //! Constructor
-  X3D_Draco_Mesh_Reader(const std::string &filename_,
-                        const std::vector<std::string> &bdy_filenames_ = {},
-                        const std::vector<unsigned> &bdy_flags_ = {});
+  explicit X3D_Draco_Mesh_Reader(const std::string &filename_,
+                                 const std::vector<std::string> &bdy_filenames_ = {},
+                                 const std::vector<unsigned> &bdy_flags_ = {});
 
   // >>> SERVICES
 

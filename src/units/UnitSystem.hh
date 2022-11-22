@@ -100,10 +100,14 @@ public:
 
   //! Define the equality operator for Units==Units.
   friend bool operator!=(UnitSystem const &op1, UnitSystem const &op2);
+
   // CREATORS
 
   //! Prefered constructor
-  UnitSystem(UnitSystemType ust) : d_ust(std::move(ust)) { Require(validUnits()); }
+  UnitSystem(UnitSystemType ust) // NOLINT [hicpp-explicit-conversions]
+      : d_ust(std::move(ust)) {
+    Require(validUnits());
+  }
 
   //! Default constructor provides SI Units
   UnitSystem() : d_ust(UnitSystemType().SI()) { Require(validUnits()); }

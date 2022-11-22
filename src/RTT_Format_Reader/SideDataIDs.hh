@@ -26,6 +26,12 @@ namespace rtt_RTT_Format_Reader {
  */
 //================================================================================================//
 class SideDataIDs {
+
+private:
+  void readKeyword(std::ifstream &meshfile);
+  void readData(std::ifstream &meshfile);
+  void readEndKeyword(std::ifstream &meshfile);
+
   // typedefs
   using ifstream = std::ifstream;
   using string = std::string;
@@ -36,19 +42,16 @@ class SideDataIDs {
   vector_str units;
 
 public:
-  SideDataIDs(const Dims &dims_)
-      : dims(dims_), names(dims.get_nside_data()), units(dims.get_nside_data()) { /* empty */
-  }
+  explicit SideDataIDs(const Dims &dims_)
+      : dims(dims_), names(dims.get_nside_data()), units(dims.get_nside_data()) {}
   ~SideDataIDs() = default;
+  SideDataIDs(SideDataIDs const &rhs) = delete;
+  SideDataIDs(SideDataIDs &&rhs) noexcept = delete;
+  SideDataIDs &operator=(SideDataIDs const &rhs) = delete;
+  SideDataIDs &operator=(SideDataIDs &&rhs) noexcept = delete;
 
   void readDataIDs(ifstream &meshfile);
 
-private:
-  void readKeyword(ifstream &meshfile);
-  void readData(ifstream &meshfile);
-  void readEndKeyword(ifstream &meshfile);
-
-public:
   /*!
    * \brief Returns the specified side_data_id name.
    * \param id_numb side_data_id index number.

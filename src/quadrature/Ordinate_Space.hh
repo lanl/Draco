@@ -116,16 +116,12 @@ using std::ostream;
 
 class Ordinate_Space : public rtt_quadrature::Ordinate_Set {
 public:
-  // NESTED CLASSES AND TYPEDEFS
-
   // CREATORS
 
   //! Specify the ordinate quadrature with defaults.
   Ordinate_Space(unsigned dimension, rtt_mesh_element::Geometry geometry,
-                 std::vector<Ordinate> const &, int expansion_order,
+                 std::vector<Ordinate> const &ordinates, int expansion_order,
                  bool extra_starting_directions = false, Ordering ordering = LEVEL_ORDERED);
-
-  // MANIPULATORS
 
   // ACCESSORS
 
@@ -137,8 +133,7 @@ public:
 
   std::vector<unsigned> const &levels() const { return levels_; }
 
-  //! Return the angle index for the most positively outward-directed angle
-  //! on every level.
+  //! Return the angle index for the most positively outward-directed angle on every level.
   std::vector<unsigned> const &first_angles() const { return first_angles_; }
 
   //! Is an ordinate on the same level as the preceding ordinate?
@@ -211,13 +206,11 @@ public:
   double compute_azimuthalAngle(double mu, double eta);
 
 protected:
-  // NESTED CLASSES AND TYPEDEFS
-
   // IMPLEMENTATION
 
-  void compute_moments_(Quadrature_Class, int sn_order);
+  void compute_moments_(Quadrature_Class quadrature_class, int sn_order);
 
-  std::vector<Moment> compute_n2lk_(Quadrature_Class, unsigned sn_order);
+  std::vector<Moment> compute_n2lk_(Quadrature_Class quadrature_class, unsigned sn_order);
 
   virtual std::vector<Moment> compute_n2lk_1D_(Quadrature_Class, unsigned sn_order) = 0;
   virtual std::vector<Moment> compute_n2lk_1Da_(Quadrature_Class, unsigned sn_order) = 0;
@@ -226,8 +219,6 @@ protected:
   virtual std::vector<Moment> compute_n2lk_3D_(Quadrature_Class, unsigned sn_order) = 0;
 
 private:
-  // NESTED CLASSES AND TYPEDEFS
-
   // IMPLEMENTATION
 
   void compute_angle_operator_coefficients_();
@@ -241,16 +232,13 @@ private:
   unsigned number_of_levels_;
   std::vector<unsigned> levels_;
   std::vector<unsigned> first_angles_;
-
-  //! Is an ordinate dependent on the preceding ordinate?
-  std::vector<bool> is_dependent_;
+  std::vector<bool> is_dependent_; //!< Is an ordinate dependent on the preceding ordinate?
 
   //! Reflection maps
   std::vector<unsigned> reflect_mu_, reflect_eta_, reflect_xi_;
 
   /*! Coefficients for angle derivative terms.  These are defined in Morel's research note of 12 May
-   * 2003 for axisymmetric geometry.
-   */
+   * 2003 for axisymmetric geometry. */
   std::vector<double> alpha_;
   std::vector<double> tau_;
 

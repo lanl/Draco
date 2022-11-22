@@ -3,8 +3,7 @@
  * \file   cdi_analytic/Pseudo_Line_Base.cc
  * \author Kent G. Budge
  * \date   Tue Apr  5 08:42:25 MDT 2011
- * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Pseudo_Line_Base.hh"
@@ -48,8 +47,8 @@ void Pseudo_Line_Base::setup_(double emin, double emax) {
     // Sort line centers
     sort(center_.begin(), center_.end());
   }
-  // else fuzz model: Instead of lines, we add a random opacity to each opacity
-  // bin to simulate very fine, unresolvable line structure.
+  // else fuzz model: Instead of lines, we add a random opacity to each opacity bin to simulate very
+  // fine, unresolvable line structure.
 
   unsigned ne = abs(number_of_edges);
   for (unsigned i = 0; i < ne; ++i) {
@@ -57,9 +56,9 @@ void Pseudo_Line_Base::setup_(double emin, double emax) {
       // normal behavior is to place edges randomly
       edge_[i] = (emax - emin) * static_cast<double>(rand()) / RAND_MAX + emin;
     } else {
-      // placed edges evenly; this makes it easier to choose a group structure
-      // that aligns with edges (as would likely be done with a production
-      // calculation using a real opacity with strong bound-free components)
+      // placed edges evenly; this makes it easier to choose a group structure that aligns with
+      // edges (as would likely be done with a production calculation using a real opacity with
+      // strong bound-free components)
       edge_[i] = (emax - emin) * (i + 1) / (ne + 1) + emin;
     }
     double C;
@@ -104,11 +103,6 @@ Pseudo_Line_Base::Pseudo_Line_Base(std::shared_ptr<Expression const> const &cont
 }
 
 //------------------------------------------------------------------------------------------------//
-// Pseudo_Line_Base::Pseudo_Line_Base(const string &cont_file, int number_of_lines,
-//                                    double line_peak, double line_width,
-//                                    int number_of_edges, double edge_ratio,
-//                                    double Tref, double Tpow, double emin,
-//                                    double emax, unsigned seed)
 Pseudo_Line_Base::Pseudo_Line_Base(const string &cont_file, int number_of_lines, double line_peak,
                                    double line_width, int number_of_edges, double edge_ratio,
                                    double Tref, double Tpow, double emin, double emax,
@@ -170,8 +164,7 @@ Pseudo_Line_Base::Pseudo_Line_Base(double nu0, double C, double Bn, double Bd, d
 //! Packing function for Pseudo_Line_Base objects.
 vector<char> Pseudo_Line_Base::pack() const {
   throw std::range_error("sorry, pack not implemented for Pseudo_Line_Base");
-  // Because we haven't implemented packing functionality for Expression trees
-  // yet.
+  // Because we haven't implemented packing functionality for Expression trees yet.
 
 #if 0
 // caculate the size in bytes
@@ -231,8 +224,7 @@ double Pseudo_Line_Base::monoOpacity(double const x, double const T) const {
       Result += peak / (1 + d * d);
     }
   } else {
-    // Fuzz model. We had better be precalculating opacities for consistent
-    // behavior.
+    // Fuzz model. We had better be precalculating opacities for consistent behavior.
     Result += peak * static_cast<double>(rand()) / RAND_MAX;
   }
 

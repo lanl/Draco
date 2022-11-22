@@ -34,10 +34,10 @@ struct quadrature_data {
 void init_quadrature(quadrature_data &quad);
 
 //! Get quadrature data (e.g.: weights and cosines)
-void get_quadrature(quadrature_data &);
+void get_quadrature(quadrature_data &quad);
 
 //! Ensure quadrature data is meaningful
-void check_quadrature_validity(const quadrature_data &);
+void check_quadrature_validity(const quadrature_data &quad);
 
 } // end extern "C" block
 

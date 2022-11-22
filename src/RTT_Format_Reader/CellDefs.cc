@@ -310,7 +310,7 @@ void CellDef::redefineCellDef(vector_uint const &new_side_types,
     // may be rotated about the outward normal of this face relative to the input cell definition.
     size_t new_quad = 0;
     while (new_ordered_sides[new_quad].size() != 4 ||
-           std::count(new_ordered_sides[new_quad].begin(), new_ordered_sides[new_quad].end(), 0u) >
+           std::count(new_ordered_sides[new_quad].begin(), new_ordered_sides[new_quad].end(), 0U) >
                0) {
       ++new_quad;
       Insist(new_quad < nsides, "Quad side error for new tri-prism cell definition.");
@@ -318,7 +318,7 @@ void CellDef::redefineCellDef(vector_uint const &new_side_types,
     // Find the one quad side definition that does not contain the first node.
     size_t old_quad = 0;
     while (ordered_sides[old_quad].size() != 4 ||
-           std::count(ordered_sides[old_quad].begin(), ordered_sides[old_quad].end(), 0u) > 0) {
+           std::count(ordered_sides[old_quad].begin(), ordered_sides[old_quad].end(), 0U) > 0) {
       ++old_quad;
       Insist(old_quad < nsides, "Quad side error for old tri-prism cell definition.");
     }
@@ -330,7 +330,7 @@ void CellDef::redefineCellDef(vector_uint const &new_side_types,
     // Equate the two remaining triangle nodes. Find the first node.
     size_t old_tri = 0;
     while (ordered_sides[old_tri].size() != 3 ||
-           std::count(ordered_sides[old_tri].begin(), ordered_sides[old_tri].end(), 0u) > 0) {
+           std::count(ordered_sides[old_tri].begin(), ordered_sides[old_tri].end(), 0U) > 0) {
       ++old_tri;
       Insist(old_tri < nsides, "Triangle side error for old tri-prism cell definition.");
     }

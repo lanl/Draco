@@ -21,7 +21,8 @@ using std::vector;
 namespace rtt_quadrature {
 
 //------------------------------------------------------------------------------------------------//
-vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_1D_(Quadrature_Class, unsigned const N) {
+vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_1D_(Quadrature_Class /*unused*/,
+                                                         unsigned const N) {
   vector<Moment> result;
 
   // Choose: l= 0, ..., N-1, k = 0
@@ -34,7 +35,8 @@ vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_1D_(Quadrature_Class, unsig
 }
 
 //------------------------------------------------------------------------------------------------//
-vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_1Da_(Quadrature_Class, unsigned const N) {
+vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_1Da_(Quadrature_Class /*unused*/,
+                                                          unsigned const N) {
   std::vector<Moment> result;
 
   // Choose: l= 0, ..., N, k = 0, ..., l to eliminate moments even in xi
@@ -51,7 +53,8 @@ vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_1Da_(Quadrature_Class, unsi
 /*!
  * \brief Creates a mapping between moment index n and the index pair (k,l).
  */
-vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_2D_(Quadrature_Class, unsigned const N) {
+vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_2D_(Quadrature_Class /*unused*/,
+                                                         unsigned const N) {
   std::vector<Moment> result;
 
   // X-Y symmetry
@@ -68,7 +71,8 @@ vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_2D_(Quadrature_Class, unsig
 /*!
  * \brief Creates a mapping between moment index n and the index pair (k,l).
  */
-vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_2Da_(Quadrature_Class, unsigned const N) {
+vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_2Da_(Quadrature_Class /*unused*/,
+                                                          unsigned const N) {
   std::vector<Moment> result;
 
   // R-Z symmetry
@@ -90,7 +94,8 @@ vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_2Da_(Quadrature_Class, unsi
 /*!
  * \brief Creates a mapping between moment index n and the index pair (k,l).
  */
-vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_3D_(Quadrature_Class, unsigned const N) {
+vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_3D_(Quadrature_Class /*unused*/,
+                                                         unsigned const N) {
   vector<Moment> result;
 
   // Choose: l= 0, ..., N-1, k = -l, ..., l

@@ -66,8 +66,8 @@ public:
   std::vector<double> M() const override;
 
   /*! Prune any moments beyond the user-specified expansion order. Such moments are included in
-   * Galerkin methods for purposes of computing the M and D matrices, but are then removed from the
-   * moment space unless the GQF interpolation model has been specified. */
+   *  Galerkin methods for purposes of computing the M and D matrices, but are then removed from the
+   *  moment space unless the GQF interpolation model has been specified. */
   bool prune() const override { return method_ != GQF; }
 
   // STATICS
@@ -75,15 +75,13 @@ public:
 private:
   // IMPLEMENTATION
 
-  std::vector<Moment> compute_n2lk_1D_(Quadrature_Class, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_1Da_(Quadrature_Class, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_2D_(Quadrature_Class, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_2Da_(Quadrature_Class, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_3D_(Quadrature_Class, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_1D_(Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_1Da_(Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_2D_(Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_2Da_(Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_3D_(Quadrature_Class /*unused*/, unsigned sn_order) override;
 
 private:
-  // NESTED CLASSES AND TYPEDEFS
-
   // IMPLEMENTATION
 
   void compute_operators();
@@ -99,14 +97,11 @@ private:
                                 unsigned const numCartesianOrdinates, std::vector<double> const &D);
 
   std::vector<double> augment_M(std::vector<unsigned> const &indexes, std::vector<double> const &M);
+
   // DATA
-
   QIM const method_;
-
-  //! Discrete to moment matrix
-  std::vector<double> D_;
-  //! Moment to discrete matrix
-  std::vector<double> M_;
+  std::vector<double> D_; //!< Discrete to moment matrix
+  std::vector<double> M_; //!< Moment to discrete matrix
 };
 
 } // end namespace rtt_quadrature

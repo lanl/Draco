@@ -31,9 +31,9 @@ namespace rtt_cdi_ndi {
  *
  * Reads data, constructs internal storage amenable to radiation calculations, and provides
  * accessors. Instantiated only through a data type-specific derived class. Energies and
- * temperatures are in units of keV. Velocity- averaged cross sections are in units of cm^3
- * sh^-1. Probability density functions sum to unity. Unit conversions from NDI data are done when
- * data is initially read in. For more details on NDI, see
+ * temperatures are in units of keV. Velocity- averaged cross sections are in units of cm^3 sh^-1.
+ * Probability density functions sum to unity. Unit conversions from NDI data are done when data is
+ * initially read in. For more details on NDI, see
  * https://xweb.lanl.gov/projects/data/nuclear/ndi/ndi.html Currently only multigroup data is
  * supported, continuous energy data is probably best added through a refactor.
  */
@@ -52,17 +52,28 @@ protected:
   //! Name of library in which to find reaction
   const std::string library;
 
-protected:
   //! Constructors
   NDI_Base(std::string dataset_in, std::string library_in);
   NDI_Base(std::string gendir_in, std::string dataset_in, std::string library_in);
 
 public:
-  //! Default constructor
+  //! Disable default constructor
   NDI_Base() = delete;
 
-  //! Default copy constructor
-  NDI_Base(const NDI_Base &) = delete;
+  //! Destructor
+  ~NDI_Base() = default;
+
+  //! Disable copy constructor
+  NDI_Base(const NDI_Base &rhs) = delete;
+
+  //! Disable move constructor
+  NDI_Base(NDI_Base &&rhs) noexcept = delete;
+
+  //! Disable assignment
+  NDI_Base &operator=(const NDI_Base &rhs) = delete;
+
+  //! Disable move assignment
+  NDI_Base &operator=(NDI_Base &&rhs) noexcept = delete;
 
   //! Get the name of the gendir file
   inline std::string get_gendir() const & { return gendir; }

@@ -57,16 +57,16 @@ struct Sparse_Compton_Data {
 //! \class Dense_Compton_Data
 //------------------------------------------------------------------------------------------------//
 struct Dense_Compton_Data {
-  UINT64 numEvals;
-  UINT64 numTs;
-  UINT64 numGroups;
-  UINT64 numLegMoments;
-  std::vector<FP> groupBdrs;
-  std::vector<FP> Ts;
+  UINT64 numEvals{0};
+  UINT64 numTs{0};
+  UINT64 numGroups{0};
+  UINT64 numLegMoments{0};
+  std::vector<FP> groupBdrs{0.0};
+  std::vector<FP> Ts{0.0};
   // [eval, moment, T, gfrom, gto]
-  std::vector<FP> data;
+  std::vector<FP> data{0.0};
   // [eval, moment, T, gfrom, gto]
-  std::vector<FP> derivatives;
+  std::vector<FP> derivatives{0.0};
 
   void resize(UINT64 numfiles, std::string const &filename);
   void read_from_file(UINT64 eval, std::string const &filename, bool isnonlin);
@@ -296,7 +296,7 @@ void Dense_Compton_Data::compute_nonlinear_difference() {
           const FP bgto = bg[gto];
           const FP bgfrom = bg[gfrom];
 
-          std::array<FP, 4> vals;
+          std::array<FP, 4> vals{0.0};
           // use scattering matrix (no transpose) for outscattering
           for (UINT64 eval : {e_OL, e_ON}) {
             const UINT64 loc =
@@ -996,12 +996,19 @@ int main(int argc, char *argv[]) {
   while ((c = program_options()) != -1) {
     switch (c) {
     case 'v': // --version
+    {
       cout << argv[0] << ": version " << rtt_dsxx::release() << endl;
       return 0;
-
+    }
     case 'h': // --help
+    {
       cout << argv[0] << ": version " << rtt_dsxx::release() << helpstring << endl;
       return 0;
+    }
+    default: {
+      cout << argv[0] << ": version " << rtt_dsxx::release() << helpstring << endl;
+      return 0;
+    }
     }
   }
 

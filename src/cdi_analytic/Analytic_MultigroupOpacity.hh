@@ -75,15 +75,19 @@ public:
   // >>> INTERFACE SPECIFIED BY rtt_cdi::MultigroupOpacity
 
   ~Analytic_MultigroupOpacity() override = default;
+  Analytic_MultigroupOpacity(Analytic_MultigroupOpacity const &rhs) = delete;
+  Analytic_MultigroupOpacity(Analytic_MultigroupOpacity &&rhs) noexcept = delete;
+  Analytic_MultigroupOpacity &operator=(Analytic_MultigroupOpacity const &rhs) = delete;
+  Analytic_MultigroupOpacity &operator=(Analytic_MultigroupOpacity &&rhs) noexcept = delete;
 
   // Get the group opacities.
-  sf_double getOpacity(double, double) const override = 0;
+  sf_double getOpacity(double targetTemperature, double targetDensity) const override = 0;
 
   // Get the group opacity fields given a field of temperatures.
-  vf_double getOpacity(const sf_double &, double) const override = 0;
+  vf_double getOpacity(const sf_double &targetTemperature, double targetDensity) const override = 0;
 
   // Get the group opacity fields given a field of densities.
-  vf_double getOpacity(double, const sf_double &) const override = 0;
+  vf_double getOpacity(double targetTemperature, const sf_double &targetDensity) const override = 0;
 
   //! Query to see if data is in tabular or functional form (false).
   bool data_in_tabular_form() const override { return false; }

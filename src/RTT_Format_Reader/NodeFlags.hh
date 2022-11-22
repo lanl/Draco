@@ -24,6 +24,12 @@ namespace rtt_RTT_Format_Reader {
  */
 //================================================================================================//
 class NodeFlags {
+
+private:
+  void readKeyword(std::ifstream &meshfile);
+  void readFlagTypes(std::ifstream &meshfile);
+  void readEndKeyword(std::ifstream &meshfile);
+
   // typedefs
   using ifstream = std::ifstream;
   using string = std::string;
@@ -36,15 +42,13 @@ public:
       : dims(dims_), flagTypes(dims.get_nnode_flag_types()) { /* empty */
   }
   ~NodeFlags() = default;
+  NodeFlags(NodeFlags const &rhs) = delete;
+  NodeFlags(NodeFlags &&rhs) noexcept = delete;
+  NodeFlags &operator=(NodeFlags const &rhs) = delete;
+  NodeFlags &operator=(NodeFlags &&rhs) noexcept = delete;
 
   void readNodeFlags(ifstream &meshfile);
 
-private:
-  void readKeyword(ifstream &meshfile);
-  void readFlagTypes(ifstream &meshfile);
-  void readEndKeyword(ifstream &meshfile);
-
-public:
   /*!
    * \brief Validates the specified node flag type and number.
    * \param flagtype Node flag type number.

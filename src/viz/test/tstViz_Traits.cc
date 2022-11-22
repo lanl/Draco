@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 17:51:52 2000
  * \brief  Viz_Traits test.
- * \note   Copyright (C) 2000-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"
@@ -26,7 +26,7 @@ private:
   vector<vector<T>> data;
 
 public:
-  Test_Field(vector<vector<T>> data_in) : data(std::move(data_in)) {}
+  explicit Test_Field(vector<vector<T>> data_in) : data(std::move(data_in)) {}
 
   T operator()(size_t i, size_t j) const { return data[i][j]; }
   size_t nrows() const { return data.size(); }

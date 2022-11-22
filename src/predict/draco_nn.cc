@@ -4,12 +4,10 @@
  * \author Mathew Cleveland
  * \date   Feb. 16th 2022
  * \brief  Simple draco neural network class implementation
- * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
- *          */
+ * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "draco_nn.hh"
-//#include "c4/ifpstream.hh"
 #include "ds++/dbc.hh"
 #include <fstream>
 #include <numeric>
@@ -23,7 +21,6 @@ namespace rtt_predict {
  * \brief Load a draco neural network file (*.nnb)
  *
  * \param[in] net_file draco NN binary file
- * 
  */
 //================================================================================================//
 void draco_nn::load_network(const std::string &net_file) {
@@ -41,7 +38,7 @@ void draco_nn::load_network(const std::string &net_file) {
   layer_shape.resize(n_layers);
   weights.resize(n_layers);
   bias.resize(n_layers);
-  std::array<int, 5> layer_buffer;
+  std::array<int, 5> layer_buffer{};
   for (size_t n = 0; n < n_layers; n++) {
     in.read(reinterpret_cast<char *>(&layer_buffer[0]), sizeof(layer_buffer));
     Insist(layer_buffer[3] == layer_buffer[4],
@@ -76,7 +73,7 @@ void draco_nn::load_network(const std::string &net_file) {
  * \param[in,out] signal strided input data used to generate a prediction (input_size*output_size)
  * \param[in] input_size number of input nodes per prediction
  * \param[in] output_size number of input signals included in the signal vector
- * 
+ *
  * \return prediction for each input signal
  */
 //================================================================================================//
@@ -92,7 +89,7 @@ std::vector<float> draco_nn::predict(std::vector<float> &signal, const size_t Re
     // apply activation to input if necessary
     if (nn_layers[n].first == ACTIVATION_LAYER_TYPE::RELU)
       std::transform(input.begin(), input.end(), input.begin(),
-                     [](auto i) { return std::max(i, 0.0f); });
+                     [](auto i) { return std::max(i, 0.0F); });
     // resize the result
     result.resize(layer_shape[n].second * output_size);
     // loop over all signals

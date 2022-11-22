@@ -3,8 +3,7 @@
  * \file   kde/kde.hh
  * \author Mathew Cleveland
  * \brief  Define class kernel density estimator class
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef kde_kde_hh
@@ -22,14 +21,15 @@ namespace rtt_kde {
  * \class kde
  * \brief kernel density estimator class for generated smoothed reconstructions of point wise PDF
  *        data
- * 
+ *
  * Returns a KDE reconstruction of a multidimensional distribution
  */
 //================================================================================================//
 class kde {
 public:
   //! Constructor
-  kde(const std::array<bool, 6> reflect_boundary_ = {false, false, false, false, false, false})
+  explicit kde(const std::array<bool, 6> reflect_boundary_ = {false, false, false, false, false,
+                                                              false})
       : reflect_boundary(reflect_boundary_) {}
 
   //! Reconstruct distribution

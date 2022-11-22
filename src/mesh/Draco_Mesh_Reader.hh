@@ -27,6 +27,11 @@ class Draco_Mesh_Reader {
 public:
   //! Virtual destructor
   virtual ~Draco_Mesh_Reader() = default;
+  Draco_Mesh_Reader() = default;
+  Draco_Mesh_Reader(Draco_Mesh_Reader const &rhs) = delete;
+  Draco_Mesh_Reader(Draco_Mesh_Reader &&rhs) noexcept = delete;
+  Draco_Mesh_Reader &operator=(Draco_Mesh_Reader const &rhs) = delete;
+  Draco_Mesh_Reader &operator=(Draco_Mesh_Reader &&rhs) noexcept = delete;
 
   // >>> ACCESSORS
 

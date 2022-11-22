@@ -238,7 +238,7 @@ inline bool is_compatible(Unit const &a, Unit const &b) {
 //------------------------------------------------------------------------------------------------//
 //! Write out the unit in text form.
 
-std::ostream &operator<<(std::ostream &, const Unit &);
+std::ostream &operator<<(std::ostream &str, const Unit &u);
 
 // Some useful examples
 

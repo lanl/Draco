@@ -4,8 +4,7 @@
  * \author Ben R. Ryan
  * \date   2020 Jun 3
  * \brief  NDI_CP_Eloss class definition.
- * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef cdi_ndi_NDI_CP_Eloss_hh
@@ -44,11 +43,23 @@ public:
   NDI_CP_Eloss(const std::string &gendir_in, const std::string &library_in,
                rtt_cdi::CParticle target_in, rtt_cdi::CParticle projectile_in);
 
+  //! Default destructor
+  ~NDI_CP_Eloss() override = default;
+
   //! Disable default constructor
   NDI_CP_Eloss() = delete;
 
   //! Disable copy constructor
-  NDI_CP_Eloss(const NDI_CP_Eloss &) = delete;
+  NDI_CP_Eloss(const NDI_CP_Eloss &rhs) = delete;
+
+  //! Disable move constructor
+  NDI_CP_Eloss(NDI_CP_Eloss &&rhs) noexcept = delete;
+
+  //! Disable assignment
+  NDI_CP_Eloss &operator=(const NDI_CP_Eloss &rhs) = delete;
+
+  //! Disable move assignment
+  NDI_CP_Eloss &operator=(NDI_CP_Eloss &&rhs) noexcept = delete;
 
   // >>> ACCESSORS
 
@@ -91,30 +102,30 @@ private:
   rtt_units::PhysicalConstexprs<rtt_units::CGS> pc; //!< Units
 #endif
 
-  uint32_t n_energy;      //!< Number of gridpoints in projectile energy
-  uint32_t n_density;     //!< Number of gridpoints in target density
-  uint32_t n_temperature; //!< Number of gridpoints in target temperature
+  uint32_t n_energy{0};      //!< Number of gridpoints in projectile energy
+  uint32_t n_density{0};     //!< Number of gridpoints in target density
+  uint32_t n_temperature{0}; //!< Number of gridpoints in target temperature
 #ifdef NDI_FOUND
-  double d_log_energy;        //!< Log spacing of projectile energy gridpoints
-  double d_log_density;       //!< Log spacing of target density gridpoints
-  double d_log_temperature;   //!< Log spacing of target temperature gridpoints
-  double min_log_energy;      //!< Log of minimum projectile energy
-  double min_log_density;     //!< Log of minimum target density
-  double min_log_temperature; //!< Log of minimum target temperature
-  double min_energy;          //!< Minimum target energy
-  double max_energy;          //!< Maximum target energy
-  double min_density;         //!< Minimum target density
-  double max_density;         //!< Maximum target density
-  double min_temperature;     //!< Minimum target temperature
-  double max_temperature;     //!< Maximum target temperature
+  double d_log_energy{0.0};        //!< Log spacing of projectile energy gridpoints
+  double d_log_density{0.0};       //!< Log spacing of target density gridpoints
+  double d_log_temperature{0.0};   //!< Log spacing of target temperature gridpoints
+  double min_log_energy{0.0};      //!< Log of minimum projectile energy
+  double min_log_density{0.0};     //!< Log of minimum target density
+  double min_log_temperature{0.0}; //!< Log of minimum target temperature
+  double min_energy{0.0};          //!< Minimum target energy
+  double max_energy{0.0};          //!< Maximum target energy
+  double min_density{0.0};         //!< Minimum target density
+  double max_density{0.0};         //!< Maximum target density
+  double min_temperature{0.0};     //!< Minimum target temperature
+  double max_temperature{0.0};     //!< Maximum target temperature
 #endif
-  sf_double energies;     //!< Vector of energy gridpoints
-  sf_double densities;    //!< Vector of density gridpoints
-  sf_double temperatures; //!< Vector of temperature gridpoints
+  sf_double energies{};     //!< Vector of energy gridpoints
+  sf_double densities{};    //!< Vector of density gridpoints
+  sf_double temperatures{}; //!< Vector of temperature gridpoints
   // Note that after unit conversions, *_energy is really *_speed
 
   //! Storage for tabulated data
-  sf_double stopping_data_1d;
+  sf_double stopping_data_1d{};
 
   //! 3D indexing of 1D stopping power data
   inline double get_stopping_data(int i_e, int i_d, int i_t) const {

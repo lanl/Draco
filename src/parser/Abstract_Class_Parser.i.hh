@@ -49,7 +49,7 @@ DLL_PUBLIC_parser extern c_string_vector abstract_class_parser_keys;
  *
  * Remember:
  * \code
- * typedef std::shared_ptr<Abstract_Class> Parse_Function(Token_Stream &);
+ * using Parse_Function(Token_Stream &) = std::shared_ptr<Abstract_Class>;
  * \endcode
  */
 template <typename Class, Parse_Table &get_parse_table(),

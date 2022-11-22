@@ -23,7 +23,7 @@ namespace rtt_cdi_cpeloss {
  * \brief Analytic_Eloss_Model base class.
  *
  * This is a base class that defines the interface given to Analytic_Eloss_Model constructors.  The
- * user can define any derived model class that will work with these analytic opacity generation 
+ * user can define any derived model class that will work with these analytic opacity generation
  * classes as long as it implements the functions required, namely:
  *
  * \arg double calculate_eloss(double T, double rho)
@@ -39,6 +39,12 @@ public:
   //! Virtual destructor for proper inheritance destruction.
   virtual ~Analytic_Eloss_Model() = default;
 
+  // Disable copy/move ctors and assignment operators.
+  Analytic_Eloss_Model(Analytic_Eloss_Model const &rhs) = delete;
+  Analytic_Eloss_Model(Analytic_Eloss_Model &&rhs) noexcept = delete;
+  Analytic_Eloss_Model &operator=(Analytic_Eloss_Model const &rhs) = delete;
+  Analytic_Eloss_Model &operator=(Analytic_Eloss_Model &&rhs) noexcept = delete;
+
   //! Interface for derived analytic eloss models.
   virtual double calculate_eloss(const double T, const double rho, const double v0) const = 0;
 
@@ -53,23 +59,12 @@ protected:
   //! Unit system (use cgs internally)
   rtt_units::PhysicalConstexprs<rtt_units::CGS> pc;
 
-  //! Target ZAID
-  const int zaidt;
-
-  //! Target mass
-  const double mt;
-
-  //! Absolute target electric charge
-  const double qtabs;
-
-  //! Projectile ZAID
-  const int zaidp;
-
-  //! Projectile mass
-  const double mp;
-
-  //! Absolute projectile electric charge
-  const double qpabs;
+  const int zaidt;    //!< Target ZAID
+  const double mt;    //!< Target mass
+  const double qtabs; //!< Absolute target electric charge
+  const int zaidp;    //!< Projectile ZAID
+  const double mp;    //!< Projectile mass
+  const double qpabs; //!< Absolute projectile electric charge
 };
 
 } // namespace rtt_cdi_cpeloss

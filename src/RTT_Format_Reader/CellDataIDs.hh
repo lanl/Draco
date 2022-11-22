@@ -27,6 +27,12 @@ namespace rtt_RTT_Format_Reader {
  */
 //================================================================================================//
 class CellDataIDs {
+
+private:
+  void readKeyword(std::ifstream &meshfile);
+  void readData(std::ifstream &meshfile);
+  void readEndKeyword(std::ifstream &meshfile);
+
   // typedefs
   using ifstream = std::ifstream;
   using string = std::string;
@@ -40,15 +46,13 @@ public:
   explicit CellDataIDs(const Dims &dims_)
       : dims(dims_), names(dims.get_ncell_data()), units(dims.get_ncell_data()) {}
   ~CellDataIDs() = default;
+  CellDataIDs(CellDataIDs const &rhs) = delete;
+  CellDataIDs(CellDataIDs &&rhs) noexcept = delete;
+  CellDataIDs &operator=(CellDataIDs const &rhs) = delete;
+  CellDataIDs &operator=(CellDataIDs &&rhs) noexcept = delete;
 
   void readDataIDs(ifstream &meshfile);
 
-private:
-  void readKeyword(ifstream &meshfile);
-  void readData(ifstream &meshfile);
-  void readEndKeyword(ifstream &meshfile);
-
-public:
   /*!
    * \brief Returns the specified cell_data_id nam.
    * \param id_numb cell_data_id index number.

@@ -33,18 +33,30 @@ class NDI_TNReaction : public NDI_Base {
 
 public:
   //! Constructor (default gendir path)
-  NDI_TNReaction(const std::string &library_in, std::string const &reaction_in,
-                 std::vector<double> const &mg_e_bounds_in);
+  NDI_TNReaction(const std::string &library_in, std::string &reaction_in,
+                 std::vector<double> mg_e_bounds_in);
 
   //! Constructor (overridden gendir path)
   NDI_TNReaction(const std::string &gendir_in, const std::string &library_in,
                  std::string reaction_in, std::vector<double> mg_e_bounds_in);
 
+  //! Default destructor
+  ~NDI_TNReaction() = default;
+
   //! Disable default constructor
   NDI_TNReaction() = delete;
 
-  //! Disable copy constructor (meaning no implicit move assignment operator or move constructor)
-  NDI_TNReaction(const NDI_TNReaction &) = delete;
+  //! Disable copy constructor
+  NDI_TNReaction(const NDI_TNReaction &rhs) = delete;
+
+  //! Disable move constructor
+  NDI_TNReaction(NDI_TNReaction &&rhs) noexcept = delete;
+
+  //! Disable assignment
+  NDI_TNReaction &operator=(const NDI_TNReaction &rhs) = delete;
+
+  //! Disable move assignment
+  NDI_TNReaction &operator=(NDI_TNReaction &&rhs) noexcept = delete;
 
   //! Return spectrum PDF at a given temperature
   std::vector<double> get_PDF(const int product_zaid, const double temperature) const;

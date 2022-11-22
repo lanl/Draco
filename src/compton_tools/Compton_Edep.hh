@@ -3,7 +3,7 @@
  * \file   compton_tools/Compton_Edep.hh
  * \author Kendra Long
  * \date   10 October 2022
- * \brief  Header file for Compton energy deposition data handling 
+ * \brief  Header file for Compton energy deposition data handling
  * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
@@ -105,7 +105,7 @@ public:
 };
 
 //! Public interface to read an energy deposition library and return a filled container
-Edep_Container read_edep_file(const std::string &);
+Edep_Container read_edep_file(const std::string &infile);
 //! Public interface to interpolate to a given frequency in a given cell
 std::pair<double, double> interpolate_sigc_erec(const size_t cell, const double freq,
                                                 const Preinterp_Container &data);
@@ -113,3 +113,7 @@ std::pair<double, double> interpolate_sigc_erec(const size_t cell, const double 
 } // namespace compton_edep
 
 #endif // rtt_compton_tools_Compton_Edep_hh
+
+//------------------------------------------------------------------------------------------------//
+// End of Compton_Edep.hh
+//------------------------------------------------------------------------------------------------//

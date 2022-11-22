@@ -14,9 +14,7 @@
  *         typically used in KDE applications to account for the kernel extending beyond the bounds
  *         of the spatial domain. Other approaches that could be considered are quadrature based
  *         approaches that fully sample the Kernel space reducing the need for the normalization.
- *
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "kde.hh"
@@ -30,9 +28,9 @@ namespace rtt_kde {
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Calculate Weight
- * 
- * \pre Calculate the effective weight in Cartesian and Spherical reconstructions from a given location to the current
- * kernel 
+ *
+ * \pre Calculate the effective weight in Cartesian and Spherical reconstructions from a given
+ *      location to the current kernel
  *
  * \param[in] r0 current kernel center location
  * \param[in] one_over_h0 current kernel width
@@ -40,7 +38,7 @@ namespace rtt_kde {
  * \param[in] one_over_h kernel width at this data location
  * \param[in] qindex quick indexing class
  * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
- * reconstruction
+ *              reconstruction
  * \param[in] scale the reconstruction distance (default value is 1.0)
  *
  * \return weight contribution to the current kernel
@@ -99,8 +97,8 @@ double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief KDE reconstruction 
- * 
+ * \brief KDE reconstruction
+ *
  * \pre The local reconstruction data is passed into this function which includes the original data
  * distribution, its spatial position, and the optimal bandwidth to be used at each point.
  *
@@ -109,7 +107,7 @@ double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
  * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
- * reconstruction
+ *              reconstruction
  * \return final local KDE function distribution reconstruction
  *
  * \post the local reconstruction of the original data is returned.
@@ -227,15 +225,15 @@ kde::reconstruction(const std::vector<double> &distribution,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief KDE weighted reconstruction 
- * 
+ * \brief KDE weighted reconstruction
+ *
  * \pre The local reconstruction data is passed into this function which includes the original data
  * distribution, its spatial position, and the optimal bandwidth to be used at each point.
  * Additional bandwidth weights are passed, these weights are used to scale the distance of the
- * particles reconstruction.
- * Disparate weights effectively move particles farther from the reconstruction location.
+ * particles reconstruction. Disparate weights effectively move particles farther from the
+ * reconstruction location.
  *
- * (distance_from_local_to_next * max(local_bandwidth_weight,next_bandwidth_weight) 
+ * (distance_from_local_to_next * max(local_bandwidth_weight,next_bandwidth_weight)
  *                                    / min(local_bandwidth_weight,next_bandwidth_weight)).
  *
  * \param[in] distribution original data to be reconstructed
@@ -244,7 +242,7 @@ kde::reconstruction(const std::vector<double> &distribution,
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
  * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
- * reconstruction
+ *              reconstruction
  * \return final local KDE function distribution reconstruction
  *
  * \post the local reconstruction of the original data is returned.
@@ -379,8 +377,8 @@ kde::weighted_reconstruction(const std::vector<double> &distribution,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief KDE sampled reconstruction 
- * 
+ * \brief KDE sampled reconstruction
+ *
  * \pre The local reconstruction data is passed into this function which includes the original data
  * distribution, its spatial position, and the optimal bandwidth to be used at each point. Rather
  * then treating each point as a delta function we will sample the integration volume on a fixed
@@ -391,7 +389,7 @@ kde::weighted_reconstruction(const std::vector<double> &distribution,
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
  * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
- * reconstruction
+ *              reconstruction
  * \return final local KDE function distribution reconstruction
  *
  * \post the local reconstruction of the original data is returned.
@@ -605,7 +603,7 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief KDE reconstruction done in logarithmic data space
- * 
+ *
  * \pre The local reconstruction data is passed into this function which includes the original data
  * distribution, its spatial position, and the optimal bandwidth to be used at each point. The
  * original data distribution is transformed into log space prior and post reconstruction. This is
@@ -616,7 +614,7 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
  * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
  * \param[in] qindex quick_index class to be used for data access.
  * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
- * reconstruction
+ *              reconstruction
  * \return final local KDE function distribution reconstruction
  *
  * \post the local reconstruction of the original data is returned.
@@ -752,7 +750,7 @@ kde::log_reconstruction(const std::vector<double> &distribution,
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief KDE apply conservation
- * 
+ *
  * \pre Apply conservation fix to the new distribution so sum(original_distribution) ==
  * sum(new_distribution)
  *
@@ -819,11 +817,11 @@ void kde::apply_conservation(const std::vector<double> &original_distribution,
  *  Calculate the bounding window (via win_min (x_min,y_min,z_min) and win_max (x_max, y_max,
  *  z_max)) given a central location and the bandwidth size in each dimension (dx,dy) for Cartesian
  *  or (dr,arc_length) for spherical.
- * 
+ *
  * \param[in] qindex quick index class for finding bounds xy bounds of a wedge shape
  * \param[in] position is the central location of the bounds
  * \param[in] one_over_bandwidth size of the reconstruction domain in each dimension. This is
- * (dx,dy) for Caresian and (dr, arc_length) for spherical. 
+ * (dx,dy) for Caresian and (dr, arc_length) for spherical.
  * \param[in,out] win_min is the minimum corner of the bounding box (x_min, y_min, z_min)
  * \param[in,out] win_max is the maximum corner of the bounding box (x_max, y_max, z_max)
  *

@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Oct  2 16:22:32 2001
  * \brief  Analytic_EoS class definition.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Analytic_EoS_hh
@@ -23,20 +22,19 @@ namespace rtt_cdi_analytic {
  *
  * \brief Derived rtt_cdi::EoS class for analytic Equation of State data.
  *
- * The Analytic_EoS class is a derived rtt_cdi::EoS class. It provides
- * analytic Equation of State (EoS) data.  The specific analytic EoS model is
- * derived from the rtt_cdi_analytic::Analytic_EoS_Model base class.  Several
- * pre-built derived classes are provided in Analytic_Models.hh.
+ * The Analytic_EoS class is a derived rtt_cdi::EoS class. It provides analytic Equation of State
+ * (EoS) data.  The specific analytic EoS model is derived from the
+ * rtt_cdi_analytic::Analytic_EoS_Model base class.  Several pre-built derived classes are provided
+ * in Analytic_Models.hh.
  *
- * Clients of this class can provide any analytic model class as long as it
- * conforms to the rtt_cdi_analytic::Analytic_EoS_Model interface.
+ * Clients of this class can provide any analytic model class as long as it conforms to the
+ * rtt_cdi_analytic::Analytic_EoS_Model interface.
  *
  * See the member functions for details about the data types and units.
  *
  * \example cdi_analytic/test/tstAnalytic_EoS.cc
  *
- * Example usage of Analytic_EoS, Analytic_EoS_Model, and their incorporation
- * into rtt_cdi::CDI.
+ * Example usage of Analytic_EoS, Analytic_EoS_Model, and their incorporation into rtt_cdi::CDI.
  */
 //================================================================================================//
 
@@ -57,7 +55,7 @@ public:
   explicit Analytic_EoS(SP_Analytic_Model model_in);
 
   // Unpacking constructor.
-  explicit Analytic_EoS(const sf_char &);
+  explicit Analytic_EoS(const sf_char &packed);
 
   // >>> ACCESSORS
   const_SP_Model get_Analytic_Model() const { return analytic_model; }
@@ -65,28 +63,29 @@ public:
   // >>> INTERFACE SPECIFIED BY rtt_cdi::EoS
 
   // Get electron internal energy.
-  double getSpecificElectronInternalEnergy(double, double) const override;
-  sf_double getSpecificElectronInternalEnergy(const sf_double &, const sf_double &) const override;
+  double getSpecificElectronInternalEnergy(double T, double rho) const override;
+  sf_double getSpecificElectronInternalEnergy(const sf_double &T,
+                                              const sf_double &rho) const override;
 
   // Get ion internal energy.
-  double getSpecificIonInternalEnergy(double, double) const override;
-  sf_double getSpecificIonInternalEnergy(const sf_double &, const sf_double &) const override;
+  double getSpecificIonInternalEnergy(double T, double rho) const override;
+  sf_double getSpecificIonInternalEnergy(const sf_double &T, const sf_double &rho) const override;
 
   // Get electron heat capacity.
-  double getElectronHeatCapacity(double, double) const override;
-  sf_double getElectronHeatCapacity(const sf_double &, const sf_double &) const override;
+  double getElectronHeatCapacity(double T, double rho) const override;
+  sf_double getElectronHeatCapacity(const sf_double &T, const sf_double &rho) const override;
 
   // Get ion heat capacity.
-  double getIonHeatCapacity(double, double) const override;
-  sf_double getIonHeatCapacity(const sf_double &, const sf_double &) const override;
+  double getIonHeatCapacity(double T, double rho) const override;
+  sf_double getIonHeatCapacity(const sf_double &T, const sf_double &rho) const override;
 
   // Get the number of free electrons per ion.
-  double getNumFreeElectronsPerIon(double, double) const override;
-  sf_double getNumFreeElectronsPerIon(const sf_double &, const sf_double &) const override;
+  double getNumFreeElectronsPerIon(double T, double rho) const override;
+  sf_double getNumFreeElectronsPerIon(const sf_double &T, const sf_double &rho) const override;
 
   // Get the electron thermal conductivity.
-  double getElectronThermalConductivity(double, double) const override;
-  sf_double getElectronThermalConductivity(const sf_double &, const sf_double &) const override;
+  double getElectronThermalConductivity(double T, double rho) const override;
+  sf_double getElectronThermalConductivity(const sf_double &T, const sf_double &rho) const override;
 
   // Get the new Te, given delta Ue, Te0.
   double getElectronTemperature(double /*rho*/, double Ue, double Tguess = 1.0) const override;

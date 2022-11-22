@@ -58,13 +58,13 @@ protected:
   using Quadrature::create_ordinates_;
 
   //! Virtual hook for create_ordinate_set
-  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry, double norm,
+  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm,
                                           unsigned mu_axis, unsigned eta_axis,
                                           bool include_starting_directions,
                                           bool include_extra_directions) const override;
 
   //! Virtual hook for create_ordinate_set
-  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry, double norm,
+  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm,
                                           bool include_starting_directions,
                                           bool include_extra_directions) const override;
 

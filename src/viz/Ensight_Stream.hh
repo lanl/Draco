@@ -74,6 +74,18 @@ public:
   //! Destructor.
   ~Ensight_Stream();
 
+  //! Disable copy construction
+  Ensight_Stream(Ensight_Stream const &rhs) = delete;
+
+  //! Disable move construction
+  Ensight_Stream(Ensight_Stream &&rhs) noexcept = delete;
+
+  //! Disable assignment
+  Ensight_Stream &operator=(Ensight_Stream const &rhs) = delete;
+
+  //! Disable move assignment
+  Ensight_Stream &operator=(Ensight_Stream &&rhs) noexcept = delete;
+
   // MANIPULATORS
 
   //! Opens the stream.

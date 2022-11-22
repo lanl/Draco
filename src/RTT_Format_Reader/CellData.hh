@@ -31,9 +31,14 @@ class CellData {
   vector_vector_dbl data;
 
 public:
-  CellData(const Dims &dims_)
+  explicit CellData(const Dims &dims_)
       : dims(dims_), data(dims.get_ncells(), vector_dbl(dims.get_ncell_data())) {}
   ~CellData() = default;
+
+  CellData(CellData const &rhs) = delete;
+  CellData(CellData &&rhs) noexcept = delete;
+  CellData &operator=(CellData const &rhs) = delete;
+  CellData &operator=(CellData &&rhs) noexcept = delete;
 
   void readCellData(ifstream &meshfile);
 

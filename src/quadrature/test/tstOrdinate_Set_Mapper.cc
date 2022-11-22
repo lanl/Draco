@@ -30,14 +30,13 @@ using namespace rtt_quadrature;
 bool is_zero(double a) { return soft_equiv(a, 0.0); }
 
 // -----------------------------------------------------------------------------
-// A simple functor to be used in computing a bunch of 3D angle dot products
-// between a given ordinate and all the ordinates in a container.
+// A simple functor to be used in computing a bunch of 3D angle dot products between a given
+// ordinate and all the ordinates in a container.
 // -----------------------------------------------------------------------------
 struct dot_product_functor_3D {
-  dot_product_functor_3D(const Ordinate &o_in) : o1(o_in) {}
+  explicit dot_product_functor_3D(const Ordinate &o_in) : o1(o_in) {}
 
-  // Returns the dot product of the ordinate passed into the functor with the
-  // local ordinate
+  // Returns the dot product of the ordinate passed into the functor with the local ordinate
   double operator()(const Ordinate &o2) const {
     return o1.mu() * o2.mu() + o1.eta() * o2.eta() + o1.xi() * o2.xi();
   }
@@ -46,14 +45,13 @@ struct dot_product_functor_3D {
 };
 
 // -----------------------------------------------------------------------------
-// A simple functor to be used in computing a bunch of 1D angle dot products
-// between a given ordinate and all the ordinates in a container.
+// A simple functor to be used in computing a bunch of 1D angle dot products between a given
+// ordinate and all the ordinates in a container.
 // -----------------------------------------------------------------------------
 struct dot_product_functor_1D {
-  dot_product_functor_1D(const Ordinate &o_in) : o1(o_in) {}
+  explicit dot_product_functor_1D(const Ordinate &o_in) : o1(o_in) {}
 
-  // Returns the dot product of the ordinate passed into the functor
-  // with the local ordinate
+  // Returns the dot product of the ordinate passed into the functor with the local ordinate
   double operator()(const Ordinate &o2) const {
     // This uses a different approach, nominally slower than
     double phi1 = acos(o1.mu());
@@ -83,9 +81,9 @@ double zeroth_moment(const vector<double> &weights, const Ordinate_Set &os) {
 }
 
 // -----------------------------------------------------------------------------
-// A quick way to test the validity of several ordinates using the nearest
-// neighbor interpolation scheme. This test harness does not account
-// for the removal of "starting directions" in the Ordinate_Set.
+// A quick way to test the validity of several ordinates using the nearest neighbor interpolation
+// scheme. This test harness does not account for the removal of "starting directions" in the
+// Ordinate_Set.
 // -----------------------------------------------------------------------------
 void nearest_neighbor_test(rtt_dsxx::UnitTest &ut, const Ordinate &ord, const Ordinate_Set &os,
                            const vector<double> &wts, const size_t index) {
@@ -134,9 +132,9 @@ void nearest_neighbor_test(rtt_dsxx::UnitTest &ut, const Ordinate &ord, const Or
 }
 
 // -----------------------------------------------------------------------------
-// A quick way to test the validity of several ordinates using the nearest
-// three ordinates interpolation scheme. This test harness does not account
-// for the removal of "starting directions" in the Ordinate_Set.
+// A quick way to test the validity of several ordinates using the nearest three ordinates
+// interpolation scheme. This test harness does not account for the removal of "starting directions"
+// in the Ordinate_Set.
 // -----------------------------------------------------------------------------
 void nearest_three_test(rtt_dsxx::UnitTest &ut, const Ordinate &ord, const Ordinate_Set &os,
                         const vector<double> &wts) {
@@ -486,10 +484,9 @@ void ordinate_set_1D_sph_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
   rtt_mesh_element::Geometry geometry(rtt_mesh_element::Geometry::SPHERICAL);
   Gauss_Legendre quadrature(N);
 
-  // Note that this test uses "starting directions" in the Ordinate_Set These
-  // are necessary for SN in curvilinear geometries, but these starting
-  // directions have zero weight and do not actually contribute to the
-  // quadrature integration -- they should not be incluced as valid ordinates
+  // Note that this test uses "starting directions" in the Ordinate_Set These are necessary for SN
+  // in curvilinear geometries, but these starting directions have zero weight and do not actually
+  // contribute to the quadrature integration -- they should not be incluced as valid ordinates
   // during the remapping!
   std::shared_ptr<Ordinate_Set> os_LS2 =
       quadrature.create_ordinate_set(1, //1-D
