@@ -21,6 +21,12 @@ namespace rtt_RTT_Format_Reader {
  */
 //================================================================================================//
 class NodeData {
+
+private:
+  void readKeyword(std::ifstream &meshfile);
+  void readData(std::ifstream &meshfile);
+  void readEndKeyword(std::ifstream &meshfile);
+
   // typedefs
   using ifstream = std::ifstream;
   using string = std::string;
@@ -31,19 +37,16 @@ class NodeData {
   vector_vector_dbl data;
 
 public:
-  NodeData(const Dims &dims_)
-      : dims(dims_), data(dims.get_nnodes(), vector_dbl(dims.get_nnode_data())) { /* empty */
-  }
+  explicit NodeData(const Dims &dims_)
+      : dims(dims_), data(dims.get_nnodes(), vector_dbl(dims.get_nnode_data())) {}
   ~NodeData() = default;
+  NodeData(NodeData const &rhs) = delete;
+  NodeData(NodeData &&rhs) noexcept = delete;
+  NodeData &operator=(NodeData const &rhs) = delete;
+  NodeData &operator=(NodeData &&rhs) noexcept = delete;
 
   void readNodeData(ifstream &meshfile);
 
-private:
-  void readKeyword(ifstream &meshfile);
-  void readData(ifstream &meshfile);
-  void readEndKeyword(ifstream &meshfile);
-
-public:
   /*!
    * \brief Returns all of the data field values for each of the nodes.
    * \return The data field values for each of the nodes.

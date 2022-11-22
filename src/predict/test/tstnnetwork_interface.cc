@@ -4,11 +4,10 @@
  * \author Mathew Cleveland
  * \date   Nov. 10th 2020
  * \brief  KDE function tests
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "../nnetwork_interface.hh"
+#include "predict/nnetwork_interface.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "ds++/Release.hh"
 #include "ds++/Soft_Equivalence.hh"
@@ -22,8 +21,7 @@ using namespace rtt_predict;
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
-//
-//
+
 void test_replication(ParallelUnitTest &ut) {
 
   std::string nn_file_name = "kde";
@@ -32,7 +30,7 @@ void test_replication(ParallelUnitTest &ut) {
   nnetwork_interface net(nn_file_name);
   if (!net.valid())
     ITFAILS;
-  std::vector<float> input(input_dim, 1.0f / static_cast<float>(input_dim));
+  std::vector<float> input(input_dim, 1.0F / static_cast<float>(input_dim));
   std::vector<float> result = net.predict(input, input_dim, output_dim);
   if (!rtt_dsxx::soft_equiv(double(result[0]), 0.4872, 1.0e-4))
     ITFAILS;

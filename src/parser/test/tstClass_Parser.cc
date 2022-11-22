@@ -19,8 +19,7 @@ using namespace rtt_parser;
 //------------------------------------------------------------------------------------------------//
 class DummyClass {
 public:
-  DummyClass(double const insouciance_in) noexcept : insouciance(insouciance_in) {}
-
+  explicit DummyClass(double const insouciance_in) noexcept : insouciance(insouciance_in) {}
   double Get_Insouciance() const { return insouciance; }
 
 private:
@@ -31,30 +30,22 @@ namespace rtt_parser {
 //------------------------------------------------------------------------------------------------//
 template <> class Class_Parse_Table<DummyClass> : public Class_Parse_Table_Base<DummyClass, false> {
 public:
-  // TYPEDEFS
-
   // MANAGEMENT
-
-  Class_Parse_Table(bool context = false);
+  explicit Class_Parse_Table(bool context = false);
 
   // SERVICES
-
   void check_completeness(Token_Stream &tokens);
 
   std::shared_ptr<DummyClass> create_object();
 
 protected:
   // DATA
-
   double parsed_insouciance{-1.0};
   bool context;
 
 private:
   // IMPLEMENTATION
-
-  static void parse_insouciance_(Token_Stream &tokens, int);
-
-  // STATIC
+  static void parse_insouciance_(Token_Stream &tokens, int /*unused*/);
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -69,7 +60,7 @@ template <> std::shared_ptr<DummyClass> parse_class<DummyClass>(Token_Stream &to
 }
 
 //------------------------------------------------------------------------------------------------//
-void Class_Parse_Table<DummyClass>::parse_insouciance_(Token_Stream &tokens, int) {
+void Class_Parse_Table<DummyClass>::parse_insouciance_(Token_Stream &tokens, int /*unused*/) {
   tokens.check_semantics(current_->parsed_insouciance < 0.0,
                          "duplicate specification of insouciance");
 

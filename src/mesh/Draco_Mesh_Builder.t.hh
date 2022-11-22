@@ -138,7 +138,7 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
   // reserve some space for num_nodes_per_face_per_cell
   std::vector<unsigned> num_nodes_per_face_per_cell;
   num_nodes_per_face_per_cell.reserve(
-      std::accumulate(num_faces_per_cell.begin(), num_faces_per_cell.end(), 0u));
+      std::accumulate(num_faces_per_cell.begin(), num_faces_per_cell.end(), 0U));
 
   // generate num_nodes_per_face_per_cell vector
   unsigned cf_counter = 0;

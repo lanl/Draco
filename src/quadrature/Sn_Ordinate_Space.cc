@@ -20,7 +20,7 @@ namespace rtt_quadrature {
 using std::vector;
 
 //------------------------------------------------------------------------------------------------//
-vector<Moment> Sn_Ordinate_Space::compute_n2lk_1D_(Quadrature_Class, unsigned /*N*/) {
+vector<Moment> Sn_Ordinate_Space::compute_n2lk_1D_(Quadrature_Class /*unused*/, unsigned /*N*/) {
   vector<Moment> result;
 
   unsigned const L = expansion_order();
@@ -35,7 +35,7 @@ vector<Moment> Sn_Ordinate_Space::compute_n2lk_1D_(Quadrature_Class, unsigned /*
 }
 
 //------------------------------------------------------------------------------------------------//
-vector<Moment> Sn_Ordinate_Space::compute_n2lk_1Da_(Quadrature_Class, unsigned /*N*/) {
+vector<Moment> Sn_Ordinate_Space::compute_n2lk_1Da_(Quadrature_Class /*unused*/, unsigned /*N*/) {
   vector<Moment> result;
 
   unsigned const L = expansion_order();
@@ -50,7 +50,7 @@ vector<Moment> Sn_Ordinate_Space::compute_n2lk_1Da_(Quadrature_Class, unsigned /
 }
 
 //------------------------------------------------------------------------------------------------//
-vector<Moment> Sn_Ordinate_Space::compute_n2lk_2D_(Quadrature_Class, unsigned /*N*/) {
+vector<Moment> Sn_Ordinate_Space::compute_n2lk_2D_(Quadrature_Class /*unused*/, unsigned /*N*/) {
   vector<Moment> result;
 
   unsigned const L = expansion_order();
@@ -71,7 +71,7 @@ vector<Moment> Sn_Ordinate_Space::compute_n2lk_2Da_(Quadrature_Class quadrature_
 }
 
 //------------------------------------------------------------------------------------------------//
-vector<Moment> Sn_Ordinate_Space::compute_n2lk_3D_(Quadrature_Class, unsigned /*N*/) {
+vector<Moment> Sn_Ordinate_Space::compute_n2lk_3D_(Quadrature_Class /*unused*/, unsigned /*N*/) {
   vector<Moment> result;
 
   unsigned const L = expansion_order();

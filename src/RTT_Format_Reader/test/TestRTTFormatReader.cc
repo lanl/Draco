@@ -50,33 +50,21 @@ void runTest(UnitTest &ut) {
     // called by the other tests (with the exception of check header) if not invoked herein.  The
     // comparison data must also be provided for additional meshes within the switch structure
     // residing in the test functions.
-    switch (mesh_number) {
-    // Test all nested class accessor functions for a very simplistic mesh file (enum DEFINED).
-    case (0):
+    if (mesh_number == 0) {
+      // Test all nested class accessor functions for a very simplistic mesh file (enum DEFINED).
       mesh_type = DEFINED;
-      all_passed = all_passed && check_header(mesh, mesh_type, ut);
-      all_passed = all_passed && check_dims(mesh, mesh_type, ut);
-      all_passed = all_passed && check_node_flags(mesh, mesh_type, ut);
-      all_passed = all_passed && check_side_flags(mesh, mesh_type, ut);
-      all_passed = all_passed && check_cell_flags(mesh, mesh_type, ut);
-      all_passed = all_passed && check_node_data_ids(mesh, mesh_type, ut);
-      all_passed = all_passed && check_side_data_ids(mesh, mesh_type, ut);
-      all_passed = all_passed && check_cell_data_ids(mesh, mesh_type, ut);
-      all_passed = all_passed && check_cell_defs(mesh, mesh_type, ut);
-      all_passed = all_passed && check_nodes(mesh, mesh_type, ut);
-      all_passed = all_passed && check_sides(mesh, mesh_type, ut);
-      all_passed = all_passed && check_cells(mesh, mesh_type, ut);
-      all_passed = all_passed && check_node_data(mesh, mesh_type, ut);
-      all_passed = all_passed && check_side_data(mesh, mesh_type, ut);
-      all_passed = all_passed && check_cell_data(mesh, mesh_type, ut);
-      break;
-
-    default:
-      ostringstream m;
-      m << "Invalid mesh type encountered." << std::endl;
-      FAILMSG(m.str());
+      all_passed =
+          check_header(mesh, mesh_type, ut) && check_dims(mesh, mesh_type, ut) &&
+          check_node_flags(mesh, mesh_type, ut) && check_side_flags(mesh, mesh_type, ut) &&
+          check_cell_flags(mesh, mesh_type, ut) && check_node_data_ids(mesh, mesh_type, ut) &&
+          check_side_data_ids(mesh, mesh_type, ut) && check_cell_data_ids(mesh, mesh_type, ut) &&
+          check_cell_defs(mesh, mesh_type, ut) && check_nodes(mesh, mesh_type, ut) &&
+          check_sides(mesh, mesh_type, ut) && check_cells(mesh, mesh_type, ut) &&
+          check_node_data(mesh, mesh_type, ut) && check_side_data(mesh, mesh_type, ut) &&
+          check_cell_data(mesh, mesh_type, ut);
+    } else {
+      FAILMSG("Invalid mesh type encountered.");
       all_passed = false;
-      break;
     }
 
     if (!all_passed) {

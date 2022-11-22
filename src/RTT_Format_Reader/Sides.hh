@@ -24,6 +24,12 @@ namespace rtt_RTT_Format_Reader {
  */
 //================================================================================================//
 class Sides {
+
+private:
+  void readKeyword(std::ifstream &meshfile);
+  void readData(std::ifstream &meshfile);
+  void readEndKeyword(std::ifstream &meshfile);
+
   // typedefs
   using ifstream = std::ifstream;
   using string = std::string;
@@ -45,18 +51,15 @@ public:
         nodes(dims.get_nsides()),
         flags(dims.get_nsides(), vector_int(dims.get_nside_flag_types())) { /* empty */
   }
-
   ~Sides() = default;
+  Sides(Sides const &rhs) = delete;
+  Sides(Sides &&rhs) noexcept = delete;
+  Sides &operator=(Sides const &rhs) = delete;
+  Sides &operator=(Sides &&rhs) noexcept = delete;
 
   void readSides(ifstream &meshfile);
   void redefineSides();
 
-private:
-  void readKeyword(ifstream &meshfile);
-  void readData(ifstream &meshfile);
-  void readEndKeyword(ifstream &meshfile);
-
-public:
   /*!
    * \brief Returns the side type associated with the specified side.
    * \param side_numb Side number.

@@ -3,8 +3,7 @@
  * \file   cdi_analytic/Pseudo_Line_Base.hh
  * \author Kent G. Budge
  * \date   Tue Apr  5 08:36:13 MDT 2011
- * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Pseudo_Line_Base_hh
@@ -27,13 +26,11 @@ double expm1(double const &x);
  * \class Pseudo_Line_Base
  * \brief Defines a random line spectrum for the opacity.
  *
- * The opacity function is a continuum on which is superimposed a number of
- * lines of the specified peak and width. The line locations are chosen at
- * random.
+ * The opacity function is a continuum on which is superimposed a number of lines of the specified
+ * peak and width. The line locations are chosen at random.
  *
- * The mass opacity coefficient is assumed independent of temperature or
- * density, which allows precalculation of the opacity structure, an important
- * time saver.
+ * The mass opacity coefficient is assumed independent of temperature or density, which allows
+ * precalculation of the opacity structure, an important time saver.
  */
 class Pseudo_Line_Base {
 public:
@@ -80,8 +77,7 @@ public:
 
   /*!
    * \brief Second constructor for Pseudo_Line_Base.
-   * \bug No unit test, but needed by Capsaicin
-   *      thermal_data/microphysics_parser.cc ->
+   * \bug No unit test, but needed by Capsaicin thermal_data/microphysics_parser.cc ->
    *      cdi_analytic/Pseudo_Line_Analytic_Odfmg_Opacity.cc -> Pseudo_Line_Base
    */
   Pseudo_Line_Base(string const &cont_file, int number_of_lines, double line_peak,
@@ -90,8 +86,7 @@ public:
 
   /*!
    * \brief Third constructor for Pseudo_Line_Base.
-   * \bug No unit test, but needed by Capsaicin
-   *      thermal_data/microphysics_parser.cc ->
+   * \bug No unit test, but needed by Capsaicin thermal_data/microphysics_parser.cc ->
    *      cdi_analytic/Pseudo_Line_Analytic_Odfmg_Opacity.cc -> Pseudo_Line_Base
    */
   Pseudo_Line_Base(double nu0, double C, double Bn, double Bd, double R, int number_of_lines,
@@ -102,6 +97,10 @@ public:
   explicit Pseudo_Line_Base(vector<char> const &packed);
 
   virtual ~Pseudo_Line_Base() = default;
+  Pseudo_Line_Base(Pseudo_Line_Base const &rhs) = delete;
+  Pseudo_Line_Base(Pseudo_Line_Base &&rhs) noexcept = delete;
+  Pseudo_Line_Base &operator=(Pseudo_Line_Base const &rhs) = delete;
+  Pseudo_Line_Base &operator=(Pseudo_Line_Base &&rhs) noexcept = delete;
 
   double line_width() const { return line_width_; }
 

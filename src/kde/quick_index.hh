@@ -4,9 +4,8 @@
  * \author Mathew Cleveland
  * \brief  This class generates coarse spatial indexing to quickly access near-neighbor data. This
  *         additionally provides simple interpolation schemes to map data to simple structured
- *         meshes. 
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
- */
+ *         meshes.
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_kde_quick_index_hh
@@ -31,7 +30,6 @@ namespace rtt_kde {
  * \param[in] dim used to ensure it is only used in valid dimension ranges
  * \param[in] sphere_center center of sphere in (x,y,z) or (r,z) coordinates
  * \param[in] locations (x,y,z) or (r,z) locations to transform to relative (r, theta, phi) space.
- *
  */
 inline std::vector<std::array<double, 3>>
 transform_spherical(const size_t dim, const std::array<double, 3> &sphere_center,
@@ -52,12 +50,7 @@ transform_spherical(const size_t dim, const std::array<double, 3> &sphere_center
 }
 
 //================================================================================================//
-/*!
- * \brief quick_index
- *
- * Provide a hash like index of spatial distributed data along with simple mapping functions.
- * 
- */
+//! Provide a hash like index of spatial distributed data along with simple mapping functions.
 //================================================================================================//
 
 class quick_index {
@@ -121,8 +114,8 @@ public:
   const size_t n_locations;
 
   // Global bounds
-  std::array<double, 3> bounding_box_min;
-  std::array<double, 3> bounding_box_max;
+  std::array<double, 3> bounding_box_min{0.0};
+  std::array<double, 3> bounding_box_max{0.0};
   // Local Data map
   std::map<size_t, std::vector<size_t>> coarse_index_map;
   std::map<size_t, std::array<double, 3>> coarse_index_center;
@@ -130,8 +123,8 @@ public:
 
   // DOMAIN DECOMPOSED DATA
   // Local bounds
-  std::array<double, 3> local_bounding_box_min;
-  std::array<double, 3> local_bounding_box_max;
+  std::array<double, 3> local_bounding_box_min{0.0};
+  std::array<double, 3> local_bounding_box_max{0.0};
   // Ordered list of local bins (indexes values are based on the global bin structure)
   std::vector<size_t> local_bins;
   // Size of ghost data buffer

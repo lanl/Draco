@@ -147,10 +147,11 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
     // build list of local bins based on the local bounds
     local_bins = window_coarse_index_list(local_bounding_box_min, local_bounding_box_max);
 
-    // build a global map for number of entries into the global bins on each processor
-    // creates a (nbins**dim)*nranks sized array
-    // NOTE: If this gets to big we could stride over a subset of coarse bins
-    // and do multiple iterations of mpi communication to build up the map
+    // build a global map for number of entries into the global bins on each processor creates a
+    // (nbins**dim)*nranks sized array
+    //
+    // \note If this gets to big we could stride over a subset of coarse bins and do multiple
+    // iterations of mpi communication to build up the map
     size_t nbins = coarse_bin_resolution;
     for (size_t d = 1; d < dim; d++)
       nbins *= coarse_bin_resolution;
@@ -263,7 +264,7 @@ auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win,
  * ranks.
  *
  * \param[in] local_data the local 3 dimensional data that is required to be available as ghost cell
- * data on other processors.
+ *              data on other processors.
  * \param[in] local_ghost_data the resulting 3 dimensional ghost data data.
  */
 void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &local_data,
@@ -297,7 +298,9 @@ void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &l
       }
       put_lambda(put, put_buffer, putIndex, win, MPI_DOUBLE);
     }
-    Remember(errorcode =) MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+    Remember(errorcode =)
+        MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), // NOLINT [hicpp-signed-bitwise]
+                      win);
     Check(errorcode == MPI_SUCCESS);
 
     // alright move the position buffer to the final correct array positions
@@ -361,7 +364,9 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
       }
       put_lambda(put, put_buffer, putIndex, win, MPI_DOUBLE);
     }
-    Remember(errorcode =) MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+    Remember(errorcode =)
+        MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), // NOLINT [hicpp-signed-bitwise]
+                      win);
     Check(errorcode == MPI_SUCCESS);
     // alright move the position buffer to the final correct vector positions
     int posIndex = 0;
@@ -382,7 +387,7 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
  * allow each rank to independently fill in its data to ghost cells of other ranks.
  *
  * \param[in] local_data the local vector data that is required to be available as ghost cell data
- * on other processors.
+ *              on other processors.
  * \param[in,out] local_ghost_data the resulting ghost data
  */
 void quick_index::collect_ghost_data(const std::vector<double> &local_data,
@@ -413,7 +418,9 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
     }
     put_lambda(put, put_buffer, putIndex, win, MPI_DOUBLE);
   }
-  Remember(errorcode =) MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+  Remember(errorcode =)
+      MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), // NOLINT [hicpp-signed-bitwise]
+                    win);
   Check(errorcode == MPI_SUCCESS);
   MPI_Win_free(&win);
 #endif
@@ -427,7 +434,7 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
  * allow each rank to independently fill in its data to ghost cells of other ranks.
  *
  * \param[in] local_data the local vector data that is required to be available as ghost cell data
- * on other processors.
+ *              on other processors.
  * \param[in,out] local_ghost_data the resulting ghost data
  */
 void quick_index::collect_ghost_data(const std::vector<int> &local_data,
@@ -458,7 +465,9 @@ void quick_index::collect_ghost_data(const std::vector<int> &local_data,
     }
     put_lambda(put, put_buffer, putIndex, win, MPI_INT);
   }
-  Remember(errorcode =) MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+  Remember(errorcode =)
+      MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), // NOLINT [hicpp-signed-bitwise]
+                    win);
   Check(errorcode == MPI_SUCCESS);
   MPI_Win_free(&win);
 #endif
@@ -484,8 +493,8 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
   // temp cast corse_bin_resolution to double for interpolation
   const auto crd = static_cast<double>(coarse_bin_resolution);
 
-  // calculate the global index range that each processor needs to
-  // accommodate the specified data window size
+  // calculate the global index range that each processor needs to accommodate the specified data
+  // window size
   std::array<size_t, 3> index_min = {0UL, 0UL, 0UL};
   std::array<size_t, 3> index_max = {0UL, 0UL, 0UL};
   size_t nbins = 1;
@@ -507,8 +516,7 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
         crd * (wmin - bounding_box_min[d]) / (bounding_box_max[d] - bounding_box_min[d]), 0.0)));
     index_max[d] = static_cast<size_t>(std::floor(crd * (wmax - bounding_box_min[d]) /
                                                   (bounding_box_max[d] - bounding_box_min[d])));
-    // because local bounds can extend beyond the mesh we need to floor to
-    // the max bin size
+    // because local bounds can extend beyond the mesh we need to floor to the max bin size
     index_max[d] = std::min(index_max[d], coarse_bin_resolution - 1);
     index_min[d] = std::min(index_min[d], coarse_bin_resolution - 1);
 
@@ -567,6 +575,7 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
       index_max[d] = std::min(index_max[d], coarse_bin_resolution - 1);
 
       // Use multiplicity to accumulate total bins;
+
       // if ((index_max[d] - index_min[d]) > 0)
       //   overlap_nbins *= index_max[d] - index_min[d] + 1;
     }
@@ -646,8 +655,7 @@ auto get_window_bin = [](auto spherical, const auto dim, const auto &grid_bins,
 auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, auto &min_distance,
                    const auto &map_type, const auto &data, const auto &distance_to_bin_center,
                    const auto &local_window_bin, const auto &data_bin) {
-  // regardless of map type if it is the first value to enter the bin it
-  // gets set to that value
+  // regardless of map type if it is the first value to enter the bin it gets set to that value
   if (data_count[local_window_bin] == 0) {
     bias_cell_count += 1.0;
     data_count[local_window_bin]++;
@@ -683,7 +691,6 @@ auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, aut
  * Maps local+ghost data to a fixed mesh grid based on a specified weighting type. This data can
  * additionally be normalized and positively biased on the grid.
  *
- *
  * \param[in] local_data the local data on the processor to be mapped to the window
  * \param[in] ghost_data the ghost data on the processor to be mapped to the window
  * \param[in,out] grid_data the resulting data map
@@ -693,7 +700,7 @@ auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, aut
  * \param[in] map_type_in string indicating the mapping (max, min, ave)
  * \param[in] normalize bool operator to specify if the data should be normalized to a pdf
  * \param[in] bias bool operator to specify if the data should be moved to the
- * positive domain space
+ *              positive domain space
  */
 void quick_index::map_data_to_grid_window(
     const std::vector<double> &local_data, const std::vector<double> &ghost_data,
@@ -768,8 +775,8 @@ void quick_index::map_data_to_grid_window(
   double bias_cell_count = 0.0;
   // Loop over all possible bins
   for (auto &cb : global_bins) {
-    // skip bins that aren't present in the map (can't use [] operator with constness)
-    // loop over the local data
+    // * skip bins that aren't present in the map (can't use [] operator with constness)
+    // * loop over the local data
     auto mapItr = coarse_index_map.find(cb);
     if (mapItr != coarse_index_map.end()) {
       for (auto &l : mapItr->second) {
@@ -1132,7 +1139,6 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
  *
  * Maps multiple local+ghost data vectors to a fixed mesh grid based on a specified weighting type.
  * This data can additionally be normalized and positively biased on the grid.
- *
  *
  * \param[in] r0 initial position
  * \param[in] r final position

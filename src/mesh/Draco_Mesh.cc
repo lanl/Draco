@@ -73,14 +73,14 @@ Draco_Mesh::Draco_Mesh(
 
   Require(dimension_ <= 3);
   Require(side_to_node_linkage_.size() ==
-          std::accumulate(side_node_count_.begin(), side_node_count_.end(), 0u));
+          std::accumulate(side_node_count_.begin(), side_node_count_.end(), 0U));
   Require(coordinates_.size() == dimension_ * global_node_number_.size());
 
   // check ghost data (should be true even when none are supplied)
   Require(ghost_cell_type_.size() == ghost_cell_number_.size());
   Require(ghost_cell_rank_.size() == ghost_cell_number_.size());
   Require(ghost_cell_to_node_linkage_.size() ==
-          std::accumulate(ghost_cell_type_.begin(), ghost_cell_type_.end(), 0u));
+          std::accumulate(ghost_cell_type_.begin(), ghost_cell_type_.end(), 0U));
 
   // build the layout using face types (number of nodes per face per cell)
   compute_cell_to_cell_linkage(
@@ -304,7 +304,7 @@ void Draco_Mesh::compute_cell_to_cell_linkage(
 
   Require(num_nodes_per_face_per_cell.size() > 0);
   Require(num_nodes_per_face_per_cell.size() ==
-          std::accumulate(num_faces_per_cell.begin(), num_faces_per_cell.end(), 0u));
+          std::accumulate(num_faces_per_cell.begin(), num_faces_per_cell.end(), 0U));
 
   // (1) create map of cell face to node set
 

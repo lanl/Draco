@@ -30,6 +30,8 @@ namespace rtt_RTT_Format_Reader {
  */
 //================================================================================================//
 class RTT_Mesh_Reader : public rtt_meshReaders::Mesh_Reader {
+
+private:
   // NESTED CLASSES AND TYPEDEFS
   using string = std::string;
   using set_int = std::set<int>;
@@ -43,8 +45,6 @@ class RTT_Mesh_Reader : public rtt_meshReaders::Mesh_Reader {
   using vector_vector_vector_uint = std::vector<std::vector<std::vector<unsigned int>>>;
 
   // DATA
-
-private:
   std::shared_ptr<RTT_Format_Reader> rttMesh;
   std::vector<std::shared_ptr<rtt_mesh_element::Element_Definition>> element_defs;
   std::vector<rtt_mesh_element::Element_Definition::Element_Type> element_types;
@@ -63,6 +63,10 @@ public:
 
   //! Destroys an RTT_Mesh_Reader class object
   ~RTT_Mesh_Reader() override = default;
+  RTT_Mesh_Reader(RTT_Mesh_Reader const &rhs) = delete;
+  RTT_Mesh_Reader(RTT_Mesh_Reader &&rhs) noexcept = delete;
+  RTT_Mesh_Reader &operator=(RTT_Mesh_Reader const &rhs) = delete;
+  RTT_Mesh_Reader &operator=(RTT_Mesh_Reader &&rhs) noexcept = delete;
 
   // ACCESSORS
 

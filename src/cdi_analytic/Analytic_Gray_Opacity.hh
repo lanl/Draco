@@ -76,7 +76,7 @@ public:
                         rtt_cdi::Model cdi_model_in = rtt_cdi::ANALYTIC);
 
   // Constructor for packed Analytic_Gray_Opacities.
-  explicit Analytic_Gray_Opacity(const sf_char &);
+  explicit Analytic_Gray_Opacity(const sf_char &packed);
 
   // >>> ACCESSORS
   const_SP_Model get_Analytic_Model() const { return analytic_model; }
@@ -84,13 +84,13 @@ public:
   // >>> INTERFACE SPECIFIED BY rtt_cdi::GrayOpacity
 
   // Get an opacity.
-  double getOpacity(double, double) const override;
+  double getOpacity(double temperature, double density) const override;
 
   // Get an opacity field given a field of temperatures.
-  sf_double getOpacity(const sf_double &, double) const override;
+  sf_double getOpacity(const sf_double &temperature, double density) const override;
 
   // Get an opacity field given a field of densities.
-  sf_double getOpacity(double, const sf_double &) const override;
+  sf_double getOpacity(double temperature, const sf_double &density) const override;
 
   //! Query to see if data is in tabular or functional form (false).
   bool data_in_tabular_form() const override { return false; }

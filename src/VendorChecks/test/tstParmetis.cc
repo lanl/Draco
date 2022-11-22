@@ -58,7 +58,7 @@ void test_parmetis(rtt_c4::ParallelUnitTest &ut) {
 #if REALTYPEWIDTH == 64
   real_t ubvec = 1.05;
 #else
-  real_t ubvec = 1.05f;
+  real_t ubvec = 1.05F;
 #endif
   // This is an array of integers that is used to pass additional parameters for the routine.
   std::vector<idx_t> options(4, 0);

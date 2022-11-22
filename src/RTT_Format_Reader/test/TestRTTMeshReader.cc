@@ -27,9 +27,6 @@ enum Meshes { DEFINED, MESHES_LASTENTRY };
 
 bool check_virtual(rtt_dsxx::UnitTest &ut, RTT_Mesh_Reader const &mesh, Meshes const &meshtype);
 
-#define PASSMSG(m) ut.passes(m)
-#define FAILMSG(m) ut.failure(m)
-
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
@@ -56,22 +53,17 @@ void runTest(rtt_dsxx::UnitTest &ut) {
     bool all_passed = true;
     // The following switch allows addition of other meshes for testing, with the "DEFINED" mesh
     // providing an example.
-    switch (mesh_number) {
-    // Test all nested class accessor functions for a very simplistic mesh file (enum DEFINED).
-    case (0):
+    if (mesh_number == 0) {
+      // Test all nested class accessor functions for a very simplistic mesh file (enum DEFINED).
       mesh_type = DEFINED;
       all_passed = all_passed && check_virtual(ut, mesh, mesh_type);
-      break;
-
-    default:
+    } else {
       FAILMSG("Invalid mesh type encountered.");
       all_passed = false;
-      break;
     }
     if (!all_passed) {
       ostringstream m;
-      m << "Errors occured testing mesh "
-        << "number " << mesh_type << endl;
+      m << "Errors occured testing mesh number " << mesh_type << endl;
       FAILMSG(m.str());
     }
   }
@@ -288,8 +280,7 @@ int main(int argc, char *argv[]) {
     cout << "ERROR: While testing " << argv[0] << ", " << err.what() << endl;
     return 1;
   } catch (...) {
-    cout << "ERROR: While testing " << argv[0] << ", "
-         << "An unknown exception was thrown" << endl;
+    cout << "ERROR: While testing " << argv[0] << ", An unknown exception was thrown" << endl;
     return 1;
   }
   return 0;

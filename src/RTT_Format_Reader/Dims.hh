@@ -69,20 +69,13 @@ public:
         cell_types(std::vector<int>()), ncell_flags(std::vector<int>()) { /* empty */
   }
   ~Dims() = default;
+  Dims(Dims const &rhs) = delete;
+  Dims(Dims &&rhs) noexcept = delete;
+  Dims &operator=(Dims const &rhs) = delete;
+  Dims &operator=(Dims &&rhs) noexcept = delete;
 
   void readDims(ifstream &meshfile);
 
-private:
-  void readKeyword(ifstream &meshfile);
-  void readUnits(ifstream &meshfile);
-  void readCellDefs(ifstream &meshfile);
-  void readDimensions(ifstream &meshfile);
-  void readNodes(ifstream &meshfile);
-  void readSides(ifstream &meshfile);
-  void readCells(ifstream &meshfile);
-  void readEndKeyword(ifstream &meshfile);
-
-public:
   // units and cell definition data access
   /*!
    * \brief Returns the problem coordinate units (e.g, cm).
@@ -236,6 +229,16 @@ public:
     return cell_types.end() !=
            std::find(cell_types.begin(), cell_types.end(), static_cast<int>(celltype));
   }
+
+private:
+  void readKeyword(ifstream &meshfile);
+  void readUnits(ifstream &meshfile);
+  void readCellDefs(ifstream &meshfile);
+  void readDimensions(ifstream &meshfile);
+  void readNodes(ifstream &meshfile);
+  void readSides(ifstream &meshfile);
+  void readCells(ifstream &meshfile);
+  void readEndKeyword(ifstream &meshfile);
 };
 
 } // end namespace rtt_RTT_Format_Reader

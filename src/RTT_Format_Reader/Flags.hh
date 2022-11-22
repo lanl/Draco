@@ -40,13 +40,15 @@ class Flags {
 
 public:
   Flags(size_t nflags_, string name_)
-      : nflags(nflags_), name(std::move(name_)), flag_nums(nflags), flag_names(nflags) { /* empty */
-  }
+      : nflags(nflags_), name(std::move(name_)), flag_nums(nflags), flag_names(nflags) {}
   ~Flags() = default;
+  Flags(Flags const &rhs) = delete;
+  Flags(Flags &&rhs) noexcept = delete;
+  Flags &operator=(Flags const &rhs) = delete;
+  Flags &operator=(Flags &&rhs) noexcept = delete;
 
   void readFlags(ifstream &meshfile);
 
-public:
   /*!
    * \brief Validates the specified flag index.
    * \param flag Flag index.

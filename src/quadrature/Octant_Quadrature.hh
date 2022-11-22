@@ -32,14 +32,11 @@ class Octant_Quadrature : public Quadrature {
 public:
   // CREATORS
 
-  Octant_Quadrature(unsigned const sn_order)
-      : Quadrature(sn_order), has_axis_assignments_(false), mu_axis_(), eta_axis_() { /* empty */
-  }
+  explicit Octant_Quadrature(unsigned const sn_order)
+      : Quadrature(sn_order), has_axis_assignments_(false), mu_axis_(), eta_axis_() {}
 
   Octant_Quadrature(unsigned const sn_order, unsigned const mu_axis, unsigned const eta_axis)
-      : Quadrature(sn_order), has_axis_assignments_(true), mu_axis_(mu_axis),
-        eta_axis_(eta_axis) { /* empty */
-  }
+      : Quadrature(sn_order), has_axis_assignments_(true), mu_axis_(mu_axis), eta_axis_(eta_axis) {}
 
   // SERVICES
   bool has_axis_assignments() const override;
@@ -64,12 +61,12 @@ private:
   using Quadrature::create_ordinates_;
 
   //! Virtual hook for create_ordinates
-  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry, double norm,
+  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm,
                                           bool include_starting_directions,
                                           bool include_extra_directions) const override;
 
   //! Virtual hook for create_ordinate_set
-  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry, double norm,
+  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm,
                                           unsigned mu_axis, unsigned eta_axis,
                                           bool include_starting_directions,
                                           bool include_extra_directions) const override;

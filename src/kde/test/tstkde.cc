@@ -4,8 +4,7 @@
  * \author Mathew Cleveland
  * \date   Nov. 10th 2020
  * \brief  KDE function tests
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "kde/kde.hh"
@@ -22,7 +21,7 @@ using namespace rtt_kde;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 //
-void test_replication(ParallelUnitTest &ut) {
+void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
   kde test_kde;
 
   // test the epan kernel
@@ -1225,7 +1224,8 @@ void test_replication(ParallelUnitTest &ut) {
   }
 }
 
-void test_decomposition(ParallelUnitTest &ut) {
+//------------------------------------------------------------------------------------------------//
+void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
   kde test_kde;
 
   // test the epan kernel

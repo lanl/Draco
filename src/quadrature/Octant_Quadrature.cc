@@ -200,30 +200,22 @@ std::vector<Ordinate> Octant_Quadrature::create_ordinates_(unsigned dimension, G
   } else {
     switch (dimension) {
     case 1:
-      switch (geometry) {
-      case rtt_mesh_element::Geometry::AXISYMMETRIC:
+      if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
         mu_axis = 0;
         eta_axis = 2;
-        break;
-
-      default:
+      } else {
         mu_axis = 2;
         eta_axis = 1;
-        break;
       }
       break;
 
     case 2:
-      switch (geometry) {
-      case rtt_mesh_element::Geometry::AXISYMMETRIC:
+      if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
         mu_axis = 0;
         eta_axis = 2;
-        break;
-
-      default:
+      } else {
         mu_axis = 0;
         eta_axis = 1;
-        break;
       }
       break;
 
@@ -241,9 +233,7 @@ std::vector<Ordinate> Octant_Quadrature::create_ordinates_(unsigned dimension, G
 }
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * Pure virtual used in conjuction with child implementations, for common features.
- */
+//! Pure virtual used in conjuction with child implementations, for common features.
 std::string Octant_Quadrature::as_text(std::string const &indent) const {
   std::string Result;
 

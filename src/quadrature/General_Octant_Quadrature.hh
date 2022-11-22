@@ -27,7 +27,7 @@ public:
   General_Octant_Quadrature(unsigned const sn_order, std::vector<double> const &mu,
                             std::vector<double> const &eta, std::vector<double> const &xi,
                             std::vector<double> const &wt, unsigned number_of_levels,
-                            Quadrature_Class);
+                            Quadrature_Class quadradure_class);
 
   General_Octant_Quadrature() = delete;
 

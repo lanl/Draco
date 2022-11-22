@@ -39,9 +39,9 @@ void NDI_Base::warn_ndi_version_mismatch(std::string const &gendir) {
   if (gendir_ver != ndi_ver) {
     using DT = Term::DracoTerminal;
     std::cout << "\n"
-              << Term::ccolor(DT::error) << "WARNING: In the cdi_ndi/NDI_Base "
-              << "constructor, the NDI library version (" << ndi_ver << ") is "
-              << "different than the NDI GENDIR version (" << gendir_ver << "). \n"
+              << Term::ccolor(DT::error) << "WARNING: In the cdi_ndi/NDI_Base constructor, the NDI "
+              << "library version (" << ndi_ver << ") is different than the NDI GENDIR version ("
+              << gendir_ver << "). \n"
               << Term::ccolor(DT::reset) << std::endl;
   }
 }
@@ -63,7 +63,8 @@ void NDI_Base::warn_ndi_version_mismatch(std::string const & /*gendir*/) {}
 //================================================================================================//
 
 //! Constructor for generic NDI reader- throws when NDI not available
-NDI_Base::NDI_Base(std::string /*dataset_in*/, std::string /*library_in*/) {
+NDI_Base::NDI_Base(std::string dataset_in, std::string library_in)
+    : dataset(std::move(dataset_in)), library(std::move(library_in)) {
   Insist(0, "NDI default gendir path only available when NDI is found.");
 }
 

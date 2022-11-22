@@ -4,8 +4,7 @@
  * \author Kendra P. Long
  * \date   Fri Aug  2 14:28:08 2019
  * \brief  Analytic_CP_Eloss class definition.
- * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPEloss_Analytic_CP_Eloss_hh
@@ -21,9 +20,8 @@ namespace rtt_cdi_cpeloss {
 /*!
  * \class Analytic_CP_Eloss
  *
- * \brief Derived rtt_cdi::CPEloss class for analytic eloss.  This class
- *        implements the interface found in cdi/CPEloss.hh for the case where CP
- *        energy loss data is in analytic form.
+ * \brief Derived rtt_cdi::CPEloss class for analytic eloss.  This class implements the interface
+ *        found in cdi/CPEloss.hh for the case where CP energy loss data is in analytic form.
  */
 //================================================================================================//
 
@@ -41,9 +39,8 @@ private:
   // Analytic eloss model.
   SP_Analytic_Model analytic_model;
 
-  // Data model (e.g. Eloss, large-angle scatter, etc.)  Currently only ELOSS is
-  // implemented.
-  //rtt_cdi::CPModel cpmodel;
+  // Data model (e.g. Eloss, large-angle scatter, etc.)  Currently only ELOSS is implemented.
+  // rtt_cdi::CPModel cpmodel;
 
 public:
   // Constructor.

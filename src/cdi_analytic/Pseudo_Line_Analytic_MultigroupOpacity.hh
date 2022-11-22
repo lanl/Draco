@@ -50,13 +50,13 @@ public:
   explicit Pseudo_Line_Analytic_MultigroupOpacity(const sf_char &packed);
 
   //! Get the group opacities.
-  sf_double getOpacity(double, double) const override;
+  sf_double getOpacity(double targetTemperature, double targetDensity) const override;
 
   //! Get the group opacity fields given a field of temperatures.
-  vf_double getOpacity(const sf_double &, double) const override;
+  vf_double getOpacity(const sf_double &targetTemperature, double targetDensity) const override;
 
   //! Get the group opacity fields given a field of densities.
-  vf_double getOpacity(double, const sf_double &) const override;
+  vf_double getOpacity(double targetTemperature, const sf_double &targetDensity) const override;
 
   //! Get the data description of the opacity.
   std::string getDataDescriptor() const override;

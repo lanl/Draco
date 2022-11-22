@@ -43,8 +43,7 @@ private:
 
 public:
   //! Constructor.
-  Viz_Traits(const FT &field_in) : field(field_in) { /*...*/
-  }
+  explicit Viz_Traits(const FT &field_in) : field(field_in) {}
 
   //! Overloaded operator().
   typename FT::value_type operator()(size_t i, size_t j) const { return field(i, j); }
@@ -76,7 +75,7 @@ private:
 
 public:
   // Constructor.
-  Viz_Traits(const std::vector<std::vector<T>> &fin) : field(fin) {
+  explicit Viz_Traits(const std::vector<std::vector<T>> &fin) : field(fin) {
     // Nothing to do here
   }
 
@@ -121,7 +120,7 @@ private:
 
 public:
   // Constructor.
-  Viz_Traits(const std::vector<std::vector<std::vector<T>>> &fin) : field(fin) {
+  explicit Viz_Traits(const std::vector<std::vector<std::vector<T>>> &fin) : field(fin) {
     // Nothing to do here
   }
 

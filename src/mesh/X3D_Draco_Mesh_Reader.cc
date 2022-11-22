@@ -37,9 +37,8 @@ X3D_Draco_Mesh_Reader::X3D_Draco_Mesh_Reader(const std::string &filename_,
 //------------------------------------------------------------------------------------------------//
 // PUBLIC FUNCTIONS
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Build the cell-face index map to the corresponding coordinates.
- */
+
+//! Build the cell-face index map to the corresponding coordinates.
 void X3D_Draco_Mesh_Reader::read_mesh() {
 
   Require(parsed_pairs.size() == 0);

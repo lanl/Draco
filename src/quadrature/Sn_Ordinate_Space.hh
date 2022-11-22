@@ -32,7 +32,7 @@ public:
 
   //! Specify the ordinate quadrature with defaults.
   Sn_Ordinate_Space(unsigned dimension, rtt_mesh_element::Geometry geometry,
-                    std::vector<Ordinate> const &, int expansion_order,
+                    std::vector<Ordinate> const &ordinates, int expansion_order,
                     bool extra_starting_directions = false, Ordering ordering = LEVEL_ORDERED);
 
   // ACCESSORS
@@ -52,11 +52,11 @@ public:
 protected:
   // IMPLEMENTATION
 
-  std::vector<Moment> compute_n2lk_1D_(Quadrature_Class, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_1Da_(Quadrature_Class, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_2D_(Quadrature_Class, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_2Da_(Quadrature_Class, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_3D_(Quadrature_Class, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_1D_(Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_1Da_(Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_2D_(Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_2Da_(Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_3D_(Quadrature_Class /*unused*/, unsigned sn_order) override;
 
 private:
   // IMPLEMENTATION

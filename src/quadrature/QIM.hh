@@ -4,8 +4,7 @@
  * \author Kent Budge
  * \date   Mon Mar 26 16:11:19 2007
  * \brief  Definition of QIM enumeration
- * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_QIM_hh
@@ -19,8 +18,8 @@ using rtt_parser::Token_Stream;
 //================================================================================================//
 /*!
  * \class QIM
- * \brief Quadrature Interpolation Model: Enumerations specify how to compute
- *        the Discrete-to-Moment operator.
+ * \brief Quadrature Interpolation Model: Enumerations specify how to compute the Discrete-to-Moment
+ *        operator.
  */
 //================================================================================================//
 enum QIM {
@@ -32,8 +31,8 @@ enum QIM {
   END_QIM //!< Sentinel value
 };
 
-void parse_quadrature_interpolation_model(Token_Stream &, QIM &);
-std::string quadrature_interpolation_model_as_text(QIM);
+void parse_quadrature_interpolation_model(Token_Stream &tokens, QIM &qim);
+std::string quadrature_interpolation_model_as_text(QIM q);
 
 } // end namespace rtt_quadrature
 

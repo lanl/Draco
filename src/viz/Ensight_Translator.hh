@@ -202,17 +202,20 @@ private:
 
   // Write out geometry file.
   template <typename IVF, typename FVF, typename ISF>
-  void write_geom(const uint32_t part_num, const std_string &, const rtt_viz::Viz_Traits<IVF> &,
-                  const rtt_viz::Viz_Traits<FVF> &, const sf2_int &, const sf_int &, const ISF &,
-                  const ISF &);
+  void write_geom(const uint32_t part_num, const std_string &part_name,
+                  const rtt_viz::Viz_Traits<IVF> &ipar, const rtt_viz::Viz_Traits<FVF> &vrtx_data,
+                  const sf2_int &cells_of_type, const sf_int &vertices, const ISF &g_vrtx_indeces,
+                  const ISF &g_cell_indeces);
 
   // Write out vertex data.
   template <typename FVF>
-  void write_vrtx_data(uint32_t part_num, const rtt_viz::Viz_Traits<FVF> &, const sf_int &);
+  void write_vrtx_data(uint32_t part_num, const rtt_viz::Viz_Traits<FVF> &vrtx_data,
+                       const sf_int &vertices);
 
   // Write out cell data.
   template <typename FVF>
-  void write_cell_data(const uint32_t part_num, const rtt_viz::Viz_Traits<FVF> &, const sf2_int &);
+  void write_cell_data(const uint32_t part_num, const rtt_viz::Viz_Traits<FVF> &cell_data,
+                       const sf2_int &cells_of_type);
 
   // Initializer used by constructors
   void initialize(const bool graphics_continue);

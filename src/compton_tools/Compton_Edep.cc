@@ -25,7 +25,7 @@ constexpr double fuzz = std::numeric_limits<double>::epsilon();
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Extract a fixed number of data points from an fstream object
- * 
+ *
  * \param[in] n_entries The number of data values to extract
  * \param[in] datafile An fstream to extract from
  * \return An n_entries-length vector of double data
@@ -51,7 +51,7 @@ std::vector<double> get_data_line(size_t n_entries, std::ifstream &datafile) {
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Extract a single size_t value from a stream
- * 
+ *
  * \param[in] sizeline A stream with size_t values in it
  * \return The next size_t value in the stream
  */
@@ -72,7 +72,7 @@ namespace compton_edep {
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Read in an average energy deposition dataset and populate/return a simple data container
- * 
+ *
  * \param[in] infile the (CSK-generated) base library filename
  * \return A data container with the raw sigma_c / EREC values
  *
@@ -306,3 +306,7 @@ void Preinterp_Container::preinterp_sigc_erec(const std::vector<double> &Tms,
   }
 }
 } // namespace compton_edep
+
+//------------------------------------------------------------------------------------------------//
+// End of Compton_Edep.cc
+//------------------------------------------------------------------------------------------------//

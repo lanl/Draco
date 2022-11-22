@@ -4,8 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  Parser for various quadrature classes.
- * \note   Copyright (C) 2015-2022 Triad National Security, LLC., All rights reserved.
- *         reserved. */
+ * \note   Copyright (C) 2015-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Quadrature.hh"
@@ -32,6 +31,10 @@ public:
   Class_Parse_Table();
 
   virtual ~Class_Parse_Table() { child_.reset(); }
+  Class_Parse_Table(Class_Parse_Table const &rhs) = delete;
+  Class_Parse_Table(Class_Parse_Table &&rhs) noexcept = delete;
+  Class_Parse_Table &operator=(Class_Parse_Table const &rhs) = delete;
+  Class_Parse_Table &operator=(Class_Parse_Table &&rhs) noexcept = delete;
 
   // SERVICES
 
@@ -52,9 +55,7 @@ private:
   // STATICS
 
   static Parse_Table &get_parse_table() { return parse_table_; }
-
   static std::shared_ptr<Quadrature> &get_parsed_object();
-
   static Class_Parse_Table *current_;
   static Parse_Table parse_table_;
   static std::shared_ptr<Quadrature> child_;
