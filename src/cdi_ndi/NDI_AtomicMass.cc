@@ -65,7 +65,7 @@ double NDI_AtomicMass::get_amw(const int zaid) const {
   Require(ndi_error == 0);
   Insist(size == 1, "NDI returned more or fewer than one atomic weight?");
 
-  std::array<double, 1> arr;
+  std::array<double, 1> arr{0.0};
   ndi_error =
       NDI2_get_float64_vec_x(gendir_handle, NDI_AT_WGT, zaid_formatted.c_str(), arr.data(), size);
   Require(ndi_error == 0);

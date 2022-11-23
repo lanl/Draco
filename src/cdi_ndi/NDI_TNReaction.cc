@@ -63,7 +63,7 @@ NDI_TNReaction::NDI_TNReaction(const std::string &library_in, std::string &react
                                std::vector<double> mg_e_bounds_in)
 #ifdef NDI_FOUND
     : NDI_TNReaction(rtt_dsxx::get_env_val<std::string>("NDI_GENDIR_PATH").second, library_in,
-                     reaction_in, mg_e_bounds_in)
+                     reaction_in, std::move(mg_e_bounds_in))
 #else
     : NDI_Base("tn", library_in), reaction(std::move(reaction_in)),
       mg_e_bounds(std::move(mg_e_bounds_in))
@@ -88,7 +88,7 @@ void NDI_TNReaction::load_ndi() {
   int dataset_handle = -1;
   int ndi_error = -9999;
   constexpr int c_str_len = 4096;
-  std::array<char, c_str_len> c_str_buf;
+  std::array<char, c_str_len> c_str_buf{' '};
 
   // Open gendir file (index of a complete NDI dataset)
   ndi_error = NDI2_open_gendir(&gendir_handle, gendir.c_str());
