@@ -68,7 +68,7 @@ checkCoverage_MR:
   stage: metrics
   allow_failure: true
   image:
-    name: alpine:latest
+    name: alpine:3.16.2
   allow_failure: true
   before_script:
     - apk add --quiet --update --no-cache curl jq
@@ -77,9 +77,13 @@ checkCoverage_MR:
   variables:
     BASE_URL: "${CI_API_V4_URL}/projects/${CI_MERGE_REQUEST_PROJECT_ID}/pipelines"
     URL: "${BASE_URL}/${CI_PIPELINE_ID}/jobs?private_token=${PRIVATE_TOKEN}"
+  artifacts:
+    paths:
+      - ${CI_JOB_NAME}.log
   script:
     - echo "curl -k -s ${URL} --> ${CI_JOB_NAME}.log"
-    - curl -k -s "${URL}" > "${CI_JOB_NAME}.log"
+    - curl -k -s ${URL}
+    - curl -k -s ${URL} > ${CI_JOB_NAME}.log
     - CURRENT_COVERAGE=$(jq --arg JOB_NAME ccs2_gcov
       '.[] | select (.name=="ccs2_gcov") | .coverage' < "${CI_JOB_NAME}.log")
     - echo "TARGET_COVERAGE  = ${TARGET_COVERAGE_PERCENT}"
