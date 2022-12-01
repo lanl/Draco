@@ -32,7 +32,7 @@ void report_leaks(std::ostream &out);
 void out_of_memory_handler();
 
 // To set the peak at which to break
-uint64_t set_check_peak(uint64_t new_peak);
+// uint64_t set_check_peak(uint64_t new_peak);
 void set_dump_and_exit(unsigned /*unused*/);
 
 //! To get a report on the console of all allocations over a threshold size.

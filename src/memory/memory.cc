@@ -6,7 +6,7 @@
  * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "memory.hh"
+#include "memory/memory.hh"
 #include "ds++/Assert.hh"
 #include "ds++/StackTrace.hh"
 #include <iostream>
@@ -152,11 +152,11 @@ void report_leaks(ostream &out) {
 }
 
 //----------------------------------------------------------------------------------------//
-uint64_t set_check_peak(uint64_t new_peak) {
-  uint64_t Result = check_peak;
-  check_peak = new_peak;
-  return Result;
-}
+// uint64_t set_check_peak(uint64_t new_peak) {
+//   uint64_t Result = check_peak;
+//   check_peak = new_peak;
+//   return Result;
+// }
 
 //----------------------------------------------------------------------------------------//
 // void set_dump_and_exit(unsigned new_dump_count) { dump_count = new_dump_count; }

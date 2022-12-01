@@ -384,6 +384,10 @@ ccs2_gcov:
   extends: .ccscs_merge
   # https://regex101.com/
   coverage: '/Total:\|\d+\.\d+%/'
+  artifacts:
+    paths:
+      - build/cov-html/
+      - build/coverage.txt
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
