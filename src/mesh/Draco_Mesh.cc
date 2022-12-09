@@ -370,7 +370,7 @@ void Draco_Mesh::compute_cell_to_cell_linkage(
     for (unsigned face = 0; face < num_faces_per_cell[cell]; ++face) {
 
       // initialize this face to not having a condition
-      bool has_face_cond = false;
+      uint32_t num_cond = 0;
 
       // get the node set for this cell and face
       const std::set<unsigned> &node_set = cface_to_nodes[cf_counter];
@@ -399,8 +399,8 @@ void Draco_Mesh::compute_cell_to_cell_linkage(
         // increment number of cell-cell faces for this cell
         num_cellcell_faces_per_cell[cell]++;
 
-        // a neighbor cell was found
-        has_face_cond = true;
+        // increment number of face conditions: a neighbor cell was found
+        num_cond++;
       }
 
       // check if a boundary/side exists for this node set
@@ -412,7 +412,8 @@ void Draco_Mesh::compute_cell_to_cell_linkage(
         // increment number of cell-side faces for this cell
         num_cellside_faces_per_cell[cell]++;
 
-        has_face_cond = true;
+        // increment number of face conditions: a true boundary was found
+        num_cond++;
       }
 
       // check if a parallel face exists for this node set
@@ -422,11 +423,15 @@ void Draco_Mesh::compute_cell_to_cell_linkage(
         cell_to_ghost_cell_linkage[cell].push_back(
             std::make_pair(nodes_to_ghost[node_set], node_vec));
 
-        has_face_cond = true;
+        // increment number of face conditions: a off-rank face was found
+        num_cond++;
       }
 
+      // check face has only one condition (internal, boundary, or ghost)
+      Insist(num_cond <= 1, "More than one condition detected on cell face.");
+
       // make face a boundary if no face conditions have been found
-      if (!has_face_cond) {
+      if (num_cond == 0) {
 
         // augment side flags with vacuum b.c.
         side_set_flag.push_back(0);

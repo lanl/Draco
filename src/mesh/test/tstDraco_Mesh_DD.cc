@@ -56,31 +56,34 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
         std::make_shared<Test_Mesh_Interface>(num_xdir, num_ydir, global_node_number, 1.0, 0.0);
   }
 
-  // set ghost data
+  // set ghost and boundary (side) data
   std::vector<unsigned> ghost_cell_type = {2};
   std::vector<int> ghost_cell_number = {0};
   std::vector<unsigned> ghost_cell_to_node_linkage(2);
   std::vector<int> ghost_cell_rank(1);
+  std::vector<unsigned> side_node_count = {2, 2, 2};
+  std::vector<unsigned> side_set_flag = {0, 0, 0};
+  std::vector<unsigned> side_to_node_linkage(6);
   if (rtt_c4::node() == 0) {
     ghost_cell_to_node_linkage = {1, 3};
     ghost_cell_rank = {1};
+    side_to_node_linkage = {1, 0, 0, 2, 2, 3};
   } else {
     ghost_cell_to_node_linkage = {2, 0};
     ghost_cell_rank = {0};
+    side_to_node_linkage = {0, 1, 1, 3, 3, 2};
   }
 
   // short-cut to some arrays
   const std::vector<unsigned> &cell_type = mesh_iface->cell_type;
   const std::vector<unsigned> &cell_to_node_linkage = mesh_iface->cell_to_node_linkage;
-  const std::vector<unsigned> &side_node_count = mesh_iface->side_node_count;
-  const std::vector<unsigned> &side_to_node_linkage = mesh_iface->side_to_node_linkage;
 
   // instantiate the mesh
-  std::shared_ptr<Draco_Mesh> mesh(new Draco_Mesh(
-      mesh_iface->dim, geometry, cell_type, cell_to_node_linkage, mesh_iface->side_set_flag,
-      side_node_count, side_to_node_linkage, mesh_iface->coordinates,
-      mesh_iface->global_node_number, mesh_iface->face_type, ghost_cell_type,
-      ghost_cell_to_node_linkage, ghost_cell_number, ghost_cell_rank));
+  std::shared_ptr<Draco_Mesh> mesh(
+      new Draco_Mesh(mesh_iface->dim, geometry, cell_type, cell_to_node_linkage, side_set_flag,
+                     side_node_count, side_to_node_linkage, mesh_iface->coordinates,
+                     mesh_iface->global_node_number, mesh_iface->face_type, ghost_cell_type,
+                     ghost_cell_to_node_linkage, ghost_cell_number, ghost_cell_rank));
 
   // check that the scalar data is correct
   FAIL_IF_NOT(mesh->get_dimension() == 2);
@@ -121,8 +124,8 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
     for (unsigned cell = 0; cell < mesh_iface->num_cells; ++cell) {
 
       // nodes must only be permuted at the cell level
-      FAIL_IF_NOT(std::is_permutation(test_cn_first, test_cn_first + cell_type[cell], cn_first,
-                                      cn_first + cell_type[cell]));
+      FAIL_IF_NOT(std::is_permutation(test_cn_first, test_cn_first + 2 * cell_type[cell], cn_first,
+                                      cn_first + 2 * cell_type[cell]));
 
       // update the iterators
       cn_first += cell_type[cell];
@@ -291,37 +294,42 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
         std::make_shared<Test_Mesh_Interface>(num_xdir, num_ydir, global_node_number, 1.0, 1.0);
   }
 
-  // set ghost data
+  // set ghost and boundary (side) data
   std::vector<unsigned> ghost_cell_type = {2, 2};
   std::vector<int> ghost_cell_number = {0, 0};
   std::vector<unsigned> ghost_cell_to_node_linkage(4);
   std::vector<int> ghost_cell_rank(2);
+  std::vector<unsigned> side_node_count = {2, 2};
+  std::vector<unsigned> side_set_flag = {0, 0};
+  std::vector<unsigned> side_to_node_linkage(4);
   if (rtt_c4::node() == 0) {
     ghost_cell_to_node_linkage = {1, 3, 3, 2};
     ghost_cell_rank = {1, 2};
+    side_to_node_linkage = {2, 0, 0, 1};
   } else if (rtt_c4::node() == 1) {
     ghost_cell_to_node_linkage = {2, 0, 2, 3};
     ghost_cell_rank = {0, 3};
+    side_to_node_linkage = {0, 1, 1, 3};
   } else if (rtt_c4::node() == 2) {
     ghost_cell_to_node_linkage = {0, 1, 1, 3};
     ghost_cell_rank = {0, 3};
+    side_to_node_linkage = {3, 2, 2, 0};
   } else {
     ghost_cell_to_node_linkage = {0, 1, 2, 0};
     ghost_cell_rank = {1, 2};
+    side_to_node_linkage = {1, 3, 3, 2};
   }
 
   // short-cut to some arrays
   const std::vector<unsigned> &cell_type = mesh_iface->cell_type;
   const std::vector<unsigned> &cell_to_node_linkage = mesh_iface->cell_to_node_linkage;
-  const std::vector<unsigned> &side_node_count = mesh_iface->side_node_count;
-  const std::vector<unsigned> &side_to_node_linkage = mesh_iface->side_to_node_linkage;
 
   // instantiate the mesh
-  std::shared_ptr<Draco_Mesh> mesh(new Draco_Mesh(
-      mesh_iface->dim, geometry, cell_type, cell_to_node_linkage, mesh_iface->side_set_flag,
-      side_node_count, side_to_node_linkage, mesh_iface->coordinates,
-      mesh_iface->global_node_number, mesh_iface->face_type, ghost_cell_type,
-      ghost_cell_to_node_linkage, ghost_cell_number, ghost_cell_rank));
+  std::shared_ptr<Draco_Mesh> mesh(
+      new Draco_Mesh(mesh_iface->dim, geometry, cell_type, cell_to_node_linkage, side_set_flag,
+                     side_node_count, side_to_node_linkage, mesh_iface->coordinates,
+                     mesh_iface->global_node_number, mesh_iface->face_type, ghost_cell_type,
+                     ghost_cell_to_node_linkage, ghost_cell_number, ghost_cell_rank));
 
   // check that the scalar data is correct
   FAIL_IF_NOT(mesh->get_dimension() == 2);
@@ -362,8 +370,8 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
     for (unsigned cell = 0; cell < mesh_iface->num_cells; ++cell) {
 
       // nodes must only be permuted at the cell level
-      FAIL_IF_NOT(std::is_permutation(test_cn_first, test_cn_first + cell_type[cell], cn_first,
-                                      cn_first + cell_type[cell]));
+      FAIL_IF_NOT(std::is_permutation(test_cn_first, test_cn_first + 2 * cell_type[cell], cn_first,
+                                      cn_first + 2 * cell_type[cell]));
 
       // update the iterators
       cn_first += cell_type[cell];
