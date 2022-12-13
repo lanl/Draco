@@ -24,8 +24,8 @@ void tstFT(UnitTest &ut) {
   double const x = 3.7;
   FAIL_IF_NOT(rtt_dsxx::soft_equiv(value(x), 3.7));
 
-  double const eps = std::numeric_limits<double>::epsilon();
-  double const mrv = std::numeric_limits<double>::min();
+  double constexpr eps = std::numeric_limits<double>::epsilon();
+  double constexpr mrv = std::numeric_limits<double>::min();
 
   FAIL_IF_NOT(rtt_dsxx::soft_equiv(Field_Traits<double const>::zero(), 0.0, mrv));
   FAIL_IF_NOT(rtt_dsxx::soft_equiv(Field_Traits<double const>::one(), 1.0, eps));
