@@ -36,10 +36,10 @@ static uint64_t total;
 static uint64_t peak;
 static uint64_t largest;
 
-static uint64_t check_peak = numeric_limits<uint64_t>::max();
-// normally set in debugger to trigger a breakpoint
-
 #if DRACO_DIAGNOSTICS & 2
+
+// normally set in debugger to trigger a breakpoint
+static uint64_t check_peak = numeric_limits<uint64_t>::max();
 
 static uint64_t check_large = numeric_limits<uint64_t>::max();
 // normally set in debugger to trigger a breakpoint

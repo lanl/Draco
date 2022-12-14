@@ -27,13 +27,12 @@ void tstbrent(UnitTest &ut) {
   double constexpr tol(1.0e-12);
   double root = brent(0.0, 6.28, 2.0, f, tol, xmin);
 
-  cout << "Found    xmin = " << setprecision(16) << xmin << ", root = " << root << endl;
-  cout << "Expected xmin = " << M_PI << endl;
-
-  if (soft_equiv(xmin, M_PI)) {
-    ut.passes("correctly found first minimum of cos");
+  if (soft_equiv(xmin, M_PI, 1.0e-10)) {
+    PASSMSG("correctly found first minimum of cos");
   } else {
-    ut.failure("did NOT correctly find first minimum of cos");
+    FAILMSG("did NOT correctly find first minimum of cos");
+    cout << "\nFound    xmin = " << setprecision(16) << xmin << ", root = " << root
+         << "\nExpected xmin = " << M_PI << ", rdiff = " << std::abs(xmin - M_PI) / M_PI << endl;
   }
 }
 
