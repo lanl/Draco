@@ -22,7 +22,7 @@ namespace rtt_dsxx {
  *
  * This class has reference semantics to the underlying random access sequence, and imposes a subset
  * on the sequence based on a stride.  It can also be used to give standard container semantics to a
- * sequence, which is particularly useful with builtin types like double* that have iterator
+ * sequence, which is particularly useful with built-in types like double* that have iterator
  * semantics.
  *
  * \arg \a Ran A random access iterator type, such as double* or std::vector<double>::iterator.
@@ -31,14 +31,14 @@ namespace rtt_dsxx {
 
 template <typename Ran> class Slice {
 private:
-  typedef typename std::iterator_traits<Ran> traits; // NOLINT
+  using traits = typename std::iterator_traits<Ran>;
 
 public:
   // NESTED CLASSES AND TYPEDEFS
 
   using value_type = typename traits::value_type;
   // no allocator type
-  using size_type = unsigned int;
+  using size_type = std::size_t;
   using difference_type = typename traits::difference_type;
 
   class iterator {
@@ -51,7 +51,7 @@ public:
 
     Ran first() const { return first_; }
     difference_type offset() const { return offset_; }
-    unsigned stride() const { return stride_; }
+    size_type stride() const { return stride_; }
 
     iterator &operator++() {
       offset_ += stride_;
@@ -81,7 +81,7 @@ public:
   private:
     friend class Slice;
 
-    iterator(Ran const first, difference_type const offset, unsigned const stride)
+    iterator(Ran const first, difference_type const offset, size_type const stride)
         : first_(first), offset_(offset), stride_(stride) {
       Require(stride > 0);
     }
@@ -96,7 +96,7 @@ public:
 
     Ran first_;
     difference_type offset_;
-    unsigned stride_;
+    size_type stride_;
   };
 
   class const_iterator {
@@ -109,7 +109,7 @@ public:
 
     Ran first() const { return first_; }
     difference_type offset() const { return offset_; }
-    unsigned stride() const { return stride_; }
+    size_type stride() const { return stride_; }
 
     const_iterator &operator++() {
       offset_ += stride_;
@@ -142,7 +142,7 @@ public:
   private:
     friend class Slice;
 
-    const_iterator(Ran const first, difference_type const offset, unsigned const stride)
+    const_iterator(Ran const first, difference_type const offset, size_type const stride)
         : first_(first), offset_(offset), stride_(stride) {
       Require(stride > 0);
     }
@@ -157,7 +157,7 @@ public:
 
     Ran first_;
     difference_type offset_;
-    unsigned stride_;
+    size_type stride_;
   };
 
   using reverse_iterator = std::reverse_iterator<iterator>;
@@ -191,7 +191,7 @@ public:
    * \param length_in Length of the constructed Slice.
    * \param stride_in Stride to apply to the sequence.
    */
-  Slice(Ran const first_in, unsigned const length_in, unsigned const stride_in = 1)
+  Slice(Ran const first_in, size_type const length_in, size_type const stride_in = 1)
       : first(first_in), length(length_in), stride(stride_in) {
     Require(stride_in > 0);
   }
@@ -232,15 +232,12 @@ public:
   size_type max_size() const;
 
 private:
-  // NESTED CLASSES AND TYPEDEFS
-
-  // IMPLEMENTATION
 
   // DATA
 
   Ran first;
-  unsigned length;
-  unsigned stride;
+  size_type length;
+  size_type stride;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -259,7 +256,7 @@ private:
  * \return The desired Slice.
  */
 template <typename Ran>
-inline Slice<Ran> slice(Ran const first, unsigned const length, unsigned const stride = 1) {
+inline Slice<Ran> slice(Ran const first, std::size_t const length, std::size_t const stride = 1) {
   Require(stride > 0);
 
   return Slice<Ran>(first, length, stride);

@@ -2,8 +2,7 @@
 /*!
  * \file   ds++/test/tstPrefetch.cc
  * \brief  Demonstrate/Test the prefetch function.
- * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Prefetch.hh"
@@ -20,7 +19,6 @@ using namespace rtt_dsxx;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
-//------------------------------------------------------------------------------------------------//
 void runtest(rtt_dsxx::UnitTest &ut) {
 
   cout << "Begin tstPrefetch::runtest() checks...\n";
@@ -43,7 +41,7 @@ void runtest(rtt_dsxx::UnitTest &ut) {
       }
     }
     for (unsigned i = 0; i < N; i += CACHE_LINE_DOUBLE) {
-      for (unsigned j = 0; j < CACHE_LINE_DOUBLE; j += 2) {
+      for (size_t j = 0; j < static_cast<size_t>(CACHE_LINE_DOUBLE); j += 2) {
         sum += sqrt(huge[j] * huge[j] + huge[j + 1] * huge[j + 1]);
       }
     }
@@ -63,7 +61,7 @@ void runtest(rtt_dsxx::UnitTest &ut) {
     }
     for (unsigned i = 0; i < N; i += CACHE_LINE_DOUBLE) {
       prefetch_cache_line(&huge[i + CACHE_LINE_DOUBLE], 0, 1);
-      for (unsigned j = 0; j < CACHE_LINE_DOUBLE; j += 2) {
+      for (size_t j = 0; j < static_cast<size_t>(CACHE_LINE_DOUBLE); j += 2) {
         sum += sqrt(huge[j] * huge[j] + huge[j + 1] * huge[j + 1]);
       }
     }

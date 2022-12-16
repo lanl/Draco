@@ -110,8 +110,8 @@ void test_parse_number(UnitTest &ut) {
   string const case3("3.1415");
   string const case4("four");
 
-  double const deps = numeric_limits<double>::epsilon();
-  float const feps = numeric_limits<float>::epsilon();
+  double constexpr deps = numeric_limits<double>::epsilon();
+  float constexpr feps = numeric_limits<float>::epsilon();
 
   FAIL_IF_NOT(parse_number<int>(case1) == 1);
   FAIL_IF_NOT(parse_number<long>(case1) == 1L);

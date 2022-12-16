@@ -226,8 +226,7 @@ void tstVersion(UnitTest &unitTest, char *test) {
   std::vector<std::string> vs_arguments = {test, "a", "--version"};
   auto argc = static_cast<int>(vs_arguments.size());
 
-  // Convert to 'char *'
-  // We can then use &vc[0] as type char**
+  // Convert to 'char *' so we can then use &vc[0] as type char**
   std::vector<char *> vc;
   std::transform(vs_arguments.begin(), vs_arguments.end(), std::back_inserter(vc),
                  convert_string_to_char_ptr);
@@ -235,7 +234,7 @@ void tstVersion(UnitTest &unitTest, char *test) {
   char **argv = &vc[0];
   try {
     std::cout << "Testing ctor... ScalarUnitTest(argc, argv, release)" << std::endl;
-    ScalarUnitTest(argc, argv, release);
+    ScalarUnitTest myut(argc, argv, release);
     FAILMSG("version construction NOT correct");
   } catch (assertion &err) {
     if (!strcmp(err.what(), "Success"))

@@ -125,8 +125,8 @@ void compute_buffer_size_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void packing_test(rtt_dsxx::UnitTest &ut) {
 
-  double const eps = std::numeric_limits<double>::epsilon();
-  double const mrv = std::numeric_limits<double>::min();
+  double constexpr eps = std::numeric_limits<double>::epsilon();
+  double constexpr mrv = std::numeric_limits<double>::min();
 
   // make some data
   double x = 102.45;

@@ -46,7 +46,7 @@ using namespace std;
  *    3    test overflow
  *
  * If \c 'DRACO_DIAGNOSTICS && 0100' is non-zero (e.g.: \c DRACO_DIAGNOSTICS=7), then Draco's
- * fpe_trap shoud convert the IEEE FPE into a C++ exception and print a stack trace.
+ * fpe_trap should convert the IEEE FPE into a C++ exception and print a stack trace.
  *
  * When run through via \c ctest, the output from these tests is captured in the files \c
  * do_exception_[0-9]+.out and \c do_exception_[0-9]+.err.
@@ -69,8 +69,7 @@ void run_test(int /*argc*/, char **argv) {
   }
 
   // Accept a command line argument with value 0, 1, 2 or 3.
-  int test(-101);
-  sscanf(argv[1], "%d", &test); // NOLINT [hicpp-vararg]
+  int test = atoi(argv[1]);
   Insist(test >= 0 && test <= 3, "Bad test value.");
 
   double zero(0.0); // for double division by zero
@@ -82,7 +81,7 @@ void run_test(int /*argc*/, char **argv) {
   // optimizer, at least for gnu and KCC. [2018-02-09 KT -- some web posts hint that marking zero
   // and neg as 'volatile' may also prevent removal of logic due to optimization.]
 
-  if (test < -100) { // this should never happen
+  if (test < 0) { // this should never happen
     Insist(0, "Something is very wrong.");
     zero = neg = 1.0; // trick the optimizer?
   }
@@ -153,7 +152,6 @@ int main(int argc, char *argv[]) {
 }
 
 //------------------------------------------------------------------------------------------------//
-
 #if defined(MSVC)
 #pragma warning(pop)
 #endif

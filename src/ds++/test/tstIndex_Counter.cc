@@ -4,8 +4,7 @@
  * \author Mike Buksas
  * \date   Wed Feb  1 08:58:48 2006
  * \brief  Unit test for Index_Counter
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Index_Converter.hh"
@@ -28,8 +27,7 @@ void test_index_counter(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(it.get_index(0) == 1);
   FAIL_IF_NOT(it.get_index(1) == 1);
   FAIL_IF_NOT(it.get_index(2) == 1);
-  if (!it.is_in_range())
-    ITFAILS;
+  FAIL_IF_NOT(it.is_in_range());
   FAIL_IF_NOT(it.get_indices()[0] == 1);
   FAIL_IF_NOT(it.get_indices()[1] == 1);
   FAIL_IF_NOT(it.get_indices()[2] == 1);
@@ -45,14 +43,12 @@ void test_index_counter(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(it.get_index(0) == 2);
   FAIL_IF_NOT(it.get_index(1) == 1);
   FAIL_IF_NOT(it.get_index(2) == 1);
-  if (!it.is_in_range())
-    ITFAILS;
+  FAIL_IF_NOT(it.is_in_range());
 
   --it;
   --it;
 
-  if (it.is_in_range())
-    ITFAILS;
+  FAIL_IF(it.is_in_range());
 
   if (ut.numFails == 0)
     PASSMSG("done with test_index_counter().");

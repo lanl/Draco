@@ -82,11 +82,11 @@ public:
     Check(dimension_okay(d));
     return m_dimensions[d];
   }
-  int min_of_index(const unsigned Remember(d)) const {
+  int min_of_index(const size_t Remember(d)) const {
     Check(dimension_okay(d));
     return OFFSET;
   }
-  int max_of_index(const unsigned d) const {
+  int max_of_index(const size_t d) const {
     Check(dimension_okay(d));
     return OFFSET + m_dimensions[d] - 1;
   }
