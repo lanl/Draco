@@ -24,8 +24,10 @@
     SP_arm: "--nodes=1 --partition=arm --qos=debug"
     SP_power9: "--nodes=1 --partition=power9 --qos=debug"
     SP_skylake: "--nodes=1 --partition=skylake --qos=debug"
-    SP_volta_x86: "--nodes=1 --partition=volta-x86 --qos=debug --constraint='cpu_family:broadwell|cpu_family:haswell'"
-    SP_x86_64: "--nodes=1 --partition=general --qos=debug --constraint='cpu_family:broadwell|cpu_family:haswell|cpu_family:skylake'"
+    SP_volta_x86: "--nodes=1 --partition=volta-x86 --qos=debug --constraint='cpu_family:broadwell|\
+                  cpu_family:haswell'"
+    SP_x86_64: "--nodes=1 --partition=general --qos=debug --constraint='cpu_family:broadwell|\
+               cpu_family:haswell|cpu_family:skylake'"
     SP_spr: "--nodes=1 --partition=crossroads-spr --qos=debug"
     # CI_DEBUG_TRACE: "true"
 
