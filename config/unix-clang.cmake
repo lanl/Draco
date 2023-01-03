@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-clang.cmake
 # brief  Establish flags for Unix clang
-# note   Copyright (C) 2015-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2015-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -23,6 +23,12 @@ include_guard(GLOBAL)
 # * must use clang++ for linking
 # * suppressions: LSAN_OPTIONS=suppressions=MyLSan.supp
 # * human readable: ASAN_SYMBOLIZER_PATH=/usr/local/bin/llvm-symbolizer ./a.out
+#
+# Sanitizers were attempted in Dec 2022 but none work correctly with our link time dependencies.
+#
+# * See https://re-git.lanl.gov/draco/devops/-/issues/107
+# * These failed with undefined symbol errors: `-fsanitize=address`, `-fsanitize=thread`,
+#   `-fsanitize=memory`, `-fsanitize=undefined`, and `-fsanitize=dataflow`.
 
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 6.0 AND NOT MSVC)
   message(FATAL_ERROR "Draco requires LLVM clang version >= 6.0.")
@@ -75,7 +81,6 @@ if(NOT CXX_FLAGS_INITIALIZED)
          " -Wno-potentially-evaluated-expression")
 
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Woverloaded-virtual")
-  # Tried to use -fsanitize=safe-stack but this caused build issues.
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")

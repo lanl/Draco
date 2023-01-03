@@ -32,6 +32,28 @@ section of the documentation. Also see:
 - <a href=http://rtt.lanl.gov/cdash3>Draco regression reporting on CDash</a>.
 - Draco mailing list, draco@lanl.gov
 
+\par Versions and Platforms
+
+msc {
+
+ML, SN, TT, Sierra, El-Cap, Crossroads, CTS-2;
+| | | | | | |;
+
+ML rbox ML [label="Moonlight", textbgcolour="#ff7f7f"],
+SN rbox SN [label="Snow"],
+TT rbox TT [label="Trinitite"];
+Sierra rbox Sierra [label="Sierra"];
+ElCap rbox ElCap [label="El Capitan"];
+xrd rbox xrd [label="Crossroads"];
+CTS2 rbox CTS2 [label="CTS-2"];
+
+ML abox TT [label="Draco-6_24_0", textbgcolor="#00ff00"];
+ML abox TT [label="Draco-6_23_0", textbgcolor="#00ff00"];
+ML abox TT [label="Draco-6_22_0", textbgcolor="#00ff00"];
+TT abox TT [label="Draco-7_0_0", textbgcolor="#00ff00"];
+TT abox Sierra [label="Draco-7_14_0", textbgcolor="#00ff00"];
+}
+
 \par Copyright
 
 \include @PROJECT_SOURCE_DIR@/LICENSE.md
