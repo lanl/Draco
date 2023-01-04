@@ -13,8 +13,8 @@
 ## Gitlab Status
 
 [![pipeline status](https://re-git.lanl.gov/draco/draco/badges/develop/pipeline.svg)](https://re-git.lanl.gov/draco/draco/-/commits/develop)
-[![coverage report](https://re-git.lanl.gov/draco/draco/badges/develop/coverage.svg)](https://re-git.lanl.gov/draco/draco/-/commits/develop)
-[![Latest Release](https://re-git.lanl.gov/draco/draco/-/badges/release.svg)](https://re-git.lanl.gov/draco/draco/-/releases)
+[![coverage report](https://re-git.lanl.gov/draco/draco/badges/develop/coverage.svg?job=gcov_regress)](https://re-git.lanl.gov/draco/draco/-/commits/develop)
+[![Latest Release](https://re-git.lanl.gov/draco/draco/-/badges/release.svg?key_width=120)](https://re-git.lanl.gov/draco/draco/-/releases)
 
 ## Summary
 
