@@ -39,6 +39,7 @@ for wantfile in $wantfiles; do
       # -T makes filename matches less strict. (change.lanl.gov #192081)
       [[ ${CRAYPE_DIR} =~ cray ]] && scp_opt="-T"
       echo "scp ${scp_opt} red@transfer.lanl.gov:${fileid} ."
+      # shellcheck disable=SC2086
       scp ${scp_opt} "red@transfer.lanl.gov:${fileid}" .
       status=$?
       if [[ $status -eq 0 ]]; then

@@ -228,7 +228,7 @@ if [[ -x "${CMF}" ]]; then
     cp -f "${file}" "${tmpfile1}"
     $CMF -c "${rscriptdir}/../.cmake-format.py" -i "${tmpfile1}" &> /dev/null
     # color output is possible if diff -version >= 3.4 with option `--color`
-    diff ${DIFFCOLOR} -u "${file}" "${tmpfile1}" | \
+    diff "${DIFFCOLOR}" -u "${file}" "${tmpfile1}" | \
       sed -e "1s|--- |--- a/|" -e "2s|+++ ${tmpfile1}|+++ b/${file}|" >> "$patchfile_cmf"
     rm "${tmpfile1}"
 
