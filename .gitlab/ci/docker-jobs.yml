@@ -14,16 +14,8 @@ superlinter:
     - darwin-docker-shared
   stage: lint
   image:
-    name: github/super-linter:slim-v4
-    # entrypoint: [""]
+      name: github/super-linter:slim-v4
   script: ["true"]
-  # script:
-  #   - |
-  #     uname -a
-  #     ls -aFlt
-  #     ls /action/lib
-  #     ls /action/lib/linter.sh
-  #     /action/lib/linter.sh
   rules:
     - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
       when: never
@@ -38,7 +30,7 @@ superlinter:
     FILTER_REGEX_EXCLUDE: (.*[.]cc$|/test/)
     PYTHON_FLAKE8_CONFIG_FILE: .flake8
     SUPPRESS_POSSUM: "true"
-    LOG_LEVEL: "VERBOSE"
+    LOG_LEVEL: "NOTICE"
     VALIDATE_ALL_CODEBASE: "false"
     VALIDATE_BASH: "true"
     VALIDATE_BASH_EXEC: "true"
@@ -56,7 +48,7 @@ superlinter:
     VALIDATE_RUBY: "true"
     VALIDATE_SHELL_SHFMT: "true"
     VALIDATE_XML: "true"
-#     # VALIDATE_YAML: "true"
+    # VALIDATE_YAML: "true"
 
 checkCoverage_MR:
   # Ref: https://re-git.lanl.gov/draco/devops/-/wikis/Fail-a-CI-test-if-coverage-decreases
