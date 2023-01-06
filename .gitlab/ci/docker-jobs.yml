@@ -3,7 +3,7 @@
 # Author:  Kelly Thompson <kgt@lanl.gov>
 # Date:    Wednesday, Jan 13, 2021, 20:57 pm
 # Purpose: gitlab suid runner commands for superlinter (https://github.com/github/super-linter).
-# Note:    Copyright (C) 2020-2021 Triad National Security, LLC., All rights reserved.
+# Note:    Copyright (C) 2020-2023 Triad National Security, LLC., All rights reserved.
 #
 # See Also: https://gitlab.com/snippets/1988376
 #--------------------------------------------------------------------------------------------------#
