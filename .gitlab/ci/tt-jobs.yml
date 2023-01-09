@@ -3,7 +3,7 @@
 # Author:  Kelly Thompson <kgt@lanl.gov>
 # Date:    Thursday, Dec 02, 2021, 09:36 am
 # Purpose: gitlab jacamar runner commands for Trinitite (LANL HPC).
-# Note:    Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
+# Note:    Copyright (C) 2022-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------#
@@ -74,20 +74,6 @@ tt_rel_cce1301_deploy:
     DRACO_ENV: "draco/cce1301"
     FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
 
-tt_deb_oneapi2140_deploy:
-  extends: .tt_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/oneapi2140"
-    FLAVOR: oneapi2140-${CMAKE_BUILD_TYPE}
-
-tt_rel_oneapi2140_deploy:
-  extends: .tt_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/oneapi2140"
-    FLAVOR: oneapi2140-${CMAKE_BUILD_TYPE}
-
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
 #--------------------------------------------------------------------------------------------------#
@@ -119,14 +105,6 @@ tt_rel_i1904_mr:
     EXTRA_CMAKE_ARGS: -GNinja
 
 # ----- slow -----
-
-tt_deb_oneapi_mr:
-  stage: slowtest
-  extends: .tt_merge
-  allow_failure: true
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/oneapi2140"
 
 tt_deb_cce_mr:
   stage: slowtest
@@ -187,24 +165,6 @@ tt_deb_cce1301_regress:
     DRACO_ENV: "draco/cce1301"
     CTEST_BUILD_NAME: "cce1301-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
-
-tt_rel_oneapi2140_regress:
-  stage: test
-  extends: .tt_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/oneapi2140"
-    CTEST_BUILD_NAME: "oneapi2140-Release"
-    MAKEFILE_FLAGS: -j -l 32
-
-tt_deb_oneapi2140_regress:
-  stage: test
-  extends: .tt_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/oneapi2140"
-    CTEST_BUILD_NAME: "oneapi2140-Debug"
-    MAKEFILE_FLAGS: -j -l 32
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/tt-jobs.yml
