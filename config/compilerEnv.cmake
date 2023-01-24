@@ -1,7 +1,7 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   config/compilerEnv.cmake
 # brief  Default CMake build parameters
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 include_guard(GLOBAL)
@@ -98,7 +98,7 @@ function(force_compiler_flags_to_cache lang_list)
     endforeach()
   endforeach()
   set(DRACO_LINK_OPTIONS
-      ${DRACO_LINK_OPTIONS}
+      "${DRACO_LINK_OPTIONS}"
       CACHE STRING "link flags" FORCE)
 endfunction()
 
@@ -745,6 +745,10 @@ macro(dbsSetupFortran)
       endif()
     endif()
 
+    if(_LANGUAGES_ MATCHES "^C$" OR _LANGUAGES_ MATCHES CXX)
+      include(FortranCInterface)
+    endif()
+
   else()
     # If CMake doesn't know about a Fortran compiler, $ENV{FC}, then also look for a compiler to use
     # with CMakeAddFortranSubdirectory.
@@ -894,7 +898,7 @@ endfunction()
 #
 # Examples: toggle_compiler_flag( GCC_ENABLE_ALL_WARNINGS "-Weffc++" "CXX" "DEBUG" )
 # ------------------------------------------------------------------------------------------------ #
-macro(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build_modes)
+function(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build_modes)
 
   # generate names that are safe for CMake RegEx MATCHES commands
   string(REPLACE "+" "x" safe_compiler_flag ${compiler_flag})
@@ -928,6 +932,7 @@ macro(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build_mo
           string(REPLACE "${compiler_flag}" "" CMAKE_${comp}_FLAGS ${CMAKE_${comp}_FLAGS})
         endif()
       endif()
+      set(CMAKE_${comp}_FLAGS "${CMAKE_${comp}_FLAGS}" PARENT_SCOPE)
 
     else() # build_modes listed
 
@@ -937,7 +942,7 @@ macro(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build_mo
 
         if(${switch})
           if(NOT "${safe_CMAKE_${comp}_FLAGS_${bm}}" MATCHES "${safe_compiler_flag}")
-            set(CMAKE_${comp}_FLAGS_${bm} "${CMAKE_${comp}_FLAGS_${bm}} ${compiler_flag} ")
+            set(CMAKE_${comp}_FLAGS_${bm} "${CMAKE_${comp}_FLAGS_${bm}} ${compiler_flag}")
           endif()
         else()
           if("${safe_CMAKE_${comp}_FLAGS_${bm}}" MATCHES "${safe_compiler_flag}")
@@ -945,13 +950,14 @@ macro(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build_mo
                            ${CMAKE_${comp}_FLAGS_${bm}})
           endif()
         endif()
+        set(CMAKE_${comp}_FLAGS_${bm} "${CMAKE_${comp}_FLAGS_${bm}}" PARENT_SCOPE)
 
       endforeach()
 
     endif()
 
   endforeach()
-endmacro()
+endfunction()
 
 # ------------------------------------------------------------------------------------------------ #
 # End config/compiler_env.cmake
