@@ -48,13 +48,24 @@ endif()
 #
 # This feature is usually compiler specific and a compile flag must be added. For this to work the
 # <platform>-<compiler>.cmake files (e.g.:  unix-g++.cmake) call this macro.
+#
+# * OpenMP under MSVC has some significant failings as of 2023.  Some details are captured at
+#   https://re-git.lanl.gov/draco/draco/-/issues/1407
+# * Client codes require OpenMP features like unsigned integer loop indices for omp threaded loops.
+# * OpenMP features that are required, should be tested in c4/tstOMP.cc.
+#
 # ------------------------------------------------------------------------------------------------ #
 macro(query_openmp_availability)
   message(STATUS "Looking for OpenMP...")
-  if(WIN32 AND (NOT CMAKE_C_COMPILER_ID STREQUAL "Clang"))
-    set(OpenMP_C_FLAGS "/openmp:experimental")
-    set(OpenMP_FOUND TRUE)
-    set(OpenMP_C_VERSION "3.1")
+  if(WIN32)
+    # ~~~
+    # /openmp:llvm is broken (see comments/re-git issue above) and other modes are too old.
+    # AND (NOT CMAKE_C_COMPILER_ID STREQUAL "Clang"))
+    # set(OpenMP_C_FLAGS "/openmp:experimental")
+    # set(OpenMP_FOUND TRUE)
+    # set(OpenMP_C_VERSION "3.1")
+    # ~~~
+    set(OpenMP_FOUND FALSE)
   else()
     find_package(OpenMP QUIET)
   endif()

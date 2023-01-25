@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Jun  6 15:03:08 2006
  * \brief  Demonstrate basic OMP threads under MPI.
- * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"
@@ -143,7 +143,7 @@ void topo_report(rtt_dsxx::UnitTest &ut, bool &one_mpi_rank_per_node) {
 //------------------------------------------------------------------------------------------------//
 void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
   if (rtt_c4::node() == 0)
-    std::cout << "Begin test sample_sum()...\n" << std::endl;
+    std::cout << "\nBegin test sample_sum()...\n" << std::endl;
 
   // Generate data and benchmark values:
   int N(10000000);
@@ -237,18 +237,6 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
                 << t2_serial_accumulate.wall_clock() << "\t" << t2_omp_accumulate.wall_clock()
                 << std::endl;
     }
-
-    // [2015-11-17 KT] The accumulate test no longer provides enough work to offset the overhead of
-    // OpenMP, especially for the optimized build.  Turn this test off...
-
-    // if( omrpn && nthreads > 4 )
-    // {
-    //     if( t2_omp_accumulate.wall_clock()
-    //         < t2_serial_accumulate.wall_clock() )
-    //         PASSMSG( "OMP accumulate was faster than Serial accumulate.");
-    //     else
-    //         FAILMSG( "OMP accumulate was slower than Serial accumulate.");
-    // }
   }
 #else // SCALAR
   PASSMSG("OMP is disabled.  No checks made.");
@@ -400,6 +388,23 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
+void tstUnsignedOmpLoop(rtt_dsxx::UnitTest &ut) {
+  if (rtt_c4::node() == 0)
+    std::cout << "\nTesting an OpenMP loop with unsigned index." << std::endl;
+  unsigned sum(0), count(5);
+  {
+#pragma omp parallel for reduction(+ : sum) default(none) shared(count)
+    for (unsigned i = 0; i < count; i++) {
+      sum += i;
+    }
+  }
+  if (rtt_c4::node() == 0)
+    std::cout << "Found Sum = " << sum << std::endl;
+  FAIL_IF_NOT(sum == 10);
+  return;
+}
+
+//------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
@@ -418,6 +423,7 @@ int main(int argc, char *argv[]) {
     // Unit tests
     topo_report(ut, omrpn);
     sample_sum(ut, omrpn);
+    tstUnsignedOmpLoop(ut);
 
     if (rtt_c4::nodes() == 1)
       MandelbrotDriver(ut);
