@@ -1,7 +1,7 @@
 # --------------------------------------------*-cmake-*------------------------------------------- #
 # file   config/unix-g++.cmake
 # brief  Establish flags for Unix/Linux - Gnu C++
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -112,7 +112,7 @@ deduplicate_flags(CMAKE_C_FLAGS)
 deduplicate_flags(CMAKE_CXX_FLAGS)
 
 # Toggle compiler flags for optional features
-toggle_compiler_flag(OpenMP_FOUND ${OpenMP_C_FLAGS} "C;CXX" "")
+toggle_compiler_flag(OpenMP_FOUND "${OpenMP_C_FLAGS}" "C;CXX" "")
 force_compiler_flags_to_cache("C;CXX")
 
 # ------------------------------------------------------------------------------------------------ #

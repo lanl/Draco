@@ -911,6 +911,11 @@ endfunction()
 # ------------------------------------------------------------------------------------------------ #
 function(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build_modes)
 
+  # If compiler flag string is empty, this call is a no-op.
+  if("${compiler_flag}x" STREQUAL "x")
+    return()
+  endif()
+
   # generate names that are safe for CMake RegEx MATCHES commands
   string(REPLACE "+" "x" safe_compiler_flag ${compiler_flag})
 
