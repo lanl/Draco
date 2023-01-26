@@ -4,7 +4,7 @@
  * \author Timothy Kelley
  * \date   Tue Jun  9 15:03:08 2020
  * \brief  Demonstrate basic OMP API with OpenMP present
- * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/c4_omp.h"
@@ -36,6 +36,17 @@ void check_set_get(UnitTest &ut) {
   FAIL_IF_NOT(final_n == init_n);
   int const thread_num{get_omp_thread_num()};
   FAIL_IF(thread_num >= final_n || thread_num < 0);
+  // set the schedule to dynamic (see documentation):
+  constexpr omp_sched_t kind{omp_sched_dynamic};
+  constexpr int chunk_size{42};
+  set_omp_schedule(kind, chunk_size);
+  // create return vals:
+  omp_sched_t kind_check;
+  int chunk_check;
+  // check that get matches what was set:
+  get_omp_schedule(kind_check, chunk_check);
+  FAIL_IF_NOT(kind == kind_check);
+  FAIL_IF_NOT(chunk_size == chunk_check);
   return;
 } // check_set_get
 

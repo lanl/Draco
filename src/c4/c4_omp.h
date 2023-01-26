@@ -3,7 +3,7 @@
  * author: Kelly Thompson
  * date  : Wednesday, Nov 23, 2011, 08:42 am
  * brief : wrapper for omp.h
- * note  : Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
+ * note  : Copyright (C) 2011-2023 Triad National Security, LLC., All rights reserved. */
 /*------------------------------------------------------------------------------------------------*/
 
 #ifndef rtt_c4_c4_omp_h
@@ -42,6 +42,38 @@ inline int get_omp_max_threads() { return omp_get_max_threads(); }
  */
 inline int get_omp_thread_num() { return omp_get_thread_num(); }
 
+/*! Set the schedule type and (optional) chunk size
+ *
+ * From https://www.openmp.org/spec-html/5.0/openmpsu121.html:
+ *
+ * typedef enum omp_sched_t {
+ * omp_sched_static = 0x1,
+ * omp_sched_dynamic = 0x2,
+ * omp_sched_guided = 0x3,
+ * omp_sched_auto = 0x4,
+ * omp_sched_monotonic = 0x80000000u
+ * }
+ *
+ * "For the schedule kinds static, dynamic, and guided the chunk_size is set to the value of the
+ * second argument, or to the default chunk_size if the value of the second argument is less than 
+ * 1."
+ *
+ * \param[in] kind Valid schedule type
+ * \param[in] chunk_size (Optional) chunk size for scheduling
+ */
+inline void set_omp_schedule(const omp_sched_t kind, const int chunk_size = 0) {
+  omp_set_schedule(kind, chunk_size);
+}
+
+/*! Get the current schedule type and chunk size
+ *
+ * \param[out] kind Valid schedule type
+ * \param[out] chunk_size (Optional) chunk size for scheduling
+ */
+inline void get_omp_schedule(omp_sched_t &kind, int &chunk_size) {
+  omp_get_schedule(&kind, &chunk_size);
+}
+
 #else
 
 /*! Bypass setting the number of OpenMP threads */
@@ -62,6 +94,13 @@ inline int get_omp_max_threads() { return 1; }
  */
 inline int get_omp_thread_num() { return 0; }
 
+/*! Bypass setting schedule for OpenMP loops
+ */
+inline void set_omp_schedule(const int /*kind*/, const int /*chunk_size*/ = 0) { return; }
+
+/*! Bypass getting schedule for OpenMP loops
+ */
+inline void get_omp_schedule(int & /*kind*/, int & /*chunk_size*/) { return; }
 #endif
 
 } // namespace rtt_c4
