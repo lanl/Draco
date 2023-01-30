@@ -46,6 +46,13 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
+tt_rel_i202120_deploy:
+  extends: .tt_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "lapse/2.2-intel"
+    FLAVOR: lapse22-intel-${CMAKE_BUILD_TYPE}
+
 tt_rel_i1904_deploy:
   extends: .tt_deploy
   variables:
@@ -106,6 +113,14 @@ tt_rel_i1904_mr:
 
 # ----- slow -----
 
+tt_deb_i202120_mr:
+  stage: slowtest
+  extends: .tt_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.2-intel"
+    EXTRA_CMAKE_ARGS: -GNinja
+
 tt_deb_cce_mr:
   stage: slowtest
   extends: .tt_merge
@@ -146,6 +161,15 @@ tt_deb_i1904_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.0-intel"
     CTEST_BUILD_NAME: "lapse20-intel-Debug"
+    EXTRA_CMAKE_ARGS: -GNinja
+
+tt_deb_i202120_regress:
+  stage: test
+  extends: .tt_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.2-intel"
+    CTEST_BUILD_NAME: "lapse22-intel-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
 
 tt_rel_cce1301_regress:

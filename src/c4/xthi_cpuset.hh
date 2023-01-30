@@ -4,7 +4,7 @@
  * \author Mike Berry <mrberry@lanl.gov>, Kelly Thompson <kgt@lanl.gov>
  * \date   Wednesday, Aug 09, 2017, 11:45 am
  * \brief  Helper functions to generate string for core affinity.
- * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2019-2023 Triad National Security, LLC., All rights reserved.
  *
  * These functions are needed by c4's xthi and ythi programs to report human readable thread
  * bindings.  It is also used by the unit test for libquo.
@@ -148,10 +148,12 @@ inline std::string cpuset_to_string(unsigned const num_cpu) {
 #endif
 #endif
 
+/*
 #if defined(__INTEL_LLVM_COMPILER)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wreserved-identifier"
 #endif
+*/
 
 inline std::string cpuset_to_string(unsigned const /*num_cpu*/) {
 
@@ -184,9 +186,11 @@ inline std::string cpuset_to_string(unsigned const /*num_cpu*/) {
   return cpuset.str().substr(0, cpuset.str().length() - entry_made);
 }
 
+/*
 #if defined(__INTEL_LLVM_COMPILER)
 #pragma clang diagnostic pop
 #endif
+*/
 
 #if defined(__clang__) && !defined(__ibmxl__) && !defined(__INTEL_LLVM_COMPILER)
 #if defined(__clang_major__) && __clang_major__ > 12
