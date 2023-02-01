@@ -4,7 +4,7 @@
 # Date:    Monday, Jun 01, 2020, 15:00 pm
 # Purpose: gitlab suid runner commands for LANL ccs-net machines. This script will be run to test
 #          pull requests.
-# Note:    Copyright (C) 2020-2022 Triad National Security, LLC.,  All rights reserved.
+# Note:    Copyright (C) 2020-2023 Triad National Security, LLC.,  All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------#
@@ -71,6 +71,7 @@ ccs1_deb_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     SITE_ID: ccscs1
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs1_c4_scalar_deploy:
   tags:
@@ -82,6 +83,7 @@ ccs1_c4_scalar_deploy:
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
     EXTRA_CMAKE_ARGS: -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
     SITE_ID: ccscs1
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs1_clangtidy_deploy:
   tags:
@@ -93,6 +95,7 @@ ccs1_clangtidy_deploy:
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
     EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
     SITE_ID: ccscs1
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs2_deb_gcc_1120_deploy:
   tags:
@@ -102,6 +105,7 @@ ccs2_deb_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     SITE_ID: ccscs2
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs2_rel_gcc_1120_deploy:
   tags:
@@ -111,6 +115,7 @@ ccs2_rel_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1120
     SITE_ID: ccscs2
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs3_deb_llvm_deploy:
   tags:
@@ -120,6 +125,7 @@ ccs3_deb_llvm_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm12
     SITE_ID: ccscs3
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs3_rel_llvm_deploy:
   tags:
@@ -129,6 +135,7 @@ ccs3_rel_llvm_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: llvm12
     SITE_ID: ccscs3
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs3_deb_gcc_1120_deploy:
   tags:
@@ -138,6 +145,7 @@ ccs3_deb_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     SITE_ID: ccscs3
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs3_rel_gcc_1120_deploy:
   tags:
@@ -147,6 +155,7 @@ ccs3_rel_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1120
     SITE_ID: ccscs3
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs4_deb_gcc_1120_deploy:
   tags:
@@ -156,6 +165,7 @@ ccs4_deb_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     SITE_ID: ccscs4
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs4_rel_gcc_1120_deploy:
   tags:
@@ -165,6 +175,7 @@ ccs4_rel_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1120
     SITE_ID: ccscs4
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs4_rwdi_gcc_1120_deploy:
   tags:
@@ -174,6 +185,7 @@ ccs4_rwdi_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: gcc1120
     SITE_ID: ccscs4
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs9_rwdi_gcc_1120_deploy:
   tags:
@@ -183,6 +195,7 @@ ccs9_rwdi_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: gcc1120
     SITE_ID: ccscs9
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs9_deb_gcc_1120_deploy:
   tags:
@@ -192,6 +205,7 @@ ccs9_deb_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     SITE_ID: ccscs9
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs9_rel_gcc_1120_deploy:
   tags:
@@ -201,6 +215,7 @@ ccs9_rel_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1120
     SITE_ID: ccscs9
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs1_fulldiag_deploy:
   tags:
@@ -214,6 +229,7 @@ ccs1_fulldiag_deploy:
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
     EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     SITE_ID: ccscs1
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs2_gcov_deploy:
   tags:
@@ -246,6 +262,7 @@ ccs4_rel_gcc850_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc850
     SITE_ID: ccscs4
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs5_deb_llvm12_deploy:
   tags:
@@ -255,6 +272,7 @@ ccs5_deb_llvm12_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm12
     SITE_ID: ccscs5
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
@@ -315,6 +333,7 @@ ccs3_deb_llvm12:
     DRACO_ENV: llvm12
     CTEST_NPROC: 32
     SITE_ID: ccscs3
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs4_rel_gcc850:
   tags:
@@ -326,6 +345,7 @@ ccs4_rel_gcc850:
     DRACO_ENV: gcc850
     CTEST_NPROC: 40
     SITE_ID: ccscs4
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs2_autodoc:
   tags:
@@ -338,6 +358,7 @@ ccs2_autodoc:
     DRACO_ENV: gcc1120
     AUTODOC: "ON"
     SITE_ID: ccscs2
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 # ---------- SLOW TEST (only starts if all regular TEST pass) ---------- #
 
@@ -351,6 +372,7 @@ ccs3_rel_llvm12:
     DRACO_ENV: llvm12
     CTEST_NPROC: 32
     SITE_ID: ccscs3
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs3_rel_gcc_1120:
   tags:
@@ -362,6 +384,7 @@ ccs3_rel_gcc_1120:
     DRACO_ENV: gcc1120
     CTEST_NPROC: 32
     SITE_ID: ccscs3
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs1_fulldiag:
   tags:

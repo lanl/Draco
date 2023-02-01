@@ -3,7 +3,7 @@
 # File  : ./.gitlab/ci/gitlab-ci-run-tests.sh
 # Date  : Tuesday, Jun 02, 2020, 12:28 pm
 # Author: Kelly Thompson <kgt@lanl.gov>
-# Note  : Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# Note  : Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 # Draco is open source.  Set permissions to g+rwX,o=g-w
@@ -25,9 +25,11 @@ fi
 
 [[ -z "${CTEST_NPROC}" ]] && CTEST_NPROC=$NPROC || echo "limiting CTEST_NPROC = $CTEST_NPROC"
 [[ -z "${MAXLOAD}" ]] && MAXLOAD=$NPROC || echo "limiting MAXLOAD = $MAXLOAD"
+[[ ${EXTRA_CMAKE_ARGS} =~ "Ninja" ]] && MAKE_COMMAND="ninja" || MAKE_COMMAND="make -j -l ${MAXLOAD}"
+export MAKE_COMMAND
 [[ "${DEPLOY}" == "TRUE" ]] && EXTRA_CMAKE_ARGS="-DBUILD_TESTING=NO ${EXTRA_CMAKE_ARGS}"
 if [[ -n "${DRACO_INSTALL_DIR}" ]]; then
-  EXTRA_CMAKE_ARGS="-DCMAKE_INSTALL_PREFIX=${DRACO_INSTALL_DIR} ${EXTRA_CMAKE_ARGS}"
+  EXTRA_CMAKE_ARGS=" ${EXTRA_CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${DRACO_INSTALL_DIR}"
 fi
 
 #if [[ -d /ccs/opt/texlive/2018/texmf-dist/tex/latex/newunicodechar ]]; then
@@ -47,6 +49,7 @@ echo -e "DEPLOY      = ${DEPLOY}\n"
 echo -e "EXTRA_CMAKE_ARGS = ${EXTRA_CMAKE_ARGS}\n"
 echo -e "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}\n"
 echo -e "EXTRA_CTEST_ARGS = ${EXTRA_CTEST_ARGS}\n"
+echo -e "MAKE_COMMAND      = ${MAKE_COMMAND}\n"
 if [[ "${AUTODOC}" == "ON" ]]; then
   run "which doxygen"
   run "which latex"

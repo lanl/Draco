@@ -52,20 +52,15 @@ tt_rel_i202120_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.2-intel"
     FLAVOR: lapse22-intel-${CMAKE_BUILD_TYPE}
+    EXTRA_CMAKE_ARGS: -G Ninja
 
-tt_rel_i1904_deploy:
-  extends: .tt_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.0-intel"
-    FLAVOR: lapse20-intel-${CMAKE_BUILD_TYPE}
-
-tt_deb_i1904_deploy:
+tt_deb_i202120_deploy:
   extends: .tt_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.0-intel"
-    FLAVOR: lapse20-intel-${CMAKE_BUILD_TYPE}
+    DRACO_ENV: "lapse/2.2-intel"
+    FLAVOR: lapse22-intel-${CMAKE_BUILD_TYPE}
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 tt_deb_cce1301_deploy:
   extends: .tt_deploy
@@ -73,6 +68,7 @@ tt_deb_cce1301_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/cce1301"
     FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 tt_rel_cce1301_deploy:
   extends: .tt_deploy
@@ -80,6 +76,7 @@ tt_rel_cce1301_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/cce1301"
     FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
@@ -103,12 +100,12 @@ tt_rel_cce1301_deploy:
 
 # ----- regular test -----
 
-tt_rel_i1904_mr:
+tt_rel_i202120_mr:
   stage: test
   extends: .tt_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.0-intel"
+    DRACO_ENV: "lapse/2.2-intel"
     EXTRA_CMAKE_ARGS: -GNinja
 
 # ----- slow -----
@@ -145,22 +142,13 @@ tt_deb_cce_mr:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-tt_rel_i1904_regress:
+tt_rel_i202120_regress:
   stage: test
   extends: .tt_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.0-intel"
-    CTEST_BUILD_NAME: "lapse20-intel-Release"
-    EXTRA_CMAKE_ARGS: -GNinja
-
-tt_deb_i1904_regress:
-  stage: test
-  extends: .tt_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.0-intel"
-    CTEST_BUILD_NAME: "lapse20-intel-Debug"
+    DRACO_ENV: "lapse/2.2-intel"
+    CTEST_BUILD_NAME: "lapse22-intel-Release"
     EXTRA_CMAKE_ARGS: -GNinja
 
 tt_deb_i202120_regress:
