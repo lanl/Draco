@@ -71,7 +71,7 @@ run "pwd"
 for i in C CXX Fortran CUDA; do
 
   # Turn build warnings into fatal errors
-  if [[ "${DRACO_ENV}" =~ "xl16" ]]; then
+  if [[ "${DRACO_ENV}" =~ "xl16" ]] || [[ "${DRACO_ENV}" =~ "power9-xl" ]]; then
     eval export ${i}_FLAGS+=\" -qhalt=w\"
   else
     if [[ "${i}" == "Fortran" ]]; then

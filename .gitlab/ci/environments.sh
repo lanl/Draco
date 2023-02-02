@@ -24,9 +24,9 @@ echo "    DRACO_ENV = ${DRACO_ENV}"
 if [[ "${SITE_ID}" == "darwin" ]]; then
   DRACO_ARCH=$(/usr/projects/draco/vendors/bin/target_arch)
   run "module use --append /projects/draco/Modules"
-  if ! [[ -f "/projects/draco/Modules/draco/${DRACO_ENV}.lua" ]]; then
+  if ! [[ -f "/projects/draco/Modules/${DRACO_ENV}.lua" ]]; then
     # Look for TCL version of the module.
-    if ! [[ -f "/projects/draco/Modules/draco/${DRACO_ENV}" ]]; then
+    if ! [[ -f "/projects/draco/Modules/${DRACO_ENV}" ]]; then
       die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}"
     fi
     # if [[ "${MPIARCH:-notset}" == "openmpi" ]]; then
@@ -37,7 +37,7 @@ if [[ "${SITE_ID}" == "darwin" ]]; then
     # fi
   fi
   export DRACO_ARCH
-  run "module load draco/${DRACO_ENV}"
+  run "module load ${DRACO_ENV}"
   if [[ "${SLURM_JOB_PARTITION}" =~ "volta" || "${SLURM_JOB_PARTITION}" =~ "gpu" ]]; then
     module load cuda
   fi
