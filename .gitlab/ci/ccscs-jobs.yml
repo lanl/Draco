@@ -52,6 +52,7 @@ ccs1_clangtidy:
     DEPLOY: 'TRUE'
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: "/scratch/regress/deploy/draco/${FLAVOR}"
+    EXTRA_CMAKE_ARGS: -G Ninja
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
@@ -71,7 +72,6 @@ ccs1_deb_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     SITE_ID: ccscs1
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs1_c4_scalar_deploy:
   tags:
@@ -81,9 +81,8 @@ ccs1_c4_scalar_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
-    EXTRA_CMAKE_ARGS: -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
     SITE_ID: ccscs1
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs1_clangtidy_deploy:
   tags:
@@ -93,9 +92,8 @@ ccs1_clangtidy_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm12
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
-    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
     SITE_ID: ccscs1
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs2_deb_gcc_1120_deploy:
   tags:
@@ -105,7 +103,6 @@ ccs2_deb_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     SITE_ID: ccscs2
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs2_rel_gcc_1120_deploy:
   tags:
@@ -115,7 +112,6 @@ ccs2_rel_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1120
     SITE_ID: ccscs2
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs3_deb_llvm_deploy:
   tags:
@@ -125,7 +121,6 @@ ccs3_deb_llvm_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm12
     SITE_ID: ccscs3
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs3_rel_llvm_deploy:
   tags:
@@ -135,7 +130,6 @@ ccs3_rel_llvm_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: llvm12
     SITE_ID: ccscs3
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs3_deb_gcc_1120_deploy:
   tags:
@@ -145,7 +139,6 @@ ccs3_deb_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     SITE_ID: ccscs3
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs3_rel_gcc_1120_deploy:
   tags:
@@ -155,7 +148,6 @@ ccs3_rel_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1120
     SITE_ID: ccscs3
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs4_deb_gcc_1120_deploy:
   tags:
@@ -165,7 +157,6 @@ ccs4_deb_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     SITE_ID: ccscs4
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs4_rel_gcc_1120_deploy:
   tags:
@@ -175,7 +166,6 @@ ccs4_rel_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1120
     SITE_ID: ccscs4
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs4_rwdi_gcc_1120_deploy:
   tags:
@@ -185,7 +175,6 @@ ccs4_rwdi_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: gcc1120
     SITE_ID: ccscs4
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs9_rwdi_gcc_1120_deploy:
   tags:
@@ -195,7 +184,6 @@ ccs9_rwdi_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: gcc1120
     SITE_ID: ccscs9
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs9_deb_gcc_1120_deploy:
   tags:
@@ -205,7 +193,6 @@ ccs9_deb_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     SITE_ID: ccscs9
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs9_rel_gcc_1120_deploy:
   tags:
@@ -215,7 +202,6 @@ ccs9_rel_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1120
     SITE_ID: ccscs9
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs1_fulldiag_deploy:
   tags:
@@ -227,9 +213,8 @@ ccs1_fulldiag_deploy:
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
-    EXTRA_CMAKE_ARGS: -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     SITE_ID: ccscs1
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs2_gcov_deploy:
   tags:
@@ -262,7 +247,6 @@ ccs4_rel_gcc850_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc850
     SITE_ID: ccscs4
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs5_deb_llvm12_deploy:
   tags:
@@ -272,7 +256,6 @@ ccs5_deb_llvm12_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm12
     SITE_ID: ccscs5
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
@@ -282,7 +265,7 @@ ccs5_deb_llvm12_deploy:
   extends: .ccscs
   variables:
     CTEST_MODE: Experimental
-    EXTRA_CMAKE_ARGS: -GNinja
+    EXTRA_CMAKE_ARGS: -G Ninja
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
@@ -333,7 +316,6 @@ ccs3_deb_llvm12:
     DRACO_ENV: llvm12
     CTEST_NPROC: 32
     SITE_ID: ccscs3
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs4_rel_gcc850:
   tags:
@@ -345,7 +327,6 @@ ccs4_rel_gcc850:
     DRACO_ENV: gcc850
     CTEST_NPROC: 40
     SITE_ID: ccscs4
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs2_autodoc:
   tags:
@@ -358,7 +339,6 @@ ccs2_autodoc:
     DRACO_ENV: gcc1120
     AUTODOC: "ON"
     SITE_ID: ccscs2
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 # ---------- SLOW TEST (only starts if all regular TEST pass) ---------- #
 
@@ -372,7 +352,6 @@ ccs3_rel_llvm12:
     DRACO_ENV: llvm12
     CTEST_NPROC: 32
     SITE_ID: ccscs3
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs3_rel_gcc_1120:
   tags:
@@ -384,7 +363,6 @@ ccs3_rel_gcc_1120:
     DRACO_ENV: gcc1120
     CTEST_NPROC: 32
     SITE_ID: ccscs3
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 ccs1_fulldiag:
   tags:
@@ -396,7 +374,7 @@ ccs1_fulldiag:
     DRACO_ENV: gcc1120
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     CTEST_NPROC: 32
     SITE_ID: ccscs1
 
@@ -415,7 +393,7 @@ ccs2_gcov:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
-    EXTRA_CMAKE_ARGS: -GNinja -DCODE_COVERAGE=ON
+    EXTRA_CMAKE_ARGS: -G Ninja -DCODE_COVERAGE=ON
     CTEST_NPROC: 20
     SITE_ID: ccscs2
 
@@ -445,7 +423,7 @@ ccs2_gcov:
   variables:
     CTEST_MODE: Nightly
     CTEST_BUILD_NAME: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-    EXTRA_CMAKE_ARGS: -GNinja
+    EXTRA_CMAKE_ARGS: -G Ninja
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh"
   rules:
@@ -500,7 +478,7 @@ clangtidy_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm12
     CTEST_NPROC: 40
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_STATIC_ANALYZER=clang-tidy
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
     CTEST_BUILD_NAME: clang-tidy
 
@@ -513,7 +491,7 @@ deb_gcc_scalar_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1120
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_C4=SCALAR
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_C4=SCALAR
     CTEST_NPROC: 40
     CTEST_BUILD_NAME: c4-scalar
 
@@ -528,7 +506,7 @@ fulldiag_regress:
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     CTEST_NPROC: 40
     CTEST_BUILD_NAME: fulldiag-static
 
