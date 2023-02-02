@@ -57,7 +57,7 @@ dp9_deb_gcc930_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
@@ -67,7 +67,7 @@ dp9_rel_gcc930_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
@@ -77,7 +77,7 @@ dp9_rel_xl16_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: power9-xl16117
+    DRACO_ENV: lapse/2.2-power9-xl
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
@@ -87,7 +87,7 @@ dp9_deb_xl16_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: power9-xl16117
+    DRACO_ENV: lapse/2.2-power9-xl
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
@@ -97,7 +97,7 @@ dx64_deb_volta_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: haswell-gcc1120
+    DRACO_ENV: draco/haswell-gcc1120
     ARCH: x86_64
     CTEST_NPROC: 10
     MAXLOAD: 40
@@ -107,7 +107,7 @@ dx64_rel_volta_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: haswell-gcc1120
+    DRACO_ENV: draco/haswell-gcc1120
     ARCH: x86_64
     CTEST_NPROC: 10
     MAXLOAD: 40
@@ -117,7 +117,7 @@ darm_deb_gcc831_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: arm-gcc831
+    DRACO_ENV: draco/arm-gcc831
     ARCH: arm
     CTEST_NPROC: 40
     MAXLOAD: 40
@@ -127,7 +127,7 @@ darm_rel_gcc831_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: arm-gcc831
+    DRACO_ENV: draco/arm-gcc831
     ARCH: arm
     CTEST_NPROC: 40
     MAXLOAD: 40
@@ -137,7 +137,7 @@ dx64_deb_nvhpc229_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: haswell-nvhpc229
+    DRACO_ENV: draco/haswell-nvhpc229
     ARCH: x86_64
     CTEST_NPROC: 20
     MAXLOAD: 20
@@ -147,7 +147,7 @@ dspr_deb_oneapi_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: spr-oneapi20221109-nda.lua
+    DRACO_ENV: draco/spr-oneapi20221109-nda.lua
     ARCH: x86_64
     CTEST_NPROC: 112
     MAXLOAD: 112
@@ -157,7 +157,7 @@ dspr_rel_oneapi_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: spr-oneapi20221109-nda.lua
+    DRACO_ENV: draco/spr-oneapi20221109-nda.lua
     ARCH: x86_64
     CTEST_NPROC: 112
     MAXLOAD: 112
@@ -173,7 +173,7 @@ darwin_style_cxx:
   variables:
     CTEST_MODE: Experimental
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: haswell-gcc1120
+    DRACO_ENV: draco/haswell-gcc1120
     ARCH: haswell
     CTEST_NPROC: 32
     MAXLOAD: 64
@@ -213,7 +213,7 @@ dp9_rel_g930_mr:
   extends: .darwin_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
@@ -225,7 +225,7 @@ dp9_deb_xl_16_mr:
   allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: power9-xl16117
+    DRACO_ENV: lapse/2.2-power9-xl
     ARCH: power9
     CTEST_NPROC: 20
     MAXLOAD: 40
@@ -238,7 +238,7 @@ dx86_deb_volta_mr:
   extends: .darwin_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: haswell-gcc1120
+    DRACO_ENV: draco/haswell-gcc1120
     ARCH: x86_64
     CTEST_NPROC: 10
     SCHEDULER_PARAMETERS: ${SP_volta_x86}
@@ -248,7 +248,7 @@ dp9_deb_g930_mr:
   extends: .darwin_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi
     ARCH: power9
     CTEST_NPROC: 10
     SCHEDULER_PARAMETERS: ${SP_power9}
@@ -259,7 +259,7 @@ dp9_rel_xl_16_mr:
   allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: power9-xl16117
+    DRACO_ENV: lapse/2.2-power9-xl
     ARCH: power9
     CTEST_NPROC: 20
     MAXLOAD: 40
@@ -270,7 +270,7 @@ dp9_rel_xl_16_mr:
 #   extends: .darwin_merge
 #   variables:
 #     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: arm-gcc831
+#     DRACO_ENV: draco/arm-gcc831
 #     ARCH: arm
 #     SCHEDULER_PARAMETERS: ${SP_arm}
 
@@ -279,7 +279,7 @@ dp9_rel_xl_16_mr:
 #   extends: .darwin_merge
 #   variables:
 #     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: arm-gcc831
+#     DRACO_ENV: draco/arm-gcc831
 #     ARCH: arm
 #     SCHEDULER_PARAMETERS: ${SP_arm}
 
@@ -301,7 +301,7 @@ dp9_rel_g930_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi
     ARCH: power9
     CTEST_NPROC: 40
     SCHEDULER_PARAMETERS: ${SP_power9}
@@ -310,7 +310,7 @@ dp9_deb_g930_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi
     ARCH: power9
     CTEST_NPROC: 40
     SCHEDULER_PARAMETERS: ${SP_power9}
@@ -319,7 +319,7 @@ dp9_rel_xl16_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: power9-xl16117
+    DRACO_ENV: lapse/2.2-power9-xl
     ARCH: power9
     CTEST_NPROC: 20
     SCHEDULER_PARAMETERS: ${SP_power9}
@@ -328,7 +328,7 @@ dp9_deb_xl16_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: power9-xl16117
+    DRACO_ENV: lapse/2.2-power9-xl
     ARCH: power9
     CTEST_NPROC: 20
     SCHEDULER_PARAMETERS: ${SP_power9}
@@ -337,7 +337,7 @@ dx86_deb_volta_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: haswell-gcc1120
+    DRACO_ENV: draco/haswell-gcc1120
     ARCH: x86_64
     CTEST_NPROC: 10
     SCHEDULER_PARAMETERS: ${SP_volta_x86}
@@ -347,7 +347,7 @@ dx86_rel_volta_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: haswell-gcc1120
+    DRACO_ENV: draco/haswell-gcc1120
     ARCH: x86_64
     CTEST_NPROC: 10
     SCHEDULER_PARAMETERS: ${SP_volta_x86}
@@ -357,7 +357,7 @@ darm_deb_gcc831_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: arm-gcc831
+    DRACO_ENV: draco/arm-gcc831
     ARCH: arm
     CTEST_NPROC: 40
     SCHEDULER_PARAMETERS: ${SP_arm}
@@ -366,7 +366,7 @@ darm_rel_gcc831_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: arm-gcc831
+    DRACO_ENV: draco/arm-gcc831
     ARCH: arm
     CTEST_NPROC: 40
     SCHEDULER_PARAMETERS: ${SP_arm}
@@ -375,7 +375,7 @@ darwin_deb_nvhpc229_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: haswell-nvhpc229
+    DRACO_ENV: draco/haswell-nvhpc229
     ARCH: x86_64
     CTEST_NPROC: 20
     SCHEDULER_PARAMETERS: ${SP_x86_64}
@@ -384,7 +384,7 @@ darwin_deb_oneapi_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: spr-oneapi20221109-nda.lua
+    DRACO_ENV: draco/spr-oneapi20221109-nda.lua
     ARCH: x86_64
     CTEST_NPROC: 112
     SCHEDULER_PARAMETERS: ${SP_spr}
@@ -393,7 +393,7 @@ darwin_rel_oneapi_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: spr-oneapi20221109-nda.lua
+    DRACO_ENV: draco/spr-oneapi20221109-nda.lua
     ARCH: x86_64
     CTEST_NPROC: 112
     SCHEDULER_PARAMETERS: ${SP_spr}
