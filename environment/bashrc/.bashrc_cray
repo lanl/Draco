@@ -3,7 +3,7 @@
 # File  : environment/bashrc/.bashrc_cray
 # Date  : Tuesday, May 31, 2016, 14:48 pm
 # Author: Kelly Thompson
-# Note  : Copyright (C) 2016-2022, Triad National Security, LLC., All rights are reserved.
+# Note  : Copyright (C) 2016-2023, Triad National Security, LLC., All rights are reserved.
 #
 # Bash configuration file for Cray HPC machines.
 #--------------------------------------------------------------------------------------------------#
@@ -41,8 +41,6 @@ fi
 # export OMP_PLACES=threads # lmdm says do not set this!
 
 unset OMP_NUM_THREADS
-if [[ ${CRAY_CPU_TARGET} =~ arm ]]; then
-  export NRANKS_PER_NODE=56
 elif [[ ${CRAY_CPU_TARGET} =~ haswell ]]; then
   export NRANKS_PER_NODE=32
 elif [[ ${CRAY_CPU_TARGET} =~ knl ]]; then
@@ -68,20 +66,10 @@ arch=`uname -m`
 sysname=`/usr/projects/hpcsoft/utilities/bin/sys_name`
 module use --append /usr/projects/draco/Modules/$sysname
 module unload draco lapse
-case $sysname in
-  capulin)
-    module unuse /usr/share/modules
-    module unuse /usr/projects/hpcsoft/modulefiles/cle7.0/capulin/libraries
-    module unuse /opt/cray/pe/perftools/21.02.0/modulefiles
-    module load draco
-    ;;
-  trinitite | trinity )
-    module load lapse/2.0-intel
-    if [[ ${SLURM_JOB_PARTITION} =~ "knl" ]]; then
-      module swap craype-haswell craype-mic-knl
-    fi
-    ;;
-esac
+module load lapse/2.2-intel
+if [[ ${SLURM_JOB_PARTITION} =~ "knl" ]]; then
+  module swap craype-haswell craype-mic-knl
+fi
 
 #--------------------------------------------------------------------------------------------------#
 # end of .bashrc_cray
