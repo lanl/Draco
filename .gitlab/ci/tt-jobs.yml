@@ -68,7 +68,6 @@ tt_deb_cce1301_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/cce1301"
     FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 tt_rel_cce1301_deploy:
   extends: .tt_deploy
@@ -76,7 +75,6 @@ tt_rel_cce1301_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/cce1301"
     FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
-    EXTRA_CMAKE_ARGS: -G Ninja
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
@@ -106,7 +104,7 @@ tt_rel_i202120_mr:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.2-intel"
-    EXTRA_CMAKE_ARGS: -GNinja
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 # ----- slow -----
 
@@ -116,7 +114,7 @@ tt_deb_i202120_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.2-intel"
-    EXTRA_CMAKE_ARGS: -GNinja
+    EXTRA_CMAKE_ARGS: -G Ninja
 
 tt_deb_cce_mr:
   stage: slowtest
@@ -134,6 +132,7 @@ tt_deb_cce_mr:
   variables:
     CTEST_MODE: Nightly
     CTEST_NPROC: 32
+    EXTRA_CMAKE_ARGS: -G Ninja
   script:
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
       "Configure,Build,Test"
@@ -148,8 +147,6 @@ tt_rel_i202120_regress:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.2-intel"
-    CTEST_BUILD_NAME: "lapse22-intel-Release"
-    EXTRA_CMAKE_ARGS: -GNinja
 
 tt_deb_i202120_regress:
   stage: test
@@ -158,7 +155,6 @@ tt_deb_i202120_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.2-intel"
     CTEST_BUILD_NAME: "lapse22-intel-Debug"
-    EXTRA_CMAKE_ARGS: -GNinja
 
 tt_rel_cce1301_regress:
   stage: test
@@ -167,7 +163,6 @@ tt_rel_cce1301_regress:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/cce1301"
     CTEST_BUILD_NAME: "cce1301-Release"
-    EXTRA_CMAKE_ARGS: -GNinja
 
 tt_deb_cce1301_regress:
   stage: test
@@ -176,7 +171,6 @@ tt_deb_cce1301_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/cce1301"
     CTEST_BUILD_NAME: "cce1301-Debug"
-    EXTRA_CMAKE_ARGS: -GNinja
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/tt-jobs.yml
