@@ -147,7 +147,7 @@ dspr_deb_oneapi_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/spr-oneapi20221109-nda.lua
+    DRACO_ENV: draco/spr-oneapi20221109-nda
     ARCH: x86_64
     CTEST_NPROC: 112
     MAXLOAD: 112
@@ -157,7 +157,7 @@ dspr_rel_oneapi_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/spr-oneapi20221109-nda.lua
+    DRACO_ENV: draco/spr-oneapi20221109-nda
     ARCH: x86_64
     CTEST_NPROC: 112
     MAXLOAD: 112
@@ -384,7 +384,7 @@ darwin_deb_oneapi_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/spr-oneapi20221109-nda.lua
+    DRACO_ENV: draco/spr-oneapi20221109-nda
     ARCH: x86_64
     CTEST_NPROC: 112
     SCHEDULER_PARAMETERS: ${SP_spr}
@@ -393,7 +393,7 @@ darwin_rel_oneapi_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/spr-oneapi20221109-nda.lua
+    DRACO_ENV: draco/spr-oneapi20221109-nda
     ARCH: x86_64
     CTEST_NPROC: 112
     SCHEDULER_PARAMETERS: ${SP_spr}
