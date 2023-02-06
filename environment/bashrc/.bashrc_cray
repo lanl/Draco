@@ -41,7 +41,7 @@ fi
 # export OMP_PLACES=threads # lmdm says do not set this!
 
 unset OMP_NUM_THREADS
-elif [[ ${CRAY_CPU_TARGET} =~ haswell ]]; then
+if [[ ${CRAY_CPU_TARGET} =~ haswell ]]; then
   export NRANKS_PER_NODE=32
 elif [[ ${CRAY_CPU_TARGET} =~ knl ]]; then
   export NRANKS_PER_NODE=68
