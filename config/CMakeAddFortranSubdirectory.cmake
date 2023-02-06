@@ -45,7 +45,7 @@
 # This is a heavily modified version of CMakeAddFortranSubdirectory.cmake that is distributed with
 # CMake
 
-# Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved.
+# Copyright (C) 2014-2023 Triad National Security, LLC., All rights reserved.
 
 # cmake-lint: disable=R0912,R0915,W0106
 
@@ -734,7 +734,7 @@ function(init_build_system_state)
       list(APPEND build_system_state "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
     endif()
   else()
-    list(APPEND build_system_state "-DHAVE_CUDA=${HAVE_CUDA}")
+    list(APPEND build_system_state "-DHAVE_GPU=${HAVE_GPU}")
   endif()
   set(build_system_state
       "${build_system_state}"

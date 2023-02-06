@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wednesday, Nov 07, 2012, 18:49 pm
  * \brief  Small executable that prints the version and copyright strings.
- * \note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_diagnostics_draco_info_hh
@@ -98,7 +98,7 @@ private:
   std::string library_type;
   std::string system_type;
   std::string site_name;
-  bool cuda = {false};
+  bool gpu = {false};
   bool mpi = {false};
   std::string mpirun_cmd;
   bool openmp = {false};
@@ -110,8 +110,8 @@ private:
   std::string cc_flags;
   std::string fc;
   std::string fc_flags;
-  std::string cuda_compiler; //! < full path to the cuda compiler (if any)
-  std::string cuda_flags;    //!< Compiler flags for cuda
+  std::string gpu_compiler; //! < full path to the cuda compiler (if any)
+  std::string gpu_flags;    //!< Compiler flags for cuda
 };
 
 } // end namespace rtt_diagnostics

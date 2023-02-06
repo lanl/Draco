@@ -3,7 +3,7 @@
  * \file  ds++/Assert.hh
  * \brief Header file for Draco specific exception class definition (rtt_dsxx::assertion). Also
  *        define Design-by-Contract macros.
- * \note  Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note  Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef RTT_dsxx_Assert_HH
@@ -173,7 +173,7 @@ void show_cookies(std::string const &cond, std::string const &file, int const li
 [[noreturn]] void insist_ptr(char const *const cond, char const *const msg, char const *const file,
                              int const line);
 
-#if defined __CUDA_ARCH__ && defined USE_CUDA
+#if defined __GPU_ARCH__ && defined USE_GPU
 /*! \brief A special version of insist that does not throw.  Useful for GPU code. \sa
  *         device/config.h.in */
 __host__ __device__ inline void no_exception_insist(char const *const cond, char const *const msg,
@@ -249,8 +249,8 @@ std::string verbose_error(std::string const &message);
  *
  * Special code for CUDA.
  *
- * If __CUDA_ARCH__ (processing with nvcc) and USE_CUDA=ON, then alter the behavior of the DbC macros
- * because cuda code cannot throw.
+ * If __CUDA_ARCH__ || __HIPCC__ (processing with nvcc/hip) and USE_GPU=ON, then alter the behavior
+ * of the DbC macros because cuda code cannot throw.
  */
 /*!
  * \def Require(condition)
@@ -299,16 +299,16 @@ std::string verbose_error(std::string const &message);
  * Eventually, we want the DBC to work in GPU/Cuda code, but for now just disable DBC.
  */
 //------------------------------------------------------------------------------------------------//
-#if ( DBC & 8 ) || ( defined __CUDA_ARCH__ && defined USE_CUDA )
+#if ( DBC & 8 ) || ( defined __GPU_ARCH__ && defined USE_GPU )
 
-#if ( DBC & 1 ) && !( defined __CUDA_ARCH__ && defined USE_CUDA )
+#if ( DBC & 1 ) && !( defined __GPU_ARCH__ && defined USE_GPU )
 #define REQUIRE_ON
 #define Require(c) if (!(c)) rtt_dsxx::show_cookies( #c, __FILE__, __LINE__ )
 #else
 #define Require(c)
 #endif
 
-#if ( DBC & 2 ) && !( defined __CUDA_ARCH__ && defined USE_CUDA )
+#if ( DBC & 2 ) && !( defined __GPU_ARCH__ && defined USE_GPU )
 #define CHECK_ON
 #define Check(c) if (!(c)) rtt_dsxx::show_cookies( #c, __FILE__, __LINE__ )
 #define Assert(c) if (!(c)) rtt_dsxx::show_cookies( #c, __FILE__, __LINE__ )
@@ -317,7 +317,7 @@ std::string verbose_error(std::string const &message);
 #define Assert(c)
 #endif
 
-#if ( DBC & 4 ) && !( defined __CUDA_ARCH__ && defined USE_CUDA )
+#if ( DBC & 4 ) && !( defined __GPU_ARCH__ && defined USE_GPU )
 #define ENSURE_ON
 #define Ensure(c) if (!(c)) rtt_dsxx::show_cookies( #c, __FILE__, __LINE__ )
 #else
@@ -327,7 +327,7 @@ std::string verbose_error(std::string const &message);
 //------------------------------------------------------------------------------------------------//
 // Always on
 //------------------------------------------------------------------------------------------------//
-#if ( defined __CUDA_ARCH__  && defined USE_CUDA )
+#if ( defined __GPU_ARCH__  && defined USE_GPU )
 #define Insist_device(c, m) if(!(c)) rtt_dsxx::no_exception_insist( #c, m, __FILE__, __LINE__)
 #else
 #define Insist_device(c,m) if (!(c)) rtt_dsxx::insist( #c, m, __FILE__, __LINE__ )
@@ -422,7 +422,7 @@ std::string verbose_error(std::string const &message);
 //------------------------------------------------------------------------------------------------//
 // If any of DBC is on, then make the remember macro active and the NOEXCEPT inactive.
 //------------------------------------------------------------------------------------------------//
-#if DBC && !( defined USE_CUDA && defined __CUDA_ARCH__ )
+#if DBC && !( defined USE_GPU && defined __GPU_ARCH__ )
 #define REMEMBER_ON
 #define Remember(c) c
 #define NOEXCEPT

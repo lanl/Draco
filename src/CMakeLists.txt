@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 April 28
 # brief  Instructions for building src level Makefile.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(draco_src_dir)
@@ -123,6 +123,13 @@ if(CMAKE_CONFIGURATION_TYPES)
     message("Cuda Debug F: ${CMAKE_CUDA_FLAGS_DEBUG}")
     message("Cuda Release: ${CMAKE_CUDA_FLAGS_RELEASE}")
   endif()
+  if(_LANGUAGES_ MATCHES HIP)
+    message("HIP         : ${CMAKE_HIP_COMPILER}")
+    message("HIP FLAGS   : ${CMAKE_HIP_FLAGS}")
+    message("HIP Debug FL: ${CMAKE_HIP_FLAGS_DEBUG}")
+    message("HIP Release : ${CMAKE_HIP_FLAGS_RELEASE}")
+  endif()
+
 else()
   hanging_indent(100 5 "C FLAGS: ${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_${Draco_BUILD_TYPE}}")
   hanging_indent(100 5 "CXX FLAGS: ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_${Draco_BUILD_TYPE}}")
@@ -134,6 +141,10 @@ else()
   if(_LANGUAGES_ MATCHES CUDA)
     message("CUDA        : ${CMAKE_CUDA_COMPILER} (${CMAKE_CUDA_COMPILER_ID})")
     message("Cuda FLAGS  : ${CMAKE_CUDA_FLAGS} ${CMAKE_CUDA_FLAGS_${Draco_BUILD_TYPE}}")
+  endif()
+  if(_LANGUAGES_ MATCHES HIP)
+    message("HIP         : ${CMAKE_HIP_COMPILER} (${CMAKE_HIP_COMPILER_ID})")
+    message("HIP FLAGS   : ${CMAKE_HIP_FLAGS} ${CMAKE_HIP_FLAGS_${Draco_BUILD_TYPE}}")
   endif()
 endif()
 if(CAFS_Fortran_COMPILER)

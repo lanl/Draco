@@ -2,7 +2,7 @@
 # \file   .cmake-format.py
 # \author Kelly Thompson <kgt@lanl.gov>
 # \brief  Options affecting listfile parsing
-# \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# \note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 #
 # https://cmake-format.readthedocs.io/en/latest/configuration.html
 # ------------------------------------------------------------------------------------------------ #
@@ -15,8 +15,8 @@ with section("parse"):  # noqa: F821
             "pargs": 1,
             "flags": ["NOEXPORT", "PROVIDE_DLL_DEPS"],
             "kwargs": {"TARGET": '*', "LIBRARY_NAME": '*', "SOURCES": '*', "HEADERS": '*',
-                       "INCLUDE_DIRS": '*', "TARGET_DEPS": '*', "LINK_LANGUAGE": '*',
-                       "LIBRARY_TYPE": '*'}},
+                       "INCLUDE_DIRS": '*', "TARGET_DEPS": '*', "LANGUAGE": '*',
+                       "LINK_LANGUAGE": '*', "LIBRARY_TYPE": '*'}},
 
         "add_component_executable": {
             "kwargs": {"TARGET": '*', "LIBRARY_NAME": '*', "SOURCES": '*', "HEADERS": '*',

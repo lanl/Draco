@@ -3,7 +3,7 @@
  * \file   quadrature/test/quadrature_test.cc
  * \author Kent G. Budge
  * \brief  Define class quadrature_test
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature_test.hh"
@@ -532,7 +532,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
                    2U, // dimension,
                    rtt_mesh_element::Geometry::CARTESIAN,
                    // expansion_order
-                   min(8U, quadrature.number_of_levels()), "GQ1",
+                   std::min(8U, quadrature.number_of_levels()), "GQ1",
                    false, // add_extra_directions,
                    Ordinate_Set::OCTANT_ORDERED);
 

@@ -3,7 +3,7 @@
  * \file   device/GPU_Device.cc
  * \author Kelly (KT) Thompson
  * \date   Thu Oct 20 15:28:48 2011
- * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "GPU_Device.hh"
@@ -23,7 +23,7 @@ namespace rtt_device {
  * - Set device and context handles.
  * - Query the devices for features.
  */
-GPU_Device::GPU_Device(void) : deviceCount(0), computeCapability(), deviceName() {
+GPU_Device::GPU_Device() : deviceCount(0), computeCapability(), deviceName() {
 
   // Get a device count, determine compute capability
   cudaError_t err = cudaGetDeviceCount(&deviceCount);
@@ -44,8 +44,12 @@ GPU_Device::GPU_Device(void) : deviceCount(0), computeCapability(), deviceName()
     // Compute capability revision
     int major = 0;
     int minor = 0;
+#ifdef USE_CUDA
     cudaDeviceGetAttribute(&major, cudaDevAttrComputeCapabilityMajor, device);
     cudaDeviceGetAttribute(&minor, cudaDevAttrComputeCapabilityMinor, device);
+#else
+    hipDeviceComputeCapability(&major, &minor, device);
+#endif
     computeCapability[device].push_back(major);
     computeCapability[device].push_back(minor);
 

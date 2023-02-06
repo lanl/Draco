@@ -10,12 +10,6 @@
 [![PyPI](https://img.shields.io/pypi/l/Django.svg)](https://github.com/lanl/Draco/blob/develop/LICENSE.md)
 [![GitHub Super-Linter](https://github.com/lanl/Draco/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
-## Gitlab Status
-
-[![pipeline status](https://re-git.lanl.gov/draco/draco/badges/develop/pipeline.svg)](https://re-git.lanl.gov/draco/draco/-/commits/develop)
-[![coverage report](https://re-git.lanl.gov/draco/draco/badges/develop/coverage.svg?job=gcov_regress)](https://re-git.lanl.gov/draco/draco/-/commits/develop)
-[![Latest Release](https://re-git.lanl.gov/draco/draco/-/badges/release.svg?key_width=120)](https://re-git.lanl.gov/draco/draco/-/releases)
-
 ## Summary
 
 Draco is an object-oriented component library geared towards numerically intensive, radiation

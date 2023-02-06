@@ -4,7 +4,7 @@
 ! author Allan Wollaber
 ! date   Tuesday, Jun 12, 2012, 16:03 pm
 ! brief  Test F90 quadrature_data passed into a C++ function
-! note   Copyright (c) 2016-2021 Triad National Security, LLC., All rights reserved.
+! note   Copyright (C) 2016-2023 Triad National Security, LLC., All rights reserved.
 !---------------------------------------------------------------------------------------------------
 
 !---------------------------------------------------------------------------------------------------
@@ -17,15 +17,15 @@ module rtt_test_quadrature_f
 
   ! Now create an interface to the C routine that accepts that a user-defined type
   interface
-     subroutine rtt_test_quadrature_interfaces(quad, err_code) &
-          bind(C, name="rtt_test_quadrature_interfaces")
-       use iso_c_binding, only: c_int
+    subroutine rtt_test_quadrature_interfaces(quad, err_code) &
+      bind(C, name="rtt_test_quadrature_interfaces")
+      use iso_c_binding, only: c_int
 
-       use quadrature_interfaces, only: quadrature_data
-       implicit none
-       type(quadrature_data), intent(in)  :: quad
-       integer(c_int), intent(out) :: err_code
-     end subroutine rtt_test_quadrature_interfaces
+      use quadrature_interfaces, only: quadrature_data
+      implicit none
+      type(quadrature_data), intent(in)  :: quad
+      integer(c_int), intent(out) :: err_code
+    end subroutine rtt_test_quadrature_interfaces
   end interface
 
 end module rtt_test_quadrature_f
@@ -36,7 +36,7 @@ end module rtt_test_quadrature_f
 subroutine test_quadrature_interfaces() bind(c)
 
   use rtt_test_quadrature_f
-  use quadrature_interfaces
+  use quadrature_interfaces, only: quadrature_data, get_quadrature, init_quadrature
   use iso_c_binding, only: c_int, c_double, c_loc
   implicit none
 
@@ -86,20 +86,20 @@ subroutine test_quadrature_interfaces() bind(c)
 
   deallocate (q_mu, q_eta, q_xi, q_wt)
 
-  if (error_code .eq. 0) then
-     print '(a)', "Test: passed"
-     print '(a)', "     error code is equal to zero"
+  if (error_code == 0) then
+    print '(a)', "Test: passed"
+    print '(a)', "     error code is equal to zero"
   else
-     print '(a)', "Test: failed"
-     print '(a,i5)', "     error code not equal to zero; it's ", error_code
+    print '(a)', "Test: failed"
+    print '(a,i5)', "     error code not equal to zero; it's ", error_code
   endif
 
   print '(a)', " "
   print '(a)', "*********************************************"
-  if (error_code .ne. 0) then
-     print '(a)', "**** ftstquadrature_interface Test: FAILED."
+  if (error_code /= 0) then
+    print '(a)', "**** ftstquadrature_interface Test: FAILED."
   else
-     print '(a)', "**** ftstquadrature_interface Test: PASSED."
+    print '(a)', "**** ftstquadrature_interface Test: PASSED."
   endif
   print '(a)', "*********************************************"
 

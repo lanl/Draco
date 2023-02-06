@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for rng/test.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(rng_test C CXX)
 
@@ -64,6 +64,7 @@ add_scalar_tests(
   PASS_REGEX "PASSED" FAIL_REGEX "FAILED")
 
 if(USE_CUDA AND NOT CMAKE_CXX_COMPILER_ID MATCHES XL)
+  # This test is proved by the Random123 project and is requires to nvcc (cuda) and gcc
   set(test_sources_cuda ${PROJECT_SOURCE_DIR}/kat_cuda.cu)
   set(test_deps_cuda "Lib_rng")
   add_scalar_tests(
