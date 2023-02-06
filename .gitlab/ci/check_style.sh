@@ -5,7 +5,7 @@
 # File  : .gitlab/ci/check_style.sh
 # Date  : Thursday, May 20, 2021, 16:31 pm
 # Author: Kelly Thompson <kgt@lanl.gov>
-# Note  : Copyright (C) 2020-2021, Triad National Security, LLC., All rights are reserved.
+# Note  : Copyright (C) 2020-2023, Triad National Security, LLC., All rights are reserved.
 #
 # Runs various lint programs in the current directory and list locally modified files that are not
 # compliant with the current coding standard (see .clang_format in the top level source directory.)
@@ -224,7 +224,9 @@ if [[ -x "${CMF}" ]]; then
     cp -f "${file}" "${tmpfile1}"
     $CMF -c "${rscriptdir}/../../.cmake-format.py" -i "${tmpfile1}" &> /dev/null
     # color output is possible if diff -version >= 3.4 with option `--color`
-    diff "${DIFFCOLOR}" -u "${file}" "${tmpfile1}" | \
+
+    # shellcheck disable=SC2086
+    diff ${DIFFCOLOR} -u "${file}" "${tmpfile1}" | \
       sed -e "1s|--- |--- a/|" -e "2s|+++ ${tmpfile1}|+++ b/${file}|" >> "$patchfile_cmf"
     rm "${tmpfile1}"
 
