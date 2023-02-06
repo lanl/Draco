@@ -14,6 +14,9 @@ Compiler Setup...
 ")
 endif()
 
+option(ENABLE_CCACHE "If available, use ccache compiler launcher" FALSE)
+option(ENABLE_F90CACHE "If available, use f90cache compiler launcher" FALSE)
+
 # ------------------------------------------------------------------------------------------------ #
 # PAPI
 # ------------------------------------------------------------------------------------------------ #
@@ -161,7 +164,15 @@ macro(dbsSetupCompilers)
     # * Provide these as arguments to cmake as -DC_FLAGS="whatever".
     #
     # -------------------------------------------------------------------------------------------- #
-    foreach(lang C CXX Fortran EXE_LINKER SHARED_LINKER CUDA)
+    foreach(
+      lang
+      C
+      CXX
+      Fortran
+      EXE_LINKER
+      SHARED_LINKER
+      CUDA
+      HIP)
       if(DEFINED ENV{${lang}_FLAGS})
         string(REPLACE "\"" "" tmp "$ENV{${lang}_FLAGS}")
         string(APPEND ${lang}_FLAGS " ${tmp}")
@@ -454,30 +465,33 @@ macro(dbsSetupCxx)
         TRUE
         CACHE BOOL "Have we looked for ccache/f90cache?")
     mark_as_advanced(CCACHE_CHECK_AVAIL_DONE)
-    # From https://crascit.com/2016/04/09/using-ccache-with-cmake/
-    message(STATUS "Looking for ccache...")
-    find_program(CCACHE_PROGRAM ccache)
-    if(CCACHE_PROGRAM)
-      message(STATUS "Looking for ccache... ${CCACHE_PROGRAM}")
-      # Set up wrapper scripts
-      set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
-      set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
-      add_feature_info(CCache CCACHE_PROGRAM "Using ccache to speed up builds.")
-    else()
-      message(STATUS "Looking for ccache... not found.")
+    if(EANBLE_CCACHE)
+      # From https://crascit.com/2016/04/09/using-ccache-with-cmake/
+      message(STATUS "Looking for ccache...")
+      find_program(CCACHE_PROGRAM ccache)
+      if(CCACHE_PROGRAM)
+        message(STATUS "Looking for ccache... ${CCACHE_PROGRAM}")
+        # Set up wrapper scripts
+        set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+        set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+        add_feature_info(CCache CCACHE_PROGRAM "Using ccache to speed up builds.")
+      else()
+        message(STATUS "Looking for ccache... not found.")
+      endif()
     endif()
 
-    # From https://crascit.com/2016/04/09/using-ccache-with-cmake/
-    message(STATUS "Looking for f90cache...")
-    find_program(F90CACHE_PROGRAM f90cache)
-    if(F90CACHE_PROGRAM)
-      message(STATUS "Looking for f90cache... ${F90CACHE_PROGRAM}")
-      set(CMAKE_Fortran_COMPILER_LAUNCHER "${F90CACHE_PROGRAM}")
-      add_feature_info(F90Cache F90CACHE_PROGRAM "Using f90cache to speed up builds.")
-    else()
-      message(STATUS "Looking for f90cache... not found.")
+    if(EANBLE_F90CACHE)
+      # From https://crascit.com/2016/04/09/using-ccache-with-cmake/
+      message(STATUS "Looking for f90cache...")
+      find_program(F90CACHE_PROGRAM f90cache)
+      if(F90CACHE_PROGRAM)
+        message(STATUS "Looking for f90cache... ${F90CACHE_PROGRAM}")
+        set(CMAKE_Fortran_COMPILER_LAUNCHER "${F90CACHE_PROGRAM}")
+        add_feature_info(F90Cache F90CACHE_PROGRAM "Using f90cache to speed up builds.")
+      else()
+        message(STATUS "Looking for f90cache... not found.")
+      endif()
     endif()
-
   endif()
 
 endmacro()
@@ -789,7 +803,7 @@ macro(dbsSetupFortran)
 endmacro()
 
 # ------------------------------------------------------------------------------------------------ #
-# Setup Cuda Compiler
+# Setup GPU Compiler
 #
 # Use:
 #
@@ -798,18 +812,18 @@ endmacro()
 #
 # Helpers - these environment variables help cmake find/set CUDA envs.
 #
-# * ENV{CUDACXX}
-# * ENV{CUDAFLAGS}
-# * ENV{CUDAHOSTCXX}
+# * ENV{CUDACXX} | ENV{HIPCXX}
+# * ENV{CUDAFLAGS} | ENV{HIPFLAGS}
+# * ENV{CUDAHOSTCXX} | ENV{HIPHOSTCXX}
 #
 # Returns:
 #
 # * BUILD_SHARED_LIBS - bool
-# * CMAKE_CUDA_FLAGS
-# * CMAKE_CUDA_FLAGS_DEBUG
-# * CMAKE_CUDA_FLAGS_RELEASE
-# * CMAKE_CUDA_FLAGS_RELWITHDEBINFO
-# * CMAKE_CUDA_FLAGS_MINSIZEREL
+# * CMAKE_[CUDA|HIP]_FLAGS
+# * CMAKE_[CUDA|HIP]_FLAGS_DEBUG
+# * CMAKE_[CUDA|HIP]_FLAGS_RELEASE
+# * CMAKE_[CUDA|HIP]_FLAGS_RELWITHDEBINFO
+# * CMAKE_[CUDA|HIP]_FLAGS_MINSIZEREL
 #
 # Notes:
 #
@@ -821,41 +835,60 @@ macro(dbsSetupCuda)
 
   # Toggle if we should try to build Cuda parts of the project. Will be enabled if ENV{CUDACXX} is
   # set.
-  option(HAVE_CUDA "Should we build Cuda parts of the project?" OFF)
+  option(HAVE_GPU "Should we build GPU accelerator parts of the project?" OFF)
 
   # Is Cuda enabled (it is considered 'optional' for draco)?
   get_property(_LANGUAGES_ GLOBAL PROPERTY ENABLED_LANGUAGES)
-  if(_LANGUAGES_ MATCHES CUDA)
-    # We found Cuda, keep track of this information.
-    set(HAVE_CUDA ON)
+  if(_LANGUAGES_ MATCHES CUDA OR _LANGUAGES_ MATCHES HIP)
+    # We found Cuda or HIP, keep track of this information.
+    set(HAVE_GPU ON)
     # User option to disable Cuda, even when it is available.
-    option(USE_CUDA "Use Cuda?" ON)
+    option(USE_GPU "Use Cuda|Hip?" ON)
   endif()
 
   # Save the results
-  set(HAVE_CUDA
-      ${HAVE_CUDA}
-      CACHE BOOL "Should we build CUDA portions of this project?" FORCE)
-  if(HAVE_CUDA AND USE_CUDA)
-    # Use this string in 'project(foo ${CUDA_DBS_STRING})' commands to enable cuda per project.
-    set(CUDA_DBS_STRING
-        "CUDA"
-        CACHE STRING "If CUDA is available, this variable is 'CUDA'")
+  set(HAVE_GPU
+      ${HAVE_GPU}
+      CACHE BOOL "Should we build GPU Accelerated (CUDA|HIP) portions of this project?" FORCE)
+  if(HAVE_GPU AND USE_GPU)
+    # Use this string in 'project(foo ${GPU_DBS_STRING})' commands to enable cuda per project.
+    if(_LANGUAGES_ MATCHES CUDA)
+      set(GPU_DBS_STRING
+          "CUDA"
+          CACHE STRING "If CUDA is available, this variable is 'CUDA'")
+    else()
+      set(GPU_DBS_STRING
+          "HIP"
+          CACHE STRING "If HIP is available, this variable is 'HIP'")
+    endif()
     # Use this string as a toggle when calling add_component_library or add_scalar_tests to force
-    # compiling with nvcc.
-    set(COMPILE_WITH_CUDA LINK_LANGUAGE CUDA)
+    # compiling with nvcc/hip.
+    set(COMPILE_WITH_GPU LINK_LANGUAGE ${GPU_DBS_STRING})
 
     # setup flags
     if("${CMAKE_CUDA_COMPILER_ID}" MATCHES "NVIDIA")
       include(unix-cuda)
+    elseif("${CMAKE_HIP_COMPILER_ID}" MATCHES "Clang")
+      include(unix-hip-clang)
     else()
-      message(FATAL_ERROR "Build system does not support CUDACXX=${CMAKE_CUDA_COMPILER}")
+      message(FATAL_ERROR "Build system does not support CUDACXX=${CMAKE_CUDA_COMPILER} or "
+                          "HIPCXX = ${CMAKE_HIP_COMPILER}")
     endif()
   endif()
 
   # Sanity Check
-  if(USE_CUDA AND NOT HAVE_CUDA)
-    message(FATAL_ERROR "==> Cuda requested but nvcc not found. Try loading a cuda module.")
+  if(USE_GPU AND NOT HAVE_GPU)
+    set(message "==> USE_GPU=TRUE but GPU hardware and/or runtimes not found.")
+    if(GPU_DBS_STRING MATCHES "CUDA")
+      string(APPEND message
+             "==> Ie. CUDA requested but nvcc was not found. Try loading a cuda module "
+             "    or setting CUDACXX or CMAKE_CUDA_COMPILER manually.")
+    else()
+      string(APPEND message
+             "==> Ie. HIP requested but rocm was not found. Try loading a rocm module."
+             "    or setting HIPCXX or CMAKE_HIP_COMPILER manually.")
+    endif()
+    message(FATAL_ERROR "${message}")
   endif()
 
 endmacro()
@@ -927,6 +960,7 @@ function(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build
        AND NOT ${comp} STREQUAL "CXX"
        AND NOT ${comp} STREQUAL "Fortran"
        AND NOT ${comp} STREQUAL "CUDA"
+       AND NOT ${comp} STREQUAL "HIP"
        AND NOT ${comp} STREQUAL "EXE_LINKER"
        AND NOT ${comp} STREQUAL "SHARED_LINKER")
       message(
@@ -948,7 +982,13 @@ function(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build
           string(REPLACE "${compiler_flag}" "" CMAKE_${comp}_FLAGS ${CMAKE_${comp}_FLAGS})
         endif()
       endif()
-      set(CMAKE_${comp}_FLAGS "${CMAKE_${comp}_FLAGS}" PARENT_SCOPE)
+      set(CMAKE_${comp}_FLAGS
+          "${CMAKE_${comp}_FLAGS}"
+          PARENT_SCOPE)
+
+      set(CMAKE_${comp}_FLAGS
+          "${CMAKE_${comp}_FLAGS}"
+          PARENT_SCOPE)
 
     else() # build_modes listed
 
@@ -966,8 +1006,9 @@ function(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build
                            ${CMAKE_${comp}_FLAGS_${bm}})
           endif()
         endif()
-        set(CMAKE_${comp}_FLAGS_${bm} "${CMAKE_${comp}_FLAGS_${bm}}" PARENT_SCOPE)
-
+        set(CMAKE_${comp}_FLAGS_${bm}
+            "${CMAKE_${comp}_FLAGS_${bm}}"
+            PARENT_SCOPE)
       endforeach()
 
     endif()

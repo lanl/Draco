@@ -70,10 +70,10 @@
 #cmakedefine draco_is64bit
 #cmakedefine draco_isATS2
 #cmakedefine DRACO_UNAME @DRACO_UNAME@
-#cmakedefine HAVE_CUDA @HAVE_CUDA@
-#cmakedefine USE_CUDA @USE_CUDA@
-/* Eg: project(foo CXX ${CUDA_DBS_STRING}) */
-#cmakedefine CUDA_DBS_STRING @CUDA_DBS_STRING@
+#cmakedefine HAVE_GPU @HAVE_GPU@
+#cmakedefine USE_GPU @USE_GPU@
+/* Eg: project(foo CXX ${GPU_DBS_STRING}) */
+#cmakedefine GPU_DBS_STRING @GPU_DBS_STRING@
 #cmakedefine APPLE @APPLE@
 #cmakedefine SITENAME "@SITENAME@"
 #cmakedefine COMPILED_HOSTNAME "@COMPILED_HOSTNAME@"
@@ -262,8 +262,19 @@
 #cmakedefine CMAKE_CUDA_FLAGS_RELEASE   "@CMAKE_CUDA_FLAGS_RELEASE@"
 #cmakedefine CMAKE_CUDA_FLAGS_RELWITHDEBINFO "@CMAKE_CUDA_FLAGS_RELWITHDEBINFO@"
 #cmakedefine CMAKE_CUDA_FLAGS_MINSIZEREL     "@CMAKE_CUDA_FLAGS_MINSIZEREL@"
-#cmakedefine CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@"
+#cmakedefine CMAKE_HIP_COMPILER        "@CMAKE_HIP_COMPILER@"
+#cmakedefine CMAKE_HIP_FLAGS           "@CMAKE_HIP_FLAGS@"
+#cmakedefine CMAKE_HIP_FLAGS_DEBUG     "@CMAKE_HIP_FLAGS_DEBUG@"
+#cmakedefine CMAKE_HIP_FLAGS_RELEASE   "@CMAKE_HIP_FLAGS_RELEASE@"
+#cmakedefine CMAKE_HIP_FLAGS_RELWITHDEBINFO "@CMAKE_HIP_FLAGS_RELWITHDEBINFO@"
+#cmakedefine CMAKE_HIP_FLAGS_MINSIZEREL     "@CMAKE_HIP_FLAGS_MINSIZEREL@"
 
+/* Used by Assert.hh to allow it to be used by C++ or cuda/hip */
+#if defined __CUDA_ARCH__ || defined __HIPCC__
+#define __GPU_ARCH__
+#endif
+
+#cmakedefine CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@"
 #cmakedefine CMAKE_COMPILER_IS_GNUCXX         @CMAKE_COMPILER_IS_GNUCXX@
 #cmakedefine CMAKE_CXX_COMPILER_ID            @CMAKE_CXX_COMPILER_ID@
 #cmakedefine CMAKE_CXX_COMPILER_VERSION      "@CMAKE_CXX_COMPILER_VERSION@"

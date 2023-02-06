@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wednesday, Nov 07, 2012, 18:49 pm
  * \brief  Small executable that prints the version and copyright strings.
- * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "draco_info.hh"
@@ -28,7 +28,7 @@ DracoInfo::DracoInfo()
       build_type(rtt_dsxx::string_toupper(CBT)), library_type("static"), system_type("Unknown"),
       site_name("Unknown"), mpirun_cmd(""), diagnostics_level("disabled"), cxx(CMAKE_CXX_COMPILER),
       cxx_flags(CMAKE_CXX_FLAGS), cc(CMAKE_C_COMPILER), cc_flags(CMAKE_C_FLAGS), fc("none"),
-      fc_flags("none"), cuda_compiler("none"), cuda_flags("none") {
+      fc_flags("none"), gpu_compiler("none"), gpu_flags("none") {
 #ifdef DRACO_SHARED_LIBS
   library_type = "Shared";
 #endif
@@ -38,8 +38,8 @@ DracoInfo::DracoInfo()
 #ifdef SITENAME
   site_name = SITENAME;
 #endif
-#ifdef HAVE_CUDA
-  cuda = true;
+#ifdef HAVE_GPU
+  gpu = true;
 #endif
 #ifdef C4_MPI
   mpi = true;
@@ -79,12 +79,20 @@ DracoInfo::DracoInfo()
     fc_flags += CMAKE_Fortran_FLAGS_DEBUG;
 #endif
 #ifdef CMAKE_CUDA_COMPILER
-  cuda_compiler = CMAKE_CUDA_COMPILER;
-  cuda_flags = CMAKE_CUDA_FLAGS;
+  gpu_compiler = CMAKE_CUDA_COMPILER;
+  gpu_flags = CMAKE_CUDA_FLAGS;
   if (build_type == std::string("RELEASE"))
-    cuda_flags += CMAKE_CUDA_FLAGS_RELEASE;
+    gpu_flags += CMAKE_CUDA_FLAGS_RELEASE;
   else if (build_type == std::string("DEBUG"))
-    cuda_flags += CMAKE_CUDA_FLAGS_DEBUG;
+    gpu_flags += CMAKE_CUDA_FLAGS_DEBUG;
+#endif
+#ifdef CMAKE_HIP_COMPILER
+  gpu_compiler = CMAKE_HIP_COMPILER;
+  gpu_flags = CMAKE_HIP_FLAGS;
+  if (build_type == std::string("RELEASE"))
+    gpu_flags += CMAKE_HIP_FLAGS_RELEASE;
+  else if (build_type == std::string("DEBUG"))
+    gpu_flags += CMAKE_HIP_FLAGS_DEBUG;
 #endif
 }
 
@@ -149,7 +157,7 @@ std::string DracoInfo::fullReport() const {
               << "\n    Library type      : " << library_type
               << "\n    System type       : " << system_type
               << "\n    Site name         : " << site_name
-              << "\n    CUDA support      : " << (cuda ? "enabled" : "disabled")
+              << "\n    GPU support       : " << (gpu ? "enabled" : "disabled")
               << "\n    MPI support       : " << (mpi ? "enabled" : "disabled (c4 scalar mode)");
 
   if (mpi) {
@@ -180,11 +188,11 @@ std::string DracoInfo::fullReport() const {
   infoMessage << "\n    Fortran_FLAGS     : ";
   print_text_with_word_wrap(fc_flags, hanging_indent, max_width, infoMessage);
 #endif
-  if (cuda) {
-    infoMessage << "\n    Cuda Compiler     : ";
-    print_text_with_word_wrap(cuda_compiler, hanging_indent, max_width, infoMessage, "/");
-    infoMessage << "\n    CUDA_FLAGS        : ";
-    print_text_with_word_wrap(cuda_flags, hanging_indent, max_width, infoMessage);
+  if (gpu) {
+    infoMessage << "\n    GPU Compiler     : ";
+    print_text_with_word_wrap(gpu_compiler, hanging_indent, max_width, infoMessage, "/");
+    infoMessage << "\n    GPU_FLAGS        : ";
+    print_text_with_word_wrap(gpu_flags, hanging_indent, max_width, infoMessage);
   }
 
   infoMessage << "\n" << endl;

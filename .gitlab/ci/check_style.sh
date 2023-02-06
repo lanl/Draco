@@ -193,8 +193,8 @@ if [[ $CMF ]]; then
   fi
 fi
 
-DIFFVER=$(diff --version | head -n 1 | sed -e 's/.*[ ]\([0-9.]\)/\1/')
-[[ $(version_gt "3.4" "${DIFFVER}") ]] && DIFFCOLOR="--color"
+# DIFFVER=$(diff --version | head -n 1 | sed -e 's/.*[ ]\([0-9.]\)/\1/')
+# [[ $(version_gt "3.4" "${DIFFVER}") ]] && DIFFCOLOR="--color"
 
 if [[ -x "${CMF}" ]]; then
 

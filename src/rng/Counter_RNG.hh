@@ -4,7 +4,7 @@
  * \author Peter Ahrens
  * \date   Fri Aug 3 16:53:23 2012
  * \brief  Declaration of class Counter_RNG.
- * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef Counter_RNG_hh
@@ -319,7 +319,7 @@ inline void Counter_RNG_Ref::spawn(Counter_RNG &new_gen) const { new_gen._spawn(
 
 //------------------------------------------------------------------------------------------------//
 //! Is this Counter_RNG_Ref a reference to rng?
-inline bool Counter_RNG_Ref::is_alias_for(Counter_RNG const &rng) const {
+GPU_HOST_DEVICE inline bool Counter_RNG_Ref::is_alias_for(Counter_RNG const &rng) const {
   return rng.begin() == data.access();
 }
 

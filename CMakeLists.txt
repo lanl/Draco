@@ -22,7 +22,7 @@ project(
 # Export compile commands for compiler tools
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
-# Do not look for Fortran/CUDA for
+# Do not look for Fortran/CUDA/HIP for
 #
 # 1. XCode based Generators, or
 # 2. Visual Studio IDE or NMake Generators (MSYS or CYGWIN environments will look for Fortran).
@@ -39,8 +39,18 @@ if((${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "N
   if(DEFINED ENV{CUDADIR}
      OR DEFINED ENV{CUDACXX}
      OR DEFINED ENV{CUDA_HOME})
-    if((DEFINED USE_CUDA AND USE_CUDA) OR NOT DEFINED USE_CUDA)
+    if((DEFINED USE_GPU AND USE_GPU) OR NOT DEFINED USE_GPU)
       enable_language(CUDA OPTIONAL)
+    endif()
+  elseif(
+    "rocmcc" MATCHES $ENV{LOADEDMODULES}
+    OR DEFINED ENV{HIPCXX}
+    OR DEFINED CMAKE_HIP_COMPILER)
+    if((DEFINED USE_GPU AND USE_GPU) OR NOT DEFINED USE_GPU)
+      enable_language(HIP OPTIONAL)
+      if(CMAKE_HIP_COMPILER MATCHES "CC")
+        set(CMAKE_HIP_FLAGS "-x hip")
+      endif()
     endif()
   endif()
 endif()

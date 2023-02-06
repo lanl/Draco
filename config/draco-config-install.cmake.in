@@ -51,23 +51,45 @@ set(Draco_MPIEXEC_NUMPROC_FLAG "@MPIEXEC_NUMPROC_FLAG@")
 set(Draco_MPI_C_WORKS "@MPI_C_WORKS@") # Used to help CAFS setup on Win32
 set(Draco_MPI_LANG_LIST "@Draco_MPI_LANG_LIST@")
 
-# CUDA
-option(HAVE_CUDA "Should we build Cuda parts of the project?" @HAVE_CUDA@)
-set(USE_CUDA "@USE_CUDA@")
-set(COMPILE_WITH_CUDA "@COMPILE_WITH_CUDA@")
-set(CUDA_DBS_STRING "@CUDA_DBS_STRING@")
-set(Draco_CMAKE_CUDA_FLAGS "@CMAKE_CUDA_FLAGS@")
-set(Draco_CMAKE_CUDA_FLAGS_DEBUG "@CMAKE_CUDA_FLAGS_DEBUG@")
-set(Draco_CMAKE_CUDA_FLAGS_RELWITHDEBINFO "@CMAKE_CUDA_FLAGS_RELWITHDEBINFO@")
-set(Draco_CMAKE_CUDA_FLAGS_RELEASE "@CMAKE_CUDA_FLAGS_RELEASE@")
-set(CUDA_ARCHITECTURES "@CUDA_ARCHITECTURES@")
-if( (${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ninja") AND USE_CUDA)
-  include(CheckLanguage)
-  check_language(CUDA)
-  if(CMAKE_CUDA_COMPILER)
-    enable_language(CUDA)
-  else()
-    message( FATAL_ERROR "==> Cuda requested but nvcc not found. Try loading a cuda module.")
+# GPU build information
+
+option(HAVE_GPU "Should we build GPU (HIP or CUDA) parts of the project?" @HAVE_GPU@)
+set(USE_GPU "@USE_GPU@")
+set(GPU_DBS_STRING "@GPU_DBS_STRING@")
+
+if(${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ninja")
+  if("${GPU_DBS_STRING}" MATCHES "CUDA")
+
+    # CUDA
+
+    set(Draco_CMAKE_CUDA_FLAGS "@CMAKE_CUDA_FLAGS@")
+    set(Draco_CMAKE_CUDA_FLAGS_DEBUG "@CMAKE_CUDA_FLAGS_DEBUG@")
+    set(Draco_CMAKE_CUDA_FLAGS_RELWITHDEBINFO "@CMAKE_CUDA_FLAGS_RELWITHDEBINFO@")
+    set(Draco_CMAKE_CUDA_FLAGS_RELEASE "@CMAKE_CUDA_FLAGS_RELEASE@")
+    set(CUDA_ARCHITECTURES "@CUDA_ARCHITECTURES@")
+    include(CheckLanguage)
+    check_language(CUDA)
+    if(CMAKE_CUDA_COMPILER)
+      enable_language(CUDA)
+    else()
+      message( FATAL_ERROR "==> Cuda requested but nvcc not found. Try loading a cuda module.")
+    endif()
+  elseif("${GPU_DBS_STRING}" MATCHES "HIP")
+
+    # HIP
+
+    set(Draco_CMAKE_HIP_FLAGS "@CMAKE_HIP_FLAGS@")
+    set(Draco_CMAKE_HIP_FLAGS_DEBUG "@CMAKE_HIP_FLAGS_DEBUG@")
+    set(Draco_CMAKE_HIP_FLAGS_RELWITHDEBINFO "@CMAKE_HIP_FLAGS_RELWITHDEBINFO@")
+    set(Draco_CMAKE_HIP_FLAGS_RELEASE "@CMAKE_HIP_FLAGS_RELEASE@")
+    set(HIP_ARCHITECTURES "@HIP_ARCHITECTURES@")
+    include(CheckLanguage)
+    check_language(HIP)
+    if(CMAKE_HIP_COMPILER)
+      enable_language(HIP)
+    else()
+      message( FATAL_ERROR "==> Hip requested but rocmcc not found. Try loading a rocm module.")
+    endif()
   endif()
 endif()
 

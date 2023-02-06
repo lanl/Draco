@@ -3,15 +3,15 @@
  * \file   device/GPU_CheckError.hh
  * \author Kelly (KT) Thompson
  * \brief  Provide helper macros for CUDA code
- * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef device_GPU_CheckError_hh
 #define device_GPU_CheckError_hh
 
+#include "device/device_gpu.h"
 #include <cstdio>
 #include <cstdlib>
-#include <cuda_runtime.h>
 
 namespace rtt_device {
 

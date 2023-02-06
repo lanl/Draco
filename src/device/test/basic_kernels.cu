@@ -3,8 +3,11 @@
  * \file   device/test/basic_kernels.cu
  * \author Kelly Thompson
  * \brief  Small kernel code for testing GPU Device framework.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
+
+// #include <hip/hip_runtime.h>
+#include "basic_kernels.hh"
 
 namespace rtt_device_test {
 

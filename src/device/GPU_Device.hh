@@ -3,13 +3,13 @@
  * \file   device/GPU_Device.hh
  * \author Kelly (KT) Thompson
  * \brief  Define class GPU_Device
- * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef device_GPU_Device_hh
 #define device_GPU_Device_hh
 
-#include "device_cuda.h"
+#include "device_gpu.h"
 #include "ds++/Assert.hh"
 #include <array>
 #include <iostream>
@@ -49,17 +49,13 @@ namespace rtt_device {
 //================================================================================================//
 class GPU_Device {
 public:
-  // NESTED CLASSES AND TYPEDEFS
-
   // CREATORS
 
   //! Default constructors.
-  GPU_Device(void);
+  GPU_Device();
 
   //! Destructor.
   ~GPU_Device();
-
-  // MANIPULATORS
 
   // ACCESSORS
 

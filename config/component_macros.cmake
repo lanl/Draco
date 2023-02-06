@@ -3,7 +3,7 @@
 # author Kelly G. Thompson, kgt@lanl.gov
 # date   2010 Dec 1
 # brief  Provide extra macros to simplify CMakeLists.txt for component directories.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 include_guard(GLOBAL)
@@ -30,8 +30,14 @@ set(Draco_std_target_props_CXX CXX_STANDARD 14 # Force strict C++ 14 standard
 set(Draco_std_target_props_CUDA
     CUDA_STANDARD;14 # Force strict C++ 14 standard
     CUDA_EXTENSIONS;OFF CUDA_STANDARD_REQUIRED;ON CUDA_ARCHITECTURES;${CUDA_ARCHITECTURES})
-# CUDA_SEPARABLE_COMPILATION ON) CUDA_RESOLVE_DEVICE_SYMBOLS ON ) target_include_directories (my lib
-# PUBLIC $<BUILD_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}> )
+# ~~~
+# CUDA_SEPARABLE_COMPILATION ON)
+# CUDA_RESOLVE_DEVICE_SYMBOLS ON )
+# target_include_directories (my lib
+#   PUBLIC $<BUILD_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}> )
+set(Draco_std_target_props_HIP
+    HIP_STANDARD;14 # Force strict C++ 14 standard
+    HIP_EXTENSIONS;OFF HIP_STANDARD_REQUIRED;ON HIP_ARCHITECTURES;${HIP_ARCHITECTURES})
 set(Draco_std_target_props INTERPROCEDURAL_OPTIMIZATION_RELEASE ${USE_IPO}
                            POSITION_INDEPENDENT_CODE ON)
 
@@ -52,6 +58,8 @@ function(dbs_std_tgt_props target)
       set_target_properties(${target} PROPERTIES ${Draco_std_target_props_CXX})
     elseif(${lang} STREQUAL "CUDA")
       set_target_properties(${target} PROPERTIES ${Draco_std_target_props_CUDA})
+    elseif(${lang} STREQUAL "HIP")
+      set_target_properties(${target} PROPERTIES ${Draco_std_target_props_HIP})
     endif()
     set_target_properties(${target} PROPERTIES ${Draco_std_target_props})
   endforeach()
@@ -297,7 +305,7 @@ macro(add_component_library)
   # These become variables of the form ${acl_NAME}, etc.
   cmake_parse_arguments(
     acl "NOEXPORT;PROVIDE_DLL_DEPS"
-    "EXPORT_NAME;TARGET;LIBRARY_NAME;LIBRARY_NAME_PREFIX;LIBRARY_TYPE;LINK_LANGUAGE"
+    "EXPORT_NAME;LANGUAGE;LIBRARY_NAME;LIBRARY_NAME_PREFIX;LIBRARY_TYPE;LINK_LANGUAGE;TARGET"
     "HEADERS;SOURCES;INCLUDE_DIRS;TARGET_DEPS;VENDOR_LIST;VENDOR_LIBS;VENDOR_INCLUDE_DIRS" ${ARGV})
 
   #
@@ -311,8 +319,8 @@ macro(add_component_library)
   if(NOT acl_LINK_LANGUAGE)
     set(acl_LINK_LANGUAGE CXX)
   endif()
-  if("${acl_LINK_LANGUAGE}" STREQUAL "CUDA")
-    set_property(SOURCE ${acl_SOURCES} APPEND PROPERTY LANGUAGE CUDA)
+  if("${acl_LANGUAGE}" STREQUAL "CUDA" OR "${acl_LANGUAGE}" STREQUAL "HIP")
+    set_property(SOURCE ${acl_SOURCES} APPEND PROPERTY LANGUAGE ${acl_LANGUAGE})
     set(acl_LIBRARY_TYPE STATIC)
   endif()
 
@@ -339,12 +347,20 @@ macro(add_component_library)
   # extract project name, minus leading "Lib_"
   string(REPLACE "Lib_" "" folder_name ${acl_TARGET})
 
+  set(lverbose OFF)
+  if(acl_TARGET MATCHES "device_foo")
+    set(lverbose ON)
+  endif()
+
+  if(lverbose)
+    message("add_library(${acl_TARGET} ${acl_LIBRARY_TYPE} ${acl_SOURCES})")
+  endif()
   add_library(${acl_TARGET} ${acl_LIBRARY_TYPE} ${acl_SOURCES})
   dbs_std_tgt_props(${acl_TARGET})
   set_target_properties(
     ${acl_TARGET} PROPERTIES
     OUTPUT_NAME ${acl_LIBRARY_NAME_PREFIX}${acl_LIBRARY_NAME}
-    FOLDER ${folder_name} WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    FOLDER ${folder_name} WINDOWS_EXPORT_ALL_SYMBOLS ON LINKER_LANGUAGE "${acl_LINK_LANGUAGE}")
   if(DEFINED DRACO_LINK_OPTIONS AND NOT "${DRACO_LINK_OPTIONS}x" STREQUAL "x")
     set_property(TARGET ${acl_TARGET} APPEND PROPERTY LINK_OPTIONS ${DRACO_LINK_OPTIONS})
   endif()
@@ -465,7 +481,9 @@ macro(register_scalar_test)
 
   separate_arguments(cmdargs UNIX_COMMAND ${rst_CMD_ARGS})
 
-  set(lverbose OFF)
+  if(rst_TARGET STREQUAL "device_gpu_hello_world")
+    set(lverbose ON)
+  endif()
   if(lverbose)
     message("add_test( NAME ${rst_TARGET} COMMAND ${RUN_CMD} ${rst_COMMAND} ${cmdargs} )")
   endif()
@@ -684,7 +702,8 @@ macro(add_scalar_tests test_sources)
 
   # These become variables of the form ${addscalartests_SOURCES}, etc.
   cmake_parse_arguments(
-    addscalartest "APPLICATION_UNIT_TEST;LINK_WITH_FORTRAN;RUN_SERIAL;NONE" "LABEL;LINK_LANGUAGE"
+    addscalartest "APPLICATION_UNIT_TEST;LINK_WITH_FORTRAN;RUN_SERIAL;NONE"
+    "LABEL;LANGUAGE;LINK_LANGUAGE"
     "DEPS;ENV;FAIL_REGEX;PASS_REGEX;RESOURCE_LOCK;RUN_AFTER;SOURCES;TEST_ARGS" ${ARGV})
 
   # Sanity Checks
@@ -692,9 +711,9 @@ macro(add_scalar_tests test_sources)
   if("${addscalartest_SOURCES}none" STREQUAL "none")
     message(
       FATAL_ERROR
-        "You must provide the keyword SOURCES and a list of sources when using "
-        "the add_scalar_tests macro.  Please see draco/config/component_macros.cmake::"
-        "add_scalar_tests() for more information.")
+        "You must provide the keyword SOURCES and a list of sources when using the add_scalar_tests"
+        " macro. Please see draco/config/component_macros.cmake::add_scalar_tests() for more "
+        "information.")
   endif()
 
   # Defaults:
@@ -704,8 +723,9 @@ macro(add_scalar_tests test_sources)
   if(NOT addscalartest_LINK_LANGUAGE)
     set(addscalartest_LINK_LANGUAGE CXX)
   endif()
-  if("${addscalartest_LINK_LANGUAGE}" STREQUAL "CUDA")
-    set_source_files_properties(${addscalartest_SOURCES} PROPERTIES LANGUAGE CUDA)
+  if("${addscalartest_LANGUAGE}" STREQUAL "CUDA" OR "${addscalartest_LANGUAGE}" STREQUAL "HIP")
+    set_source_files_properties(${addscalartest_SOURCES} PROPERTIES LANGUAGE
+                                                                    "${addscalartest_LANGUAGE}")
   endif()
 
   # Special Cases:
@@ -763,6 +783,10 @@ macro(add_scalar_tests test_sources)
   foreach(file ${addscalartest_SOURCES})
 
     get_filename_component(testname ${file} NAME_WE)
+    if(testname MATCHES "gpu_hello_world")
+      set(lverbose ON)
+      message("add_executable(Ut_${compname}_${testname}_exe ${file})")
+    endif()
     add_executable(Ut_${compname}_${testname}_exe ${file})
     dbs_std_tgt_props(Ut_${compname}_${testname}_exe)
     set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY OUTPUT_NAME ${testname})
@@ -775,15 +799,28 @@ macro(add_scalar_tests test_sources)
     if(DEFINED DRACO_LINK_OPTIONS AND NOT "${DRACO_LINK_OPTIONS}x" STREQUAL "x")
       set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY LINK_OPTIONS
                                                                          ${DRACO_LINK_OPTIONS})
+      if(lverbose)
+        message("set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY LINK_OPTIONS
+                                                                         ${DRACO_LINK_OPTIONS})")
+      endif()
     endif()
     if(addscalartest_LINK_WITH_FORTRAN)
       set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY LINKER_LANGUAGE Fortran)
+    elseif(addscalartest_LINK_LANGUAGE)
+      set_property(TARGET Ut_${compname}_${testname}_exe APPEND
+                   PROPERTY LINKER_LANGUAGE ${addscalartest_LINK_LANGUAGE})
     endif()
     if(addscalartest_RUN_SERIAL)
       set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY RUN_SERIAL ON)
     endif()
+    if(lverbose)
+      message("target_link_libraries(Ut_${compname}_${testname}_exe ${test_lib_target_name}
+      ${addscalartest_DEPS})")
+    endif()
     target_link_libraries(Ut_${compname}_${testname}_exe ${test_lib_target_name}
                           ${addscalartest_DEPS})
+    set(lverbose OFF)
+
   endforeach()
 
   # Register the unit test

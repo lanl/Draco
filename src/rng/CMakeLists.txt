@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for rng.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(rng CXX)
@@ -51,7 +51,7 @@ list(APPEND headers_public "${pkg_config_h}")
 # ------------------------------------------------------------------------------------------------ #
 # Build package library
 # ------------------------------------------------------------------------------------------------ #
-if(HAVE_CUDA AND USE_CUDA)
+if(HAVE_GPU AND USE_GPU)
   set(deps Lib_dsxx Lib_device GSL::gsl)
 else()
   set(deps Lib_dsxx GSL::gsl)

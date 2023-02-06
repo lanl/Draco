@@ -4,11 +4,11 @@
  * \author Alex R. Long
  * \date   Mon Mar 25 2019
  * \brief  Show how code can be called from GPU and host
- * \note   Copyright (C) 2019-2020 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2019-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Dual_Call.hh"
+#include "ds++/Assert.hh"
 
 namespace rtt_device_test {
 
