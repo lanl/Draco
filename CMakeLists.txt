@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 April 28
 # brief  Instructions for building root level Makefile.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #
 # Build notes:
 #
@@ -31,10 +31,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 #
 #   * Fortran only: $ENV{FC} is not set (e.g. clang on Linux)
 #   * Cuda only   : $ENV{CUDADIR} is not set (e.g. cuda module not loaded)
-if(${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ninja")
-  if(DEFINED ENV{FC} OR DEFINED CMAKE_Fortran_COMPILER)
-    enable_language(Fortran OPTIONAL)
-  endif()
+if((${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ninja") AND NOT MSVC)
+  # For non-MSVC builds, always look for Fortran.  If $ENV{FC} or ${CMAKE_Fortran_COMPILER} are
+  # defined, they will be used.  Otherwise cmake will search for a Fortran compiler based on its
+  # internal rules.  Normally, it will look for gfortran first.
+  enable_language(Fortran OPTIONAL)
   if(DEFINED ENV{CUDADIR}
      OR DEFINED ENV{CUDACXX}
      OR DEFINED ENV{CUDA_HOME})
