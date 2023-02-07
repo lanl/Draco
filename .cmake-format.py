@@ -75,9 +75,11 @@ with section("parse"):  # noqa: F821
                        "IMPORTED_LINK_INTERFACE_LIBRARIES_NOCONFIG": '*',
                        "IMPORTED_LOCATION": '*',
                        "INTERFACE_INCLUDE_DIRECTORIES": '*',
+                       "LINKER_LANGUAGE": '*',
                        "OUTPUT_NAME": '*',
                        "RUNTIME_OUTPUT_DIRECTORY": '*',
                        "VS_KEYWORD": '*',
+                       "WINDOWS_EXPORT_ALL_SYMBOLS": '*',
                        "XCODE_ATTRIBUTE_ENABLE_OPENMP_SUPPORT": '*'}},
 
         "set_tests_properties": {
