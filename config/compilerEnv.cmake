@@ -465,7 +465,7 @@ macro(dbsSetupCxx)
         TRUE
         CACHE BOOL "Have we looked for ccache/f90cache?")
     mark_as_advanced(CCACHE_CHECK_AVAIL_DONE)
-    if(EANBLE_CCACHE)
+    if(ENABLE_CCACHE)
       # From https://crascit.com/2016/04/09/using-ccache-with-cmake/
       message(STATUS "Looking for ccache...")
       find_program(CCACHE_PROGRAM ccache)
@@ -480,7 +480,7 @@ macro(dbsSetupCxx)
       endif()
     endif()
 
-    if(EANBLE_F90CACHE)
+    if(ENABLE_F90CACHE)
       # From https://crascit.com/2016/04/09/using-ccache-with-cmake/
       message(STATUS "Looking for f90cache...")
       find_program(F90CACHE_PROGRAM f90cache)
@@ -986,28 +986,26 @@ function(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build
           "${CMAKE_${comp}_FLAGS}"
           PARENT_SCOPE)
 
-      set(CMAKE_${comp}_FLAGS
-          "${CMAKE_${comp}_FLAGS}"
-          PARENT_SCOPE)
-
     else() # build_modes listed
 
-      foreach(bm ${build_modes})
+      foreach(buildtype ${build_modes})
 
-        string(REPLACE "+" "x" safe_CMAKE_${comp}_FLAGS_${bm} ${CMAKE_${comp}_FLAGS_${bm}})
+        string(REPLACE "+" "x" safe_CMAKE_${comp}_FLAGS_${buildtype}
+                       ${CMAKE_${comp}_FLAGS_${buildtype}})
 
         if(${switch})
-          if(NOT "${safe_CMAKE_${comp}_FLAGS_${bm}}" MATCHES "${safe_compiler_flag}")
-            set(CMAKE_${comp}_FLAGS_${bm} "${CMAKE_${comp}_FLAGS_${bm}} ${compiler_flag}")
+          if(NOT "${safe_CMAKE_${comp}_FLAGS_${buildtype}}" MATCHES "${safe_compiler_flag}")
+            set(CMAKE_${comp}_FLAGS_${buildtype}
+                "${CMAKE_${comp}_FLAGS_${buildtype}} ${compiler_flag}")
           endif()
         else()
-          if("${safe_CMAKE_${comp}_FLAGS_${bm}}" MATCHES "${safe_compiler_flag}")
-            string(REPLACE "${compiler_flag}" "" CMAKE_${comp}_FLAGS_${bm}
-                           ${CMAKE_${comp}_FLAGS_${bm}})
+          if("${safe_CMAKE_${comp}_FLAGS_${buildtype}}" MATCHES "${safe_compiler_flag}")
+            string(REPLACE "${compiler_flag}" "" CMAKE_${comp}_FLAGS_${buildtype}
+                           ${CMAKE_${comp}_FLAGS_${buildtype}})
           endif()
         endif()
-        set(CMAKE_${comp}_FLAGS_${bm}
-            "${CMAKE_${comp}_FLAGS_${bm}}"
+        set(CMAKE_${comp}_FLAGS_${buildtype}
+            "${CMAKE_${comp}_FLAGS_${buildtype}}"
             PARENT_SCOPE)
       endforeach()
 

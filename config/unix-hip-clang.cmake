@@ -57,7 +57,6 @@ if(NOT HIP_FLAGS_INITIALIZED)
     set(HIP_ARCHITECTURES
         ${HIP_ARCHITECTURES}
         CACHE STRING "target architecture for gpu code.")
-    message("HIP_ARCHITECTURES: ${HIP_ARCHITECTURES}")
   endif()
 
   # string(APPEND CMAKE_HIP_FLAGS " -g --expt-relaxed-constexpr") string(APPEND CMAKE_HIP_FLAGS "

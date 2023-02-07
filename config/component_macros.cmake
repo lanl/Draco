@@ -347,6 +347,8 @@ macro(add_component_library)
   # extract project name, minus leading "Lib_"
   string(REPLACE "Lib_" "" folder_name ${acl_TARGET})
 
+  # Specialized code to help debug this code. Replace "device_foo" with the actual target name that
+  # needs to be analyized (eg. Lib_dsxx)
   set(lverbose OFF)
   if(acl_TARGET MATCHES "device_foo")
     set(lverbose ON)
@@ -360,7 +362,9 @@ macro(add_component_library)
   set_target_properties(
     ${acl_TARGET} PROPERTIES
     OUTPUT_NAME ${acl_LIBRARY_NAME_PREFIX}${acl_LIBRARY_NAME}
-    FOLDER ${folder_name} WINDOWS_EXPORT_ALL_SYMBOLS ON LINKER_LANGUAGE "${acl_LINK_LANGUAGE}")
+    FOLDER ${folder_name}
+    WINDOWS_EXPORT_ALL_SYMBOLS ON
+    LINKER_LANGUAGE "${acl_LINK_LANGUAGE}")
   if(DEFINED DRACO_LINK_OPTIONS AND NOT "${DRACO_LINK_OPTIONS}x" STREQUAL "x")
     set_property(TARGET ${acl_TARGET} APPEND PROPERTY LINK_OPTIONS ${DRACO_LINK_OPTIONS})
   endif()
@@ -481,7 +485,7 @@ macro(register_scalar_test)
 
   separate_arguments(cmdargs UNIX_COMMAND ${rst_CMD_ARGS})
 
-  if(rst_TARGET STREQUAL "device_gpu_hello_world")
+  if(rst_TARGET STREQUAL "device_gpu_hello_mars")
     set(lverbose ON)
   endif()
   if(lverbose)
@@ -783,7 +787,7 @@ macro(add_scalar_tests test_sources)
   foreach(file ${addscalartest_SOURCES})
 
     get_filename_component(testname ${file} NAME_WE)
-    if(testname MATCHES "gpu_hello_world")
+    if(testname MATCHES "gpu_hello_mars")
       set(lverbose ON)
       message("add_executable(Ut_${compname}_${testname}_exe ${file})")
     endif()
