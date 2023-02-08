@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Wednesday, May 26, 2021, 13:44 pm
 # brief  Establish flags for Linux64 - Intel C++ (LLVM)
-# note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 # cmake-lint: disable=C0301
@@ -57,7 +57,7 @@ if(NOT CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv AND NOT IS_DIRECTORY "/ccs
   set(HAS_XHOST TRUE)
   toggle_compiler_flag(HAS_XHOST "-xHost" "C;CXX" "")
 endif()
-toggle_compiler_flag(OpenMP_FOUND ${OpenMP_C_FLAGS} "C;CXX" "")
+toggle_compiler_flag(OpenMP_FOUND "${OpenMP_C_FLAGS}" "C;CXX" "")
 force_compiler_flags_to_cache("C;CXX")
 
 # ------------------------------------------------------------------------------------------------ #
