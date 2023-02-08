@@ -27,8 +27,8 @@
 #endif
 
 #ifdef USE_HIP
-#include <hip/hip_runtime_api.h>
 #include <hip/hip_runtime.h>
+#include <hip/hip_runtime_api.h>
 #define cudaError_t hipError_t
 #define cudaGetDevice hipGetDevice
 #define cudaSetDevice hipSetDevice
