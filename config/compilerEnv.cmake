@@ -68,10 +68,27 @@ macro(query_openmp_availability)
     # set(OpenMP_FOUND TRUE)
     # set(OpenMP_C_VERSION "3.1")
     # ~~~
-    set(OpenMP_FOUND FALSE)
+    set(USE_OPENMP OFF)
+  elseif(DEFINED USE_OPENMP)
+    # no-op (use defined value, -DUSE_OPENMP=<OFF|ON>,  instead of attempting to guess)
+  elseif(DEFINED ENV{USE_OPENMP})
+    # Use the value found in the environment: `export USE_OPENMP=<OFF|ON>`
+    set(USE_OPENMP $ENV{USE_OPENMP})
   else()
-    find_package(OpenMP QUIET)
+    # Assume we want to use it if it is found.
+    set(USE_OPENMP ON)
   endif()
+  set(USE_OPENMP
+      ${USE_OPENMP}
+      CACHE BOOL "Enable OpenMP threading support if detected." FORCE)
+
+  # Find package if desired:
+  if(USE_OPENMP)
+    find_package(OpenMP QUIET)
+  else()
+    set(OpenMP_FOUND FALSE)
+  endif()
+
   if(OpenMP_FOUND)
     # [2022-10-27 KT] cmake/3.22 doesn't report OpenMP_C_VERSION for nvc++. Fake it for now.
     if("${OpenMP_C_VERSION}x" STREQUAL "x" AND CMAKE_CXX_COMPILER_ID MATCHES "NVHPC")
@@ -93,7 +110,13 @@ macro(query_openmp_availability)
         ${OpenMP_FOUND}
         CACHE BOOL "Is OpenMP available?" FORCE)
   else()
-    message(STATUS "Looking for OpenMP... not found")
+    if(USE_OPENMP)
+      # Not detected, though desired.
+      message(STATUS "Looking for OpenMP... not found")
+    else()
+      # Detected, but not desired.
+      message(STATUS "Looking for OpenMP... found, but disabled for this build")
+    endif()
   endif()
 endmacro()
 

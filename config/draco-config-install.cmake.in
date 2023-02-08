@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Save Draco configuration information for installation (cmake export)
-# note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2012-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 list( APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}" )
 get_filename_component( _SELF_DIR "${CMAKE_CURRENT_LIST_FILE}"  PATH )
@@ -51,8 +51,13 @@ set(Draco_MPIEXEC_NUMPROC_FLAG "@MPIEXEC_NUMPROC_FLAG@")
 set(Draco_MPI_C_WORKS "@MPI_C_WORKS@") # Used to help CAFS setup on Win32
 set(Draco_MPI_LANG_LIST "@Draco_MPI_LANG_LIST@")
 
-# GPU build information
+#--------------------------------------------------------------------------------------------------#
+# OpenMP toggle
+#   This allows us to explicitly disable OpenMP support (may be needed for mixed toolchains)
+#--------------------------------------------------------------------------------------------------#
+set(USE_OPENMP "@USE_OPENMP@")
 
+# GPU build information
 option(HAVE_GPU "Should we build GPU (HIP or CUDA) parts of the project?" @HAVE_GPU@)
 set(USE_GPU "@USE_GPU@")
 set(GPU_DBS_STRING "@GPU_DBS_STRING@")
