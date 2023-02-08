@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/Linux-NVHPC-Fortran.cmake
 # brief  Establish Fortran flags for Linux - NVHPC
-# note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2022-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -29,7 +29,7 @@ endif()
 deduplicate_flags(CMAKE_Fortran_FLAGS)
 
 # Toggle compiler flags for optional features
-toggle_compiler_flag(OpenMP_FOUND ${OpenMP_Fortran_FLAGS} "Fortran" "")
+toggle_compiler_flag(OpenMP_FOUND "${OpenMP_Fortran_FLAGS}" "Fortran" "")
 force_compiler_flags_to_cache("Fortran")
 
 # ------------------------------------------------------------------------------------------------ #
