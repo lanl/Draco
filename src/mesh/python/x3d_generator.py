@@ -3,7 +3,7 @@
 # file  src/mesh/python/x3d_generator.py
 # date  Monday, Jul 19, 2021, 12:14 pm
 # brief This script generates X3D mesh files from a mesh object (assumed to have certain data).
-# note  Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# note  Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import mesh_types
 import numpy as np
@@ -13,7 +13,8 @@ import argparse
 mesh_type_dict = {'orth_1d_mesh': mesh_types.orth_1d_mesh, 'orth_2d_mesh': mesh_types.orth_2d_mesh,
                   'orth_3d_mesh': mesh_types.orth_3d_mesh, 'fcc_3d_mesh': mesh_types.fcc_3d_mesh,
                   'vor_2d_mesh': mesh_types.vor_2d_mesh, 'rnd_1d_mesh': mesh_types.rnd_1d_mesh,
-                  'rnd_2d_mesh': mesh_types.rnd_2d_mesh, 'rnd_3d_mesh': mesh_types.rnd_3d_mesh}
+                  'rnd_2d_mesh': mesh_types.rnd_2d_mesh, 'rnd_3d_mesh': mesh_types.rnd_3d_mesh,
+                  'smoothdist_2d_mesh': mesh_types.smoothdist_2d_mesh}
 
 # ------------------------------------------------------------------------------------------------ #
 # -- create argument parser
@@ -67,6 +68,8 @@ elif args.mesh_type in ['vor_2d_mesh']:
     mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_cells)
 elif args.mesh_type in ['rnd_1d_mesh', 'rnd_2d_mesh', 'rnd_3d_mesh']:
     mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim, args.eps, args.rnd_seed)
+elif args.mesh_type in ['smoothdist_2d_mesh']:
+    mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim, args.eps)
 
 # ------------------------------------------------------------------------------------------------ #
 # -- construct matid and region dictionary if region data arguments are available

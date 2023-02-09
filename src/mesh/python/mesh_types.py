@@ -3,7 +3,7 @@
 # file  src/mesh/python/mesh_types.py
 # date  Monday, Jul 19, 2021, 12:14 pm
 # brief This script provides mesh classes that calculate and contain unstructred mesh data.
-# note  Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# note  Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import numpy as np
 
@@ -1035,8 +1035,8 @@ class rnd_1d_mesh(orth_1d_mesh):
     '''
 
     def __init__(self, bounds_per_dim, num_cells_per_dim, eps, rng_seed):
-        assert (eps >= 0.0), 'eps < 0.0'
-        assert (eps <= 1.0), 'eps > 1.0'
+        assert (eps >= 0.0), 'eps <= 0.0'
+        assert (eps <= 1.0), 'eps >= 1.0'
         # -- import pseudorandom number generator functions
         from random import seed, random
         # -- invoke base mesh constructor to generate initial mesh form
@@ -1068,8 +1068,8 @@ class rnd_2d_mesh(orth_2d_mesh):
     '''
 
     def __init__(self, bounds_per_dim, num_cells_per_dim, eps, rng_seed):
-        assert (eps >= 0.0), 'eps < 0.0'
-        assert (eps <= 1.0), 'eps > 1.0'
+        assert (eps >= 0.0), 'eps <= 0.0'
+        assert (eps <= 1.0), 'eps >= 1.0'
         # -- import pseudorandom number generator functions
         from random import seed, random
         # -- invoke base mesh constructor to generate initial mesh form
@@ -1109,8 +1109,8 @@ class rnd_3d_mesh(fcc_3d_mesh):
     '''
 
     def __init__(self, bounds_per_dim, num_cells_per_dim, eps, rng_seed):
-        assert (eps >= 0.0), 'eps < 0.0'
-        assert (eps <= 1.0), 'eps > 1.0'
+        assert (eps >= 0.0), 'eps <= 0.0'
+        assert (eps <= 1.0), 'eps >= 1.0'
         # -- import pseudorandom number generator functions
         from random import seed, random
         # -- invoke base mesh constructor to generate initial mesh form
@@ -1146,6 +1146,35 @@ class rnd_3d_mesh(fcc_3d_mesh):
                     self.coordinates_per_node[node, 0] += dx0
                     self.coordinates_per_node[node, 1] += dy0
                     self.coordinates_per_node[node, 2] += dz0
+
+# ------------------------------------------------------------------------------------------------ #
+# smoothly distorted 2D mesh type: nodes of the orthogonal 2D mesh type are smoothly distorted
+
+
+class smoothdist_2d_mesh(orth_2d_mesh):
+    '''
+    Class for orthogonally structured mesh with smoothly distorted nodes.
+    '''
+
+    def __init__(self, bounds_per_dim, num_cells_per_dim, eps):
+        assert (eps >= 0.0), 'eps <= 0.0'
+        assert (eps <= 0.1), 'eps <= 0.1'
+        orth_2d_mesh.__init__(self, bounds_per_dim, num_cells_per_dim)
+        # -- short-cuts
+        nx = num_cells_per_dim[0]
+        ny = num_cells_per_dim[1]
+        # -- modify vertices
+        for j in range(0, ny + 1):
+            j_offset = (nx + 1) * j
+            for i in range(0, nx + 1):
+                node = i + j_offset
+                x = self.coordinates_per_node[node, 0]
+                y = self.coordinates_per_node[node, 1]
+                # -- add displacement to coordinates
+                self.coordinates_per_node[node, 0] += eps * \
+                    np.sin(2. * np.pi * x) * np.sin(2. * np.pi * y)
+                self.coordinates_per_node[node, 1] += eps * \
+                    np.sin(2. * np.pi * x) * np.sin(2. * np.pi * y)
 
 # ------------------------------------------------------------------------------------------------ #
 # end of mesh_types.py
