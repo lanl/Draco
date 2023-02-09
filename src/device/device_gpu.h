@@ -29,27 +29,28 @@
 #ifdef USE_HIP
 #include <hip/hip_runtime.h>
 #include <hip/hip_runtime_api.h>
-#define cudaError_t hipError_t
-#define cudaGetDevice hipGetDevice
-#define cudaSetDevice hipSetDevice
-#define cudaGetDeviceCount hipGetDeviceCount
-#define cudaGetDeviceProperties hipGetDeviceProperties
-#define cudaDeviceProp hipDeviceProp_t
+#define cudaDevAttrClockRate hipDeviceAttributeClockRate
+#define cudaDevAttrMaxRegistersPerBlock hipDeviceAttributeMaxRegistersPerBlock
+#define cudaDevAttrPciBusId hipDeviceAttributePciBusId
+#define cudaDevAttrTextureAlignment hipDeviceAttributeTextureAlignment
 #define cudaDevAttrTotalConstantMemory hipDeviceAttributeTotalConstantMemory
 #define cudaDeviceGetAttribute hipDeviceGetAttribute
-#define cudaDevAttrMaxRegistersPerBlock hipDeviceAttributeMaxRegistersPerBlock
-#define cudaDevAttrClockRate hipDeviceAttributeClockRate
-#define cudaDevAttrTextureAlignment hipDeviceAttributeTextureAlignment
-#define cudaSuccess hipSuccess
-#define cudaGetErrorString hipGetErrorString
-#define cudaMalloc hipMalloc
-#define cudaMemcpyHostToDevice hipMemcpyHostToDevice
-#define cudaMemcpyDeviceToHost hipMemcpyDeviceToHost
-#define cudaFree hipFree
-#define cudaMemcpy hipMemcpy
-#define cudaDeviceSynchronize hipDeviceSynchronize
-#define cudaGetLastError hipGetLastError
+#define cudaDeviceProp hipDeviceProp_t
 #define cudaDeviceReset hipDeviceReset
+#define cudaDeviceSynchronize hipDeviceSynchronize
+#define cudaError_t hipError_t
+#define cudaFree hipFree
+#define cudaGetDevice hipGetDevice
+#define cudaGetDeviceCount hipGetDeviceCount
+#define cudaGetDeviceProperties hipGetDeviceProperties
+#define cudaGetErrorString hipGetErrorString
+#define cudaGetLastError hipGetLastError
+#define cudaMalloc hipMalloc
+#define cudaMemcpy hipMemcpy
+#define cudaMemcpyDeviceToHost hipMemcpyDeviceToHost
+#define cudaMemcpyHostToDevice hipMemcpyHostToDevice
+#define cudaSetDevice hipSetDevice
+#define cudaSuccess hipSuccess
 #endif
 
 #ifdef USE_CUDA
