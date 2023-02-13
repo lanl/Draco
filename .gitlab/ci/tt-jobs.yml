@@ -147,6 +147,7 @@ tt_rel_i202120_regress:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.2-intel"
+    CTEST_BUILD_NAME: "lapse22-intel-Release"
 
 tt_deb_i202120_regress:
   stage: test
