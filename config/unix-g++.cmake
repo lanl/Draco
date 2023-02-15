@@ -23,7 +23,6 @@ include_guard(GLOBAL)
 #
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
-# arm --> -mcpu=thunderx2t99 ??? Darwin volta nodes?
 check_c_compiler_flag("-march=native" HAS_MARCH_NATIVE)
 
 #

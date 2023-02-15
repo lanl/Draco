@@ -53,12 +53,12 @@ The Draco build system has the following highlighted features:
 Currently, the Draco Build System is supported on the following systems/operating systems:
 
 - Linux (x86_64-based platforms)
-- Windows (x86_64) via Visual Studio or MinGW/MSYS.  Probably works in Cygwin, but this is
+- Windows (x86_64) via Visual Studio or MinGW/MSYS. Probably works in Cygwin, but this is
   untested.
 - OSX via Makefiles or Xcode-projects
 - IBM (Power9)
-- ARM
 - Nvidia GPUs
+- AMD GPUs
 
 The DBS has been tested and verified on these systems.
 
