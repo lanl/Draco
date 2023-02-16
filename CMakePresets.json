@@ -42,6 +42,40 @@
       }
     },
     {
+      "name": "linux-debug-scalar",
+      "displayName": "Linux Debug (No MPI)",
+      "description": "Target Linux for Debug build.",
+      "inherits": "linux-ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DRACO_C4": "SCALAR",
+        "DRACO_DIAGNOSTICS": "2"
+      }
+    },
+    {
+      "name": "linux-debug-fd-static",
+      "displayName": "Linux Debug (Full Diagnostics, static libraries)",
+      "description": "Target Linux for Debug build.",
+      "inherits": "linux-ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DRACO_DIAGNOSTICS": "7",
+        "DRACO_TIMING": "1",
+        "DRACO_LIBRARY_TYPE": "STATIC"
+      }
+    },
+    {
+      "name": "linux-debug-valgrind",
+      "displayName": "Linux Debug (Valgrind memory analysis)",
+      "description": "Target Linux for Debug build.",
+      "inherits": "linux-ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ENABLE_MEMORYCHECK": "ON",
+        "CTEST_MEMORYCHECK_SUPPRESSIONS_FILE": "${sourceDir}/.gitlab/ci/valgrind_suppress.txt"
+      }
+    },
+    {
       "name": "macos-debug",
       "displayName": "macOS Debug",
       "description": "Target a remote macOS system.",
@@ -96,8 +130,8 @@
       }
     },
     {
-      "name": "x64-debug",
-      "displayName": "x64 Debug",
+      "name": "win-x64-debug",
+      "displayName": "Windows x64 Debug",
       "description": "Target Windows (64-bit) with the Visual Studio development environment. (Debug)",
       "inherits": "windows-msbuild",
       "cacheVariables": {
@@ -105,8 +139,8 @@
       }
     },
     {
-      "name": "x64-release",
-      "displayName": "x64 Release",
+      "name": "win-x64-release",
+      "displayName": "Windows x64 Release",
       "description": "Target Windows (64-bit) with the Visual Studio development environment (Release)",
       "inherits": "windows-msbuild",
       "cacheVariables": {
@@ -116,12 +150,32 @@
   ],
   "buildPresets": [
     {
-      "name": "x64-debug",
-      "configurePreset": "x64-debug"
+      "name": "win-x64-debug",
+      "configurePreset": "win-x64-debug"
     },
     {
-      "name": "x64-release",
-      "configurePreset": "x64-release"
+      "name": "win-x64-release",
+      "configurePreset": "win-x64-release"
+    },
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug"
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release"
+    },
+    {
+      "name": "linux-debug-scalar",
+      "configurePreset": "linux-debug-scalar"
+    },
+    {
+      "name": "linux-debug-fd-static",
+      "configurePreset": "linux-debug-fd-static"
+    },
+    {
+      "name": "linux-debug-valgrind",
+      "configurePreset": "linux-debug-valgrind"
     }
   ],
   "testPresets": [
@@ -176,16 +230,16 @@
       }
     },
     {
-      "name": "x64-debug",
+      "name": "win-x64-debug",
       "inherits": "windows-ctest",
-      "configurePreset": "x64-debug",
+      "configurePreset": "win-x64-debug",
       "configuration": "Debug",
       "displayName": "Ctest"
     },
     {
-      "name": "x64-release",
+      "name": "win-x64-release",
       "inherits": "windows-ctest",
-      "configurePreset": "x64-release",
+      "configurePreset": "win-x64-release",
       "configuration": "Release",
       "displayName": "Ctest"
     }
