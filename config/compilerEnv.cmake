@@ -465,24 +465,6 @@ macro(dbsSetupCxx)
     set(CMAKE_REQUIRED_DEFINITIONS "")
   endif()
 
-  # Enable the definition of UINT64_C in stdint.h (required by Random123).
-  add_definitions(-D__STDC_CONSTANT_MACROS)
-  set(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_REQUIRED_DEFINITIONS} -D__STDC_CONSTANT_MACROS")
-
-  # Define _POSIX_C_SOURCE=200112 and _XOPEN_SOURCE=600, to enable definitions conforming to
-  # POSIX.1-2001, POSIX.2, XPG4, SUSv2, SUSv3, and C99.  See the feature_test_macros(7) man page for
-  # more information.
-  add_definitions(-D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600)
-  set(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_REQUIRED_DEFINITIONS} -D_POSIX_C_SOURCE=200112")
-  set(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_REQUIRED_DEFINITIONS} -D_XOPEN_SOURCE=600")
-  if(APPLE)
-    # Defining the above requires adding POSIX extensions, otherwise, include ordering still goes
-    # wrong on Darwin, (i.e., putting fstream before iostream causes problems) see
-    # https://code.google.com/p/wmii/issues/detail?id=89
-    add_definitions(-D_DARWIN_C_SOURCE)
-    set(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_REQUIRED_DEFINITIONS} -D_DARWIN_C_SOURCE ")
-  endif()
-
   if(NOT CCACHE_CHECK_AVAIL_DONE)
     set(CCACHE_CHECK_AVAIL_DONE
         TRUE
