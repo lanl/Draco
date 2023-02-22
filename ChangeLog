@@ -1,9 +1,11 @@
 2023-02-08 Mathew Cleveland <cleveland@lanl.gov>
-	* Draco has been updated to version 7_15_0 and is tied to the release of Jayenne-8_13_0
-      and Capsaicin-1_13_0.
+	* Draco has been updated to version 7_15_0 and is tied to the release
+	of Jayenne-8_14_0
+      and Capsaicin/CTA-1_13_0 and Capsaicin/TRT-1_13_0.
         - https://re-git.lanl.gov/draco/draco/-/milestones/5
-        - https://re-git.lanl.gov/groups/jayenne/-/milestones/27
-        - https://re-git.lanl.gov/groups/capsaicin/-/milestones/4
+        - https://re-git.lanl.gov/jayenne/jayenne/-/milestones/27
+        - https://re-git.lanl.gov/capsaicin/cta/-/milestones/
+	- https://re-git.lanl.gov/capsaicin/trt/-/milestones/
 
 		Draco-7_15_0, build date 2023 Feb 14, build type: Debug, DBC: 7, DRACO_DIAGNOSTICS: 0
 
