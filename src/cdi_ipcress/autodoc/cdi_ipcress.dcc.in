@@ -1,4 +1,4 @@
-//---------------------------------*-C++-*-----------------------------------//
+//-------------------------------------------*-C++-*----------------------------------------------//
 // cdi_ipcress.dcc
 // cdi_ipcress Overview page
 // Thomas M. Evans
@@ -17,32 +17,28 @@ opacities library.
 \b History:
 
 - Created in 2011 by Kelly Thompson
-- Software is based on code found in xRage to meet platform requirements for
-  CCS-2 TRT software (i.e.: non-LANL HPC machines like Mac, Windows, and Linux
-  desktops; or alternate compilers like clang; and to support special nodes on
-  Darwin like ARM, Power8/9, and KNL).  Fontes is under the impression that he
-  gave the source code to me, but I don’t think I have ever had access to
-  <a
-  href="https://xweb.lanl.gov/projects/data/atomic/gandolf/gandolf.php">XCP-5's
-  ‘gandolf’</a> library sources
-- Designated open source software (BSD-3 License) in 2016
-  (github.com/lanl/draco). LA-CC-16-016 (Draco-6) and C19028 (Draco-7).
-- Current implementation is 1400 lines of C++ (only 1100 lines if you ignore the
-  special ODFMG extensions -- this is no longer used AFAIK).
-- Reads data from binary files and serves up these data arrays to clients.  It
-  does no post-processing or shaping of the data.
-- In 2014, Alex Long created a python based GUI opacity plotter that complements
-  the core features of the cdi_ipcress package.  This 400 lines of python code
-  is stored alongside the IPCRESS reader source code.
-- Draco’s IPCRESS reader has been essentially zero-cost wrt to maintenance costs
-  since its implementation in 2011.  We have made recent improvements related as
-  identified by compiler sanitizer and lint tools -- but this work was done
-  along with all of the other code in Draco and not as specific support of the
-  IPCRESS reader.
-- Because of its easy-to-use C/C++ interface and portability, the Draco IPCRESS
-  reader has been used successfully by many other projects at LANL, including
-  Chicoma, NGC (HKPark’s work with Symphony), and several summer student and
-  postdoc projects.
+- Software is based on code found in xRage to meet platform requirements for CCS-2 TRT software
+  (i.e.: non-LANL HPC machines like Mac, Windows, and Linux desktops; or alternate compilers like
+  clang; and to support special nodes on Darwin like Power9).  Fontes is under the impression that
+  he gave the source code to me, but I don’t think I have ever had access to <a
+  href="https://xweb.lanl.gov/projects/data/atomic/gandolf/gandolf.php">XCP-5's ‘gandolf’</a>
+  library sources.
+- Designated open source software (BSD-3 License) in 2016 (github.com/lanl/draco). LA-CC-16-016
+  (Draco-6) and C19028 (Draco-7).
+- Current implementation is 1400 lines of C++ (only 1100 lines if you ignore the special ODFMG
+  extensions -- this is no longer used AFAIK).
+- Reads data from binary files and serves up these data arrays to clients.  It does no
+  post-processing or shaping of the data.
+- In 2014, Alex Long created a python based GUI opacity plotter that complements the core features
+  of the cdi_ipcress package.  This 400 lines of python code is stored alongside the IPCRESS reader
+  source code.
+- Draco’s IPCRESS reader has been essentially zero-cost wrt to maintenance costs since its
+  implementation in 2011.  We have made recent improvements related as identified by compiler
+  sanitizer and lint tools -- but this work was done along with all of the other code in Draco and
+  not as specific support of the IPCRESS reader.
+- Because of its easy-to-use C/C++ interface and portability, the Draco IPCRESS reader has been used
+  successfully by many other projects at LANL, including Chicoma, NGC (HKPark’s work with Symphony),
+  and several summer student and postdoc projects
 .
 */
 

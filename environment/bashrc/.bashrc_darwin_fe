@@ -23,7 +23,7 @@ export DRACO_ARCH=$(/usr/projects/draco/vendors/bin/target_arch)
 if [[ -n "$MODULESHOME" ]]; then
   module use --append /projects/draco/Modules
   case $DRACO_ARCH in
-    arm)     module load draco/arm-gcc831 ;;
+    # arm)     module load draco/arm-gcc831 ;;
     power9*) module load draco/power9-gcc930-smpi ;;
     x86_64)
       module load draco/haswell-gcc1120

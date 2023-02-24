@@ -158,7 +158,7 @@ if [[ ${INTERACTIVE} == true ]]; then
 
   case ${target} in
 
-    # Darwin Heterogeneous Cluster (GPU, ARM, P9, etc.)
+    # Darwin Heterogeneous Cluster (GPU, P9, etc.)
     # wiki: https://darwin.lanl.gov
     darwin-fe* | cn[0-9]*)
       # shellcheck source=/dev/null
