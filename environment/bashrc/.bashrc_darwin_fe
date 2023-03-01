@@ -24,7 +24,7 @@ if [[ -n "$MODULESHOME" ]]; then
   module use --append /projects/draco/Modules
   case $DRACO_ARCH in
     # arm)     module load draco/arm-gcc831 ;;
-    power9*) module load draco/power9-gcc930-smpi ;;
+    power9*) module load lapse/2.3.1-power9-xl ;;
     x86_64)
       module load draco/haswell-gcc1120
       if [[ "${SLURM_JOB_PARTITION}" =~ "volta" || "${SLURM_JOB_PARTITION}" =~ "gpu" ]]; then
@@ -34,7 +34,7 @@ if [[ -n "$MODULESHOME" ]]; then
         module load draco/skylake-intel1905
       elif [[ "${SLURM_JOB_PARTITION}" =~ "crossroads-spr" ]]; then
         module unload draco
-        module load draco/spr-gcc850
+        module load draco/spr-oneapi20230201-nda
       fi
       ;;
   esac
