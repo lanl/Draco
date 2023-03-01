@@ -76,7 +76,7 @@ dp9_rel_xl16_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: lapse/2.2-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-xl
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
@@ -86,7 +86,7 @@ dp9_deb_xl16_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: lapse/2.2-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-xl
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
@@ -204,7 +204,7 @@ dp9_deb_xl_16_mr:
   allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: lapse/2.2-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-xl
     ARCH: power9
     CTEST_NPROC: 20
     MAXLOAD: 40
@@ -238,7 +238,7 @@ dp9_rel_xl_16_mr:
   allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: lapse/2.2-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-xl
     ARCH: power9
     CTEST_NPROC: 20
     MAXLOAD: 40
@@ -280,7 +280,7 @@ dp9_rel_xl16_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: lapse/2.2-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-xl
     ARCH: power9
     CTEST_NPROC: 20
     SCHEDULER_PARAMETERS: ${SP_power9}
@@ -289,7 +289,7 @@ dp9_deb_xl16_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: lapse/2.2-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-xl
     ARCH: power9
     CTEST_NPROC: 20
     SCHEDULER_PARAMETERS: ${SP_power9}

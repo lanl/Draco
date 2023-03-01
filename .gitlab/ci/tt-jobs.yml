@@ -50,16 +50,16 @@ tt_rel_i202120_deploy:
   extends: .tt_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.2-intel"
-    FLAVOR: lapse22-intel-${CMAKE_BUILD_TYPE}
+    DRACO_ENV: "lapse/2.3.1-intel"
+    FLAVOR: lapse231-intel-${CMAKE_BUILD_TYPE}
     EXTRA_CMAKE_ARGS: -G Ninja
 
 tt_deb_i202120_deploy:
   extends: .tt_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.2-intel"
-    FLAVOR: lapse22-intel-${CMAKE_BUILD_TYPE}
+    DRACO_ENV: "lapse/2.3.1-intel"
+    FLAVOR: lapse231-intel-${CMAKE_BUILD_TYPE}
     EXTRA_CMAKE_ARGS: -G Ninja
 
 tt_deb_cce1301_deploy:
@@ -103,7 +103,7 @@ tt_rel_i202120_mr:
   extends: .tt_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.2-intel"
+    DRACO_ENV: "lapse/2.3.1-intel"
     EXTRA_CMAKE_ARGS: -G Ninja
 
 # ----- slow -----
@@ -113,7 +113,7 @@ tt_deb_i202120_mr:
   extends: .tt_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.2-intel"
+    DRACO_ENV: "lapse/2.3.1-intel"
     EXTRA_CMAKE_ARGS: -G Ninja
 
 tt_deb_cce_mr:
@@ -146,16 +146,16 @@ tt_rel_i202120_regress:
   extends: .tt_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.2-intel"
-    CTEST_BUILD_NAME: "lapse22-intel-Release"
+    DRACO_ENV: "lapse/2.3.1-intel"
+    CTEST_BUILD_NAME: "lapse231-intel-Release"
 
 tt_deb_i202120_regress:
   stage: test
   extends: .tt_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.2-intel"
-    CTEST_BUILD_NAME: "lapse22-intel-Debug"
+    DRACO_ENV: "lapse/2.3.1-intel"
+    CTEST_BUILD_NAME: "lapse231-intel-Debug"
 
 tt_rel_cce1301_regress:
   stage: test

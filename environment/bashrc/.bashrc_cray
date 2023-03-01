@@ -66,7 +66,7 @@ arch=`uname -m`
 sysname=`/usr/projects/hpcsoft/utilities/bin/sys_name`
 module use --append /usr/projects/draco/Modules/$sysname
 module unload draco lapse
-module load lapse/2.2-intel
+module load lapse/2.3.1-intel
 if [[ ${SLURM_JOB_PARTITION} =~ "knl" ]]; then
   module swap craype-haswell craype-mic-knl
 fi

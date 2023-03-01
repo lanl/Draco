@@ -3,7 +3,7 @@
 # Author:  Kelly Thompson <kgt@lanl.gov>
 # Date:    Thursday, Dec 02, 2021, 09:36 am
 # Purpose: gitlab jacamar runner commands for Snow (LANL HPC). This script wil be run to test MRs.
-# Note:    Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# Note:    Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------#
@@ -43,50 +43,43 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-sn_rel_i1904_deploy:
+sn_rel_i2120_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.0-intel"
-    FLAVOR: lapse20-intel-Release
+    DRACO_ENV: "lapse/2.3.1-intel"
+    FLAVOR: lapse231-intel-Release
     EXTRA_CMAKE_ARGS: -GNinja
 
-sn_deb_i1904_deploy:
+sn_deb_i2120_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.0-intel"
-    FLAVOR: lapse20-intel-Debug
+    DRACO_ENV: "lapse/2.3.1-intel"
+    FLAVOR: lapse231-intel-Debug
     EXTRA_CMAKE_ARGS: -GNinja
-
-# sn_rel_i1913_deploy:
-#   extends: .snow_deploy
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: "draco/intel1913"
-#     FLAVOR: intel1913-Release
 
 sn_deb_g930_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.0-gnu"
-    FLAVOR: lapse20-gnu-Debug
+    DRACO_ENV: "lapse/2.3.1-gnu"
+    FLAVOR: lapse231-gnu-Debug
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_rel_g930_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.0-gnu"
-    FLAVOR: lapse20-gnu-Release
+    DRACO_ENV: "lapse/2.3.1-gnu"
+    FLAVOR: lapse231-gnu-Release
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_fulldiag_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.0-intel"
+    DRACO_ENV: "lapse/2.3.1-intel"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     FLAVOR: intel-fulldiag-static
 
@@ -110,37 +103,30 @@ sn_deb_fulldiag_deploy:
 
 # ----- fast -----
 
-sn_rel_i1904_mr:
+sn_rel_i2120_mr:
   stage: fasttest
   extends: .snow_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.0-intel"
+    DRACO_ENV: "lapse/2.3.1-intel"
     EXTRA_CMAKE_ARGS: -GNinja
 
 # ----- regular test -----
 
-sn_deb_i1904_mr:
+sn_deb_i2120_mr:
   stage: test
   extends: .snow_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.0-intel"
+    DRACO_ENV: "lapse/2.3.1-intel"
     EXTRA_CMAKE_ARGS: -GNinja
-
-# sn_rel_i1913_mr:
-#   stage: test
-#   extends: .snow_merge
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: "draco/intel1913"
 
 sn_deb_g930_mr:
   stage: test
   extends: .snow_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.0-gnu"
+    DRACO_ENV: "lapse/2.3.1-gnu"
     EXTRA_CMAKE_ARGS: -GNinja
 
 # ----- slow -----
@@ -150,7 +136,7 @@ sn_deb_fulldiag_mr:
   extends: .snow_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.0-intel"
+    DRACO_ENV: "lapse/2.3.1-intel"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
 
 #--------------------------------------------------------------------------------------------------#
@@ -170,45 +156,37 @@ sn_deb_fulldiag_mr:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-sn_rel_i1904_regress:
+sn_rel_i2120_regress:
   stage: test
   extends: .snow_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.0-intel"
-    CTEST_BUILD_NAME: "lapse20-intel-Release"
+    DRACO_ENV: "lapse/2.3.1-intel"
+    CTEST_BUILD_NAME: "lapse231-intel-Release"
     EXTRA_CMAKE_ARGS: -GNinja
 
-sn_deb_i1904_regress:
+sn_deb_i2120_regress:
   stage: test
   extends: .snow_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.0-intel"
-    CTEST_BUILD_NAME: "lapse20-intel-Debug"
+    DRACO_ENV: "lapse/2.3.1-intel"
+    CTEST_BUILD_NAME: "lapse231-intel-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
-
-# sn_rel_i1913_regress:
-#   extends: .snow_nightly
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: "draco/intel1913"
-#     CTEST_BUILD_NAME: "intel1913-Release"
-#     MAKEFILE_FLAGS: -j -l 36
 
 sn_deb_g930_regress:
   extends: .snow_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.0-gnu"
-    CTEST_BUILD_NAME: "lapse20-gnu-Debug"
+    DRACO_ENV: "lapse/2.3.1-gnu"
+    CTEST_BUILD_NAME: "lapse231-gnu-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_fulldiag_regress:
   extends: .snow_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.0-intel"
+    DRACO_ENV: "lapse/2.3.1-intel"
     FLAVOR: intel-fulldiag-static
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     CTEST_BUILD_NAME: intel-fulldiag-static
