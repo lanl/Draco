@@ -112,15 +112,20 @@ export CTEST_NPROC
 # Build and run the tests for draco; post results to CDash.
 #--------------------------------------------------------------------------------------------------#
 
-        export http_proxy=http://proxyout.lanl.gov:8080;
-        export https_proxy=$http_proxy;
-        export HTTP_PROXY=$http_proxy;
-        export HTTPS_PROXY=$http_proxy;
-        export proxy_rsync=$http_proxy;
-        export RSYNC_PROXY=$http_proxy;
-        export proxy_http=$http_proxy;
-        export proxy_skip=$http_proxy;
-        export proxy_https=$http_proxy;
+# export http_proxy=http://proxyout.lanl.gov:8080;
+# export https_proxy=$http_proxy;
+# export HTTP_PROXY=$http_proxy;
+# export HTTPS_PROXY=$http_proxy;
+# export proxy_rsync=$http_proxy;
+# export RSYNC_PROXY=$http_proxy;
+# export proxy_http=$http_proxy;
+# export proxy_skip=$http_proxy;
+# export proxy_https=$http_proxy;
+
+unset http_proxy
+unset https_proxy
+unset HTTP_PROXY
+unset HTTPS_PROXY
 
 echo "To rerun manually, cd to CI directory (pwd), set these variables, run ctest."
 echo " "
