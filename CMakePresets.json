@@ -14,8 +14,8 @@
       "installDir": "${sourceDir}/install/${presetName}",
       "condition": {
         "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
+        "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
+        "rhs": "Linux-"
       },
       "vendor": {
         "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
@@ -73,6 +73,41 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "ENABLE_MEMORYCHECK": "ON",
         "CTEST_MEMORYCHECK_SUPPRESSIONS_FILE": "${sourceDir}/.gitlab/ci/valgrind_suppress.txt"
+      }
+    },
+    {
+      "name": "darwin-p9",
+      "hidden": true,
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/${presetName}-$env{SLURM_JOB_PARTITION}-$env{CC}",
+      "installDir": "${sourceDir}/install/${presetName}-$env{SLURM_JOB_PARTITION}-$env{CC}",
+      "condition": {
+        "type": "equals",
+        "lhs": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
+        "rhs": "darwin-power9"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
+          "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
+        }
+      }
+    },
+    {
+      "name": "darwin-p9-debug",
+      "displayName": "Darwin Power9 Debug",
+      "description": "Target Darwin Power9 for Debug build.",
+      "inherits": "darwin-p9",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "darwin-p9-release",
+      "displayName": "Darwin Power9 Releaes",
+      "description": "Target Darwin Power9 for Release build.",
+      "inherits": "darwin-p9",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
       }
     },
     {
@@ -176,6 +211,14 @@
     {
       "name": "linux-debug-valgrind",
       "configurePreset": "linux-debug-valgrind"
+    },
+    {
+      "name": "darwin-p9-debug",
+      "configurePreset": "darwin-p9-debug"
+    },
+    {
+      "name": "darwin-p9-release",
+      "configurePreset": "darwin-p9-release"
     }
   ],
   "testPresets": [
@@ -186,8 +229,8 @@
       "hidden": true,
       "condition": {
         "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
+        "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
+        "rhs": "Linux-"
       },
       "output": {
         "outputOnFailure": true
@@ -210,6 +253,38 @@
       "description": "Run all tests",
       "displayName": "Ctest",
       "configurePreset": "linux-release"
+    },
+    {
+      "name": "darwin-p9-ctest",
+      "description": "Run all tests",
+      "displayName": "Ctest",
+      "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
+        "rhs": "Linux-darwin"
+      },
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    },
+    {
+      "name": "darwin-p9-debug",
+      "inherits": "darwin-p9-ctest",
+      "description": "Run all tests",
+      "displayName": "Ctest",
+      "configurePreset": "darwin-p9-debug"
+    },
+    {
+      "name": "darwin-p9-release",
+      "inherits": "darwin-p9-ctest",
+      "description": "Run all tests",
+      "displayName": "Ctest",
+      "configurePreset": "darwin-p9-release"
     },
     {
       "name": "windows-ctest",
@@ -244,5 +319,4 @@
       "displayName": "Ctest"
     }
   ]
-
 }
