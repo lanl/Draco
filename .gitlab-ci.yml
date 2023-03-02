@@ -31,6 +31,7 @@ include:
   - local: /.gitlab/ci/ccscs-jobs.yml
   - local: /.gitlab/ci/darwin-jobs.yml
   - local: /.gitlab/ci/docker-jobs.yml
+  - local: /.gitlab/ci/llnlrz-jobs.yml
   - local: /.gitlab/ci/msvc-jobs.yml
 
 #--------------------------------------------------------------------------------------------------#

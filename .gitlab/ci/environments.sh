@@ -12,7 +12,7 @@ echo "    SITE_ID = ${SITE_ID}"
 [[ -n "${SCHEDULER_PARAMETERS}" ]] && echo "    Using: salloc ${SCHEDULER_PARAMETERS}"
 
 case ${SITE_ID} in
-  darwin | ccscs* | sn* | trinitite*) ;;
+  darwin | ccscs* | rz*| sn* | trinitite*) ;;
   *) die ".gitlab/ci/environments.sh :: SITE_ID not recognized, SITE_ID = ${SITE_ID}" ;;
 esac
 
@@ -52,6 +52,17 @@ elif [[ "${SITE_ID}" =~ "ccscs" ]]; then
     die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}"
   fi
   run "module load draco/${DRACO_ENV}"
+
+#------------------------------------------------------------------------------#
+# RZ systems (LLNL)
+#------------------------------------------------------------------------------#
+elif [[ "${SITE_ID}" =~ "rzvernal" ]] || [[ "${SITE_ID}" =~ "rzansel" ]]; then
+  run "module use --append /usr/gapps/jayenne/Modules/${SITE_ID}"
+  case ${DRACO_ENV} in
+    lapse* | draco* ) ;;
+    *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
+  esac
+  run "module load ${DRACO_ENV}"
 
 #------------------------------------------------------------------------------#
 # Snow
