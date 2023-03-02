@@ -3,7 +3,7 @@
 # author Gabriel Rockefeller, Kelly Thompson <kgt@lanl.gov>
 # date   2012 Nov 1
 # brief  Establish flags for Linux64 - IBM XL C++
-# note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2012-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -32,43 +32,56 @@ if(NOT CXX_FLAGS_INITIALIZED)
   if(EXISTS /usr/gapps)
     # ATS-2
     string(APPEND CMAKE_C_FLAGS " --gcc-toolchain=/usr/tce/packages/gcc/gcc-8.3.1")
-  elseif(EXISTS /projects/opt/ppc64le/ibm AND NOT $ENV{CXX} MATCHES "-F")
-    # Darwin power9 - extract version from module environment.
+
+  elseif(EXISTS /projects/opt/ppc64le/ibm AND NOT $ENV{CXX} MATCHES "-F") # Darwin
+    # ~~~
+    # Darwin power9 requires specialized config files for xlC + cuda builds...
+    # ~~~
     string(REPLACE ":" ";" modules $ENV{LOADEDMODULES})
+    # extract version from module environment.
     foreach(module ${modules})
       if(${module} MATCHES "^gcc")
         string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+)" "\\1.\\2.\\3" gcc_version
                              ${module})
-      elseif(NOT DEFINED xlc_version AND ${module} MATCHES "^ibm/xlc")
+      elseif(NOT DEFINED xlc_version AND (${module} MATCHES "^ibm/xlc" OR ${module} MATCHES "^xl"))
         string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+).([0-9]+).*" "\\1.\\2.\\3.\\4"
                              xlc_version ${module})
         string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+).*" "\\1.\\2.\\3" xlc_version_3
                              ${xlc_version})
       elseif(${module} MATCHES "^cuda")
         if(NOT DEFINED cuda_version)
-          # string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\1.\\2" cuda_version ${module})
           string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\1" cuda_version_major ${module})
-          # As of 2022-09-27, the config on Darwin files are either *.cuda.10.1 or *.cuda.11.0.
-          if(cuda_version_major MATCHES "10")
-            set(cuda_version "10.1")
-          elseif(cuda_version_major MATCHES "11")
-            set(cuda_version "11.0")
+          string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\2" cuda_version_minor ${module})
+          string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+)*.*" "\\3" cuda_version_patch
+                               ${module})
+          if("${cuda_version_patch}" STREQUAL "${module}")
+            set(cuda_version "${cuda_version_major}.${cuda_version_minor}")
+          else()
+            set(cuda_version "${cuda_version_major}.${cuda_version_minor}.${cuda_version_patch}")
           endif()
         endif()
       endif()
     endforeach()
-    # Only redhat 7.7 is currently supported
+    # Only RHEL[78] is supported
     file(READ /etc/redhat-release rhr)
     string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\1.\\2" redhat_version "${rhr}")
     if(NOT DEFINED cuda_version)
       # if no cuda module is loaded, we still need to point to the config file that ends in
-      # *.cuda.11.0.
-      set(cuda_version "11.0")
+      # *.cuda.11.XX.
+      if(redhat_version MATCHES "^8.([0-9]+)")
+        # set(cuda_version "11.8.0") # no-op
+      else()
+        set(cuda_version "11.0") # config files only exist for cuda-11.0
+      endif()
     endif()
-    string(
-      CONCAT CMAKE_CXX_COMPILER_CONFIG_FILE
-             "/projects/opt/ppc64le/ibm/xlc-${xlc_version}/xlC/${xlc_version_3}/etc/xlc.cfg.rhel."
-             "${redhat_version}.gcc.${gcc_version}.cuda.${cuda_version}")
+    if(redhat_version MATCHES "^8.([0-9]+)")
+      set(CMAKE_CXX_COMPILER_CONFIG_FILE "/projects/opt/rhel8/ppc64le/ibm/")
+    else()
+      set(CMAKE_CXX_COMPILER_CONFIG_FILE "/projects/opt/ppc64le/ibm/")
+    endif()
+    string(APPEND CMAKE_CXX_COMPILER_CONFIG_FILE
+           "xlc-${xlc_version}/xlC/${xlc_version_3}/etc/xlc.cfg.rhel.${redhat_version}.gcc."
+           "${gcc_version}.cuda.${cuda_version}")
     set(CMAKE_CXX_COMPILER_CONFIG_FILE
         ${CMAKE_CXX_COMPILER_CONFIG_FILE}
         CACHE FILEPATH "XL config file" FORCE)
