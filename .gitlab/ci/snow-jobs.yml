@@ -146,7 +146,8 @@ sn_deb_fulldiag_mr:
 .snow_nightly:
   extends: .snow
   variables:
-    CTEST_MODE: Nightly
+    # CTEST_MODE: Nightly
+    CTEST_MODE: Experimental
     CTEST_NPROC: 36
   script:
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
