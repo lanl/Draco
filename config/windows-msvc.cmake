@@ -4,7 +4,7 @@
 # date   2010 June 5
 # brief  Establish flags for Visual Studio on Windows. These settings are shared by cl.exe and
 #        clang-cl.exe.
-# note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -100,13 +100,6 @@ if(NOT CXX_FLAGS_INITIALIZED)
   # applied in component_macros.cmake near calls to add_libarary or add_executable.
   set(DRACO_LINK_OPTIONS "$<$<CONFIG:DEBUG>:/ignore:4099>")
 
-endif()
-
-#
-# Toggle compiler flags for optional features
-#
-if(NOT "${OpenMP_C_FLAGS}x" STREQUAL "x")
-  toggle_compiler_flag(OpenMP_FOUND ${OpenMP_C_FLAGS} "C;CXX" "")
 endif()
 
 #

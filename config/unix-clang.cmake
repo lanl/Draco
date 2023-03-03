@@ -112,17 +112,6 @@ if(NOT CXX_FLAGS_INITIALIZED)
 endif()
 
 # ------------------------------------------------------------------------------------------------ #
-# Toggle for OpenMP support
-if(OpenMP_C_FLAGS)
-  toggle_compiler_flag(OpenMP_FOUND "${OpenMP_C_FLAGS}" "C" "")
-endif()
-if(OpenMP_CXX_FLAGS)
-  toggle_compiler_flag(OpenMP_FOUND "${OpenMP_CXX_FLAGS}" "CXX" "")
-endif()
-# Note: adding openmp option to EXE_LINKER will break MPI detection for gfortran when running with
-# clang++/clang/gfortran.
-
-# ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
 deduplicate_flags(CMAKE_C_FLAGS)
 deduplicate_flags(CMAKE_CXX_FLAGS)

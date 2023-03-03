@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-pgi.cmake
 # brief  Establish flags for Linux64 - Portland Group C/C++
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -67,13 +67,6 @@ endif()
 
 # ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
-#
-# * deduplicate_flags(CMAKE_C_FLAGS)
-# * deduplicate_flags(CMAKE_CXX_FLAGS)
-
-if(NOT "${OpenMP_C_FLAGS}x" STREQUAL "x")
-  toggle_compiler_flag(OpenMP_FOUND "${OpenMP_C_FLAGS}" "C;CXX;EXE_LINKER" "")
-endif()
 force_compiler_flags_to_cache("C;CXX")
 
 # ------------------------------------------------------------------------------------------------ #

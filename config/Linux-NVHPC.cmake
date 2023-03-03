@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/Linux-NVHPC.cmake
 # brief  Establish flags for Linux NVHPC
-# note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2022-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -38,15 +38,6 @@ if(NOT CXX_FLAGS_INITIALIZED)
   set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
 
-endif()
-
-# ------------------------------------------------------------------------------------------------ #
-# Toggle for OpenMP support
-if(OpenMP_C_FLAGS)
-  toggle_compiler_flag(OpenMP_FOUND "${OpenMP_C_FLAGS}" "C" "")
-endif()
-if(OpenMP_CXX_FLAGS)
-  toggle_compiler_flag(OpenMP_FOUND "${OpenMP_CXX_FLAGS}" "CXX" "")
 endif()
 
 # ------------------------------------------------------------------------------------------------ #

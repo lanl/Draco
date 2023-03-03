@@ -39,7 +39,6 @@ endif()
 # ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
 deduplicate_flags(CMAKE_Fortran_FLAGS)
-toggle_compiler_flag(OpenMP_FOUND "${OpenMP_Fortran_FLAGS}" "Fortran" "")
 force_compiler_flags_to_cache("Fortran")
 
 # ------------------------------------------------------------------------------------------------ #
