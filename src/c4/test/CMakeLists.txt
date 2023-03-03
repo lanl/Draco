@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for c4/test.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(c4_test CXX)
 
@@ -64,7 +64,7 @@ foreach(omptest ${special_tests})
     add_parallel_tests(
       MPI_PLUS_OMP
       SOURCES "${omptest}"
-      DEPS Lib_c4
+      DEPS Lib_c4;OpenMP::OpenMP_CXX
       PE_LIST "${omp_test_pe_list}")
   endif()
 endforeach()

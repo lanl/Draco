@@ -59,6 +59,14 @@ endif()
 #
 # ------------------------------------------------------------------------------------------------ #
 macro(query_openmp_availability)
+  message(STATUS "Looking for Threads...")
+  find_package(Threads QUIET)
+  if(Threads_FOUND)
+    message(STATUS "Looking for Threads...found")
+  else()
+    message(STATUS "Looking for Threads...not found")
+  endif()
+
   message(STATUS "Looking for OpenMP...")
   if(WIN32)
     # ~~~

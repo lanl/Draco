@@ -17,7 +17,6 @@ include_guard(GLOBAL)
 # Compiler flag checks
 #
 include(platform_checks)
-query_openmp_availability()
 
 #
 # Compiler Flags
@@ -120,16 +119,6 @@ endif()
 # Ensure cache values always match current selection
 deduplicate_flags(CMAKE_C_FLAGS)
 deduplicate_flags(CMAKE_CXX_FLAGS)
-
-# Toggle for OpenMP support
-if(OpenMP_C_FLAGS)
-  toggle_compiler_flag(OpenMP_FOUND "-qsmp=omp" "C" "RELEASE")
-  toggle_compiler_flag(OpenMP_FOUND "-qsmp=noopt" "C" "DEBUG")
-endif()
-if(OpenMP_CXX_FLAGS)
-  toggle_compiler_flag(OpenMP_FOUND "-qsmp=omp" "CXX" "RELEASE")
-  toggle_compiler_flag(OpenMP_FOUND "-qsmp=noopt" "CXX" "DEBUG")
-endif()
 force_compiler_flags_to_cache("C;CXX")
 
 # ------------------------------------------------------------------------------------------------ #

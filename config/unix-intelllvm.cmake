@@ -57,7 +57,6 @@ if(NOT CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv AND NOT IS_DIRECTORY "/ccs
   set(HAS_XHOST TRUE)
   toggle_compiler_flag(HAS_XHOST "-xHost" "C;CXX" "")
 endif()
-toggle_compiler_flag(OpenMP_FOUND "${OpenMP_C_FLAGS}" "C;CXX" "")
 force_compiler_flags_to_cache("C;CXX")
 
 # ------------------------------------------------------------------------------------------------ #
