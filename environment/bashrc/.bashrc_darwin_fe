@@ -29,9 +29,6 @@ if [[ -n "$MODULESHOME" ]]; then
       module load draco/haswell-gcc1120
       if [[ "${SLURM_JOB_PARTITION}" =~ "volta" || "${SLURM_JOB_PARTITION}" =~ "gpu" ]]; then
         module load cuda
-      elif [[ "${SLURM_JOB_PARTITION}" =~ "skylake" ]]; then
-        module unload draco
-        module load draco/skylake-intel1905
       elif [[ "${SLURM_JOB_PARTITION}" =~ "crossroads-spr" ]]; then
         module unload draco
         module load draco/spr-oneapi20230201-nda

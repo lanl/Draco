@@ -112,11 +112,11 @@ dx64_rel_volta_deploy:
     MAXLOAD: 40
     SCHEDULER_PARAMETERS: ${SP_volta_x86}
 
-dx64_deb_nvhpc229_deploy:
+dx64_deb_nvhpc231_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/haswell-nvhpc229
+    DRACO_ENV: draco/haswell-nvhpc231
     ARCH: x86_64
     CTEST_NPROC: 20
     MAXLOAD: 20
@@ -126,7 +126,7 @@ dspr_deb_oneapi_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/spr-oneapi20221109-nda
+    DRACO_ENV: draco/spr-oneapi20230201-nda
     ARCH: x86_64
     CTEST_NPROC: 112
     MAXLOAD: 112
@@ -136,7 +136,7 @@ dspr_rel_oneapi_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/spr-oneapi20221109-nda
+    DRACO_ENV: draco/spr-oneapi20230201-nda
     ARCH: x86_64
     CTEST_NPROC: 112
     MAXLOAD: 112
@@ -314,11 +314,11 @@ dx86_rel_volta_regress:
     SCHEDULER_PARAMETERS: ${SP_volta_x86}
     CTEST_BUILD_NAME: volta-${DRACO_ENV}-${CMAKE_BUILD_TYPE}
 
-darwin_deb_nvhpc229_regress:
+darwin_deb_nvhpc231_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/haswell-nvhpc229
+    DRACO_ENV: draco/haswell-nvhpc231
     ARCH: x86_64
     CTEST_NPROC: 20
     SCHEDULER_PARAMETERS: ${SP_x86_64}
@@ -327,7 +327,7 @@ darwin_deb_oneapi_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/spr-oneapi20221109-nda
+    DRACO_ENV: draco/spr-oneapi20230201-nda
     ARCH: x86_64
     CTEST_NPROC: 112
     SCHEDULER_PARAMETERS: ${SP_spr}
@@ -336,7 +336,7 @@ darwin_rel_oneapi_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/spr-oneapi20221109-nda
+    DRACO_ENV: draco/spr-oneapi20230201-nda
     ARCH: x86_64
     CTEST_NPROC: 112
     SCHEDULER_PARAMETERS: ${SP_spr}
