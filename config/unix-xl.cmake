@@ -28,71 +28,84 @@ if(NOT CXX_FLAGS_INITIALIZED)
       CACHE INTERNAL "using draco settings.")
 
   string(APPEND CMAKE_C_FLAGS " -g -qflttrap -qmaxmem=-1")
+
   if(EXISTS /usr/gapps)
     # ATS-2
     string(APPEND CMAKE_C_FLAGS " --gcc-toolchain=/usr/tce/packages/gcc/gcc-8.3.1")
 
-  elseif(EXISTS /projects/opt/ppc64le/ibm AND NOT $ENV{CXX} MATCHES "-F") # Darwin
+  elseif(EXISTS /projects/opt/ppc64le/ibm AND NOT ("${CMAKE_CXX_FLAGS}" MATCHES "-F")) # Darwin
     # ~~~
     # Darwin power9 requires specialized config files for xlC + cuda builds...
     # ~~~
-    string(REPLACE ":" ";" modules $ENV{LOADEDMODULES})
-    # extract version from module environment.
-    foreach(module ${modules})
-      if(${module} MATCHES "^gcc")
-        string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+)" "\\1.\\2.\\3" gcc_version
-                             ${module})
-      elseif(NOT DEFINED xlc_version AND (${module} MATCHES "^ibm/xlc" OR ${module} MATCHES "^xl"))
-        string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+).([0-9]+).*" "\\1.\\2.\\3.\\4"
-                             xlc_version ${module})
-        string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+).*" "\\1.\\2.\\3" xlc_version_3
-                             ${xlc_version})
-      elseif(${module} MATCHES "^cuda")
-        if(NOT DEFINED cuda_version)
-          string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\1" cuda_version_major ${module})
-          string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\2" cuda_version_minor ${module})
-          string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+)*.*" "\\3" cuda_version_patch
-                               ${module})
-          if("${cuda_version_patch}" STREQUAL "${module}")
-            set(cuda_version "${cuda_version_major}.${cuda_version_minor}")
-          else()
-            set(cuda_version "${cuda_version_major}.${cuda_version_minor}.${cuda_version_patch}")
-          endif()
-        endif()
-      endif()
-    endforeach()
-    # Only RHEL[78] is supported
+    # Only RHEL7 needs this special flag
     file(READ /etc/redhat-release rhr)
     string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\1.\\2" redhat_version "${rhr}")
-    if(NOT DEFINED cuda_version)
-      # if no cuda module is loaded, we still need to point to the config file that ends in
-      # *.cuda.11.XX.
-      if(redhat_version MATCHES "^8.([0-9]+)")
-        # set(cuda_version "11.8.0") # no-op
-      else()
+    if(redhat_version MATCHES "^7.([0-9]+)")
+      string(REPLACE ":" ";" modules $ENV{LOADEDMODULES})
+      # extract version from module environment.
+      foreach(module ${modules})
+        if(${module} MATCHES "^gcc")
+          string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+)" "\\1.\\2.\\3" gcc_version
+                               ${module})
+        elseif(NOT DEFINED xlc_version AND (${module} MATCHES "^ibm/xlc" OR ${module} MATCHES "^xl"
+                                           ))
+          string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+).([0-9]+).*" "\\1.\\2.\\3.\\4"
+                               xlc_version ${module})
+          string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+).*" "\\1.\\2.\\3" xlc_version_3
+                               ${xlc_version})
+        elseif(${module} MATCHES "^cuda")
+          if(NOT DEFINED cuda_version)
+            string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\1" cuda_version_major ${module})
+            string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\2" cuda_version_minor ${module})
+            string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).([0-9]+)*.*" "\\3" cuda_version_patch
+                                 ${module})
+            if("${cuda_version_patch}" STREQUAL "${module}")
+              set(cuda_version "${cuda_version_major}.${cuda_version_minor}")
+            else()
+              set(cuda_version "${cuda_version_major}.${cuda_version_minor}.${cuda_version_patch}")
+            endif()
+          endif()
+        endif()
+      endforeach()
+
+      if(NOT DEFINED cuda_version)
+        # if no cuda module is loaded, we still need to point to the config file that ends in
+        # *.cuda.11.XX.
         set(cuda_version "11.0") # config files only exist for cuda-11.0
       endif()
-    endif()
-    if(redhat_version MATCHES "^8.([0-9]+)")
-      set(CMAKE_CXX_COMPILER_CONFIG_FILE "/projects/opt/rhel8/ppc64le/ibm/")
-    else()
       set(CMAKE_CXX_COMPILER_CONFIG_FILE "/projects/opt/ppc64le/ibm/")
+      # Look for filename variations
+      string(
+        CONCAT CMAKE_CXX_COMPILER_CONFIG_FILE3 "${CMAKE_CXX_COMPILER_CONFIG_FILE}"
+               "xlc-${xlc_version}/xlC/${xlc_version_3}/etc/xlc.cfg.rhel.${redhat_version}.gcc."
+               "${gcc_version}.cuda.${cuda_version}")
+      string(
+        CONCAT CMAKE_CXX_COMPILER_CONFIG_FILE2 "${CMAKE_CXX_COMPILER_CONFIG_FILE}"
+               "xlc-${xlc_version}/xlC/${xlc_version_3}/etc/xlc.cfg.rhel.${redhat_version}.gcc."
+               "${gcc_version}.cuda.${cuda_version_major}.${cuda_version_minor}")
+      if(EXISTS ${CMAKE_CXX_COMPILER_CONFIG_FILE3})
+        set(CMAKE_CXX_COMPILER_CONFIG_FILE ${CMAKE_CXX_COMPILER_CONFIG_FILE3})
+      else()
+        set(CMAKE_CXX_COMPILER_CONFIG_FILE ${CMAKE_CXX_COMPILER_CONFIG_FILE2})
+      endif()
+      unset(CMAKE_CXX_COMPILER_CONFIG_FILE3)
+      unset(CMAKE_CXX_COMPILER_CONFIG_FILE2)
+      set(CMAKE_CXX_COMPILER_CONFIG_FILE
+          ${CMAKE_CXX_COMPILER_CONFIG_FILE}
+          CACHE FILEPATH "XL config file" FORCE)
+      if(EXISTS ${CMAKE_CXX_COMPILER_CONFIG_FILE})
+        string(APPEND CMAKE_C_FLAGS " -F${CMAKE_CXX_COMPILER_CONFIG_FILE}")
+      else()
+        message(
+          FATAL_ERROR
+            "IBM XLC selected (Darwin), but requested config file was not found."
+            "\nCMAKE_CXX_COMPILER_CONFIG_FILE = ${CMAKE_CXX_COMPILER_CONFIG_FILE}"
+            "\nTry setting CXX_FLAGS=-F<filepath> in your enironment.")
+      endif()
+      unset(gcc_version)
+      unset(xl_version)
+      unset(config_file)
     endif()
-    string(APPEND CMAKE_CXX_COMPILER_CONFIG_FILE
-           "xlc-${xlc_version}/xlC/${xlc_version_3}/etc/xlc.cfg.rhel.${redhat_version}.gcc."
-           "${gcc_version}.cuda.${cuda_version}")
-    set(CMAKE_CXX_COMPILER_CONFIG_FILE
-        ${CMAKE_CXX_COMPILER_CONFIG_FILE}
-        CACHE FILEPATH "XL config file" FORCE)
-    if(EXISTS ${CMAKE_CXX_COMPILER_CONFIG_FILE})
-      string(APPEND CMAKE_C_FLAGS " -F${CMAKE_CXX_COMPILER_CONFIG_FILE}")
-    else()
-      message(FATAL_ERROR "IBM XLC selected (Darwin), but requested config file was not found."
-                          "\nCMAKE_CXX_COMPILER_CONFIG_FILE = ${CMAKE_CXX_COMPILER_CONFIG_FILE}")
-    endif()
-    unset(gcc_version)
-    unset(xl_version)
-    unset(config_file)
   endif()
 
   set(CMAKE_C_FLAGS_DEBUG "-O0 -qfullpath -DDEBUG")
