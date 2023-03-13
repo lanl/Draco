@@ -91,6 +91,7 @@ dp9_deb_xl16_deploy:
     CTEST_NPROC: 10
     MAXLOAD: 40
     SCHEDULER_PARAMETERS: ${SP_power9}
+    EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
 
 dx64_deb_volta_deploy:
   extends: .darwin_deploy
@@ -209,6 +210,7 @@ dp9_deb_xl_16_mr:
     CTEST_NPROC: 20
     MAXLOAD: 40
     SCHEDULER_PARAMETERS: ${SP_power9}
+    EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
 
 # ----- slow -----
 
@@ -293,6 +295,7 @@ dp9_deb_xl16_regress:
     ARCH: power9
     CTEST_NPROC: 20
     SCHEDULER_PARAMETERS: ${SP_power9}
+    EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
 
 dx86_deb_volta_regress:
   extends: .darwin_nightly
