@@ -36,6 +36,60 @@
     # LLNL_SLURM_SCHEDULER_PARAMETERS: -N 1
 
 #--------------------------------------------------------------------------------------------------#
+# Deployment Jobs (run on develop after MRs are merged)
+#--------------------------------------------------------------------------------------------------#
+
+.rzvernal_deploy:
+  extends: .rzvernal
+  stage: deploy
+  variables:
+    DEPLOY: 'TRUE'
+    DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}
+  script:
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
+  rules:
+    # Don't deploy if this is a forked repository.
+    - if: '$CI_PROJECT_NAMESPACE != "draco"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+.rzansel_deploy:
+  extends: .rzansel
+  stage: deploy
+  variables:
+    DEPLOY: 'TRUE'
+    DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}
+  script:
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
+  rules:
+    # Don't deploy if this is a forked repository.
+    - if: '$CI_PROJECT_NAMESPACE != "draco"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+rzvernal_rel_cce1501_deploy:
+  extends: .rzvernal_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.2.0-cce"
+    FLAVPR: lapse220-cce-${CMAKE_BUILD_TYPE}
+    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
+    # DRACO_ENV: "lapse/2.2.0-cce-hip"
+
+rzansel_rel_xl1611_deploy:
+  extends: .rzansel_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.2.0-xl"
+    FLAVPR: lapse220-xl-${CMAKE_BUILD_TYPE}
+
+#--------------------------------------------------------------------------------------------------#
 # Merge Requests
 #--------------------------------------------------------------------------------------------------#
 
@@ -80,6 +134,67 @@ rzansel_rel_xl1611_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.2.0-xl"
+
+#--------------------------------------------------------------------------------------------------#
+# Nightly Regression
+#--------------------------------------------------------------------------------------------------#
+
+.rzvernal_nightly:
+  extends: .rzvernal
+  variables:
+    CTEST_MODE: Nightly
+    CTEST_NPROC: 80
+    DRACO_ENV: "lapse/2.2.0-cce"
+    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
+    CTEST_BUILD_NAME: "lapse220-cce-${CMAKE_BUILD_TYPE}"
+  script:
+    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
+      "Configure,Build,Test"
+  after_script:
+    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m "Submit"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+
+rzvernal_rel_cce1501_regress:
+  stage: test
+  extends: .rzvernal_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+
+rzvernal_deb_cce1501_regress:
+  stage: test
+  extends: .rzvernal_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+
+#--------------------------------------------------------------------------------------------------#
+
+.rzansel_nightly:
+  extends: .rzansel
+  variables:
+    CTEST_MODE: Nightly
+    CTEST_NPROC: 20
+    DRACO_ENV: "lapse/2.2.0-xl"
+    CTEST_BUILD_NAME: "lapse220-xl-${CMAKE_BUILD_TYPE}"
+  script:
+    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
+      "Configure,Build,Test"
+  after_script:
+    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m "Submit"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+
+rzansel_rel_xl1611_regress:
+  stage: test
+  extends: .rzansel_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+
+rzansel_deb_xl1611_regress:
+  stage: test
+  extends: .rzansel_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/lanlrz-jobs.yml
