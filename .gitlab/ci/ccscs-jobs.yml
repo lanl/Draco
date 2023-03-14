@@ -572,13 +572,11 @@ rel_gcc_8.5.0_regress:
 # Re-deploy dependent projects
 #--------------------------------------------------------------------------------------------------#
 
-downstream-deploy:
+.downstream-deploy:
   stage: deploy-downstream
   variables:
     DEPLOY: 'TRUE'
-    PROJECT: 'CTA'
   trigger:
-    project: capsaicin/cta
     branch: develop
     strategy: depend
   rules:
@@ -589,6 +587,20 @@ downstream-deploy:
       when: never
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
+
+downstream-deploy-cta:
+  extends: .downstream-deploy
+  variables:
+    PROJECT: 'CTA'
+  trigger:
+    project: capsaicin/cta
+
+downstream-deploy-jayenne:
+  extends: .downstream-deploy
+  variables:
+    PROJECT: 'Jayenne'
+  trigger:
+    project: jayenne/jayenne
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/ccscs-jobs.yml
