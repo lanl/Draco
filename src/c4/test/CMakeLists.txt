@@ -88,7 +88,7 @@ list(REMOVE_ITEM test_sources ${four_pe_tests})
 if(NOT ${DRACO_C4} STREQUAL "SCALAR")
   add_parallel_tests(
     SOURCES "${four_pe_tests}"
-    DEPS Lib_c4
+    DEPS Lib_c4;Threads::Threads
     PE_LIST "4"
     LABEL "nomemcheck")
   if(NOT DEFINED MPI_MAX_NUMPROCS_PHYSICAL)
