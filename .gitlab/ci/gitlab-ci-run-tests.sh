@@ -32,6 +32,14 @@ if [[ -n "${DRACO_INSTALL_DIR}" ]]; then
   EXTRA_CMAKE_ARGS=" ${EXTRA_CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${DRACO_INSTALL_DIR}"
 fi
 
+if [[ $(groups | grep -c ccsrad) == 1 ]]; then
+  deploy_group=ccsrad
+elif [[ $(groups | grep -c dacodes) == 1 ]]; then
+  deploy_group=dacodes
+else
+  die "Neither ccsrad or dacodes can be used as Unix group for deployment."
+fi
+
 #if [[ -d /ccs/opt/texlive/2018/texmf-dist/tex/latex/newunicodechar ]]; then
 #  TEXINPUTS="${TEXINPUTS:+${TEXINPUTS}:}/ccs/opt/texlive/2018/texmf-dist/tex/latex/newunicodechar"
 #fi
@@ -136,7 +144,7 @@ else
     if [[ -n "${DRACO_INSTALL_DIR}" ]]; then
       run "rm -rf ${DRACO_INSTALL_DIR}"
       run "mkdir -p ${DRACO_INSTALL_DIR}"
-      run "chgrp ccsrad ${DRACO_INSTALL_DIR}"
+      run "chgrp ${deploy_group} ${DRACO_INSTALL_DIR}"
       run "chmod g+rwX,o+rX ${DRACO_INSTALL_DIR}"
       run "chmod g+s ${DRACO_INSTALL_DIR}"
     fi
@@ -144,7 +152,7 @@ else
     run "cmake --build . --target install --  -j $MAXLOAD -l $MAXLOAD"
 
     # Double check permissions for installed (deployed) files
-    run "chgrp -R ccsrad ${DRACO_INSTALL_DIR}"
+    run "chgrp -R ${deploy_group} ${DRACO_INSTALL_DIR}"
     run "chmod -R g+rwX,o+rX ${DRACO_INSTALL_DIR}"
 
   else
