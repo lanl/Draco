@@ -3,7 +3,7 @@
  * \file   kde/quick_index.cc
  * \author Mathew Cleveland
  * \brief  Explicitly defined quick_index functions.
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quick_index.hh"
@@ -11,18 +11,43 @@
 #include <numeric>
 #include <tuple>
 
+namespace { // unnamed namespace for pure local function
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Transform location array (x, y, z) positions to (r, theta, phi) grid
+ *
+ * Calculate a relative r theta and phi coordinate relative to a sphere center location from a
+ * standard (x,y,z) or (r,z) coordinates
+ *
+ * \param[in] dim used to ensure it is only used in valid dimension ranges
+ * \param[in] sphere_center center of sphere in (x,y,z) or (r,z) coordinates
+ * \param[in] locations (x,y,z) or (r,z) locations to transform to relative (r, theta, phi) space.
+ */
+std::vector<std::array<double, 3>>
+transform_spherical(const size_t dim, const std::array<double, 3> &sphere_center,
+                    const std::vector<std::array<double, 3>> &locations) {
+  Insist(dim == 2, "Transform_r_theta Only implemented in 2d");
+  std::vector<std::array<double, 3>> r_theta_locations(locations);
+  for (auto &location : r_theta_locations) {
+    const std::array<double, 3> v{location[0] - sphere_center[0], location[1] - sphere_center[1],
+                                  0.0};
+    const double r = sqrt(v[0] * v[0] + v[1] * v[1]);
+    const double mag = sqrt(v[0] * v[0] + v[1] * v[1]);
+    double cos_theta = mag > 0.0 ? std::max(std::min(v[1] / mag, 1.0), -1.0) : 0.0;
+    location = std::array<double, 3>{
+        r, location[0] < sphere_center[0] ? 2.0 * rtt_units::PI - acos(cos_theta) : acos(cos_theta),
+        0.0};
+  }
+  return r_theta_locations;
+}
+} // unnamed namespace
+
 namespace rtt_kde {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief quick_index constructor.
+ * \brief quick_index constructor unknown cell data dimensions (deltas).
  *
- * This function builds up a global indexing table to quickly access data that is spatial located
- * near each other. It breaks up the data into equally spaced bins in each dimension. For domain
- * decomposed data it builds a one sided communication map to place local data that is need on other
- * processors for ghost cells. The ghost cell extents is determined by the max_data_window spatial
- * size such that any cell on the local domain will have access to all points that should fall into
- * the spatial window centered on any given local point.
  *
  * \param[in] dim_ specifying the data dimensionality
  * \param[in] locations_ data locations.
@@ -39,7 +64,53 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
     : dim(dim_), domain_decomposed(domain_decomposed_), spherical(spherical_),
       sphere_center(sphere_center_), coarse_bin_resolution(bins_per_dimension_),
       locations(spherical ? transform_spherical(dim_, sphere_center_, locations_) : locations_),
+      deltas(std::vector<std::array<double, 3>>(locations_.size(), {0.0, 0.0, 0.0})),
       n_locations(locations_.size()), max_window_size(max_window_size_) {
+  initialize_data();
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief quick_index constructor for structured meshes with known cell dimensions (deltas)
+ *
+ *
+ *
+ * \param[in] dim_ specifying the data dimensionality
+ * \param[in] locations_ data locations.
+ * \param[in] deltas_ size of each cell in each dimension
+ * \param[in] max_window_size_ maximum supported window size
+ * \param[in] bins_per_dimension_ number of bins in each dimension
+ * \param[in] domain_decomposed_
+ * \param[in] spherical_ bool operator to enable spherical transform
+ * \param[in] sphere_center_ origin of spherical transform
+ */
+quick_index::quick_index(const size_t dim_, const std::vector<std::array<double, 3>> &locations_,
+                         const std::vector<std::array<double, 3>> &deltas_,
+                         const double max_window_size_, const size_t bins_per_dimension_,
+                         const bool domain_decomposed_, const bool spherical_,
+                         const std::array<double, 3> &sphere_center_)
+    : dim(dim_), domain_decomposed(domain_decomposed_), spherical(spherical_),
+      sphere_center(sphere_center_), coarse_bin_resolution(bins_per_dimension_),
+      locations(spherical ? transform_spherical(dim_, sphere_center_, locations_) : locations_),
+      deltas(spherical ? transform_spherical_delta(dim_, sphere_center_, locations_, deltas_)
+                       : deltas_),
+      n_locations(locations_.size()), max_window_size(max_window_size_) {
+  initialize_data();
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Initialize Core Data
+ *
+ * This function builds up a global indexing table to quickly access data that is spatial located
+ * near each other. It breaks up the data into equally spaced bins in each dimension. For domain
+ * decomposed data it builds a one sided communication map to place local data that is need on other
+ * processors for ghost cells. The ghost cell extents is determined by the max_data_window spatial
+ * size such that any cell on the local domain will have access to all points that should fall into
+ * the spatial window centered on any given local point.
+ *
+ */
+void quick_index::initialize_data() {
   Require(dim > 0);
   Require(coarse_bin_resolution > 0);
 
@@ -225,6 +296,12 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
     // collect the local ghost locations
     collect_ghost_data(locations, local_ghost_locations);
 
+    // allocate ghost deltas
+    local_ghost_deltas =
+        std::vector<std::array<double, 3>>(local_ghost_buffer_size, {0.0, 0.0, 0.0});
+    // collect the local ghost deltas
+    collect_ghost_data(deltas, local_ghost_deltas);
+
   } // End domain decomposed data construction
 }
 
@@ -379,6 +456,70 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
 #endif
 }
 
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Collect ghost data for a vector<vector<double>> where the first vector is of length ghost
+ * cells and the second vector is a fixed data_size per ghost cell
+ *
+ * Collect ghost data for vector<vector<double>> arrays. This function uses RMA and the local
+ * put_window_map to allow each rank to independently fill in its data to ghost cells of other
+ * ranks.
+ *
+ * \param[in] local_data the local multi-dimensional data that is required to be available as ghost
+ * cell data on other processors.
+ * \param[in,out] local_ghost_data the resulting multi-dimensional ghost data
+ * \param[in] data_size is the size of each data set in each ghost cell
+ */
+void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &local_data,
+                                     std::vector<std::vector<double>> &local_ghost_data,
+                                     size_t data_size) const {
+  Insist(domain_decomposed, "Calling collect_ghost_data with a quick_index object that specified "
+                            "domain_decomposed=.false.");
+  Require(local_data.size() == n_locations);
+  size_t ghost_data_size = local_ghost_data.size();
+  Insist(ghost_data_size == local_ghost_buffer_size,
+         "The local_ghost_data must be sized via quick_index.local_ghost_buffer_size");
+  // Check ghost data
+  for (size_t l = 0; l < ghost_data_size; l++) {
+    Insist(local_ghost_data[l].size() == data_size,
+           "ghost_data[" + std::to_string(l) + "] input must be sized to data_size");
+  }
+#ifdef C4_MPI // temporary work around until RMA is available in c4
+  // Use one sided MPI Put commands to fill up the ghost cell location data
+  std::vector<double> local_ghost_buffer(local_ghost_buffer_size, 0.0);
+  std::vector<double> put_buffer(max_put_buffer_size, 0.0);
+  MPI_Win win;
+  MPI_Win_create(local_ghost_buffer.data(), local_ghost_buffer_size * sizeof(double),
+                 sizeof(double), MPI_INFO_NULL, MPI_COMM_WORLD, &win);
+
+  // working from my local data put the ghost data on the other ranks
+  for (size_t d = 0; d < data_size; d++) {
+    Check(local_data[d].size() == data_size);
+    Remember(int errorcode =) MPI_Win_fence(MPI_MODE_NOSTORE, win);
+    Check(errorcode == MPI_SUCCESS);
+    for (auto &put : put_window_map) {
+      // use map.at() to allow const access
+      Check((coarse_index_map.at(put.first)).size() <= max_put_buffer_size);
+      // fill up the current ghost cell data for this dimension
+      int putIndex = 0;
+      for (auto &l : coarse_index_map.at(put.first)) {
+        put_buffer[putIndex] = local_data[l][d];
+        putIndex++;
+      }
+      put_lambda(put, put_buffer, putIndex, win, MPI_DOUBLE);
+    }
+    Remember(errorcode =) MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+    Check(errorcode == MPI_SUCCESS);
+    // alright move the position buffer to the final correct vector positions
+    int posIndex = 0;
+    for (auto &pos : local_ghost_buffer) {
+      local_ghost_data[posIndex][d] = pos;
+      posIndex++;
+    }
+  }
+  MPI_Win_free(&win);
+#endif
+}
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Collect ghost data for a vector<double>
@@ -597,6 +738,92 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
 }
 
 //------------------------------------------------------------------------------------------------//
+//  Lambda for exact window mapping
+auto exact_window_mapping = [](auto spherical, const auto dim, const auto &grid_bins,
+                               const auto &location, const auto &value, const auto &delta,
+                               const auto &window_min, const auto &window_max,
+                               const auto &n_map_bins, auto &grid_data, auto &data_count) {
+  // calculate local bin index
+  for (size_t b = 0; b < n_map_bins; b++) {
+    std::array<size_t, 3> bin_id{b % grid_bins[0], grid_bins[1] > 0 ? b / (grid_bins[0]) : 0,
+                                 grid_bins[0] * grid_bins[1] > 0 ? b / (grid_bins[0] * grid_bins[1])
+                                                                 : 0};
+    std::array<double, 3> distance_to_bin_center{0.0, 0.0, 0.0};
+    for (size_t d = 0; d < dim; d++) {
+      if (rtt_dsxx::soft_equiv(window_max[d], window_min[d])) {
+        bin_id[d] = 0;
+        continue;
+      }
+      const double window_delta = window_max[d] - window_min[d];
+      const double bin_center =
+          window_min[d] + (static_cast<double>(bin_id[d]) / static_cast<double>(grid_bins[d]) +
+                           0.5 / static_cast<double>(grid_bins[d])) *
+                              window_delta;
+      Check((window_max[d] - window_min[d]) > 0.0);
+      double loc = location[d];
+      // transform location for zero theta overshoot
+      if (spherical && d == 1 && window_max[d] > 2.0 * rtt_units::PI &&
+          location[d] < (window_max[d] - 2.0 * rtt_units::PI))
+        loc += 2.0 * rtt_units::PI;
+      // transform location for zero theta overshoot
+      if (spherical && d == 1 && window_min[d] < 0 &&
+          location[d] > (2.0 * rtt_units::PI + window_min[d]))
+        loc -= 2.0 * rtt_units::PI;
+      distance_to_bin_center[d] = (bin_center - loc);
+    }
+    if (fabs(distance_to_bin_center[0]) <= delta[0] * 0.5 &&
+        fabs(distance_to_bin_center[1]) <= delta[1] * 0.5 &&
+        fabs(distance_to_bin_center[2]) <= delta[2] * 0.5) {
+      grid_data[b] = value;
+      data_count[b] += 1;
+    }
+  }
+};
+
+//------------------------------------------------------------------------------------------------//
+//  Lambda for exact window mapping
+auto exact_window_vector_mapping = [](auto spherical, const auto dim, const auto &grid_bins,
+                                      const auto &location, const auto &value, const auto &vindex,
+                                      const auto &delta, const auto &window_min,
+                                      const auto &window_max, const auto &n_map_bins,
+                                      auto &grid_data, auto &data_count, const auto &vsize) {
+  // calculate local bin index
+  for (size_t b = 0; b < n_map_bins; b++) {
+    std::array<size_t, 3> bin_id{b % grid_bins[0], grid_bins[1] > 0 ? b / (grid_bins[0]) : 0,
+                                 grid_bins[0] * grid_bins[1] > 0 ? b / (grid_bins[0] * grid_bins[1])
+                                                                 : 0};
+    std::array<double, 3> distance_to_bin_center{0.0, 0.0, 0.0};
+    for (size_t d = 0; d < dim; d++) {
+      const double window_delta = window_max[d] - window_min[d];
+      if (!(window_delta > 0.0)) {
+        continue;
+      }
+      const double bin_center =
+          window_min[d] + (static_cast<double>(bin_id[d]) / static_cast<double>(grid_bins[d]) +
+                           0.5 / static_cast<double>(grid_bins[d])) *
+                              window_delta;
+      double loc = location[d];
+      // transform location for zero theta overshoot
+      if (spherical && d == 1 && window_max[d] > 2.0 * rtt_units::PI &&
+          location[d] < (window_max[d] - 2.0 * rtt_units::PI))
+        loc += 2.0 * rtt_units::PI;
+      // transform location for zero theta overshoot
+      if (spherical && d == 1 && window_min[d] < 0 &&
+          location[d] > (2.0 * rtt_units::PI + window_min[d]))
+        loc -= 2.0 * rtt_units::PI;
+      distance_to_bin_center[d] = (bin_center - loc);
+    }
+    if (fabs(distance_to_bin_center[0]) <= delta[0] * 0.5 &&
+        fabs(distance_to_bin_center[1]) <= delta[1] * 0.5 &&
+        fabs(distance_to_bin_center[2]) <= delta[2] * 0.5) {
+      data_count[b] += 1;
+      for (size_t v = 0; v < vsize; v++)
+        grid_data[v][b] = value[v][vindex];
+    }
+  }
+};
+
+//------------------------------------------------------------------------------------------------//
 // Lambda for getting the mapped window bin
 auto get_window_bin = [](auto spherical, const auto dim, const auto &grid_bins,
                          const auto &location, const auto &window_min, const auto &window_max,
@@ -749,9 +976,16 @@ void quick_index::map_data_to_grid_window(
     Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
                (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
                (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
-           "one of grid bins must be == 1, Grid must be 1D to use ave_fill option");
+           "one of grid bins must be == 1, Grid must be 1D to use nearest_fill option");
     fill = true;
     map_type = "nearest";
+  } else if (map_type_in == "exact_fill") {
+    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
+           "one of grid bins must be == 1, Grid must be 1D to use exact_fill option");
+    fill = true;
+    map_type = "exact";
   }
 
   for (size_t d = 0; d < dim; d++)
@@ -780,19 +1014,24 @@ void quick_index::map_data_to_grid_window(
     auto mapItr = coarse_index_map.find(cb);
     if (mapItr != coarse_index_map.end()) {
       for (auto &l : mapItr->second) {
-        bool valid;
-        size_t local_window_bin;
-        double distance_to_bin_center;
-        std::tie(valid, local_window_bin, distance_to_bin_center) = get_window_bin(
-            spherical, dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
+        if (map_type == "exact") {
+          exact_window_mapping(spherical, dim, grid_bins, locations[l], local_data[l], deltas[l],
+                               window_min, window_max, n_map_bins, grid_data, data_count);
+        } else {
+          bool valid;
+          size_t local_window_bin;
+          double distance_to_bin_center;
+          std::tie(valid, local_window_bin, distance_to_bin_center) = get_window_bin(
+              spherical, dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
 
-        // If the bin is outside the window continue to the next poin
-        if (!valid)
-          continue;
+          // If the bin is outside the window continue to the next poin
+          if (!valid)
+            continue;
 
-        // lambda for mapping the data
-        map_data(bias_cell_count, data_count, grid_data, min_distance, map_type, local_data,
-                 distance_to_bin_center, local_window_bin, l);
+          // lambda for mapping the data
+          map_data(bias_cell_count, data_count, grid_data, min_distance, map_type, local_data,
+                   distance_to_bin_center, local_window_bin, l);
+        }
 
       } // end local point loop
     }   // if valid local bin loop
@@ -802,20 +1041,26 @@ void quick_index::map_data_to_grid_window(
       if (gmapItr != local_ghost_index_map.end()) {
         // loop over ghost data
         for (auto &g : gmapItr->second) {
-          bool valid;
-          size_t local_window_bin;
-          double distance_to_bin_center;
-          std::tie(valid, local_window_bin, distance_to_bin_center) =
-              get_window_bin(spherical, dim, grid_bins, local_ghost_locations[g], window_min,
-                             window_max, n_map_bins);
+          if (map_type == "exact") {
+            exact_window_mapping(spherical, dim, grid_bins, local_ghost_locations[g], ghost_data[g],
+                                 local_ghost_deltas[g], window_min, window_max, n_map_bins,
+                                 grid_data, data_count);
+          } else {
+            bool valid;
+            size_t local_window_bin;
+            double distance_to_bin_center;
+            std::tie(valid, local_window_bin, distance_to_bin_center) =
+                get_window_bin(spherical, dim, grid_bins, local_ghost_locations[g], window_min,
+                               window_max, n_map_bins);
 
-          // If the bin is outside the window continue to the next poin
-          if (!valid)
-            continue;
+            // If the bin is outside the window continue to the next poin
+            if (!valid)
+              continue;
 
-          // lambda for mapping the data
-          map_data(bias_cell_count, data_count, grid_data, min_distance, map_type, ghost_data,
-                   distance_to_bin_center, local_window_bin, g);
+            // lambda for mapping the data
+            map_data(bias_cell_count, data_count, grid_data, min_distance, map_type, ghost_data,
+                     distance_to_bin_center, local_window_bin, g);
+          }
         } // end ghost point loop
       }   // if valid ghost bin
     }     // if dd
@@ -955,10 +1200,12 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
   Require(domain_decomposed
               ? (fabs(window_max[0] - window_min[0]) - max_window_size) / max_window_size < 1e-6
               : true);
+  /*
   Remember(double ymax = spherical ? std::min(rtt_units::PI / 2.0, max_window_size / window_max[0])
                                    : max_window_size;)
       Require(domain_decomposed ? (fabs(window_max[1] - window_min[1]) - ymax) / ymax < 1e-6
                                 : true);
+                                */
   Require(domain_decomposed
               ? (fabs(window_max[2] - window_min[2]) - max_window_size) / max_window_size < 1e-6
               : true);
@@ -990,9 +1237,16 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
     Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
                (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
                (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
-           "one of grid bins must be == 1, Grid must be 1D to use ave_fill option");
+           "one of grid bins must be == 1, Grid must be 1D to use nearest_fill option");
     fill = true;
     map_type = "nearest";
+  } else if (map_type_in == "exact_fill") {
+    Insist((grid_bins[0] > 1 && grid_bins[1] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[1] > 1 && grid_bins[0] <= 1 && grid_bins[2] <= 1) ||
+               (grid_bins[2] > 1 && grid_bins[0] <= 1 && grid_bins[1] <= 1),
+           "one of grid bins must be == 1, Grid must be 1D to use exact_fill option");
+    fill = true;
+    map_type = "exact";
   }
 
   for (size_t d = 0; d < dim; d++)
@@ -1025,17 +1279,24 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
     auto mapItr = coarse_index_map.find(cb);
     if (mapItr != coarse_index_map.end()) {
       for (auto &l : mapItr->second) {
-        bool valid;
-        size_t local_window_bin;
-        double distance_to_bin_center;
-        std::tie(valid, local_window_bin, distance_to_bin_center) = get_window_bin(
-            spherical, dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
-        // If the bin is outside the window continue to the next poin
-        if (!valid)
-          continue;
-        Check(local_window_bin < n_map_bins);
-        map_vector_data(bias_cell_count, data_count, grid_data, min_distance, map_type, local_data,
-                        distance_to_bin_center, local_window_bin, l, vsize);
+        if (map_type == "exact") {
+          exact_window_vector_mapping(spherical, dim, grid_bins, locations[l], local_data, l,
+                                      deltas[l], window_min, window_max, n_map_bins, grid_data,
+                                      data_count, vsize);
+        } else {
+
+          bool valid;
+          size_t local_window_bin;
+          double distance_to_bin_center;
+          std::tie(valid, local_window_bin, distance_to_bin_center) = get_window_bin(
+              spherical, dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
+          // If the bin is outside the window continue to the next poin
+          if (!valid)
+            continue;
+          Check(local_window_bin < n_map_bins);
+          map_vector_data(bias_cell_count, data_count, grid_data, min_distance, map_type,
+                          local_data, distance_to_bin_center, local_window_bin, l, vsize);
+        }
       } // end local point loop
     }   // if valid local bin loop
     if (domain_decomposed) {
@@ -1044,18 +1305,25 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
       if (gmapItr != local_ghost_index_map.end()) {
         // loop over ghost data
         for (auto &g : gmapItr->second) {
-          bool valid;
-          size_t local_window_bin;
-          double distance_to_bin_center;
-          std::tie(valid, local_window_bin, distance_to_bin_center) =
-              get_window_bin(spherical, dim, grid_bins, local_ghost_locations[g], window_min,
-                             window_max, n_map_bins);
+          if (map_type == "exact") {
+            exact_window_vector_mapping(spherical, dim, grid_bins, local_ghost_locations[g],
+                                        ghost_data, g, local_ghost_deltas[g], window_min,
+                                        window_max, n_map_bins, grid_data, data_count, vsize);
+          } else {
 
-          // If the bin is outside the window continue to the next poin
-          if (!valid)
-            continue;
-          map_vector_data(bias_cell_count, data_count, grid_data, min_distance, map_type,
-                          ghost_data, distance_to_bin_center, local_window_bin, g, vsize);
+            bool valid;
+            size_t local_window_bin;
+            double distance_to_bin_center;
+            std::tie(valid, local_window_bin, distance_to_bin_center) =
+                get_window_bin(spherical, dim, grid_bins, local_ghost_locations[g], window_min,
+                               window_max, n_map_bins);
+
+            // If the bin is outside the window continue to the next poin
+            if (!valid)
+              continue;
+            map_vector_data(bias_cell_count, data_count, grid_data, min_distance, map_type,
+                            ghost_data, distance_to_bin_center, local_window_bin, g, vsize);
+          }
         } // end ghost point loop
       }   // if valid ghost bin
     }     // if dd

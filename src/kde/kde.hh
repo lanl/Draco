@@ -3,7 +3,7 @@
  * \file   kde/kde.hh
  * \author Mathew Cleveland
  * \brief  Define class kernel density estimator class
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef kde_kde_hh
@@ -15,6 +15,17 @@
 #include <vector>
 
 namespace rtt_kde {
+
+//! Apply conservation to reconstructed distribution
+void apply_conservation(const std::vector<double> &original_distribution,
+                        const std::vector<int> &maskids, const std::vector<int> &conservation_mask,
+                        std::vector<double> &new_distribution, const bool domain_decompsed);
+
+//! Apply conservation to reconstructed distribution
+void apply_conservation(const std::vector<std::vector<double>> &original_distribution,
+                        const std::vector<int> &maskids, const std::vector<int> &conservation_mask,
+                        std::vector<std::vector<double>> &new_distribution,
+                        const size_t distribution_size, const bool domain_decompsed);
 
 //================================================================================================//
 /*!
@@ -38,6 +49,12 @@ public:
                                      const std::vector<std::array<double, 3>> &one_over_band_width,
                                      const quick_index &qindex,
                                      const double discontinuity_cutoff = 1.0) const;
+  std::vector<std::vector<double>>
+  reconstruction(const std::vector<std::vector<double>> &distribution, const size_t data_size,
+                 const std::vector<int> &reconstruction_mask,
+                 const std::vector<std::array<double, 3>> &one_over_band_width,
+                 const quick_index &qindex, const double discontinuity_cutoff = 1.0) const;
+
   std::vector<double>
   weighted_reconstruction(const std::vector<double> &distribution,
                           const std::vector<double> &bandwidthweights,
@@ -59,15 +76,13 @@ public:
                      const std::vector<std::array<double, 3>> &one_over_band_width,
                      const quick_index &qindex, const double discontinuity_cutoff = 1.0) const;
 
-  //! Apply conservation to reconstructed distribution
-  void apply_conservation(const std::vector<double> &original_distribution,
-                          const std::vector<int> &maskids,
-                          const std::vector<int> &conservation_mask,
-                          std::vector<double> &new_distribution, const bool domain_decompsed) const;
   // STATICS
 
   //! Epanechikov Kernel
   inline double epan_kernel(const double x) const;
+
+  //! Integrate the Epanechikov Kernel
+  inline double int_epan_kernel(const double x0, const double x1) const;
 
   //! Transform the solution into log space
   inline double log_transform(const double value, const double bias) const;
@@ -78,9 +93,9 @@ public:
 private:
   //! Private function to calculate kernel weight
   double calc_weight(const std::array<double, 3> &r0, const std::array<double, 3> &one_over_h0,
-                     const std::array<double, 3> &r, const std::array<double, 3> &one_over_h,
-                     const quick_index &qindex, const double &discontinuity_cutoff,
-                     const double scale = 1.0) const;
+                     const std::array<double, 3> &r, const std::array<double, 3> &delta,
+                     const std::array<double, 3> &one_over_h, const quick_index &qindex,
+                     const double &discontinuity_cutoff, const double scale = 1.0) const;
 
   //! Private function to calculate the window bounds
   void calc_win_min_max(const quick_index &qindex, const std::array<double, 3> &position,

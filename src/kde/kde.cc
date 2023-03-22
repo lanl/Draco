@@ -14,7 +14,7 @@
  *         typically used in KDE applications to account for the kernel extending beyond the bounds
  *         of the spatial domain. Other approaches that could be considered are quadrature based
  *         approaches that fully sample the Kernel space reducing the need for the normalization.
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "kde.hh"
@@ -35,6 +35,7 @@ namespace rtt_kde {
  * \param[in] r0 current kernel center location
  * \param[in] one_over_h0 current kernel width
  * \param[in] r data location
+ * \param[in] delta data cell dimensions (width/hight/depth)
  * \param[in] one_over_h kernel width at this data location
  * \param[in] qindex quick indexing class
  * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
@@ -46,9 +47,9 @@ namespace rtt_kde {
  * \post the local reconstruction of the original data is returned.
  */
 double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double, 3> &one_over_h0,
-                        const std::array<double, 3> &r, const std::array<double, 3> &one_over_h,
-                        const quick_index &qindex, const double &discontinuity_cutoff,
-                        const double scale) const {
+                        const std::array<double, 3> &r, const std::array<double, 3> &delta,
+                        const std::array<double, 3> &one_over_h, const quick_index &qindex,
+                        const double &discontinuity_cutoff, const double scale) const {
   Require(one_over_h0[0] > 0.0);
   Require(qindex.dim > 1 ? one_over_h0[1] > 0.0 : true);
   Require(qindex.dim > 2 ? one_over_h0[2] > 0.0 : true);
@@ -60,36 +61,84 @@ double kde::calc_weight(const std::array<double, 3> &r0, const std::array<double
   Require(qindex.spherical ? !reflect_boundary[1] : true);
   double weight = 1.0;
   std::array<double, 3> distance = qindex.calc_orthogonal_distance(r0, r);
+  // orthogonal distance, in each dimension, to the lowest corner of the cell
+  std::array<double, 3> low_distance = qindex.calc_orthogonal_distance(
+      r0, std::array<double, 3>{r[0] - delta[0] * 0.5, r[1] - delta[1] * 0.5, 0.0});
+  // orthogonal distance, in each dimension, to the highest corner of the cell
+  std::array<double, 3> high_distance = qindex.calc_orthogonal_distance(
+      r0, std::array<double, 3>{r[0] + delta[0] * 0.5, r[1] + delta[1] * 0.5, 0.0});
   std::array<double, 3> low_reflect_r0_distance =
       qindex.calc_orthogonal_distance(qindex.bounding_box_min, r0);
-  std::array<double, 3> low_reflect_r_distance =
-      qindex.calc_orthogonal_distance(qindex.bounding_box_min, r);
+  std::array<double, 3> low_reflect_r_distance = qindex.calc_orthogonal_distance(
+      qindex.bounding_box_min,
+      std::array<double, 3>{r[0] - delta[0] * 0.5, r[1] - delta[1] * 0.5, r[2] - delta[2] * 0.5});
+  std::array<double, 3> low_reflect_r1_distance = qindex.calc_orthogonal_distance(
+      qindex.bounding_box_min,
+      std::array<double, 3>{r[0] + delta[0] * 0.5, r[1] + delta[1] * 0.5, r[2] + delta[2] * 0.5});
   std::array<double, 3> high_reflect_r0_distance =
       qindex.calc_orthogonal_distance(r0, qindex.bounding_box_max);
-  std::array<double, 3> high_reflect_r_distance =
-      qindex.calc_orthogonal_distance(r, qindex.bounding_box_max);
+  std::array<double, 3> high_reflect_r_distance = qindex.calc_orthogonal_distance(
+      std::array<double, 3>{r[0] + delta[0] * 0.5, r[1] + delta[1] * 0.5, r[2] + delta[2] * 0.5},
+      qindex.bounding_box_max);
+  std::array<double, 3> high_reflect_r1_distance = qindex.calc_orthogonal_distance(
+      std::array<double, 3>{r[0] - delta[0] * 0.5, r[1] - delta[1] * 0.5, r[2] - delta[2] * 0.5},
+      qindex.bounding_box_max);
   for (size_t d = 0; d < qindex.dim; d++) {
-    const double u = distance[d] * scale * one_over_h0[d];
-    const double disc_scale =
-        fabs(one_over_h0[d] - one_over_h[d]) / std::max(one_over_h0[d], one_over_h[d]) >
-                discontinuity_cutoff
-            ? 0.0
-            : 1.0;
-    // Apply Boundary Condition Weighting
-    double bc_weight = 0.0;
-    const bool low_reflect = reflect_boundary[d * 2];
-    const bool high_reflect = reflect_boundary[d * 2 + 1];
-    if (low_reflect) {
-      const double low_u =
-          (low_reflect_r0_distance[d] + low_reflect_r_distance[d]) * scale * one_over_h0[d];
-      bc_weight += epan_kernel(low_u);
+    // we get delta values then use the integral form of the weights
+    // otherwise use point wise evaluate (delta function)
+    if (delta[d] > 0.0) {
+      const double u0 = (low_distance[d]) * scale * one_over_h0[d];
+      const double u1 = (high_distance[d]) * scale * one_over_h0[d];
+      const double disc_scale =
+          fabs(one_over_h0[d] - one_over_h[d]) / std::max(one_over_h0[d], one_over_h[d]) >
+                  discontinuity_cutoff
+              ? 0.0
+              : 1.0;
+      // Apply Boundary Condition Weighting
+      double bc_weight = 0.0;
+      const bool low_reflect = reflect_boundary[d * 2];
+      const bool high_reflect = reflect_boundary[d * 2 + 1];
+      if (low_reflect) {
+        const double low_u0 =
+            (low_reflect_r0_distance[d] + low_reflect_r_distance[d]) * scale * one_over_h0[d];
+        const double low_u1 =
+            (low_reflect_r0_distance[d] + low_reflect_r1_distance[d]) * scale * one_over_h0[d];
+
+        bc_weight += int_epan_kernel(low_u0, low_u1);
+      }
+      if (high_reflect) {
+        const double high_u0 =
+            (high_reflect_r0_distance[d] + high_reflect_r_distance[d]) * scale * one_over_h0[d];
+        const double high_u1 =
+            (high_reflect_r0_distance[d] + high_reflect_r1_distance[d]) * scale * one_over_h0[d];
+
+        bc_weight += int_epan_kernel(high_u0, high_u1);
+      }
+      weight *= disc_scale * (bc_weight + int_epan_kernel(u0, u1)) * one_over_h0[d];
+
+    } else {
+      const double u = distance[d] * scale * one_over_h0[d];
+      const double disc_scale =
+          fabs(one_over_h0[d] - one_over_h[d]) / std::max(one_over_h0[d], one_over_h[d]) >
+                  discontinuity_cutoff
+              ? 0.0
+              : 1.0;
+      // Apply Boundary Condition Weighting
+      double bc_weight = 0.0;
+      const bool low_reflect = reflect_boundary[d * 2];
+      const bool high_reflect = reflect_boundary[d * 2 + 1];
+      if (low_reflect) {
+        const double low_u =
+            (low_reflect_r0_distance[d] + low_reflect_r_distance[d]) * scale * one_over_h0[d];
+        bc_weight += epan_kernel(low_u);
+      }
+      if (high_reflect) {
+        const double high_u =
+            (high_reflect_r0_distance[d] + high_reflect_r_distance[d]) * scale * one_over_h0[d];
+        bc_weight += epan_kernel(high_u);
+      }
+      weight *= disc_scale * (bc_weight + epan_kernel(u)) * one_over_h0[d];
     }
-    if (high_reflect) {
-      const double high_u =
-          (high_reflect_r0_distance[d] + high_reflect_r_distance[d]) * scale * one_over_h0[d];
-      bc_weight += epan_kernel(high_u);
-    }
-    weight *= disc_scale * (bc_weight + epan_kernel(u)) * one_over_h0[d];
   }
   Ensure(!(weight < 0.0));
   return weight;
@@ -159,8 +208,9 @@ kde::reconstruction(const std::vector<double> &distribution,
           for (auto &l : mapItr->second) {
             if (reconstruction_mask[i] != reconstruction_mask[l])
               continue;
-            const double weight = calc_weight(r0, one_over_h0, qindex.locations[l],
-                                              one_over_bandwidth[l], qindex, discontinuity_cutoff);
+            const double weight =
+                calc_weight(r0, one_over_h0, qindex.locations[l], qindex.deltas[l],
+                            one_over_bandwidth[l], qindex, discontinuity_cutoff);
             result[i] += distribution[l] * weight;
             normal[i] += weight;
           }
@@ -171,9 +221,9 @@ kde::reconstruction(const std::vector<double> &distribution,
           for (auto &g : gmapItr->second) {
             if (reconstruction_mask[i] != ghost_mask[g])
               continue;
-            const double weight =
-                calc_weight(r0, one_over_h0, qindex.local_ghost_locations[g],
-                            ghost_one_over_bandwidth[g], qindex, discontinuity_cutoff);
+            const double weight = calc_weight(
+                r0, one_over_h0, qindex.local_ghost_locations[g], qindex.local_ghost_deltas[g],
+                ghost_one_over_bandwidth[g], qindex, discontinuity_cutoff);
             result[i] += ghost_distribution[g] * weight;
             normal[i] += weight;
           }
@@ -204,8 +254,10 @@ kde::reconstruction(const std::vector<double> &distribution,
           for (auto &l : mapItr->second) {
             if (reconstruction_mask[i] != reconstruction_mask[l])
               continue;
-            const double weight = calc_weight(r0, one_over_h0, qindex.locations[l],
-                                              one_over_bandwidth[l], qindex, discontinuity_cutoff);
+            const double weight =
+                calc_weight(r0, one_over_h0, qindex.locations[l], qindex.deltas[l],
+                            one_over_bandwidth[l], qindex, discontinuity_cutoff);
+
             result[i] += distribution[l] * weight;
             normal[i] += weight;
           }
@@ -225,8 +277,150 @@ kde::reconstruction(const std::vector<double> &distribution,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief KDE weighted reconstruction
+ * \brief KDE reconstruction 
+ * 
+ * \pre The local reconstruction data is passed into this function which includes the original data
+ * distribution, its spatial position, and the optimal bandwidth to be used at each point.
  *
+ * \param[in] distribution original data to be reconstructed
+ * \param[in] data_size number of scalar distribution to perform the reconstruction on
+ * \param[in] reconstruction_mask designate points that should be reconstructed together
+ * \param[in] one_over_bandwidth inverse bandwidth size to be used at each data location
+ * \param[in] qindex quick_index class to be used for data access.
+ * \param[in] discontinuity_cutoff maximum size of value discrepancies to include in the
+ * reconstruction
+ * \return final local KDE function distribution reconstruction
+ *
+ * \post the local reconstruction of the original data is returned.
+ */
+std::vector<std::vector<double>>
+kde::reconstruction(const std::vector<std::vector<double>> &distribution, const size_t data_size,
+                    const std::vector<int> &reconstruction_mask,
+                    const std::vector<std::array<double, 3>> &one_over_bandwidth,
+                    const quick_index &qindex, const double discontinuity_cutoff) const {
+  Require(qindex.dim < 3 && qindex.dim > 0);
+  const size_t local_size = distribution.size();
+  // be sure that the quick_index matches this data size
+  Require(qindex.locations.size() == local_size);
+  Require(one_over_bandwidth.size() == local_size);
+
+  // used for the zero accumulation conservation
+  std::vector<std::vector<double>> result(local_size, std::vector<double>(data_size, 0.0));
+  std::vector<double> normal(local_size, 0.0);
+  if (qindex.domain_decomposed) {
+
+    std::vector<std::vector<double>> ghost_distribution(qindex.local_ghost_buffer_size,
+                                                        std::vector<double>(data_size));
+    qindex.collect_ghost_data(distribution, ghost_distribution, data_size);
+    std::vector<int> ghost_mask(qindex.local_ghost_buffer_size);
+    qindex.collect_ghost_data(reconstruction_mask, ghost_mask);
+    std::vector<std::array<double, 3>> ghost_one_over_bandwidth(qindex.local_ghost_buffer_size,
+                                                                {0.0, 0.0, 0.0});
+    qindex.collect_ghost_data(one_over_bandwidth, ghost_one_over_bandwidth);
+
+    std::array<double, 3> win_min{0.0, 0.0, 0.0};
+    std::array<double, 3> win_max{0.0, 0.0, 0.0};
+    // now apply the kernel to the local ranks
+    for (size_t i = 0; i < local_size; i++) {
+      // skip masked data
+      if (reconstruction_mask[i] == 0) {
+        Check(result[i].size() == distribution[i].size());
+        result[i] = distribution[i];
+        normal[i] = 1.0;
+        continue;
+      }
+      const std::array<double, 3> r0 = qindex.locations[i];
+      const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
+      calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
+      const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
+      // fetch local contribution
+      for (auto &cb : coarse_bins) {
+        // skip bins that aren't present in the map (for constness)
+        auto mapItr = qindex.coarse_index_map.find(cb);
+        if (mapItr != qindex.coarse_index_map.end()) {
+          // loop over local data
+          for (auto &l : mapItr->second) {
+            if (reconstruction_mask[i] != reconstruction_mask[l])
+              continue;
+            const double weight =
+                calc_weight(r0, one_over_h0, qindex.locations[l], qindex.deltas[l],
+                            one_over_bandwidth[l], qindex, discontinuity_cutoff);
+            for (size_t d = 0; d < data_size; d++) {
+              result[i][d] += distribution[l][d] * weight;
+            }
+            normal[i] += weight;
+          }
+        }
+        auto gmapItr = qindex.local_ghost_index_map.find(cb);
+        if (gmapItr != qindex.local_ghost_index_map.end()) {
+          // loop over ghost data
+          for (auto &g : gmapItr->second) {
+            if (reconstruction_mask[i] != ghost_mask[g])
+              continue;
+            const double weight = calc_weight(
+                r0, one_over_h0, qindex.local_ghost_locations[g], qindex.local_ghost_deltas[g],
+                ghost_one_over_bandwidth[g], qindex, discontinuity_cutoff);
+            for (size_t d = 0; d < data_size; d++) {
+              result[i][d] += ghost_distribution[g][d] * weight;
+            }
+            normal[i] += weight;
+          }
+        }
+      }
+    }
+  } else { // local reconstruction only
+
+    std::array<double, 3> win_min{0.0, 0.0, 0.0};
+    std::array<double, 3> win_max{0.0, 0.0, 0.0};
+    // now apply the kernel to the local ranks
+    for (size_t i = 0; i < local_size; i++) {
+      // skip masked data
+      if (reconstruction_mask[i] == 0) {
+        Check(result[i].size() == distribution[i].size());
+        result[i] = distribution[i];
+        normal[i] = 1.0;
+        continue;
+      }
+      const std::array<double, 3> r0 = qindex.locations[i];
+      const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
+      calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
+      const std::vector<size_t> coarse_bins = qindex.window_coarse_index_list(win_min, win_max);
+      for (auto &cb : coarse_bins) {
+        // skip bins that aren't present in the map (can't use [] operator with constness)
+        auto mapItr = qindex.coarse_index_map.find(cb);
+        if (mapItr != qindex.coarse_index_map.end()) {
+          // loop over local data
+          for (auto &l : mapItr->second) {
+            if (reconstruction_mask[i] != reconstruction_mask[l])
+              continue;
+            const double weight =
+                calc_weight(r0, one_over_h0, qindex.locations[l], qindex.deltas[l],
+                            one_over_bandwidth[l], qindex, discontinuity_cutoff);
+            for (size_t d = 0; d < data_size; d++) {
+              result[i][d] += distribution[l][d] * weight;
+            }
+            normal[i] += weight;
+          }
+        }
+      }
+    }
+  }
+
+  // normalize the integrated weight contributions
+  for (size_t i = 0; i < local_size; i++) {
+    Check(normal[i] > 0.0);
+    for (size_t d = 0; d < data_size; d++) {
+      result[i][d] /= normal[i];
+    }
+  }
+
+  return result;
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief KDE weighted reconstruction 
+ * 
  * \pre The local reconstruction data is passed into this function which includes the original data
  * distribution, its spatial position, and the optimal bandwidth to be used at each point.
  * Additional bandwidth weights are passed, these weights are used to scale the distance of the
@@ -303,8 +497,8 @@ kde::weighted_reconstruction(const std::vector<double> &distribution,
             const double scale = std::max(bandwidth_weights[i], bandwidth_weights[l]) /
                                  std::min(bandwidth_weights[i], bandwidth_weights[l]);
             const double weight =
-                calc_weight(r0, one_over_h0, qindex.locations[l], one_over_bandwidth[l], qindex,
-                            discontinuity_cutoff, scale);
+                calc_weight(r0, one_over_h0, qindex.locations[l], qindex.deltas[l],
+                            one_over_bandwidth[l], qindex, discontinuity_cutoff, scale);
             result[i] += distribution[l] * weight;
             normal[i] += weight;
           }
@@ -318,9 +512,9 @@ kde::weighted_reconstruction(const std::vector<double> &distribution,
             Insist(ghost_bandwidth_weights[g] > 0.0, "Bandwidths must be postive (>0.0)");
             const double scale = std::max(bandwidth_weights[i], ghost_bandwidth_weights[g]) /
                                  std::min(bandwidth_weights[i], ghost_bandwidth_weights[g]);
-            const double weight =
-                calc_weight(r0, one_over_h0, qindex.local_ghost_locations[g],
-                            ghost_one_over_bandwidth[g], qindex, discontinuity_cutoff, scale);
+            const double weight = calc_weight(
+                r0, one_over_h0, qindex.local_ghost_locations[g], qindex.local_ghost_deltas[g],
+                ghost_one_over_bandwidth[g], qindex, discontinuity_cutoff, scale);
             result[i] += ghost_distribution[g] * weight;
             normal[i] += weight;
           }
@@ -356,8 +550,8 @@ kde::weighted_reconstruction(const std::vector<double> &distribution,
             const double scale = std::max(bandwidth_weights[i], bandwidth_weights[l]) /
                                  std::min(bandwidth_weights[i], bandwidth_weights[l]);
             const double weight =
-                calc_weight(r0, one_over_h0, qindex.locations[l], one_over_bandwidth[l], qindex,
-                            discontinuity_cutoff, scale);
+                calc_weight(r0, one_over_h0, qindex.locations[l], qindex.deltas[l],
+                            one_over_bandwidth[l], qindex, discontinuity_cutoff, scale);
             result[i] += distribution[l] * weight;
             normal[i] += weight;
           }
@@ -430,6 +624,7 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
         normal[i] = 1.0;
         continue;
       }
+      const std::array<double, 3> delta_zero{0.0, 0.0, 0.0};
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
       calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
@@ -440,7 +635,7 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
           (win_max[2] - win_min[2]) / static_cast<double>(dir_samples[2])};
       // include center point
       const double weight0 =
-          calc_weight(r0, one_over_h0, r0, one_over_h0, qindex, discontinuity_cutoff);
+          calc_weight(r0, one_over_h0, r0, delta_zero, one_over_h0, qindex, discontinuity_cutoff);
       result[i] += distribution[i] * weight0;
       normal[i] += weight0;
       for (size_t xi = 0; xi < dir_samples[0]; xi++) {
@@ -509,8 +704,8 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
                 win_min[0] + 0.5 * delta[0] + static_cast<double>(xi) * delta[0],
                 win_min[1] + 0.5 * delta[1] + static_cast<double>(yi) * delta[1],
                 win_min[2] + 0.5 * delta[2] + static_cast<double>(zi) * delta[2]};
-            const double weight =
-                calc_weight(r0, one_over_h0, location, inv_bw, qindex, discontinuity_cutoff);
+            const double weight = calc_weight(r0, one_over_h0, location, delta_zero, inv_bw, qindex,
+                                              discontinuity_cutoff);
             result[i] += value * weight;
             normal[i] += weight;
           }
@@ -529,6 +724,7 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
         normal[i] = 1.0;
         continue;
       }
+      const std::array<double, 3> delta_zero{0.0, 0.0, 0.0};
       const std::array<double, 3> r0 = qindex.locations[i];
       const std::array<double, 3> one_over_h0 = one_over_bandwidth[i];
       calc_win_min_max(qindex, r0, one_over_h0, win_min, win_max);
@@ -539,7 +735,7 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
           (win_max[2] - win_min[2]) / static_cast<double>(dir_samples[2])};
       // include center point
       const double weight0 =
-          calc_weight(r0, one_over_h0, r0, one_over_h0, qindex, discontinuity_cutoff);
+          calc_weight(r0, one_over_h0, r0, delta_zero, one_over_h0, qindex, discontinuity_cutoff);
       result[i] += distribution[i] * weight0;
       normal[i] += weight0;
       for (size_t xi = 0; xi < dir_samples[0]; xi++) {
@@ -581,8 +777,8 @@ kde::sampled_reconstruction(const std::vector<double> &distribution,
                 win_min[0] + 0.5 * delta[0] + static_cast<double>(xi) * delta[0],
                 win_min[1] + 0.5 * delta[1] + static_cast<double>(yi) * delta[1],
                 win_min[2] + 0.5 * delta[2] + static_cast<double>(zi) * delta[2]};
-            const double weight =
-                calc_weight(r0, one_over_h0, location, inv_bw, qindex, discontinuity_cutoff);
+            const double weight = calc_weight(r0, one_over_h0, location, delta_zero, inv_bw, qindex,
+                                              discontinuity_cutoff);
             result[i] += value * weight;
             normal[i] += weight;
           }
@@ -675,8 +871,9 @@ kde::log_reconstruction(const std::vector<double> &distribution,
           for (auto &l : mapItr->second) {
             if (reconstruction_mask[i] != reconstruction_mask[l])
               continue;
-            const double weight = calc_weight(r0, one_over_h0, qindex.locations[l],
-                                              one_over_bandwidth[l], qindex, discontinuity_cutoff);
+            const double weight =
+                calc_weight(r0, one_over_h0, qindex.locations[l], qindex.deltas[l],
+                            one_over_bandwidth[l], qindex, discontinuity_cutoff);
             result[i] += log_transform(distribution[l], log_bias) * weight;
             normal[i] += weight;
           }
@@ -687,9 +884,9 @@ kde::log_reconstruction(const std::vector<double> &distribution,
           for (auto &g : gmapItr->second) {
             if (reconstruction_mask[i] != ghost_mask[g])
               continue;
-            const double weight =
-                calc_weight(r0, one_over_h0, qindex.local_ghost_locations[g],
-                            ghost_one_over_bandwidth[g], qindex, discontinuity_cutoff);
+            const double weight = calc_weight(
+                r0, one_over_h0, qindex.local_ghost_locations[g], qindex.local_ghost_deltas[g],
+                ghost_one_over_bandwidth[g], qindex, discontinuity_cutoff);
             result[i] += log_transform(ghost_distribution[g], log_bias) * weight;
             normal[i] += weight;
           }
@@ -724,8 +921,9 @@ kde::log_reconstruction(const std::vector<double> &distribution,
           for (auto &l : mapItr->second) {
             if (reconstruction_mask[i] != reconstruction_mask[l])
               continue;
-            const double weight = calc_weight(r0, one_over_h0, qindex.locations[l],
-                                              one_over_bandwidth[l], qindex, discontinuity_cutoff);
+            const double weight =
+                calc_weight(r0, one_over_h0, qindex.locations[l], qindex.deltas[l],
+                            one_over_bandwidth[l], qindex, discontinuity_cutoff);
             result[i] += log_transform(distribution[l], log_bias) * weight;
             normal[i] += weight;
           }
@@ -749,6 +947,40 @@ kde::log_reconstruction(const std::vector<double> &distribution,
 
 //------------------------------------------------------------------------------------------------//
 /*!
+ * \brief Calculate window min and max bounds.
+ *
+ *  Calculate the bounding window (via win_min (x_min,y_min,z_min) and win_max (x_max, y_max,
+ *  z_max)) given a central location and the bandwidth size in each dimension (dx,dy) for Cartesian
+ *  or (dr, dtheta) for spherical.
+ * 
+ * \param[in] qindex quick index class for finding bounds xy bounds of a wedge shape
+ * \param[in] position is the central location of the bounds
+ * \param[in] one_over_bandwidth size of the reconstruction domain in each dimension. This is
+ * (dx,dy) for Caresian and (dr, arc_length) for spherical. 
+ * \param[in,out] win_min is the minimum corner of the bounding box (x_min, y_min, z_min)
+ * \param[in,out] win_max is the maximum corner of the bounding box (x_max, y_max, z_max)
+ *
+ */
+void kde::calc_win_min_max(const quick_index &qindex, const std::array<double, 3> &position,
+                           const std::array<double, 3> &one_over_bandwidth,
+                           std::array<double, 3> &win_min, std::array<double, 3> &win_max) const {
+  const size_t dim = qindex.dim;
+  Require(dim > 0);
+  Require(one_over_bandwidth[0] > 0.0);
+  Require(dim > 1 ? one_over_bandwidth[1] > 0.0 : true);
+  Require(dim > 2 ? one_over_bandwidth[2] > 0.0 : true);
+  for (size_t d = 0; d < dim; d++) {
+    win_min[d] = position[d] - 2.0 / one_over_bandwidth[d];
+    win_max[d] = position[d] + 2.0 / one_over_bandwidth[d];
+  }
+}
+
+//------------------------------------------------------------------------------------------------//
+// INDEPENDENT FUNCTIONS (not members of KDE class)
+//------------------------------------------------------------------------------------------------//
+
+//------------------------------------------------------------------------------------------------//
+/*!
  * \brief KDE apply conservation
  *
  * \pre Apply conservation fix to the new distribution so sum(original_distribution) ==
@@ -761,11 +993,9 @@ kde::log_reconstruction(const std::vector<double> &distribution,
  * \param[in] domain_decomposed bool
  *
  */
-void kde::apply_conservation(const std::vector<double> &original_distribution,
-                             const std::vector<int> &maskids,
-                             const std::vector<int> &conservation_mask,
-                             std::vector<double> &new_distribution,
-                             const bool domain_decomposed) const {
+void apply_conservation(const std::vector<double> &original_distribution,
+                        const std::vector<int> &maskids, const std::vector<int> &conservation_mask,
+                        std::vector<double> &new_distribution, const bool domain_decomposed) {
 
   Require(maskids.size() > 0);
   const size_t local_size = original_distribution.size();
@@ -802,7 +1032,13 @@ void kde::apply_conservation(const std::vector<double> &original_distribution,
     }
 
     // Apply residual
-    if (abs_distribution_conservation > 0.0) {
+    if (reconstruction_conservation > 0.0 && original_conservation > 0.0) {
+      const double ratio = original_conservation / reconstruction_conservation;
+      for (size_t i = 0; i < local_size; i++)
+        if (mask[i] > 0.0)
+          new_distribution[i] *= ratio;
+
+    } else if (abs_distribution_conservation > 0.0) {
       const double res = original_conservation - reconstruction_conservation;
       for (size_t i = 0; i < local_size; i++)
         new_distribution[i] += mask[i] * res * abs_distribution[i] / abs_distribution_conservation;
@@ -812,31 +1048,74 @@ void kde::apply_conservation(const std::vector<double> &original_distribution,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Calculate window min and max bounds.
+ * \brief KDE apply conservation to individual distributions per cell
+ * 
+ * \pre Apply conservation fix to the new distribution so sum(original_distribution) ==
+ * sum(new_distribution)
  *
- *  Calculate the bounding window (via win_min (x_min,y_min,z_min) and win_max (x_max, y_max,
- *  z_max)) given a central location and the bandwidth size in each dimension (dx,dy) for Cartesian
- *  or (dr,arc_length) for spherical.
- *
- * \param[in] qindex quick index class for finding bounds xy bounds of a wedge shape
- * \param[in] position is the central location of the bounds
- * \param[in] one_over_bandwidth size of the reconstruction domain in each dimension. This is
- * (dx,dy) for Caresian and (dr, arc_length) for spherical.
- * \param[in,out] win_min is the minimum corner of the bounding box (x_min, y_min, z_min)
- * \param[in,out] win_max is the maximum corner of the bounding box (x_max, y_max, z_max)
+ * \param[in] original_distribution original data to be reconstructed
+ * \param[in] maskids list of mask ids to be considered during the reconstruction
+ * \param[in] conservation_mask designate points that should be considered in conservation together
+ * \param[in,out] new_distribution original data to apply conservation fixup to
+ * \param[in] distribution_size is the number of scalar vectors to apply the conservation over
+ * \param[in] domain_decomposed bool
  *
  */
-void kde::calc_win_min_max(const quick_index &qindex, const std::array<double, 3> &position,
-                           const std::array<double, 3> &one_over_bandwidth,
-                           std::array<double, 3> &win_min, std::array<double, 3> &win_max) const {
-  const size_t dim = qindex.dim;
-  Require(dim > 0);
-  Require(one_over_bandwidth[0] > 0.0);
-  Require(dim > 1 ? one_over_bandwidth[1] > 0.0 : true);
-  Require(dim > 2 ? one_over_bandwidth[2] > 0.0 : true);
-  for (size_t d = 0; d < dim; d++) {
-    win_min[d] = position[d] - 1.0 / one_over_bandwidth[d];
-    win_max[d] = position[d] + 1.0 / one_over_bandwidth[d];
+void apply_conservation(const std::vector<std::vector<double>> &original_distribution,
+                        const std::vector<int> &maskids, const std::vector<int> &conservation_mask,
+                        std::vector<std::vector<double>> &new_distribution,
+                        const size_t distribution_size, const bool domain_decomposed) {
+
+  Require(maskids.size() > 0);
+  const size_t local_size = original_distribution.size();
+  Insist(new_distribution.size() == local_size,
+         "Original and new distributions must be the same size");
+  Insist(conservation_mask.size() == local_size, "Conservation maks size does not match data size");
+
+  // per material conservation
+  for (auto &maskid : maskids) {
+    // compute absolute solution and setup double mask
+    std::vector<std::vector<double>> abs_distribution(local_size,
+                                                      std::vector<double>(distribution_size, 0.0));
+    std::vector<double> mask(local_size, 1.0);
+    std::vector<double> original_conservation(distribution_size, 0.0);
+    std::vector<double> reconstruction_conservation(distribution_size, 0.0);
+    std::vector<double> abs_conservation(distribution_size, 0.0);
+    for (size_t i = 0; i < local_size; i++) {
+      Check(new_distribution[i].size() == distribution_size);
+      // convert mask to double for easy math operations
+      if (conservation_mask[i] != maskid)
+        mask[i] = 0.0;
+
+      for (size_t j = 0; j < distribution_size; j++) {
+        abs_distribution[i][j] = fabs(new_distribution[i][j]);
+        original_conservation[j] += original_distribution[i][j] * mask[i];
+        reconstruction_conservation[j] += new_distribution[i][j] * mask[i];
+        abs_conservation[j] += abs_distribution[i][j] * mask[i];
+      }
+    }
+
+    if (domain_decomposed) {
+      // accumulate global contribution
+      rtt_c4::global_sum(&original_conservation[0], distribution_size);
+      rtt_c4::global_sum(&reconstruction_conservation[0], distribution_size);
+      rtt_c4::global_sum(&abs_conservation[0], distribution_size);
+    }
+
+    // Apply residual
+    for (size_t j = 0; j < distribution_size; j++) {
+      if (reconstruction_conservation[j] > 0.0 && original_conservation[j] > 0.0) {
+        const double ratio = original_conservation[j] / reconstruction_conservation[j];
+        for (size_t i = 0; i < local_size; i++)
+          if (mask[i] > 0.0)
+            new_distribution[i][j] *= ratio;
+
+      } else if (abs_conservation[j] > 0.0) {
+        const double res = original_conservation[j] - reconstruction_conservation[j];
+        for (size_t i = 0; i < local_size; i++)
+          new_distribution[i][j] += mask[i] * res * abs_distribution[i][j] / abs_conservation[j];
+      }
+    }
   }
 }
 
