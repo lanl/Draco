@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Nov. 10th 2020
  * \brief  Member definitions of class kde
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -31,6 +31,35 @@ namespace rtt_kde {
 inline double kde::epan_kernel(const double x) const {
   const double x2 = x * x;
   return x2 > 1.0 ? 0.0 : 0.75 * (1.0 - x2);
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief int_epan_kernel 
+ *
+ * Integral form of the basis function used during reconstruction (note this will be zero if the
+ * integration area is zero - so don't use in the point wise reconstruction).
+ *
+ * Epanechnikov kenrel to be used in reconstrtuction
+ *
+ * \param[in] x0 beginning point of the integration
+ * \param[in] x1 ending point of the integration
+ * \return distribution weight based on distance from the kernel center 
+ *
+ * Test of kde.
+ */
+inline double kde::int_epan_kernel(const double x0, const double x1) const {
+  // fix the integration bounds from -1..1
+  Require(!(x0 > x1));
+  const double a = std::min(std::max(x0, -1.0), 1.0);
+  const double b = std::min(std::max(x1, -1.0), 1.0);
+  const double a3 = a * a * a;
+  const double b3 = b * b * b;
+  // int_a^b(3/4(*1.0-x**2)dx = 1/3*3/4*(a**3-3a-b**3+3b)
+  const double weight = 0.25 * (a3 - 3.0 * a - b3 + 3.0 * b);
+  Ensure(!(weight < 0.0));
+  Ensure(!(weight > 1.0));
+  return weight;
 }
 
 //------------------------------------------------------------------------------------------------//

@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Aug. 10th 2021
  * \brief  quick_index testing function
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "kde/quick_index.hh"
@@ -170,27 +170,36 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     std::vector<double> data{3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0};
     std::vector<int> int_data{3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
     std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
+    std::vector<std::array<double, 3>> delta_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
     // This cell spatial ordering is difficult for this setup in that every
     // rank requires a sub set of information from every other rank
     for (int i = 0; i < 10; i++) {
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
+      delta_array[i][0] = 1.0;
+      delta_array[i][1] = 1.0;
     }
 
     // map to dd arrays with simple stride
     std::vector<double> dd_data(local_size, 0.0);
+    std::vector<std::vector<double>> dd_data_mg(local_size, std::vector<double>(2, 0.0));
     std::vector<int> dd_int_data(local_size, 0);
     std::vector<std::vector<double>> dd_3x_data(3, std::vector<double>(local_size, 0.0));
     std::vector<std::array<double, 3>> dd_position_array(local_size,
                                                          std::array<double, 3>{0.0, 0.0, 0.0});
+    std::vector<std::array<double, 3>> dd_delta_array(local_size,
+                                                      std::array<double, 3>{0.0, 0.0, 0.0});
 
     for (int i = 0; i < local_size; i++) {
       dd_data[i] = data[i + rtt_c4::node() * 3];
+      dd_data_mg[i][0] = data[i + rtt_c4::node() * 3];
+      dd_data_mg[i][1] = data[i + rtt_c4::node() * 3] + 1.0;
       dd_int_data[i] = int_data[i + rtt_c4::node() * 3];
       dd_3x_data[0][i] = data[i + rtt_c4::node() * 3];
       dd_3x_data[1][i] = data[i + rtt_c4::node() * 3] + 1;
       dd_3x_data[2][i] = -data[i + rtt_c4::node() * 3];
       dd_position_array[i] = position_array[i + rtt_c4::node() * 3];
+      dd_delta_array[i] = delta_array[i + rtt_c4::node() * 3];
     }
 
     // in dd mode the max window size determines the number of ghost cells
@@ -199,6 +208,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const bool dd = true;
     const size_t dim = 1;
     quick_index qindex(dim, dd_position_array, max_window_size, bins_per_dim, dd);
+    quick_index delta_qindex(dim, dd_position_array, dd_delta_array, max_window_size, bins_per_dim,
+                             dd);
 
     // Check the local state data
     if (!qindex.domain_decomposed)
@@ -336,27 +347,39 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     // Check the local ghost locations (this tangentially checks the private
     // put_window_map which is used to build this local data).
     std::vector<std::array<double, 3>> gold_ghost_locations;
+    std::vector<std::array<double, 3>> gold_ghost_deltas;
     if (rtt_c4::node() == 0) {
       gold_ghost_locations = {{0.5, 0.0, 0.0}, {3.0, 0.0, 0.0}, {1.5, 0.0, 0.0}, {2.5, 0.0, 0.0}};
+      gold_ghost_deltas = {{1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}};
     } else if (rtt_c4::node() == 1) {
       gold_ghost_locations = {{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {2.0, 0.0, 0.0}, {1.5, 0.0, 0.0},
                               {2.5, 0.0, 0.0}, {3.5, 0.0, 0.0}, {4.5, 0.0, 0.0}};
+      gold_ghost_deltas = {{1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0},
+                           {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}};
 
     } else {
       gold_ghost_locations = {
           {1.0, 0.0, 0.0}, {2.0, 0.0, 0.0}, {0.5, 0.0, 0.0}, {3.0, 0.0, 0.0}, {4.0, 0.0, 0.0}};
+      gold_ghost_deltas = {
+          {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}};
     }
     if (gold_ghost_locations.size() != qindex.local_ghost_locations.size())
       ITFAILS;
     for (size_t i = 0; i < qindex.local_ghost_locations.size(); i++) {
-      for (size_t d = 0; d < 3; d++)
+      for (size_t d = 0; d < 3; d++) {
         if (!rtt_dsxx::soft_equiv(gold_ghost_locations[i][d], qindex.local_ghost_locations[i][d]))
           ITFAILS;
+        if (!rtt_dsxx::soft_equiv(gold_ghost_deltas[i][d], delta_qindex.local_ghost_deltas[i][d]))
+          ITFAILS;
+      }
     }
 
     // Check collect_ghost_data vector call
     std::vector<double> ghost_data(qindex.local_ghost_buffer_size, 0.0);
     qindex.collect_ghost_data(dd_data, ghost_data);
+    std::vector<std::vector<double>> ghost_data_mg(qindex.local_ghost_buffer_size,
+                                                   std::vector<double>(2, 0.0));
+    qindex.collect_ghost_data(dd_data_mg, ghost_data_mg, 2);
     std::vector<int> int_ghost_data(qindex.local_ghost_buffer_size, 0);
     qindex.collect_ghost_data(dd_int_data, int_ghost_data);
     std::vector<std::vector<double>> ghost_3x_data(
@@ -385,9 +408,14 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_3x_ghost_data[1] = {5.0, 6.0, 9.0, 7.0, 8.0};
       gold_3x_ghost_data[2] = {-4.0, -5.0, -8.0, -6.0, -7.0};
     }
-    for (size_t i = 0; i < ghost_data.size(); i++)
+    for (size_t i = 0; i < ghost_data.size(); i++) {
       if (!rtt_dsxx::soft_equiv(ghost_data[i], gold_ghost_data[i]))
         ITFAILS;
+      if (!rtt_dsxx::soft_equiv(ghost_data_mg[i][0], gold_ghost_data[i]))
+        ITFAILS;
+      if (!rtt_dsxx::soft_equiv(ghost_data_mg[i][1], gold_ghost_data[i] + 1.0))
+        ITFAILS;
+    }
     for (size_t i = 0; i < int_ghost_data.size(); i++)
       if (int_ghost_data[i] != gold_int_ghost_data[i])
         ITFAILS;
@@ -1083,11 +1111,14 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
   {
     std::vector<double> data{3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0};
     std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
+    std::vector<std::array<double, 3>> delta_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
     // This cell spatial ordering is difficult for this setup in that every
     // rank requires a sub set of information from every other rank
     for (int i = 0; i < 10; i++) {
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
+      delta_array[i][0] = 1.0;
+      delta_array[i][1] = 1.0;
     }
 
     // map to dd arrays with simple stride
@@ -1095,6 +1126,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     std::vector<std::vector<double>> dd_3x_data(3, std::vector<double>(local_size, 0.0));
     std::vector<std::array<double, 3>> dd_position_array(local_size,
                                                          std::array<double, 3>{0.0, 0.0, 0.0});
+    std::vector<std::array<double, 3>> dd_delta_array(local_size,
+                                                      std::array<double, 3>{0.0, 0.0, 0.0});
 
     for (int i = 0; i < local_size; i++) {
       dd_data[i] = data[i + rtt_c4::node() * 3];
@@ -1102,6 +1135,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       dd_3x_data[1][i] = data[i + rtt_c4::node() * 3] + 1;
       dd_3x_data[2][i] = -data[i + rtt_c4::node() * 3];
       dd_position_array[i] = position_array[i + rtt_c4::node() * 3];
+      dd_delta_array[i] = delta_array[i + rtt_c4::node() * 3];
     }
 
     // in dd mode the max window size determines the number of ghost cells
@@ -1110,6 +1144,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const bool dd = true;
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, bins_per_dim, dd);
+    quick_index delta_qindex(dim, dd_position_array, dd_delta_array, max_window_size * 2.0,
+                             bins_per_dim, dd);
 
     // Check the local state data
     if (!qindex.domain_decomposed)
@@ -1250,20 +1286,29 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     // Check the local ghost locations (this tangentially checks the private
     // put_window_map which is used to build this local data).
     std::vector<std::array<double, 3>> gold_ghost_locations;
+    std::vector<std::array<double, 3>> gold_ghost_deltas;
     if (rtt_c4::node() == 0) {
       gold_ghost_locations = {{3.0, 0.5, 0.0}};
+      gold_ghost_deltas = {{1.0, 1.0, 0.0}};
     } else if (rtt_c4::node() == 1) {
       gold_ghost_locations = {{0.0, 0.5, 0.0},  {1.0, 0.5, 0.0},  {2.0, 0.5, 0.0}, {1.5, -0.5, 0.0},
                               {2.5, -0.5, 0.0}, {3.5, -0.5, 0.0}, {4.5, -0.5, 0.0}};
+      gold_ghost_deltas = {{1.0, 1.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 1.0, 0.0},
+                           {1.0, 1.0, 0.0}, {1.0, 1.0, 0.0}, {1.0, 1.0, 0.0}};
+
     } else {
       gold_ghost_locations = {{0.5, -0.5, 0.0}};
+      gold_ghost_deltas = {{1.0, 1.0, 0.0}};
     }
     if (gold_ghost_locations.size() != qindex.local_ghost_locations.size())
       ITFAILS;
     for (size_t i = 0; i < qindex.local_ghost_locations.size(); i++) {
-      for (size_t d = 0; d < 3; d++)
+      for (size_t d = 0; d < 3; d++) {
         if (!rtt_dsxx::soft_equiv(gold_ghost_locations[i][d], qindex.local_ghost_locations[i][d]))
           ITFAILS;
+        if (!rtt_dsxx::soft_equiv(gold_ghost_deltas[i][d], delta_qindex.local_ghost_deltas[i][d]))
+          ITFAILS;
+      }
     }
 
     // Check collect_ghost_data vector call
@@ -1342,6 +1387,58 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
         gold_window_3x_data[2] = {0.0, 0.0, -9.0, 0.0, 0.0};
       }
 
+      for (size_t i = 0; i < bin_sizes[0]; i++)
+        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
+          ITFAILS;
+      for (size_t v = 0; v < 3; v++)
+        for (size_t i = 0; i < bin_sizes[0]; i++)
+          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
+            ITFAILS;
+    }
+
+    // check exact mapping with deltas
+    {
+      // delta_qindex has a larger ghost buffer so I need new ghost data here
+      std::vector<double> delta_ghost_data(delta_qindex.local_ghost_buffer_size, 0.0);
+      delta_qindex.collect_ghost_data(dd_data, delta_ghost_data);
+      std::vector<std::vector<double>> delta_ghost_3x_data(
+          3, std::vector<double>(delta_qindex.local_ghost_buffer_size, 0.0));
+      delta_qindex.collect_ghost_data(dd_3x_data, delta_ghost_3x_data);
+
+      // build a length=1.0 window around the first point on each node
+      const std::array<double, 3> min{dd_position_array[0][0] - 1.0, dd_position_array[0][1] - 0.5,
+                                      0.0};
+      const std::array<double, 3> max{dd_position_array[0][0] + 1.0, dd_position_array[0][1] + 0.5,
+                                      0.0};
+      const std::array<size_t, 3> bin_sizes{5, 1, 0};
+      const bool normalize = false;
+      const bool bias = false;
+      const std::string map_type = "exact";
+      std::vector<double> window_data(5, 0.0);
+      delta_qindex.map_data_to_grid_window(dd_data, delta_ghost_data, window_data, min, max,
+                                           bin_sizes, map_type, normalize, bias);
+      std::vector<std::vector<double>> window_3x_data(3, std::vector<double>(5, 0.0));
+      delta_qindex.map_data_to_grid_window(dd_3x_data, delta_ghost_3x_data, window_3x_data, min,
+                                           max, bin_sizes, map_type, normalize, bias);
+      std::vector<double> gold_window_data;
+      std::vector<std::vector<double>> gold_window_3x_data(3);
+      // different result then 1D because the 1.0 y offset of the data
+      if (rtt_c4::node() == 0) {
+        gold_window_data = {0.0, 3.0, 3.0, 3.0, 4.0};
+        gold_window_3x_data[0] = {0.0, 3.0, 3.0, 3.0, 4.0};
+        gold_window_3x_data[1] = {0.0, 4.0, 4.0, 4.0, 5.0};
+        gold_window_3x_data[2] = {0.0, -3.0, -3.0, -3.0, -4.0};
+      } else if (rtt_c4::node() == 1) {
+        gold_window_data = {5.0, 6.0, 6.0, 6.0, 7.0};
+        gold_window_3x_data[0] = {5.0, 6.0, 6.0, 6.0, 7.0};
+        gold_window_3x_data[1] = {6.0, 7.0, 7.0, 7.0, 8.0};
+        gold_window_3x_data[2] = {-5.0, -6.0, -6.0, -6.0, -7.0};
+      } else {
+        gold_window_data = {8.0, 9.0, 9.0, 9.0, 10.0};
+        gold_window_3x_data[0] = {8.0, 9.0, 9.0, 9.0, 10.0};
+        gold_window_3x_data[1] = {9.0, 10.0, 10.0, 10.0, 11.0};
+        gold_window_3x_data[2] = {-8.0, -9.0, -9.0, -9.0, -10.0};
+      }
       for (size_t i = 0; i < bin_sizes[0]; i++)
         if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
           ITFAILS;
@@ -1761,11 +1858,13 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     const size_t data_size = radial_edges.size() * cosine_edges.size();
     std::vector<std::array<double, 3>> position_array(data_size,
                                                       std::array<double, 3>{0.0, 0.0, 0.0});
+    std::vector<std::array<double, 3>> delta_array(data_size, std::array<double, 3>{0.0, 0.0, 0.0});
 
     std::vector<double> shell_data(data_size, 0.0);
     std::vector<double> spoke_data(data_size, 0.0);
     size_t point_i = 0;
     size_t ri = 0;
+    double sum_area = 0.0;
     for (auto &r : radial_edges) {
       size_t mui = 0;
       for (auto &mu : cosine_edges) {
@@ -1775,6 +1874,8 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
         position_array[point_i][0] =
             rtt_dsxx::soft_equiv(r * r, rel_y * rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
         position_array[point_i][1] = sphere_center[1] + rel_y;
+        delta_array[point_i] = {0.5 * r, 0.5 * r, 0.0};
+        sum_area += delta_array[point_i][0] * delta_array[point_i][1];
         point_i++;
         mui++;
       }
@@ -1784,11 +1885,13 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     std::vector<double> dd_data(local_size, 1.0);
     std::vector<std::vector<double>> dd_2x_data(2, std::vector<double>(local_size, 1.0));
     std::vector<std::array<double, 3>> dd_position_array(local_size);
+    std::vector<std::array<double, 3>> dd_delta_array(local_size);
     for (size_t i = 0; i < local_size; i++) {
       dd_data[i] = shell_data[i + rtt_c4::node() * local_size];
       dd_2x_data[0][i] = shell_data[i + rtt_c4::node() * local_size];
       dd_2x_data[1][i] = spoke_data[i + rtt_c4::node() * local_size];
       dd_position_array[i] = position_array[i + rtt_c4::node() * local_size];
+      dd_delta_array[i] = delta_array[i + rtt_c4::node() * local_size];
     }
 
     // in dd mode the max window size does nothing so set it large
@@ -1799,6 +1902,19 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, bins_per_dim, dd, spherical,
                        sphere_center);
+    quick_index delta_qindex(dim, dd_position_array, dd_delta_array, max_window_size, bins_per_dim,
+                             dd, spherical, sphere_center);
+
+    // sum the spherical area to be sure it matches the original Cartesian area
+    double spherical_area = 0.0;
+    for (size_t i = 0; i < local_size; i++) {
+      // shell area is A=dtheta/2*((r0+dr/2)**2-(r0-dr/2)**2) = dtheta*r0*dr
+      spherical_area +=
+          delta_qindex.deltas[i][0] * delta_qindex.deltas[i][1] * delta_qindex.locations[i][0];
+    }
+    rtt_c4::global_sum(spherical_area);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(spherical_area, sum_area));
+
     // Check the local state data
     if (!qindex.domain_decomposed)
       ITFAILS;
@@ -2043,6 +2159,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     // Check the local ghost locations (this tangentially checks the private
     // put_window_map which is used to build this local data).
     std::vector<std::array<double, 3>> gold_ghost_locations;
+    std::vector<std::array<double, 3>> gold_ghost_deltas;
     if (rtt_c4::node() == 0) {
       gold_ghost_locations = {
           {0.075, 0, 0.0},      {0.1, 0, 0.0},         {0.25, 0, 0.0},       {0.075, 0.722734, 0.0},
