@@ -91,7 +91,8 @@ transform_spherical_delta(const size_t dim, const std::array<double, 3> &sphere_
     // original_area = ((dtheta*alpha)/2)*((r0+(dr*alpha)/2)**2-(r0-(dr*alpha)/2)**2) ->
     // original_area = dtheta*r0*dr*alpha**2 ->
     // alpha = sqrt(original_area/(dtheta*r0*dr))
-    const double alpha = std::sqrt(original_area / (delta[0] * r_center * delta[1]));
+    const double denom = delta[0] * r_center * delta[1];
+    const double alpha = denom > 0.0 ? std::sqrt(original_area / denom) : 1.0;
     delta[0] *= alpha;
     delta[1] *= alpha;
     i++;
