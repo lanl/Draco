@@ -65,7 +65,7 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
       sphere_center(sphere_center_), coarse_bin_resolution(bins_per_dimension_),
       locations(spherical ? transform_spherical(dim_, sphere_center_, locations_) : locations_),
       deltas(std::vector<std::array<double, 3>>(locations_.size(), {0.0, 0.0, 0.0})),
-      n_locations(locations_.size()), max_window_size(max_window_size_) {
+      n_locations(locations_.size()), max_put_buffer_size(0), max_window_size(max_window_size_) {
   initialize_data();
 }
 
