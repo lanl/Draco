@@ -51,7 +51,9 @@ else
 
   if [[ -d /usr/projects/draco/Modules/cts1 ]]; then
     module use --append /usr/projects/draco/Modules/cts1
-    module unload draco lapse
+    for sm in draco lapse; do
+      [[ $(module list 2>&1 | grep -c $sm) > 0 ]] && module unload $sm
+    done
     module load lapse/2.3.1-intel
   fi
 
