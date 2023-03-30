@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Tuesday, Jun 02, 2020, 11:44 am
 # brief  CTest regression script for DRACO
-# note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 # Ref: http://www.cmake.org/Wiki/CMake_Scripting_Of_CTest
 
@@ -329,59 +329,63 @@ ctest_test( RETURN_VALUE test_failure ${EXTRA_CTEST_ARGS})
       set(CODE_COVERAGE "ON")
 
       # Count lines of code and upload results. CLOC commands:
-      if( EXISTS "/ccs/codes/radtran/bin/cloc" )
+      find_program(CLOC cloc)
+      message("==> Found CLOC = ${CLOC}")
+      if(EXISTS "${CLOC}")
 
         # Process and save lines of code
         message( "Generating lines of code statistics...
-/ccs/codes/radtran/bin/cloc
-        --exclude-list-file=${CTEST_SOURCE_DIRECTORY}/.gitlab/ci/cloc-exclude.cfg
+${CLOC}
+        --exclude-list-file=.gitlab/ci/cloc-exclude.cfg
         --exclude-lang=Text,Postscript
         --categorize=cloc-categorize.log
         --counted=cloc-counted.log
         --ignored=cloc-ignored.log
-        --progress-rate=0
+        --progress-rate=0 --lang-no-ext=Text
         --report-file=lines-of-code.log
-        --force-lang-def=${CTEST_SOURCE_DIRECTORY}/.gitlab/ci/cloc-lang.defs
+        --force-lang-def=.gitlab/ci/cloc-lang.defs
         ${CTEST_SOURCE_DIRECTORY}
             ")
         execute_process(
-          COMMAND /ccs/codes/radtran/bin/cloc
-          --exclude-list-file=${CTEST_SOURCE_DIRECTORY}/.gitlab/ci/cloc-exclude.cfg
+          COMMAND ${CLOC}
+          --exclude-list-file=.gitlab/ci/cloc-exclude.cfg
           --exclude-lang=Text,Postscript
           --categorize=cloc-categorize.log
           --counted=cloc-counted.log
           --ignored=cloc-ignored.log
-          --progress-rate=0
+          --progress-rate=0 --lang-no-ext=Text
           --report-file=lines-of-code.log
-          --force-lang-def=${CTEST_SOURCE_DIRECTORY}/.gitlab/ci/cloc-lang.defs
+          --force-lang-def=.gitlab/ci/cloc-lang.defs
           ${CTEST_SOURCE_DIRECTORY}
           #  --3
           #  --diff
           WORKING_DIRECTORY ${CTEST_SOURCE_DIRECTORY}
           )
-        message( "Lines of code data at ${CTEST_SOURCE_DIRECTORY}/lines-of-code.log")
+        message( "Lines of code data at lines-of-code.log")
         message( "Generating lines of code statistics (omitting test directories)
-/ccs/codes/radtran/bin/cloc
-        --exclude-list-file=${CTEST_SOURCE_DIRECTORY}/.gitlab/ci/cloc-exclude.cfg
+${CLOC}
+        --exclude-list-file=.gitlab/ci/cloc-exclude.cfg
         --exclude-lang=Text,Postscript
         --categorize=cloc-categorize-notest.log
         --counted=cloc-counted-notest.log
         --ignored=cloc-ignored-notest.log
-        --progress-rate=0
+        --progress-rate=0 --lang-no-ext=Text
         --report-file=lines-of-code-notest.log
-        --force-lang-def=${CTEST_SOURCE_DIRECTORY}/.gitlab/ci/cloc-lang.defs
+        --exclude-dir=test
+        --force-lang-def=.gitlab/ci/cloc-lang.defs
         ${CTEST_SOURCE_DIRECTORY}
             ")
         execute_process(
-          COMMAND /ccs/codes/radtran/bin/cloc
-          --exclude-list-file=${CTEST_SOURCE_DIRECTORY}/.gitlab/ci/cloc-exclude.cfg
+          COMMAND ${CLOC}
+          --exclude-list-file=.gitlab/ci/cloc-exclude.cfg
           --exclude-lang=Text,Postscript
-          --categorize=cloc-categorize.log
-          --counted=cloc-counted.log
-          --ignored=cloc-ignored.log
-          --progress-rate=0
+          --categorize=cloc-categorize-notest.log
+          --counted=cloc-counted-notest.log
+          --ignored=cloc-ignored-notest.log
+          --progress-rate=0 --lang-no-ext=Text
           --report-file=lines-of-code-notest.log
-          --force-lang-def=${CTEST_SOURCE_DIRECTORY}/.gitlab/ci/cloc-lang.defs
+          --exclude-dir=test
+          --force-lang-def=.gitlab/ci/cloc-lang.defs
           ${CTEST_SOURCE_DIRECTORY}
           #  --3
           #  --diff
@@ -454,10 +458,14 @@ if(${CTEST_SCRIPT_ARG} MATCHES Submit)
   set( datafiles
     "${CTEST_BINARY_DIRECTORY}/coverage.txt"
     "${CTEST_SOURCE_DIRECTORY}/lines-of-code.log"
-    "${CTEST_SOURCE_DIRECTORY}/lines-of-code-notest.log"
     "${CTEST_SOURCE_DIRECTORY}/cloc-categorize.log"
     "${CTEST_SOURCE_DIRECTORY}/cloc-counted.log"
-    "${CTEST_SOURCE_DIRECTORY}/cloc-ignored.log")
+    "${CTEST_SOURCE_DIRECTORY}/cloc-ignored.log"
+    "${CTEST_SOURCE_DIRECTORY}/lines-of-code-notest.log"
+    "${CTEST_SOURCE_DIRECTORY}/cloc-categorize-notest.log"
+    "${CTEST_SOURCE_DIRECTORY}/cloc-counted-notest.log"
+    "${CTEST_SOURCE_DIRECTORY}/cloc-ignored-notest.log"
+    )
   foreach( file ${datafiles} )
     if(EXISTS "${file}")
       list(APPEND files_to_upload "${file}")
