@@ -29,7 +29,7 @@ namespace rtt_kde {
  *
  * This is a bit hacky, we are defining simple min/max bounds in spherical coordinates based on the
  * defining cell corner nodes. This will create overlapping integration bounds, but we assume this
- * simple transformation is a better approximation then using point based integration. 
+ * simple transformation is a better approximation then using point based integration.
  *
  * \param[in] dim used to ensure it is only used in valid dimension ranges
  * \param[in] sphere_center center of sphere in (x,y,z) or (r,z) coordinates
@@ -205,12 +205,12 @@ private:
   void initialize_data();
 
   // PRIVATE DATA
+
   // Map used to write local data to other processor ghost cells
   // put_window_map[global_id] = [put_rank, ghost_proc_buffer_size, ghost_proc_put_offset]
   // array is integers to accommodate mpi data types
   std::map<size_t, std::vector<std::array<int, 2>>> put_window_map{};
-  // max put buffer size;
-  size_t max_put_buffer_size;
+  size_t max_put_buffer_size{0}; //!< max put buffer size;
   double max_window_size;
 };
 

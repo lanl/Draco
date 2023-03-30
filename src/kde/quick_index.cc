@@ -48,7 +48,6 @@ namespace rtt_kde {
 /*!
  * \brief quick_index constructor unknown cell data dimensions (deltas).
  *
- *
  * \param[in] dim_ specifying the data dimensionality
  * \param[in] locations_ data locations.
  * \param[in] max_window_size_ maximum supported window size
@@ -72,8 +71,6 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief quick_index constructor for structured meshes with known cell dimensions (deltas)
- *
- *
  *
  * \param[in] dim_ specifying the data dimensionality
  * \param[in] locations_ data locations.
@@ -108,7 +105,6 @@ quick_index::quick_index(const size_t dim_, const std::vector<std::array<double,
  * processors for ghost cells. The ghost cell extents is determined by the max_data_window spatial
  * size such that any cell on the local domain will have access to all points that should fall into
  * the spatial window centered on any given local point.
- *
  */
 void quick_index::initialize_data() {
   Require(dim > 0);
@@ -147,8 +143,8 @@ void quick_index::initialize_data() {
       max_bin_size = std::max(max_bin_size, coarse_bin_size);
       double wsize = coarse_bin_size + max_window_size * 0.5;
       if (spherical && d == 1) {
-        // Transform to dtheta via arch_lenght=r*dtheta
-        // enforce a 90 degree maximum angle
+        // * Transform to dtheta via arch_lenght=r*dtheta
+        // * enforce a 90 degree maximum angle
         wsize = std::min(rtt_units::PI / 2,
                          0.5 * (max_window_size + coarse_bin_size) / local_bounding_box_max[0]);
       }
@@ -218,11 +214,10 @@ void quick_index::initialize_data() {
     // build list of local bins based on the local bounds
     local_bins = window_coarse_index_list(local_bounding_box_min, local_bounding_box_max);
 
-    // build a global map for number of entries into the global bins on each processor creates a
-    // (nbins**dim)*nranks sized array
-    //
-    // \note If this gets to big we could stride over a subset of coarse bins and do multiple
-    // iterations of mpi communication to build up the map
+    // * build a global map for number of entries into the global bins on each processor creates a
+    //   (nbins**dim)*nranks sized array
+    // * \note If this gets to big we could stride over a subset of coarse bins and do multiple
+    //   iterations of mpi communication to build up the map
     size_t nbins = coarse_bin_resolution;
     for (size_t d = 1; d < dim; d++)
       nbins *= coarse_bin_resolution;
@@ -257,10 +252,10 @@ void quick_index::initialize_data() {
     }
     rtt_c4::global_sum(&global_need_bins_per_proc[0], nbins * nodes);
 
-    // calculate the put map so each node knows which processor to send data
-    // and where to index that data
-    // PERFORMANCE NOTE: This would be more efficient to use a MPI_SCAN and
-    // std::partial_sum but I need to think how this would actually look.
+    // * calculate the put map so each node knows which processor to send data and where to index
+    //   that data
+    // * PERFORMANCE NOTE: This would be more efficient to use a MPI_SCAN and std::partial_sum but I
+    //   need to think how this would actually look.
     max_put_buffer_size = 0;
     for (int rec_proc = 0; rec_proc < rtt_c4::nodes(); rec_proc++) {
       // calculating the offset SUCKS!!! If anyone can find a better way please help.
@@ -315,8 +310,8 @@ auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win,
   for (auto &putv : put.second) {
     const int put_rank = putv[0];
     const int put_offset = putv[1];
-    // This is dumb, but we need to write in chunks because MPI_Put writes
-    // junk with large (>10,000) buffer sizes.
+    // This is dumb, but we need to write in chunks because MPI_Put writes junk with large (>10,000)
+    // buffer sizes.
     int chunk_size = 1000;
     const auto nchunks = static_cast<int>(
         std::ceil(static_cast<double>(put_size) / static_cast<double>(chunk_size)));
@@ -508,7 +503,7 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
       }
       put_lambda(put, put_buffer, putIndex, win, MPI_DOUBLE);
     }
-    Remember(errorcode =) MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win);
+    Remember(errorcode =) MPI_Win_fence((MPI_MODE_NOSTORE | MPI_MODE_NOSUCCEED), win); // NOLINT
     Check(errorcode == MPI_SUCCESS);
     // alright move the position buffer to the final correct vector positions
     int posIndex = 0;
