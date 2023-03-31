@@ -18,22 +18,26 @@ if [[ ! ${VENDOR_DIR} ]]; then
 fi
 
 [[ -z "${TERM}" ]] && export TERM=xterm-256color
-
-export DRACO_ARCH=$(/usr/projects/draco/vendors/bin/target_arch)
+[[ "${SLURM_JOB_PARTITION}x" == "x" ]] && DRACO_ARCH="x86_64" || DRACO_ARCH="${SLURM_JOB_PARTITION}"
+export DRACO_ARCH
 if [[ -n "$MODULESHOME" ]]; then
   module use --append /projects/draco/Modules
   case $DRACO_ARCH in
     # arm)     module load draco/arm-gcc831 ;;
-    power9*) module load lapse/2.3.1-power9-xl ;;
+    crossroads*)
+      module load draco/spr-oneapi20230201-nda ;;
+    power9-rhel8*)
+      module load lapse/2.3.1-power9-rhel8-xl ;;
+    power9-rhel7*)
+      module load lapse/2.3.1-power9-rhel7-xl ;;
+    power9*)
+      module load lapse/2.3.1-power9-xl ;;
+    shared-gpu)
+      module load draco/haswell-gcc1120 cuda ;;
+    volta*)
+      module load draco/haswell-gcc1120 cuda ;;
     x86_64)
-      module load draco/haswell-gcc1120
-      if [[ "${SLURM_JOB_PARTITION}" =~ "volta" || "${SLURM_JOB_PARTITION}" =~ "gpu" ]]; then
-        module load cuda
-      elif [[ "${SLURM_JOB_PARTITION}" =~ "crossroads-spr" ]]; then
-        module unload draco
-        module load draco/spr-oneapi20230201-nda
-      fi
-      ;;
+      module load draco/haswell-gcc1120 ;;
   esac
 fi
 

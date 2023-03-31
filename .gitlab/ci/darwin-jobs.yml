@@ -21,7 +21,9 @@
   variables:
     SITE_ID: darwin
     DEPLOY: "FALSE"
-    SP_power9: "--nodes=1 --partition=power9 --qos=debug"
+    SP_power9_rhel8: "--nodes=1 --partition=power9-rhel8,power9-rhel8-asc --qos=debug"
+    SP_power9_rhel7: "--nodes=1 --partition=power9-rhel7,power9-rhel7-asc --qos=debug"
+    SP_power9: "--nodes=1 --partition=power9,power9-asc --qos=debug"
     SP_skylake: "--nodes=1 --partition=skylake --qos=debug"
     SP_volta_x86: "--nodes=1 --partition=volta-x86 --qos=debug --constraint='cpu_family:broadwell|\
                   cpu_family:haswell'"
@@ -56,41 +58,41 @@ dp9_deb_gcc930_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
 
 dp9_rel_gcc930_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
 
 dp9_rel_xl16_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: lapse/2.3.1-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
 
 dp9_deb_xl16_deploy:
   extends: .darwin_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: lapse/2.3.1-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
     EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
 
 dx64_deb_volta_deploy:
@@ -193,11 +195,11 @@ dp9_rel_g930_mr:
   extends: .darwin_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
     ARCH: power9
     CTEST_NPROC: 10
     MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
 
 dp9_deb_xl_16_mr:
   stage: test
@@ -205,11 +207,11 @@ dp9_deb_xl_16_mr:
   allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: lapse/2.3.1-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
     ARCH: power9
     CTEST_NPROC: 20
     MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
     EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
 
 # ----- slow -----
@@ -229,10 +231,10 @@ dp9_deb_g930_mr:
   extends: .darwin_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
     ARCH: power9
     CTEST_NPROC: 10
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
 
 dp9_rel_xl_16_mr:
   stage: slowtest
@@ -240,11 +242,11 @@ dp9_rel_xl_16_mr:
   allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: lapse/2.3.1-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
     ARCH: power9
     CTEST_NPROC: 20
     MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -264,37 +266,38 @@ dp9_rel_g930_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
     ARCH: power9
     CTEST_NPROC: 40
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
 
 dp9_deb_g930_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/power9-gcc930-smpi
+    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
     ARCH: power9
     CTEST_NPROC: 40
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
 
 dp9_rel_xl16_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: lapse/2.3.1-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
     ARCH: power9
     CTEST_NPROC: 20
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
+    EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
 
 dp9_deb_xl16_regress:
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: lapse/2.3.1-power9-xl
+    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
     ARCH: power9
     CTEST_NPROC: 20
-    SCHEDULER_PARAMETERS: ${SP_power9}
+    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
     EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
 
 dx86_deb_volta_regress:
