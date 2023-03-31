@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-cuda.cmake
 # brief  Establish flags for Unix/Linux - Cuda
-# note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -52,8 +52,7 @@ if(NOT CUDA_FLAGS_INITIALIZED)
       "yes"
       CACHE INTERNAL "using draco settings.")
 
-  string(APPEND CMAKE_CUDA_FLAGS " -g --expt-relaxed-constexpr")
-  string(APPEND CMAKE_CUDA_FLAGS " --expt-extended-lambda")
+  string(APPEND CMAKE_CUDA_FLAGS " -g --expt-relaxed-constexpr --expt-extended-lambda")
   if(CMAKE_CXX_COMPILER_ID MATCHES "XL")
     string(APPEND CMAKE_CUDA_FLAGS " -DCUB_IGNORE_DEPRECATED_CPP_DIALECT"
            " -DTHRUST_IGNORE_DEPRECATED_CPP_DIALECT")

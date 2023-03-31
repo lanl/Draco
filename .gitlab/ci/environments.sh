@@ -22,7 +22,9 @@ echo "    DRACO_ENV = ${DRACO_ENV}"
 # Darwin
 #------------------------------------------------------------------------------#
 if [[ "${SITE_ID}" == "darwin" ]]; then
-  DRACO_ARCH=$(/usr/projects/draco/vendors/bin/target_arch)
+  [[ "${SLURM_JOB_PARTITION}x" == "x" ]] && DRACO_ARCH="x86_64" || \
+    DRACO_ARCH="${SLURM_JOB_PARTITION}"
+  export DRACO_ARCH
   run "module use --append /projects/draco/Modules"
   if ! [[ -f "/projects/draco/Modules/${DRACO_ENV}.lua" ]]; then
     # Look for TCL version of the module.
@@ -36,7 +38,6 @@ if [[ "${SITE_ID}" == "darwin" ]]; then
     #   fi
     # fi
   fi
-  export DRACO_ARCH
   run "module load ${DRACO_ENV}"
   if [[ "${SLURM_JOB_PARTITION}" =~ "volta" || "${SLURM_JOB_PARTITION}" =~ "gpu" ]]; then
     module load cuda
