@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 17:19:16 2002
  * \brief  Test timing functions in C4.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/Global_Timer.hh"
@@ -177,11 +177,7 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
   if (rtt_c4::node() == 0) {
     std::ostringstream timingsingleline;
     t.printline(timingsingleline, 4, 8);
-#ifdef HAVE_PAPI
-    if (timingsingleline.str().length() == 34)
-#else
     if (timingsingleline.str().length() == 26)
-#endif
       PASSMSG(string("printline() returned a single line of the") + " expected length.");
     else
       FAILMSG(string("printline() did not return a line of the ") + "expected length.");
@@ -214,33 +210,6 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
     PASSMSG("merge okay");
   else
     FAILMSG("merge NOT okay");
-
-  //------------------------------------------------------------//
-  // Check PAPI data
-  //------------------------------------------------------------//
-
-  long long cachemisses = t.sum_cache_misses();
-  long long cachehits = t.sum_cache_hits();
-  long long flops = t.sum_floating_operations();
-
-#ifdef HAVE_PAPI
-
-  std::cout << "PAPI metrics report:\n"
-            << "   Cache misses : " << cachemisses << "\n"
-            << "   Cache hits   : " << cachehits << "\n"
-            << "   FLOP         : " << flops << std::endl;
-
-  if (cachemisses == 0 && cachehits == 0 && flops == 0)
-    FAILMSG("PAPI metrics returned 0 when PAPI was available.");
-  else
-    PASSMSG("PAPI metrics returned >0 values when PAPI is available.");
-
-#else
-  if (cachemisses == 0 && cachehits == 0 && flops == 0)
-    PASSMSG("PAPI metrics return 0 when PAPI is not available.");
-  else
-    FAILMSG("PAPI metrics did not return 0 when PAPI was not available.");
-#endif
 
   // Exercise the global report and reset. Unfortunately, there's no easy way to
   // check the validity of the output except to eyeball.

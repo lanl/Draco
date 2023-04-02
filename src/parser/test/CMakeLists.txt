@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for parser/test.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 project(parser_test CXX)
 
@@ -32,8 +32,7 @@ set(scalar_test_sources
     ${PROJECT_SOURCE_DIR}/tstParse_Table.cc
     ${PROJECT_SOURCE_DIR}/tstClass_Parser.cc)
 list(REMOVE_ITEM test_sources ${scalar_test_sources})
-add_scalar_tests(SOURCES "${scalar_test_sources}" DEPS "Lib_parser"
-)# ;${MPI_CXX_LIBRARIES};${PAPI_LIBRARY}" )
+add_scalar_tests(SOURCES "${scalar_test_sources}" DEPS "Lib_parser")
 
 # Special case for driver4tstConsole_Token_Stream 1. This test doesn't work under Xcode 2. This test
 # must have unique access to tstConsole_Token_Stream and we will use a RESOURCE_LOCK to prevent
