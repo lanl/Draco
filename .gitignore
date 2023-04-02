@@ -28,6 +28,7 @@ vcpkg/
 !.vscode/launch.json
 !.vscode/extensions.json
 out/
+wget-log
 
 # OS Generated Files
 .DS_Store

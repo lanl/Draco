@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for norms/test.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(norms_test CXX)
 
@@ -20,8 +20,7 @@ file(GLOB test_sources *.cc)
 add_parallel_tests(
   SOURCES "${test_sources}"
   PE_LIST "1;2"
-  # DEPS    "Lib_norms;${MPI_CXX_LIBRARIES};${PAPI_LIBRARY}" )
-  DEPS "Lib_norms;${PAPI_LIBRARY}")
+  DEPS "Lib_norms")
 
 # ------------------------------------------------------------------------------------------------ #
 # End norms/test/CMakeLists.txt

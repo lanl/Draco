@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for c4
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(c4 CXX)
@@ -36,10 +36,6 @@ list(APPEND headers ${PROJECT_BINARY_DIR}/c4/config.h)
 # ------------------------------------------------------------------------------------------------ #
 # Build package library
 # ------------------------------------------------------------------------------------------------ #
-if(PAPI_LIBRARY)
-  set(c4_extra_VENDORS VENDOR_LIST;PAPI;VENDOR_LIBS;${PAPI_LIBRARY})
-endif()
-
 set(target_deps Lib_dsxx)
 if("${DRACO_C4}" STREQUAL "MPI")
   if(HAVE_LIBQUO)

@@ -44,12 +44,6 @@
 /* Add version check for Compaq ALASKA MPI releases */
 #undef MPI_VERSION_CHECK
 
-/* PAPI */
-#cmakedefine HAVE_PAPI @HAVE_PAPI@
-#ifdef HAVE_PAPI
-#include "@PAPI_INCLUDE@/papi.h"
-#endif
-
 /* Special settings for DRACO_C4 == SCALAR */
 /* When C4_MPI,
    - set DRACO_MAX_PROCESSOR_NAME in c4_mpi.h

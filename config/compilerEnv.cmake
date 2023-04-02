@@ -18,35 +18,6 @@ option(ENABLE_CCACHE "If available, use ccache compiler launcher" FALSE)
 option(ENABLE_F90CACHE "If available, use f90cache compiler launcher" FALSE)
 
 # ------------------------------------------------------------------------------------------------ #
-# PAPI
-# ------------------------------------------------------------------------------------------------ #
-if(DEFINED ENV{PAPI_HOME})
-  set(HAVE_PAPI
-      1
-      CACHE BOOL "Is PAPI available on this machine?")
-  set(PAPI_INCLUDE
-      $ENV{PAPI_INCLUDE}
-      CACHE PATH "PAPI headers at this location")
-  set(PAPI_LIBRARY
-      $ENV{PAPI_LIBDIR}/libpapi.so
-      CACHE FILEPATH "PAPI library.")
-endif()
-
-if(HAVE_PAPI)
-  set(PAPI_INCLUDE
-      ${PAPI_INCLUDE}
-      CACHE PATH "PAPI headers at this location")
-  set(PAPI_LIBRARY
-      ${PAPI_LIBDIR}/libpapi.so
-      CACHE FILEPATH "PAPI library.")
-  if(NOT EXISTS ${PAPI_LIBRARY})
-    message(FATAL_ERROR "PAPI requested, but library not found. Set PAPI_LIBDIR to correct path.")
-  endif()
-  mark_as_advanced(PAPI_INCLUDE PAPI_LIBRARY)
-  add_feature_info(HAVE_PAPI HAVE_PAPI "Provide PAPI hardware counters if available.")
-endif()
-
-# ------------------------------------------------------------------------------------------------ #
 # Query OpenMP availability
 #
 # This feature is usually compiler specific and a compile flag must be added. For this to work the
