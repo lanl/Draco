@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Thu Jun 22 16:22:07 2000
  * \brief  CDI class implementation file.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "CDI.hh"
@@ -339,12 +339,12 @@ void CDI::integrate_Rosseland_Spectrum(std::vector<double> const &bounds, double
   size_t const groups(bounds.size() - 1);
   rosseland.resize(groups, 0.0);
 
-  // The branches here ensure the function is robust in corner cases of a very hot or very
-  // cold T. For the special case T==0 there is a special branch. For finite T, we test the
-  // frequency against T * 50 to guarantee that the operation frequency / T cannot
-  // overflow. We take advantage of the fact that for frequency greater that about 48 * T,
-  // the integral is 1 to roundoff. We choose 50 to give just a little extra slack in case
-  // some optimizing compiler does something weird and wonderful.
+  // The branches here ensure the function is robust in corner cases of a very hot or very cold T.
+  // For the special case T==0 there is a special branch. For finite T, we test the frequency
+  // against T * 50 to guarantee that the operation frequency / T cannot overflow. We take advantage
+  // of the fact that for frequency greater that about 48 * T, the integral is 1 to roundoff. We
+  // choose 50 to give just a little extra slack in case some optimizing compiler does something
+  // weird and wonderful.
   if (T > 0.0) {
     // Initialize the loop:
     double planck_value(-42.0);
@@ -388,11 +388,12 @@ void CDI::integrate_Rosseland_Spectrum(std::vector<double> const &bounds, double
       rosseland[groups - 1] += 1 - rosseland_value;
     }
   } else {
-    // T == 0
-    // For the somewhat ill-posed case of T == 0 and bounds[0] == 0, we have chosen
-    // to pretend bounds[0] == 0 as T -> 0. This is likely the least surprising behavior
-    // for clients. In practice, it matters little, since the spectrum will almost
-    // always be multiplied by a scaling factor that goes to zero as T -> 0.
+    // T == 0.
+    //
+    // * For the somewhat ill-posed case of T == 0 and bounds[0] == 0, we have chosen to pretend
+    //   bounds[0] == 0 as T -> 0. This is likely the least surprising behavior for clients. In
+    //   practice, it matters little, since the spectrum will almost always be multiplied by a
+    //   scaling factor that goes to zero as T -> 0.
     fill(rosseland.begin(), rosseland.end(), 0.0);
     if (extend || bounds[0] <= 0.0)
       rosseland[0] = 1.0;
