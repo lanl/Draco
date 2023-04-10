@@ -36,7 +36,9 @@ if [[ -n "$MODULESHOME" ]]; then
       module load draco/haswell-gcc1120 cuda ;;
     volta*)
       module load draco/haswell-gcc1120 cuda ;;
-    x86_64)
+    skylake-gold)
+      module load draco/haswell-gcc1120 ;;
+    general)
       module load draco/haswell-gcc1120 ;;
   esac
 fi
