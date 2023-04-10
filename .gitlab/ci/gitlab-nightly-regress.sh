@@ -126,6 +126,7 @@ unset http_proxy
 unset https_proxy
 unset HTTP_PROXY
 unset HTTPS_PROXY
+export no_proxy=localhost,127.0.0.1,.lanl.gov
 
 echo "To rerun manually, cd to CI directory (pwd), set these variables, run ctest."
 echo " "
@@ -155,7 +156,36 @@ echo "modes       = ${modes}"
 echo "HTTPS_PROXY = ${HTTPS_PROXY}"
 echo " "
 
-run "ctest -V -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
+case $SITE_ID in
+rzansel|rzvernal)
+  if [[ ${modes} == "Submit" ]]; then
+    # We can't do the regular ctest Submit from LLNL RZ systems yet because we can't access
+    # https://rtt.lanl.gov/cdash3. Instead tar the results and scp them to tt-rfe where another
+    # script will see them and post the results to CDash.
+
+    # Get a LANL kerberos ticket to allow scp.
+    if [[ -f "${HOME}/.ssh/${USER}-hpcalias.keytab" ]]; then
+      run "klist"
+      run "kinit -kt ${HOME}/.ssh/${USER}-hpcalias.keytab ${USER}-hpcalias@HPC.LANL.GOV"
+      run "klist"
+    else
+      echo "==> Failed to find keytab alias ${HOME}/.ssh/${USER}-hpcalias.keytab."
+      echo "    Cannot upload results."
+      exit 1
+    fi
+    run "cd ${DRACO_BINARY_DIR}"
+    # rzansel-Draco-Nightly-lapse220-cce-Debug
+    tarfile=${SITE_ID}-${PROJECT}-${CTEST_MODE}-${CTEST_BUILD_NAME}.tar
+    run "tar cvf ${tarfile} DartConfiguration.tcl Testing"
+    run "scp ${tarfile} tt-rfe:/usr/projects/ccsrad/regress/rzansel_staging/."
+  else
+    run "ctest -V -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
+  fi
+  ;;
+*)
+  run "ctest -V -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
+  ;;
+esac
 
 [[ "${AUTODOC}" == "ON" ]] && cp "${DRACO_SOURCE_DIR}/.gitlab/ci/index.html" "${AUTODOCDIR}/."
 
