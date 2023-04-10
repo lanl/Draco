@@ -92,13 +92,13 @@ checkCoverage_MR:
         echo "    ${CURRENT_COVERAGE}% > ${TARGET_COVERAGE_PERCENT}%";
       fi
   rules:
-    - if: '$CI_COMMIT_BRANCH != "develop"'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_ccsnet/'
       when: never
     - if: '$CI_MERGE_REQUEST_TITLE =~ /Draft:/ || $CI_MERGE_REQUEST_TITLE =~ /WIP:/'
       when: never
     - if: '$CI_PROJECT_NAMESPACE != "draco"'
       when: never
+    - if: '$CI_COMMIT_BRANCH != "develop"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 #--------------------------------------------------------------------------------------------------#
