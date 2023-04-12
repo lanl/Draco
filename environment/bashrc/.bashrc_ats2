@@ -36,7 +36,7 @@ modcmd=`declare -f module`
 if [[ ! ${modcmd} ]]; then
   echo "ERROR: The module command was not found. No modules will be loaded (ats-2, e02)."
 else
-  module use --append /usr/gapps/jayenne/Modules
+  module use --append /usr/gapps/jayenne/Modules/rzansel
   module unuse /usr/share/lmod/lmod/modulefiles/Core
   module unuse /collab/usr/global/tools/modulefiles/blueos_3_ppc64le_ib_p9/Core
   module load lapse/2.2.0-xl

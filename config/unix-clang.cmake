@@ -29,6 +29,9 @@ include_guard(GLOBAL)
 # * See https://re-git.lanl.gov/draco/devops/-/issues/107
 # * These failed with undefined symbol errors: `-fsanitize=address`, `-fsanitize=thread`,
 #   `-fsanitize=memory`, `-fsanitize=undefined`, and `-fsanitize=dataflow`.
+#
+# Options that control floating point behavior are listed at
+# https://clang.llvm.org/docs/UsersManual.html#controlling-floating-point-behavior
 
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 6.0 AND NOT MSVC)
   message(FATAL_ERROR "Draco requires LLVM clang version >= 6.0.")

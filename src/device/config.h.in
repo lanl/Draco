@@ -3,8 +3,18 @@
  * \file   device/config.h
  * \author Gabriel M. Rockefeller
  * \date   Mon Jun 13 16:48:32 2011
- * \brief  CPP defines necessary for the device package.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \brief  CPP defines necessary for the device package and necessary setup for draco and client
+           builds that depend on CUDA or HIP runtimes.
+ * \note   Copyright (C) 2016-2023 Triad National Security, LLC., All rights reserved.
+ *
+ * Provide CPP defines that control how GPU code is compiled.  This allows us to use the same code
+ * to target CPU or GPU. It also allows us to compile the same GPU-targeted code with either nvcc
+ * or hipcc.
+ *
+ * We also use this file to wrap the cuda/hip runtimes for localized warning suppression.  These
+ * headers for the runtimes do not meet our coding standards, but we don't need to warned about
+ * deficiencies in vendor code.
+ */
 /*------------------------------------------------------------------------------------------------*/
 
 #ifndef rtt_device_config_h
@@ -13,29 +23,108 @@
 #include "ds++/config.h"
 #include <string>
 
-/*----------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
 /* Mark functions for compilation on host and device */
 
 #if (defined __NVCC__ || defined __HIPCC__) && defined USE_GPU
+
 #define HOST_AND_DEVICE_FUNCTION __host__ __device__
 #define GPU_HOST_DEVICE __host__ __device__
 #define GPU_DEVICE __device__
 #define GPU_KERNEL __global__
 #define CONSTANT __constant__
+
 #else
+
+/* Mark code for CPU by defining these to be empty strings */
 #define HOST_AND_DEVICE_FUNCTION
 #define GPU_HOST_DEVICE
 #define GPU_DEVICE
 #define GPU_KERNEL
 #define CONSTANT constexpr
+
 #endif
 
+/* GPU_DBS_STRING = {HIP, CUDA} or undefined */
 #cmakedefine GPU_DBS_STRING @GPU_DBS_STRING@
 #cmakedefine USE_CUDA
 #cmakedefine USE_HIP
 
-/*----------------------------------------------------------------------------*/
-/* Misc */
+#if defined(USE_CUDA) || defined(USE_HIP)
+
+/*------------------------------------------------------------------------------------------------*/
+/* Suppressions for cuda/hip runtime headers */
+
+// Suppresses warnings found in "cuda.h" and "hip_runtime.h".
+// http://wiki.services.openoffice.org/wiki/Writing_warning-free_code#When_all_else_fails
+#if defined __GNUC__
+#pragma GCC system_header
+// Intel defines __GNUC__ by default
+#ifdef __INTEL_COMPILER
+#pragma warning push
+#endif
+#elif defined __SUNPRO_CC
+#pragma disable_warn
+#elif defined _MSC_VER
+#pragma warning(push, 1)
+#endif
+
+/*------------------------------------------------------------------------------------------------*/
+/* HIP Support */
+
+#ifdef USE_HIP
+#include <hip/hip_runtime.h>
+#include <hip/hip_runtime_api.h>
+#define cudaDevAttrClockRate hipDeviceAttributeClockRate
+#define cudaDevAttrMaxRegistersPerBlock hipDeviceAttributeMaxRegistersPerBlock
+#define cudaDevAttrPciBusId hipDeviceAttributePciBusId
+#define cudaDevAttrTextureAlignment hipDeviceAttributeTextureAlignment
+#define cudaDevAttrTotalConstantMemory hipDeviceAttributeTotalConstantMemory
+#define cudaDeviceGetAttribute hipDeviceGetAttribute
+#define cudaDeviceProp hipDeviceProp_t
+#define cudaDeviceReset hipDeviceReset
+#define cudaDeviceSynchronize hipDeviceSynchronize
+#define cudaError_t hipError_t
+#define cudaFree hipFree
+#define cudaGetDevice hipGetDevice
+#define cudaGetDeviceCount hipGetDeviceCount
+#define cudaGetDeviceProperties hipGetDeviceProperties
+#define cudaGetErrorName hipGetErrorName
+#define cudaGetErrorString hipGetErrorString
+#define cudaGetLastError hipGetLastError
+#define cudaMalloc hipMalloc
+#define cudaMemcpy hipMemcpy
+#define cudaMemcpyDeviceToHost hipMemcpyDeviceToHost
+#define cudaMemcpyHostToDevice hipMemcpyHostToDevice
+#define cudaSetDevice hipSetDevice
+#define cudaSuccess hipSuccess
+#endif
+
+/*------------------------------------------------------------------------------------------------*/
+/* Cuda Support */
+#ifdef USE_CUDA
+#include <cuda.h>
+#include <cuda_runtime.h>
+#endif
+
+/*------------------------------------------------------------------------------------------------*/
+/* Restore compiler warnings */
+
+#if defined __GNUC__
+#pragma GCC system_header
+#ifdef __INTEL_COMPILER
+#pragma warning pop
+#endif
+#elif defined __SUNPRO_CC
+#pragma enable_warn
+#elif defined _MSC_VER
+#pragma warning(pop)
+#endif
+
+#endif /* defined(USE_CUDA) || defined(USE_HIP) */
+
+/*------------------------------------------------------------------------------------------------*/
+/* Misc - support for unit tests */
 
 namespace rtt_device {
 std::string const test_kernel_bindir("@TEST_KERNEL_BINDIR@");

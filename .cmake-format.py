@@ -62,7 +62,7 @@ with section("parse"):  # noqa: F821
 
         "set_target_properties": {
             "pargs": 1,
-            "flags": ["FOO_PROPERTIES", "NO_EXTERNAL_INSTALL"],
+            "flags": ["PROPERTIES", "NO_EXTERNAL_INSTALL"],
             "kwargs": {"COMPILE_DEFINITIONS": '*', "DEPENDS": '*', "FOLDER": '*',
                        "IMPORTED_CONFIGURATIONS": '*',
                        "IMPORTED_IMPLIB": '*',
@@ -75,6 +75,7 @@ with section("parse"):  # noqa: F821
                        "IMPORTED_LINK_INTERFACE_LIBRARIES_NOCONFIG": '*',
                        "IMPORTED_LOCATION": '*',
                        "INTERFACE_INCLUDE_DIRECTORIES": '*',
+                       "LINK_FLAGS": '*',
                        "LINKER_LANGUAGE": '*',
                        "OUTPUT_NAME": '*',
                        "RUNTIME_OUTPUT_DIRECTORY": '*',

@@ -268,10 +268,11 @@
 #cmakedefine CMAKE_HIP_FLAGS_RELEASE   "@CMAKE_HIP_FLAGS_RELEASE@"
 #cmakedefine CMAKE_HIP_FLAGS_RELWITHDEBINFO "@CMAKE_HIP_FLAGS_RELWITHDEBINFO@"
 #cmakedefine CMAKE_HIP_FLAGS_MINSIZEREL     "@CMAKE_HIP_FLAGS_MINSIZEREL@"
+#cmakedefine HIP_ARCHITECTURES "@HIP_ARCHITECTURES@"
 
 /* Used by Assert.hh to allow it to be used by C++ or cuda/hip */
-#if defined __CUDA_ARCH__ || defined __HIPCC__
-#define __GPU_ARCH__
+#if defined __NVCC__ || defined __HIPCC__
+#define __GPUCC__
 #endif
 
 #cmakedefine CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@"

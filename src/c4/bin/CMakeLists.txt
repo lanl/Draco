@@ -20,6 +20,16 @@ if(OpenMP_FOUND)
     TARGETS Exe_xthi
     EXPORT draco-targets
     DESTINATION ${DBSCFGDIR}bin)
+  # rzvernal with cce@15 needs -fopenmp on the link line and cmake doesn't provide this
+  # automatically.  Probably a bug, but let's just provide the work-around for now.
+  if(DEFINED ENV{CRAY_ACCEL_TARGET}
+     AND "$ENV{CRAY_ACCEL_TARGET}" MATCHES "amd"
+     AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set_target_properties(
+      Exe_xthi
+      PROPERTIES
+      LINK_FLAGS "-fopenmp")
+  endif()
 endif()
 
 add_component_executable(

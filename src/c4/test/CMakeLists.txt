@@ -49,26 +49,36 @@ list(REMOVE_ITEM test_sources ${special_test})
 # This test uses MPI+OMP:
 set(special_tests ${PROJECT_SOURCE_DIR}/tstOMP.cc ${PROJECT_SOURCE_DIR}/tstOMP_API_off.cc
                   ${PROJECT_SOURCE_DIR}/tstOMP_API_on.cc)
-if(DEFINED ENV{TRAVIS})
-  set(omp_test_pe_list "1") #< TRAVIS has severe limits on number of ranks/threads
-elseif(CODE_COVERAGE)
-  set(omp_test_pe_list "2") #< The 1 MPI rank version gets confused when running under code-coverage
-                            #< configurations.
-else()
-  set(omp_test_pe_list "1;2")
-endif()
+list(REMOVE_ITEM test_sources ${special_tests})
+if(OpenMP_FOUND)
+  if(CODE_COVERAGE)
+    set(omp_test_pe_list "2") #< The 1 MPI rank version gets confused when running under
+                              #< code-coverage configurations.
+  else()
+    set(omp_test_pe_list "1;2")
+  endif()
 
-foreach(omptest ${special_tests})
-  list(REMOVE_ITEM test_sources ${omptest})
-  if(OpenMP_FOUND)
+  foreach(omptest ${special_tests})
     add_parallel_tests(
       MPI_PLUS_OMP
       SOURCES "${omptest}"
       DEPS Lib_c4;OpenMP::OpenMP_CXX
       PE_LIST "${omp_test_pe_list}")
+  endforeach()
+  unset(omp_test_pe_list)
+  # rzvernal with cce@15 needs -fopenmp on the link line and cmake doesn't provide this
+  # automatically.  Probably a bug, but let's just provide the work-around for now.
+  if(DEFINED ENV{CRAY_ACCEL_TARGET}
+     AND "$ENV{CRAY_ACCEL_TARGET}" MATCHES "amd"
+     AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set_target_properties(
+      Ut_c4_tstOMP_API_off_exe
+      Ut_c4_tstOMP_API_on_exe
+      Ut_c4_tstOMP_exe
+      PROPERTIES
+      LINK_FLAGS "-fopenmp")
   endif()
-endforeach()
-unset(omp_test_pe_list)
+endif()
 
 # Tests that expect exactly 2 PE (omit for DRACO_C4=SCALAR builds):
 set(two_pe_tests ${PROJECT_SOURCE_DIR}/tstPingPong.cc)

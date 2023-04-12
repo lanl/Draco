@@ -9,7 +9,7 @@
 #ifndef device_GPU_CheckError_hh
 #define device_GPU_CheckError_hh
 
-#include "device/device_gpu.h"
+#include "device/config.h"
 #include <cstdio>
 #include <cstdlib>
 

@@ -12,9 +12,8 @@ endif()
 
 # Notes:
 #
-# Useful options that could be added to aid debugging
-#
-# * *
+# * Options that control floating point behavior are listed at
+#   https://clang.llvm.org/docs/UsersManual.html#controlling-floating-point-behavior
 
 # Discover CUDA compute capabilities.
 # ~~~
@@ -42,7 +41,6 @@ endif()
 #
 # Compiler Flags
 #
-# -Xcudafe --diag_suppress=1427: suppress "warning: offsetof applied to non-POD"
 
 if(NOT HIP_FLAGS_INITIALIZED)
 
@@ -59,12 +57,18 @@ if(NOT HIP_FLAGS_INITIALIZED)
         CACHE STRING "target architecture for gpu code.")
   endif()
 
-  # string(APPEND CMAKE_HIP_FLAGS " -g --expt-relaxed-constexpr") string(APPEND CMAKE_HIP_FLAGS "
-  # --expt-extended-lambda")
   string(CONCAT CMAKE_HIP_FLAGS_DEBUG " -O0")
-  set(CMAKE_HIP_FLAGS_RELEASE "-O2")
-  set(CMAKE_HIP_FLAGS_MINSIZEREL "-O2")
-  set(CMAKE_HIP_FLAGS_RELWITHDEBINFO "-O2 --generate-line-info")
+  # -O2 or higher causes known answer failures. Maybe due to forced fast-math features? We have also
+  # tried these options that didn't improve solution reproducibility:
+  #
+  # * -fno-fast-math
+  # * -fno-unsafe-math-optimizations
+  # * -ffp-contract=off
+  # * -fgpu-flush-denormals-to-zero
+  # * -ffp-model=precise
+  set(CMAKE_HIP_FLAGS_RELEASE "-O1")
+  set(CMAKE_HIP_FLAGS_MINSIZEREL "-O1")
+  set(CMAKE_HIP_FLAGS_RELWITHDEBINFO "-O1 --generate-line-info")
 
 endif()
 

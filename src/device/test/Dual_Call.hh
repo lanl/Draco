@@ -10,7 +10,7 @@
 #ifndef rtt_device_test_Dual_Call_hh
 #define rtt_device_test_Dual_Call_hh
 
-#include "device/device_gpu.h"
+#include "device/config.h"
 
 namespace rtt_device_test {
 
