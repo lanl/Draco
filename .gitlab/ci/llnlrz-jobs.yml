@@ -195,6 +195,7 @@ rzansel_deb_xl1611_regress:
   extends: .rzansel_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
+    EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/lanlrz-jobs.yml
