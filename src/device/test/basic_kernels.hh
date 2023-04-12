@@ -10,7 +10,7 @@
 #ifndef rtt_device_test_basic_kernels_hh
 #define rtt_device_test_basic_kernels_hh
 
-#include "device/device_gpu.h"
+#include "device/config.h"
 #include <algorithm>
 #include <numeric>
 #include <vector>

@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 
-// This ifdef block is related to the code found at src/device/device_gpu.h.  We need this code
+// This ifdef block is related to the code found at src/device/config.h.  We need this code
 // locally in this file because it is compled before cmake is done creating device/config.h.
 #ifdef __HIP__
 #include "hip/hip_runtime.h"

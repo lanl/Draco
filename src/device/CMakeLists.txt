@@ -30,7 +30,7 @@ set(headers ${PROJECT_BINARY_DIR}/device/config.h)
 if(HAVE_GPU AND USE_GPU)
 
   set(sources GPU_Device.cc)
-  list(APPEND headers GPU_Device.hh device_gpu.h)
+  list(APPEND headers GPU_Device.hh)
   set(include_dirs PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>)
   if(EXISTS "${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
     string(APPEND include_dirs ";$<BUILD_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}>")

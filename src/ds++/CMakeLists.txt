@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 Sep 24
 # brief  Generate build project files for ds++.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(dsxx CXX)
@@ -69,7 +69,7 @@ if(CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
     set(draco_isKNL ON)
   endif()
   # Is this CCE
-  if(DEFINED ENV{CRAY_PE_CCE_VARIANT})
+  if(DEFINED ENV{CRAY_PE_CCE_VARIANT} OR MPI_CXX_LIB_NAMES MATCHES "mpi_cray")
     set(CRAYPE_CCE TRUE)
   endif()
 endif()

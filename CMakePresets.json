@@ -237,7 +237,8 @@
       },
       "execution": {
         "noTestsAction": "error",
-        "stopOnFailure": true
+        "stopOnFailure": true,
+        "jobs": 24
       }
     },
     {
@@ -301,7 +302,8 @@
       },
       "execution": {
         "noTestsAction": "error",
-        "stopOnFailure": true
+        "stopOnFailure": true,
+        "jobs": 24
       }
     },
     {
