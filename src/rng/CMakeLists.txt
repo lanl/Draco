@@ -83,9 +83,15 @@ add_component_library(
 # ------------------------------------------------------------------------------------------------ #
 # Installation instructions
 # ------------------------------------------------------------------------------------------------ #
-# install( TARGETS Lib_rng EXPORT draco-targets LIBRARY DESTINATION "${DBSCFGDIR_LIBRARY}" ARCHIVE
-# DESTINATION "${DBSCFGDIR}lib" RUNTIME DESTINATION "${DBSCFGDIR}bin" PUBLIC_HEADER DESTINATION
-# "${DBSCFGDIR}include/rng" )
+#
+# ~~~
+# install(TARGETS Lib_rng EXPORT draco-targets
+#         LIBRARY DESTINATION "${DBSCFGDIR_LIBRARY}"
+#         ARCHIVE DESTINATION "${DBSCFGDIR}lib"
+#         RUNTIME DESTINATION "${DBSCFGDIR}bin"
+#         PUBLIC_HEADER DESTINATION
+#         "${DBSCFGDIR}include/rng" )
+# ~~~
 install(FILES ${headers_public} DESTINATION ${DBSCFGDIR}include/rng)
 
 # ------------------------------------------------------------------------------------------------ #
