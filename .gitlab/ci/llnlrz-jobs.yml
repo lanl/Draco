@@ -44,6 +44,9 @@
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
+    DRACO_ENV: "lapse/2.2.0-cce"
+    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
@@ -61,6 +64,8 @@
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
+    DRACO_ENV: "lapse/2.2.0-xl"
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
@@ -77,31 +82,21 @@ rzvernal_rel_cce1501_deploy:
   extends: .rzvernal_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.2.0-cce"
-    FLAVOR: lapse220-cce-${CMAKE_BUILD_TYPE}
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
 
 rzvernal_deb_cce1501_deploy:
   extends: .rzvernal_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.2.0-cce"
-    FLAVOR: lapse220-cce-${CMAKE_BUILD_TYPE}
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
 
 rzansel_rel_xl1611_deploy:
   extends: .rzansel_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.2.0-xl"
-    FLAVOR: lapse220-xl-${CMAKE_BUILD_TYPE}
 
 rzansel_deb_xl1611_deploy:
   extends: .rzansel_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.2.0-xl"
-    FLAVOR: lapse220-xl-${CMAKE_BUILD_TYPE}
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
