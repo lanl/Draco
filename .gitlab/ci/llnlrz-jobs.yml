@@ -78,7 +78,7 @@ rzvernal_rel_cce1501_deploy:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.2.0-cce"
-    FLAVPR: lapse220-cce-${CMAKE_BUILD_TYPE}
+    FLAVOR: lapse220-cce-${CMAKE_BUILD_TYPE}
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
 
 rzvernal_deb_cce1501_deploy:
@@ -86,7 +86,7 @@ rzvernal_deb_cce1501_deploy:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.2.0-cce"
-    FLAVPR: lapse220-cce-${CMAKE_BUILD_TYPE}
+    FLAVOR: lapse220-cce-${CMAKE_BUILD_TYPE}
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
 
 rzansel_rel_xl1611_deploy:
@@ -94,14 +94,14 @@ rzansel_rel_xl1611_deploy:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.2.0-xl"
-    FLAVPR: lapse220-xl-${CMAKE_BUILD_TYPE}
+    FLAVOR: lapse220-xl-${CMAKE_BUILD_TYPE}
 
 rzansel_deb_xl1611_deploy:
   extends: .rzansel_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.2.0-xl"
-    FLAVPR: lapse220-xl-${CMAKE_BUILD_TYPE}
+    FLAVOR: lapse220-xl-${CMAKE_BUILD_TYPE}
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
