@@ -165,7 +165,6 @@ rzansel|rzvernal)
 
     # Get a LANL kerberos ticket to allow scp.
     if [[ -f "${HOME}/.ssh/${USER}-hpcalias.keytab" ]]; then
-      run "klist"
       run "kinit -kt ${HOME}/.ssh/${USER}-hpcalias.keytab ${USER}-hpcalias@HPC.LANL.GOV"
       run "klist"
     else
