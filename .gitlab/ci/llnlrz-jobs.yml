@@ -49,7 +49,7 @@
     DRACO_ENV: "lapse/2.2.0-cce"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-    DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}
+    DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
@@ -68,7 +68,7 @@
     DEPLOY: 'TRUE'
     DRACO_ENV: "lapse/2.2.0-xl"
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-    DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}
+    DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
