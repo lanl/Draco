@@ -34,8 +34,10 @@ if(HAVE_GPU AND USE_GPU)
   set(include_dirs PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>)
   if(EXISTS "${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
     string(APPEND include_dirs ";$<BUILD_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}>")
+    string(APPEND include_dirs ";$<INSTALL_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}>")
   elseif(EXISTS "$ENV{ROCM_PATH}")
     string(APPEND include_dirs ";$<BUILD_INTERFACE:$ENV{ROCM_PATH}/include>")
+    string(APPEND include_dirs ";$<INSTALL_INTERFACE:$ENV{ROCM_PATH}/include>")
   endif()
   add_component_library(
     TARGET Lib_device

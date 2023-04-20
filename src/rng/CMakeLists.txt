@@ -97,25 +97,7 @@ install(FILES ${headers_public} DESTINATION ${DBSCFGDIR}include/rng)
 # ------------------------------------------------------------------------------------------------ #
 # Unit tests
 # ------------------------------------------------------------------------------------------------ #
-
-# Tests are broken for the hippified version of Random123.  KT will need to work on this -- but
-# maybe wait until the HIP features are merged back into the main R123 repo???
-#
-# * https://github.com/mrowan137/Random123/ (branch 'HIP')
-
-# If we are using the hippified hack of Random123, disable these tests.
-set(CPU_COMPATIBLE_R123 TRUE) # Assume we have a good Random123
-if(EXISTS "${RANDOM123_INCLUDE_DIR}/Random123/array.h")
-  file(READ "${RANDOM123_INCLUDE_DIR}/Random123/array.h" array_h_content)
-  string(FIND "${array_h_content}" "__HIP_DEVICE_COMPILE__" location)
-  if(NOT ${location} EQUAL -1)
-    # We found the AMD hacked version of R123 that doesn't work on CPUs.
-    set(CPU_COMPATIBLE_R123 FALSE)
-    message("      ==> Skipping rng tests because hacked version of Random123 found (hip).")
-  endif()
-endif()
-
-if(BUILD_TESTING AND CPU_COMPATIBLE_R123)
+if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
