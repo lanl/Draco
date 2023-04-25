@@ -59,6 +59,9 @@ elif [[ "${SITE_ID}" =~ "ccscs" ]]; then
 #------------------------------------------------------------------------------#
 elif [[ "${SITE_ID}" =~ "rzvernal" ]] || [[ "${SITE_ID}" =~ "rzansel" ]]; then
   run "module use --append /usr/gapps/jayenne/Modules/${SITE_ID}"
+  for sm in draco lapse; do
+    [[ $(module list 2>&1 | grep -c $sm) -gt 0 ]] && module unload $sm
+  done
   case ${DRACO_ENV} in
     lapse* | draco* ) ;;
     *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
