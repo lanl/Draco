@@ -157,7 +157,10 @@ rzansel_rel_xl1611_mr:
     CTEST_NPROC: 80
     DRACO_ENV: "lapse/2.3.0-cce"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
-    CTEST_BUILD_NAME: "lapse220-cce-${CMAKE_BUILD_TYPE}"
+    CTEST_BUILD_NAME: "lapse230-cce-${CMAKE_BUILD_TYPE}"
+  artifacts:
+    paths:
+      - build/${SITE_ID}-${PROJECT}-${CTEST_MODE}-${CTEST_BUILD_NAME}.tar
   script:
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
       "Configure,Build,Test"
@@ -187,6 +190,9 @@ rzvernal_deb_cce1501_regress:
     CTEST_NPROC: 20
     DRACO_ENV: "lapse/2.2.0-xl"
     CTEST_BUILD_NAME: "lapse220-xl-${CMAKE_BUILD_TYPE}"
+  artifacts:
+    paths:
+      - build/${SITE_ID}-${PROJECT}-${CTEST_MODE}-${CTEST_BUILD_NAME}.tar
   script:
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
       "Configure,Build,Test"
