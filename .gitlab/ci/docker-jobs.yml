@@ -108,7 +108,7 @@ checkCoverage_MR:
 # Regressions: collect data from LLNL RZ systems and post it to cdash
 #--------------------------------------------------------------------------------------------------#
 
-post_llnl_rzansel_results:
+post_rzansel_results_to_cdash:
   # https://docs.gitlab.com/ee/api/job_artifacts.html
   # CI_API_V4_URL = https://re-git.lanl.gov/api/v4
   tags:
@@ -127,7 +127,7 @@ post_llnl_rzansel_results:
     URL: "${BASE_URL}/pipelines/${CI_PIPELINE_ID}/jobs?private_token=${PRIVATE_TOKEN}"
     URL2: "${BASE_URL}/jobs/${JID}/artifacts?private_token=${PRIVATE_TOKEN}"
   script:
-    - cd ${DRACO_BINARY_DIR}
+    - mkdir -p ${DRACO_BINARY_DIR} && cd ${DRACO_BINARY_DIR}
     - echo "              CI_API_V4_URL = ${CI_API_V4_URL}"
     - echo "CI_MERGE_REQUEST_PROJECT_ID = ${CI_MERGE_REQUEST_PROJECT_ID}"
     - echo "             CI_PIPELINE_ID = ${CI_PIPELINE_ID}"
