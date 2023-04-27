@@ -120,7 +120,7 @@ post_rzansel_results_to_cdash:
     name: alpine:3.16.2
   before_script:
     - apk add --quiet --update --no-cache curl jq cmake
-  dependencies:
+  needs:
     - rzansel_deb_xl1611_regress
     - rzansel_rel_xl1611_regress
   variables:
@@ -138,7 +138,8 @@ post_rzansel_results_to_cdash:
     # Find the job ID for the job of interest and unload its artifacts.
     - JID=$(cat ${CI_JOB_NAME}.log | jq -c '.[] | select (.name == "rzansel_deb_xl1611_regress") | .id')
     - echo "Downlowding artifacts for JID=${JID}..."
-    # - curl --location --output artifacts.zip ${URL2}
+    - curl --location --output artifacts.zip ${URL2}
+    - ls -aFl
     # - mkdir rzansel_deb_xl1611_regress && cd rzansel_deb_xl1611_regress
     # - unzip artifacts.zip
     # - ls -aFl

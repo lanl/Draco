@@ -631,12 +631,12 @@ rel_gcc_8.5.0_regress:
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-downstream-deploy-cta:
+downstream-deploy-dert:
   extends: .downstream-deploy
   variables:
-    PROJECT: 'CTA'
+    PROJECT: 'DeRT'
   trigger:
-    project: capsaicin/cta
+    project: capsaicin/dert
 
 downstream-deploy-jayenne:
   extends: .downstream-deploy
