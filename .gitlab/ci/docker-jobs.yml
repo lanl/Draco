@@ -125,20 +125,33 @@ post_rzansel_results_to_cdash:
     - rzansel_rel_xl1611_regress
   variables:
     BASE_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}"
-    URL: "${BASE_URL}/pipelines/${CI_PIPELINE_ID}/jobs?private_token=${PRIVATE_TOKEN}"
+    # URL: "${BASE_URL}/pipelines/${CI_PIPELINE_ID}/jobs?private_token=${PRIVATE_TOKEN}"
     URL2: "${BASE_URL}/jobs/${JID}/artifacts?private_token=${PRIVATE_TOKEN}"
   script:
     - mkdir -p ${DRACO_BINARY_DIR} && cd ${DRACO_BINARY_DIR}
-    - echo " CI_API_V4_URL = ${CI_API_V4_URL}"
-    - echo "CI_PIPELINE_ID = ${CI_PIPELINE_ID}"
+    # - echo " CI_API_V4_URL = ${CI_API_V4_URL}"
+    # - echo "CI_PIPELINE_ID = ${CI_PIPELINE_ID}"
     # Get all of the meta data for this pipeline.
-    - echo "curl -k -s ${URL} --> ${CI_JOB_NAME}.log"
-    - curl -k -s ${URL}
-    - curl -k -s ${URL} > ${CI_JOB_NAME}.log
+    # - echo "curl -k -s ${URL} --> ${CI_JOB_NAME}.log"
+    # - curl -k -s ${URL}
+    # - curl -k -s ${URL} > ${CI_JOB_NAME}.log
     # Find the job ID for the job of interest and unload its artifacts.
-    - JID=$(cat ${CI_JOB_NAME}.log | jq -c '.[] | select (.name == "rzansel_deb_xl1611_regress") | .id')
-    - echo "Downlowding artifacts for JID=${JID}..."
-    - curl --location --output artifacts.zip ${URL2}
+    # - JID=$(cat ${CI_JOB_NAME}.log | jq -c '.[] | select (.name == "rzansel_deb_xl1611_regress") | .id')
+    # - echo "Downlowding artifacts for JID=${JID}..."
+    # - curl --location --output artifacts.zip ${URL2}
+    - ls -aFl
+    - >
+      for tf in $(\ls -1 *.tar); do
+          # Extract the raw files.
+          build_dir=${tf//.tar/};
+          echo -e "\n============================================================";
+          echo "Examining ${build_dir}";
+          echo -e "============================================================\n";
+          mkdir -p ${build_dir};
+          run "cd ${build_dir}";
+          run "tar -xvf ../${tf}";
+          ls -aFl;
+      done
     - ls -aFl
     # - mkdir rzansel_deb_xl1611_regress && cd rzansel_deb_xl1611_regress
     # - unzip artifacts.zip
