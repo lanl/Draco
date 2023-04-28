@@ -124,12 +124,12 @@ post_rzansel_results_to_cdash:
   script:
     - mkdir -p ${DRACO_BINARY_DIR} && cd ${DRACO_BINARY_DIR}
     # The artifacts from the jobs listed under the 'needs:' section should already be here.
-    - ls -aFl
+    - ls *.tar
     - >
       for tf in $(\ls -1 *.tar); do
           cd ${DRACO_BINARY_DIR};
           build_dir=${tf//.tar/};
-          site=${tf//_*/};
+          site=$(echo ${tf} | sed -e 's/_.*//')
           echo -e "\n============================================================";
           echo "Examining ${build_dir} (${site})";
           echo -e "============================================================\n";
@@ -141,15 +141,13 @@ post_rzansel_results_to_cdash:
           tag=`head -n 1 Testing/TAG`;
           buildname=`grep BuildName Testing/${tag}/Build.xml | sed -e s'/.*\"\(.*\)\"/\1/'`;
           sed -i "s%BuildName.*%BuildName: ${buildname}%" DartConfiguration.tcl;
-          sed -i "s%Site.*%Site: ${site}%" DartConfiguration.tcl;
+          sed -i "s%Site.*%Site: ${site}-gr%" DartConfiguration.tcl;
           echo -e "\n-- Modified values:\n";
           grep Site DartConfiguration.tcl;
           grep BuildName DartConfiguration.tcl;
-          which ctest;
           ctest --extra-submit DartConfiguration.tcl;
       done;
-    - ls -aFl
-    # - echo "==> PASS: RZ test results submitted to CDash."
+    - echo "==> PASS: RZ test results submitted to CDash."
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
