@@ -131,7 +131,7 @@ post_rzansel_results_to_cdash:
           cd ${DRACO_BINARY_DIR};
           # Extract the raw files.
           build_dir=${tf//.tar/};
-          site=${tf//_*/}
+          site=${tf//_*/};
           echo -e "\n============================================================";
           echo "Examining ${build_dir} (${site})";
           echo -e "============================================================\n";
