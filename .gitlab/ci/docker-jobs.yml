@@ -129,7 +129,7 @@ post_rzansel_results_to_cdash:
       for tf in $(\ls -1 *.tar); do
           cd ${DRACO_BINARY_DIR};
           build_dir=${tf//.tar/};
-          site=$(echo ${tf} | sed -e 's/_.*//')
+          site=$(echo ${tf} | sed -e 's/-.*//')
           echo -e "\n============================================================";
           echo "Examining ${build_dir} (${site})";
           echo -e "============================================================\n";
