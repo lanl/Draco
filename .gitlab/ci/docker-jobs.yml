@@ -110,8 +110,6 @@ checkCoverage_MR:
 
 post_rzansel_results_to_cdash:
   # https://docs.gitlab.com/ee/api/job_artifacts.html
-  # CI_API_V4_URL = https://re-git.lanl.gov/api/v4
-  # CI_PROJECT_ID = 503
   tags:
     - darwin-docker-shared
   stage: test
@@ -123,55 +121,39 @@ post_rzansel_results_to_cdash:
   needs:
     - rzansel_deb_xl1611_regress
     - rzansel_rel_xl1611_regress
-  # variables:
-    # BASE_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}"
-    # URL2: "${BASE_URL}/jobs/${JID}/artifacts?private_token=${PRIVATE_TOKEN}"
   script:
     - mkdir -p ${DRACO_BINARY_DIR} && cd ${DRACO_BINARY_DIR}
+    # The artifacts from the jobs listed under the 'needs:' section should already be here.
     - ls -aFl
     - >
       for tf in $(\ls -1 *.tar); do
+          # Extract each tar file into a directory of the same name.
+          cd ${DRACO_BINARY_DIR};
           # Extract the raw files.
           build_dir=${tf//.tar/};
+          site=${tf//_*/}
           echo -e "\n============================================================";
-          echo "Examining ${build_dir}";
+          echo "Examining ${build_dir} (${site})";
           echo -e "============================================================\n";
           mkdir -p ${build_dir} && cd ${build_dir};
-          tar -xvf ../${tf};
-          ls -aFl;
-      done
+          tar -xvf ../${tf};    
+          # Process the CDash data and upload it. Update the DartConfigration.tcl file so that it 
+          # makes sense.
+          sed -i "s%SourceDirectory.*%SourceDirectory: ${DRACO_SOURCE_DIR}%" DartConfiguration.tcl;
+          sed -i "s%BuildDirectory.*%BuildDirectory: ${DRACO_BINARY_DIR}/${build_dir}%" \
+            DartConfiguration.tcl;
+          tag=`head -n 1 Testing/TAG`;
+          buildname=`grep BuildName Testing/${tag}/Build.xml | sed -e s'/.*\"\(.*\)\"/\1/'`;
+          sed -i "s%BuildName.*%BuildName: ${buildname}%" DartConfiguration.tcl;
+          sed -i "s%Site.*%Site: ${site}%" DartConfiguration.tcl;
+          echo -e "\n-- Modified values:\n";
+          grep Site DartConfiguration.tcl;
+          grep BuildName DartConfiguration.tcl;
+          which ctest;
+          ctest --extra-submit DartConfiguration.tcl;
+      done;
     - ls -aFl
-    # - mkdir rzansel_deb_xl1611_regress && cd rzansel_deb_xl1611_regress
-    # - unzip artifacts.zip
-    # - ls -aFl
-    # Process the CDash data and upload it.
-    #
-    # Update the DartConfigration.tcl file so that it makes sense.
-    # - sed -i "s%SourceDirectory.*%SourceDirectory: /usr/projects/ccsrad/regress/${project}%" DartConfiguration.tcl
-    # - sed -i "s%BuildDirectory.*%BuildDirectory: /usr/projects/ccsrad/regress/rzansel_staging/${build_dir}%" DartConfiguration.tcl
-    # - tag=`head -n 1 Testing/TAG`
-    # - buildname=`grep BuildName Testing/${tag}/Build.xml | sed -e s'/.*\"\(.*\)\"/\1/'`
-    # - sed -i "s%BuildName.*%BuildName: ${buildname}%" DartConfiguration.tcl
-    # - sed -i "s%Site.*%Site: rzvernal-gr%" DartConfiguration.tcl
-    # - echo -e "\n-- Modified values:\n"
-    # - grep Site DartConfiguration.tcl
-    # - grep BuildName DartConfiguration.tcl
-    # - which ctest
-    # - ctest --extra-submit DartConfiguration.tcl
-    # - cd /usr/projects/ccsrad/regress/rzansel_staging
-    # - rm ${tf}"
-    # - rm -rf ${build_dir}"
-    #
-    #   if [ "${CURRENT_COVERAGE}notset" == "notset" ]; then
-    #     echo "==> FAIL: Error extracting coverage metric." && exit 1; fi
-    # - >
-    #   if [ $(echo "${CURRENT_COVERAGE} < ${TARGET_COVERAGE_PERCENT}"|bc) == 1 ]; then
-    #     echo -n  "==> FAIL: Code coverage for this MR is below target value of " &&
-    #     echo "${TARGET_COVERAGE_PERCENT}" && exit 1;
-    #   else
-    #     echo "==> PASS: Code coverage for this MR meets minimum requirements" &&
-    #     echo "    ${CURRENT_COVERAGE}% > ${TARGET_COVERAGE_PERCENT}%";
-    #   fi
+    - echo "==> PASS: RZ test results submitted to CDash."
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
