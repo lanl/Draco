@@ -147,7 +147,7 @@ post_rzansel_results_to_cdash:
           grep BuildName DartConfiguration.tcl;
           ctest --extra-submit DartConfiguration.tcl;
       done;
-    - echo "==> PASS: RZ test results submitted to CDash."
+    - echo "==> PASS -- RZ test results submitted to CDash."
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
