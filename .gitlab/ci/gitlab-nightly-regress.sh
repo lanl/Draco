@@ -160,22 +160,11 @@ case $SITE_ID in
 rzansel|rzvernal)
   if [[ ${modes} == "Submit" ]]; then
     # We can't do the regular ctest Submit from LLNL RZ systems yet because we can't access
-    # https://rtt.lanl.gov/cdash3. Instead tar the results and scp them to tt-rfe where another
-    # script will see them and post the results to CDash.
-
-    # Get a LANL kerberos ticket to allow scp.
-    # if [[ -f "${HOME}/.ssh/${USER}-hpcalias.keytab" ]]; then
-    #   run "kinit -kt ${HOME}/.ssh/${USER}-hpcalias.keytab ${USER}-hpcalias@HPC.LANL.GOV"
-    #   run "klist"
-    # else
-    #   echo "==> Failed to find keytab alias ${HOME}/.ssh/${USER}-hpcalias.keytab."
-    #   echo "    Cannot upload results."
-    #   exit 1
-    # fi
+    # https://rtt.lanl.gov/cdash3. Instead tar the results and register them as artifacts.  Another
+    # gitlab runner job unpacks these artifacts in a container run at LANL and pushes them to cdash.
     run "cd ${DRACO_BINARY_DIR}"
     tarfile=${SITE_ID}-${PROJECT}-${CTEST_MODE}-${CTEST_BUILD_NAME}.tar
     run "tar cvf ${tarfile} DartConfiguration.tcl Testing"
-    # run "scp ${tarfile} tt-rfe:/usr/projects/ccsrad/regress/rzansel_staging/."
   else
     run "ctest -V -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
   fi
