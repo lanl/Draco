@@ -4,18 +4,14 @@ Draco Development Environment
 Draco provides default environment settings through:
  - Default .bashrc and .cshrc files
  - Emacs setup/macros/indentation defaults.
- - Module systems for loading/unloading compilers, vendors, etc.
- - LaTeX templates
- - utility scripts (ack, printbib, etc.)
 
 Recommended use:
 
-1. From $HOME/.bashrc add a command to source
-   draco/environment/bashrc/.bashrc.
-2. From $HOME/.emacs add an instruction to load 
-   draco/environment/elisp/draco-setup
-3. If you don't use (1), you can still use the Draco modules by
-   sourcing draco/environment/Modules/init/bash or if you already have
-   the module command in your environment, simply run 'module use
-   draco/environment/Modules/hpc' or similar.
+1. From $HOME/.bashrc add a command to source draco/environment/bashrc/.bashrc.
+
+2. From $HOME/.emacs add an instruction to load draco/environment/elisp/draco-setup
+
+3. If you don't use (1), you can still use the Draco modules by sourcing
+   draco/environment/Modules/init/bash or if you already have the module command in your
+   environment, simply run 'module use draco/environment/Modules/hpc' or similar.
 
