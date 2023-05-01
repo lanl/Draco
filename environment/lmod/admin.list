@@ -1,4 +1,0 @@
-# export LMOD_ADMIN_FILE=/home/kellyt/draco/environment/lmod/admin.list
-# https://lmod.readthedocs.io/en/latest/140_deprecating_modules.html
-
-cmake/3.15.1: This module is deprecated.
