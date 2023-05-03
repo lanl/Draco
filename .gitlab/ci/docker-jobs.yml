@@ -119,10 +119,14 @@ post_rzansel_results_to_cdash:
   before_script:
     - apk add --quiet --update --no-cache cmake
   needs:
-    - rzansel_deb_xl1611_regress
-    - rzansel_rel_xl1611_regress
-    - rzvernal_deb_cce1501_regress
-    - rzvernal_rel_cce1501_regress
+    - job: rzansel_deb_xl1611_regress
+      artifacts: true
+    - job: rzansel_rel_xl1611_regress
+      artifacts: true
+    - job: rzvernal_deb_cce1501_regress
+      artifacts: true
+    - job: rzvernal_rel_cce1501_regress
+      artifacts: true
   script:
     - mkdir -p ${DRACO_BINARY_DIR} && cd ${DRACO_BINARY_DIR}
     # The artifacts from the jobs listed under the 'needs:' section should already be here.
@@ -136,7 +140,7 @@ post_rzansel_results_to_cdash:
           echo "Examining ${build_dir} (${site}-gr)";
           echo -e "============================================================\n";
           mkdir -p ${build_dir} && cd ${build_dir};
-          tar -xvf ../${tf};    
+          tar -xvf ../${tf};
           sed -i "s%SourceDirectory.*%SourceDirectory: ${DRACO_SOURCE_DIR}%" DartConfiguration.tcl;
           sed -i "s%BuildDirectory.*%BuildDirectory: ${DRACO_BINARY_DIR}/${build_dir}%" \
             DartConfiguration.tcl;
