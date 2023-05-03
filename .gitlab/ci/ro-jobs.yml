@@ -1,0 +1,139 @@
+#--------------------------------------------------------------------------------------------------#
+# File:    .gitlab/ci/ro-jobs.yml
+# Author:  Kelly Thompson <kgt@lanl.gov>
+# Date:    Thursday, Dec 02, 2021, 09:36 am
+# Purpose: gitlab jacamar runner commands for rocinante (LANL HPC).
+# Note:    Copyright (C) 2023 Triad National Security, LLC., All rights reserved.
+#--------------------------------------------------------------------------------------------------#
+
+#--------------------------------------------------------------------------------------------------#
+# Machine-wide default job settings
+#--------------------------------------------------------------------------------------------------#
+
+---
+.ro:
+  tags:
+    - rocinante
+  variables:
+    CTEST_MODE: Experimental
+    DEPLOY: "FALSE"
+    SITE_ID: rocinante
+    CTEST_NPROC: 112
+    SCHEDULER_PARAMETERS: -N 1
+    # -A asc-ci --partition=ci --qos=ci --reservation=ci
+    # CI_DEBUG_TRACE: "true"
+
+#--------------------------------------------------------------------------------------------------#
+# Deployment Jobs (run on develop after MRs are merged)
+#--------------------------------------------------------------------------------------------------#
+
+.ro_deploy:
+  extends: .ro
+  stage: deploy
+  variables:
+    DEPLOY: 'TRUE'
+    DRACO_INSTALL_DIR: "/usr/projects/draco/deploy/rocinante/${FLAVOR}"
+  script:
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
+  rules:
+    # Don't deploy if this is a forked repository.
+    - if: '$CI_PROJECT_NAMESPACE != "draco"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+ro_rel_intel_classic_deploy:
+  extends: .ro_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "lapse/2.3.1-intel"
+    FLAVOR: lapse231-intel-${CMAKE_BUILD_TYPE}
+    EXTRA_CMAKE_ARGS: -G Ninja
+
+ro_deb_intel_classic_deploy:
+  extends: .ro_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.3.1-intel"
+    FLAVOR: lapse231-intel-${CMAKE_BUILD_TYPE}
+    EXTRA_CMAKE_ARGS: -G Ninja
+
+#--------------------------------------------------------------------------------------------------#
+# Merge Requests
+#--------------------------------------------------------------------------------------------------#
+
+.ro_merge:
+  extends: .ro
+  # allow_failure: true
+  script:
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
+  rules:
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_rocinante/'
+      when: never
+    - if: '$CI_MERGE_REQUEST_TITLE =~ /Draft:/ || $CI_MERGE_REQUEST_TITLE =~ /WIP:/'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+# ----- fast -----
+
+# None
+
+# ----- regular test -----
+
+ro_rel_intel_classic_mr:
+  stage: test
+  extends: .ro_merge
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "lapse/2.3.1-intel"
+    EXTRA_CMAKE_ARGS: -G Ninja
+
+# ----- slow -----
+
+ro_deb_intel_classic_mr:
+  stage: slowtest
+  extends: .ro_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.3.1-intel"
+    EXTRA_CMAKE_ARGS: -G Ninja
+
+#--------------------------------------------------------------------------------------------------#
+# Nightly Regression
+#--------------------------------------------------------------------------------------------------#
+
+.ro_nightly:
+  extends: .ro
+  variables:
+    CTEST_MODE: Nightly
+    CTEST_NPROC: 112
+    EXTRA_CMAKE_ARGS: -G Ninja
+  script:
+    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
+      "Configure,Build,Test"
+  after_script:
+    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m "Submit"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+
+ro_rel_intel_classic_regress:
+  stage: test
+  extends: .ro_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "lapse/2.3.1-intel"
+    CTEST_BUILD_NAME: "lapse231-intel-Release"
+
+ro_deb_intel_classic_regress:
+  stage: test
+  extends: .ro_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.3.1-intel"
+    CTEST_BUILD_NAME: "lapse231-intel-Debug"
+
+#--------------------------------------------------------------------------------------------------#
+# end .gitlab/ci/ro-jobs.yml
+#--------------------------------------------------------------------------------------------------#
