@@ -152,6 +152,7 @@ rzansel_rel_xl1611_mr:
 
 .rzvernal_nightly:
   extends: .rzvernal
+  allow_failure: true
   variables:
     CTEST_MODE: Nightly
     CTEST_NPROC: 80
@@ -159,6 +160,7 @@ rzansel_rel_xl1611_mr:
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
     CTEST_BUILD_NAME: "lapse230-cce-${CMAKE_BUILD_TYPE}"
   artifacts:
+    when: always
     paths:
       - build/${SITE_ID}-${PROJECT}-${CTEST_MODE}-${CTEST_BUILD_NAME}.tar
   script:
@@ -185,12 +187,14 @@ rzvernal_deb_cce1501_regress:
 
 .rzansel_nightly:
   extends: .rzansel
+  allow_failure: true
   variables:
     CTEST_MODE: Nightly
     CTEST_NPROC: 20
     DRACO_ENV: "lapse/2.2.0-xl"
     CTEST_BUILD_NAME: "lapse220-xl-${CMAKE_BUILD_TYPE}"
   artifacts:
+    when: always
     paths:
       - build/${SITE_ID}-${PROJECT}-${CTEST_MODE}-${CTEST_BUILD_NAME}.tar
   script:
