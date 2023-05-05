@@ -174,13 +174,12 @@ if [[ ${INTERACTIVE} == true ]]; then
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_rfta" ;;
 
-    # trinitite (tt-rfe) | trinity (tr-fe)
-    tt-rfe* | tt-login* | tr-fe* | tr-login* | nid* )
+    ro-rfe* | ty-rfe* )
       # shellcheck source=/dev/null
-      source "${DRACO_ENV_DIR}/bashrc/.bashrc_cray" ;;
+      source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats3" ;;
 
     # LLNL ATS-2
-    rzmanta* | rzansel* | sierra*)
+    rzansel* | sierra*)
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats2" ;;
 
@@ -188,6 +187,11 @@ if [[ ${INTERACTIVE} == true ]]; then
     rznevada* | rzvernal*)
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats4" ;;
+
+    # trinitite (tt-rfe) | trinity (tr-fe)
+    tt-rfe* | tt-login* | tr-fe* | tr-login* | nid* )
+      # shellcheck source=/dev/null
+      source "${DRACO_ENV_DIR}/bashrc/.bashrc_cray" ;;
 
     # LAP Virtual Machine
     vc*)
