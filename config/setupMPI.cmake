@@ -384,7 +384,9 @@ macro(setupCrayMPI)
   #   with other parallel steps.
 
   set(preflags " ") # -N 1 --cpu_bind=verbose,cores
-  string(APPEND preflags " --gres=craynetwork:0 --overlap")
+  if(NOT MPIEXEC_EXECUTABLE MATCHES "flux")
+    string(APPEND preflags " --gres=craynetwork:0 --overlap")
+  endif()
   set(MPIEXEC_PREFLAGS
       ${preflags}
       CACHE STRING "extra mpirun flags (list)." FORCE)
@@ -490,14 +492,30 @@ macro(setupMPILibrariesUnix)
 
     if(CMAKE_CXX_COMPILER_WRAPPER MATCHES CrayPrgEnv OR IS_DIRECTORY "/usr/projects/hpcsoft/toss3/")
       if(NOT EXISTS ${MPIEXEC_EXECUTABLE})
-        find_program(MPIEXEC_EXECUTABLE srun)
+        find_program(MPIEXEC_EXECUTABLE flux) # 1st option is flux
+        if(EXISTS ${MPIEXEC_EXECUTABLE})
+          execute_process(COMMAND ${MPIEXEC_EXECUTABLE} jobs
+                          RESULT_VARIABLE fluxfailure OUTPUT_QUIET ERROR_QUIET)
+          if(NOT "${fluxfailure}" STREQUAL "0")
+            unset(MPIEXEC_EXECUTABLE CACHE)
+          endif()
+        endif()
+        if(NOT EXISTS ${MPIEXEC_EXECUTABLE})
+          find_program(MPIEXEC_EXECUTABLE srun) # fall back to srun
+        endif()
       endif()
+      if(MPIEXEC_EXECUTABLE MATCHES "flux")
+        set(MPIEXEC_NUMPROC_FLAG run;-n)
+      else()
+        set(MPIEXEC_NUMPROC_FLAG "-n")
+      endif()
+      set(MPIEXEC_NUMPROC_FLAG
+          "${MPIEXEC_NUMPROC_FLAG}"
+          CACHE STRING "mpirun flag used to specify the number of processors to use")
       set(MPIEXEC_EXECUTABLE
           ${MPIEXEC_EXECUTABLE}
           CACHE STRING "Program to execute MPI parallel programs." FORCE)
-      set(MPIEXEC_NUMPROC_FLAG
-          "-n"
-          CACHE STRING "mpirun flag used to specify the number of processors to use")
+
     elseif(DEFINED ENV{SYS_TYPE} AND "$ENV{SYS_TYPE}" MATCHES "ppc64le_ib_p9") # ATS-2
       if(NOT EXISTS ${MPIEXEC_EXECUTABLE})
         find_program(MPIEXEC_EXECUTABLE lrun)
