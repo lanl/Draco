@@ -275,7 +275,7 @@ ccs5_deb_llvm12_deploy:
       else
         VERSION_PATCH=${CI_COMMIT_BRANCH//*_/};
       fi
-    - EXTRA_CMAKE_ARGS=${EXTRA_CMAKE_ARGS} -DDraco_VERSION_PATCH=${VERSION_PATCH}
+    - EXTRA_CMAKE_ARGS="${EXTRA_CMAKE_ARGS} -DDraco_VERSION_PATCH=${VERSION_PATCH}"
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
     # Don't deploy if this is a forked repository.
