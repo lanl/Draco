@@ -102,6 +102,56 @@ rzansel_deb_xl1611_deploy:
     EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
 
 #--------------------------------------------------------------------------------------------------#
+# Deploy a Release
+#--------------------------------------------------------------------------------------------------#
+
+.rzansel_deploy_release:
+  extends: .rzansel
+  stage: deploy
+  variables:
+    DEPLOY: 'TRUE'
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+    DRACO_INSTALL_DIR: "/usr/gapps/jayenne/${CI_COMMIT_BRANCH}/${SITE_ID}/${FLAVOR}"
+  script:
+    - echo "branch = $CI_COMMIT_BRANCH, tag = $CI_COMMIT_TAG"
+    - echo "Starting rzansel_deploy_release..."
+    - if [[ -z ${CI_COMMIT_BRANCH} ]]; then
+        VERSION_PATCH=${CI_COMMIT_TAG//*_/};
+      else
+        VERSION_PATCH=${CI_COMMIT_BRANCH//*_/};
+      fi
+    - EXTRA_CMAKE_ARGS=${EXTRA_CMAKE_ARGS} -DDraco_VERSION_PATCH=${VERSION_PATCH}
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
+  rules:
+    # Don't deploy if this is a forked repository.
+    - if: '$CI_PROJECT_NAMESPACE != "draco"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
+    - if: '$CI_COMMIT_TAG =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+rzansel_rel_xl_deploy_release:
+  extends: .rzansel_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "lapse/2.2.0-xl"
+    EXTRA_CMAKE_ARGS: -DDRACO_ROUNDOFF_MODE=FAST
+
+rzansel_deb_xl_deploy_release:
+  extends: .rzansel_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.2.0-xl"
+
+rzansel_rwdi_xl_deploy_release:
+  extends: .rzansel_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: RelWithDebInfo
+    DRACO_ENV: "lapse/2.2.0-xl"
+
+#--------------------------------------------------------------------------------------------------#
 # Merge Requests
 #--------------------------------------------------------------------------------------------------#
 
