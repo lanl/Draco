@@ -122,14 +122,14 @@ sn_deb_gcc_930_deploy_release:
     EXTRA_CMAKE_ARGS: -G Ninja
 
 sn_rel_gcc_930_deploy_release:
-  extends: .ccscs_deploy_release
+  extends: .sn_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.3.1-gnu"
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_ROUNDOFF_MODE=FAST
 
 sn_rwdi_gcc_930_deploy_release:
-  extends: .ccscs_deploy_release
+  extends: .sn_deploy_release
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: "lapse/2.3.1-gnu"
