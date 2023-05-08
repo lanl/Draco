@@ -150,6 +150,7 @@ rzansel_rwdi_xl_deploy_release:
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: "lapse/2.2.0-xl"
+    EXTRA_CMAKE_FLAGS: -DDRACO_DBC_LEVEL=15
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
