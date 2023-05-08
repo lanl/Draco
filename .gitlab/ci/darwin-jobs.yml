@@ -200,7 +200,7 @@ dx64_rwdi_gcc_1120_deploy_release:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: draco/haswell-gcc1120
     ARCH: x86_64
-    EXTRA_CMAKE_ARGS: -G Ninja
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_DBC_LEVEL=15
     SCHEDULER_PARAMETERS: ${SP_volta_x86}
 
 #--------------------------------------------------------------------------------------------------#

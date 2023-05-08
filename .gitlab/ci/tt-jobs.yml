@@ -126,7 +126,7 @@ tt_rwdi_i2120_deploy_release:
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: "lapse/2.3.1-intel"
-    EXTRA_CMAKE_ARGS: -GNinja
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
