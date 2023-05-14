@@ -22,8 +22,8 @@
     DEPLOY: "FALSE"
     SITE_ID: rzvernal
     CTEST_NPROC: 40
-    SCHEDULER_PARAMETERS: -N 1
-    LLNL_SLURM_SCHEDULER_PARAMETERS: -N 1
+    SCHEDULER_PARAMETERS: -N 1 --begin=+5s
+    LLNL_SLURM_SCHEDULER_PARAMETERS: -N 1 --begin=+5s
 
 .rzansel:
   tags:
