@@ -137,7 +137,7 @@ post_rzansel_results_to_cdash:
           build_dir=${tf//.tar/};
           site=$(echo ${tf} | sed -e 's/-.*//')
           echo -e "\n============================================================";
-          echo "Examining ${build_dir} (${site}-gr)";
+          echo "Examining ${build_dir} (${site})";
           echo -e "============================================================\n";
           mkdir -p ${build_dir} && cd ${build_dir};
           tar -xvf ../${tf};
@@ -147,7 +147,7 @@ post_rzansel_results_to_cdash:
           tag=`head -n 1 Testing/TAG`;
           buildname=`grep BuildName Testing/${tag}/Build.xml | sed -e s'/.*\"\(.*\)\"/\1/'`;
           sed -i "s%BuildName.*%BuildName: ${buildname}%" DartConfiguration.tcl;
-          sed -i "s%Site.*%Site: ${site}-gr%" DartConfiguration.tcl;
+          sed -i "s%Site.*%Site: ${site}%" DartConfiguration.tcl;
           echo -e "\n-- Modified values:\n";
           grep Site DartConfiguration.tcl;
           grep BuildName DartConfiguration.tcl;
