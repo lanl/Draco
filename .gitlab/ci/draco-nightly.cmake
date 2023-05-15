@@ -77,7 +77,6 @@ set(CTEST_SITE "$ENV{SITE_ID}")
 if(DEFINED ENV{ARCH})
   string(APPEND CTEST_SITE "-$ENV{ARCH}")
 endif()
-string(APPEND CTEST_SITE "-gr") # indicating job was initiated by a gitlab runner.
 
 # separate_arguments(EXTRA_CMAKE_ARGS UNIX_COMMAND "$ENV{EXTRA_CMAKE_ARGS}") # leave as string
 set(EXTRA_CMAKE_ARGS "$ENV{EXTRA_CMAKE_ARGS}")
