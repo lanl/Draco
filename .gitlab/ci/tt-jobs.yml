@@ -62,20 +62,6 @@ tt_deb_i202120_deploy:
     FLAVOR: lapse231-intel-${CMAKE_BUILD_TYPE}
     EXTRA_CMAKE_ARGS: -G Ninja
 
-tt_deb_cce1301_deploy:
-  extends: .tt_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/cce1301"
-    FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
-
-tt_rel_cce1301_deploy:
-  extends: .tt_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/cce1301"
-    FLAVOR: cce1301-${CMAKE_BUILD_TYPE}
-
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
 #--------------------------------------------------------------------------------------------------#
@@ -168,13 +154,6 @@ tt_deb_i202120_mr:
     DRACO_ENV: "lapse/2.3.1-intel"
     EXTRA_CMAKE_ARGS: -G Ninja
 
-tt_deb_cce_mr:
-  stage: slowtest
-  extends: .tt_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/cce1301"
-
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
 #--------------------------------------------------------------------------------------------------#
@@ -208,22 +187,6 @@ tt_deb_i202120_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.3.1-intel"
     CTEST_BUILD_NAME: "lapse231-intel-Debug"
-
-tt_rel_cce1301_regress:
-  stage: test
-  extends: .tt_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/cce1301"
-    CTEST_BUILD_NAME: "cce1301-Release"
-
-tt_deb_cce1301_regress:
-  stage: test
-  extends: .tt_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/cce1301"
-    CTEST_BUILD_NAME: "cce1301-Debug"
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/tt-jobs.yml
