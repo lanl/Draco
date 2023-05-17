@@ -14,6 +14,8 @@
 .ro:
   tags:
     - rocinante
+    - batch
+    - ro-rfe1
   allow_failure: true
   variables:
     CTEST_MODE: Experimental
@@ -21,6 +23,8 @@
     SITE_ID: rocinante
     CTEST_NPROC: 112
     SCHEDULER_PARAMETERS: -N 1
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+    EXTRA_CMAKE_ARGS: -G Ninja
     # -A asc-ci --partition=ci --qos=ci --reservation=ci
     # CI_DEBUG_TRACE: "true"
 
@@ -49,17 +53,96 @@ ro_rel_intel_classic_deploy:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.1-intel"
-    FLAVOR: lapse231-intel-${CMAKE_BUILD_TYPE}
-    EXTRA_CMAKE_ARGS: -G Ninja
+    DRACO_ENV: "draco/intel-2023.1.0"
 
 ro_deb_intel_classic_deploy:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-intel"
-    FLAVOR: lapse231-intel-${CMAKE_BUILD_TYPE}
-    EXTRA_CMAKE_ARGS: -G Ninja
+    DRACO_ENV: "draco/intel-2023.1.0"
+
+ro_rel_oneapi_deploy:
+  extends: .ro_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "draco/oneapi-2023.1.0"
+
+ro_deb_oneapi_deploy:
+  extends: .ro_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/oneapi-2023.1.0"
+
+#--------------------------------------------------------------------------------------------------#
+# Deploy a Release
+#--------------------------------------------------------------------------------------------------#
+
+.ro_deploy_release:
+  extends: .ro
+  stage: deploy
+  variables:
+    DEPLOY: 'TRUE'
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+    DRACO_INSTALL_DIR: "/usr/projects/draco/${CI_COMMIT_BRANCH}/${SITE_ID}/${FLAVOR}"
+  script:
+    - echo "branch = $CI_COMMIT_BRANCH, tag = $CI_COMMIT_TAG"
+    - echo "Starting ro_deploy_release..."
+    - if [[ -z ${CI_COMMIT_BRANCH} ]]; then
+        VERSION_PATCH=${CI_COMMIT_TAG//*_/};
+      else
+        VERSION_PATCH=${CI_COMMIT_BRANCH//*_/};
+      fi
+    - EXTRA_CMAKE_ARGS="${EXTRA_CMAKE_ARGS} -DDraco_VERSION_PATCH=${VERSION_PATCH}"
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
+  rules:
+    # Don't deploy if this is a forked repository.
+    - if: '$CI_PROJECT_NAMESPACE != "draco"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
+    - if: '$CI_COMMIT_TAG =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+ro_rel_intel_classic_deploy_release:
+  extends: .ro_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "draco/intel-2023.1.0"
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
+
+ro_deb_intel_classic_deploy_release:
+  extends: .ro_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/intel-2023.1.0"
+
+ro_rwdi_intel_classic_deploy_release:
+  extends: .ro_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: RelWithDebInfo
+    DRACO_ENV: "draco/intel-2023.1.0"
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
+
+ro_rel_oneapi_deploy_release:
+  extends: .ro_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "draco/oneapi-2023.1.0"
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
+
+ro_deb_oneapi_deploy_release:
+  extends: .ro_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/oneapi-2023.1.0"
+
+ro_rwdi_oneapi_deploy_release:
+  extends: .ro_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: RelWithDebInfo
+    DRACO_ENV: "draco/oneapi-2023.1.0"
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
@@ -67,7 +150,7 @@ ro_deb_intel_classic_deploy:
 
 .ro_merge:
   extends: .ro
-  # allow_failure: true
+  allow_failure: true
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
@@ -79,7 +162,12 @@ ro_deb_intel_classic_deploy:
 
 # ----- fast -----
 
-# None
+ro_deb_intel_classic_mr:
+  stage: fasttest
+  extends: .ro_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/intel-2023.1.0"
 
 # ----- regular test -----
 
@@ -88,18 +176,23 @@ ro_rel_intel_classic_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.1-intel"
-    EXTRA_CMAKE_ARGS: -G Ninja
+    DRACO_ENV: "draco/intel-2023.1.0"
 
 # ----- slow -----
 
-ro_deb_intel_classic_mr:
+ro_deb_oneapi_mr:
   stage: slowtest
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-intel"
-    EXTRA_CMAKE_ARGS: -G Ninja
+    DRACO_ENV: "draco/oneapi-2023.1.0"
+
+ro_rel_oneapi_mr:
+  stage: slowtest
+  extends: .ro_merge
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "draco/oneapi-2023.1.0"
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -110,7 +203,7 @@ ro_deb_intel_classic_mr:
   variables:
     CTEST_MODE: Nightly
     CTEST_NPROC: 112
-    EXTRA_CMAKE_ARGS: -G Ninja
+    CTEST_BUILD_NAME: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
   script:
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
       "Configure,Build,Test"
@@ -124,16 +217,28 @@ ro_rel_intel_classic_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.1-intel"
-    CTEST_BUILD_NAME: "lapse231-intel-Release"
+    DRACO_ENV: "draco/intel-2023.1.0"
 
 ro_deb_intel_classic_regress:
   stage: test
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-intel"
-    CTEST_BUILD_NAME: "lapse231-intel-Debug"
+    DRACO_ENV: "draco/intel-2023.1.0"
+
+ro_rel_oneapi_regress:
+  stage: test
+  extends: .ro_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "draco/oneapi-2023.1.0"
+
+ro_deb_oneapi_regress:
+  stage: test
+  extends: .ro_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/oneapi-2023.1.0"
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/ro-jobs.yml

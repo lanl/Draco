@@ -37,7 +37,7 @@ if [[ ! ${modcmd} ]]; then
   echo "ERROR: The module command was not found. No modules will be loaded (ats-3 e02)."
 else
   module use --append /usr/projects/draco/Modules/ats3
-  module load lapse/2.3.1-intel
+  module load draco/intel-2023.1.0
   # module unuse /opt/cray/pe/lmod/modulefiles/compiler/crayclang/10.0
   # module unuse /opt/cray/pe/lmod/modulefiles/perftools/21.05.0
   # module unuse /opt/cray/pe/lmod/modulefiles/cpu/x86-rome/1.0

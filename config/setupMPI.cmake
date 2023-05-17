@@ -39,7 +39,7 @@ function(setMPIflavorVer)
 
   # First attempt to determine MPI flavor -- scape flavor from full path (this ususally works for
   # HPC or systems with modules)
-  if(CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
+  if(CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv OR "$ENV{LOADEDMODULES}" MATCHES "cray-mpich")
     set(MPI_FLAVOR "cray")
   elseif(
     "${MPIEXEC_EXECUTABLE}" MATCHES "openmpi"
