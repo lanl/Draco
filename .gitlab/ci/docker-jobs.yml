@@ -135,12 +135,13 @@ post_rzansel_results_to_cdash:
       for tf in $(\ls -1 *.tar); do
           cd ${DRACO_BINARY_DIR};
           build_dir=${tf//.tar/};
-          site=$(echo ${tf} | sed -e 's/-.*//')
+          site=$(echo ${tf} | sed -e 's/-.*//');
           echo -e "\n============================================================";
           echo "Examining ${build_dir} (${site})";
           echo -e "============================================================\n";
           mkdir -p ${build_dir} && cd ${build_dir};
           tar -xvf ../${tf};
+          cp DartConfiguration.tcl DartConfiguration.tcl.bak;
           sed -i "s%SourceDirectory.*%SourceDirectory: ${DRACO_SOURCE_DIR}%" DartConfiguration.tcl;
           sed -i "s%BuildDirectory.*%BuildDirectory: ${DRACO_BINARY_DIR}/${build_dir}%" \
             DartConfiguration.tcl;
@@ -149,8 +150,8 @@ post_rzansel_results_to_cdash:
           sed -i "s%BuildName.*%BuildName: ${buildname}%" DartConfiguration.tcl;
           sed -i "s%Site.*%Site: ${site}%" DartConfiguration.tcl;
           echo -e "\n-- Modified values:\n";
-          grep Site DartConfiguration.tcl;
-          grep BuildName DartConfiguration.tcl;
+          if [[ $(diff -a DartConfiguration.tcl.bak DartConfiguration.tcl > my.diff; \
+            cat diff.txt | wc -l) -gt 0 ]]; then cat diff.txt; fi;
           ctest --extra-submit DartConfiguration.tcl;
       done;
     - echo "==> PASS -- RZ test results submitted to CDash."
