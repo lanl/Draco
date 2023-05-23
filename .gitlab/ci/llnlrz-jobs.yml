@@ -180,7 +180,7 @@ rzansel_rwdi_xl_deploy_release:
 
 # ----- regular test -----
 
-rzvernal_rel_cce1501_mr:
+rzvernal_deb_cce1501_mr:
   stage: test
   extends: .rzvernal_merge
   variables:
@@ -188,7 +188,15 @@ rzvernal_rel_cce1501_mr:
     DRACO_ENV: "lapse/2.3.0-cce"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
 
-rzansel_rel_xl1611_mr:
+rzvernal_deb_cce1501_hip_mr:
+  stage: test
+  extends: .rzvernal_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.3.0-cce"
+    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
+
+rzansel_deb_xl1611_mr:
   stage: test
   extends: .rzansel_merge
   variables:
