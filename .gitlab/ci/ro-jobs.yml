@@ -18,13 +18,13 @@
     - ro-rfe1
   allow_failure: true
   variables:
-    CTEST_MODE: Experimental
-    DEPLOY: "FALSE"
     SITE_ID: rocinante
+    CTEST_MODE: Experimental
     CTEST_NPROC: 112
-    SCHEDULER_PARAMETERS: -N 1
-    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+    DEPLOY: "FALSE"
     EXTRA_CMAKE_ARGS: -G Ninja
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+    SCHEDULER_PARAMETERS: -N 1
     # -A asc-ci --partition=ci --qos=ci --reservation=ci
     # CI_DEBUG_TRACE: "true"
 
@@ -37,7 +37,7 @@
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
-    DRACO_INSTALL_DIR: "/usr/projects/draco/deploy/rocinante/${FLAVOR}"
+    DRACO_INSTALL_DIR: "/usr/projects/draco/deploy/${SITE_ID}/${FLAVOR}"
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
