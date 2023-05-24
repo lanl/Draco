@@ -516,7 +516,7 @@ macro(setupMPILibrariesUnix)
           ${MPIEXEC_EXECUTABLE}
           CACHE STRING "Program to execute MPI parallel programs." FORCE)
 
-    elseif(DEFINED ENV{SYS_TYPE} AND "$ENV{SYS_TYPE}" MATCHES "ppc64le_ib_p9") # ATS-2
+    elseif(DEFINED ENV{SYS_TYPE} AND "$ENV{SYS_TYPE}" MATCHES "ppc64le_ib") # ATS-2
       if(NOT EXISTS ${MPIEXEC_EXECUTABLE})
         find_program(MPIEXEC_EXECUTABLE lrun)
       endif()
