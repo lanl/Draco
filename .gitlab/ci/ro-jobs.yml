@@ -73,6 +73,14 @@ ro_deb_oneapi_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/oneapi-2023.1.0"
 
+ro_deb_fulldiag_deploy:
+  extends: .ro_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/intel-2023.1.0"
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    FLAVOR: intel-fulldiag-static
+
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
 #--------------------------------------------------------------------------------------------------#
@@ -198,6 +206,7 @@ ro_rel_oneapi_mr:
 
 .ro_nightly:
   extends: .ro
+  stage: test
   variables:
     CTEST_MODE: Nightly
     CTEST_NPROC: 112
@@ -211,32 +220,37 @@ ro_rel_oneapi_mr:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
 ro_rel_intel_classic_regress:
-  stage: test
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/intel-2023.1.0"
 
 ro_deb_intel_classic_regress:
-  stage: test
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/intel-2023.1.0"
 
 ro_rel_oneapi_regress:
-  stage: test
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/oneapi-2023.1.0"
 
 ro_deb_oneapi_regress:
-  stage: test
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "draco/oneapi-2023.1.0"
+
+ro_deb_fulldiag_regress:
+  extends: .ro_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/intel-2023.1.0"
+    FLAVOR: intel-fulldiag-static
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+    CTEST_BUILD_NAME: intel-fulldiag-static
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/ro-jobs.yml
