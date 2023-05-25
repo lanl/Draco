@@ -74,27 +74,6 @@ dp9_rel_gcc930_deploy:
     MAXLOAD: 40
     SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
 
-dp9_rel_xl16_deploy:
-  extends: .darwin_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
-    ARCH: power9
-    CTEST_NPROC: 10
-    MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
-
-dp9_deb_xl16_deploy:
-  extends: .darwin_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
-    ARCH: power9
-    CTEST_NPROC: 10
-    MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
-    EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
-
 dx64_deb_nvhpc231_deploy:
   extends: .darwin_deploy
   variables:
@@ -104,26 +83,6 @@ dx64_deb_nvhpc231_deploy:
     CTEST_NPROC: 20
     MAXLOAD: 20
     SCHEDULER_PARAMETERS: ${SP_x86_64}
-
-dspr_deb_oneapi_deploy:
-  extends: .darwin_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/spr-oneapi20230201-nda
-    ARCH: x86_64
-    CTEST_NPROC: 112
-    MAXLOAD: 112
-    SCHEDULER_PARAMETERS: ${SP_spr}
-
-dspr_rel_oneapi_deploy:
-  extends: .darwin_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/spr-oneapi20230201-nda
-    ARCH: x86_64
-    CTEST_NPROC: 112
-    MAXLOAD: 112
-    SCHEDULER_PARAMETERS: ${SP_spr}
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
@@ -220,59 +179,7 @@ darwin_style_cxx:
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
-# ----- fast -----
-
 # none
-
-# ----- regular test -----
-
-dp9_rel_g930_mr:
-  stage: test
-  extends: .darwin_merge
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
-    ARCH: power9
-    CTEST_NPROC: 10
-    MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
-
-dp9_deb_xl_16_mr:
-  stage: test
-  extends: .darwin_merge
-  allow_failure: true
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
-    ARCH: power9
-    CTEST_NPROC: 20
-    MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
-    EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
-
-# ----- slow -----
-
-dp9_deb_g930_mr:
-  stage: slowtest
-  extends: .darwin_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
-    ARCH: power9
-    CTEST_NPROC: 10
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
-
-dp9_rel_xl_16_mr:
-  stage: slowtest
-  extends: .darwin_merge
-  allow_failure: true
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
-    ARCH: power9
-    CTEST_NPROC: 20
-    MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -288,44 +195,6 @@ dp9_rel_xl_16_mr:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-dp9_rel_g930_regress:
-  extends: .darwin_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
-    ARCH: power9
-    CTEST_NPROC: 40
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
-
-dp9_deb_g930_regress:
-  extends: .darwin_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
-    ARCH: power9
-    CTEST_NPROC: 40
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
-
-dp9_rel_xl16_regress:
-  extends: .darwin_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
-    ARCH: power9
-    CTEST_NPROC: 20
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
-    EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
-
-dp9_deb_xl16_regress:
-  extends: .darwin_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: lapse/2.3.1-power9-rhel7-xl
-    ARCH: power9
-    CTEST_NPROC: 20
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
-    EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
-
 darwin_deb_nvhpc231_regress:
   extends: .darwin_nightly
   variables:
@@ -334,24 +203,6 @@ darwin_deb_nvhpc231_regress:
     ARCH: x86_64
     CTEST_NPROC: 20
     SCHEDULER_PARAMETERS: ${SP_x86_64}
-
-darwin_deb_oneapi_regress:
-  extends: .darwin_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/spr-oneapi20230201-nda
-    ARCH: x86_64
-    CTEST_NPROC: 112
-    SCHEDULER_PARAMETERS: ${SP_spr}
-
-darwin_rel_oneapi_regress:
-  extends: .darwin_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/spr-oneapi20230201-nda
-    ARCH: x86_64
-    CTEST_NPROC: 112
-    SCHEDULER_PARAMETERS: ${SP_spr}
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/darwin-jobs.yml
