@@ -62,7 +62,12 @@ option(HAVE_GPU "Should we build GPU (HIP or CUDA) parts of the project?" @HAVE_
 set(USE_GPU "@USE_GPU@")
 set(GPU_DBS_STRING "@GPU_DBS_STRING@")
 
-if(${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ninja")
+
+if((${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ninja") AND NOT MSVC)
+  # For non-MSVC builds, always look for Fortran.  If $ENV{FC} or ${CMAKE_Fortran_COMPILER} are
+  # defined, they will be used.  Otherwise cmake will search for a Fortran compiler based on its
+  # internal rules.  Normally, it will look for gfortran first.
+  enable_language(Fortran OPTIONAL)
   if("${GPU_DBS_STRING}" MATCHES "CUDA")
 
     # CUDA
@@ -95,13 +100,6 @@ if(${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ni
     else()
       message( FATAL_ERROR "==> Hip requested but rocmcc not found. Try loading a rocm module.")
     endif()
-  endif()
-endif()
-
-# Is Fortran enabled (it is considered 'optional' for draco)?
-if( ${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ninja" )
-  if( DEFINED ENV{FC} OR DEFINED CMAKE_Fortran_COMPILER )
-    enable_language( Fortran OPTIONAL )
   endif()
 endif()
 
