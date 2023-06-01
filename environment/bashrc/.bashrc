@@ -190,7 +190,7 @@ if [[ ${INTERACTIVE} == true ]]; then
 
     # trinitite (tt-rfe) | trinity (tr-fe)
     tt-rfe* | tt-login* | tr-fe* | tr-login* | nid* )
-      if [[ "${SLURM_CLUSTER_NAME}" == "rocinante" ]]; then
+      if [[ "${MODULEPATH}" =~ "rocinante" ]]; then
         # shellcheck source=/dev/null
         source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats3"
       else

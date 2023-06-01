@@ -385,7 +385,12 @@ macro(setupCrayMPI)
 
   set(preflags " ") # -N 1 --cpu_bind=verbose,cores
   if(NOT MPIEXEC_EXECUTABLE MATCHES "flux")
-    string(APPEND preflags " --gres=craynetwork:0 --overlap --hint=nomultithread")
+    if(DEFINED ENV{PE_PRODUCT_LIST} AND "$ENV{PE_PRODUCT_LIST}" MATCHES "CRAYPE_X86_SPR")
+      # ATS-3
+      string(APPEND preflags " --overlap --cpu-bind=none")
+    else()
+      string(APPEND preflags " --gres=craynetwork:0 --overlap --hint=nomultithread")
+    endif()
   endif()
   set(MPIEXEC_PREFLAGS
       ${preflags}
