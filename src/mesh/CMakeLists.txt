@@ -3,7 +3,7 @@
 # author Ryan Wollaeger <wollaeger@lanl.gov>
 # date   Thursday, Jun 07, 2018, 15:37 pm
 # brief  Generate build project files for mesh.
-# note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2018-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(mesh CXX)
@@ -12,7 +12,6 @@ project(mesh CXX)
 # Source files
 # ------------------------------------------------------------------------------------------------ #
 file(GLOB sources *.cc)
-file(GLOB explicit_instantiations *_pt.cc)
 file(GLOB headers *.hh)
 
 # ------------------------------------------------------------------------------------------------ #
