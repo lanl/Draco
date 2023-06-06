@@ -186,11 +186,13 @@
   "buildPresets": [
     {
       "name": "win-x64-debug",
-      "configurePreset": "win-x64-debug"
+      "configurePreset": "win-x64-debug",
+      "jobs":  22
     },
     {
       "name": "win-x64-release",
-      "configurePreset": "win-x64-release"
+      "configurePreset": "win-x64-release",
+      "jobs": 22
     },
     {
       "name": "linux-debug",
