@@ -389,7 +389,7 @@ macro(setupCrayMPI)
       # ATS-3
       string(APPEND preflags " --overlap --cpu-bind=none")
     else()
-      string(APPEND preflags " --gres=craynetwork:0 --overlap --hint=nomultithread")
+      string(APPEND preflags " --gres=craynetwork:0 --overlap")
     endif()
   endif()
   set(MPIEXEC_PREFLAGS
