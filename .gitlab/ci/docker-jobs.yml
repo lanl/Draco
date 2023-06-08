@@ -2,10 +2,13 @@
 # File:    .gitlab/ci/docker-jobs.yml
 # Author:  Kelly Thompson <kgt@lanl.gov>
 # Date:    Wednesday, Jan 13, 2021, 20:57 pm
-# Purpose: gitlab suid runner commands for superlinter (https://github.com/github/super-linter).
+# Purpose: CI jobs that run in a docker container (superlinter, coverageCheck, post-cdash-results)
 # Note:    Copyright (C) 2020-2023 Triad National Security, LLC., All rights reserved.
 #
-# See Also: https://gitlab.com/snippets/1988376
+# See also:
+# * https://github.com/github/super-linter
+# * https://gitlab.com/snippets/1988376
+# * https://hpc.lanl.gov/services/hpc-asc-gitlab/shared-runners.html
 #--------------------------------------------------------------------------------------------------#
 
 ---
@@ -50,20 +53,17 @@ superlinter:
     VALIDATE_XML: "true"
     # VALIDATE_YAML: "true"
 
+#--------------------------------------------------------------------------------------------------#
+
 checkCoverage_MR:
   # Ref: https://re-git.lanl.gov/draco/devops/-/wikis/Fail-a-CI-test-if-coverage-decreases
   # CI_API_V4_URL = https://re-git.lanl.gov/api/v4
   # CI_MERGE_REQUEST_PROJECT_ID = 503 (draco)
   # TARGET_COVERAGE_PERCENT is set in the gitlab CI variables section of the GUI.
   tags:
-    - darwin-docker-shared
+    - container
+    - shell
   stage: metrics
-  allow_failure: true
-  image:
-    name: alpine:3.16.2
-  allow_failure: true
-  before_script:
-    - apk add --quiet --update --no-cache curl jq
   dependencies:
     - ccs2_gcov
   variables:
@@ -111,13 +111,10 @@ checkCoverage_MR:
 post_rzansel_results_to_cdash:
   # https://docs.gitlab.com/ee/api/job_artifacts.html
   tags:
-    - darwin-docker-shared
+    - container
+    - shell
   stage: test
   allow_failure: true
-  image:
-    name: alpine:3.16.2
-  before_script:
-    - apk add --quiet --update --no-cache cmake
   needs:
     - job: rzansel_deb_xl1611_regress
       artifacts: true
