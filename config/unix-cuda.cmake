@@ -6,6 +6,8 @@
 
 include_guard(GLOBAL)
 
+# cmake-lint: disable=C0301,W0106
+
 if(NOT CMAKE_CUDA_COMPILER_ID STREQUAL NVIDIA)
   message(FATAL_ERROR "Draco only supports the Nvidia cuda compiler.")
 endif()
@@ -58,11 +60,23 @@ if(NOT CUDA_FLAGS_INITIALIZED)
            " -DTHRUST_IGNORE_DEPRECATED_CPP_DIALECT")
     string(APPEND CMAKE_CUDA_FLAGS " -ccbin ${CMAKE_CXX_COMPILER} -Xcompiler -std=c++14"
            " -Xcompiler -qxflag=disable__cplusplusOverride")
-    if(EXISTS /usr/gapps)
-      # ATS-2
-      string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler --gcc-toolchain=/usr/tce/packages/gcc/gcc-8.3.1"
-             " -Xcompiler -qxflag=disable__cplusplusOverride")
-    elseif(EXISTS ${CMAKE_CXX_COMPILER_CONFIG_FILE})
+
+    if(EXISTS /usr/gapps) # ATS-2
+      file(READ /etc/redhat-release rhr)
+      string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\1.\\2" redhat_version "${rhr}")
+      # If manually specified (eg. spack), do not add the --gcc-toolchain option
+      if(NOT CMAKE_CUDA_FLAGS MATCHES "--gcc-toolchain=")
+        string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler")
+        if(redhat_version MATCHES "^8.([0-9]+)")
+          string(APPEND CMAKE_CUDA_FLAGS " --gcc-toolchain=/usr/tce/packages/gcc/gcc-11.2.1")
+        else()
+          string(APPEND CMAKE_CUDA_FLAGS " --gcc-toolchain=/usr/tce/packages/gcc/gcc-8.3.1")
+        endif()
+      endif()
+      string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler -qxflag=disable__cplusplusOverride")
+
+    elseif(DEFINED ENV{CMAKE_CXX_COMPILER_CONFIG_FILE} AND EXISTS
+                                                           "$ENV{CMAKE_CXX_COMPILER_CONFIG_FILE}")
       # Darwin
       string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler -F${CMAKE_CXX_COMPILER_CONFIG_FILE}")
     endif()
