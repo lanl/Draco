@@ -566,8 +566,9 @@ macro(dbsSetupStaticAnalyzers)
                                                                "[-]config-file[=]")
           list(GET CMAKE_CXX_CLANG_TIDY 0 CMAKE_CXX_CLANG_TIDY)
         endif()
+        string(APPEND CMAKE_CXX_CLANG_TIDY ";${CLANG_TIDY_CHECKS}")
         set(CMAKE_CXX_CLANG_TIDY
-            "${CMAKE_CXX_CLANG_TIDY};${CLANG_TIDY_CHECKS}"
+            "${CMAKE_CXX_CLANG_TIDY}"
             CACHE STRING "Run clang-tidy on each source file before compile." FORCE)
       else()
         unset(CMAKE_CXX_CLANG_TIDY)
