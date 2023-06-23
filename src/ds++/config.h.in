@@ -300,6 +300,7 @@
 #ifdef _MSC_VER
     #undef max
     #undef min
+    #undef small
     #define NOMINMAX
     /* We want to use M_PI from math.h */
     #define _USE_MATH_DEFINES
