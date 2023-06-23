@@ -72,6 +72,15 @@ ccs1_deb_gcc_1120_deploy:
     DRACO_ENV: gcc1120
     SITE_ID: ccscs1
 
+ccs1_rwdi_gcc_1120_deploy:
+  tags:
+    - CCSCS1-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: RelWithDebInfo
+    DRACO_ENV: gcc1120
+    SITE_ID: ccscs1
+
 ccs1_c4_scalar_deploy:
   tags:
     - CCSCS1-setuid-shared
@@ -174,33 +183,6 @@ ccs4_rwdi_gcc_1120_deploy:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: gcc1120
     SITE_ID: ccscs4
-
-ccs9_rwdi_gcc_1120_deploy:
-  tags:
-    - CCSCS9-setuid-shared
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: gcc1120
-    SITE_ID: ccscs9
-
-ccs9_deb_gcc_1120_deploy:
-  tags:
-    - CCSCS9-setuid-shared
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
-    SITE_ID: ccscs9
-
-ccs9_rel_gcc_1120_deploy:
-  tags:
-    - CCSCS9-setuid-shared
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1120
-    SITE_ID: ccscs9
 
 ccs1_fulldiag_deploy:
   tags:
