@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 16:36:10 2000
  * \brief  Ensight_Translator template definitions.
- * \note   Copyright (C) 2015-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2015-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include <map>
@@ -174,37 +174,30 @@ Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &
                                  const FVF &pt_coor_in, const FVF &vrtx_data_in,
                                  const FVF &cell_data_in, const ISF &rgn_numbers,
                                  const SSF &rgn_name) {
-  using rtt_viz::Viz_Traits;
-  using std::find;
-  using std::string;
-  using std::vector;
-
   // >>> PREPARE DATA TO SET ENSIGHT OUTPUT
 
   // load traits for vector field types
+  Viz_Traits<FVF> cell_data(cell_data_in);
   Viz_Traits<IVF> ipar(ipar_in);
   Viz_Traits<FVF> pt_coor(pt_coor_in);
   Viz_Traits<FVF> vrtx_data(vrtx_data_in);
-  Viz_Traits<FVF> cell_data(cell_data_in);
 
   // define sizes used throughout
-  size_t ncells = ipar.nrows();
-  size_t nvertices = pt_coor.nrows();
-  Remember(size_t nrgn = rgn_name.size(););
+  size_t const ncells = ipar.nrows();
+  size_t const nvertices = pt_coor.nrows();
 
   // Check sizes of all data.
-  Require(iel_type.size() == ncells);
+  Require(rgn_numbers.size() == rgn_name.size());
   Require(cell_rgn_index.size() == ncells);
+  Require(iel_type.size() == ncells);
   Require(cell_data.nrows() == ncells || cell_data.nrows() == 0);
   Require(vrtx_data.nrows() == nvertices || vrtx_data.nrows() == 0);
-  Require(rgn_numbers.size() == nrgn);
 
   // create the parts list
   ISF parts_list;
 
   for (size_t i = 0; i < ncells; ++i) {
-    auto const find_location = find(parts_list.begin(), parts_list.end(), cell_rgn_index[i]);
-
+    auto const find_location = std::find(parts_list.begin(), parts_list.end(), cell_rgn_index[i]);
     if (find_location == parts_list.end())
       parts_list.push_back(cell_rgn_index[i]);
   }
@@ -213,7 +206,7 @@ Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &
   size_t nparts = parts_list.size();
 
   // create the parts names
-  vector<string> part_names;
+  std::vector<std::string> part_names;
 
   for (size_t i = 0; i < nparts; ++i) {
     auto const find_location_c = find(rgn_numbers.begin(), rgn_numbers.end(), parts_list[i]);
@@ -242,7 +235,7 @@ Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &
   // Initialize cells_of_type and vertices_of_part.
 
   for (size_t i = 0; i < ncells; ++i) {
-    auto const find_location = find(parts_list.begin(), parts_list.end(), cell_rgn_index[i]);
+    auto const find_location = std::find(parts_list.begin(), parts_list.end(), cell_rgn_index[i]);
 
     Check(find_location != parts_list.end());
     //Check(iel_type[i] >= 0);
@@ -359,11 +352,6 @@ Ensight_Translator::write_part(uint32_t part_num, const std_string &part_name, c
                                const ISF &g_cell_indices) {
   Require(part_num > 0);
 
-  using rtt_viz::Viz_Traits;
-  using std::find;
-  using std::string;
-  using std::vector;
-
   // load traits for vector field types
   Viz_Traits<IVF> ipar(ipar_in);
   Viz_Traits<FVF> pt_coor(pt_coor_in);
@@ -371,8 +359,8 @@ Ensight_Translator::write_part(uint32_t part_num, const std_string &part_name, c
   Viz_Traits<FVF> cell_data(cell_data_in);
 
   // define sizes used throughout
-  size_t ncells = ipar.nrows();
-  size_t nvertices = pt_coor.nrows();
+  size_t const ncells = ipar.nrows();
+  size_t const nvertices = pt_coor.nrows();
 
   // Check sizes of all data.
   Require(iel_type.size() == ncells);
@@ -385,7 +373,6 @@ Ensight_Translator::write_part(uint32_t part_num, const std_string &part_name, c
   sf2_int cells_of_type(d_num_cell_types);
 
   for (size_t i = 0; i < ncells; ++i) {
-    // Check(iel_type[i] >= 0);
     Check(static_cast<unsigned>(iel_type[i]) < d_num_cell_types);
     Check(i < INT_MAX);
     cells_of_type[iel_type[i]].push_back(static_cast<int>(i));

@@ -4,22 +4,19 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 16:36:10 2000
  * \brief  Ensight_Translator header file.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_viz_Ensight_Translator_hh
 #define rtt_viz_Ensight_Translator_hh
 
-#include "Ensight_Stream.hh"
-#include "Viz_Traits.hh"
 #include "c4/C4_Functions.hh"
+#include "viz/Ensight_Stream.hh"
+#include "viz/Viz_Traits.hh"
 #include <memory>
 #include <set>
 
 namespace rtt_viz {
-
-// helper for SFINAE
-template <bool C, typename T> using enable_if_t = typename std::enable_if<C, T>::type;
 
 //================================================================================================//
 /*!
