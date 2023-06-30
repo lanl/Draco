@@ -4,16 +4,20 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 17:10:54 2000
  * \brief  Viz_Traits header file.
- * \note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_viz_Viz_Traits_hh
 #define rtt_viz_Viz_Traits_hh
 
 #include "ds++/Assert.hh"
+#include <set>
 #include <vector>
 
 namespace rtt_viz {
+
+// helper for SFINAE
+template <bool C, typename T> using enable_if_t = typename std::enable_if<C, T>::type;
 
 //================================================================================================//
 /*!
@@ -32,12 +36,20 @@ namespace rtt_viz {
  * \arg operator()(int i, int j) where the range is [0:N-1, 0:N-1];
  * \arg nrows() returns the number of rows (i index);
  * \arg ncols(int row) returns the number of columns in row (j index);
- * \arg FT::value_type defined to the type returned by the field (int, double, etc).
+ *
+ * https://stackoverflow.com/questions/61562051/c-sfinae-for-array-vector
+ *
+ * \tparam FT field type must be a 2D or 3D STL container.  Eg. vector<vector<int>> or
+ *          vector<vector<set<float>>>.
+ * \tparam elementTypeOuter SFINAE failure if FT is not an STL container.
+ * \tparam elementType SFINAE failure if elementTypeOuter is not an STL container.
  */
 //================================================================================================//
 
-template <typename FT> class Viz_Traits {
-private:
+template <typename FT, typename elementTypeOuter = typename FT::value_type,
+          typename elementType = typename elementTypeOuter::value_type>
+class Viz_Traits {
+
   //! Reference to the field.
   const FT &field;
 
@@ -45,116 +57,56 @@ public:
   //! Constructor.
   explicit Viz_Traits(const FT &field_in) : field(field_in) {}
 
-  //! Overloaded operator().
-  typename FT::value_type operator()(size_t i, size_t j) const { return field(i, j); }
-
-  // Overloaded operator().
-  typename FT::value_type operator()(size_t i, size_t j, size_t /*k*/) const { return field(i, j); }
-
-  //! Row size accessor.
-  size_t nrows() const { return field.nrows(); }
-
-  //! Column size accessor.
-  size_t ncols(size_t row) const { return field.ncols(row); }
-
-  // Depth size accessor.
-  size_t ndpth(size_t /*row*/, size_t /*col*/) const { return 0; }
-};
-
-//------------------------------------------------------------------------------------------------//
-// Specialization for std::vector<std::vector>
-
-template <typename T> class Viz_Traits<std::vector<std::vector<T>>> {
-public:
-  // Type traits
-  using elementType = T;
-
-private:
-  // Reference to vector<vector> field.
-  const std::vector<std::vector<T>> &field;
-
-public:
-  // Constructor.
-  explicit Viz_Traits(const std::vector<std::vector<T>> &fin) : field(fin) {
-    // Nothing to do here
-  }
-
-  // Overloaded operator().
-  T operator()(size_t i, size_t j) const {
+  //! Overloaded operator() with 2 args.
+  auto operator()(size_t i, size_t j) const {
     Require(i < field.size());
     Require(j < field[i].size());
     return field[i][j];
   }
 
-  // Overloaded operator().
-  T operator()(size_t i, size_t j, size_t /*k*/) const {
-    Require(i < field.size());
-    Require(j < field[i].size());
-    return field[i][j];
+  //! Overloaded operator() with 3 args used on 2D data
+  template <typename U = elementType, enable_if_t<std::is_pod<U>::value, bool> = true>
+  auto operator()(size_t i, size_t j, size_t /*k*/) const {
+    return this->operator()(i, j);
   }
-
-  // Row size accessor.
-  size_t nrows() const { return field.size(); }
-
-  // Column size accessor.
-  size_t ncols(size_t row) const {
-    Require(row < field.size());
-    return field[row].size();
-  }
-
-  // Depth size accessor.
-  size_t ndpth(size_t /*row*/, size_t /*col*/) const { return 0; }
-};
-
-//------------------------------------------------------------------------------------------------//
-// Specialization for std::vector<std::vector<std::vector>>
-
-template <typename T> class Viz_Traits<std::vector<std::vector<std::vector<T>>>> {
-public:
-  // Type traits
-  using elementType = T;
-
-private:
-  // Reference to vector<vector> field.
-  const std::vector<std::vector<std::vector<T>>> &field;
-
-public:
-  // Constructor.
-  explicit Viz_Traits(const std::vector<std::vector<std::vector<T>>> &fin) : field(fin) {
-    // Nothing to do here
-  }
-
-  // Overloaded operator().
-  std::vector<T> operator()(size_t i, size_t j) const {
-    Require(i < field.size());
-    Require(j < field[i].size());
-    return field[i][j];
-  }
-
-  // Overloaded operator().
-  T operator()(size_t i, size_t j, size_t k) const {
+  /*
+  * \brief Overloaded operator() with 3 args used on 3D data.
+  * \bug If the innermost container is \c std::set, then the [k] operator is invalid.  You cannot
+  *      access the elements of a \c std::set with an index.
+  */
+  template <typename U = elementType, enable_if_t<!std::is_pod<U>::value, bool> = true>
+  auto operator()(size_t i, size_t j, size_t k) const {
     Require(i < field.size());
     Require(j < field[i].size());
     Require(k < field[i][j].size());
     return field[i][j][k];
   }
 
-  // Row size accessor.
+  //! Row size accessor.
   size_t nrows() const { return field.size(); }
 
-  // Column size accessor.
+  //! Column size accessor.
   size_t ncols(size_t row) const {
     Require(row < field.size());
     return field[row].size();
   }
 
-  // Depth size accessor.
+  //! Depth size accessor for 2D fields
+  template <typename U = elementType, enable_if_t<std::is_pod<U>::value, bool> = true>
+  size_t ndpth(size_t /*row*/, size_t /*col*/) const {
+    return 0;
+  }
+
+  //! Depth size accessor for 3D fields
+  template <typename U = elementType, enable_if_t<!std::is_pod<U>::value, bool> = true>
   size_t ndpth(size_t row, size_t col) const {
     Require(row < field.size());
     Require(col < field[row].size());
     return field[row][col].size();
   }
-};
+
+}; // class Viz_Trais
+
 } // namespace rtt_viz
 
 #endif // rtt_viz_Viz_Traits_hh
