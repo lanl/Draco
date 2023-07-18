@@ -1,8 +1,8 @@
 #--------------------------------------------------------------------------------------------------#
-# File:    .gitlab/ci/llnlrz-jobs.yml
+# File:    .gitlab/ci/rzansel-jobs.yml
 # Author:  Kelly Thompson <kgt@lanl.gov>
 # Date:    Mon Feb 27 14:41:34 MST 2023
-# Purpose: gitlab jacamar runner commands for LLNL RZ systems.
+# Purpose: gitlab jacamar runner commands for LLNL rzansel.
 # Note:    Copyright (C) 2023 Triad National Security, LLC., All rights reserved.
 #
 # * https://lc.llnl.gov/confluence/display/GITLAB/GitLab+CI
@@ -13,18 +13,6 @@
 #--------------------------------------------------------------------------------------------------#
 
 ---
-.rzvernal:
-  tags:
-    - rzvernal
-    - batch
-  variables:
-    CTEST_MODE: Experimental
-    DEPLOY: "FALSE"
-    SITE_ID: rzvernal
-    CTEST_NPROC: 40
-    SCHEDULER_PARAMETERS: -N 1 --begin=+5s
-    LLNL_SLURM_SCHEDULER_PARAMETERS: -N 1 --begin=+5s
-
 .rzansel:
   tags:
     - rzansel
@@ -40,26 +28,6 @@
 #--------------------------------------------------------------------------------------------------#
 # Deployment Jobs (run on develop after MRs are merged)
 #--------------------------------------------------------------------------------------------------#
-
-.rzvernal_deploy:
-  extends: .rzvernal
-  stage: deploy
-  variables:
-    DEPLOY: 'TRUE'
-    DRACO_ENV: "lapse/2.3.0-cce"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
-    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-    DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
-  script:
-    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
-  rules:
-    # Don't deploy if this is a forked repository.
-    - if: '$CI_PROJECT_NAMESPACE != "draco"'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: never
-    - if: '$CI_COMMIT_BRANCH == "develop"'
-    - if: '$CI_PIPELINE_SOURCE == "web"'
 
 .rzansel_deploy:
   extends: .rzansel
@@ -79,16 +47,6 @@
       when: never
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
-
-rzvernal_rel_cce1501_deploy:
-  extends: .rzvernal_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-
-rzvernal_deb_cce1501_deploy:
-  extends: .rzvernal_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
 
 rzansel_rel_xl1611_deploy:
   extends: .rzansel_deploy
@@ -154,18 +112,6 @@ rzansel_rwdi_xl_deploy_release:
 # Merge Requests
 #--------------------------------------------------------------------------------------------------#
 
-.rzvernal_merge:
-  extends: .rzvernal
-  allow_failure: true
-  script:
-    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
-  rules:
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_rzvernal/'
-      when: never
-    - if: '$CI_MERGE_REQUEST_TITLE =~ /Draft:/ || $CI_MERGE_REQUEST_TITLE =~ /WIP:/'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-
 .rzansel_merge:
   extends: .rzansel
   allow_failure: true
@@ -180,22 +126,6 @@ rzansel_rwdi_xl_deploy_release:
 
 # ----- regular test -----
 
-rzvernal_deb_cce1501_mr:
-  stage: test
-  extends: .rzvernal_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.0-cce"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
-
-rzvernal_deb_cce1501_hip_mr:
-  stage: test
-  extends: .rzvernal_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.0-cce"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
-
 rzansel_deb_xl1611_mr:
   stage: test
   extends: .rzansel_merge
@@ -205,41 +135,6 @@ rzansel_deb_xl1611_mr:
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
-#--------------------------------------------------------------------------------------------------#
-
-.rzvernal_nightly:
-  extends: .rzvernal
-  allow_failure: true
-  variables:
-    CTEST_MODE: Nightly
-    CTEST_NPROC: 80
-    DRACO_ENV: "lapse/2.3.0-cce"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=OFF
-    CTEST_BUILD_NAME: "lapse230-cce-${CMAKE_BUILD_TYPE}"
-  artifacts:
-    when: always
-    paths:
-      - build/${SITE_ID}-${PROJECT}-${CTEST_MODE}-${CTEST_BUILD_NAME}.tar
-  script:
-    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
-      "Configure,Build,Test"
-  after_script:
-    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m "Submit"
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-
-rzvernal_rel_cce1501_regress:
-  stage: test
-  extends: .rzvernal_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Release
-
-rzvernal_deb_cce1501_regress:
-  stage: test
-  extends: .rzvernal_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-
 #--------------------------------------------------------------------------------------------------#
 
 .rzansel_nightly:
@@ -276,5 +171,5 @@ rzansel_deb_xl1611_regress:
     EXTRA_CMAKE_ARGS: -DUSE_OPENMP=OFF
 
 #--------------------------------------------------------------------------------------------------#
-# end .gitlab/ci/llnlrz-jobs.yml
+# end .gitlab/ci/rzansel-jobs.yml
 #--------------------------------------------------------------------------------------------------#
