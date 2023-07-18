@@ -26,14 +26,15 @@ stages:
   - deploy-downstream
 
 include:
-  - local: /.gitlab/ci/tt-jobs.yml
-  - local: /.gitlab/ci/snow-jobs.yml
   - local: /.gitlab/ci/ccscs-jobs.yml
   - local: /.gitlab/ci/darwin-jobs.yml
   - local: /.gitlab/ci/docker-jobs.yml
-  - local: /.gitlab/ci/llnlrz-jobs.yml
   - local: /.gitlab/ci/msvc-jobs.yml
   - local: /.gitlab/ci/ro-jobs.yml
+  - local: /.gitlab/ci/rzansel-jobs.yml
+  - local: /.gitlab/ci/rzvernal-jobs.yml
+  - local: /.gitlab/ci/snow-jobs.yml
+  - local: /.gitlab/ci/tt-jobs.yml
 
 #--------------------------------------------------------------------------------------------------#
 # End .gitlab-ci.yml
