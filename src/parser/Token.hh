@@ -3,7 +3,7 @@
  * \file   parser/Token.hh
  * \author Kent G. Budge
  * \brief  Define class Token and enum Token_Type
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Token_HH
@@ -16,12 +16,9 @@
 #endif
 
 namespace rtt_parser {
-using std::string;
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Token types recognized by a Token_Stream.
- */
+//! Token types recognized by a Token_Stream.
 enum Token_Type {
   END,     /*!< The identifier <CODE>end</CODE>, denoting that the Parse_Table should return control
             *   to its client.  Can be used to implement nested parse tables.*/
@@ -49,16 +46,13 @@ public:
   // CREATORS
 
   //! Construct a Token with the specified non-text type and location.
-  inline Token(Token_Type type, string const &location);
+  inline Token(Token_Type type, std::string const &location);
 
   //! Construct a single-character OTHER token with the specified location.
-  inline Token(char c, string const &location);
+  inline Token(char c, std::string const &location);
 
   //! Construct a Token with specified type, text, and location.
-  inline Token(Token_Type type, string const &text, string const &location);
-
-  //! Construct a Token with specified type, text, and location.
-  inline Token(Token_Type type, string &&text, string &&location);
+  inline Token(Token_Type type, std::string text, std::string location);
 
   //! Default constructor
   inline Token() : text_(), location_() {}
@@ -69,10 +63,10 @@ public:
   Token_Type type() const noexcept { return type_; }
 
   //! Return the token text.
-  string const &text() const { return text_; }
+  std::string const &text() const { return text_; }
 
   //! Return the location information.
-  string const &location() const { return location_; }
+  std::string const &location() const { return location_; }
 
   //! Check that the class invariants are satisfied.
   bool check_class_invariant() const;
@@ -87,8 +81,11 @@ public:
 
 private:
   Token_Type type_ = {END}; //!< Type of this token
-  string text_;             //!< Text of this token
-  string location_;         //!< Location information (such as file and line)
+  std::string text_;        //!< Text of this token
+  std::string location_;    //!< Location information (such as file and line)
+
+  //! Helper to check post-ctor state
+  void ctor_check_state();
 };
 
 // For checking of assertions
@@ -102,48 +99,30 @@ bool Is_Other_Text(char const *string);
 //! Test equality of two Tokens
 bool operator==(Token const &a, Token const &b);
 
-//------------------------------------------------------------------------------------------------//
-/*!
- * \param type Type of the Token.
- * \param text Text of the Token.
- * \param location The token location.
- */
-inline Token::Token(Token_Type const type, string const &text, string const &location)
-    : type_(type), text_(text), location_(location) {
-  Require(Is_Text_Token(type));
-  Require(type != KEYWORD || Is_Keyword_Text(text.c_str()));
-  Require(type != REAL || Is_Real_Text(text.c_str()));
-  Require(type != INTEGER || Is_Integer_Text(text.c_str()));
-  Require(type != STRING || Is_String_Text(text.c_str()));
-  Require(type != OTHER || Is_Other_Text(text.c_str()));
+//! Helper to check post-ctor state
+inline void Token::ctor_check_state() {
+  Require(Is_Text_Token(type_));
+  Require(type_ != KEYWORD || Is_Keyword_Text(text_.c_str()));
+  Require(type_ != REAL || Is_Real_Text(text_.c_str()));
+  Require(type_ != INTEGER || Is_Integer_Text(text_.c_str()));
+  Require(type_ != STRING || Is_String_Text(text_.c_str()));
+  Require(type_ != OTHER || Is_Other_Text(text_.c_str()));
 
   Ensure(check_class_invariant());
-  Ensure(this->type() == type);
-  Ensure(this->text() == text);
-  Ensure(this->location() == location);
+  Ensure(this->type() == type_);
+  Ensure(this->text() == text_);
+  Ensure(this->location() == location_);
 }
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * Move version of previous constructor.
- *
  * \param type Type of the Token.
  * \param text Text of the Token.
  * \param location The token location.
  */
-inline Token::Token(Token_Type const type, string &&text, string &&location)
-    : type_(type), text_(text), location_(location) {
-  Require(Is_Text_Token(type));
-  Require(type != KEYWORD || Is_Keyword_Text(text.c_str()));
-  Require(type != REAL || Is_Real_Text(text.c_str()));
-  Require(type != INTEGER || Is_Integer_Text(text.c_str()));
-  Require(type != STRING || Is_String_Text(text.c_str()));
-  Require(type != OTHER || Is_Other_Text(text.c_str()));
-
-  Ensure(check_class_invariant());
-  Ensure(this->type() == type);
-  Ensure(this->text() == text);
-  Ensure(this->location() == location);
+inline Token::Token(Token_Type const type, std::string text, std::string location)
+    : type_(type), text_(std::move(text)), location_(std::move(location)) {
+  ctor_check_state();
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -151,13 +130,13 @@ inline Token::Token(Token_Type const type, string &&text, string &&location)
  * \param c The token text (a single character)
  * \param location The token location.
  */
-inline Token::Token(char const c, string const &location)
+inline Token::Token(char const c, std::string const &location)
     : type_(OTHER), text_(1, c), location_(location) {
-  Require(Is_Other_Text(string(1, c).c_str()));
+  Require(Is_Other_Text(std::string(1, c).c_str()));
 
   Ensure(check_class_invariant());
   Ensure(this->type() == OTHER);
-  Ensure(this->text() == string(1, c));
+  Ensure(this->text() == std::string(1, c));
   Ensure(this->location() == location);
 }
 
@@ -168,7 +147,7 @@ inline Token::Token(char const c, string const &location)
  *
  * These token types have no associated text.
  */
-inline Token::Token(Token_Type const type, string const &location)
+inline Token::Token(Token_Type const type, std::string const &location)
     : type_(type), text_(), location_(location) {
   Require(!Is_Text_Token(type));
 

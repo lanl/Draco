@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Thu Jul 17 14:08:42 2008
  * \brief  Member definitions of class Abstract_Class_Parser
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef utils_Abstract_Class_Parser_i_hh
@@ -69,7 +69,7 @@ std::vector<Parse_Function>
 template <typename Class, Parse_Table &get_parse_table(),
           std::shared_ptr<Class> &get_parsed_object(), typename Parse_Function>
 void Abstract_Class_Parser<Class, get_parse_table, get_parsed_object,
-                           Parse_Function>::register_child(string const &keyword,
+                           Parse_Function>::register_child(std::string const &keyword,
                                                            Parse_Function parsefunction) {
   using namespace rtt_parser;
 
@@ -100,7 +100,7 @@ void Abstract_Class_Parser<Class, get_parse_table, get_parsed_object,
 template <typename Class, Parse_Table &get_parse_table(),
           std::shared_ptr<Class> &get_parsed_object(), typename Parse_Function>
 void Abstract_Class_Parser<Class, get_parse_table, get_parsed_object,
-                           Parse_Function>::register_child(string const &keyword,
+                           Parse_Function>::register_child(std::string const &keyword,
                                                            std::shared_ptr<Class> parsefunction(
                                                                Token_Stream &)) {
 

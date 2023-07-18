@@ -3,8 +3,7 @@
  * \file   Token.cc
  * \author Kent G. Budge
  * \brief  Definitions of Token helper functions.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Token.hh"
@@ -24,9 +23,9 @@ bool Is_Text_Token(Token_Type const type) {
 /*!
  * Is the argument a valid OTHER text?
  *
- * \return \c true if the argument points to a string of a single character that
- * does not fit any other token type pattern, or if the argument points to a
- * string of two or three characters from a recognized standard set.
+ * \return \c true if the argument points to a string of a single character that does not fit any
+ * other token type pattern, or if the argument points to a string of two or three characters from a
+ * recognized standard set.
  */
 bool Is_Other_Text(char const *text) {
   Require(text != nullptr);
@@ -100,8 +99,8 @@ bool Is_String_Text(char const *text) {
 /*!
  *  Is the argument a valid real constant?
  *
- * \return \c true if the argument points to a string consisting of a single C++
- * floating-point constant.
+ * \return \c true if the argument points to a string consisting of a single C++ floating-point
+ * constant.
  */
 bool Is_Real_Text(char const *text) {
   Require(text != nullptr);
@@ -115,8 +114,7 @@ bool Is_Real_Text(char const *text) {
 /*!
  * Is the argument a valid integer constanta?
  *
- * \return \c true if the argument points to a string consisting of a single C++
- * integer constant.
+ * \return \c true if the argument points to a string consisting of a single C++ integer constant.
  */
 bool Is_Integer_Text(char const *text) {
   Require(text != nullptr);
@@ -139,10 +137,9 @@ bool operator==(Token const &a, Token const &b) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * The invariants all reflect the basic requirement that the token text is
- * consistent with the token type.  For example, if the type is REAL, the text
- * must be a valid C representation of a real number, which can be converted to
- * double using atof.
+ * The invariants all reflect the basic requirement that the token text is consistent with the token
+ * type.  For example, if the type is REAL, the text must be a valid C representation of a real
+ * number, which can be converted to double using atof.
  *
  * \return \c true if the invariants are all satisfied; \c false otherwise
  */
@@ -156,6 +153,7 @@ bool Token::check_class_invariant() const {
 }
 
 } // namespace rtt_parser
+
 //------------------------------------------------------------------------------------------------//
 // end of Token_Stream.cc
 //------------------------------------------------------------------------------------------------//
