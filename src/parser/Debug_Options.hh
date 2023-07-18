@@ -3,7 +3,7 @@
  * \file   parser/Debug_Options.hh
  * \author Kent Grimmett Budge
  * \brief  Define the Debug_Options enumeration and declare parse functions.
- * \note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2023 Triad National Security, LLC., All rights reserved. */
 /*------------------------------------------------------------------------------------------------*/
 
 #ifndef parser_Debug_Options_hh
@@ -40,14 +40,14 @@ unsigned parse_debug_options(rtt_parser::Token_Stream &tokens, unsigned parent_m
 
 //------------------------------------------------------------------------------------------------//
 //! Add an application-specific debug option.
-void add_debug_option(string const &option_name, unsigned const bit);
+void add_debug_option(std::string const &option_name, unsigned const bit);
 
 //------------------------------------------------------------------------------------------------//
 //! Add an application-specific debug option.
-unsigned add_debug_option(string const &option_name);
+unsigned add_debug_option(std::string const &option_name);
 
 //------------------------------------------------------------------------------------------------//
-unsigned get_debug_option(string const &option_name);
+unsigned get_debug_option(std::string const &option_name);
 
 //------------------------------------------------------------------------------------------------//
 //! Flush application-specific debug options.

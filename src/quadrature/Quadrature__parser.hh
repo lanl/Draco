@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  Parser for various quadrature classes.
- * \note   Copyright (C) 2015-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2015-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Quadrature.hh"
@@ -48,7 +48,7 @@ public:
 
   // STATICS
 
-  static void register_quadrature(string const &keyword,
+  static void register_quadrature(std::string const &keyword,
                                   std::shared_ptr<Quadrature> parse_function(Token_Stream &));
 
 private:
