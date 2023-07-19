@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for viz/test.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 project(viz_test CXX)
 
@@ -14,9 +14,13 @@ project(viz_test CXX)
 file(GLOB test_sources ${PROJECT_SOURCE_DIR}/tstEnsight_Stream.cc
      ${PROJECT_SOURCE_DIR}/tstViz_Traits.cc)
 
+file(GLOB serial_test_sources ${PROJECT_SOURCE_DIR}/tstvtk_camr_writer.cc)
+
 # ------------------------------------------------------------------------------------------------ #
 # Build Unit tests
 # ------------------------------------------------------------------------------------------------ #
+
+add_scalar_tests(SOURCES "${serial_test_sources}" DEPS "Lib_viz")
 
 if(NOT APPLE AND DRACO_C4 STREQUAL MPI)
   # numdiff/ndselect crashes when run on OS/X so don't try to run the tests.
@@ -70,6 +74,7 @@ set(extra_clean_files
     Temperatures.diff
     Velocity.diff
     ensight_stream.out
+    vtk_out.vtk
     geo.diff
     part_testproblem_binary_ensight
     part_testproblem_ensight
