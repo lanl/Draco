@@ -7,10 +7,9 @@
  * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef rtt_viz_VTK_CAMR_HPP
-#define rtt_viz_VTK_CAMR_HPP
+#ifndef rtt_viz_vtk_camr_writer_hh
+#define rtt_viz_vtk_camr_writer_hh
 
-// system includes
 #include <sstream>
 #include <type_traits>
 #include <unordered_map>
@@ -18,15 +17,19 @@
 
 namespace rtt_viz {
 
-////////////////////////////////////////////////////////////////////////////////
-//! \brief A vtk writer class for legacy files.
-////////////////////////////////////////////////////////////////////////////////
+//================================================================================================//
+/*!
+ * \class vtk_camr_writer_t
+ *
+ * \brief A VTK writer class for legacy files.
+ */
+//================================================================================================//
 class vtk_camr_writer_t {
 
 public:
   /// constructors
   vtk_camr_writer_t() = default;
-  vtk_camr_writer_t(int rank) {}
+  explicit vtk_camr_writer_t(int /*rank*/) {}
 
   /// Open a file
   int open(const char *filename) {
@@ -40,7 +43,7 @@ public:
   }
 
   /// Close a file
-  int close(void) {
+  int close() {
     file_.close();
     return !file_.good();
   }
@@ -48,7 +51,7 @@ public:
 public:
   // write "VTK files "
   int write_camr_unstructured_begin() {
-    file_ << "<VTKFile type=\"UnstructuredGrid\" version=\"2.0\" byte_order=\"LittleEndian\">"
+    file_ << R"(<VTKFile type="UnstructuredGrid" version="2.0" byte_order="LittleEndian">)"
           << std::endl;
     file_ << "<UnstructuredGrid>" << std::endl;
 
@@ -60,12 +63,11 @@ public:
     return !file_.good();
   }
 
-  //============================================================================
-  /// Write piece data
-  //============================================================================
-  int write_camr_piece_begin(int num_dims, int ncells) {
-    int nvts = pow(2, num_dims) * ncells;
-    file_ << "<Piece NumberOfPoints=\"" << nvts << "\" NumberOfCells=\"" << ncells << "\">"
+  //------------------------------------------------------------------------------------------------//
+  // Write piece data
+  int write_camr_piece_begin(const int num_dims, const int ncells) {
+    int nvts = static_cast<int>(pow(2, num_dims)) * ncells;
+    file_ << R"(<Piece NumberOfPoints=")" << nvts << R"(" NumberOfCells=")" << ncells << R"(">)"
           << std::endl;
     return !file_.good();
   }
@@ -75,17 +77,16 @@ public:
     return !file_.good();
   }
 
-  //============================================================================
-  /// Write point coordinates
-  //============================================================================
-  int write_camr_points(std::size_t num_dims, std::size_t ncells, double dx,
-                        std::vector<double> &vertex, std::vector<int> levels) {
+  //------------------------------------------------------------------------------------------------//
+  // Write point coordinates
+  int write_camr_points(const std::size_t num_dims, const std::size_t ncells, const double dx,
+                        const std::vector<double> &vertex, const std::vector<int> &levels) {
 
     file_ << "<Points>" << std::endl;
-    file_ << "<DataArray type=\"Float64\" NumberOfComponents=\"3\">" << std::endl;
+    file_ << R"(<DataArray type="Float64" NumberOfComponents="3">)" << std::endl;
     ;
 
-    for (int i = 0; i < ncells; ++i) {
+    for (int i = 0; i < static_cast<int>(ncells); ++i) {
       double width = dx / pow(2, levels[i]);
       double x0 = vertex[i * num_dims];
       double y0 = vertex[i * num_dims + 1];
@@ -119,16 +120,15 @@ public:
     return !file_.good();
   }
 
-  //============================================================================
-  /// Write cells either quad (2d) or hex (3d)
-  //============================================================================
-  int write_camr_cells(int num_dims, int ncells) {
-    int nvts = pow(2, num_dims);
+  //------------------------------------------------------------------------------------------------//
+  // Write cells either quad (2d) or hex (3d)
+  int write_camr_cells(const int num_dims, const int ncells) {
+    int nvts = static_cast<int>(pow(2, num_dims));
     int element_type = num_dims == 2 ? 9 : 12;
 
     file_ << "<Cells>" << std::endl;
     // connectivity.
-    file_ << "<DataArray type=\"Int32\" Name=\"connectivity\">" << std::endl;
+    file_ << R"(<DataArray type="Int32" Name="connectivity">)" << std::endl;
     ;
     int cntr(0);
 
@@ -143,7 +143,7 @@ public:
 
     // offsets
     cntr = nvts;
-    file_ << "<DataArray type=\"Int32\" Name=\"offsets\">" << std::endl;
+    file_ << R"(<DataArray type="Int32" Name="offsets">)" << std::endl;
     ;
     for (int i = 0; i < ncells; ++i) {
       file_ << cntr << " ";
@@ -153,7 +153,7 @@ public:
     file_ << "</DataArray>" << std::endl;
 
     // types
-    file_ << "<DataArray type=\"UInt8\" Name=\"types\">" << std::endl;
+    file_ << R"(<DataArray type="UInt8" Name="types">)" << std::endl;
     ;
     for (int i = 0; i < ncells; ++i) {
       file_ << element_type << " ";
@@ -167,9 +167,8 @@ public:
     return !file_.good();
   }
 
-  //============================================================================
-  /// Write cells data
-  //============================================================================
+  //------------------------------------------------------------------------------------------------//
+  // Write cell data
   int write_camr_cell_data_begin() {
     file_ << "<CellData>" << std::endl;
     return !file_.good();
@@ -180,9 +179,10 @@ public:
     return !file_.good();
   }
 
-  template <typename T> int write_camr_cell_data(std::string name, T begin, T end) {
-    file_ << "<DataArray type=\"Float64\" Name=\"" << name << "\""
-          << " NumberOfComponents=\"1\">" << std::endl;
+  template <typename T>
+  int write_camr_cell_data(const std::string &name, const T begin, const T end) {
+    file_ << R"(<DataArray type="Float64" Name=")" << name << R"(")"
+          << R"( NumberOfComponents="1">)" << std::endl;
 
     for (auto i = begin; i != end; ++i)
       file_ << *i << " ";
@@ -192,9 +192,9 @@ public:
     return !file_.good();
   }
 
-  int write_camr_cell_data(std::string name, std::vector<double> &data) {
-    int data_size = data.size();
-    file_ << "<DataArray type=\"Float64\" Name=\"" << name << "\">" << std::endl;
+  int write_camr_cell_data(const std::string &name, const std::vector<double> &data) {
+    int data_size = static_cast<int>(data.size());
+    file_ << R"(<DataArray type="Float64" Name=")" << name << R"(">)" << std::endl;
     for (int i = 0; i < data_size; ++i)
       file_ << data[i] << " ";
     file_ << std::endl;
@@ -202,39 +202,39 @@ public:
     return !file_.good();
   }
 
-  //////////////////////////////////////////////////////////////////////////
-  // writing root file
-  ///////////////////////////////////////////////////////////////////////////
-  int write_camr_pvtu_file(int nranks, int num_dims, double time, std::string file_prefix,
-                           std::vector<std::string> &var_names) {
-    file_ << "<VTKFile type=\"PUnstructuredGrid\" version=\"2.0\" byte_order=\"LittleEndian\">"
+  //------------------------------------------------------------------------------------------------//
+  // Write root file
+  int write_camr_pvtu_file(const int nranks, const int /*num_dims*/, const double time,
+                           const std::string &file_prefix,
+                           const std::vector<std::string> &var_names) {
+    file_ << R"(<VTKFile type="PUnstructuredGrid" version="2.0" byte_order="LittleEndian">)"
           << std::endl;
-    file_ << "<PUnstructuredGrid GhostLevel=\"0\">" << std::endl;
+    file_ << R"(<PUnstructuredGrid GhostLevel="0">)" << std::endl;
     file_ << "<FieldData>" << std::endl;
-    file_ << "<DataArray type=\"Float64\" Name=\"TimeValue\" NumberOfTuples=\"1\">" << time
+    file_ << R"(<DataArray type="Float64" Name="TimeValue" NumberOfTuples="1">)" << time
           << std::endl;
     file_ << "</DataArray>" << std::endl;
     file_ << "</FieldData>" << std::endl;
 
     for (int i = 0; i < nranks; ++i)
-      file_ << "<Piece Source=\"" << file_prefix << i << ".vtu\"/>" << std::endl;
+      file_ << R"(<Piece Source=")" << file_prefix << i << R"().vtu"/>)" << std::endl;
 
     file_ << "<PPoints>" << std::endl;
-    file_ << "<PDataArray type=\"Float64\" NumberOfComponents=\"3\"/>" << std::endl;
+    file_ << R"(<PDataArray type="Float64" NumberOfComponents="3"/>)" << std::endl;
     file_ << "</PPoints>" << std::endl;
     file_ << "<PCells>" << std::endl;
 
-    file_ << "<PDataArray type=\"Int32\" Name=\"connectivity\"/>" << std::endl;
-    file_ << "<PDataArray type=\"Int32\" Name=\"offsets\"/>" << std::endl;
-    file_ << "<PDataArray type=\"UInt8\" Name=\"types\"/>" << std::endl;
+    file_ << R"(<PDataArray type="Int32" Name="connectivity"/>)" << std::endl;
+    file_ << R"(<PDataArray type="Int32" Name="offsets"/>)" << std::endl;
+    file_ << R"(<PDataArray type="UInt8" Name="types"/>)" << std::endl;
 
     file_ << "</PCells>" << std::endl;
 
     file_ << "<PCellData>" << std::endl;
 
-    for (int i = 0; i < var_names.size(); ++i)
-      file_ << "<PDataArray type=\"Float64\"  Name=\"" << var_names[i]
-            << "\" NumberOfComponents=\"1\"/>" << std::endl;
+    for (auto &var_name : var_names)
+      file_ << R"(<PDataArray type="Float64"  Name=")" << var_name
+            << R"(" NumberOfComponents="1"/>)" << std::endl;
     file_ << "</PCellData>" << std::endl;
 
     file_ << "</PUnstructuredGrid>" << std::endl;
@@ -245,14 +245,17 @@ public:
   }
 
 private:
-  //! \brief file pointer
+  //! file pointer
   std::ofstream file_;
 
   //! significant figures
   int sigfigs_ = std::numeric_limits<double>::digits10;
-  ; //consts::digits;
 };
 
 } // namespace rtt_viz
 
-#endif
+#endif // rtt_viz_vtk_camr_writer_hh
+
+//------------------------------------------------------------------------------------------------//
+// end of viz/vtk_camr_writer.hh
+//------------------------------------------------------------------------------------------------//
