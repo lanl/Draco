@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 14:44:54 2002
  * \brief  C4 MPI non-blocking send/recv instantiations.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/config.h"
@@ -48,6 +48,12 @@ template int allgatherv<unsigned>(unsigned *send_buffer, int send_size, unsigned
 
 template int allgatherv<double>(double *send_buffer, int send_size, double *receive_buffer,
                                 int *receive_sizes, int *receive_displs);
+
+template int allgatherv<int>(int *send_buffer, int send_size, int *receive_buffer,
+                             int *receive_sizes, int *receive_displs);
+
+template int allgatherv<char>(char *send_buffer, int send_size, char *receive_buffer,
+                              int *receive_sizes, int *receive_displs);
 
 //------------------------------------------------------------------------------------------------//
 template int scatter<unsigned>(unsigned *send_buffer, unsigned *receive_buffer, int size);

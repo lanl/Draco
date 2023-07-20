@@ -4,7 +4,7 @@
 * \author Thomas M. Evans, Kelly Thompson <kgt@lanl.gov>
 * \date   Mon Mar 25 17:06:25 2002
 * \brief  Implementation of C4 serial option.
-* \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
+* \note   Copyright (C) 2018-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_serial_t_hh
@@ -131,10 +131,9 @@ int gatherv(T *send_buffer, int send_size, T *receive_buffer, int * /*receive_si
 
 //------------------------------------------------------------------------------------------------//
 template <typename T>
-int allgatherv(T *send_buffer, int send_size, T *receive_buffer, int * /*receive_sizes*/,
+int allgatherv(T *send_buffer, int send_size, T *receive_buffer, int *receive_sizes,
                int *receive_displs) {
-
-  std::copy(send_buffer, send_buffer + send_size, receive_buffer + receive_displs[0]);
+  gatherv(send_buffer, send_size, receive_buffer, receive_sizes, receive_displs);
   return C4_SUCCESS;
 }
 

@@ -3,7 +3,7 @@
  * \file   c4/global_containers.hh
  * \author Kent Budge
  * \brief  Define class global_containers
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_global_containers_hh
@@ -34,10 +34,6 @@ template <typename ElementType> void global_merge(std::set<ElementType> &local_s
  */
 template <typename IndexType, typename ElementType>
 void global_merge(std::map<IndexType, ElementType> &local_map);
-
-//------------------------------------------------------------------------------------------------//
-//! Specialization for bool
-template <typename IndexType> void global_merge(std::map<IndexType, bool> &local_map);
 
 } // end namespace rtt_c4
 
