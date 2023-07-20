@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Thu Mar 21 16:56:17 2002
  * \brief  C4 MPI template implementation.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_swap_t_hh
@@ -16,6 +16,26 @@
 #include "ds++/Assert.hh"
 
 namespace rtt_c4 {
+
+//------------------------------------------------------------------------------------------------//
+// Helper
+//------------------------------------------------------------------------------------------------//
+template <typename T>
+std::vector<C4_Req> det_swap_build_outg_C4_Req(unsigned const outgoing_processor_count,
+                                               std::vector<unsigned> const &outgoing_pid,
+                                               std::vector<std::vector<T>> const &outgoing_data,
+                                               int tag) {
+  // Post the asynchronous sends.
+  std::vector<C4_Req> outgoing_C4_Req(outgoing_processor_count);
+  for (unsigned p = 0; p < outgoing_processor_count; ++p) {
+    Check(outgoing_data[p].size() < INT_MAX);
+    Check(outgoing_pid[p] < INT_MAX);
+    outgoing_C4_Req[p] = rtt_c4::send_async(
+        (outgoing_data[p].size() > 0 ? &outgoing_data[p][0] : nullptr),
+        static_cast<int>(outgoing_data[p].size()), static_cast<int>(outgoing_pid[p]), tag);
+  }
+  return outgoing_C4_Req;
+}
 
 //------------------------------------------------------------------------------------------------//
 // EXCHANGE
@@ -41,14 +61,8 @@ void determinate_swap(std::vector<unsigned> const &outgoing_pid,
   {
 
     // Post the asynchronous sends.
-    std::vector<C4_Req> outgoing_C4_Req(outgoing_processor_count);
-    for (unsigned p = 0; p < outgoing_processor_count; ++p) {
-      Check(outgoing_data[p].size() < INT_MAX);
-      Check(outgoing_pid[p] < INT_MAX);
-      outgoing_C4_Req[p] = rtt_c4::send_async(
-          (outgoing_data[p].size() > 0 ? &outgoing_data[p][0] : nullptr),
-          static_cast<int>(outgoing_data[p].size()), static_cast<int>(outgoing_pid[p]), tag);
-    }
+    std::vector<C4_Req> outgoing_C4_Req =
+        det_swap_build_outg_C4_Req(outgoing_processor_count, outgoing_pid, outgoing_data, tag);
 
     // Post the asynchronous receives
     std::vector<C4_Req> incoming_C4_Req(incoming_processor_count);
@@ -144,14 +158,8 @@ void semideterminate_swap(std::vector<unsigned> const &outgoing_pid,
     determinate_swap(outgoing_pid, outgoing_size, incoming_pid, incoming_size, tag);
 
     // Post the asynchronous sends.
-    std::vector<C4_Req> outgoing_C4_Req(outgoing_processor_count);
-    for (unsigned p = 0; p < outgoing_processor_count; ++p) {
-      Check(outgoing_data[p].size() < INT_MAX);
-      Check(outgoing_pid[p] < INT_MAX);
-      outgoing_C4_Req[p] = rtt_c4::send_async(
-          (outgoing_data[p].size() > 0 ? &outgoing_data[p][0] : nullptr),
-          static_cast<int>(outgoing_data[p].size()), static_cast<int>(outgoing_pid[p]), tag);
-    }
+    std::vector<C4_Req> outgoing_C4_Req =
+        det_swap_build_outg_C4_Req(outgoing_processor_count, outgoing_pid, outgoing_data, tag);
 
     // Post the asynchronous receives
     incoming_data.resize(incoming_pid.size());
