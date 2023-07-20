@@ -5,7 +5,7 @@
 # date   Monday, December 15, 2014, 5:44 pm
 # brief  This script uses the functions in ipcress_reader.py to generate an interactive plot for
 #        multigroup opacity data.
-# note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2014-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 # import block
@@ -27,10 +27,84 @@ else:
         BOTTOM, mainloop
 matplotlib.use('TkAgg')
 
+
+# ------------------------------------------------------------------------------------------------ #
+# Helper function for filling out min/max values
+# ------------------------------------------------------------------------------------------------ #
+def construct_data_for_plot(hnu_grid, mgr_grid, mgp_grid, mgs_grid, mgrt_grid, T_grid, rho_grid):
+
+    # get interpolated opacity data for this temperature and density
+    # first check to see if the data is valid (non-zero)
+    mgr_valid = ip_reader.check_valid_data(mgr_grid)
+    mgp_valid = ip_reader.check_valid_data(mgp_grid)
+    mgs_valid = ip_reader.check_valid_data(mgs_grid)
+    mgrt_valid = ip_reader.check_valid_data(mgrt_grid)
+
+    name = selected_ID.get()
+
+    print("-------------------- BEGIN DATA PRINT FOR {0} ---------------------".format(name))
+    print("Group structure for {0} groups:".format(len(hnu_grid) - 1))
+    print(hnu_grid)
+    # if valid, interpolate data at target rho and target T
+    if (mgr_valid):
+        mgr_interp = ip_reader.interpolate_mg_opacity_data(
+            T_grid, rho_grid, hnu_grid, mgr_grid,
+            target_rho.get(), target_T.get(), "multigroup absorption Rosseland")
+    if (mgp_valid):
+        mgp_interp = ip_reader.interpolate_mg_opacity_data(
+            T_grid, rho_grid, hnu_grid, mgp_grid,
+            target_rho.get(), target_T.get(), "multigroup absorption Planckian")
+    if (mgs_valid):
+        mgs_interp = ip_reader.interpolate_mg_opacity_data(
+            T_grid, rho_grid, hnu_grid, mgs_grid,
+            target_rho.get(), target_T.get(), "multigroup scattering")
+    if (mgrt_valid):
+        # mgrt_interp =
+        ip_reader.interpolate_mg_opacity_data(
+            T_grid, rho_grid, hnu_grid, mgrt_grid,
+            target_rho.get(), target_T.get(), "total rosseland")
+    print("-------------------- END DATA PRINT FOR {0} ---------------------".format(name))
+
+    # plotting data arrays
+    opr_data = []    # Rosseland absorption
+    opp_data = []    # Planck absorption
+    ops_data = []    # Rosseland scattering
+    # oprt_data = []   # Rosseland total
+    hnu_data = []    # hnu plot data
+
+    # add points to plotting data twice to get the bar structure and find max and min opacity
+    min_opacity = 1.0e10
+    max_opacity = 0.0
+    for hnu_i, hnu in enumerate(hnu_grid[:-1]):
+        hnu_data.append(hnu)
+        hnu_data.append(hnu_grid[hnu_i + 1])
+
+        if (mgr_valid):
+            opr_data.append(mgr_interp[hnu_i])
+            opr_data.append(mgr_interp[hnu_i])
+            min_opacity = min([min(opr_data), min_opacity])
+            max_opacity = max([max(opr_data), max_opacity])
+
+        if (mgp_valid):
+            opp_data.append(mgp_interp[hnu_i])
+            opp_data.append(mgp_interp[hnu_i])
+            min_opacity = min([min(opp_data), min_opacity])
+            max_opacity = max([max(opp_data), max_opacity])
+
+        if (mgs_valid):
+            ops_data.append(mgs_interp[hnu_i])
+            ops_data.append(mgs_interp[hnu_i])
+            min_opacity = min([min(ops_data), min_opacity])
+            max_opacity = max([max(ops_data), max_opacity])
+
+    # return the 4 data sets and min/max_opacity
+    return hnu_data, opr_data, opp_data, ops_data, min_opacity, max_opacity, mgr_valid, mgs_valid,
+    mgp_valid, name
+
+
 # ------------------------------------------------------------------------------------------------ #
 # main program
 # ------------------------------------------------------------------------------------------------ #
-
 # make sure an IPCRESS file is specified
 if (len(sys.argv) != 2):
     print("Useage: {0} <path to ipcress file>".format(sys.argv[0]))
@@ -80,67 +154,19 @@ target_T.set(avg_T)
 op_type = IntVar()
 op_type.set(1)
 
-# get interpolated opacity data for this temperature and density
-# first check to see if the data is valid (non-zero)
-mgr_valid = ip_reader.check_valid_data(mgr_grid)
-mgp_valid = ip_reader.check_valid_data(mgp_grid)
-mgs_valid = ip_reader.check_valid_data(mgs_grid)
-mgrt_valid = ip_reader.check_valid_data(mgrt_grid)
-
-name = selected_ID.get()
-print("-------------------- BEGIN DATA PRINT FOR {0} ---------------------".format(name))
-print("Group structure for {0} groups:".format(len(hnu_grid) - 1))
-print(hnu_grid)
-# if valid, interpolate data at target rho and target T
-if (mgr_valid):
-    mgr_interp = ip_reader.interpolate_mg_opacity_data(
-        T_grid, rho_grid, hnu_grid, mgr_grid,
-        target_rho.get(), target_T.get(), "multigroup absorption Rosseland")
-if (mgp_valid):
-    mgp_interp = ip_reader.interpolate_mg_opacity_data(
-        T_grid, rho_grid, hnu_grid, mgp_grid,
-        target_rho.get(), target_T.get(), "multigroup absorption Planckian")
-if (mgs_valid):
-    mgs_interp = ip_reader.interpolate_mg_opacity_data(
-        T_grid, rho_grid, hnu_grid, mgs_grid,
-        target_rho.get(), target_T.get(), "multigroup scattering")
-if (mgrt_valid):
-    # mgrt_interp =
-    ip_reader.interpolate_mg_opacity_data(
-        T_grid, rho_grid, hnu_grid, mgrt_grid,
-        target_rho.get(), target_T.get(), "total rosseland")
-print("-------------------- END DATA PRINT FOR {0} ---------------------".format(name))
-
 # plotting data arrays
 opr_data = []    # Rosseland absorption
 opp_data = []    # Planck absorption
 ops_data = []    # Rosseland scattering
-oprt_data = []   # Rosseland total
 hnu_data = []    # hnu plot data
-
-# add points to plotting data twice to get the bar structure and find max and min opacity
 min_opacity = 1.0e10
 max_opacity = 0.0
-for hnu_i, hnu in enumerate(hnu_grid[:-1]):
-    hnu_data.append(hnu)
-    hnu_data.append(hnu_grid[hnu_i + 1])
-    if (mgr_valid):
-        opr_data.append(mgr_interp[hnu_i])
-        opr_data.append(mgr_interp[hnu_i])
-        min_opacity = min([min(opr_data), min_opacity])
-        max_opacity = max([max(opr_data), max_opacity])
-
-    if (mgp_valid):
-        opp_data.append(mgp_interp[hnu_i])
-        opp_data.append(mgp_interp[hnu_i])
-        min_opacity = min([min(opp_data), min_opacity])
-        max_opacity = max([max(opp_data), max_opacity])
-
-    if (mgs_valid):
-        ops_data.append(mgs_interp[hnu_i])
-        ops_data.append(mgs_interp[hnu_i])
-        min_opacity = min([min(ops_data), min_opacity])
-        max_opacity = max([max(ops_data), max_opacity])
+mgr_valid = False
+mgs_valid = False
+mgp_valid = False
+hnu_data, opr_data, opp_data, ops_data, min_opacity, max_opacity, mgr_valid, mgs_valid, mgp_valid,
+name = construct_data_for_plot(hnu_grid, mgr_grid, mgp_grid, mgs_grid, mgrt_grid, T_grid,
+                               rho_grid)
 
 # Plot data with the initial settings
 a.set_xscale('log')
@@ -198,67 +224,11 @@ def plot_op():
     mgs_grid = table_key_dict["{0}_{1}".format("rsmg", selected_ID.get())]
     mgrt_grid = table_key_dict["{0}_{1}".format("rtmg", selected_ID.get())]
 
-    # get interpolated opacity data for this temperature and density
-    # first check to see if the data is valid (non-zero)
-    mgr_valid = ip_reader.check_valid_data(mgr_grid)
-    mgp_valid = ip_reader.check_valid_data(mgp_grid)
-    mgs_valid = ip_reader.check_valid_data(mgs_grid)
-    mgrt_valid = ip_reader.check_valid_data(mgrt_grid)
+    hnu_data, opr_data, opp_data, ops_data, min_opacity, max_opacity, mgr_valid, mgs_valid,
+    mgp_valid, name = construct_data_for_plot(hnu_grid, mgr_grid, mgp_grid, mgs_grid,
+                                              mgrt_grid, T_grid, rho_grid)
 
-    name = selected_ID.get()
-    print("-------------------- BEGIN DATA PRINT FOR {0} --------------------".format(name))
-    # if valid, interpolate data at target rho and target T
-    if (mgr_valid):
-        mgr_interp = ip_reader.interpolate_mg_opacity_data(
-            T_grid, rho_grid, hnu_grid, mgr_grid, target_rho.get(), target_T.get(),
-            "multigroup absorption Rosseland")
-    if (mgp_valid):
-        mgp_interp = ip_reader.interpolate_mg_opacity_data(
-            T_grid, rho_grid, hnu_grid, mgp_grid, target_rho.get(), target_T.get(),
-            "multigroup absorption Planckian")
-    if (mgs_valid):
-        mgs_interp = ip_reader.interpolate_mg_opacity_data(
-            T_grid, rho_grid, hnu_grid, mgs_grid, target_rho.get(), target_T.get(),
-            "multigroup scattering")
-    if (mgrt_valid):
-        # mgrt_interp
-        ip_reader.interpolate_mg_opacity_data(
-            T_grid, rho_grid, hnu_grid, mgrt_grid, target_rho.get(), target_T.get(),
-            "total rosseland")
-    print("-------------------- END DATA PRINT FOR {0} --------------------".format(name))
-
-    # plotting data arrays
-    opr_data = []    # Rosseland absorption
-    opp_data = []    # Planck absorption
-    ops_data = []    # Rosseland scattering
-    # oprt_data = []   # Rosseland total
-    hnu_data = []    # hnu plot data
-
-    # add points to plotting data twice to get the bar structure and find max and min opacity
-    min_opacity = 1.0e10
-    max_opacity = 0.0
-    for hnu_i, hnu in enumerate(hnu_grid[:-1]):
-        hnu_data.append(hnu)
-        hnu_data.append(hnu_grid[hnu_i + 1])
-
-        if (mgr_valid):
-            opr_data.append(mgr_interp[hnu_i])
-            opr_data.append(mgr_interp[hnu_i])
-            min_opacity = min([min(opr_data), min_opacity])
-            max_opacity = max([max(opr_data), max_opacity])
-
-        if (mgp_valid):
-            opp_data.append(mgp_interp[hnu_i])
-            opp_data.append(mgp_interp[hnu_i])
-            min_opacity = min([min(opp_data), min_opacity])
-            max_opacity = max([max(opp_data), max_opacity])
-
-        if (mgs_valid):
-            ops_data.append(mgs_interp[hnu_i])
-            ops_data.append(mgs_interp[hnu_i])
-            min_opacity = min([min(ops_data), min_opacity])
-            max_opacity = max([max(ops_data), max_opacity])
-
+    # Plot data with the initial settings
     a.set_xscale('log')
     a.set_yscale('log')
     a.set_xlabel('hnu (keV)')

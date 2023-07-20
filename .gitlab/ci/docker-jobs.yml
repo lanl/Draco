@@ -17,8 +17,13 @@ superlinter:
     - darwin-docker-shared
   stage: lint
   image:
-      name: github/super-linter:slim-v4
-  script: ["true"]
+      name: github/super-linter:slim-v5
+  script:
+    - cd $CI_PROJECT_DIR
+    - $CI_PROJECT_DIR/lib/linter.sh
+  # artifacts:
+  #   paths:
+  #     - $CI_PROJECT_DIR/super-linter.log
   rules:
     - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
       when: never
@@ -28,20 +33,23 @@ superlinter:
     DEFAULT_WORKSPACE: $CI_PROJECT_DIR
     ANSIBLE_DIRECTORY: $CI_PROJECT_PATH
     LINTER_RULES_PATH: $CI_PROJECT_PATH/.github/linters
+    # LOG_FILE: $CI_PROJECT_DIR/super-linter.log
     DEFAULT_BRANCH: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
     ERROR_ON_MISSING_EXEC_BIT: "true"
     FILTER_REGEX_EXCLUDE: (.*[.]cc$|/test/)
     PYTHON_FLAKE8_CONFIG_FILE: .flake8
     SUPPRESS_POSSUM: "true"
+    JSCPD_CONFIG_FILE: "../../../builds/draco/draco/.gitlab/ci/.jscpd.json"
     LOG_LEVEL: "NOTICE"
     VALIDATE_ALL_CODEBASE: "false"
     VALIDATE_BASH: "true"
     VALIDATE_BASH_EXEC: "true"
     VALIDATE_DOCKERFILE: "true"
     VALIDATE_ENV: "true"
+    VALIDATE_GITLEAKS: "true"
     VALIDATE_HTML: "true"
+    VALIDATE_JSCPD: "true"
     VALIDATE_JSON: "true"
-    # VALIDATE_LATEX: "true"
     VALIDATE_LUA: "true"
     VALIDATE_MARKDOWN: "true"
     VALIDATE_PERL: "true"
@@ -51,7 +59,6 @@ superlinter:
     VALIDATE_RUBY: "true"
     VALIDATE_SHELL_SHFMT: "true"
     VALIDATE_XML: "true"
-    # VALIDATE_YAML: "true"
 
 #--------------------------------------------------------------------------------------------------#
 
