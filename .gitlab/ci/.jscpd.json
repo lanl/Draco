@@ -1,0 +1,15 @@
+{
+  "threshold": 0,
+  "min-lines": 10,
+  "minTokens": 100,
+  "reporters": [
+    "consoleFull"
+  ],
+  "ignore": [
+    "**/__snapshots__/**",
+    "**/elisp/*.el",
+    "**/experimental/**",
+    "**/gaussj.t.hh"
+  ],
+  "absolute": true
+}

@@ -6,7 +6,7 @@
 # brief This script has functions that parse an IPCRESS file and returns a dictionary that contains
 #        data for each property and each material present in the file. This script also contains
 #        interpolation functions for opacity data.
-# note   Copyright (C) 2016, Triad National Security, LLC.,  All rights reserved.
+# note   Copyright (C) 2016-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 # import block
@@ -32,7 +32,6 @@ def get_data_for_id(filename, data_start_index, num_entries):
             word = f.read(8)
             temp_grid.append(unpack('>d', word)[0])
     return temp_grid
-# ------------------------------------------------------------------------------------------------ #
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -46,12 +45,7 @@ def write_data_for_id(filename, data_start_index, num_entries, new_values):
 
 
 # ------------------------------------------------------------------------------------------------ #
-def interpolate_mg_opacity_data(T_grid, rho_grid, hnu_grid, op_data,
-                                target_rho, target_T, print_str=""):
-    n_rho = len(rho_grid)
-    # n_T = len(T_grid)
-    n_hnu = len(hnu_grid)
-
+def interpolate_opacity_date_checks(target_rho, target_T, rho_grid, T_grid, print_str=""):
     # don't allow extrapolation
     if (target_rho < np.min(rho_grid)):
         target_rho = np.min(rho_grid)
@@ -64,6 +58,16 @@ def interpolate_mg_opacity_data(T_grid, rho_grid, hnu_grid, op_data,
     if (print_str is not None):
         print("Interpolating {0}--Target rho: {1} , target T: {2}".format(
             print_str, target_rho, target_T))
+
+
+# ------------------------------------------------------------------------------------------------ #
+def interpolate_mg_opacity_data(T_grid, rho_grid, hnu_grid, op_data, target_rho, target_T,
+                                print_str=""):
+    n_rho = len(rho_grid)
+    n_hnu = len(hnu_grid)
+
+    # don't allow extrapolation
+    interpolate_opacity_date_checks(target_rho, target_T, rho_grid, T_grid, print_str)
 
     # get correct index of adjacent density points
     rho_L = 1000
@@ -82,9 +86,6 @@ def interpolate_mg_opacity_data(T_grid, rho_grid, hnu_grid, op_data,
             T_L = T_i
             T_G = T_i + 1
             break
-
-    # print("Temperature interpolation bounds: {0} {1}".format(T_grid[T_L], T_grid[T_G]))
-    # print("Density interpolation bounds: {0} {1}".format(rho_grid[rho_L], rho_grid[rho_G]))
 
     # get the adjacent rows of the opacity index
     # get the points of the opacity index
@@ -121,23 +122,11 @@ def interpolate_mg_opacity_data(T_grid, rho_grid, hnu_grid, op_data,
 
 
 # ------------------------------------------------------------------------------------------------ #
-def interpolate_gray_opacity_data(T_grid, rho_grid, op_data, target_rho,
-                                  target_T, print_str=""):
+def interpolate_gray_opacity_data(T_grid, rho_grid, op_data, target_rho, target_T, print_str=""):
     n_rho = len(rho_grid)
-    # n_T = len(T_grid)
 
     # don't allow extrapolation
-    if (target_rho < np.min(rho_grid)):
-        target_rho = np.min(rho_grid)
-    if (target_rho > np.max(rho_grid)):
-        target_rho = np.max(rho_grid)
-    if (target_T < np.min(T_grid)):
-        target_T = np.min(T_grid)
-    if (target_T > np.max(T_grid)):
-        target_T = np.max(T_grid)
-    if (print_str is not None):
-        print("Interpolating {0}--Target rho: {1} , target T: {2}".format(
-            print_str, target_rho, target_T))
+    interpolate_opacity_date_checks(target_rho, target_T, rho_grid, T_grid, print_str)
 
     rho_L = 1000
     rho_G = 0
@@ -160,7 +149,6 @@ def interpolate_gray_opacity_data(T_grid, rho_grid, op_data, target_rho,
     rho_G_T_G = op_data[n_rho * T_G + rho_G]
 
     # interpolate in log space
-    # print("{0} {1} {2} {3}" .format(rho_L_T_L, rho_L_T_G, rho_G_T_L, rho_G_T_G))
     log_op_T_L = log(rho_L_T_L) + log(target_rho / rho_grid[rho_L]) / \
         log(rho_grid[rho_G] / rho_grid[rho_L]) * log(rho_G_T_L / rho_L_T_L)
     log_op_T_G = log(rho_L_T_G) + log(target_rho / rho_grid[rho_L]) / \
@@ -169,8 +157,6 @@ def interpolate_gray_opacity_data(T_grid, rho_grid, op_data, target_rho,
         log(T_grid[T_G] / T_grid[T_L]) * (log_op_T_G - log_op_T_L)
     interp_op = exp(log_op)
 
-    # print("opacity(sq_cm/g)         opacity(1/cm)")
-    # print("{0}     {1}".format(interp_op, interp_op*target_rho))
     return interp_op
 
 
