@@ -65,6 +65,7 @@ ro_rel_oneapi_deploy:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/oneapi-2023.1.0"
+    EXTRA_CMAKE_ARGS: -G Ninja -DUSE_IPO=OFF
 
 ro_deb_oneapi_deploy:
   extends: .ro_deploy
@@ -134,7 +135,7 @@ ro_rel_oneapi_deploy_release:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/oneapi-2023.1.0"
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST -DUSE_IPO=OFF
 
 ro_deb_oneapi_deploy_release:
   extends: .ro_deploy_release
@@ -198,6 +199,7 @@ ro_rel_oneapi_mr:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/oneapi-2023.1.0"
+    EXTRA_CMAKE_ARGS: -G Ninja -DUSE_IPO=OFF
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -235,6 +237,7 @@ ro_rel_oneapi_regress:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/oneapi-2023.1.0"
+    EXTRA_CMAKE_ARGS: -G Ninja -DUSE_IPO=OFF
 
 ro_deb_oneapi_regress:
   extends: .ro_nightly
