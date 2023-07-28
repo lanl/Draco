@@ -16,7 +16,6 @@
     - rocinante
     - batch
     - ro-rfe1
-  allow_failure: true
   variables:
     SITE_ID: rocinante
     CTEST_MODE: Experimental
@@ -156,7 +155,7 @@ ro_rwdi_oneapi_deploy_release:
 
 .ro_merge:
   extends: .ro
-  allow_failure: true
+  # allow_failure: true
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:

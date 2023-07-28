@@ -3,16 +3,16 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for diagnostics/test.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(diagnostics_test CXX)
 
 # ------------------------------------------------------------------------------------------------ #
 # Source files
 # ------------------------------------------------------------------------------------------------ #
-set(scalar_test_sources ${PROJECT_SOURCE_DIR}/tstDiagnostics.cc ${PROJECT_SOURCE_DIR}/tstProcmon.cc
-                        ${PROJECT_SOURCE_DIR}/tstTiming.cc)
-set(parallel_test_sources ${PROJECT_SOURCE_DIR}/tstruntime_error.cc)
+set(scalar_test_sources ${PROJECT_SOURCE_DIR}/tstDiagnostics.cc ${PROJECT_SOURCE_DIR}/tstProcmon.cc)
+set(parallel_test_sources ${PROJECT_SOURCE_DIR}/tstTiming.cc
+                          ${PROJECT_SOURCE_DIR}/tstruntime_error.cc)
 
 # ------------------------------------------------------------------------------------------------ #
 # Build Unit tests
