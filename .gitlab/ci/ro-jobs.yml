@@ -200,6 +200,14 @@ ro_rel_oneapi_mr:
     DRACO_ENV: "draco/oneapi-2023.1.0"
     EXTRA_CMAKE_ARGS: -G Ninja -DUSE_IPO=OFF
 
+ro_deb_fulldiag_mr:
+  stage: slowtest
+  extends: .ro_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "draco/intel-2023.1.0"
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
+
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
 #--------------------------------------------------------------------------------------------------#
