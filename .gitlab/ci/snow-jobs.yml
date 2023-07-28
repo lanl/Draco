@@ -75,14 +75,6 @@ sn_rel_g930_deploy:
     FLAVOR: lapse231-gnu-Release
     EXTRA_CMAKE_ARGS: -GNinja
 
-sn_deb_fulldiag_deploy:
-  extends: .snow_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-intel"
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
-    FLAVOR: intel-fulldiag-static
-
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
 #--------------------------------------------------------------------------------------------------#
@@ -200,16 +192,6 @@ sn_deb_g930_mr:
     DRACO_ENV: "lapse/2.3.1-gnu"
     EXTRA_CMAKE_ARGS: -GNinja
 
-# ----- slow -----
-
-sn_deb_fulldiag_mr:
-  stage: slowtest
-  extends: .snow_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-intel"
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
-
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
 #--------------------------------------------------------------------------------------------------#
@@ -253,15 +235,6 @@ sn_deb_g930_regress:
     DRACO_ENV: "lapse/2.3.1-gnu"
     CTEST_BUILD_NAME: "lapse231-gnu-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
-
-sn_deb_fulldiag_regress:
-  extends: .snow_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-intel"
-    FLAVOR: intel-fulldiag-static
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
-    CTEST_BUILD_NAME: intel-fulldiag-static
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/snow-jobs.yml
