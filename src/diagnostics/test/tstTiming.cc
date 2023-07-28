@@ -4,14 +4,13 @@
  * \author Thomas M. Evans
  * \date   Mon Dec 12 15:32:10 2005
  * \brief  Test the diagnostics/TIMER macros
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "c4/ParallelUnitTest.hh"
 #include "diagnostics/Diagnostics.hh"
 #include "diagnostics/Timing.hh"
 #include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
 #include "ds++/Soft_Equivalence.hh"
 #include <iomanip>
 
@@ -137,79 +136,53 @@ void test_timing(rtt_dsxx::UnitTest &ut) {
   D::update_timer("B", 1.1);
   D::update_timer("B", 2.3);
 
-  if (!soft_equiv(D::timer_value("A"), 1.2))
-    ITFAILS;
-  if (!soft_equiv(D::timer_value("B"), 3.4))
-    ITFAILS;
-  if (!soft_equiv(D::timer_value("C"), 0.0))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(D::timer_value("A"), 1.2));
+  FAIL_IF_NOT(soft_equiv(D::timer_value("B"), 3.4));
+  FAIL_IF_NOT(soft_equiv(D::timer_value("C"), 0.0));
 
   D::reset_timer("B");
   D::update_timer("A", 1.3);
-  if (!soft_equiv(D::timer_value("A"), 2.5))
-    ITFAILS;
-  if (!soft_equiv(D::timer_value("B"), 0.0))
-    ITFAILS;
-  if (!soft_equiv(D::timer_value("C"), 0.0))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(D::timer_value("A"), 2.5));
+  FAIL_IF_NOT(soft_equiv(D::timer_value("B"), 0.0));
+  FAIL_IF_NOT(soft_equiv(D::timer_value("C"), 0.0));
 
   vector<string> timers = D::timer_keys();
-  if (timers.size() != 3)
-    ITFAILS;
-  if (timers[0] != "A")
-    ITFAILS;
-  if (timers[1] != "B")
-    ITFAILS;
-  if (timers[2] != "C")
-    ITFAILS;
+  FAIL_IF_NOT(timers.size() == 3);
+  FAIL_IF_NOT(timers[0] == "A");
+  FAIL_IF_NOT(timers[1] == "B");
+  FAIL_IF_NOT(timers[2] == "C");
 
   D::delete_timer("B");
   timers = D::timer_keys();
-  if (timers.size() != 2)
-    ITFAILS;
-  if (timers[0] != "A")
-    ITFAILS;
-  if (timers[1] != "C")
-    ITFAILS;
+  FAIL_IF_NOT(timers.size() == 2);
+  FAIL_IF_NOT(timers[0] == "A");
+  FAIL_IF_NOT(timers[1] == "C");
 
   // calling timer_value on B will get it back
-  if (!soft_equiv(D::timer_value("A"), 2.5))
-    ITFAILS;
-  if (!soft_equiv(D::timer_value("B"), 0.0))
-    ITFAILS;
-  if (!soft_equiv(D::timer_value("C"), 0.0))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(D::timer_value("A"), 2.5));
+  FAIL_IF_NOT(soft_equiv(D::timer_value("B"), 0.0));
+  FAIL_IF_NOT(soft_equiv(D::timer_value("C"), 0.0));
   timers = D::timer_keys();
-  if (timers.size() != 3)
-    ITFAILS;
-  if (D::num_timers() != 3)
-    ITFAILS;
+  FAIL_IF_NOT(timers.size() == 3);
+  FAIL_IF_NOT(D::num_timers() == 3);
 
   // delete all timers
   D::delete_timers();
-  if (D::num_timers() != 0)
-    ITFAILS;
+  FAIL_IF_NOT(D::num_timers() == 0);
   timers = D::timer_keys();
-  if (timers.size() != 0)
-    ITFAILS;
+  FAIL_IF_NOT(timers.size() == 0);
 
   D::update_timer("B", 12.4);
   D::update_timer("C", 1.3);
-  if (!soft_equiv(D::timer_value("A"), 0.0))
-    ITFAILS;
-  if (!soft_equiv(D::timer_value("B"), 12.4))
-    ITFAILS;
-  if (!soft_equiv(D::timer_value("C"), 1.3))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(D::timer_value("A"), 0.0));
+  FAIL_IF_NOT(soft_equiv(D::timer_value("B"), 12.4));
+  FAIL_IF_NOT(soft_equiv(D::timer_value("C"), 1.3));
 
   // reset all timers
   D::reset_timers();
-  if (!soft_equiv(D::timer_value("A"), 0.0))
-    ITFAILS;
-  if (!soft_equiv(D::timer_value("B"), 0.0))
-    ITFAILS;
-  if (!soft_equiv(D::timer_value("C"), 0.0))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(D::timer_value("A"), 0.0));
+  FAIL_IF_NOT(soft_equiv(D::timer_value("B"), 0.0));
+  FAIL_IF_NOT(soft_equiv(D::timer_value("C"), 0.0));
 
   if (ut.numFails == 0)
     PASSMSG("Diagnostics timer lists ok.");
@@ -217,13 +190,11 @@ void test_timing(rtt_dsxx::UnitTest &ut) {
 
 //------------------------------------------------------------------------------------------------//
 void test_macros(rtt_dsxx::UnitTest &ut) {
-  // delete all existing timers
-  D::delete_timers();
+  D::delete_timers(); // delete all existing timers
 
   // make timers and do results
   TIMER(outer_timer);
   TIMER_START("Outer", outer_timer);
-
   do_A();
   do_B();
   do_C();
@@ -234,32 +205,25 @@ void test_macros(rtt_dsxx::UnitTest &ut) {
   // if the timers are off we get no timing data
   vector<string> keys = D::timer_keys();
 #if DRACO_TIMING == 0
-  if (keys.size() != 0)
-    ITFAILS;
-  if (D::num_timers() != 0)
-    ITFAILS;
+  FAIL_IF_NOT(keys.size() == 0);
+  FAIL_IF_NOT(D::num_timers() == 0);
 #else
 #ifndef DRACO_CALIPER
-  if (keys.size() != 4)
-    ITFAILS;
-  cout << setw(15) << "Routine" << setw(15) << "Fraction" << endl;
-  cout << "------------------------------" << endl;
+  FAIL_IF(keys.size() != 4);
+  cout << setw(15) << "Routine" << setw(15) << "Fraction\n" << string(30, '-') << endl;
 
   // get the keys and print a table
-  double total = D::timer_value("Outer");
-  if (total <= 0.0)
-    ITFAILS;
+  double const total = D::timer_value("Outer");
+  FAIL_IF(total <= 0.0);
 
   cout.precision(4);
   cout.setf(ios::fixed, ios::floatfield);
 
-  for (size_t i = 0, N = keys.size(); i < N; ++i) {
-    double fraction = D::timer_value(keys[i]) / total;
-    cout << setw(15) << keys[i] << setw(15) << fraction << endl;
+  for (auto const &key : keys) {
+    double const fraction = D::timer_value(key) / total;
+    cout << setw(15) << key << setw(15) << fraction << endl;
   }
-
-  cout << "The total time was " << total << endl;
-  cout << endl;
+  cout << "The total time was " << total << "\n" << endl;
 #endif // DRACO_CALIPER
 #endif
 
@@ -271,7 +235,7 @@ void test_macros(rtt_dsxx::UnitTest &ut) {
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
-  rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
+  rtt_c4::ParallelUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
     timing_active();
     test_timing(ut);
