@@ -93,8 +93,12 @@ cmake_host_system_information(RESULT HAVE_HARDWARE_SSE2 QUERY HAS_SSE2)
 cmake_host_system_information(RESULT HAVE_HARDWARE_SSE_FP QUERY HAS_SSE_FP)
 cmake_host_system_information(RESULT HAVE_HARDWARE_SSE_MMX QUERY HAS_SSE_MMX)
 
-if(${SITENAME_FAMILY} MATCHES "ATS-2")
-  set(draco_isATS2 1)
+# SYS_TYPE
+#
+# * RHEL7: blueos_3_ppc64le_ib_p9
+# * REHL8: toss_4_ppc64le_ib
+if(${SITENAME_FAMILY} MATCHES "ATS-2" AND "$ENV{SYS_TYPE}" MATCHES "blueos_3")
+  set(draco_isATS2_rhel7 1)
 endif()
 
 # Create ds++/config.h
