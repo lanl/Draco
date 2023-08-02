@@ -132,9 +132,6 @@ endfunction()
 #   TARGET_DEPS  "dep1;dep2;..."
 #   SOURCES      "file1.cc;file2.cc;..."
 #   HEADERS      "file1.hh;file2.hh;..."
-#   VENDOR_LIST  "MPI;GSL"
-#   VENDOR_LIBS  "${MPI_CXX_LIBRARIES};${GSL_LIBRARIES}"
-#   VENDOR_INCLUDE_DIRS "${MPI_CXX_INCLUDE_DIR};${GSL_INCLUDE_DIR}"
 #   FOLDER       "myfolder"
 #   PROJECT_LABEL "myproject42"
 #   NOEXPORT    - do not export target or dependencies to draco-config.cmake
@@ -163,7 +160,7 @@ macro(add_component_executable)
   # These become variables of the form ${ace_NAME}, etc.
   cmake_parse_arguments(
     ace "NOEXPORT;NOCOMMANDWINDOW" "EXPORT_NAME;TARGET;EXE_NAME;LINK_LANGUAGE;FOLDER;PROJECT_LABEL"
-    "HEADERS;SOURCES;TARGET_DEPS;VENDOR_LIST;VENDOR_LIBS;VENDOR_INCLUDE_DIRS" ${ARGV})
+    "HEADERS;SOURCES;TARGET_DEPS" ${ARGV})
 
   # Default link language is C++
   if(NOT DEFINED ace_LINK_LANGUAGE)
@@ -244,15 +241,6 @@ macro(add_component_executable)
       target_link_libraries(${ace_TARGET} ${ace_TARGET_DEPS})
     endif()
   endif()
-  if(DEFINED ace_VENDOR_LIBS)
-    target_link_libraries(${ace_TARGET} ${ace_VENDOR_LIBS})
-  endif()
-  if(ace_VENDOR_INCLUDE_DIRS)
-    set_property(
-      TARGET ${ace_TARGET}
-      APPEND
-      PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${ace_VENDOR_INCLUDE_DIRS}")
-  endif()
 
 endmacro()
 
@@ -278,9 +266,6 @@ endmacro()
 #   HEADERS      "file1.hh;file2.hh;..."
 #   LIBRARY_NAME_PREFIX "rtt_"
 #   LIBRARY_TYPE "SHARED"
-#   VENDOR_LIST  "MPI;GSL"
-#   VENDOR_LIBS  "${MPI_CXX_LIBRARIES};${GSL_LIBRARIES}"
-#   VENDOR_INCLUDE_DIRS "${MPI_CXX_INCLUDE_DIR};${GSL_INCLUDE_DIR}"
 #   NOEXPORT
 #   PROVIDE_DLL_DEPS
 #   )
@@ -306,7 +291,7 @@ macro(add_component_library)
   cmake_parse_arguments(
     acl "NOEXPORT;PROVIDE_DLL_DEPS"
     "EXPORT_NAME;LANGUAGE;LIBRARY_NAME;LIBRARY_NAME_PREFIX;LIBRARY_TYPE;LINK_LANGUAGE;TARGET"
-    "HEADERS;SOURCES;INCLUDE_DIRS;TARGET_DEPS;VENDOR_LIST;VENDOR_LIBS;VENDOR_INCLUDE_DIRS" ${ARGV})
+    "HEADERS;SOURCES;INCLUDE_DIRS;TARGET_DEPS" ${ARGV})
 
   #
   # Defaults:
@@ -320,7 +305,10 @@ macro(add_component_library)
     set(acl_LINK_LANGUAGE CXX)
   endif()
   if("${acl_LANGUAGE}" STREQUAL "CUDA" OR "${acl_LANGUAGE}" STREQUAL "HIP")
-    set_property(SOURCE ${acl_SOURCES} APPEND PROPERTY LANGUAGE ${acl_LANGUAGE})
+    set_property(
+      SOURCE ${acl_SOURCES}
+      APPEND
+      PROPERTY LANGUAGE ${acl_LANGUAGE})
     set(acl_LIBRARY_TYPE STATIC)
   endif()
 
@@ -411,13 +399,6 @@ macro(add_component_library)
     if(DBS_GENERATE_OBJECT_LIBRARIES)
       target_include_directories(${acl_objlib_TARGET} ${acl_INCLUDE_DIRS})
     endif()
-  endif()
-  if(NOT "${acl_VENDOR_LIBS}x" STREQUAL "x")
-    target_link_libraries(${acl_TARGET} ${acl_VENDOR_LIBS})
-  endif()
-  if(acl_VENDOR_INCLUDE_DIRS)
-    set_property(TARGET ${acl_TARGET} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
-                                                      "${acl_VENDOR_INCLUDE_DIRS}")
   endif()
 
   # Copy necessary dll files to the build directory
