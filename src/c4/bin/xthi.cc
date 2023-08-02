@@ -4,7 +4,7 @@
  * \author Mike Berry <mrberry@lanl.gov>, Kelly Thompson <kgt@lanl.gov>
  * \date   Wednesday, Aug 09, 2017, 11:45 am
  * \brief  Print MPI rank, thread number and core affinity bindings.
- * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2017-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/C4_Functions.hh"
@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 #if defined(__GNUC__) && !defined(__clang__) && __GNUC__ < 9
   // gcc-8.X complains about normal syntax. ATS-2 requires different code from all the other
   // machines - these systems must handle const strings differently.
-#ifdef draco_isATS2
+#ifdef draco_isATS2_rhel7
   // rzansel/sierra
 #pragma omp parallel default(none) shared(hostname, std::cout)
 #else

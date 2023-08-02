@@ -65,7 +65,8 @@ if(NOT CUDA_FLAGS_INITIALIZED)
       file(READ /etc/redhat-release rhr)
       string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\1.\\2" redhat_version "${rhr}")
       # If manually specified (eg. spack), do not add the --gcc-toolchain option
-      if(NOT CMAKE_CUDA_FLAGS MATCHES "--gcc-toolchain=")
+      if(NOT (CMAKE_CUDA_FLAGS MATCHES "--gcc-toolchain=" OR ENV{SPACK_CFLAGS} MATCHES
+                                                             "--gcc-toolchain="))
         string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler")
         if(redhat_version MATCHES "^8.([0-9]+)")
           string(APPEND CMAKE_CUDA_FLAGS " --gcc-toolchain=/usr/tce/packages/gcc/gcc-11.2.1")
