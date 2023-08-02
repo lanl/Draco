@@ -45,7 +45,7 @@
     - if: '$CI_PROJECT_NAMESPACE != "draco"'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: never
+      when: manual
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
