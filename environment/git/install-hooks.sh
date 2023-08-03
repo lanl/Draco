@@ -15,7 +15,7 @@
 # select which pre-commit hooks are going to be installed
 HOOKS="pre-commit pre-commit-clang-format pre-commit-autopep8 pre-commit-flake8 pre-commit-fprettify"
 HOOKS="$HOOKS pre-commit-cmake-format pre-commit-cmake-lint pre-commit-copyright"
-# TOOLS="common.sh"
+TOOLS="common.sh"
 ###########################################################
 # There should be no need to change anything below this line.
 
@@ -27,7 +27,7 @@ SCRIPTPATH="$(dirname -- "$0")"
 # shellcheck source=environment/git/canonicalize_filename.sh
 source "$SCRIPTPATH/canonicalize_filename.sh"
 
-# TOOLSPATH="$(canonicalize_filename "$SCRIPTPATH/../../tools")"
+TOOLSPATH="$(canonicalize_filename "$SCRIPTPATH/../../tools")"
 
 # If argument is provided assume it is the top level of a git repository.
 if [[ $1 ]]; then
@@ -52,8 +52,8 @@ copy_hooks() {
     echo "Copying $hook to $dotgitdir/hooks/."
     cp -i -- "$SCRIPTPATH/$hook" "$dotgitdir/hooks/." || true
   done
-  #echo "Copying common.sh to $dotgitdir/hooks/."
-  #cp -i -- "$TOOLSPATH/common.sh" "$dotgitdir/hooks/." || true
+  echo "Copying common.sh to $dotgitdir/hooks/."
+  cp -i -- "$TOOLSPATH/common.sh" "$dotgitdir/hooks/." || true
 
   for hook in $HOOKS $TOOLS; do
     chmod +x "$dotgitdir/hooks/$hook"
