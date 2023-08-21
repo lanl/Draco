@@ -16,7 +16,7 @@ string(CONCAT ddesc "An object-oriented component library supporting radiation t
 project(
   Draco
   DESCRIPTION ${ddesc}
-  VERSION 7.15.0
+  VERSION 7.16.0
   LANGUAGES CXX C)
 
 # Export compile commands for compiler tools

@@ -188,6 +188,7 @@ inline T fma_with_diagnostics(T const a, T const b, T const c, std::string const
 #ifdef FMA_ALWAYS_SOFTWARE
 #undef FMA
 #define FMA(a, b, c) fma((a), (b), (c))
+#undef FMAF
 #define FMAF(a, b, c) fmaf((a), (b), (c))
 #undef FMA_ACCURATE
 #define FMA_ACCURATE(a, b, c) fma((a), (b), (c))
@@ -196,6 +197,7 @@ inline T fma_with_diagnostics(T const a, T const b, T const c, std::string const
 #ifdef FMA_NEVER_SOFTWARE
 #undef FMA
 #define FMA(a, b, c) ((a) * (b) + c)
+#undef FMAF
 #define FMAF(a, b, c) ((a) * (b) + c)
 #undef FMA_ACCURATE
 #define FMA_ACCURATE(a, b, c) ((a) * (b) + c)
