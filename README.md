@@ -102,11 +102,11 @@ Group](http://www.lanl.gov/org/padste/adtsc/computer-computational-statistical-s
 > *CCS-2 Draco Team:* Kelly G. Thompson, Matt A. Cleveland, Ryan T. Wollaeger,
 > Ben R. Ryan, Alex R. Long, Kendra P. Long, James S. Warsa, Jae H. Chang, and Jeff R. Haack.
 >
-> *Prior Contributors:* Gabriel M. Rockefeller, Allan B. Wollaber, Tim Kelley, Rob B. Lowrie,
-> Paul W. Talbot, Katherine J. Wang, Andrew T. Till, Ondrej Certik, Peter Ahrens, David A. Dixon,
-> Massimiliano Rosa, Todd J. Urbatsch, Daniel Holladay, Howard Pritchard, Jeff D. Densmore, Jeff
-> Furnish, John McGhee, Kris C. Garrett, Mike Buksas, Nick Myers, Paul Henning, Randy Roberts,
-> Seth Johnson, Todd Adams, Tom Evans, Lori Pritchett-Sheats, and Seth D. Cook.
+> *Prior Contributors:* Kent G. Budge, Gabriel M. Rockefeller, Allan B. Wollaber, Tim Kelley,
+> Rob B. Lowrie, Paul W. Talbot, Katherine J. Wang, Andrew T. Till, Ondrej Certik, Peter Ahrens,
+> David A. Dixon, Massimiliano Rosa, Todd J. Urbatsch, Daniel Holladay, Howard Pritchard, Jeff D.
+> Densmore, Jeff Furnish, John McGhee, Kris C. Garrett, Mike Buksas, Nick Myers, Paul Henning,
+> Randy Roberts, Seth Johnson, Todd Adams, Tom Evans, Lori Pritchett-Sheats, and Seth D. Cook.
 
 ## Release
 
