@@ -24,53 +24,48 @@ namespace rtt_diagnostics {
  * The constructed string will take this form:
  *
  * \verbatim
-Draco-7_16_0, build date 2023 Aug 21, build type: Debug, DBC: 7, DRACO_DIAGNOSTICS: 0
+Draco-7_11_20210915, build date 2021 Sep 15, build type: Debug, DBC: 7, DRACO_DIAGNOSTICS: 0
 
-CCS-2 Draco Team: Kelly G. Thompson, Matt A. Cleveland, Ryan T. Wollaeger, Ben R. Ryan, 
-     Alex R. Long, Kendra P. Long, James S. Warsa, Jae H. Chang, and Jeff R. Haack.
+CCS-2 Draco Team: Kelly G. Thompson, Kent G. Budge, Matt A. Cleveland, Ryan T. Wollaeger,
+     Ben R. Ryan, Alex R. Long, Kendra P. Long, James S. Warsa, Jae H. Chang, Andrew T. Till,
+     and David A. Dixon.
 
-Prior Contributors: Kent G. Budge, Gabriel M. Rockefeller, Allan B. Wollaber, Tim Kelley, 
-     Rob B. Lowrie, Paul W. Talbot, Katherine J. Wang, Andrew T. Till, Ondrej Certik, Peter Ahrens, 
-     David A. Dixon, Massimiliano Rosa, Todd J. Urbatsch, Daniel Holladay, Howard Pritchard, 
-     Jeff D. Densmore, Jeff Furnish, John McGhee, Kris C. Garrett, Mike Buksas, Nick Myers, 
-     Paul Henning, Randy Roberts, Seth Johnson, Todd Adams, Tom Evans, Lori Pritchett-Sheats, 
-     and Seth D. Cook.
+Prior Contributors: Gabriel M. Rockefeller, Allan B. Wollaber, Tim Kelley, Rob B. Lowrie,
+     Paul W. Talbot, Katherine J. Wang, Seth D. Cook, Ondrej Certik, Peter Ahrens,
+     Massimiliano Rosa, Todd J. Urbatsch, Daniel Holladay, Jeff D. Densmore, Howard Pritchard,
+     Jeff Furnish, John McGhee, Kris C. Garrett, Mike Buksas, Nick Myers, Paul Henning,
+     Randy Roberts, Seth Johnson, Todd Adams, Tom Evans, and Lori Pritchett-Sheats.
 
-Copyright (C) 2014-2023 Triad National Security, LLC., All rights reserved. */
-Released under a 3 - Clause BSD License.
+For information, send e-mail to draco@lanl.gov.
 
-                     For information,
-    send e -
-        mail to draco @lanl.gov.
+Build information:
+    Build type        : DEBUG
+    Library type      : Shared
+    System type       : Linux
+    Site name         : ccscs3
+    CUDA support      : disabled
+    MPI support       : enabled
+      mpirun cmd      : /ccs/opt/.../bin/mpiexec -n <N> -bind-to none
+    OpenMP support    : enabled
+    Design-by-Contract: 7, features = Insist, Require, Check, Ensure
+    Diagnostics       : 0
+    Diagnostics Timing: disabled
+    CXX Compiler      : /scratch/vendors/spack.20180425/opt/spack/linux-rhel7-x86_64/gcc-4.8.5/
+                        gcc-8.1.0-3c5hjkqndywdp3w2l5vts62xlllrsbtq/bin/g++
+    CXX_FLAGS         : -Wcast-align -Wpointer-arith -Wall -pedantic -Wno-expansion-to-defined
+                        -Wnarrowing -march=native -fopenmp -Werror
+    C Compiler        : /scratch/vendors/spack.20180425/opt/spack/linux-rhel7-x86_64/gcc-4.8.5/
+                        gcc-8.1.0-3c5hjkqndywdp3w2l5vts62xlllrsbtq/bin/gcc
+    C_FLAGS           : -Wcast-align -Wpointer-arith -Wall -pedantic -Wno-expansion-to-defined
+                        -Wnarrowing -march=native -fopenmp -Werror
+    Fortran Compiler  : /scratch/vendors/spack.20180425/opt/spack/linux-rhel7-x86_64/gcc-4.8.5/
+                        gcc-8.1.0-3c5hjkqndywdp3w2l5vts62xlllrsbtq/bin/gfortran
+    Fortran_FLAGS     : -ffree-line-length-none -cpp -march=native -fopenmp
 
-            Build information : Build type : DEBUG Library type : Shared System type
-    : Linux Site name : ccscs3 CUDA support : disabled MPI support : enabled mpirun cmd
-    : /
-      ccs / opt / ... / bin / mpiexec -
-        n<N> - bind - to none OpenMP support : enabled Design - by - Contract : 7,
-    features = Insist, Require, Check,
-    Ensure Diagnostics : 0 Diagnostics Timing : disabled CXX Compiler
-    : /
-      scratch / vendors / spack .20180425 / opt / spack / linux -
-        rhel7 - x86_64 / gcc - 4.8.5 / gcc - 8.1.0 -
-        3c5hjkqndywdp3w2l5vts62xlllrsbtq / bin / g++ CXX_FLAGS : -Wcast - align - Wpointer - arith -
-        Wall - pedantic - Wno - expansion - to - defined - Wnarrowing - march =
-        native - fopenmp -
-        Werror C Compiler : / scratch / vendors / spack .20180425 / opt / spack / linux - rhel7 -
-        x86_64 / gcc - 4.8.5 / gcc - 8.1.0 -
-        3c5hjkqndywdp3w2l5vts62xlllrsbtq / bin / gcc C_FLAGS : -Wcast - align - Wpointer - arith -
-        Wall - pedantic - Wno - expansion - to - defined - Wnarrowing - march =
-            native - fopenmp -
-            Werror Fortran Compiler : / scratch / vendors / spack .20180425 / opt / spack / linux -
-            rhel7 - x86_64 / gcc - 4.8.5 / gcc - 8.1.0 -
-            3c5hjkqndywdp3w2l5vts62xlllrsbtq / bin / gfortran Fortran_FLAGS : -ffree - line -
-            length - none - cpp - march =
-                native -
-                fopenmp
-
-                    * \endverbatim * /
-                    //================================================================================================//
-                    class DracoInfo {
+ * \endverbatim
+ */
+//================================================================================================//
+class DracoInfo {
 public:
   // IMPLELEMENTATION
   // ================
