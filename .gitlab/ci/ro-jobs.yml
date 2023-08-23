@@ -90,7 +90,7 @@ ro_deb_fulldiag_deploy:
   variables:
     DEPLOY: 'TRUE'
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-    DRACO_INSTALL_DIR: "/usr/projects/draco/${CI_COMMIT_BRANCH}/${SITE_ID}/${FLAVOR}"
+    DRACO_INSTALL_DIR: "/usr/projects/draco/${CI_COMMIT_TAG}${CI_COMMIT_BRANCH}/${SITE_ID}/${FLAVOR}"
   script:
     - echo "branch = $CI_COMMIT_BRANCH, tag = $CI_COMMIT_TAG"
     - echo "Starting ro_deploy_release..."
