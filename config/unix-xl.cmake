@@ -33,8 +33,8 @@ if(NOT CXX_FLAGS_INITIALIZED)
     file(READ /etc/redhat-release rhr)
     string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\1.\\2" redhat_version "${rhr}")
     # If manually specified (eg. spack), do not add the --gcc-toolchain option
-    if(NOT (CMAKE_C_FLAGS MATCHES "--gcc-toolchain=" OR ENV{SPACK_CFLAGS} MATCHES "--gcc-toolchain="
-           ))
+    if(NOT (CMAKE_C_FLAGS MATCHES "--gcc-toolchain=" OR $ENV{SPACK_CFLAGS} MATCHES
+                                                        "--gcc-toolchain="))
       if(redhat_version MATCHES "^8.([0-9]+)")
         string(APPEND CMAKE_C_FLAGS " --gcc-toolchain=/usr/tce/packages/gcc/gcc-11.2.1")
       else()
