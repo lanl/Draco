@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------------------------ #
 # file   : platform_checks.cmake
 # brief  : Platform Checks for Draco Build System
-# note   : Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved.
+# note   : Copyright (C) 2011-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -36,6 +36,9 @@ function(dbs_set_sitename)
     if("$ENV{SLURM_CLUSTER_NAME}" MATCHES "trinity")
       set(SITENAME "Trinity")
       set(SITENAME_FAMILY "ATS-1")
+    elseif("$ENV{SLURM_CLUSTER_NAME}" MATCHES "rocinante")
+      set(SITENAME "Rocinante")
+      set(SITENAME_FAMILY "ATS-3") # or CTS-2?!
     else()
       set(SITENAME "Trinitite")
       set(SITENAME_FAMILY "ATS-1")
