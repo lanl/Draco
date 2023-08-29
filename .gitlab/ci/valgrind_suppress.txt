@@ -4,7 +4,7 @@
 # Date  : Friday, May 19, 2017, 10:26 am
 # Author: Kelly Thompson <kgt@lanl.gov>
 # Breif : Valgrind Suppression Instructions
-# Note  : Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# Note  : Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 #
 # Example valgrind use:
@@ -256,8 +256,59 @@
    ...
    obj:/lib/ld-2.12.so
 }
-
-
+#--------------------------------------------------------------------------------------------------#
+# Added with bump to valgrind-3.20 on ccsnet
+#--------------------------------------------------------------------------------------------------#
+{
+   pthread/start_thread1
+   Memcheck:Param
+   writev(vector[1])
+   fun:writev
+   fun:pmix_ptl_base_send_handler
+   ...
+   fun:start_thread
+   fun:clone
+}
+{
+   ompi-4/ob1_send1
+   Memcheck:Param
+   writev(vector[1])
+   fun:writev
+   ...
+   fun:opal_progress
+   fun:mca_pml_ob1_send
+   ...
+   fun:main
+}
+{
+   ompi/pmix_calloc1
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   ...
+   fun:PMIx_Init
+   ...
+   fun:main
+}
+{
+   ompi/isend1
+   Memcheck:Param
+   writev(vector[2])
+   fun:writev
+   fun:mca_btl_tcp_frag_send
+   ...
+   fun:main
+}
+{
+   ompi/pmix_malloc1
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   ...
+   fun:pmix_server_init
+   fun:rte_init
+   ...
+}
 ## ---------------------------------------------------------------------- ##
 ## EOSPAC 6
 ## ---------------------------------------------------------------------- ##
