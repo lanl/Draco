@@ -281,7 +281,7 @@
    fun:main
 }
 {
-   ompi/pmix_calloc1
+   ompi-4/pmix_calloc1
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:calloc
@@ -291,7 +291,7 @@
    fun:main
 }
 {
-   ompi/isend1
+   ompi-4/isend1
    Memcheck:Param
    writev(vector[2])
    fun:writev
@@ -300,7 +300,7 @@
    fun:main
 }
 {
-   ompi/pmix_malloc1
+   ompi-4/pmix_malloc1
    Memcheck:Leak
    match-leak-kinds: definite
    fun:malloc
@@ -308,6 +308,38 @@
    fun:pmix_server_init
    fun:rte_init
    ...
+}
+{
+   ompi-4/waitall1
+   Memcheck:Param
+   writev(vector[1])
+   fun:writev
+   ...
+   fun:opal_progress
+   fun:ompi_request_default_wait_all
+   ...
+   fun:main
+}
+{
+   ompi-4/winfence1
+   Memcheck:Param
+   writev(vector[1])
+   fun:writev
+   ...
+   fun:ompi_osc_pt2pt_fence
+   fun:PMPI_Win_fence
+   ...
+   fun:main
+}
+{
+   ompi-4/barrier1
+   Memcheck:Param
+   writev(vector[1])
+   fun:writev
+   ...
+   fun:PMPI_Barrier
+   ...
+   fun:main
 }
 ## ---------------------------------------------------------------------- ##
 ## EOSPAC 6
