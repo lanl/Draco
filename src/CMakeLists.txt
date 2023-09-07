@@ -22,8 +22,7 @@ force_compiler_flags_to_cache("C;CXX")
 
 # <experimental/mdspan> doesn't work with some tool chains...
 option(USE_MDSPAN "Use experimental/mdspan" ON)
-if((MSVC AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-   OR (CMAKE_CXX_COMPILER_ID MATCHES "Intel" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18.0))
+if(MSVC AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(USE_MDSPAN OFF)
 endif()
 
