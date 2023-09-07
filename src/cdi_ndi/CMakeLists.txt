@@ -1,7 +1,7 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   cdi_ndi/CMakeLists.txt
 # brief  Instructions for building cdi_ndi Makefiles.
-# note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(cdi_ndi CXX)
@@ -12,7 +12,7 @@ project(cdi_ndi CXX)
 file(GLOB sources *.cc)
 file(GLOB headers *.hh)
 list(APPEND headers ${PROJECT_BINARY_DIR}/cdi_ndi/config.h)
-set(deps Lib_cdi Lib_rng Lib_units)
+set(deps Lib_cdi Lib_units)
 
 # If NDI is found, set the associated variables. Otherwise, the cdi_ndi lib will be built with
 # stubbed-out routines.
