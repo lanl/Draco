@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 June 6
 # brief  Look for any libraries which are required at the top level.
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -42,7 +42,7 @@ endmacro()
 function(setupRandom123)
 
   message(STATUS "Looking for Random123...")
-  find_package(Random123 REQUIRED QUIET)
+  find_package(Random123 QUIET)
   mark_as_advanced(RANDOM123_FOUND)
   if(RANDOM123_FOUND)
     message(STATUS "Looking for Random123.found ${RANDOM123_INCLUDE_DIR}")
