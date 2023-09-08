@@ -1140,15 +1140,5 @@ macro(process_autodoc_pages)
 endmacro()
 
 # -------------------------------------------------------------------------------------------------#
-# ADD_DIR_IF_EXISTS - A helper macro used for including sub-project directories from src/CMakeLists.
-# -------------------------------------------------------------------------------------------------#
-macro(add_dir_if_exists package)
-  if(EXISTS ${PROJECT_SOURCE_DIR}/${package})
-    message("   ${package}")
-    add_subdirectory(${package})
-  endif()
-endmacro()
-
-# -------------------------------------------------------------------------------------------------#
 # End config/component_macros.cmake
 # -------------------------------------------------------------------------------------------------#
