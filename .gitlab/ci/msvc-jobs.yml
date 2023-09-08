@@ -35,7 +35,7 @@
     # ${COMPUTERNAME} doesn't seem to work.
     GENERATOR: "Visual Studio 17 2022"
     DEPLOY: "FALSE"
-    VCVARS: "C:\\PROGRA~1\\MIB055~1\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat"
+    VCVARS: "C:\\PROGRA~1\\MIB055~1\\2022\\Professional\\VC\\Auxiliary\\Build\\vcvars64.bat"
     CMAKE_TOOLCHAIN_FILE: "${CI_PROJECT_DIR}\\.gitlab\\ci\\vs2022-toolchain.cmake"
     MINGW64PATH: "C:\\msys64\\mingw64\\bin"
     CMAKE_C_FLAGS: "/WX"
