@@ -34,7 +34,6 @@ include:
   - local: /.gitlab/ci/rzansel-jobs.yml
   - local: /.gitlab/ci/rzvernal-jobs.yml
   - local: /.gitlab/ci/snow-jobs.yml
-  - local: /.gitlab/ci/tt-jobs.yml
 
 #--------------------------------------------------------------------------------------------------#
 # End .gitlab-ci.yml

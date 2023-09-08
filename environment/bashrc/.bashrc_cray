@@ -43,8 +43,6 @@ fi
 unset OMP_NUM_THREADS
 if [[ ${CRAY_CPU_TARGET} =~ haswell ]]; then
   export NRANKS_PER_NODE=32
-elif [[ ${CRAY_CPU_TARGET} =~ knl ]]; then
-  export NRANKS_PER_NODE=68
 fi
 
 # Support building cassio with ccsrad shared deployment repository.
@@ -67,9 +65,6 @@ sysname=`/usr/projects/hpcsoft/utilities/bin/sys_name`
 module use --append /usr/projects/draco/Modules/$sysname
 module unload draco lapse
 module load lapse/2.3.1-intel
-if [[ ${SLURM_JOB_PARTITION} =~ "knl" ]]; then
-  module swap craype-haswell craype-mic-knl
-fi
 
 #--------------------------------------------------------------------------------------------------#
 # end of .bashrc_cray

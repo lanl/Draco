@@ -28,12 +28,6 @@ if(NOT CXX_FLAGS_INITIALIZED)
   # -qno-opt-dynamic-align fixed LAP numerical sensitivity for Hypre (Gaber, 12/01/2020).
   string(CONCAT CMAKE_C_FLAGS_RELEASE "-O3 -fp-speculation=fast -fp-model=precise -pthread"
                 " -qno-opt-dynamic-align -DNDEBUG")
-  # * [KT 2017-01-19] On KNL, -fp-model=fast changes behavior significantly for IMC. Revert to
-  #   -fp-model=precise.
-  if("$ENV{CRAY_CPU_TARGET}" STREQUAL "mic-knl")
-    string(REPLACE "-fp-model=fast" "-fp-model=precise" CMAKE_C_FLAGS_RELEASE
-                   ${CMAKE_C_FLAGS_RELEASE})
-  endif()
 
   set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_RELEASE}")
   string(CONCAT CMAKE_C_FLAGS_RELWITHDEBINFO "-debug inline-debug-info -O3 -pthread"

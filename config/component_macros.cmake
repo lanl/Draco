@@ -715,8 +715,8 @@ macro(add_scalar_tests test_sources)
 
   # Special Cases:
   # ------------------------------------------------------------
-  # On some platforms (Trinity, Sierra), even scalar tests must be run underneath MPIEXEC_EXECUTABLE
-  # (srun, jsrun, lrun):
+  # On some platforms (Sierra), even scalar tests must be run underneath MPIEXEC_EXECUTABLE (srun,
+  # jsrun, lrun):
   separate_arguments(MPIEXEC_PREFLAGS)
   if(("${MPIEXEC_EXECUTABLE}" MATCHES "srun" OR "${MPIEXEC_EXECUTABLE}" MATCHES "jsrun"))
     set(RUN_CMD ${MPIEXEC_EXECUTABLE} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} 1)

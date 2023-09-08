@@ -12,7 +12,7 @@ echo "    SITE_ID = ${SITE_ID}"
 [[ -n "${SCHEDULER_PARAMETERS}" ]] && echo "    Using: salloc ${SCHEDULER_PARAMETERS}"
 
 case ${SITE_ID} in
-  darwin | ccscs* | roci* | rz* | sn* | trinitite*) ;;
+  darwin | ccscs* | roci* | rz* | sn*) ;;
   *) die ".gitlab/ci/environments.sh :: SITE_ID not recognized, SITE_ID = ${SITE_ID}" ;;
 esac
 
@@ -88,22 +88,6 @@ elif [[ "${SITE_ID}" =~ "rocinante" ]]; then
   case ${DRACO_ENV} in
     lapse* | draco* ) ;;
     *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
-  esac
-  run "module load ${DRACO_ENV}"
-
-#------------------------------------------------------------------------------#
-# Trinitite
-#------------------------------------------------------------------------------#
-elif [[ "${SITE_ID}" =~ "trinitite" ]]; then
-  run "module use --append /usr/projects/draco/Modules/trinitite"
-  # export PATH=/scratch/vendors/bin:$PATH # clang-format
-  case ${DRACO_ENV} in
-    lapse* | draco* ) ;;
-    *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
-  esac
-  run "module unload draco lapse"
-  case ${DRACO_ENV} in
-    draco/cce*) run "module swap PrgEnv-intel PrgEnv-cray" ;;
   esac
   run "module load ${DRACO_ENV}"
 
