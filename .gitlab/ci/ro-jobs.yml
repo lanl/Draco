@@ -12,15 +12,14 @@
 
 ---
 .ro:
+  extends: .jacamar
   tags:
     - rocinante
     - batch
     - ro-rfe1
   variables:
     SITE_ID: rocinante
-    CTEST_MODE: Experimental
     CTEST_NPROC: 111
-    DEPLOY: "FALSE"
     EXTRA_CMAKE_ARGS: -G Ninja
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     SCHEDULER_PARAMETERS: -N 1 -L none@slurmdb -A asc-ci --partition=ci --qos=ci --reservation=ci

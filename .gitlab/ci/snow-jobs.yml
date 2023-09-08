@@ -12,12 +12,11 @@
 
 ---
 .snow:
+  extends: .jacamar
   tags:
     - snow
     - batch
   variables:
-    CTEST_MODE: Experimental
-    DEPLOY: "FALSE"
     SITE_ID: snow
     SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --partition=ci --qos=ci --reservation=ci -L none@slurmdb"
     # CI_DEBUG_TRACE: "true"
