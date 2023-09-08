@@ -61,7 +61,7 @@ fi
 
   # target="`uname -n | sed -e s/[.].*//`"
   # case ${target} in
-  #   tt-rfe* | tt-login*)
+  #   ro-rfe* | ro-login*)
   #     module swap intel intel/15.0.3
   #     ;;
   #   *)

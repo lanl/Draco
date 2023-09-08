@@ -66,7 +66,6 @@
 #cmakedefine draco_isLinux_with_aprun
 #cmakedefine draco_isCatamount
 #cmakedefine draco_isPGI
-#cmakedefine draco_isKNL
 #cmakedefine draco_is64bit
 #cmakedefine draco_isATS2_rhel7
 #cmakedefine DRACO_UNAME @DRACO_UNAME@

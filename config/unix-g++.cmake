@@ -24,6 +24,7 @@ include_guard(GLOBAL)
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
 check_c_compiler_flag("-march=native" HAS_MARCH_NATIVE)
+# Figure out what gcc does when give '-march=native': 'gcc -### -march=native -x c -'
 
 #
 # Compiler Flags

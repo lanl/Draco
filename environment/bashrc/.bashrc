@@ -188,16 +188,6 @@ if [[ ${INTERACTIVE} == true ]]; then
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats4" ;;
 
-    # trinitite (tt-rfe) | trinity (tr-fe)
-    tt-rfe* | tt-login* | tr-fe* | tr-login* | nid* )
-      if [[ "${MODULEPATH}" =~ "rocinante" ]]; then
-        # shellcheck source=/dev/null
-        source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats3"
-      else
-        # shellcheck source=/dev/null
-        source "${DRACO_ENV_DIR}/bashrc/.bashrc_cray"
-      fi
-      ;;
     # LAP Virtual Machine
     vc*)
       # shellcheck source=/dev/null

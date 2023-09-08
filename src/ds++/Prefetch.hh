@@ -2,7 +2,7 @@
 /*!
  * \file   ds++/SystemCall.hh
  * \brief  Wrapper for explicit prefetch commands. Hides system dependence.
- * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_Prefetch_hh
@@ -95,23 +95,15 @@ namespace rtt_dsxx {
 #endif
 
 //! Number of bytes (char) on a cache line.
-
-#ifdef draco_isKNL
-unsigned const CACHE_LINE_CHAR = 64U;
-#else
 unsigned const CACHE_LINE_CHAR = 32U; // correct for Haswell; assumed for other
-#endif
 
 //! Number of ints in a cache line.
-
 unsigned const CACHE_LINE_INT = CACHE_LINE_CHAR / sizeof(int);
 
 //! Number of long ints in a cache line.
-
 unsigned const CACHE_LINE_LONG = CACHE_LINE_CHAR / sizeof(long);
 
 //! Number of double precision values in a cache line.
-
 unsigned const CACHE_LINE_DOUBLE = CACHE_LINE_CHAR / sizeof(double);
 
 } // namespace rtt_dsxx

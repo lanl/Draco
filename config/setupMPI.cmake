@@ -203,22 +203,7 @@ macro(query_topology)
   set(MPI_CORES_PER_CPU 4)
   set(MPI_PHYSICAL_CORES 1)
 
-  if("${SITENAME}" STREQUAL "Trinitite" OR "${SITENAME}" STREQUAL "Trinity")
-    # Backend is different than build-node
-    if($ENV{CRAY_CPU_TARGET} MATCHES "mic-knl")
-      set(MPI_CORES_PER_CPU 17)
-      set(MPI_PHYSICAL_CORES 4)
-      set(MPIEXEC_MAX_NUMPROCS
-          68
-          CACHE STRING "Max procs on node." FORCE)
-    else()
-      set(MPI_CORES_PER_CPU 16)
-      set(MPI_PHYSICAL_CORES 2)
-      set(MPIEXEC_MAX_NUMPROCS
-          32
-          CACHE STRING "Max procs on node." FORCE)
-    endif()
-  elseif(SITENAME MATCHES "rznevada" OR SITENAME MATCHES "rzvernal")
+  if(SITENAME MATCHES "rznevada" OR SITENAME MATCHES "rzvernal")
     set(MPI_CORES_PER_CPU 2)
     set(MPI_PHYSICAL_CORES 64)
     set(MPIEXEC_MAX_NUMPROCS

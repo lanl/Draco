@@ -189,10 +189,6 @@ function flavor
       done
       # pick the first compiler in the list
       compilerflavor=$(echo "${compilermodules}" | awk '{print $1;}')
-      # append target if KNL
-      if [[ $(echo "${CRAY_CPU_TARGET}" | grep -c knl) == 1 ]]; then
-        compilerflavor+='-knl'
-      fi
       ;;
     darwin*)
       platform=$os # e.g.: darwin-power9
@@ -352,16 +348,6 @@ function lookupppn()
   target=$(uname -n | sed -e 's/[.].*//')
   ppn=1
   case "${target}" in
-    t[rt]-fe* | t[rt]-login*)
-      if [[ "$CRAY_CPU_TARGET" == "haswell" ]]; then
-        ppn=32
-      elif [[ "$CRAY_CPU_TARGET" == "knl" ]]; then
-        ppn=68
-      else
-        echo "ERROR: Expected CRAY_CPU_TARGET to be set in the environment."
-        exit 1
-      fi
-      ;;
     fi* | ic* | sn* | cy* )         ppn=36 ;;
     rzansel* | rzmanta* | sierra* ) ppn=40 ;;
     *) ppn=$(grep -c processor /proc/cpuinfo) ;;
