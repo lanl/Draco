@@ -14,6 +14,13 @@ variables:
   https_proxy: "http://proxyout.lanl.gov:8080"
   no_proxy: "localhost,127.0.0.1,.lanl.gov,lanl.gov"
   OMP_NUM_THREADS: 8
+  CTEST_MODE: Experimental
+  DEPLOY: "FALSE"
+
+.jacamar:
+  id_tokens:
+    SITE_ID_TOKEN:
+      aud: https://re-git.lanl.gov
 
 stages:
   - lint

@@ -14,12 +14,11 @@
 
 ---
 .rzansel:
+  extends: .jacamar
   tags:
     - rzansel
     - batch
   variables:
-    CTEST_MODE: Experimental
-    DEPLOY: "FALSE"
     SITE_ID: rzansel
     CTEST_NPROC: 10
     # SCHEDULER_PARAMETERS: -N 1

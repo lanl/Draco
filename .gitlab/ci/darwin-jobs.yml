@@ -20,7 +20,6 @@
     - darwin-slurm-shared
   variables:
     SITE_ID: darwin
-    DEPLOY: "FALSE"
     SP_power9_rhel8: "--nodes=1 --partition=power9-rhel8,power9-rhel8-asc --qos=debug"
     SP_power9_rhel7: "--nodes=1 --partition=power9-rhel7,power9-rhel7-asc --qos=debug"
     SP_power9: "--nodes=1 --partition=power9,power9-asc --qos=debug"
@@ -148,7 +147,6 @@ darwin_style_cxx:
   stage: lint
   extends: .darwin
   variables:
-    CTEST_MODE: Experimental
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: draco/haswell-gcc1120
     ARCH: haswell
@@ -168,8 +166,6 @@ darwin_style_cxx:
 
 .darwin_merge:
   extends: .darwin
-  variables:
-    CTEST_MODE: Experimental
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:

@@ -14,7 +14,6 @@
 ---
 .ccscs:
   variables:
-    DEPLOY: "FALSE"
     # CI_DEBUG_TRACE: "true"
 
 #--------------------------------------------------------------------------------------------------#
@@ -27,7 +26,6 @@ ccs1_clangtidy:
   extends: .ccscs
   stage: lint
   variables:
-    CTEST_MODE: Experimental
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm12
     CTEST_NPROC: 32
@@ -293,7 +291,6 @@ ccs1_rel_gcc_1120_deploy_release:
 .ccscs_merge:
   extends: .ccscs
   variables:
-    CTEST_MODE: Experimental
     EXTRA_CMAKE_ARGS: -G Ninja
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
