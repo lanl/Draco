@@ -30,61 +30,61 @@ endif()
 # Level 1
 message(" ")
 message(STATUS "Configuring Level 1 packages --")
-add_dir_if_exists(ds++)
+add_subdirectory(ds++)
 
 # Only test selected components if CI_CLANG_TIDY is running
 
 # Level 2
 message(" ")
 message(STATUS "Configuring Level 2 packages --")
-add_dir_if_exists(c4) #< needs ds++
-add_dir_if_exists(cdi) #< needs ds++
-add_dir_if_exists(device) #< needs ds++
-add_dir_if_exists(FortranChecks) #< needs ds++
-add_dir_if_exists(linear) #< needs ds++
-add_dir_if_exists(memory) #< needs ds++
-add_dir_if_exists(mesh_element) #< needs ds++
-add_dir_if_exists(ode) #< needs ds++
-add_dir_if_exists(units) #< needs ds++
+add_subdirectory(c4) #< needs ds++
+add_subdirectory(cdi) #< needs ds++
+add_subdirectory(device) #< needs ds++
+add_subdirectory(FortranChecks) #< needs ds++
+add_subdirectory(linear) #< needs ds++
+add_subdirectory(memory) #< needs ds++
+add_subdirectory(mesh_element) #< needs ds++
+add_subdirectory(ode) #< needs ds++
+add_subdirectory(units) #< needs ds++
 
 # Level 3
 message(" ")
 message(STATUS "Configuring Level 3 packages --")
 if(USE_MDSPAN)
-  add_dir_if_exists(experimental) #< only the tests need ds++
-  add_dir_if_exists(cdi_CPEloss) #< needs cdi, units, experimental
+  add_subdirectory(experimental) #< only the tests need ds++
+  add_subdirectory(cdi_CPEloss) #< needs cdi, units, experimental
 endif()
-add_dir_if_exists(cdi_eospac) #< needs parser, ode, cdi
-add_dir_if_exists(cdi_ipcress) #< needs cdi
-add_dir_if_exists(diagnostics) #< needs c4
-add_dir_if_exists(fit) #< needs linear
-add_dir_if_exists(kde) #< needs c4
-add_dir_if_exists(meshReaders) #< needs c4
-add_dir_if_exists(min) #< needs linear
-add_dir_if_exists(norms) #< needs c4
-add_dir_if_exists(parser) #< needs units, c4, mesh_element
+add_subdirectory(cdi_eospac) #< needs parser, ode, cdi
+add_subdirectory(cdi_ipcress) #< needs cdi
+add_subdirectory(diagnostics) #< needs c4
+add_subdirectory(fit) #< needs linear
+add_subdirectory(kde) #< needs c4
+add_subdirectory(meshReaders) #< needs c4
+add_subdirectory(min) #< needs linear
+add_subdirectory(norms) #< needs c4
+add_subdirectory(parser) #< needs units, c4, mesh_element
 if(RANDOM123_FOUND)
-  add_dir_if_exists(rng) #< needs ds++, device
+  add_subdirectory(rng) #< needs ds++, device
 endif()
-add_dir_if_exists(roots) #< needs linear
-add_dir_if_exists(VendorChecks) #< needs c4
-add_dir_if_exists(viz) #< needs c4
-add_dir_if_exists(predict)
+add_subdirectory(roots) #< needs linear
+add_subdirectory(VendorChecks) #< needs c4
+add_subdirectory(viz) #< needs c4
+add_subdirectory(predict)
 
 # Level 4
 message(" ")
 message(STATUS "Configuring Level 4 packages --")
-add_dir_if_exists(cdi_analytic) #< needs parser, roots, ode, cdi
-add_dir_if_exists(cdi_ndi) #< needs ds++, rng, cdi
-add_dir_if_exists(RTT_Format_Reader) #< needs meshReaders
-add_dir_if_exists(special_functions) #< needs roots, units, GSL
+add_subdirectory(cdi_analytic) #< needs parser, roots, ode, cdi
+add_subdirectory(cdi_ndi) #< needs ds++, rng, cdi
+add_subdirectory(RTT_Format_Reader) #< needs meshReaders
+add_subdirectory(special_functions) #< needs roots, units, GSL
 
 # Level 5
 message(" ")
 message(STATUS "Configuring Level 5 packages --")
-add_dir_if_exists(compton_tools) #< needs ds++, units, cdi_analtyic
-add_dir_if_exists(mesh) #< needs c4, ds++, mesh_element
-add_dir_if_exists(quadrature) #< needs mesh_element, parser, special_functions
+add_subdirectory(compton_tools) #< needs ds++, units, cdi_analtyic
+add_subdirectory(mesh) #< needs c4, ds++, mesh_element
+add_subdirectory(quadrature) #< needs mesh_element, parser, special_functions
 
 # Summary
 
