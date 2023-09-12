@@ -70,6 +70,11 @@ if(NOT HIP_FLAGS_INITIALIZED)
   set(CMAKE_HIP_FLAGS_MINSIZEREL "-O1")
   set(CMAKE_HIP_FLAGS_RELWITHDEBINFO "-O1 --generate-line-info")
 
+  # Disable FMA at the compile level if desired
+  if(DEFINED FMA_NEVER_HARDWARE)
+    string(APPEND CMAKE_HIP_FLAGS " -ffp-contract=off")
+  endif()
+
 endif()
 
 string(APPEND CMAKE_CXX_FLAGS " -D__HIP_PLATFORM_HCC__= -D__HIP_PLATFORM_AMD__=")

@@ -91,6 +91,11 @@ if(NOT CXX_FLAGS_INITIALIZED)
     endif()
   endif()
 
+  # Disable FMA at the compile level if desired
+  if(DEFINED FMA_NEVER_HARDWARE)
+    string(APPEND CMAKE_C_FLAGS " -ffp-contract=off")
+  endif()
+
   string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS}")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Woverloaded-virtual -Wsuggest-override")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")

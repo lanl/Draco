@@ -88,6 +88,10 @@ if(NOT CUDA_FLAGS_INITIALIZED)
   set(CMAKE_CUDA_FLAGS_MINSIZEREL "-O2")
   set(CMAKE_CUDA_FLAGS_RELWITHDEBINFO "-O2 --generate-line-info")
 
+  # Disable FMA at the compile level if desired
+  if(DEFINED FMA_NEVER_HARDWARE)
+    string(APPEND CMAKE_CUDA_FLAGS " --fmad=false")
+  endif()
 endif()
 
 # ------------------------------------------------------------------------------------------------ #

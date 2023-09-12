@@ -50,6 +50,11 @@
 //#define FMA_ALWAYS_SOFTWARE 1
 //#define FMA_NEVER_SOFTWARE 1
 
+#if defined(FMA_NEVER_HARDWARE)
+// KPL: If we are disabling FMA via compiler flags, use the "no hardware fma" logic in this file.
+#undef HAVE_HARDWARE_FMA
+#endif
+
 #if defined(FMA_ALWAYS_SOFTWARE) && defined(FMA_NEVER_SOFTWARE)
 #error "Both FMA_ALWAYS_SOFTWARE and FMA_NEVER_SOFTWARE should not be set."
 #endif
@@ -98,6 +103,8 @@ inline T fma_with_diagnostics(T const a, T const b, T const c, std::string const
                               uint32_t const line, bool const abort_on_fail) {
   T const accurate = fma(a, b, c);
   T const fast = ((a) * (b) + c);
+  // KPL: This tolerance may not be quite tight enough to expose relevant diffs in quantities
+  // like momentum deposition, which tend to have very small absolute magnitudes.
   // For T=double, tol = 1.e+7 * 1.e-19 = 1.e-12
   T const tol =
       std::pow(10, (std::numeric_limits<T>::max_digits10 / 3)) * std::numeric_limits<T>::epsilon();
@@ -120,7 +127,6 @@ inline T fma_with_diagnostics(T const a, T const b, T const c, std::string const
       std::cout << msg.str();
     }
   }
-
   return abort_on_fail ? fast : accurate;
 }
 
@@ -133,6 +139,7 @@ inline T fma_with_diagnostics(T const a, T const b, T const c, std::string const
  * exception.  This is useful for finding operations that are sensitive to roundoff.
  */
 #define FMA(a, b, c) rtt_dsxx::fma_with_diagnostics((a), (b), (c), __FILE__, __LINE__, true)
+#define FMAF(a, b, c) rtt_dsxx::fma_with_diagnostics((a), (b), (c), __FILE__, __LINE__, true)
 #define FMA_ACCURATE(a, b, c)                                                                      \
   rtt_dsxx::fma_with_diagnostics((a), (b), (c), __FILE__, __LINE__, false)
 #else
@@ -175,6 +182,7 @@ inline T fma_with_diagnostics(T const a, T const b, T const c, std::string const
  * though it is much slower (2-3x slower).
  */
 #define FMA(a, b, c) ((a) * (b) + c)
+#define FMAF(a, b, c) ((a) * (b) + c)
 #define FMA_ACCURATE(a, b, c) fma((a), (b), (c))
 
 #endif /* HAVE_HARDWARE_FMA */
