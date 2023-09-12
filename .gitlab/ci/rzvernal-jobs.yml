@@ -102,7 +102,7 @@ rzvernal_deb_cce1501_mr:
     CTEST_NPROC: 80
     DRACO_ENV: "lapse/2.3.2-cce"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
-    CTEST_BUILD_NAME: "lapse230-cce-${CMAKE_BUILD_TYPE}"
+    CTEST_BUILD_NAME: "lapse232-cce-${CMAKE_BUILD_TYPE}"
   artifacts:
     when: always
     paths:
