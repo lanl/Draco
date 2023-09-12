@@ -17,8 +17,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
   #   headers that I can't suppress easily (warning 191: type qualifier is meaningless on cast type)
   # * [KT 2015-07-10] -diag-disable 11060 -- disable warning that is issued when '-ip' is turned on
   #   and a library has no symbols (this occurs when capsaicin links some trilinos libraries.)
-  string(APPEND CMAKE_C_FLAGS
-         " -g -w1 -vec-report0 -diag-disable=remark -shared-intel -no-ftz -fma"
+  string(APPEND CMAKE_C_FLAGS " -g -w1 -vec-report0 -diag-disable=remark -shared-intel -no-ftz"
          " -diag-disable=11060")
   if(DBS_GENERATE_OBJECT_LIBRARIES)
     string(APPEND CMAKE_C_FLAGS " -ipo")
@@ -41,6 +40,15 @@ if(NOT CXX_FLAGS_INITIALIZED)
 
   # Use C99 standard.
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
+
+  # Disable FMA at the compile level if desired
+  if(DEFINED FMA_NEVER_HARDWARE)
+    string(APPEND CMAKE_C_FLAGS " -no-fma")
+    string(APPEND CMAKE_CXX_FLAGS " -no-fma")
+  else()
+    string(APPEND CMAKE_C_FLAGS " -fma")
+    string(APPEND CMAKE_CXX_FLAGS " -fma")
+  endif()
 
 endif()
 

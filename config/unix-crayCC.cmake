@@ -43,6 +43,12 @@ if(NOT CXX_FLAGS_INITIALIZED)
   set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
 
+  # Disable FMA at the compile level if desired
+  if(DEFINED FMA_NEVER_HARDWARE)
+    string(APPEND CMAKE_C_FLAGS " -ffp-contract=off")
+    string(APPEND CMAKE_CXX_FLAGS " -ffp-contract=off")
+  endif()
+
 endif()
 
 # ------------------------------------------------------------------------------------------------ #

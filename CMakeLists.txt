@@ -80,7 +80,7 @@ include(dracoTesting)
 
 # Setup defaults, value checks, etc.
 include(buildEnv)
-# set defaults for BUILD_TYPE and INSTALL_PREFIX
+# set defaults for BUILD_TYPE and INSTALL_PREFIX, DRACO_ROUNDOFF_MODE
 dbssetdefaults()
 # Initialize fields that define the exported target files (draco-config.cmake)
 dbsinitexporttargets("Draco")

@@ -266,7 +266,12 @@ macro(query_fma_on_hardware)
     endif()
 
     if(HAVE_HARDWARE_FMA)
-      message(STATUS "Looking for hardware FMA support...found fma.")
+      # If we have explicitly toggled FMA off, say so here.
+      if(FMA_NEVER_HARDWARE)
+        message(STATUS "Looking for hardware FMA support...found, but disabled for this build.")
+      else()
+        message(STATUS "Looking for hardware FMA support...found fma.")
+      endif()
     else()
       message(STATUS "Looking for hardware FMA support...fma not found.")
     endif()

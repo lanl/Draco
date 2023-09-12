@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 June 5
 # brief  Default CMake build parameters
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #------------------------------------------------------------------------------------------------- #
 
 include_guard(GLOBAL)
@@ -215,16 +215,19 @@ targets are installed." FORCE)
   # Special FMA modes - roundoff controls
   # -------------------------------------------------------------------------------------------- #
   if(NOT DEFINED DRACO_ROUNDOFF_MODE)
-    set(DRACO_ROUNDOFF_MODE "ACCURATE") # default value
+    set(DRACO_ROUNDOFF_MODE "NOFMA") # default value- no hardware FMA
   endif()
   set(DRACO_ROUNDOFF_MODE
       "${DRACO_ROUNDOFF_MODE}"
-      CACHE STRING "Roundoff Mode { ACCURATE AUTOSELECT FAST }")
-  set_property(CACHE DRACO_ROUNDOFF_MODE PROPERTY STRINGS "ACCURATE" "AUTOSELECT" "FAST")
+      CACHE STRING "Roundoff Mode { ACCURATE AUTOSELECT FAST NOFMA }")
+  set_property(CACHE DRACO_ROUNDOFF_MODE PROPERTY STRINGS "ACCURATE" "AUTOSELECT" "FAST" "NOFMA")
   if("${DRACO_ROUNDOFF_MODE}" STREQUAL "FAST")
     set(FMA_NEVER_SOFTWARE TRUE)
   elseif("${DRACO_ROUNDOFF_MODE}" STREQUAL "ACCURATE")
     set(FMA_ALWAYS_SOFTWARE TRUE)
+  elseif("${DRACO_ROUNDOFF_MODE}" STREQUAL "NOFMA")
+    # This mode disables use of hardware FMA entirely (compiler flag).
+    set(FMA_NEVER_HARDWARE TRUE)
   endif()
 
 endmacro()

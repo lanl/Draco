@@ -2,7 +2,7 @@
 /*!
  * \file   config.h
  * \brief  CPP defines necessary for the ds++ package.
- * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 /*------------------------------------------------------------------------------------------------*/
 
 #ifndef rtt_dsxx_config_h
@@ -91,6 +91,7 @@
 #cmakedefine DRACO_ROUNDOFF_MODE "@DRACO_ROUNDOFF_MODE@"
 #cmakedefine FMA_ALWAYS_SOFTWARE
 #cmakedefine FMA_NEVER_SOFTWARE
+#cmakedefine FMA_NEVER_HARDWARE
 
 /*------------------------------------------------------------------------------------------------*/
 /* Platform checks */

@@ -78,6 +78,12 @@ if(NOT CXX_FLAGS_INITIALIZED)
     string(APPEND CMAKE_C_FLAGS " -fp-model=precise")
   endif()
 
+  # Disable FMA at the compile level if desired
+  if(DEFINED FMA_NEVER_HARDWARE)
+    string(APPEND CMAKE_C_FLAGS " -ffp-contract=off")
+    string(APPEND CMAKE_CXX_FLAGS " -ffp-contract=off")
+  endif()
+
   # Suppress warnings about typeid() called with function as an argument. In this case, the function
   # might not be called if the type can be deduced.
   string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS} -Wno-undefined-var-template"

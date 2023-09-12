@@ -19,6 +19,7 @@ include_guard(GLOBAL)
 #
 # Compiler Flags
 #
+# KPL: TODO: Not clear if there's a nofma flag for NVHPC.
 if(NOT CXX_FLAGS_INITIALIZED)
   set(CXX_FLAGS_INITIALIZED
       "yes"
