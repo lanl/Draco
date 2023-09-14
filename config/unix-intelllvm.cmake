@@ -41,6 +41,12 @@ if(NOT CXX_FLAGS_INITIALIZED)
   # Use C99 standard.
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}") # -std=c99
 
+  # Disable FMA at the compile level if desired
+  if(DEFINED FMA_NEVER_HARDWARE)
+    string(APPEND CMAKE_C_FLAGS " -ffp-contract=off")
+    string(APPEND CMAKE_CXX_FLAGS " -ffp-contract=off")
+  endif()
+
 endif()
 
 # ------------------------------------------------------------------------------------------------ #
