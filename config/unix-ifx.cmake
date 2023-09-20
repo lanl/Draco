@@ -18,7 +18,7 @@ if(NOT Fortran_FLAGS_INITIALIZED)
       CACHE STRING "Fortran compiler version string" FORCE)
   mark_as_advanced(CMAKE_Fortran_COMPILER_VERSION)
 
-  string(APPEND CMAKE_Fortran_FLAGS " -g")
+  string(APPEND CMAKE_Fortran_FLAGS " -g -mia32 -axSSSE3")
   string(CONCAT CMAKE_Fortran_FLAGS_DEBUG "-O0 -DDEBUG")
   if(NOT DEFINED CMAKE_CXX_COMPILER_WRAPPER AND NOT "${CMAKE_CXX_COMPILER_WRAPPER}" STREQUAL
                                                 "CrayPrgEnv")
@@ -41,9 +41,6 @@ endif()
 # ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
 deduplicate_flags(CMAKE_Fortran_FLAGS)
-
-# Optional compiler flags
-toggle_compiler_flag(ENABLE_SSE "-mia32 -axSSSE3" "Fortran" "") # sse3, ssse3
 force_compiler_flags_to_cache("Fortran")
 
 # ------------------------------------------------------------------------------------------------ #
