@@ -69,15 +69,6 @@ if(NOT CXX_FLAGS_INITIALIZED)
   set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_RELEASE}")
   set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O3 -funroll-loops")
 
-  # OneAPI on trinitite reports itself as "LLVM" and parses this file.  The Intel optimizer needs
-  # these options to maintain IEEE 754 compliance.
-  if(DEFINED CMAKE_CXX_COMPILER_WRAPPER
-     AND CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv
-     AND DEFINED ENV{INTEL_COMPILER_TYPE}
-     AND "$ENV{INTEL_COMPILER_TYPE}" STREQUAL "ONEAPI")
-    string(APPEND CMAKE_C_FLAGS " -fp-model=precise")
-  endif()
-
   # Disable FMA at the compile level if desired
   if(DEFINED FMA_NEVER_HARDWARE)
     string(APPEND CMAKE_C_FLAGS " -ffp-contract=off")
