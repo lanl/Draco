@@ -98,8 +98,8 @@ def construct_data_for_plot(hnu_grid, mgr_grid, mgp_grid, mgs_grid, mgrt_grid, T
             max_opacity = max([max(ops_data), max_opacity])
 
     # return the 4 data sets and min/max_opacity
-    return hnu_data, opr_data, opp_data, ops_data, min_opacity, max_opacity, mgr_valid, mgs_valid,
-    mgp_valid, name
+    return [hnu_data, opr_data, opp_data, ops_data, min_opacity, max_opacity, mgr_valid, mgs_valid,
+            mgp_valid, name]
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -164,9 +164,9 @@ max_opacity = 0.0
 mgr_valid = False
 mgs_valid = False
 mgp_valid = False
-hnu_data, opr_data, opp_data, ops_data, min_opacity, max_opacity, mgr_valid, mgs_valid, mgp_valid,
-name = construct_data_for_plot(hnu_grid, mgr_grid, mgp_grid, mgs_grid, mgrt_grid, T_grid,
-                               rho_grid)
+[hnu_data, opr_data, opp_data, ops_data, min_opacity, max_opacity, mgr_valid, mgs_valid, mgp_valid,
+ name] = construct_data_for_plot(hnu_grid, mgr_grid, mgp_grid, mgs_grid, mgrt_grid, T_grid,
+                                 rho_grid)
 
 # Plot data with the initial settings
 a.set_xscale('log')
@@ -224,9 +224,8 @@ def plot_op():
     mgs_grid = table_key_dict["{0}_{1}".format("rsmg", selected_ID.get())]
     mgrt_grid = table_key_dict["{0}_{1}".format("rtmg", selected_ID.get())]
 
-    hnu_data, opr_data, opp_data, ops_data, min_opacity, max_opacity, mgr_valid, mgs_valid,
-    mgp_valid, name = construct_data_for_plot(hnu_grid, mgr_grid, mgp_grid, mgs_grid,
-                                              mgrt_grid, T_grid, rho_grid)
+    [hnu_data, opr_data, opp_data, ops_data, min_opacity, max_opacity, mgr_valid, mgs_valid,
+     mgp_valid, name] = construct_data_for_plot(hnu_grid, mgr_grid, mgp_grid, mgs_grid, mgrt_grid, T_grid, rho_grid)
 
     # Plot data with the initial settings
     a.set_xscale('log')
