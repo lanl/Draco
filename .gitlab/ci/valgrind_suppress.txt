@@ -2475,6 +2475,33 @@
    fun:PMPI_Wait
    ...
 }
+{
+   openmpi/411/008
+   Memcheck:Param
+   writev(vector[1])
+   fun:writev
+   ...
+   fun:PMPI_Test
+   ...
+}
+{
+   openmpi/411/009
+   Memcheck:Param
+   writev(vector[1])
+   fun:writev
+   ...
+   fun:PMPI_Win_create
+   ...
+}
+{
+   openmpi/411/010
+   Memcheck:Param
+   writev(vector[2])
+   fun:writev
+   ...
+   fun:PMPI_Win_fence
+   ...
+}
 
 # ------------------------------------------------------------------------------------------------ #
 # Python 2.7
