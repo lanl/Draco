@@ -26,7 +26,6 @@ if(NOT CXX_FLAGS_INITIALIZED)
   set(CXX_FLAGS_INITIALIZED
       "yes"
       CACHE INTERNAL "using draco settings.")
-
   string(APPEND CMAKE_C_FLAGS " -g -qflttrap -qmaxmem=-1")
 
   if(EXISTS /usr/gapps) # ATS-2
@@ -57,6 +56,11 @@ if(NOT CXX_FLAGS_INITIALIZED)
 
   if(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "ppc64le")
     string(APPEND CMAKE_C_FLAGS " -qarch=pwr9 -qtune=pwr9")
+  endif()
+
+  # Disable FMA at the compile level if desired
+  if(DEFINED FMA_NEVER_HARDWARE)
+    string(APPEND CMAKE_C_FLAGS " -qfloat=nomaf")
   endif()
 
   # Email from Roy Musselman <roymuss@us.ibm.com, 2019-03-21: For C++14, add
