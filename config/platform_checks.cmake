@@ -36,7 +36,11 @@ function(dbs_set_sitename)
     if("$ENV{SLURM_CLUSTER_NAME}" MATCHES "rocinante")
       set(SITENAME "Rocinante")
       set(SITENAME_FAMILY "ATS-3") # or CTS-2?!
+      # TODO: elseif for tycho.
     endif()
+  elseif(${SITENAME} MATCHES "ro")
+    set(SITENAME "Rocinante")
+    set(SITENAME_FAMILY "ATS-3") # or CTS-2?!
   elseif(${SITENAME} MATCHES "sn")
     set(SITENAME "Snow")
     set(SITENAME_FAMILY "CTS-1")
