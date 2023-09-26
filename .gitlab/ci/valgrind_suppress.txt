@@ -3211,7 +3211,6 @@
    fun:QUO_create
    ...
 }
-
 {
    hwloc/e004
    Memcheck:Leak
@@ -3221,6 +3220,20 @@
    fun:QUO_create
    ...
 }
+# * 2023-09-26 KT :: I don't like this one but I think valgrind reports an issue because QuoWrapper
+#   is a singleton.  I can't figure out how to eliminate this warning: '1 bytes in 1 blocks are
+#   still reachable'.  It only occurs once per run and I assume this is because the singleton
+#   handle isn't freed until the program ends.
+{
+   hwloc/e005
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_Znwm
+   fun:_ZN6rtt_c410QuoWrapper14is_initializedEv
+   fun:_ZN6rtt_c410QuoWrapper9fetch_quoEv
+   ...
+}
+
 
 # ------------------------------------------------------------------------------------------------ #
 # NDI-2.2.0alpha-2
