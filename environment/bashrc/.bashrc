@@ -174,7 +174,7 @@ if [[ ${INTERACTIVE} == true ]]; then
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_rfta" ;;
 
-    ro-rfe* | ty-rfe* )
+    ro-rfe* | ty-rfe* | nid* )
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats3" ;;
 
