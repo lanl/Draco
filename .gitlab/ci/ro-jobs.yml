@@ -19,7 +19,7 @@
     - ro-rfe1
   variables:
     SITE_ID: rocinante
-    CTEST_NPROC: 111
+    CTEST_NPROC: 1
     EXTRA_CMAKE_ARGS: -G Ninja
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     SCHEDULER_PARAMETERS: -N 1 -L none@slurmdb -A asc-ci --partition=ci --qos=ci --reservation=ci
@@ -216,7 +216,6 @@ ro_deb_fulldiag_mr:
   stage: test
   variables:
     CTEST_MODE: Nightly
-    CTEST_NPROC: 112
     CTEST_BUILD_NAME: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
   script:
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
