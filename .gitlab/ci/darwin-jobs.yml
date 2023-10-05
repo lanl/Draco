@@ -53,36 +53,6 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-dp9_deb_gcc930_deploy:
-  extends: .darwin_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
-    ARCH: power9
-    CTEST_NPROC: 10
-    MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
-
-dp9_rel_gcc930_deploy:
-  extends: .darwin_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/power9-gcc930-smpi-rhel7
-    ARCH: power9
-    CTEST_NPROC: 10
-    MAXLOAD: 40
-    SCHEDULER_PARAMETERS: ${SP_power9_rhel7}
-
-dx64_deb_nvhpc231_deploy:
-  extends: .darwin_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/haswell-nvhpc231
-    ARCH: x86_64
-    CTEST_NPROC: 20
-    MAXLOAD: 20
-    SCHEDULER_PARAMETERS: ${SP_x86_64}
-
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
 #--------------------------------------------------------------------------------------------------#
@@ -190,15 +160,6 @@ darwin_style_cxx:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
-
-darwin_deb_nvhpc231_regress:
-  extends: .darwin_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/haswell-nvhpc231
-    ARCH: x86_64
-    CTEST_NPROC: 20
-    SCHEDULER_PARAMETERS: ${SP_x86_64}
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/darwin-jobs.yml
