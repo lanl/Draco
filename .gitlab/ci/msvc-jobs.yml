@@ -88,6 +88,7 @@ x64_deb_msvc_22_mr:
     EXTRA_CMAKE_ARGS: -DBUILD_TESTING=OFF
   script:
     - cmd.exe /c "%CI_PROJECT_DIR%\.gitlab\ci\gitlab-ci-run-tests.bat"
+  resource_group: ${FLAVOR}
   rules:
     # Don't deploy if this is a forked repository.
     - if: '$CI_PROJECT_NAMESPACE != "draco"'
