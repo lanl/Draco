@@ -44,6 +44,7 @@
     DRACO_INSTALL_DIR: "/projects/draco/deploy/${FLAVOR}"
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
+  resource_group: ${FLAVOR}
   rules:
     # Don't deploy if this is a forked repository.
     - if: '$CI_PROJECT_NAMESPACE != "draco"'
@@ -76,6 +77,7 @@
       fi
     - EXTRA_CMAKE_ARGS="${EXTRA_CMAKE_ARGS} -DDraco_VERSION_PATCH=${VERSION_PATCH}"
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
+  resource_group: release-${FLAVOR}
   rules:
     # Don't deploy if this is a forked repository.
     - if: '$CI_PROJECT_NAMESPACE != "draco"'

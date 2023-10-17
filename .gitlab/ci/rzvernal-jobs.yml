@@ -39,6 +39,7 @@
     DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
+  resource_group: ${FLAVOR}
   rules:
     # Don't deploy if this is a forked repository.
     - if: '$CI_PROJECT_NAMESPACE != "draco"'
