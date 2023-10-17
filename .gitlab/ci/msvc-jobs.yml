@@ -4,7 +4,7 @@
 # Date:    Monday, Jun 01, 2020, 15:00 pm
 # Purpose: gitlab suid runner commands for MSVC (LANL). This script wil be run to test pull
 #          requests
-# Note:    Copyright (C) 2021 Triad National Security, LLC., All rights reserved.
+# Note:    Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 #-------------------------------------------------------------------------------------------------#
 
 # Setup a "Group Runner" on gitlab.
@@ -137,5 +137,5 @@ x64_rel_msvc_22_regress:
     CMAKE_BUILD_TYPE: Release
 
 #-------------------------------------------------------------------------------------------------#
-# end .gitlab/ci/nmsvc-jobs.yml
+# end .gitlab/ci/msvc-jobs.yml
 #-------------------------------------------------------------------------------------------------#
