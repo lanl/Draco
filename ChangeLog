@@ -1,3 +1,26 @@
+2023-10-23 Mathew Cleveland <cleveland@lanl.gov>
+	* Draco has been updated to version 7_17_0 and is tied to the release
+	  of Jayenne-8_16_0 and capsaicin/dert-1_0_0
+        - https://re-git.lanl.gov/draco/draco/-/milestones/7
+        - https://re-git.lanl.gov/jayenne/jayenne/-/milestones/29
+        - https://re-git.lanl.gov/capsaicin/dert/-/milestones/
+
+  Draco-7_17_0, build date 2023 Oct 23, build type: Debug, DBC: 7, DRACO_DIAGNOSTICS: 0
+
+  CCS-2 Draco Team: Kelly G. Thompson, Matt A. Cleveland, Ryan T. Wollaeger, Ben R. Ryan, 
+      Alex R. Long, Kendra P. Long, James S. Warsa, Jae H. Chang, Jeff R. Haack, and Daniel Holladay.
+ 
+   Prior Contributors: Kent G. Budge, Gabriel M. Rockefeller, Allan B. Wollaber, Tim Kelley, 
+      Rob B. Lowrie, Paul W. Talbot, Katherine J. Wang, Andrew T. Till, Ondrej Certik, Peter Ahrens, 
+      Massimiliano Rosa, David A. Dixon, Howard Pritchard, Todd J. Urbatsch, Jeff D. Densmore, 
+      Jeff Furnish, John McGhee, Kris C. Garrett, Mike Buksas, Nick Myers, Paul Henning, 
+      Randy Roberts, Seth Johnson, Todd Adams, Tom Evans, Lori Pritchett-Sheats, and Seth D. Cook.
+   
+   Copyright (C) 2016-2023 Triad National Security, LLC. (C19028, LA-CC-16-016),
+        Released under a 3-Clause BSD License
+
+   For information, send e-mail to draco@lanl.gov.	
+
 2023-08-21 Mathew Cleveland <cleveland@lanl.gov>
 	* Draco has been updated to version 7_16_0 and is tied to the release
 	of Jayenne-8_15_0
