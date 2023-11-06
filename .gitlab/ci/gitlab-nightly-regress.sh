@@ -9,21 +9,66 @@
 print_use()
 {
   echo " "
-  echo "Usage: ${0#*/} -h -m [Configure,Build,Test,Submit]"
+  echo "Usage: ${0#*/} -h"
+  echo "               -a [EXTRA_CMAKE_ARGS]"
+  echo "               -c Use current environment."
+  echo "               -e Do not source the environments.sh file used by nightly regressions."
+  echo "               -g [GENERATOR]"
+  echo "               -i [DRACO_BINARY_DIR]"
+  echo "               -m [Configure,Build,Test,Submit]"
+  echo "               -n [numproc]"
+  echo "               -p [PROJECT]"
+  echo "               -s [DRACO_SOURCE_DIR]"
+  echo "               -t [CTEST_BUILD_TYPE]"
+  echo "               -v VERBOSITY = {-V, -VV}"
+  echo "               -x [MAXLOAD]"
+  echo "               -z cdash upload token"
   echo " "
 }
 
 # defaults:
 modes="Configure,Build,Test,Submit"
+export VERBOSITY="-V"
 
-while getopts "hm:" opt; do
+while getopts "a:eg:hi:m:n:p:s:t:v:x:z:" opt; do
 case $opt in
+a)  EXTRA_CMAKE_ARGS="$OPTARG"
+    export EXTRA_CMAKE_ARGS ;;
+e)  source_environment=0 ;;
+g)  CTEST_CMAKE_GENERATOR="${OPTARG}"
+    export CTEST_CMAKE_GENERATOR ;;
 h)  print_use; exit 0 ;;
+i)  DRACO_BINARY_DIR="$OPTARG"
+    export DRACO_BINARY_DIR ;;
 m)  modes="$OPTARG" ;;
+n)  CTEST_NPROC="$OPTARG"
+    export CTEST_NPROC;;
+p)  PROJECT="$OPTARG"
+    export PROJECT ;;
+s)  DRACO_SOURCE_DIR="$OPTARG"
+    export DRACO_SOURCE_DIR ;;
+t)  CMAKE_BUILD_TYPE="$OPTARG"
+    export CMAKE_BUILD_TYPE ;;
+v)  VERBOSITY="$OPTARG"
+    export VERBOSITY ;;
+x)  MAXLOAD="$OPTARG"
+    export MAXLOAD ;;
+z)  cdash_upload_auth_token="$OPTARG"
+    export cdash_upload_auth_token ;;
 \?) echo "" ;echo "invalid option: -$OPTARG"; print_use; exit 1 ;;
 :)  echo "" ;echo "option -$OPTARG requires an argument."; print_use; exit 1 ;;
 esac
 done
+
+[[ -n $CI_PROJECT_DIR ]] || CI_PROJECT_DIR=${DRACO_SOURCE_DIR}
+[[ -n $CTEST_MODE ]] || CTEST_MODE="Experimental"
+[[ -n $CTEST_SITE ]] || CTEST_SITE=$(uname -n)
+if [[ "${CTEST_BUILD_NAME}x" == "x" ]]; then
+  # shellcheck disable=2001
+  compiler=$(echo "$CXX" | sed -e 's%.*/%%')
+  CTEST_BUILD_NAME="$CMAKE_BUILD_TYPE-$compiler"
+fi
+export CI_PROJECT_DIR CTEST_MODE CTEST_SITE CTEST_BUILD_NAME
 
 echo "==> Setting modes to $modes."
 
@@ -31,8 +76,14 @@ echo "==> Setting modes to $modes."
 set -e
 # shellcheck source=.gitlab/ci/common.sh
 source "${DRACO_SOURCE_DIR}/.gitlab/ci/common.sh"
-# shellcheck source=.gitlab/ci/environments.sh
-source "${DRACO_SOURCE_DIR}/.gitlab/ci/environments.sh"
+
+if [[ $source_environment == "0" ]]; then
+  # do nothing
+  echo "Using current build environment..."
+else
+  # shellcheck source=.gitlab/ci/environments.sh
+  source "${DRACO_SOURCE_DIR}/.gitlab/ci/environments.sh"
+fi
 
 if [[ $(which lscpu | grep -c lscpu) -gt 0 ]]; then
   # run "lscpu"
@@ -46,7 +97,8 @@ fi
 if [[ -z "${MEMCHECK_CONFIGURATION}" ]] && [[ "${EXTRA_CMAKE_ARGS}" =~ "ENABLE_MEMORYCHECK" ]]; then
   MEMCHECK_CONFIGURATION=ON
 fi
-export CODECOV MEMCHECK_CONFIGURATION MAXLOAD
+[[ -n $MAKEFILE_FLAGS ]] || export MAKEFILE_FLAGS="-j $MAXLOAD"
+export CTEST_NPROC MAXLOAD CODECOV MEMCHECK_CONFIGURATION
 
 #echo -e "\n========== printenv ==========\n"
 #[[ -z "${SLURM_NODELIST}" ]] || echo "SLURM_NODELIST = ${SLURM_NODELIST}"
@@ -156,21 +208,27 @@ echo "modes       = ${modes}"
 echo "HTTPS_PROXY = ${HTTPS_PROXY}"
 echo " "
 
+if [[ "${cdash_upload_auth_token}x" == "x" ]]; then
+  # shellcheck disable=2154
+  die "environment variable cdash_upload_auth_token was not set. Aborting"
+fi
+
 case $SITE_ID in
 rzansel|rzvernal)
   if [[ ${modes} == "Submit" ]]; then
     # We can't do the regular ctest Submit from LLNL RZ systems yet because we can't access
-    # https://rtt.lanl.gov/cdash3. Instead tar the results and register them as artifacts.  Another
-    # gitlab runner job unpacks these artifacts in a container run at LANL and pushes them to cdash.
+    # https://asc-cdash-poc.lanl.gov. Instead tar the results and register them as artifacts.
+    # Another gitlab runner job unpacks these artifacts in a container run at LANL and pushes them
+    # to cdash.
     run "cd ${DRACO_BINARY_DIR}"
     tarfile=${SITE_ID}-${PROJECT}-${CTEST_MODE}-${CTEST_BUILD_NAME}.tar
     run "tar cvf ${tarfile} DartConfiguration.tcl Testing"
   else
-    run "ctest -V -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
+    run "ctest ${VERBOSITY} -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
   fi
   ;;
 *)
-  run "ctest -V -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
+  run "ctest ${VERBOSITY} -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
   ;;
 esac
 

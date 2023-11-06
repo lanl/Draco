@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 Oct 14
 # brief  Instructions for building Doxygen documentation
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 # 2018-03-10 (KT): As of cmake-3.9.0, we have the option of using the cmake function
@@ -110,8 +110,6 @@ add_custom_target(
   file://${DOXYGEN_OUTPUT_DIR}/${DOXYGEN_HTML_OUTPUT}/index.html
 
 ")
-
-# To Do: 1. How to 'make clean'?
 
 # ------------------------------------------------------------------------------------------------ #
 # End autodoc/CMakeLists.txt

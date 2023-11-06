@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 Nov 2
 # brief  Install the config directory in the target directory
-# note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(config)
@@ -66,6 +66,35 @@ set(file_list
 install(FILES ${file_list} DESTINATION cmake)
 install(FILES ${CMake_AFSD} DESTINATION cmake/CMakeAddFortranSubdirectory)
 install(PROGRAMS ${config_helper_sh} DESTINATION cmake)
+
+# ---------------------------------------------------------------------------##
+# Rules to submit build to CDash
+# ---------------------------------------------------------------------------##
+
+add_custom_command(
+  OUTPUT ${PROJECT_BINARY_DIR}/always_out_of_date.log
+  COMMAND "${CMAKE_PROGRAM_PATH}" -E make_directory "${Draco_BINARY_DIR}/cdashrep"
+  COMMAND
+    ${Draco_SOURCE_DIR}/.gitlab/ci/gitlab-nightly-regress.sh -e -g "${CMAKE_GENERATOR}" -i
+    "${Draco_BINARY_DIR}/cdashrep" -p "Draco" -t "${CMAKE_BUILD_TYPE}" -s "${Draco_SOURCE_DIR}" -n
+    "${MPIEXEC_MAX_NUMPROCS}"
+    # -x 24 -v "-VV" -m "Configure,Build,Test,Submit" (defaulted)
+  COMMENT "starting...")
+
+add_custom_target(
+  cdashrep
+  DEPENDS ${PROJECT_BINARY_DIR}/always_out_of_date.log
+  COMMENT
+    "Report build to CDash: https://asc-cdash-poc.lanl.gov/index.php?project=Draco
+
+This target runs the script:
+
+  ${Draco_SOURCE_DIR}/.gitlab/ci/gitlab-nightly-regress.sh -e -g \"${CMAKE_GENERATOR}\"
+  -i ${Draco_BINARY_DIR}/cdashrep -p Draco -t ${CMAKE_BUILD_TYPE} -s ${Draco_SOURCE_DIR}
+  -n ${MPIEXEC_MAX_NUMPROCS}
+
+Required environment variables:
+  cdash_upload_auth_token")
 
 # ---------------------------------------------------------------------------##
 # End of config/CMakeLists.txt
