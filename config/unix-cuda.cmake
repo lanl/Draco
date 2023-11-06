@@ -62,19 +62,18 @@ if(NOT CUDA_FLAGS_INITIALIZED)
            " -Xcompiler -qxflag=disable__cplusplusOverride")
 
     if(EXISTS /usr/gapps) # ATS-2
-      file(READ /etc/redhat-release rhr)
-      string(REGEX REPLACE "[^0-9]*([0-9]+).([0-9]+).*" "\\1.\\2" redhat_version "${rhr}")
-      # If manually specified (eg. spack), do not add the --gcc-toolchain option
-      if(NOT (CMAKE_CUDA_FLAGS MATCHES "--gcc-toolchain=" OR "$ENV{SPACK_CFLAGS}" MATCHES
-                                                             "--gcc-toolchain="))
-        string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler")
-        if(redhat_version MATCHES "^8.([0-9]+)")
-          string(APPEND CMAKE_CUDA_FLAGS " --gcc-toolchain=/usr/tce/packages/gcc/gcc-11.2.1")
-        else()
-          string(APPEND CMAKE_CUDA_FLAGS " --gcc-toolchain=/usr/tce/packages/gcc/gcc-8.3.1")
-        endif()
+      # The CUDA_FLAGS should use the same gcc-toolchain as the C_FLAGS.
+      if(NOT CMAKE_CUDA_FLAGS MATCHES "--gcc-toolchain=" AND CMAKE_C_FLAGS MATCHES
+                                                             "--gcc-toolchain=")
+        string(REGEX MATCH "\\--gcc-toolchain=[^ $]+" GCC_TOOLCHAIN_FLAG "${CMAKE_C_FLAGS}")
+        string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler ${GCC_TOOLCHAIN_FLAG}")
+
+        # ... or by SPACK_CFLAGS, if we are building this via Spack
+      elseif(NOT CMAKE_CUDA_FLAGS MATCHES "--gcc-toolchain=" AND "$ENV{SPACK_CFLAGS}" MATCHES
+                                                                 "--gcc-toolchain=")
+        string(REGEX MATCH "\\--gcc-toolchain=[^ $]+" GCC_TOOLCHAIN_FLAG "$ENV{SPACK_CFLAGS}")
+        string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler ${GCC_TOOLCHAIN_FLAG}")
       endif()
-      string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler -qxflag=disable__cplusplusOverride")
 
     elseif(DEFINED ENV{CMAKE_CXX_COMPILER_CONFIG_FILE} AND EXISTS
                                                            "$ENV{CMAKE_CXX_COMPILER_CONFIG_FILE}")
