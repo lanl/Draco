@@ -6,6 +6,16 @@
 # note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 # Ref: http://www.cmake.org/Wiki/CMake_Scripting_Of_CTest
+#
+# * Before 2023 Oct
+#   * Report to https://rtt.lanl.gov/cdash3
+#   * No auth required to upload
+# * After 2023 Oct
+#   * Report to https://asc-cdash-poc
+#   * Requires authentication token to upload.
+#   * Token saved to re-git CI variables, https://re-git.lanl.gov/draco/draco/-/settings/ci_cd.
+#   * Set token at https://asc-cdash-poc.lanl.gov/user.php
+# ------------------------------------------------------------------------------------------------ #
 
 # Avoid adding '-i' when using ninja
 if(POLICY CMP0061)
@@ -16,7 +26,7 @@ set(CTEST_SOURCE_DIRECTORY "$ENV{DRACO_SOURCE_DIR}")
 set(CTEST_BINARY_DIRECTORY "$ENV{DRACO_BINARY_DIR}")
 set(CTEST_PROJECT_NAME "$ENV{PROJECT}")
 
-set(CTEST_SUBMIT_URL "https://rtt.lanl.gov/cdash3/submit.php?project=$ENV{PROJECT}")
+set(CTEST_SUBMIT_URL "https://asc-cdash-poc.lanl.gov/submit.php?project=$ENV{PROJECT}")
 set(CTEST_CURL_OPTIONS CURLOPT_SSL_VERIFYPEER_OFF CURLOPT_SSL_VERIFYHOST_OFF)
 set(CTEST_NIGHTLY_START_TIME "22:00:00 MDT")
 
@@ -43,15 +53,18 @@ CTEST_CMAKE_GENERATOR  = ${CTEST_CMAKE_GENERATOR}
 # ------------------------------------------------------------------------------------------------ #
 cmake_host_system_information(RESULT MPI_PHYSICAL_CORES QUERY NUMBER_OF_PHYSICAL_CORES)
 # message("==> MPI_PHYSICAL_CORES = ${MPI_PHYSICAL_CORES}")
-# message("==> MAXLOAD            = $ENV{MAXLOAD}")
 
-if( (${MPI_PHYSICAL_CORES} LESS 2) AND ($ENV{MAXLOAD} GREATER 1))
-  # for power9, the cmake command returns 1, so revert to the shell script value.
-  set(MPI_PHYSICAL_CORES $ENV{MAXLOAD})
-endif()
-if(WIN32)
-  # For Windows, just use the specified ${MAXLOAD}
-  set(MPI_PHYSICAL_CORES $ENV{MAXLOAD})
+if(DEFINED ENV{MAXLOAD})
+# message("==> MAXLOAD            = $ENV{MAXLOAD}")
+  if( ( (${MPI_PHYSICAL_CORES} LESS 2) AND ($ENV{MAXLOAD} GREATER 1) ) OR
+    ($ENV{MAXLOAD} GREATER ${MPI_PHYSICAL_CORES}))
+    # for power9, the cmake command returns 1, so revert to the shell script value.
+    set(MPI_PHYSICAL_CORES $ENV{MAXLOAD})
+  endif()
+  if(WIN32)
+    # For Windows, just use the specified ${MAXLOAD}
+    set(MPI_PHYSICAL_CORES $ENV{MAXLOAD})
+  endif()
 endif()
 
 # ------------------------------------------------------------------------------------------------ #
@@ -68,12 +81,18 @@ endif()
 # - EXTRA_CTEST_ARGS
 # - CTEST_MEMORYCHECK_SUPPRESSIONS_FILE
 # ------------------------------------------------------------------------------------------------ #
+if(DEFINED ENV{CI_PROJECT_DIR})
+  set(CI_PROJECT_DIR $ENV{CI_PROJECT_DIR})
+endif()
 file(TO_CMAKE_PATH "${CI_PROJECT_DIR}" CI_PROJECT_DIR)
 set(CTEST_BUILD_NAME "$ENV{CTEST_BUILD_NAME}")
 set(CTEST_BUILD_TYPE "$ENV{CMAKE_BUILD_TYPE}")
 set(CTEST_MODE "$ENV{CTEST_MODE}")
-
-set(CTEST_SITE "$ENV{SITE_ID}")
+if(DEFINED ENV{CTEST_SITE})
+  set(CTEST_SITE "$ENV{CTEST_SITE}")
+else()
+  set(CTEST_SITE "$ENV{SITE_ID}")
+endif()
 if(DEFINED ENV{ARCH})
   string(APPEND CTEST_SITE "-$ENV{ARCH}")
 endif()
@@ -216,7 +235,7 @@ ctest_configure(
   if(configure_failure)
     message("${ctest_configure_errors}")
     if(${CTEST_SCRIPT_ARG} MATCHES Submit)
-      ctest_submit()
+      ctest_submit(HTTPHEADER "Authorization: Bearer $ENV{cdash_upload_auth_token}")
     endif()
     message(FATAL_ERROR "configuration error")
   endif()
@@ -264,7 +283,7 @@ ctest_build( ${CTB_FLAGS}
     if(build_failure OR (NOT "${ctest_build_errors}" STREQUAL "0") )
       message("${ctest_build_errors}")
       if(${CTEST_SCRIPT_ARG} MATCHES Submit)
-        ctest_submit()
+        ctest_submit(HTTPHEADER "Authorization: Bearer $ENV{cdash_upload_auth_token}")
       endif()
       message(FATAL_ERROR "build error")
     endif()
@@ -281,7 +300,7 @@ ctest_build( ${CTB_FLAGS}
       CAPTURE_CMAKE_ERROR ctest_build_errors)
     if(build_failure OR (NOT "${ctest_build_errors}" STREQUAL "0") )
       if(${CTEST_SCRIPT_ARG} MATCHES Submit)
-        ctest_submit()
+        ctest_submit(HTTPHEADER "Authorization: Bearer $ENV{cdash_upload_auth_token}")
       endif()
       message(FATAL_ERROR "build error")
       file(WRITE "${CTEST_BINARY_DIRECTORY}/build_error.txt"
@@ -317,7 +336,7 @@ ctest_test( RETURN_VALUE test_failure ${EXTRA_CTEST_ARGS})
 
     if(test_failure OR (NOT "${ctest_test_errors}" STREQUAL "0") )
       if(${CTEST_SCRIPT_ARG} MATCHES Submit)
-        ctest_submit()
+        ctest_submit(HTTPHEADER "Authorization: Bearer $ENV{cdash_upload_auth_token}")
       endif()
       message(FATAL_ERROR "test errors")
       file(WRITE "${CTEST_BINARY_DIRECTORY}/test_error.txt"
@@ -470,20 +489,24 @@ if(${CTEST_SCRIPT_ARG} MATCHES Submit)
       list(APPEND files_to_upload "${file}")
     endif()
   endforeach()
-  message("ctest_upload( FILES ${files_to_upload} )" )
-  ctest_upload( FILES ${files_to_upload} CAPTURE_CMAKE_ERROR err)
-  message( "return code = ${err}" )
+  if( NOT "${files_to_upload}x" STREQUAL "x" )
+    message("ctest_upload( FILES ${files_to_upload} )" )
+    ctest_upload( FILES ${files_to_upload} CAPTURE_CMAKE_ERROR err)
+    message( "return code = ${err}" )
+  endif()
   if(EXISTS "${CTEST_BINARY_DIRECTORY}/gcov.tar")
     message("
 ==> ctest_submit(CDASH_UPLOAD \"${CTEST_BINARY_DIRECTORY}/gcov.tar\"
-      CDASH_UPLOAD_TYPE GcovTar)
+      CDASH_UPLOAD_TYPE GcovTar
+      HTTPHEADER \"Authorization: Bearer XXX\")
 ")
     ctest_submit(CDASH_UPLOAD "${CTEST_BINARY_DIRECTORY}/gcov.tar"
-      CDASH_UPLOAD_TYPE GcovTar)
+      CDASH_UPLOAD_TYPE GcovTar
+      HTTPHEADER "Authorization: Bearer $ENV{cdash_upload_auth_token}")
   endif()
 
-  message("ctest_submit()")
-  ctest_submit()
+  message("ctest_submit(HTTPHEADER \"Authorization: Bearer XXX\")")
+  ctest_submit(HTTPHEADER "Authorization: Bearer $ENV{cdash_upload_auth_token}")
 
   if(EXISTS "${CTEST_BINARY_DIRECTORY}/build_error.txt" OR
       EXISTS "${CTEST_BINARY_DIRECTORY}/test_error.txt")

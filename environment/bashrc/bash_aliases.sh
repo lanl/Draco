@@ -117,10 +117,9 @@ unset color_prompt
 # Aliases -----------------------------------------------------------------------------------------#
 
 # alias cmakedebug='unset MPI_ROOT;C_FLAGS=-Werror CXX_FLAGS=-Werror cmake -Wdeprecated -Wdev'
-# alias cmakedebugfast='cmake -DBUILD_TESTING=OFF'
+# alias cmakedebugfast='cmake -GNinja -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=OFF'
 # alias cmakerel='cmake -DCMAKE_BUILD_TYPE=RELEASE'
 # alias ehco='echo'
-# alias em='emacsclient -c --alternate-editor=emacs'
 # alias emacs='/bin/emacs -fn 6x13 &> /dev/null'
 # alias functions='declare -f | grep \^[a-zA-Z]'
 # alias gitk='gitk --all'
