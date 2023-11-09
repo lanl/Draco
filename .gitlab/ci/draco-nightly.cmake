@@ -7,10 +7,10 @@
 # ------------------------------------------------------------------------------------------------ #
 # Ref: http://www.cmake.org/Wiki/CMake_Scripting_Of_CTest
 #
-# * Before 2023 Oct
+# * CDash server hosted by CCS-2
 #   * Report to https://rtt.lanl.gov/cdash3
 #   * No auth required to upload
-# * After 2023 Oct
+# * CDash server hosted by asc-services (FY24)
 #   * Report to https://asc-cdash-poc
 #   * Requires authentication token to upload.
 #   * Token saved to re-git CI variables, https://re-git.lanl.gov/draco/draco/-/settings/ci_cd.
@@ -26,7 +26,7 @@ set(CTEST_SOURCE_DIRECTORY "$ENV{DRACO_SOURCE_DIR}")
 set(CTEST_BINARY_DIRECTORY "$ENV{DRACO_BINARY_DIR}")
 set(CTEST_PROJECT_NAME "$ENV{PROJECT}")
 
-set(CTEST_SUBMIT_URL "https://asc-cdash-poc.lanl.gov/submit.php?project=$ENV{PROJECT}")
+set(CTEST_SUBMIT_URL "https://rtt.lanl.gov/cdash3/submit.php?project=$ENV{PROJECT}")
 set(CTEST_CURL_OPTIONS CURLOPT_SSL_VERIFYPEER_OFF CURLOPT_SSL_VERIFYHOST_OFF)
 set(CTEST_NIGHTLY_START_TIME "22:00:00 MDT")
 

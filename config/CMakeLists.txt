@@ -85,7 +85,7 @@ add_custom_target(
   cdashrep
   DEPENDS ${PROJECT_BINARY_DIR}/always_out_of_date.log
   COMMENT
-    "Report build to CDash: https://asc-cdash-poc.lanl.gov/index.php?project=Draco
+    "Report build to CDash: https://rtt.lanl.gov/cdash3/index.php?project=Draco
 
 This target runs the script:
 
