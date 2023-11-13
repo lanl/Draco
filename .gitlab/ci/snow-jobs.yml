@@ -18,6 +18,7 @@
     - batch
   variables:
     SITE_ID: snow
+    CTEST_SITE: ${SITE_ID}
     SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --partition=ci --qos=ci --reservation=ci -L none@slurmdb"
     # CI_DEBUG_TRACE: "true"
 
