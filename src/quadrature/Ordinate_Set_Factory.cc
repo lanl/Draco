@@ -4,7 +4,7 @@
  * \author Allan Wollaber
  * \date   Mon Mar  7 10:42:56 EST 2016
  * \brief  Implementation file for the class rtt_quadrature::Ordinate_Set_Factory.
- * \note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Ordinate_Set_Factory.hh"
@@ -87,34 +87,34 @@ std::shared_ptr<Ordinate_Set> Ordinate_Set_Factory::get_Ordinate_Set() const {
                                                     add_starting_directions, add_extra_directions,
                                                     Ordinate_Set::LEVEL_ORDERED);
     }
-  } else if (quad_.dimension == 2) { // 2D quadratures
+  } else if (quad_.dimension == 2 || quad_.dimension == 3) { // 2D/3D quadratures
     if (quad_.type == 0) {
       Level_Symmetric quadrature(quad_.order);
-      ordinate_set = quadrature.create_ordinate_set(2, geometry,
+      ordinate_set = quadrature.create_ordinate_set(quad_.dimension, geometry,
                                                     1.0, // norm,
                                                     add_starting_directions, add_extra_directions,
                                                     Ordinate_Set::LEVEL_ORDERED);
     } else if (quad_.type == 1) {
       Tri_Chebyshev_Legendre quadrature(quad_.order);
-      ordinate_set = quadrature.create_ordinate_set(2, geometry,
+      ordinate_set = quadrature.create_ordinate_set(quad_.dimension, geometry,
                                                     1.0, // norm,
                                                     add_starting_directions, add_extra_directions,
                                                     Ordinate_Set::LEVEL_ORDERED);
     } else if (quad_.type == 2) {
       Square_Chebyshev_Legendre quadrature(quad_.order);
-      ordinate_set = quadrature.create_ordinate_set(2, geometry,
+      ordinate_set = quadrature.create_ordinate_set(quad_.dimension, geometry,
                                                     1.0, // norm,
                                                     add_starting_directions, add_extra_directions,
                                                     Ordinate_Set::LEVEL_ORDERED);
     } else if (quad_.type == 3) {
       Product_Chebyshev_Legendre quadrature(quad_.order, quad_.azimuthal_order);
-      ordinate_set = quadrature.create_ordinate_set(2, geometry,
+      ordinate_set = quadrature.create_ordinate_set(quad_.dimension, geometry,
                                                     1.0, // norm,
                                                     add_starting_directions, add_extra_directions,
                                                     Ordinate_Set::LEVEL_ORDERED);
     }
   } else {
-    Insist(quad_.dimension > 0 && quad_.dimension < 3, "Expected 1 <= quad_.dimension < 3.");
+    Insist(quad_.dimension > 0 && quad_.dimension <= 3, "Expected 1 <= quad_.dimension <= 3.");
   }
 
   Ensure(ordinate_set);

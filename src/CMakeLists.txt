@@ -82,7 +82,7 @@ add_subdirectory(special_functions) #< needs roots, units, GSL
 message(" ")
 message(STATUS "Configuring Level 5 packages --")
 add_subdirectory(compton_tools) #< needs ds++, units, cdi_analtyic
-add_subdirectory(mesh) #< needs c4, ds++, mesh_element
+add_subdirectory(mesh) #< needs c4, ds++, mesh_element, viz
 add_subdirectory(quadrature) #< needs mesh_element, parser, special_functions
 
 # Summary
