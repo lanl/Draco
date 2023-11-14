@@ -304,6 +304,7 @@ ccs1_rel_gcc_1120_deploy_release:
     - if: '$CI_PROJECT_NAMESPACE != "draco"'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
 
 # FAST TEST
 

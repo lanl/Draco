@@ -81,6 +81,7 @@ rzvernal_deb_cce1501_deploy:
     - if: '$CI_MERGE_REQUEST_TITLE =~ /Draft:/ || $CI_MERGE_REQUEST_TITLE =~ /WIP:/'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
 
 # ----- regular test -----
 

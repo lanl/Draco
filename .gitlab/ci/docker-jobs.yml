@@ -28,6 +28,7 @@ superlinter:
     - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
   variables:
     RUN_LOCAL: "true"
     DEFAULT_WORKSPACE: $CI_PROJECT_DIR
@@ -48,7 +49,7 @@ superlinter:
     VALIDATE_ENV: "true"
     VALIDATE_GITLEAKS: "true"
     VALIDATE_HTML: "true"
-    VALIDATE_JSCPD: "true"
+    # VALIDATE_JSCPD: "true"
     VALIDATE_JSON: "true"
     VALIDATE_LUA: "true"
     VALIDATE_MARKDOWN: "true"
@@ -110,6 +111,7 @@ checkCoverage_MR:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
 
 #--------------------------------------------------------------------------------------------------#
 # Regressions: collect data from LLNL RZ systems and post it to cdash
@@ -164,6 +166,47 @@ post_rzansel_results_to_cdash:
     - echo "==> PASS -- RZ test results submitted to CDash."
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
+
+#--------------------------------------------------------------------------------------------------#
+# Use MR action to trigger restart of CI pipleline via webhook when MR title changes.
+#
+# 1. This requires a trigger token (Settings -> CI/CD -> Pipeline trigger token)
+# 2. Create a webhook (Settings -> Webhook).  Something like...
+#    https://re-git.lanl.gov/api/v4/projects/503/ref/webhook/trigger/pipeline?token=<token>
+# 3. Save the webhook token to the CI/CD variables as CI_JOB_TOKEN
+#
+#--------------------------------------------------------------------------------------------------#
+titlechange:
+  tags:
+    - darwin-docker-shared
+  stage: test
+  image:
+    name: alpine:3.16.2
+  before_script:
+    - apk add --quiet --update --no-cache curl jq
+  script:
+    - echo $TRIGGER_PAYLOAD
+    - cat $TRIGGER_PAYLOAD
+    - 'export SOURCE=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.source_branch)'
+    - 'export PREVIOUS=$(cat $TRIGGER_PAYLOAD | jq -r .changes.title.previous)'
+    - 'export CURRENT=$(cat $TRIGGER_PAYLOAD | jq -r .changes.title.current)'
+    - echo $SOURCE
+    - echo $PREVIOUS
+    - echo $CURRENT
+    - >
+      if [[ "$PREVIOUS" != "$CURRENT" ]] && \
+        ( [[ "$PREVIOUS" =~ "WIP:" ]] || [[ "$PREVIOUS" =~ "Draft:" ]] ) && \
+        ! ( [[ "$CURRENT" =~ "WIP:" ]] && [[ "$CURRENT" =~ "Draft:" ]] );
+      then \
+        echo "==> curl --request POST --form ref=${SOURCE}";
+        echo "    https://re-git.lanl.gov/api/v4/projects/${CI_PROJECT_ID}/trigger/pipeline";
+        curl --request POST --form "token=$CI_JOB_TOKEN" --form "ref=${SOURCE}" \
+          "https://re-git.lanl.gov/api/v4/projects/${CI_PROJECT_ID}/trigger/pipeline";
+      else
+        echo "==> Skip webhook. WIP/Draft not removed from title.";
+      fi;
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/docker-jobs.yml

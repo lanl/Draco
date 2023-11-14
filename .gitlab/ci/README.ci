@@ -1,8 +1,0 @@
-
-#stages:
-#- prepare
-#- style
-#- autodoc
-#- build
-#- package
-#- release
