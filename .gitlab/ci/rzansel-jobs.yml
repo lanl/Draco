@@ -20,6 +20,7 @@
     - batch
   variables:
     SITE_ID: rzansel
+    CTEST_SITE: ${SITE_ID}
     CTEST_NPROC: 10
     # SCHEDULER_PARAMETERS: -N 1
     # LLNL_SLURM_SCHEDULER_PARAMETERS: -N 1
