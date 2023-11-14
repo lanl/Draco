@@ -65,6 +65,7 @@
     - if: '$CI_MERGE_REQUEST_TITLE =~ /Draft:/ || $CI_MERGE_REQUEST_TITLE =~ /WIP:/'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
 
 x64_deb_msvc_22_mr:
   stage: slowtest
