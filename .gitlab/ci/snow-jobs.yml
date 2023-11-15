@@ -48,32 +48,32 @@ sn_rel_i2120_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.1-intel"
-    FLAVOR: lapse231-intel-Release
+    DRACO_ENV: "lapse/2.3.2-intel"
+    FLAVOR: lapse232-intel-Release
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_i2120_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-intel"
-    FLAVOR: lapse231-intel-Debug
+    DRACO_ENV: "lapse/2.3.2-intel"
+    FLAVOR: lapse232-intel-Debug
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_g930_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-gnu"
-    FLAVOR: lapse231-gnu-Debug
+    DRACO_ENV: "lapse/2.3.2-gnu"
+    FLAVOR: lapse232-gnu-Debug
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_rel_g930_deploy:
   extends: .snow_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.1-gnu"
-    FLAVOR: lapse231-gnu-Release
+    DRACO_ENV: "lapse/2.3.2-gnu"
+    FLAVOR: lapse232-gnu-Release
     EXTRA_CMAKE_ARGS: -GNinja
 
 #--------------------------------------------------------------------------------------------------#
@@ -110,42 +110,42 @@ sn_deb_gcc_930_deploy_release:
   extends: .sn_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-gnu"
+    DRACO_ENV: "lapse/2.3.2-gnu"
     EXTRA_CMAKE_ARGS: -G Ninja
 
 sn_rel_gcc_930_deploy_release:
   extends: .sn_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.1-gnu"
+    DRACO_ENV: "lapse/2.3.2-gnu"
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_ROUNDOFF_MODE=FAST
 
 sn_rwdi_gcc_930_deploy_release:
   extends: .sn_deploy_release
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/2.3.1-gnu"
+    DRACO_ENV: "lapse/2.3.2-gnu"
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_DBC_LEVEL=15
 
 sn_rel_i2120_deploy_release:
   extends: .sn_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.1-intel"
+    DRACO_ENV: "lapse/2.3.2-intel"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
 
 sn_deb_i2120_deploy_release:
   extends: .sn_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-intel"
+    DRACO_ENV: "lapse/2.3.2-intel"
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_rwdi_i2120_deploy_release:
   extends: .sn_deploy_release
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/2.3.1-intel"
+    DRACO_ENV: "lapse/2.3.2-intel"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
 #--------------------------------------------------------------------------------------------------#
@@ -174,7 +174,7 @@ sn_rel_i2120_mr:
   extends: .snow_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.1-intel"
+    DRACO_ENV: "lapse/2.3.2-intel"
     EXTRA_CMAKE_ARGS: -GNinja
 
 # ----- regular test -----
@@ -184,7 +184,7 @@ sn_deb_i2120_mr:
   extends: .snow_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-intel"
+    DRACO_ENV: "lapse/2.3.2-intel"
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_g930_mr:
@@ -192,7 +192,7 @@ sn_deb_g930_mr:
   extends: .snow_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-gnu"
+    DRACO_ENV: "lapse/2.3.2-gnu"
     EXTRA_CMAKE_ARGS: -GNinja
 
 #--------------------------------------------------------------------------------------------------#
@@ -218,8 +218,8 @@ sn_rel_i2120_regress:
   extends: .snow_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.1-intel"
-    CTEST_BUILD_NAME: "lapse231-intel-Release"
+    DRACO_ENV: "lapse/2.3.2-intel"
+    CTEST_BUILD_NAME: "lapse232-intel-Release"
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_i2120_regress:
@@ -227,16 +227,16 @@ sn_deb_i2120_regress:
   extends: .snow_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-intel"
-    CTEST_BUILD_NAME: "lapse231-intel-Debug"
+    DRACO_ENV: "lapse/2.3.2-intel"
+    CTEST_BUILD_NAME: "lapse232-intel-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_g930_regress:
   extends: .snow_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.1-gnu"
-    CTEST_BUILD_NAME: "lapse231-gnu-Debug"
+    DRACO_ENV: "lapse/2.3.2-gnu"
+    CTEST_BUILD_NAME: "lapse232-gnu-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
 
 #--------------------------------------------------------------------------------------------------#
