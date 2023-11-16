@@ -699,7 +699,7 @@ class vor_2d_mesh(base_mesh):
     files.
     '''
 
-    def __init__(self, bounds_per_dim, num_cells, seed=0):
+    def __init__(self, bounds_per_dim, num_per_dim, seed=0):
         def soft_equiv(a, b, eps=1.e-12):
             if 2. * np.fabs(a - b) / (a + b + eps) < eps:
                 return True
@@ -708,7 +708,15 @@ class vor_2d_mesh(base_mesh):
         from scipy.spatial import Voronoi
         np.random.seed(seed)
 
+        # -- admonishment that issues may arise at high resolution
+        print('WARNING this algorithm becomes more unstable at high cell counts (>~ 100)')
+        print('If an assertion is thrown, e.g.')
+        print('  AssertionError: Boundary edge not identified')
+        print('You may retry the script until a successful random number seed')
+        print('occurs. This is unlikely above ~1000 cells')
+
         # -- convenience variables
+        num_cells = num_per_dim[0] * num_per_dim[1]
         xmin = bounds_per_dim[0][0]
         xmax = bounds_per_dim[0][1]
         ymin = bounds_per_dim[1][0]
@@ -1024,10 +1032,111 @@ class vor_2d_mesh(base_mesh):
                     bdy_nodes.append(node)
             self.nodes_per_side.append(np.unique(bdy_nodes))
 
+# ------------------------------------------------------------------------------------------------ #
+# right triangle 2D mesh type: orthogonal 2D mesh type with a diagonal drawn across each cell from
+# top left to bottom right to create a set of right triangles
+
+
+class righttri_2d_mesh(base_mesh):
+    '''
+    Class for mesh with right triangles built from an orthogonally structured 2D mesh.
+    '''
+
+    def __init__(self, bounds_per_dim, num_cells_per_dim):
+        # -- short-cuts
+        nx = num_cells_per_dim[0]
+        ny = num_cells_per_dim[1]
+
+        # -- number of dimensions
+        ndim = len(num_cells_per_dim)
+        self.ndim = ndim
+        assert (ndim == 2), 'ndim != 2, exiting...'
+        assert (len(bounds_per_dim) == ndim), 'len(bounds_per_dim) != ndim, exiting...'
+
+        # -- create grid arrays along each dimension
+        grid_per_dim = [np.linspace(bounds_per_dim[i][0], bounds_per_dim[i][1],
+                                    num_cells_per_dim[i] + 1) for i in range(ndim)]
+
+        # -- create node indices
+        num_nodes = (nx + 1) * (ny + 1)
+        self.num_nodes = num_nodes
+        self.coordinates_per_node = np.zeros((num_nodes, ndim))
+        for j in range(ny + 1):
+            j_offset = (nx + 1) * j
+            for i in range(nx + 1):
+                node = i + j_offset
+                self.coordinates_per_node[node, 0] = grid_per_dim[0][i]
+                self.coordinates_per_node[node, 1] = grid_per_dim[1][j]
+
+        # -- set total number of cells and faces (two cells per uniform cartesian cell)
+        num_cells = 2 * nx * ny
+        self.num_cells = num_cells
+        self.num_faces = 3 * num_cells
+
+        # -- constants for this mesh
+        self.num_faces_per_cell = 3 * np.ones((num_cells), dtype=int)
+        self.num_nodes_per_face = 2 * np.ones((4 * num_cells), dtype=int)
+
+        # -- set nodes per face and faces per cell
+        self.faces_per_cell = np.zeros((num_cells, 3), dtype=int)
+        self.nodes_per_face = np.zeros((4 * num_cells, 2), dtype=int)
+        for j in range(ny):
+            for i in range(nx):
+
+                # -- First triangle
+                cell = 2 * (i + nx * j)
+                # -- faces per cell
+                self.faces_per_cell[cell, 0] = 3 * cell
+                self.faces_per_cell[cell, 1] = 3 * cell + 1
+                self.faces_per_cell[cell, 2] = 3 * cell + 2
+                # -- nodes per face (per cell)
+                self.nodes_per_face[3 * cell, 0] = i + j * (nx + 1)
+                self.nodes_per_face[3 * cell, 1] = i + 1 + j * (nx + 1)
+                self.nodes_per_face[3 * cell + 1, 0] = i + 1 + j * (nx + 1)
+                self.nodes_per_face[3 * cell + 1, 1] = i + (j + 1) * (nx + 1)
+                self.nodes_per_face[3 * cell + 2, 0] = i + (j + 1) * (nx + 1)
+                self.nodes_per_face[3 * cell + 2, 1] = i + j * (nx + 1)
+
+                # -- Second triangle
+                cell = 2 * (i + nx * j) + 1
+                # -- faces per cell
+                self.faces_per_cell[cell, 0] = 3 * cell
+                self.faces_per_cell[cell, 1] = 3 * cell + 1
+                self.faces_per_cell[cell, 2] = 3 * cell + 2
+                # -- nodes per face (per cell)
+                self.nodes_per_face[3 * cell, 0] = i + 1 + j * (nx + 1)
+                self.nodes_per_face[3 * cell, 1] = i + 1 + (j + 1) * (nx + 1)
+                self.nodes_per_face[3 * cell + 1, 0] = i + 1 + (j + 1) * (nx + 1)
+                self.nodes_per_face[3 * cell + 1, 1] = i + (j + 1) * (nx + 1)
+                self.nodes_per_face[3 * cell + 2, 0] = i + (j + 1) * (nx + 1)
+                self.nodes_per_face[3 * cell + 2, 1] = i + 1 + j * (nx + 1)
+
+        # -- enumerate boundary nodes per face ("side")
+        # -- faces at x extrema
+        nodes_per_side_xlow = np.zeros((ny, 2), dtype=int)
+        nodes_per_side_xhig = np.zeros((ny, 2), dtype=int)
+        for j in range(ny):
+            nodes_per_side_xlow[ny - 1 - j, 0] = (j + 1) * (nx + 1)
+            nodes_per_side_xlow[ny - 1 - j, 1] = j * (nx + 1)
+            nodes_per_side_xhig[j, 0] = j * (nx + 1) + nx
+            nodes_per_side_xhig[j, 1] = (j + 1) * (nx + 1) + nx
+        # -- faces at y extrema
+        nodes_per_side_ylow = np.zeros((nx, 2), dtype=int)
+        nodes_per_side_yhig = np.zeros((nx, 2), dtype=int)
+        for i in range(nx):
+            nodes_per_side_ylow[i, 0] = i
+            nodes_per_side_ylow[i, 1] = i + 1
+            nodes_per_side_yhig[nx - 1 - i, 0] = i + 1 + ny * (nx + 1)
+            nodes_per_side_yhig[nx - 1 - i, 1] = i + ny * (nx + 1)
+        # -- compile into one side face array list (expeced as counter-clockwise in 2D)
+        self.nodes_per_side = [nodes_per_side_ylow, nodes_per_side_xhig,
+                               nodes_per_side_yhig, nodes_per_side_xlow]
 
 # ------------------------------------------------------------------------------------------------ #
 # random 1D mesh type: orthogonal 1D mesh type with vertices randomly sampled in a ball
 # centered at original (orthogonal) vertices
+
+
 class rnd_1d_mesh(orth_1d_mesh):
     '''
     Class for mesh with randomly resampled vertices from orthogonally structured 1D mesh.

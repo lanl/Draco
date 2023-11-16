@@ -12,8 +12,10 @@ import argparse
 # -- mesh class dictionary
 mesh_type_dict = {'orth_1d_mesh': mesh_types.orth_1d_mesh, 'orth_2d_mesh': mesh_types.orth_2d_mesh,
                   'orth_3d_mesh': mesh_types.orth_3d_mesh, 'fcc_3d_mesh': mesh_types.fcc_3d_mesh,
-                  'vor_2d_mesh': mesh_types.vor_2d_mesh, 'rnd_1d_mesh': mesh_types.rnd_1d_mesh,
-                  'rnd_2d_mesh': mesh_types.rnd_2d_mesh, 'rnd_3d_mesh': mesh_types.rnd_3d_mesh,
+                  'vor_2d_mesh': mesh_types.vor_2d_mesh,
+                  'righttri_2d_mesh': mesh_types.righttri_2d_mesh,
+                  'rnd_1d_mesh': mesh_types.rnd_1d_mesh, 'rnd_2d_mesh': mesh_types.rnd_2d_mesh,
+                  'rnd_3d_mesh': mesh_types.rnd_3d_mesh,
                   'smoothdist_2d_mesh': mesh_types.smoothdist_2d_mesh}
 
 # ------------------------------------------------------------------------------------------------ #
@@ -28,8 +30,6 @@ parser.add_argument('-bd', '--bnd_per_dim', type=float, nargs='+', default=[0.0,
                     help='Bounds per dimension.')
 parser.add_argument('--name', type=str, default='mesh',
                     help='Select file name (will be prefixed with x3d. and sufficed with .in).')
-parser.add_argument('--num_cells', type=int, default=100,
-                    help='Number of cells')
 # -- random mesh options
 parser.add_argument('--eps', type=float, default=1.0,
                     help='0=no randomization, 1=max possible randomization.')
@@ -65,7 +65,9 @@ bnd_per_dim = [[args.bnd_per_dim[2 * i], args.bnd_per_dim[2 * i + 1]] for i in r
 if args.mesh_type in ['orth_1d_mesh', 'orth_2d_mesh', 'orth_3d_mesh', 'fcc_3d_mesh']:
     mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim)
 elif args.mesh_type in ['vor_2d_mesh']:
-    mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_cells)
+    mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim)
+elif args.mesh_type in ['righttri_2d_mesh']:
+    mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim)
 elif args.mesh_type in ['rnd_1d_mesh', 'rnd_2d_mesh', 'rnd_3d_mesh']:
     mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim, args.eps, args.rnd_seed)
 elif args.mesh_type in ['smoothdist_2d_mesh']:

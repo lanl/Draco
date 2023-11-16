@@ -3,7 +3,7 @@
 # file  src/mesh/python/x3d_plotter.py
 # date  Monday, Aug 9, 2021
 # brief This script plots X3D mesh files.
-# note  Copyright (C) 2021 Triad National Security, LLC., All rights reserved.
+# note  Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import matplotlib.pyplot as plt
 import argparse
@@ -15,6 +15,8 @@ import os
 parser = argparse.ArgumentParser(description='Plot X3D mesh file.')
 parser.add_argument('-fn', '--file_name', type=str, default=None, required=True,
                     help='Provide mesh file to plot.')
+parser.add_argument('-sn', '--save_name', type=str, default=None,
+                    help='Save figure rather than show plot, if requested.')
 
 # -- parse arguments from command line
 args = parser.parse_args()
@@ -156,7 +158,13 @@ elif numdim == 2:
     # -- plot nodes
     for node in nodes:
         ax.plot([node[0]], [node[1]], marker='.', color='b')
-    plt.show()
+
+    # -- output
+    ax.set_aspect('equal')
+    if args.save_name is None:
+        plt.show()
+    else:
+        plt.savefig(args.save_name)
 
 elif numdim == 3:
     assert (False), "3D plotting not supported!"
