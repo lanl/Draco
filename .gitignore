@@ -1,6 +1,7 @@
 # See https://github.com/cpp-best-practices/cpp_starter_project/blob/main/.gitignore
 
 *.elc
+*.orig
 *.pyc
 *~
 .settings/
