@@ -6,8 +6,12 @@
 # Note  : Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
-# Draco is open source.  Set permissions to g+rwX,o=g-w
-umask 0002
+# Draco is open source. Default permissions to g+rwX,o=g-w (umask 2). Otherwise use the UMASK value.
+if [[ -z "${UMASK}" ]]; then
+  umask 0002
+else
+  umask "${UMASK}"
+fi
 umask
 
 # preliminaries and environment
