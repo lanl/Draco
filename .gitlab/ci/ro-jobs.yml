@@ -82,6 +82,18 @@ ro_deb_fulldiag_deploy:
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     FLAVOR: intel-fulldiag-static
 
+ro_rel_gnu_deploy:
+  extends: .ro_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "lapse/2.4.0-gnu"
+
+ro_deb_gnu_deploy:
+  extends: .ro_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.4.0-gnu"
+
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
 #--------------------------------------------------------------------------------------------------#
@@ -153,6 +165,26 @@ ro_rwdi_oneapi_deploy_release:
     DRACO_ENV: "draco/oneapi-2023.1.0"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
+ro_rel_gnu_deploy_release:
+  extends: .ro_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: "lapse/2.4.0-gnu"
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
+
+ro_deb_gnu_deploy_release:
+  extends: .ro_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.4.0-gnu"
+
+ro_rwdi_gnu_deploy_release:
+  extends: .ro_deploy_release
+  variables:
+    CMAKE_BUILD_TYPE: RelWithDebInfo
+    DRACO_ENV: "lapse/2.4.0-gnu"
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
+
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
 #--------------------------------------------------------------------------------------------------#
@@ -187,6 +219,13 @@ ro_rel_intel_classic_mr:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "draco/intel-2023.1.0"
+
+ro_deb_gnu_mr:
+  stage: test
+  extends: .ro_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.4.0-gnu"
 
 # ----- slow -----
 
@@ -264,6 +303,12 @@ ro_deb_fulldiag_regress:
     FLAVOR: intel-fulldiag-static
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     CTEST_BUILD_NAME: intel-fulldiag-static
+
+ro_deb_gnu_regress:
+  extends: .ro_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/2.4.0-gnu"
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/ro-jobs.yml
