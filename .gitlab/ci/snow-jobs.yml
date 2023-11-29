@@ -20,6 +20,7 @@
     SITE_ID: snow
     CTEST_SITE: ${SITE_ID}
     SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --partition=ci --qos=ci --reservation=ci -L none@slurmdb"
+    EXTRA_CMAKE_ARGS: -GNinja
     # CI_DEBUG_TRACE: "true"
 
 #--------------------------------------------------------------------------------------------------#
@@ -51,7 +52,6 @@ sn_rel_i2120_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.3.2-intel"
     FLAVOR: lapse232-intel-Release
-    EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_i2120_deploy:
   extends: .snow_deploy
@@ -59,23 +59,6 @@ sn_deb_i2120_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.3.2-intel"
     FLAVOR: lapse232-intel-Debug
-    EXTRA_CMAKE_ARGS: -GNinja
-
-sn_deb_g930_deploy:
-  extends: .snow_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.2-gnu"
-    FLAVOR: lapse232-gnu-Debug
-    EXTRA_CMAKE_ARGS: -GNinja
-
-sn_rel_g930_deploy:
-  extends: .snow_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.2-gnu"
-    FLAVOR: lapse232-gnu-Release
-    EXTRA_CMAKE_ARGS: -GNinja
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
@@ -108,27 +91,6 @@ sn_rel_g930_deploy:
     - if: '$CI_COMMIT_TAG =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-sn_deb_gcc_930_deploy_release:
-  extends: .sn_deploy_release
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.2-gnu"
-    EXTRA_CMAKE_ARGS: -G Ninja
-
-sn_rel_gcc_930_deploy_release:
-  extends: .sn_deploy_release
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.2-gnu"
-    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_ROUNDOFF_MODE=FAST
-
-sn_rwdi_gcc_930_deploy_release:
-  extends: .sn_deploy_release
-  variables:
-    CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/2.3.2-gnu"
-    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_DBC_LEVEL=15
-
 sn_rel_i2120_deploy_release:
   extends: .sn_deploy_release
   variables:
@@ -141,7 +103,6 @@ sn_deb_i2120_deploy_release:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.3.2-intel"
-    EXTRA_CMAKE_ARGS: -GNinja
 
 sn_rwdi_i2120_deploy_release:
   extends: .sn_deploy_release
@@ -189,14 +150,6 @@ sn_deb_i2120_mr:
     DRACO_ENV: "lapse/2.3.2-intel"
     EXTRA_CMAKE_ARGS: -GNinja
 
-sn_deb_g930_mr:
-  stage: test
-  extends: .snow_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.2-gnu"
-    EXTRA_CMAKE_ARGS: -GNinja
-
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
 #--------------------------------------------------------------------------------------------------#
@@ -231,14 +184,6 @@ sn_deb_i2120_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.3.2-intel"
     CTEST_BUILD_NAME: "lapse232-intel-Debug"
-    EXTRA_CMAKE_ARGS: -GNinja
-
-sn_deb_g930_regress:
-  extends: .snow_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.2-gnu"
-    CTEST_BUILD_NAME: "lapse232-gnu-Debug"
     EXTRA_CMAKE_ARGS: -GNinja
 
 #--------------------------------------------------------------------------------------------------#
