@@ -4,8 +4,7 @@
  * \author H. Park
  * \date   Aug. 1 2023
  * \brief  Rep_Topology implementation file.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Rep_Topology.hh"
@@ -19,9 +18,9 @@ namespace rtt_mesh {
 /*!
  * \brief Rep_Topology constructor.
  *
- * The Rep_Topology constructor only requires the number of global cells in
- * the problem to build an instance of Rep_Topology.  All other functions are
- * trivially derived based on the simplicity of a full replication topology.
+ * The Rep_Topology constructor only requires the number of global cells in the problem to build an
+ * instance of Rep_Topology.  All other functions are trivially derived based on the simplicity of a
+ * full replication topology.
  *
  * \param num_global_cells number of global cells in the problem
  */
@@ -42,13 +41,12 @@ Rep_Topology::Rep_Topology(const packed_type &packed) : Topology(1, "replication
   u.set_buffer(packed.size(), &packed[0]);
 
   // unpack the number of global cells
-  int64_t tmp;
+  int64_t tmp(0);
   u >> tmp;
   Base::num_global_cells_d = tmp;
 
   Ensure(&packed[0] + packed.size() == u.get_ptr());
   Ensure(Base::get_parallel_scheme() == "replication");
-  // Ensure (Base::num_global_cells_d > 0);
 }
 
 //------------------------------------------------------------------------------------------------//

@@ -4,8 +4,7 @@
  * \author Mathew Cleveland
  * \date   March 2019
  * \brief  Analytic_EICoupling member definitions.
- * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2019-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Analytic_EICoupling.hh"
@@ -22,8 +21,7 @@ namespace rtt_cdi_analytic {
  * This constructor builds an analytic EICoupling model defined by the
  * rtt_cdi_analytic::Analytic_EICoupling_Model derived class argument.
  *
- * \param model_in shared_ptr to a derived
- *        rtt_cdi_analytic::Analytic_EICoupling_Model object
+ * \param model_in shared_ptr to a derived rtt_cdi_analytic::Analytic_EICoupling_Model object
  */
 Analytic_EICoupling::Analytic_EICoupling(SP_Analytic_Model model_in)
     : analytic_model(std::move(model_in)) {
@@ -34,14 +32,12 @@ Analytic_EICoupling::Analytic_EICoupling(SP_Analytic_Model model_in)
 /*!
  * \brief Unpacking constructor.
  *
- * This constructor rebuilds and Analytic_EICoupling from a vector<char> that
- * was created by a call to pack().  It can only rebuild Analytic_Model types
- * that have been registered in the rtt_cdi_analytic::EICoupling_Models
- * enumeration.
+ * This constructor rebuilds and Analytic_EICoupling from a vector<char> that was created by a call
+ * to pack().  It can only rebuild Analytic_Model types that have been registered in the
+ * rtt_cdi_analytic::EICoupling_Models enumeration.
  */
 Analytic_EICoupling::Analytic_EICoupling(const sf_char &packed) : analytic_model() {
-  // the packed size must be at least 2 integers (size,
-  // analytic model indicator)
+  // the packed size must be at least 2 integers (size, analytic model indicator)
   Require(packed.size() >= 2 * sizeof(int));
 
   // make an unpacker
@@ -51,7 +47,7 @@ Analytic_EICoupling::Analytic_EICoupling(const sf_char &packed) : analytic_model
   unpacker.set_buffer(packed.size(), &packed[0]);
 
   // unpack the size of the analytic model
-  int size_analytic;
+  int size_analytic(0);
   unpacker >> size_analytic;
   Check(static_cast<size_t>(size_analytic) >= sizeof(int));
 
@@ -62,12 +58,11 @@ Analytic_EICoupling::Analytic_EICoupling(const sf_char &packed) : analytic_model
 
   Check(unpacker.get_ptr() == &packed[0] + packed.size());
 
-  // now reset the buffer so that we can determine the analytic model
-  // indicator
+  // now reset the buffer so that we can determine the analytic model indicator
   unpacker.set_buffer(size_analytic, &packed_analytic[0]);
 
   // unpack the indicator
-  int indicator;
+  int indicator(0);
   unpacker >> indicator;
 
   // now determine which analytic model we need to build
@@ -84,19 +79,17 @@ Analytic_EICoupling::Analytic_EICoupling(const sf_char &packed) : analytic_model
 // EICoupling INTERFACE FUNCTIONS
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief EICoupling accessor that returns a single electron-ion coupling
- *        coefficient.
+ * \brief EICoupling accessor that returns a single electron-ion coupling coefficient.
  *
- * \param[in] eTemperature The electron temperature value for which an
- *     opacity value is being requested (keV).
- * \param[in] iTemperature The electron temperature value for which an
- *     opacity value is being requested (keV).
- * \param[in] density The density value for which an opacity
- *     value is being requested (g/cm^3).
- * \param[in] w_e is the plasma electron frequency (as defined by Eq. 3.41 in
- *     Brown, Preston, and Singleton, 'Physics Reports', V410, Issue 4, 2005)
- * \param[in] w_i is the average plasma ion frequency (as defined by Eq. 3.61 in
- *     Brown, Preston, and Singleton, 'Physics Reports', V410, Issue 4, 2005)
+ * \param[in] eTemperature The electron temperature value for which an opacity value is being
+ *     requested (keV).
+ * \param[in] iTemperature The electron temperature value for which an opacity value is being
+ *     requested (keV).
+ * \param[in] density The density value for which an opacity value is being requested (g/cm^3).
+ * \param[in] w_e is the plasma electron frequency (as defined by Eq. 3.41 in Brown, Preston, and
+ *     Singleton, 'Physics Reports', V410, Issue 4, 2005)
+ * \param[in] w_i is the average plasma ion frequency (as defined by Eq. 3.61 in Brown, Preston, and
+ *     Singleton, 'Physics Reports', V410, Issue 4, 2005)
  * \return A electron-ion coupling coeffiecent (1/s).
  */
 double Analytic_EICoupling::getElectronIonCoupling(const double eTemperature,
@@ -116,21 +109,18 @@ double Analytic_EICoupling::getElectronIonCoupling(const double eTemperature,
 }
 
 /*!
- * \brief EICoupling accessor that returns a vector electron-ion coupling
- * coefficients.
+ * \brief EICoupling accessor that returns a vector electron-ion coupling coefficients.
  *
- * \param[in] vetemperature The electron temperature value for which an
- *     opacity value is being requested (keV).
- * \param[in] vitemperature The electron temperature value for which an
- *     opacity value is being requested (keV).
- * \param[in] vdensity The density value for which an opacity
- *     value is being requested (g/cm^3).
- * \param[in] vw_e is the plasma electron frequency (as defined by Eq. 3.41 in
- *     Brown, Preston, and Singleton, 'Physics Reports', V410, Issue 4, 2005)
- * \param[in] vw_i is the average plasma ion frequency (as defined by Eq. 3.61 in
- *     Brown, Preston, and Singleton, 'Physics Reports', V410, Issue 4, 2005)
+ * \param[in] vetemperature The electron temperature value for which an opacity value is being
+ *     requested (keV).
+ * \param[in] vitemperature The electron temperature value for which an opacity value is being
+ *     requested (keV).
+ * \param[in] vdensity The density value for which an opacity value is being requested (g/cm^3).
+ * \param[in] vw_e is the plasma electron frequency (as defined by Eq. 3.41 in Brown, Preston, and
+ *     Singleton, 'Physics Reports', V410, Issue 4, 2005)
+ * \param[in] vw_i is the average plasma ion frequency (as defined by Eq. 3.61 in Brown, Preston,
+ *     and Singleton, 'Physics Reports', V410, Issue 4, 2005)
  * \return A vector of electron-ion coupling coeffiecent (kJ/cc/keV/s).
-
  */
 Analytic_EICoupling::sf_double Analytic_EICoupling::getElectronIonCoupling(
     const std::vector<double> &vetemperature, const std::vector<double> &vitemperature,
@@ -165,10 +155,9 @@ Analytic_EICoupling::sf_double Analytic_EICoupling::getElectronIonCoupling(
 /*!
  * \brief Pack an analytic EICoupling.
  *
- * This function will pack up the Analytic_EICoupling into a char
- * array (represented by a vector<char>).  The Analytic_EICoupling_Model derived
- * class must have a pack function; this is enforced by the virtual
- * Analytic_EICoupling_Model base class.
+ * This function will pack up the Analytic_EICoupling into a char array (represented by a
+ * vector<char>).  The Analytic_EICoupling_Model derived class must have a pack function; this is
+ * enforced by the virtual Analytic_EICoupling_Model base class.
  */
 Analytic_EICoupling::sf_char Analytic_EICoupling::pack() const {
   Require(analytic_model);
@@ -179,8 +168,7 @@ Analytic_EICoupling::sf_char Analytic_EICoupling::pack() const {
   // first pack up the analytic model
   sf_char anal_model = analytic_model->pack();
 
-  // now add up the total size (in bytes): size of analytic model + 1
-  // int for size of analytic model
+  // now add up the total size (in bytes): size of analytic model + 1 int for size of analytic model
   Check(anal_model.size() + 1 * sizeof(int) < INT_MAX);
   int size = static_cast<int>(anal_model.size() + 1 * sizeof(int));
 

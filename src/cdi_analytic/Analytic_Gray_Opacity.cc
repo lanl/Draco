@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Aug 24 13:13:46 2001
  * \brief  Analytic_Gray_Opacity member definitions.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Analytic_Gray_Opacity.hh"
@@ -19,14 +18,12 @@ namespace rtt_cdi_analytic {
 /*!
  * \brief Constructor for an analytic gray opacity model.
  *
- * This constructor builds an opacity model defined by the
- * rtt_cdi_analytic::Analytic_Opacity_Model derived class argument.
+ * This constructor builds an opacity model defined by the rtt_cdi_analytic::Analytic_Opacity_Model
+ * derived class argument.
  *
- * The reaction type for this instance of the class is determined by the
- * rtt_cdi::Reaction argument.
+ * The reaction type for this instance of the class is determined by the rtt_cdi::Reaction argument.
  *
- * \param model_in shared_ptr to a derived
- *                 rtt_cdi_analytic::Analytic_Opacity_Model object
+ * \param model_in shared_ptr to a derived rtt_cdi_analytic::Analytic_Opacity_Model object
  * \param reaction_in rtt_cdi::Reaction type (enumeration)
  * \param cdi_model_in CDI model type
  */
@@ -44,15 +41,14 @@ Analytic_Gray_Opacity::Analytic_Gray_Opacity(SP_Analytic_Model model_in,
 /*!
  * \brief Unpacking constructor.
  *
- * This constructor rebuilds and Analytic_Gray_Opacity from a vector<char>
- * that was created by a call to pack().  It can only rebuild Analytic_Model
- * types that have been registered in the rtt_cdi_analytic::Opacity_Models
- * enumeration.
+ * This constructor rebuilds and Analytic_Gray_Opacity from a vector<char> that was created by a
+ * call to pack().  It can only rebuild Analytic_Model types that have been registered in the
+ * rtt_cdi_analytic::Opacity_Models enumeration.
  */
 Analytic_Gray_Opacity::Analytic_Gray_Opacity(const sf_char &packed)
     : analytic_model(), reaction(), model() {
-  // the packed size must be at least 4 integers (size, reaction type,
-  // model type, analytic model indicator)
+  // the packed size must be at least 4 integers (size, reaction type, model type, analytic model
+  // indicator)
   Require(packed.size() >= 4 * sizeof(int));
 
   // make an unpacker
@@ -62,7 +58,7 @@ Analytic_Gray_Opacity::Analytic_Gray_Opacity(const sf_char &packed)
   unpacker.set_buffer(packed.size(), &packed[0]);
 
   // unpack the size of the analytic model
-  int size_analytic;
+  int size_analytic(0);
   unpacker >> size_analytic;
   Check(static_cast<size_t>(size_analytic) >= sizeof(int));
 
@@ -72,7 +68,8 @@ Analytic_Gray_Opacity::Analytic_Gray_Opacity(const sf_char &packed)
     unpacker >> packed_analytic[i];
 
   // unpack the reaction and model type
-  int react_int, model_int;
+  int react_int(0);
+  int model_int(0);
   unpacker >> react_int >> model_int;
   Check(unpacker.get_ptr() == &packed[0] + packed.size());
 
@@ -82,12 +79,11 @@ Analytic_Gray_Opacity::Analytic_Gray_Opacity(const sf_char &packed)
   Check(reaction == rtt_cdi::ABSORPTION || reaction == rtt_cdi::SCATTERING ||
         reaction == rtt_cdi::TOTAL);
 
-  // now reset the buffer so that we can determine the analytic model
-  // indicator
+  // now reset the buffer so that we can determine the analytic model indicator
   unpacker.set_buffer(size_analytic, &packed_analytic[0]);
 
   // unpack the indicator
-  int indicator;
+  int indicator(0);
   unpacker >> indicator;
 
   // now determine which analytic model we need to build
@@ -108,9 +104,9 @@ Analytic_Gray_Opacity::Analytic_Gray_Opacity(const sf_char &packed)
 /*!
  * \brief Return a scalar opacity given a scalar temperature and density.
  *
- * Given a scalar temperature and density, return an opacity for the reaction
- * type specified by the constructor.  The analytic opacity model is
- * specified in the constructor (Analytic_Gray_Opacity()).
+ * Given a scalar temperature and density, return an opacity for the reaction type specified by the
+ * constructor.  The analytic opacity model is specified in the constructor
+ * (Analytic_Gray_Opacity()).
  *
  * \param temperature material temperature in keV
  * \param density material density in g/cm^3
@@ -130,14 +126,12 @@ double Analytic_Gray_Opacity::getOpacity(double temperature, double density) con
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Return a field of opacities given a field of temperatures and a
- * scalar density.
+ * \brief Return a field of opacities given a field of temperatures and a scalar density.
  *
- * Given a field of temperatures and a scalar density, return an opacity
- * field for the reaction type specified by the constructor.  The analytic
- * opacity model is specified in the constructor
- * (Analytic_Gray_Opacity()).  The returned opacity field has the same number
- * of elements as the temperature field.
+ * Given a field of temperatures and a scalar density, return an opacity field for the reaction type
+ * specified by the constructor.  The analytic opacity model is specified in the constructor
+ * (Analytic_Gray_Opacity()).  The returned opacity field has the same number of elements as the
+ * temperature field.
  *
  * The field type for temperatures is an std::vector.
  *
@@ -170,14 +164,12 @@ Analytic_Gray_Opacity::sf_double Analytic_Gray_Opacity::getOpacity(const sf_doub
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Return a field of opacities given a field of densities and a scalar
- * temperature.
+ * \brief Return a field of opacities given a field of densities and a scalar temperature.
  *
- * Given a field of densities and a scalar temperature, return an opacity
- * field for the reaction type specified by the constructor.  The analytic
- * opacity model is specified in the constructor
- * (Analytic_Gray_Opacity()).  The returned opacity field has the same number
- * of elements as the density field.
+ * Given a field of densities and a scalar temperature, return an opacity field for the reaction
+ * type specified by the constructor.  The analytic opacity model is specified in the constructor
+ * (Analytic_Gray_Opacity()).  The returned opacity field has the same number of elements as the
+ * density field.
  *
  * The field type for densities is an std::vector.
  *
@@ -212,10 +204,9 @@ Analytic_Gray_Opacity::sf_double Analytic_Gray_Opacity::getOpacity(double temper
 /*!
  * \brief Pack an analytic gray opacity.
  *
- * This function will pack up the Analytic_Gray_Opacity into a char array
- * (represented by a vector<char>).  The Analytic_Opacity_Model derived class
- * must have a pack function; this is enforced by the virtual
- * Analytic_Opacity_Model base class.
+ * This function will pack up the Analytic_Gray_Opacity into a char array (represented by a
+ * vector<char>).  The Analytic_Opacity_Model derived class must have a pack function; this is
+ * enforced by the virtual Analytic_Opacity_Model base class.
  */
 Analytic_Gray_Opacity::sf_char Analytic_Gray_Opacity::pack() const {
   Require(analytic_model);
@@ -226,9 +217,8 @@ Analytic_Gray_Opacity::sf_char Analytic_Gray_Opacity::pack() const {
   // first pack up the analytic model
   sf_char anal_model = analytic_model->pack();
 
-  // now add up the total size (in bytes): size of analytic model + 3
-  // int--one for reaction type, one for model type, and one for size of
-  // analytic model
+  // now add up the total size (in bytes): size of analytic model + 3 int--one for reaction type,
+  // one for model type, and one for size of analytic model
   Check(anal_model.size() + 3 * sizeof(int) < INT_MAX);
   int size = static_cast<int>(anal_model.size() + 3 * sizeof(int));
 
