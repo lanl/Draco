@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Wed Nov  7 15:58:08 2001
  * \brief  Test the routines used for serializing and de-serializing C++ objects
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Packing_Utils.hh"
@@ -90,7 +90,7 @@ void compute_buffer_size_test(rtt_dsxx::UnitTest &ut) {
   u.skip(1);
 
   for (unsigned i = 0; i < 4; ++i) {
-    char c;
+    char c('x');
     u >> c;
     FAIL_IF_NOT(c == test_string[i]);
   }

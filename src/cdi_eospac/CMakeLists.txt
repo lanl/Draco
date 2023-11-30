@@ -1,12 +1,13 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   cdi_eospac/CMakeLists.txt
 # brief  Instructions for building cdi_eospac Makefiles.
-# note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2012-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(cdi_eospac CXX)
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "11.2.0")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND (CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "11.2.0"
+                                             OR CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "12.2.0"))
   # Suppress build warning: "lto1: error: potential null pointer dereference"
   string(APPEND CMAKE_C_FLAGS " -Wno-null-dereference")
   string(APPEND CMAKE_CXX_FLAGS " -Wno-null-dereference")

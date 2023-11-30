@@ -4,7 +4,7 @@
  * \author Thomas M. Evans, Tim Kelley <tkelley@lanl.gov>
  * \date   Thu Jul 19 11:27:46 2001
  * \brief  Packing Utilities, classes for packing stuff.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
  *
  * This file contains classes and utilities that are used to "pack" data into byte-streams. The
  * byte-streams are represented by the char* type.  The following classes are:
@@ -420,7 +420,8 @@ template <typename T> void Unpacker::unpack(T &value) {
   Ensure(ptr >= begin_ptr);
   Ensure(ptr + sizeof(T) <= end_ptr);
 
-  std::memcpy(&value, ptr, sizeof(T));
+  if (ptr != nullptr)
+    std::memcpy(&value, ptr, sizeof(T));
 
   if (do_byte_swap)
     byte_swap(value);
@@ -697,7 +698,7 @@ void unpack_data(std::map<keyT, dataT> &unpacked_map, std::vector<char> const &p
 
   // unpack the keys
   keyT key;
-  dataT data;
+  dataT data{};
   for (size_t i = 0; i < numkeys; ++i) {
     unpacker >> key;
     unpacker >> data;
