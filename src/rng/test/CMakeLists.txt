@@ -12,6 +12,15 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_G
   string(APPEND CMAKE_CXX_FLAGS " -Wno-expansion-to-defined")
 endif()
 
+# * 2023-12-01 (KT) - Suppress build warning: "array subscript 5 is outside array bounds." While we
+#   have shown that the code is safe, it should probably be updated to use a std:: container instead
+#   of Data_Table. See https://re-git.lanl.gov/draco/draco/-/issues/1450 for more details.
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND (CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "11.2.0"))
+  # OR CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "12.2.0"))
+  string(APPEND CMAKE_C_FLAGS " -Wno-array-bounds")
+  string(APPEND CMAKE_CXX_FLAGS " -Wno-array-bounds")
+endif()
+
 # ------------------------------------------------------------------------------------------------ #
 # Source files
 # ------------------------------------------------------------------------------------------------ #

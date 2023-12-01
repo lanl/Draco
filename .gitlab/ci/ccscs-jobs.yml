@@ -395,6 +395,17 @@ ccs3_rel_gcc_1120:
     CTEST_NPROC: 32
     SITE_ID: ccscs3
 
+ccs4_rwdi_gcc_1120:
+  tags:
+    - CCSCS4-setuid-shared
+  stage: slowtest
+  extends: .ccscs_merge
+  variables:
+    CMAKE_BUILD_TYPE: RelWithDebInfo
+    DRACO_ENV: gcc1120
+    CTEST_NPROC: 32
+    SITE_ID: ccscs4
+
 ccs1_fulldiag:
   tags:
     - CCSCS1-setuid-shared

@@ -697,7 +697,7 @@ void unpack_data(std::map<keyT, dataT> &unpacked_map, std::vector<char> const &p
   unpacker >> numkeys;
 
   // unpack the keys
-  keyT key;
+  keyT key{};
   dataT data{};
   for (size_t i = 0; i < numkeys; ++i) {
     unpacker >> key;
