@@ -6,13 +6,15 @@
 # Note  : Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
-# Draco is open source. Default permissions to g+rwX,o=g-w (umask 2). Otherwise use the UMASK value.
-if [[ -z "${UMASK}" ]]; then
-  umask 0002
-else
-  umask "${UMASK}"
-fi
+# Staging directory should be protected. Deployed artifacts will be set with chmod at the end of
+# this script.
+umask 77
 umask
+if [[ "${DEPLOY_RELEASE}" == "TRUE" ]]; then
+  chmod_params="g+rX,o+rX" # release directory
+else
+  chmod_params="g+rwX,o+rX" # deploy directory
+fi
 
 # preliminaries and environment
 set -e
@@ -149,7 +151,7 @@ else
       run "rm -rf ${DRACO_INSTALL_DIR}"
       run "mkdir -p ${DRACO_INSTALL_DIR}"
       run "chgrp ${deploy_group} ${DRACO_INSTALL_DIR}"
-      run "chmod g+rwX,o+rX ${DRACO_INSTALL_DIR}"
+      run "chmod ${chmod_params} ${DRACO_INSTALL_DIR}"
       run "chmod g+s ${DRACO_INSTALL_DIR}"
     fi
     # run "make -j -l $MAXLOAD install"
@@ -157,7 +159,7 @@ else
 
     # Double check permissions for installed (deployed) files
     run "chgrp -R ${deploy_group} ${DRACO_INSTALL_DIR}"
-    run "chmod -R g+rwX,o+rX ${DRACO_INSTALL_DIR}"
+    run "chmod -R ${chmod_params} ${DRACO_INSTALL_DIR}"
 
   else
     EXTRA_CTEST_ARGS+=" --output-on-failure --repeat until-pass:2"

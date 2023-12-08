@@ -52,5 +52,4 @@ Checks: "*,
 "
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*[.]hh'
-HeaderFilterRegex: '.*[.]hh'
 FormatStyle:     none
