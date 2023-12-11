@@ -4,7 +4,7 @@
 # File  : .gitlab/ci/environments.sh
 # Date  : Monday, Jun 01, 2020, 15:43 pm
 # Author: Kelly Thompson
-# Note  : Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# Note  : Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 echo "==> Setting up CI environment..."

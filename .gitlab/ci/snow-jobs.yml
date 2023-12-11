@@ -137,7 +137,6 @@ sn_rel_i2120_mr:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.3.2-intel"
-    EXTRA_CMAKE_ARGS: -GNinja
 
 # ----- regular test -----
 
@@ -147,7 +146,6 @@ sn_deb_i2120_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.3.2-intel"
-    EXTRA_CMAKE_ARGS: -GNinja
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -174,7 +172,6 @@ sn_rel_i2120_regress:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.3.2-intel"
     CTEST_BUILD_NAME: "lapse232-intel-Release"
-    EXTRA_CMAKE_ARGS: -GNinja
 
 sn_deb_i2120_regress:
   stage: test
@@ -183,7 +180,6 @@ sn_deb_i2120_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.3.2-intel"
     CTEST_BUILD_NAME: "lapse232-intel-Debug"
-    EXTRA_CMAKE_ARGS: -GNinja
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/snow-jobs.yml

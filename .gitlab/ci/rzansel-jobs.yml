@@ -117,7 +117,6 @@ rzansel_rwdi_xl_deploy_release:
 
 .rzansel_merge:
   extends: .rzansel
-  allow_failure: true
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
@@ -143,7 +142,6 @@ rzansel_deb_xl1611_mr:
 
 .rzansel_nightly:
   extends: .rzansel
-  allow_failure: true
   variables:
     CTEST_MODE: Nightly
     CTEST_NPROC: 20
