@@ -102,8 +102,8 @@ private:
 public:
   // Constructor.
   Topology_Builder(int decomposition, int64_t num_global_cells, uint32_t num_bnd_cells,
-                   int *bnd_cells, int *bnd_procs, uint32_t num_full_cells,
-                   uint32_t num_active_cells, int *full2active)
+                   const int *bnd_cells, const int *bnd_procs, uint32_t num_full_cells,
+                   uint32_t num_active_cells, const int *full2active)
       : decomposition_(decomposition), num_global_cells_(num_global_cells),
         num_bnd_cells_(num_bnd_cells), bnd_cells_(bnd_cells), bnd_procs_(bnd_procs),
         num_full_cells_(num_full_cells), num_active_cells_(num_active_cells),

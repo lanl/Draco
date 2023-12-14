@@ -84,6 +84,11 @@ public:
   void local_to_global(FT &local, GT &global, Op mapping);
 
   //! Gather boundary cell data for all processors
+  template <typename FT, typename BT>
+  void gather_ghost_cell_data(SP_Comm_Patterns const &pattern, const FT &local_data,
+                              BT bc_data) const;
+
+  //! Gather boundary cell data for all processors
   //! assume local_data and bc_data is vector.
   template <typename FT, typename BT>
   void gather_ghost_cell_data(SP_Comm_Patterns const &pattern, const FT &local_data, BT bc_data,
@@ -102,6 +107,13 @@ public:
   template <typename T>
   void fill_ghost_cell_data(SP_Comm_Patterns pattern, std::vector<T> &local_data,
                             const size_t vector_size = 1);
+
+protected:
+  //! Gather boundary cell data for all processors
+  //! assume local_data and bc_data is FLAT vector.
+  template <typename FT, typename BT>
+  void gather_fv_ghost_cell_data(SP_Comm_Patterns const &pattern, const FT &local_data, BT bc_data,
+                                 size_t const vector_size) const;
 };
 
 } // namespace rtt_mesh

@@ -338,6 +338,155 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
   static const int comm_tag = 606;
 
   // Extract the type of the data being received. Data being sent will be converted to this type.
+  using Vector_T = typename std::iterator_traits<B_IT>::value_type;
+  using Vector_Iter_T = typename Vector_T::iterator;
+  using Recv_T = typename std::iterator_traits<Vector_Iter_T>::value_type;
+  using Data = Data_Request<Recv_T>;
+
+  Check(*pattern);
+
+  const size_t num_incoming = pattern->get_num_recv_procs();
+
+  // Post receives to the data we need.
+  // ----------------------------------
+
+  // Make a vector of data that will be received from each processor: We will stack cell wise vector
+  // data to a 1d vector to send and receive the data and we will then repopulate it into the proper
+  // vector structure
+  std::vector<Data> incoming_data(num_incoming, Data());
+
+  auto const recv_begin = pattern->get_recv_begin();
+  auto const recv_end = pattern->get_recv_end();
+
+  auto data_request = incoming_data.begin();
+
+  for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
+    // Determine the processor to receive from and the size of the data.
+    int processor = itor->first;
+    size_t data_size = itor->second.size();
+
+    data_request->allocate(data_size * vector_size);
+    data_request->post(processor, comm_tag);
+  }
+  Check(data_request == incoming_data.end());
+
+  // Send data we have that other processors need.
+  // ---------------------------------------------
+
+  auto const send_begin = pattern->get_send_begin();
+  auto const send_end = pattern->get_send_end();
+
+  for (auto itor = send_begin; itor != send_end; itor++) {
+    // Determine the processor we are sending to and the size of the data.
+    int processor = itor->first;
+    size_t data_size = itor->second.size();
+
+    Data_Send<Recv_T> sender(data_size * vector_size);
+
+    // Pack the data to send into the sender's array.
+    Recv_T *data = sender.get_data();
+    size_t k = 0;
+    for (size_t i = 0; i < data_size; i++) {
+      for (size_t j = 0; j < vector_size; j++) {
+        // Get the local cell index and assign the data
+        int local_cell = itor->second[i];
+        Check(local_cell > 0);
+        Check(local_data[local_cell - 1].size() == vector_size);
+        data[k] = local_data[local_cell - 1][j];
+        k++;
+      }
+    }
+    Check(k == data_size * vector_size);
+    sender.send(processor, comm_tag);
+  }
+
+  // Receive the data and write out ghost_data field
+  // --------------------------------------------
+
+  size_t finished = 0;
+  while (finished < num_incoming) {
+    // Loop through the C4 requests for each processor that we communicate with and see if the data
+    // is here
+
+    data_request = incoming_data.begin();
+    for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
+      size_t data_size = itor->second.size();
+
+      // If the message is compete...
+      if (data_request->complete()) {
+        Require(!data_request->inuse());
+
+        finished++;
+
+        // Write the data to the bc_data field
+        Recv_T *data = data_request->get_data();
+        size_t k = 0;
+        for (size_t c = 0; c < data_size; ++c) {
+          // Determine the boundary cell and write the data
+          int ghost_cell = itor->second[c];
+          for (size_t j = 0; j < vector_size; j++) {
+            ghost_data[ghost_cell - 1][j] = data[k];
+            k++;
+          }
+        }
+        Check(k == data_size * vector_size);
+
+        data_request->release();
+      }
+    }
+    Check(data_request == incoming_data.end());
+  }
+
+  Ensure(finished == num_incoming);
+
+  // sync everything
+  rtt_c4::global_barrier();
+}
+
+//------------------------------------------------------------------------------------------------//
+// GHOST CELL FLAT VECTOR PARALLEL OPERATIONS (GATHER/SCATTER TYPE)
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Fill boundary cell vector data fields in a spatially decomposed topology.
+ *
+ * This function utilizes the rtt_mmesh::Comm_Patterns class to "gather" data into ghost cell
+ * fields.  What this entails is the following:
+ *
+ * \arg using the Comm_Patterns, each processor posts requests to processors it needs data from;
+
+ * \arg using the Comm_Patterns and local data fields, each processor sends data out to processors
+ * that need data;
+
+ * \arg each processor receives the data for its boundary cells and writes it into a local boundary
+ * cell field
+
+ * The Topology must be a derived spatially decomposed type (not Rep_Topology).
+
+ * \sa rtt_mesh::Comm_Patterns and rtt_mesh::Topology (rtt_mesh::DD_Topology)
+ *
+ * \param[in] pattern active Comm_Patterns object, the patterns must be set
+ * \param[in] local_data field of local data on processor that will be sent to other processors
+ *               according to the Comm_Patterns. Must implement operator[] with the cell-1
+ *               convention.
+ * \param[in,out] ghost_data empty ghost cell field that will be filled. Must have size equal to the
+ *               number of ghost nodes on the local processor. Must implement operator[] with the
+ *               cell-1 convention.
+ * \param[in] vector_size  number of DoFs per cell.
+ * 
+ *  NOTE: this function assumes 1D array, size of cell*vector_size.
+ *        Default is scalar (vector_size=1)
+ */
+template <typename FT, typename B_IT>
+void Parallel_Data_Operator::gather_fv_ghost_cell_data(SP_Comm_Patterns const &pattern,
+                                                       const FT &local_data, B_IT ghost_data,
+                                                       const size_t vector_size) const {
+  Require(pattern);
+  Require(local_data.size() > 0);
+  // This is a different tag than then parallel operation of serial values though we don't think
+  // these function calls will ever conflict
+  static const int comm_tag = 606;
+
+  // Extract the type of the data being received. Data being sent will be converted to this type.
   using Recv_T = typename std::iterator_traits<B_IT>::value_type;
   using Data = Data_Request<Recv_T>;
 
@@ -439,6 +588,134 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
   // sync everything
   rtt_c4::global_barrier();
 }
+
+//------------------------------------------------------------------------------------------------//
+/*!
+
+ * \brief Fill boundary cell data fields in a spatially decomposed topology.
+
+ * This function utilizes the rtt_mc::Comm_Patterns class to "gather" data into boundary cell
+ * fields.  What this entails is the following:
+
+ * \arg using the Comm_Patterns, each processor posts requests to processors it needs data from;
+
+ * \arg using the Comm_Patterns and local data fields, each processor sends data out to processors
+ *      that need data;
+
+ * \arg each processor receives the data for its boundary cells and writes it into a local boundary
+ *      cell field
+
+ * The Topology must be a derived spatially decomposed type (not Rep_Topology).
+
+ * \sa rtt_mc::Comm_Patterns and rtt_mc::Topology (rtt_mc::DD_Topology)
+ *
+ * \param pattern active Comm_Patterns object, the patterns must be set
+ *
+ * \param local_data field of local data on processor that will be sent to other processors
+ *               according to the Comm_Patterns. Must implement operator[] with the cell-1
+ *               convention.
+ *
+ * \param bc_data empty boundary cell field that will be filled. Must have size equal to the number
+ *               of boundary nodes on the local processor. Must implement operator[] with the cell-1
+ *               convention.
+ */
+template <typename FT, typename B_IT>
+void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &pattern,
+                                                    const FT &local_data, B_IT bc_data) const {
+  static const int comm_tag = 605;
+
+  // Extract the type of the data being received. Data being sent will be converted to this type.
+  using Recv_T = typename std::iterator_traits<B_IT>::value_type;
+  using Data = Data_Request<Recv_T>;
+
+  Check(*pattern);
+
+  const size_t num_incoming = pattern->get_num_recv_procs();
+
+  // Post receives to the data we need.
+  // ----------------------------------
+
+  // Make a vector of data that will be received from each processor:
+  std::vector<Data> incoming_data(num_incoming, Data());
+
+  auto const recv_begin = pattern->get_recv_begin();
+  auto const recv_end = pattern->get_recv_end();
+
+  auto data_request = incoming_data.begin();
+
+  for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
+    // Determine the processor to receive from and the size of the data.
+    int processor = itor->first;
+    size_t data_size = itor->second.size();
+
+    data_request->allocate(data_size);
+    data_request->post(processor, comm_tag);
+  }
+  Check(data_request == incoming_data.end());
+
+  // Send data we have that other processors need.
+  // ---------------------------------------------
+
+  auto const send_begin = pattern->get_send_begin();
+  auto const send_end = pattern->get_send_end();
+
+  for (auto itor = send_begin; itor != send_end; itor++) {
+    // Determine the processor we are sending to and the size of the data.
+    int processor = itor->first;
+    size_t data_size = itor->second.size();
+
+    Data_Send<Recv_T> sender(data_size);
+
+    // Pack the data to send into the sender's array.
+    Recv_T *data = sender.get_data();
+    for (size_t i = 0; i < data_size; i++) {
+      // Get the local cell index and assign the data
+      int local_cell = itor->second[i];
+      Check(local_cell > 0);
+      data[i] = local_data[local_cell - 1];
+    }
+
+    sender.send(processor, comm_tag);
+  }
+
+  // Receive the data and write out bc_data field
+  // --------------------------------------------
+
+  size_t finished = 0;
+  while (finished < num_incoming) {
+    // Loop through the C4 requests for each processor that we communicate with and see if the data
+    // is here
+
+    data_request = incoming_data.begin();
+    for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
+      size_t data_size = itor->second.size();
+
+      // If the message is compete...
+      if (data_request->complete()) {
+        Require(!data_request->inuse());
+
+        finished++;
+
+        // Write the data to the bc_data field
+        Recv_T *data = data_request->get_data();
+        for (size_t c = 0; c < data_size; ++c) {
+          // Determine the boundary cell and write the data
+          int boundary_cell = itor->second[c];
+          bc_data[boundary_cell - 1] = data[c];
+        }
+
+        data_request->release();
+      }
+    }
+    Check(data_request == incoming_data.end());
+  }
+
+  Ensure(finished == num_incoming);
+
+  // sync everything
+  rtt_c4::global_barrier();
+}
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Fill boundary cell data fields in a spatially decomposed topology.
@@ -533,7 +810,7 @@ void Parallel_Data_Operator::fill_ghost_cell_data(SP_Comm_Patterns pattern,
 
   std::vector<T> ghost_data(nghosts * vector_size);
 
-  gather_ghost_cell_data(pattern, local_data, ghost_data.begin(), vector_size);
+  gather_fv_ghost_cell_data(pattern, local_data, ghost_data.begin(), vector_size);
   size_t cntr(0);
   // resize local_data..
   local_data.resize((nowned + nghosts) * vector_size);
