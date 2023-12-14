@@ -10,19 +10,34 @@ project(mesh_test CXX)
 # ------------------------------------------------------------------------------------------------ #
 # Source files
 # ------------------------------------------------------------------------------------------------ #
+set(test_lib_sources ${PROJECT_SOURCE_DIR}/Test_Topology.cc ${PROJECT_SOURCE_DIR}/Test_Topology.hh)
+
+# ------------------------------------------------------------------------------------------------ #
+# Build library for test directory
+# ------------------------------------------------------------------------------------------------ #
+
+add_component_library(
+  TARGET Lib_mesh_test
+  TARGET_DEPS Lib_mesh;
+  LIBRARY_NAME mesh_test
+  SOURCES "${test_lib_sources}"
+  NOEXPORT)
 
 # create unit test lists
 set(one_pe_tests
     ${PROJECT_SOURCE_DIR}/tstDraco_Mesh.cc ${PROJECT_SOURCE_DIR}/tstDraco_Mesh_Builder.cc
     ${PROJECT_SOURCE_DIR}/tstX3D_Draco_Mesh_Reader.cc ${PROJECT_SOURCE_DIR}/tstCAMR_Mesh.cc)
-set(two_pe_tests ${PROJECT_SOURCE_DIR}/tstDraco_Mesh_DD.cc ${PROJECT_SOURCE_DIR}/tstTopology.cc)
+set(two_pe_tests
+    ${PROJECT_SOURCE_DIR}/tstDraco_Mesh_DD.cc ${PROJECT_SOURCE_DIR}/tstTopology.cc
+    ${PROJECT_SOURCE_DIR}/tstTopology_Builder.cc ${PROJECT_SOURCE_DIR}/tstComm_Patterns.cc
+    ${PROJECT_SOURCE_DIR}/tstParallel_Data_Op.cc)
 set(two_pe_only_tests ${PROJECT_SOURCE_DIR}/tstCAMR_Mesh_DD.cc)
 
 # ------------------------------------------------------------------------------------------------ #
 # Build Unit tests
 # ------------------------------------------------------------------------------------------------ #
 
-set(libs_for_tests Lib_c4 Lib_mesh Lib_quadrature)
+set(libs_for_tests Lib_mesh_test Lib_c4 Lib_mesh Lib_quadrature)
 
 add_parallel_tests(
   SOURCES "${one_pe_tests}"
