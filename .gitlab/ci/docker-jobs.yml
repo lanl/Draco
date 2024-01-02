@@ -117,24 +117,13 @@ checkCoverage_MR:
 # Regressions: collect data from LLNL RZ systems and post it to cdash
 #--------------------------------------------------------------------------------------------------#
 
-post_rzansel_results_to_cdash:
+.post_rz_regress_results_to_cdash:
   # https://docs.gitlab.com/ee/api/job_artifacts.html
   tags:
     - container
     - shell
   stage: test
   allow_failure: true
-  variables:
-    SUBMIT_URL: "https://rtt.lanl.gov/cdash3/submit.php?project=Draco"
-  needs:
-    - job: rzansel_deb_xl1611_regress
-      artifacts: true
-    - job: rzansel_rel_xl1611_regress
-      artifacts: true
-    - job: rzvernal_deb_cce1501_regress
-      artifacts: true
-    - job: rzvernal_rel_cce1501_regress
-      artifacts: true
   script:
     - mkdir -p ${DRACO_BINARY_DIR} && cd ${DRACO_BINARY_DIR}
     # The artifacts from the jobs listed under the 'needs:' section should already be here.
@@ -153,7 +142,7 @@ post_rzansel_results_to_cdash:
           sed -i "s%SourceDirectory.*%SourceDirectory: ${DRACO_SOURCE_DIR}%" DartConfiguration.tcl;
           sed -i "s%BuildDirectory.*%BuildDirectory: ${DRACO_BINARY_DIR}/${build_dir}%" \
             DartConfiguration.tcl;
-          sed -i "s%SubmitURL:.*%SubmitURL: ${SUBMIT_URL}%" DartConfiguration.tcl;
+          sed -i "s%SubmitURL:.*%SubmitURL: ${CTEST_SUBMIT_URL}%" DartConfiguration.tcl;
           tag=`head -n 1 Testing/TAG`;
           buildname=`grep BuildName Testing/${tag}/Build.xml | sed -e s'/.*\"\(.*\)\"/\1/'`;
           sed -i "s%BuildName.*%BuildName: ${buildname}%" DartConfiguration.tcl;
@@ -165,7 +154,25 @@ post_rzansel_results_to_cdash:
       done;
     - echo "==> PASS -- RZ test results submitted to CDash."
   rules:
+    - if: '$CI_PROJECT_NAMESPACE != "draco"'
+      when: never
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
+
+post_rzansel_regress_results_to_cdash:
+  extends: .post_rz_regress_results_to_cdash
+  needs:
+    - job: rzansel_deb_xl1611_regress
+      artifacts: true
+    - job: rzansel_rel_xl1611_regress
+      artifacts: true
+
+post_rzvernal_regress_results_to_cdash:
+  extends: .post_rz_regress_results_to_cdash
+  needs:
+    - job: rzvernal_deb_cce1501_regress
+      artifacts: true
+    - job: rzvernal_rel_cce1501_regress
+      artifacts: true
 
 #--------------------------------------------------------------------------------------------------#
 # Use MR action to trigger restart of CI pipleline via webhook when MR title changes.
