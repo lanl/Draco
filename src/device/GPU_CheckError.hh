@@ -3,7 +3,7 @@
  * \file   device/GPU_CheckError.hh
  * \author Kelly (KT) Thompson
  * \brief  Provide helper macros for CUDA code
- * \note   Copyright (C) 2019-2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef device_GPU_CheckError_hh

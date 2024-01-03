@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Dec 12 15:32:10 2005
  * \brief  Test the diagnostics/TIMER macros
- * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"

@@ -4,7 +4,7 @@
  * \author Robert B. Lowrie
  * \date   Friday May 26 19:58:19 2017
  * \brief  Unit test for C4_Status class.
- * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2017-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

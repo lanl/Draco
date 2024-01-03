@@ -4,7 +4,7 @@
  * \author Kelly Thompson <kgt@lanl.gov>
  * \date   Friday, Jul 29, 2016, 10:05 am
  * \brief  Check basic functionality of Release.hh/cc files.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
+ * \note   Copyright (C) 2016-2024 Triad National Security, LLC.
  *         All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 

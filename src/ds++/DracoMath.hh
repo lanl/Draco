@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  New or overloaded cmath or cmath-like functions.
- * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_DracoMath_hh

@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Aug 1 2023
  * \brief  Member definitions of class Parallel_Data_Operator
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef mesh_Parallel_Data_Operator_i_hh

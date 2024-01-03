@@ -1,7 +1,7 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   device/test/CMakeLists.txt
 # brief  Instructions for building device/test Makefile.
-# note   Copyright (C) 2011-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(device_test CXX ${GPU_DBS_STRING})
 

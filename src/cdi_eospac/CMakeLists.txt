@@ -1,7 +1,7 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   cdi_eospac/CMakeLists.txt
 # brief  Instructions for building cdi_eospac Makefiles.
-# note   Copyright (C) 2012-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(cdi_eospac CXX)

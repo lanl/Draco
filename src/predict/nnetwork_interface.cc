@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Jan. 11t 2021
  * \brief  Explicit instansiation of the nnetwork_interface class
- * \note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

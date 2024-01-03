@@ -3,7 +3,7 @@
  * \file   rng/test/tstRnd_Control_Inline.cc
  * \author Paul Henning
  * \brief  Rnd_Control test.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

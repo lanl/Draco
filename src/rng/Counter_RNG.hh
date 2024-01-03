@@ -4,7 +4,7 @@
  * \author Peter Ahrens
  * \date   Fri Aug 3 16:53:23 2012
  * \brief  Declaration of class Counter_RNG.
- * \note   Copyright (C) 2012-2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef Counter_RNG_hh

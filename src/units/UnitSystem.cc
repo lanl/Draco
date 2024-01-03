@@ -2,7 +2,7 @@
 /*! \file   UnitSystem.cc
  *  \author Kelly Thompson
  *  \date   Thu Oct 24 15:10:32 2003
- *  \note   Copyright (C) 2003-2020 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2003-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "UnitSystem.hh"

@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Mon Jan 22 13:23:37 2001
  * \brief  IpcressGrayOpacity class header file (derived from cdi/GrayOpacity)
- * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_ipcress_IpcressGrayOpacity_hh

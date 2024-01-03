@@ -24,11 +24,11 @@ debugprint "running pre-commit-copyright"
 
 # remove any older patches from previous commits. Set to true or false.
 # DELETE_OLD_PATCHES=true
-
 # file types to parse.
 FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .sh .txt"
 #FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
-FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc Release.hh check_style.sh info.cc"
+FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc Release.hh check_style.sh info.cc .in kat_main.h"
+FILE_ENDINGS_EXCLUDE+=" rngNxW.h util.h terminal.h util_cpu.h fpe_trap.hh"
 export FILE_EXTS FILE_ENDINGS_EXCLUDE
 
 ##################################################################

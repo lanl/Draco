@@ -4,7 +4,7 @@
  * \author Kelly Thompson <kgt@lanl.gov>
  * \date   Wed Nov 10 09:35:09 2010
  * \brief  Test functions defined in ds++/FMA.cc
- * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2017-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

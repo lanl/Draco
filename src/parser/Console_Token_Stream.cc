@@ -3,7 +3,7 @@
  * \file   Console_Token_Stream.cc
  * \author Kent G. Budge
  * \brief  Definitions of Console_Token_Stream methods.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Console_Token_Stream.hh"

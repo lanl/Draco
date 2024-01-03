@@ -4,7 +4,7 @@
  * \author Paul Talbot
  * \date   Thu Jul 28 09:20:34 2011
  * \brief  Tests the ExpInt for correct solutions in each routine
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

@@ -4,7 +4,7 @@
  * \author Kendra P. Long
  * \date   Fri Aug  2 14:28:08 2019
  * \brief  Analytic_CP_Eloss class definition.
- * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPEloss_Analytic_CP_Eloss_hh

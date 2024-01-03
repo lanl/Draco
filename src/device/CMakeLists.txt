@@ -3,7 +3,7 @@
 # author Gabriel Rockefeller
 # date   2011 June 13
 # brief  Instructions for building device Makefile.
-# note   Copyright (C) 2011-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(device CXX ${GPU_DBS_STRING})

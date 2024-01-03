@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2016 May 11
 # brief  Instructions for building VendorsChecks/test level Makefile.
-# note   Copyright (C) 2016-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(VendorsChecks_test CXX)
 

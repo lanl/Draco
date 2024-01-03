@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Aug 1 2023
  * \brief  Topology_Builder class definition.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

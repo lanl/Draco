@@ -4,7 +4,7 @@
 # date   Saturday, Dec 28, 2019, 15:35 pm
 # brief  Provide future C++ features that can be made to work when limiting C++
 #        standard to 14.
-# note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(experimental CXX)

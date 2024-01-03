@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Fri Oct 12 15:39:39 2001
  * \brief  Ipcress file test
- * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

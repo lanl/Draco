@@ -3,7 +3,7 @@
  * \file   parser/Debug_Options.cc
  * \author Kent Grimmett Budge
  * \brief  Define Debug_Options parse functions.
- * \note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
 /*------------------------------------------------------------------------------------------------*/
 
 #include "Debug_Options.hh"
