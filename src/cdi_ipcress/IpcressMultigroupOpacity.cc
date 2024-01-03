@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Nov 15 15:51:27 2011
  * \brief  IpcressMultigroupOpacity templated class implementation file.
- * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "IpcressMultigroupOpacity.hh"

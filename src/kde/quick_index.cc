@@ -3,7 +3,7 @@
  * \file   kde/quick_index.cc
  * \author Mathew Cleveland
  * \brief  Explicitly defined quick_index functions.
- * \note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quick_index.hh"

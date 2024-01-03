@@ -3,7 +3,7 @@
  * \file   rng/test/ut_M128.hh
  * \author Gabriel M. Rockefeller
  * \brief  ut_M128 header file.
- * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

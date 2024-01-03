@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Aug 24 13:13:46 2001
  * \brief  Analytic_Gray_Opacity member definitions.
- * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Analytic_Gray_Opacity.hh"

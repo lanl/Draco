@@ -14,7 +14,7 @@
  *         typically used in KDE applications to account for the kernel extending beyond the bounds
  *         of the spatial domain. Other approaches that could be considered are quadrature based
  *         approaches that fully sample the Kernel space reducing the need for the normalization.
- * \note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "kde.hh"

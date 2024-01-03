@@ -4,7 +4,7 @@
 # author Mathew Cleveland
 # date   Nov. 10th 2020
 # brief  CMake build environment for KDE
-# note   Copyright (C) 2021-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(kde CXX)

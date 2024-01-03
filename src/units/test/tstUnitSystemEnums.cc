@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wed Oct  8 13:50:19 2003
  * \brief  Unit tests for units/UnitSystemEnum class
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

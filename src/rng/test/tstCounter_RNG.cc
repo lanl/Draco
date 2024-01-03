@@ -4,7 +4,7 @@
  * \author Peter Ahrens
  * \date   Fri Aug 3 16:53:23 2012
  * \brief  Counter_RNG tests.
- * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

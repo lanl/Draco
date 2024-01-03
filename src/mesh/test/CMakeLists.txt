@@ -3,7 +3,7 @@
 # author Ryan Wollaeger <wollaeger@lanl.gov>
 # date   Thursday, Jun 07, 2018, 15:44 pm
 # brief  Generate build project files for mesh/test.
-# note   Copyright (C) 2018-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(mesh_test CXX)
 

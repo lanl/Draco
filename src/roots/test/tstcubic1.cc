@@ -3,7 +3,7 @@
  * \file   roots/test/tstcubic1.cc
  * \author Kent G. Budge
  * \date   Wed Sep 15 10:12:52 2010
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

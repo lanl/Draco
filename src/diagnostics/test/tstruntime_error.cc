@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Wed Apr 28 09:31:51 2010
  * \brief  Test runtime_error function.
- * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

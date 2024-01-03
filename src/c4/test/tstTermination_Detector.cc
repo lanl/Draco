@@ -3,7 +3,7 @@
  * \file   c4/test/tstTermination_Detector.cc
  * \author Kent Budge
  * \date   Tue Sep 21 11:45:44 2004
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

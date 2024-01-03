@@ -4,7 +4,7 @@
  * \author Rob Lowrie
  * \date   Thu Oct 13 14:33:59 2005
  * \brief  Does a floating-point exception.
- * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Assert.hh"

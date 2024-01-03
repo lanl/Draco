@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Aug 22 15:15:49 2000
  * \brief  Header file for IpcressFile class
- * \note   Copyright (C) 2011-2023 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

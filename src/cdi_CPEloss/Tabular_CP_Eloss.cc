@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2019 Nov 4
  * \brief  Tabular_CP_Eloss member definitions.
- * \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Tabular_CP_Eloss.hh"

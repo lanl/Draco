@@ -4,7 +4,7 @@
  * \author Thomas M. Evans, Ryan T. Wollaeger
  * \date   Wednesday, Oct 03, 2018, 15:27 pm
  * \brief  Ensight_Translator unstructured mesh test.
- * \note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"

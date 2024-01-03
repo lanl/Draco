@@ -3,7 +3,7 @@
  * \file   parser/Text_Token_Stream.hh
  * \author Kent G. Budge
  * \brief  Definition of the Text_Token_Stream class.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Text_Token_Stream_HH

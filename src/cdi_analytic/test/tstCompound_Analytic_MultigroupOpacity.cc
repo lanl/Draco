@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Nov 13 17:24:12 2001
  * \brief  Compound_Analytic_MultigroupOpacity test.
- * \note   Copyright (C) 2019-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

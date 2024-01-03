@@ -3,7 +3,7 @@
  * \file   min/test/tstbrent.cc
  * \author Kent G. Budge
  * \date   Tue Nov 16 17:26:03 2010
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

@@ -3,7 +3,7 @@
  * \file   special_functions/test/tstgaulag.cc
  * \author Kent Budge
  * \date   Tue Sep 27 12:49:39 2005
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/DracoMath.hh"

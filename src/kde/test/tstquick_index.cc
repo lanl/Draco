@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Aug. 10th 2021
  * \brief  quick_index testing function
- * \note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "kde/quick_index.hh"

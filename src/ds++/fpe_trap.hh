@@ -4,7 +4,7 @@
  * \author Rob Lowrie, Kelly Thompson
  * \date   Thu Oct 13 16:36:09 2005
  * \brief  Contains functions in the fpe_trap namespace.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC. All rights reserved.
+ * \note   Copyright (C) 2016-2024 Triad National Security, LLC. All rights reserved.
  *
  * Copyright (C) 1994-2001  K. Scott Hunziker.
  * Copyright (C) 1990-1994  The Boeing Company.

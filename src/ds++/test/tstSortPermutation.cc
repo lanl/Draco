@@ -3,7 +3,7 @@
  * \file   ds++/test/tstSortPermutation.cc
  * \author Randy M. Roberts
  * \date   Mon Feb 14 14:20:45 2000
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

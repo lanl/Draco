@@ -3,7 +3,7 @@
  * \file   cdi_ipcress/test/tIpcressOpacity.cc
  * \author Thomas M. Evans
  * \date   Fri Oct 26 10:50:44 2001
- * \note   Copyright (C) 2011-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ipcress_test.hh"

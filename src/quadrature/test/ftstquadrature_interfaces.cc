@@ -4,7 +4,7 @@
  * \author Allan Wollaber
  * \date   Mon May 23 15:34:18 MDT 2016
  * \brief  Test the correctness of the Fortran interface to quadrature_data
- * \note   Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 // forward declaration of f90 functions

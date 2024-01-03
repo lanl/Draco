@@ -3,7 +3,7 @@
  * \file   units/test/tstUnitSystemType.cc
  * \author Kelly Thompson
  * \date   Wed Oct  8 13:50:19 2003
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Sep 21 11:45:44 2004
  * \brief  Unit tests for the Processor_Group class and member functions.
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

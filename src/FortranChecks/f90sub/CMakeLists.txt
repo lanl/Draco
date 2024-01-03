@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2013 June 24
 # brief  Generate build project files for Fortran.
-# note   Copyright (C) 2014-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(FortranChecks_f90sub C Fortran)

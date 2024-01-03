@@ -3,7 +3,7 @@
  * \file   device/GPU_Device.hh
  * \author Kelly (KT) Thompson
  * \brief  Define class GPU_Device
- * \note   Copyright (C) 2011-2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef device_GPU_Device_hh

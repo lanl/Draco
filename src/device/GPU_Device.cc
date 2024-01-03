@@ -3,7 +3,7 @@
  * \file   device/GPU_Device.cc
  * \author Kelly (KT) Thompson
  * \date   Thu Oct 20 15:28:48 2011
- * \note   Copyright (C) 2011-2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "GPU_Device.hh"

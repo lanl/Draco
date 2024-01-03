@@ -3,7 +3,7 @@
  * \file   rng/test/ut_aes.hh
  * \author Gabriel M. Rockefeller
  * \brief  ut_aes header file.
- * \note   Copyright (C) 2012-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

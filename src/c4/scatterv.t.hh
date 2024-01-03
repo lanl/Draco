@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Thu Mar 21 16:56:17 2002
  * \brief  C4 MPI template implementation.
- * \note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_scatterv_t_hh

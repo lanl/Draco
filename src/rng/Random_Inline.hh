@@ -3,7 +3,7 @@
  * \file    rng/Random_Inline.hh
  * \author  Paul Henning
  * \brief   Header to bring in appropriate random number generators
- * \note    Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note    Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_rng_Random_Inline_hh

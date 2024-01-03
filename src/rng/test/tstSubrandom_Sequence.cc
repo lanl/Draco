@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Thu Dec 22 14:16:45 2006
  * \brief  Test the Subrandom_Sequence class
- * \note   Copyright (C) 2006-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2006-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

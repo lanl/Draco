@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Sep 21 11:57:47 2004
  * \brief  Unit test for F1 function.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Release.hh"

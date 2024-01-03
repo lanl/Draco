@@ -4,7 +4,7 @@
  * \author Allan Wollaber
  * \date   Mon Mar  7 10:42:56 EST 2016
  * \brief  Implementation file for the class rtt_quadrature::Ordinate_Set_Factory.
- * \note   Copyright (C) 2016-2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Ordinate_Set_Factory.hh"

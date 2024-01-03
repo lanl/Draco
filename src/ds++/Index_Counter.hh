@@ -3,7 +3,7 @@
  * \file   ds++/Index_Counter.hh
  * \author Mike Buksas
  * \date   Tue Jan 31 16:45:39 2006
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_Index_Counter_hh

@@ -4,7 +4,7 @@
  * \author Rob Lowrie, Kelly Thompson
  * \date   Thu Oct 13 16:52:05 2005
  * \brief  platform dependent implementation of fpe_trap functions.
- * \note   Copyright (C) 2013-2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "fpe_trap.hh"

@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Nov  1 13:24:19 2005
  * \brief  Test functions provided by C4_Serial.cc/.hh
- * \note   Copyright (C) 2010-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
