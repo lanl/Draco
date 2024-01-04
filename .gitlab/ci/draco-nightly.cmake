@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Tuesday, Jun 02, 2020, 11:44 am
 # brief  CTest regression script for DRACO
-# note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 # Ref: http://www.cmake.org/Wiki/CMake_Scripting_Of_CTest
 #
@@ -466,9 +466,9 @@ ctest_coverage( BUILD \"${CTEST_BINARY_DIRECTORY}\" APPEND )
     endif()
   endif() # AUTODOC
 
-endif() # Test
+  message("==> Done with testing")
 
-message("==> Done with testing")
+endif() # Test
 
 # ------------------------------------------------------------------------------------------------ #
 # Submit the results to CDash
