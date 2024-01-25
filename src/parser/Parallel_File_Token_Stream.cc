@@ -4,8 +4,7 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Definitions of Parallel_File_Token_Stream methods.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Parallel_File_Token_Stream.hh"
@@ -22,8 +21,7 @@ using namespace rtt_dsxx;
 //-------------------------------------------------------------------------//
 Parallel_File_Token_Stream::letter::letter(string file_name)
     : filename_(std::move(file_name)), infile_(), is_io_processor_(rtt_c4::node() == 0),
-      // The current implementation always designates processor 0 as the I/O
-      // processor.
+      // The current implementation always designates processor 0 as the I/O processor.
       at_eof_(false), at_error_(false) {
   open_();
 
@@ -42,10 +40,9 @@ Parallel_File_Token_Stream::Parallel_File_Token_Stream()
 /*!
  * \brief Construct a Parallel_File_Token_Stream
  *
- * The constructed object derives its text from the specified file. This
- * Parallel_File_Token_Stream will use the default Text_Token_Stream breaking
- * whitespace characters. If the file cannot be opened, then an exception is
- * thrown.
+ * The constructed object derives its text from the specified file. This Parallel_File_Token_Stream
+ * will use the default Text_Token_Stream breaking whitespace characters. If the file cannot be
+ * opened, then an exception is thrown.
  *
  * \param[in] file_name Name of the file from which to extract tokens.
  * \throw std::invalid_argument If the file cannot be opened.
@@ -60,18 +57,14 @@ Parallel_File_Token_Stream::Parallel_File_Token_Stream(string const &file_name)
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Construct a Parallel_File_Token_Stream that derives its text from the
- *        specified file. If the file cannot be opened, then \c error() will
- *        test true.
+ * \brief Construct a Parallel_File_Token_Stream that derives its text from the specified file. If
+ *        the file cannot be opened, then \c error() will test true.
  *
  * \param[in] file_name Name of the file from which to extract tokens.
- * \param[in] ws Points to a string containing user-defined whitespace
- *                 characters.
+ * \param[in] ws Points to a string containing user-defined whitespace characters.
  *
- * \throw std::bad_alloc If there is not enough memory to initialize the token
- *                 and character queues.
+ * \throw std::bad_alloc If there is not enough memory to initialize the token and character queues.
  * \throw std::invalid_argument If the file cannot be opened.
- *
  * \todo Make this constructor more failsafe.
  */
 Parallel_File_Token_Stream::Parallel_File_Token_Stream(string const &file_name, set<char> const &ws)
@@ -128,12 +121,9 @@ void Parallel_File_Token_Stream::letter::open_() {
            << "The file specified could not be found.\n"
            << "The file requested was: \"" << filename_ << "\""
            << " (PE " << rtt_c4::node() << ")\n"
-           << "Ensure that the filename includes the full path or "
-           << "a relative path from\n"
-           << "the binary to the input file (e.g. ../test/deck.inp)."
-           << "\n\n"
-           << "This error can also occur if you forgot to"
-           << "execute the code under\n"
+           << "Ensure that the filename includes the full path or a relative path from\n"
+           << "the binary to the input file (e.g. ../test/deck.inp).\n\n"
+           << "This error can also occur if you forgot to execute the code under\n"
            << "mpirun or prun." << endl;
     throw std::invalid_argument(errmsg.str().c_str());
   }
@@ -141,9 +131,8 @@ void Parallel_File_Token_Stream::letter::open_() {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function constructs and returns a string of the form "filename, line #"
- * indicating the location at which the last token was parsed.  This is useful
- * for error reporting in parsers.
+ * This function constructs and returns a string of the form "filename, line #" indicating the
+ * location at which the last token was parsed.  This is useful for error reporting in parsers.
  *
  * \return A string of the form "filename, line #"
  */
@@ -159,27 +148,21 @@ string Parallel_File_Token_Stream::location_() const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * Only the I/O processor actually reads from the file.  Up to
- * numeric_limits<signed char>::max() characters are read by this processor.
- * The I/O processor then broadcasts a message consisting of a status character
- * and the characters that were read. If the I/O processor has reached the end
- * of the file, the status character is 0. If the I/O processor has encountered
- * some kind of stream error, the status character is set to \c
- * static_cast<char>(-1).  Otherwise the status character is the number of
- * characters to be transmitted.
+ * Only the I/O processor actually reads from the file.  Up to numeric_limits<signed char>::max()
+ * characters are read by this processor. The I/O processor then broadcasts a message consisting of
+ * a status character and the characters that were read. If the I/O processor has reached the end of
+ * the file, the status character is 0. If the I/O processor has encountered some kind of stream
+ * error, the status character is set to \c static_cast<char>(-1).  Otherwise the status character
+ * is the number of characters to be transmitted.
  *
- * \return The next character in the text stream.
- *
- * \throw rtt_dsxx::assert If a received message has a length greater than the
- *             maximum expected.
+ * \throw rtt_dsxx::assert If a received message has a length greater than the maximum expected.
  */
 void Parallel_File_Token_Stream::fill_character_buffer_() {
   using rtt_c4::broadcast;
 
-  // The first value in the communications buffer will be a status code, which
-  // if positive is the number of valid characters ini the buffer. This dictates
-  // the maximum size needed for the buffer to be the maximum positive character
-  // value, plus one (for the status code itself).
+  // The first value in the communications buffer will be a status code, which if positive is the
+  // number of valid characters ini the buffer. This dictates the maximum size needed for the buffer
+  // to be the maximum positive character value, plus one (for the status code itself).
   vector<char> comm_buffer(numeric_limits<signed char>::max() + 1);
 
   if (letter_ != nullptr) {
@@ -275,8 +258,8 @@ void Parallel_File_Token_Stream::letter::fill_character_buffer_(vector<char> &co
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief This function may be used to check whether an I/O error has occured,
- *        such as failure to open the text file.
+ * \brief This function may be used to check whether an I/O error has occured, such as failure to
+ *        open the text file.
  *
  * \return \c true if an error has occured; \c false otherwise.
  */
@@ -286,8 +269,7 @@ bool Parallel_File_Token_Stream::error_() const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function may be used to check whether the end of the text file has been
- * reached.
+ * This function may be used to check whether the end of the text file has been reached.
  *
  * \return \c true if the end of the text file has been reached; \c false
  *         otherwise.
@@ -298,9 +280,8 @@ bool Parallel_File_Token_Stream::end_() const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function sends a message by writing it to the error console stream.
- * Only processor 0 writes the message, to avoid many (possibly thousands) of
- * duplicate messages.
+ * This function sends a message by writing it to the error console stream. Only processor 0 writes
+ * the message, to avoid many (possibly thousands) of duplicate messages.
  */
 void Parallel_File_Token_Stream::report(Token const &token, string const &message) {
   if (rtt_c4::node() == 0) {
@@ -311,9 +292,8 @@ void Parallel_File_Token_Stream::report(Token const &token, string const &messag
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function sends a message by writing it to the error console stream.
- * Only processor 0 writes the message, to avoid many (possibly thousands) of
- * duplicate messages.
+ * This function sends a message by writing it to the error console stream. Only processor 0 writes
+ * the message, to avoid many (possibly thousands) of duplicate messages.
  *
  * This version assumes that the cursor is the message location.
  */
@@ -321,8 +301,7 @@ void Parallel_File_Token_Stream::report(string const &message) {
   Require(check_class_invariants());
 
   Token token = lookahead();
-  // The lookahead must be done on all processors to avoid a potential lockup
-  // condition.
+  // The lookahead must be done on all processors to avoid a potential lockup condition.
   if (rtt_c4::node() == 0) {
     cerr << token.location() << ": " << message << endl;
   }
@@ -332,9 +311,8 @@ void Parallel_File_Token_Stream::report(string const &message) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function sends a message by writing it to the error console stream.
- * Only processor 0 writes the message, to avoid many (possibly thousands) of
- * duplicate messages.
+ * This function sends a message by writing it to the error console stream. Only processor 0 writes
+ * the message, to avoid many (possibly thousands) of duplicate messages.
  *
  * This version prints no location information.
  */
@@ -350,9 +328,8 @@ void Parallel_File_Token_Stream::comment(string const &message) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function rewinds the file stream associated with the file token stream
- * and flushes its internal buffers, so that scanning resumes at the beginning
- * of the file stream.
+ * This function rewinds the file stream associated with the file token stream and flushes its
+ * internal buffers, so that scanning resumes at the beginning of the file stream.
  */
 void Parallel_File_Token_Stream::rewind() {
   while (!letters_.empty()) {
@@ -395,9 +372,8 @@ bool Parallel_File_Token_Stream::letter::check_class_invariants() const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \param filename Name of file to be included at this point. On return,
- * replaced with an absolute path based on DRACO_INCLUDE_PATH if the relative
- * path did not exist.
+ * \param filename Name of file to be included at this point. On return, replaced with an absolute
+ *           path based on DRACO_INCLUDE_PATH if the relative path did not exist.
  */
 void Parallel_File_Token_Stream::push_include(std::string &filename) {
   Text_Token_Stream::push_include(filename);

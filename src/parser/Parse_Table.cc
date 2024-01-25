@@ -144,13 +144,13 @@ void Parse_Table::sort_table_() noexcept(false) // apparently std::sort can thro
         err << "An ambiguous keyword was detected in a "
             << "Parse_Table:  " << i->moniker << endl
             << "Modules: ";
-        if (i->module)
-          err << i->module;
+        if (i->parse_table_module)
+          err << i->parse_table_module;
         else
           err << "<null>";
         err << ' ';
-        if ((i + 1)->module)
-          err << (i + 1)->module;
+        if ((i + 1)->parse_table_module)
+          err << (i + 1)->parse_table_module;
         else
           err << "<null>";
         err << endl;

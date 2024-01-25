@@ -245,7 +245,7 @@ template <typename Class> struct Class_Parser_Keyword {
    * It identifies which class in the inheritance hierarchy is associated
    * with a particular keyword.
    */
-  char const *module;
+  char const *class_parser_module;
 
   /*! Explanation of keyword.
    *
@@ -257,8 +257,10 @@ template <typename Class> struct Class_Parser_Keyword {
   char const *description;
 
   Class_Parser_Keyword(char const *moniker, void (Class_Parser<Class>::*func)(Token_Stream &, int),
-                       int const index, char const *module, char const *description = nullptr)
-      : moniker(moniker), func(func), index(index), module(module), description(description) {}
+                       int const index, char const *class_parser_module,
+                       char const *description = nullptr)
+      : moniker(moniker), func(func), index(index), class_parser_module(class_parser_module),
+        description(description) {}
 };
 
 //-------------------------------------------------------------------------//
