@@ -4,7 +4,7 @@
 # Date:    Monday, Jun 01, 2020, 15:00 pm
 # Purpose: gitlab suid runner commands for LANL ccs-net machines. This script will be run to test
 #          pull requests.
-# Note:    Copyright (C) 2020-2023 Triad National Security, LLC.,  All rights reserved.
+# Note:    Copyright (C) 2020-2024 Triad National Security, LLC.,  All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------#
@@ -27,7 +27,7 @@ ccs1_clangtidy:
   stage: lint
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm12
+    DRACO_ENV: llvm1201
     CTEST_NPROC: 32
     EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
     EXTRA_CTEST_ARGS: -R dsxx_tstRelease
@@ -68,7 +68,7 @@ ccs1_deb_gcc_1120_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     SITE_ID: ccscs1
 
 ccs1_rwdi_gcc_1120_deploy:
@@ -77,7 +77,7 @@ ccs1_rwdi_gcc_1120_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     SITE_ID: ccscs1
 
 ccs1_c4_scalar_deploy:
@@ -86,7 +86,7 @@ ccs1_c4_scalar_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
     SITE_ID: ccscs1
@@ -97,7 +97,7 @@ ccs1_clangtidy_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm12
+    DRACO_ENV: llvm1201
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
     SITE_ID: ccscs1
@@ -108,7 +108,7 @@ ccs2_deb_gcc_1120_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     SITE_ID: ccscs2
 
 ccs2_rel_gcc_1120_deploy:
@@ -117,7 +117,7 @@ ccs2_rel_gcc_1120_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     SITE_ID: ccscs2
 
 ccs3_deb_llvm_deploy:
@@ -126,7 +126,7 @@ ccs3_deb_llvm_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm12
+    DRACO_ENV: llvm1201
     SITE_ID: ccscs3
 
 ccs3_rel_llvm_deploy:
@@ -135,7 +135,7 @@ ccs3_rel_llvm_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: llvm12
+    DRACO_ENV: llvm1201
     SITE_ID: ccscs3
 
 ccs3_deb_gcc_1120_deploy:
@@ -144,7 +144,7 @@ ccs3_deb_gcc_1120_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     SITE_ID: ccscs3
 
 ccs3_rel_gcc_1120_deploy:
@@ -153,7 +153,7 @@ ccs3_rel_gcc_1120_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     SITE_ID: ccscs3
 
 ccs4_deb_gcc_1120_deploy:
@@ -162,7 +162,7 @@ ccs4_deb_gcc_1120_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     SITE_ID: ccscs4
 
 ccs4_rel_gcc_1120_deploy:
@@ -171,7 +171,7 @@ ccs4_rel_gcc_1120_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     SITE_ID: ccscs4
 
 ccs4_rwdi_gcc_1120_deploy:
@@ -180,7 +180,7 @@ ccs4_rwdi_gcc_1120_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     SITE_ID: ccscs4
 
 ccs1_fulldiag_deploy:
@@ -189,7 +189,7 @@ ccs1_fulldiag_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
@@ -202,7 +202,7 @@ ccs2_gcov_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
     EXTRA_CMAKE_ARGS: -DCODE_COVERAGE=ON
     SITE_ID: ccscs2
@@ -213,7 +213,7 @@ ccs2_valgrind_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
     EXTRA_CMAKE_ARGS: -DENABLE_MEMORYCHECK=ON
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
@@ -234,7 +234,7 @@ ccs5_deb_llvm12_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm12
+    DRACO_ENV: llvm1201
     SITE_ID: ccscs5
 
 #--------------------------------------------------------------------------------------------------#
@@ -274,7 +274,7 @@ ccs1_deb_gcc_1120_deploy_release:
   extends: .ccscs_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     SITE_ID: ccscs1
 
 ccs1_rel_gcc_1120_deploy_release:
@@ -283,7 +283,7 @@ ccs1_rel_gcc_1120_deploy_release:
   extends: .ccscs_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     SITE_ID: ccscs1
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_ROUNDOFF_MODE=FAST
 
@@ -316,7 +316,7 @@ ccs3_deb_gcc_1120:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=2
     CTEST_NPROC: 32
     SITE_ID: ccscs3
@@ -328,7 +328,7 @@ ccs1_c4_scalar:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
     CTEST_NPROC: 40
     SITE_ID: ccscs1
@@ -343,7 +343,7 @@ ccs3_deb_llvm12:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm12
+    DRACO_ENV: llvm1201
     CTEST_NPROC: 32
     SITE_ID: ccscs3
 
@@ -366,7 +366,7 @@ ccs2_autodoc:
   allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     AUTODOC: "ON"
     SITE_ID: ccscs2
 
@@ -379,7 +379,7 @@ ccs3_rel_llvm12:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: llvm12
+    DRACO_ENV: llvm1201
     CTEST_NPROC: 32
     SITE_ID: ccscs3
 
@@ -390,7 +390,7 @@ ccs3_rel_gcc_1120:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     CTEST_NPROC: 32
     SITE_ID: ccscs3
 
@@ -401,7 +401,7 @@ ccs4_rwdi_gcc_1120:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     CTEST_NPROC: 32
     SITE_ID: ccscs4
 
@@ -412,7 +412,7 @@ ccs1_fulldiag:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
@@ -425,14 +425,15 @@ ccs2_gcov:
   stage: slowtest
   extends: .ccscs_merge
   # https://regex101.com/
-  coverage: '/Total:\|\d+\.\d+%/'
+  coverage: '/lines[.]+: \d+\.\d+%/'
+  # coverage: '/Total:\|\d+\.\d+%/'
   artifacts:
     paths:
       - build/cov-html/
       - build/coverage.txt
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
     EXTRA_CMAKE_ARGS: -G Ninja -DCODE_COVERAGE=ON
     CTEST_NPROC: 20
@@ -445,7 +446,7 @@ ccs2_gcov:
 #   extends: .ccscs_merge
 #   variables:
 #     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: gcc1120
+#     DRACO_ENV: gcc1220
 #     EXTRA_CMAKE_ARGS: -GNinja -DENABLE_MEMORYCHECK=ON
 #       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
 #     EXTRA_CTEST_ARGS: -L memcheck -LE nomemcheck
@@ -477,7 +478,7 @@ rel_gcc_11.2.0_regress:
   variables:
     SITE_ID: ccscs1
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     CTEST_NPROC: 40
 
 deb_gcc_11.2.0_regress:
@@ -487,7 +488,7 @@ deb_gcc_11.2.0_regress:
   variables:
     SITE_ID: ccscs2
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     CTEST_NPROC: 40
 
 deb_llvm_regress:
@@ -497,7 +498,7 @@ deb_llvm_regress:
   variables:
     SITE_ID: ccscs3
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm12
+    DRACO_ENV: llvm1201
     CTEST_NPROC: 40
 
 rel_llvm_regress:
@@ -507,7 +508,7 @@ rel_llvm_regress:
   variables:
     SITE_ID: ccscs3
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: llvm12
+    DRACO_ENV: llvm1201
     CTEST_NPROC: 40
 
 clangtidy_regress:
@@ -517,7 +518,7 @@ clangtidy_regress:
   variables:
     SITE_ID: ccscs1
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm12
+    DRACO_ENV: llvm1201
     CTEST_NPROC: 40
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
@@ -530,7 +531,7 @@ deb_gcc_scalar_regress:
   variables:
     SITE_ID: ccscs1
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_C4=SCALAR
     CTEST_NPROC: 40
@@ -543,7 +544,7 @@ fulldiag_regress:
   variables:
     SITE_ID: ccscs1
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
@@ -559,7 +560,7 @@ gcov_regress:
   variables:
     SITE_ID: ccscs2
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
     EXTRA_CMAKE_ARGS: -DCODE_COVERAGE=ON
     CTEST_NPROC: 40
@@ -572,7 +573,7 @@ valgrind_regress:
   variables:
     SITE_ID: ccscs2
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
     MEMCHECK_CONFIGURATION: "ON"
     # EXTRA_CMAKE_ARGS: -GNinja -DENABLE_MEMORYCHECK=ON
@@ -590,7 +591,7 @@ pages:
   variables:
     SITE_ID: ccscs4
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1120
+    DRACO_ENV: gcc1220
     DEPLOY: "TRUE"
     AUTODOC: "ON"
     AUTODOCDIR: "${CI_PROJECT_DIR}/public"

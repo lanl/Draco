@@ -71,12 +71,12 @@ struct Keyword {
    *
    * This member is significant only if certain options are set in the Parse_Table.  It is used to
    * support parsing in frameworks that support self-registering modules.  Such modules often need
-   * to add keywords to existing Parse_Tables, and the \c module member is useful for identifying
+   * to add keywords to existing Parse_Tables, and the \c parse_table_module member is useful for identifying
    * the module from which a particular keyword in a table originated.  This is particularly
    * important for diagnosing keyword clashes, where two modules have registered keywords with the
    * same moniker in the same Parse_Table.
    */
-  char const *module = {nullptr};
+  char const *parse_table_module = nullptr;
 
   /*! Explanation of keyword.
    *
@@ -84,14 +84,14 @@ struct Keyword {
    * Token_Stream that it does not recognize, it will list the recognized keywords and, if a keyword
    * has a non-null description, it will print that description.
    */
-  char const *description = {nullptr};
+  char const *description = nullptr;
 
   Keyword() = default;
 
   Keyword(char const *moniker_in, void (*func_in)(Token_Stream &, int), int const index_in,
-          char const *module_in, char const *description_in = nullptr)
-      : moniker(moniker_in), func(func_in), index(index_in), module(module_in),
-        description(description_in) {}
+          char const *parse_table_module_in, char const *description_in = nullptr)
+      : moniker(moniker_in), func(func_in), index(index_in),
+        parse_table_module(parse_table_module_in), description(description_in) {}
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -248,11 +248,11 @@ private:
  * \param b Second keyword to be compared.
  *
  * \return <code>a.moniker == b.moniker &&a.func == b.func && a.index == b.index &&
- *	       a.module == b.module</code>
+ *	       a.parse_table_module == b.parse_table_module</code>
  */
 inline bool operator==(Keyword const &a, Keyword const &b) {
   return strcmp(a.moniker, b.moniker) == 0 && a.func == b.func && a.index == b.index &&
-         strcmp(a.module, b.module) == 0;
+         strcmp(a.parse_table_module, b.parse_table_module) == 0;
 }
 
 //------------------------------------------------------------------------------------------------//

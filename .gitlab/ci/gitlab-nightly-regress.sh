@@ -63,6 +63,7 @@ done
 [[ -n $CI_PROJECT_DIR ]] || CI_PROJECT_DIR=${DRACO_SOURCE_DIR}
 [[ -n $CTEST_MODE ]] || CTEST_MODE="Experimental"
 [[ -n $CTEST_SITE ]] || CTEST_SITE=$(uname -n)
+CTEST_SITE=${CTEST_SITE//.lanl.gov/}
 if [[ "${CTEST_BUILD_NAME}x" == "x" ]]; then
   # shellcheck disable=2001
   compiler=$(echo "$CXX" | sed -e 's%.*/%%')

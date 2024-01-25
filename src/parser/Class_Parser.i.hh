@@ -97,7 +97,7 @@ void Class_Parser_Base<Class, once, allow_exit>::add(
 
     for (unsigned i = 0; i < count; i++) {
       auto const &b = table[i];
-      Keyword d(b.moniker, b.func, b.index, b.module, b.description);
+      Keyword d(b.moniker, b.func, b.index, b.class_parser_module, b.description);
       Require(Is_Well_Formed_Keyword(d));
       table_.push_back(d);
     }
@@ -135,13 +135,13 @@ void Class_Parser_Base<Class, once, allow_exit>::sort_table_() noexcept(
       err << "An ambiguous keyword was detected in a "
           << "Parse_Table:  " << i->moniker << endl
           << "Modules: ";
-      if (i->module)
-        err << i->module;
+      if (i->class_parser_module)
+        err << i->class_parser_module;
       else
         err << "<null>";
       err << ' ';
-      if ((i + 1)->module)
-        err << (i + 1)->module;
+      if ((i + 1)->class_parser_module)
+        err << (i + 1)->class_parser_module;
       else
         err << "<null>";
       err << endl;

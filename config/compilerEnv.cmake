@@ -1,7 +1,7 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   config/compilerEnv.cmake
 # brief  Default CMake build parameters
-# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 include_guard(GLOBAL)
@@ -259,14 +259,7 @@ macro(dbsSetupCompilers)
       endif()
       if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 
-        list(
-          APPEND
-          CODE_COVERAGE_IGNORE_REGEX
-          /usr/*
-          *test/*
-          */opt/spack/*
-          *terminal/*
-          *FortranChecks/*)
+        list(APPEND CODE_COVERAGE_IGNORE_REGEX *test/* */opt/spack/* *terminal/* *FortranChecks/*)
         list(REMOVE_DUPLICATES CODE_COVERAGE_IGNORE_REGEX)
         set(CODE_COVERAGE_IGNORE_REGEX
             ${CODE_COVERAGE_IGNORE_REGEX}
@@ -282,7 +275,16 @@ macro(dbsSetupCompilers)
           find_program(GCOV NAMES "$ENV{GCOV}" gcov)
           if(EXISTS "${LCOV}" AND EXISTS "${GCOV}")
             # Add a custom target that prints the coverage report
-            set(lcovopts1 --gcov-tool ${GCOV} --quiet)
+            set(lcovopts1
+                -j
+                --keep-going
+                --ignore-errors
+                gcov,gcov,unused,unused
+                --rc
+                geninfo_unexecuted_blocks=1
+                --gcov-tool
+                ${GCOV}
+                --quiet)
             set(lcovopts2 ${lcovopts1} --output-file coverage.info)
             unset(lcov_ignore)
             foreach(myregex ${CODE_COVERAGE_IGNORE_REGEX})
@@ -304,7 +306,7 @@ macro(dbsSetupCompilers)
               BYPRODUCTS "${PROJECT_BINARY_DIR}/coverage.info" "${PROJECT_BINARY_DIR}/coverage.txt"
               COMMAND ${LCOV} ${lcovopts2} --capture --directory .
               COMMAND ${LCOV} ${lcovopts2} --remove coverage.info ${lcov_ignore}
-              COMMAND genhtml coverage.info --demangle-cpp --output-directory cov-html
+              COMMAND genhtml -q --legend coverage.info --demangle-cpp --output-directory cov-html
               COMMAND "${captureLcov}" -g "${GCOV}" -l "${LCOV}" -b "${PROJECT_SOURCE_DIR}"
               COMMENT "Lcov is processing gcov data files...")
             unset(captureLcov)
@@ -361,8 +363,10 @@ macro(dbsSetupCxx)
   # If the CMake_<LANG>_COMPILER is a MPI wrapper...
   if("${my_cxx_compiler}" MATCHES "mpicxx")
     # MPI wrapper
-    execute_process(COMMAND "${my_cxx_compiler}" --version
-                    OUTPUT_VARIABLE mpicxx_version_output OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(
+      COMMAND "${my_cxx_compiler}" --version
+      OUTPUT_VARIABLE mpicxx_version_output
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
     # make output safe for regex matching
     string(REPLACE "+" "x" mpicxx_version_output ${mpicxx_version_output})
     if(${mpicxx_version_output} MATCHES icpc)
@@ -707,8 +711,10 @@ macro(dbsSetupFortran)
 
     # MPI wrapper
     if(${my_fc_compiler} MATCHES "mpif90")
-      execute_process(COMMAND ${my_fc_compiler} --version
-                      OUTPUT_VARIABLE mpifc_version_output OUTPUT_STRIP_TRAILING_WHITESPACE)
+      execute_process(
+        COMMAND ${my_fc_compiler} --version
+        OUTPUT_VARIABLE mpifc_version_output
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
       if("${mpifc_version_output}" MATCHES "ifort")
         set(my_fc_compiler ifort)
       elseif("${mpifc_version_output}" MATCHES "GNU")

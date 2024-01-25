@@ -40,7 +40,9 @@ repname="coverage.txt"
 
 while getopts ":b:g:l:r:" opt; do
 case $opt in
-b) basediropt="--base-directory ${OPTARG}" ;;
+b)
+  # ignore basediropt="--base-directory ${OPTARG}"
+;;
 g) GCOV="${OPTARG}" ;;
 l) LCOV="${OPTARG}" ;;
 r) repname="${OPTARG}" ;;
@@ -65,11 +67,15 @@ fi
 
 # Ask lcov to generate the text report:
 # - generate the text report at the same location as coverage.info (top level of build tree).
-echo "$LCOV --gcov-tool $GCOV --quiet ${basediropt} --list coverage.info --> ${repname}"
+# cmd="$LCOV --keep-going --ignore-errors gcov,gcov --gcov-tool $GCOV --quiet ${basediropt}"
+# cmd+=" --list coverage.info"
+cmd="$LCOV --gcov-tool $GCOV --summary coverage.info"
+echo "${cmd} --> ${repname}"
 
 # We actually want word splitting in this case.
 # shellcheck disable=SC2086
-${LCOV} --gcov-tool "${GCOV}" --quiet ${basediropt} --list coverage.info &> "${repname}"
+eval ${cmd} > "${repname}"
+
 # also print the report to stdout.
 cat "${repname}"
 

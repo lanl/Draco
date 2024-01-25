@@ -1,7 +1,7 @@
 # --------------------------------------------*-cmake-*------------------------------------------- #
 # file   config/unix-g++.cmake
 # brief  Establish flags for Unix/Linux - Gnu C++
-# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -40,22 +40,19 @@ if(NOT CXX_FLAGS_INITIALIZED)
   string(APPEND CMAKE_C_FLAGS
          " -g -Wall -Wextra -pedantic -Wcast-align -Wconversion -Wpointer-arith -Wfloat-equal"
          " -Wunused-macros -Wshadow -Wformat=2")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.0)
-    string(APPEND CMAKE_C_FLAGS " -Wnull-dereference")
-  endif()
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
     # Pragmas in rng and Random123 don't seem to disable this check.
     string(APPEND CMAKE_C_FLAGS " -Wno-expansion-to-defined")
   endif()
-  string(
-    CONCAT CMAKE_C_FLAGS_DEBUG "-fno-inline -fno-eliminate-unused-debug-types -O0"
-           " -Wundef -Wunreachable-code -fsanitize=bounds-strict -fdiagnostics-color=auto -DDEBUG")
+  string(CONCAT CMAKE_C_FLAGS_DEBUG "-fno-inline -fno-eliminate-unused-debug-types -O0"
+                " -Wundef -Wunreachable-code -fsanitize=bounds-strict -fdiagnostics-color=auto"
+                " -Wnull-dereference -DDEBUG")
   # GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
   string(CONCAT CMAKE_C_FLAGS_RELEASE "-O3 -funroll-loops -D_FORTIFY_SOURCE=2"
-                " -fno-var-tracking-assignments -DNDEBUG")
+                " -fno-var-tracking-assignments -Wno-stringop-overflow -DNDEBUG")
   set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_RELEASE}")
   string(CONCAT CMAKE_C_FLAGS_RELWITHDEBINFO "-O3 -fno-eliminate-unused-debug-types"
-                " -funroll-loops")
+                " -funroll-loops -Wno-stringop-overflow")
 
   if(NOT DEFINED ENV{TRAVIS})
     # Some options (including these) seem to confuse Travis. See

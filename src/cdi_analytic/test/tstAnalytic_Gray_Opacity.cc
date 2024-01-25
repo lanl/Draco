@@ -282,21 +282,19 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 
 void type_test(rtt_dsxx::UnitTest &ut) {
-  // make an analytic gray opacity that returns the total opacity for a constant
-  // model
+  // make an analytic gray opacity that returns the total opacity for a constant model
   const double constant_opacity = 5.0;
 
   shared_ptr<Analytic_Opacity_Model> model(new Constant_Analytic_Opacity_Model(constant_opacity));
 
   shared_ptr<GrayOpacity> op(new Analytic_Gray_Opacity(model, rtt_cdi::TOTAL));
-  shared_ptr<Analytic_Gray_Opacity> opac;
 
   if (op.get()) {
     auto &r = *op.get();
     FAIL_IF_NOT(typeid(r) == typeid(rtt_cdi_analytic::Analytic_Gray_Opacity));
   }
 
-  opac = dynamic_pointer_cast<Analytic_Gray_Opacity>(op);
+  shared_ptr<Analytic_Gray_Opacity> opac = dynamic_pointer_cast<Analytic_Gray_Opacity>(op);
 
   vector<double> parm = opac->get_Analytic_Model()->get_parameters();
 
