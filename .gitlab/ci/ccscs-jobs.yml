@@ -62,7 +62,7 @@ ccs1_clangtidy:
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-ccs1_deb_gcc_1120_deploy:
+ccs1_deb_gcc_1220_deploy:
   tags:
     - CCSCS1-setuid-shared
   extends: .ccscs_deploy
@@ -71,7 +71,7 @@ ccs1_deb_gcc_1120_deploy:
     DRACO_ENV: gcc1220
     SITE_ID: ccscs1
 
-ccs1_rwdi_gcc_1120_deploy:
+ccs1_rwdi_gcc_1220_deploy:
   tags:
     - CCSCS1-setuid-shared
   extends: .ccscs_deploy
@@ -102,7 +102,7 @@ ccs1_clangtidy_deploy:
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
     SITE_ID: ccscs1
 
-ccs2_deb_gcc_1120_deploy:
+ccs2_deb_gcc_1220_deploy:
   tags:
     - CCSCS2-setuid-shared
   extends: .ccscs_deploy
@@ -111,7 +111,7 @@ ccs2_deb_gcc_1120_deploy:
     DRACO_ENV: gcc1220
     SITE_ID: ccscs2
 
-ccs2_rel_gcc_1120_deploy:
+ccs2_rel_gcc_1220_deploy:
   tags:
     - CCSCS2-setuid-shared
   extends: .ccscs_deploy
@@ -138,7 +138,7 @@ ccs3_rel_llvm_deploy:
     DRACO_ENV: llvm1201
     SITE_ID: ccscs3
 
-ccs3_deb_gcc_1120_deploy:
+ccs3_deb_gcc_1220_deploy:
   tags:
     - CCSCS3-setuid-shared
   extends: .ccscs_deploy
@@ -147,7 +147,7 @@ ccs3_deb_gcc_1120_deploy:
     DRACO_ENV: gcc1220
     SITE_ID: ccscs3
 
-ccs3_rel_gcc_1120_deploy:
+ccs3_rel_gcc_1220_deploy:
   tags:
     - CCSCS3-setuid-shared
   extends: .ccscs_deploy
@@ -156,7 +156,7 @@ ccs3_rel_gcc_1120_deploy:
     DRACO_ENV: gcc1220
     SITE_ID: ccscs3
 
-ccs4_deb_gcc_1120_deploy:
+ccs4_deb_gcc_1220_deploy:
   tags:
     - CCSCS4-setuid-shared
   extends: .ccscs_deploy
@@ -165,7 +165,7 @@ ccs4_deb_gcc_1120_deploy:
     DRACO_ENV: gcc1220
     SITE_ID: ccscs4
 
-ccs4_rel_gcc_1120_deploy:
+ccs4_rel_gcc_1220_deploy:
   tags:
     - CCSCS4-setuid-shared
   extends: .ccscs_deploy
@@ -174,7 +174,7 @@ ccs4_rel_gcc_1120_deploy:
     DRACO_ENV: gcc1220
     SITE_ID: ccscs4
 
-ccs4_rwdi_gcc_1120_deploy:
+ccs4_rwdi_gcc_1220_deploy:
   tags:
     - CCSCS4-setuid-shared
   extends: .ccscs_deploy
@@ -268,7 +268,7 @@ ccs5_deb_llvm12_deploy:
     - if: '$CI_COMMIT_TAG =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-ccs1_deb_gcc_1120_deploy_release:
+ccs1_deb_gcc_1220_deploy_release:
   tags:
     - CCSCS1-setuid-shared
   extends: .ccscs_deploy_release
@@ -277,7 +277,7 @@ ccs1_deb_gcc_1120_deploy_release:
     DRACO_ENV: gcc1220
     SITE_ID: ccscs1
 
-ccs1_rel_gcc_1120_deploy_release:
+ccs1_rel_gcc_1220_deploy_release:
   tags:
     - CCSCS1-setuid-shared
   extends: .ccscs_deploy_release
@@ -309,7 +309,7 @@ ccs1_rel_gcc_1120_deploy_release:
 
 # FAST TEST
 
-ccs3_deb_gcc_1120:
+ccs3_deb_gcc_1220:
   tags:
     - CCSCS3-setuid-shared
   stage: fasttest
@@ -383,7 +383,7 @@ ccs3_rel_llvm12:
     CTEST_NPROC: 32
     SITE_ID: ccscs3
 
-ccs3_rel_gcc_1120:
+ccs3_rel_gcc_1220:
   tags:
     - CCSCS3-setuid-shared
   stage: slowtest
@@ -394,7 +394,7 @@ ccs3_rel_gcc_1120:
     CTEST_NPROC: 32
     SITE_ID: ccscs3
 
-ccs4_rwdi_gcc_1120:
+ccs4_rwdi_gcc_1220:
   tags:
     - CCSCS4-setuid-shared
   stage: slowtest
@@ -471,7 +471,7 @@ ccs2_gcov:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-rel_gcc_11.2.0_regress:
+rel_gcc_12.2.0_regress:
   tags:
     - CCSCS1-setuid-shared
   extends: .ccscs_nightly
@@ -481,7 +481,7 @@ rel_gcc_11.2.0_regress:
     DRACO_ENV: gcc1220
     CTEST_NPROC: 40
 
-deb_gcc_11.2.0_regress:
+deb_gcc_12.2.0_regress:
   tags:
     - CCSCS2-setuid-shared
   extends: .ccscs_nightly
