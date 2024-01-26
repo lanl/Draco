@@ -4,7 +4,7 @@
 # Date  : Friday, May 19, 2017, 10:26 am
 # Author: Kelly Thompson <kgt@lanl.gov>
 # Breif : Valgrind Suppression Instructions
-# Note  : Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
+# Note  : Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 #
 # Example valgrind use:
@@ -3234,7 +3234,6 @@
    ...
 }
 
-
 # ------------------------------------------------------------------------------------------------ #
 # NDI-2.2.0alpha-2
 # ------------------------------------------------------------------------------------------------ #
@@ -3248,6 +3247,21 @@
    fun:ndi_c_set_zaid_h
    ...
    fun:main
+}
+
+# ------------------------------------------------------------------------------------------------ #
+# OpenMP
+# ------------------------------------------------------------------------------------------------ #
+
+{
+   openmp/e0001
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:memalign
+   fun:gomp_aligned_alloc
+   fun:gomp_new_team
+   fun:GOMP_parallel
+   ...
 }
 
 # ------------------------------------------------------------------------------------------------ #
