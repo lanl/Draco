@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-hip-clang.cmake
 # brief  Establish flags for Unix/Linux - HIP
-# note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -68,7 +68,7 @@ if(NOT HIP_FLAGS_INITIALIZED)
   # * -ffp-model=precise
   set(CMAKE_HIP_FLAGS_RELEASE "-O1")
   set(CMAKE_HIP_FLAGS_MINSIZEREL "-O1")
-  set(CMAKE_HIP_FLAGS_RELWITHDEBINFO "-O1 --generate-line-info")
+  set(CMAKE_HIP_FLAGS_RELWITHDEBINFO "-O1")
 
   # Disable FMA at the compile level if desired
   if(DEFINED FMA_NEVER_HARDWARE)

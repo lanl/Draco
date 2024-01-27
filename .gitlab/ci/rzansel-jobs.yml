@@ -34,7 +34,7 @@
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
-    DRACO_ENV: "lapse/2.3.2-xl"
+    DRACO_ENV: "lapse/2.4.0-xl"
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
   script:
@@ -95,20 +95,20 @@ rzansel_rel_xl_deploy_release:
   extends: .rzansel_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.3.2-xl"
+    DRACO_ENV: "lapse/2.4.0-xl"
     EXTRA_CMAKE_ARGS: -DDRACO_ROUNDOFF_MODE=FAST
 
 rzansel_deb_xl_deploy_release:
   extends: .rzansel_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.2-xl"
+    DRACO_ENV: "lapse/2.4.0-xl"
 
 rzansel_rwdi_xl_deploy_release:
   extends: .rzansel_deploy_release
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/2.3.2-xl"
+    DRACO_ENV: "lapse/2.4.0-xl"
     EXTRA_CMAKE_FLAGS: -DDRACO_DBC_LEVEL=15
 
 #--------------------------------------------------------------------------------------------------#
@@ -134,7 +134,7 @@ rzansel_deb_xl1611_mr:
   extends: .rzansel_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.2-xl"
+    DRACO_ENV: "lapse/2.4.0-xl"
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -145,8 +145,8 @@ rzansel_deb_xl1611_mr:
   variables:
     CTEST_MODE: Nightly
     CTEST_NPROC: 20
-    DRACO_ENV: "lapse/2.3.2-xl"
-    CTEST_BUILD_NAME: "lapse232-xl-${CMAKE_BUILD_TYPE}"
+    DRACO_ENV: "lapse/2.4.0-xl"
+    CTEST_BUILD_NAME: "lapse240-xl-${CMAKE_BUILD_TYPE}"
   artifacts:
     when: always
     paths:
