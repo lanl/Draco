@@ -348,7 +348,7 @@ function lookupppn()
   target=$(uname -n | sed -e 's/[.].*//')
   ppn=1
   case "${target}" in
-    fi* | ic* | sn* | cy* )         ppn=36 ;;
+    fi* | ic* | sn* | cy* | fg* )   ppn=36 ;;
     rzansel* | rzmanta* | sierra* ) ppn=40 ;;
     *) ppn=$(grep -c processor /proc/cpuinfo) ;;
   esac

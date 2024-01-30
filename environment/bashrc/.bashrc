@@ -164,8 +164,8 @@ if [[ ${INTERACTIVE} == true ]]; then
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_darwin_fe" ;;
 
-    # Cyclone | Fire | Ice | Snow
-    cy* | fi* | ic* | sn* )
+    # Cyclone | Fire | Ice | Snow | Fog
+    cy* | fi* | ic* | sn* | fg*)
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_cts1" ;;
 
