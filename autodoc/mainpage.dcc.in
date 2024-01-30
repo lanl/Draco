@@ -45,7 +45,7 @@ section of the documentation. Also see:
 
    # Next items on same line due to ','
    ML rbox ML [label="Moonlight", textbgcolour="#ff7f7f"],
-   SN rbox SN [label="CTS-1/Snow", textbgcolour="#ffff00"],
+   SN rbox SN [label="CTS-1/Snow/Fog", textbgcolour="#ffff00"],
    TT rbox TT [label="Trinitite", textbgcolour="#ff7f7f"],
    Sierra rbox Sierra [label="Sierra", textbgcolour="#006e33"],
    ElCap rbox ElCap [label="El Capitan", textbgcolour="#006e33"],

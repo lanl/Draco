@@ -3,7 +3,7 @@
 # author Kelly Thompson
 # date   2008 May 30
 # brief  Establish flags for Unix - Intel Fortran
-# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 #
@@ -22,7 +22,7 @@ if(NOT Fortran_FLAGS_INITIALIZED)
   #   and a library has no symbols (this occurs when a client links some trilinos libraries.)
   # * [KT 2016-11-16] -diag-disable 11021 -- disable warning that is issued when '-ip' is turned on
   #   and a  library has unresolved symbols (this occurs when a client links to openmpi/1.10.3 on
-  #   snow/fire/ice).  Ref: https://github.com/open-mpi/ompi/issues/251
+  #   fog/snow/fire/ice).  Ref: https://github.com/open-mpi/ompi/issues/251
   # * [KT 2018-03-14] '-assume nostd_mod_proc_name' -- discussion with G.  Rockefeller and S. Nolen
   #   aobut ifort's non-standard  name mangling for module procedures. Not sure if we need this yet.
 

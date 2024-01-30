@@ -1,8 +1,8 @@
 #--------------------------------------------------------------------------------------------------#
-# File:    .gitlab/ci/snow-jobs.yml
+# File:    .gitlab/ci/fog-jobs.yml
 # Author:  Kelly Thompson <kgt@lanl.gov>
 # Date:    Thursday, Dec 02, 2021, 09:36 am
-# Purpose: gitlab jacamar runner commands for Snow (LANL HPC). This script wil be run to test MRs.
+# Purpose: gitlab jacamar runner commands for fog (LANL HPC). This script wil be run to test MRs.
 # Note:    Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
@@ -11,13 +11,13 @@
 #--------------------------------------------------------------------------------------------------#
 
 ---
-.snow:
+.fog:
   extends: .jacamar
   tags:
-    - snow
+    - fog
     - batch
   variables:
-    SITE_ID: snow
+    SITE_ID: fog
     CTEST_SITE: ${SITE_ID}
     SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --partition=ci --qos=ci --reservation=ci -L none@slurmdb"
     EXTRA_CMAKE_ARGS: -GNinja
@@ -27,8 +27,8 @@
 # Deployment Jobs (run on develop after MRs are merged)
 #--------------------------------------------------------------------------------------------------#
 
-.snow_deploy:
-  extends: .snow
+.fog_deploy:
+  extends: .fog
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
@@ -45,15 +45,15 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-sn_rel_i2120_deploy:
-  extends: .snow_deploy
+fg_rel_i2120_deploy:
+  extends: .fog_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.3.2-intel"
     FLAVOR: lapse232-intel-Release
 
-sn_deb_i2120_deploy:
-  extends: .snow_deploy
+fg_deb_i2120_deploy:
+  extends: .fog_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.3.2-intel"
@@ -63,8 +63,8 @@ sn_deb_i2120_deploy:
 # Deploy a Release
 #--------------------------------------------------------------------------------------------------#
 
-.sn_deploy_release:
-  extends: .snow
+.fg_deploy_release:
+  extends: .fog
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
@@ -73,7 +73,7 @@ sn_deb_i2120_deploy:
     DRACO_INSTALL_DIR: "/usr/projects/draco/${CI_COMMIT_TAG}${CI_COMMIT_BRANCH}/${SITE_ID}/${FLAVOR}"
   script:
     - echo "branch = $CI_COMMIT_BRANCH, tag = $CI_COMMIT_TAG"
-    - echo "Starting sn_deploy_release..."
+    - echo "Starting fg_deploy_release..."
     - if [[ -z ${CI_COMMIT_BRANCH} ]]; then
         VERSION_PATCH=${CI_COMMIT_TAG//*_/};
       else
@@ -90,21 +90,21 @@ sn_deb_i2120_deploy:
     - if: '$CI_COMMIT_TAG =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-sn_rel_i2120_deploy_release:
-  extends: .sn_deploy_release
+fg_rel_i2120_deploy_release:
+  extends: .fg_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.3.2-intel"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
 
-sn_deb_i2120_deploy_release:
-  extends: .sn_deploy_release
+fg_deb_i2120_deploy_release:
+  extends: .fg_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.3.2-intel"
 
-sn_rwdi_i2120_deploy_release:
-  extends: .sn_deploy_release
+fg_rwdi_i2120_deploy_release:
+  extends: .fg_deploy_release
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: "lapse/2.3.2-intel"
@@ -114,13 +114,13 @@ sn_rwdi_i2120_deploy_release:
 # Merge Requests
 #--------------------------------------------------------------------------------------------------#
 
-.snow_merge:
-  extends: .snow
+.fog_merge:
+  extends: .fog
   # allow_failure: true
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_snow/'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_fog/'
       when: never
     - if: '$CI_MERGE_REQUEST_TITLE =~ /Draft:/ || $CI_MERGE_REQUEST_TITLE =~ /WIP:/'
       when: never
@@ -131,18 +131,18 @@ sn_rwdi_i2120_deploy_release:
 
 # ----- fast -----
 
-sn_rel_i2120_mr:
+fg_rel_i2120_mr:
   stage: fasttest
-  extends: .snow_merge
+  extends: .fog_merge
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.3.2-intel"
 
 # ----- regular test -----
 
-sn_deb_i2120_mr:
+fg_deb_i2120_mr:
   stage: test
-  extends: .snow_merge
+  extends: .fog_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.3.2-intel"
@@ -151,8 +151,8 @@ sn_deb_i2120_mr:
 # Nightly Regression
 #--------------------------------------------------------------------------------------------------#
 
-.snow_nightly:
-  extends: .snow
+.fog_nightly:
+  extends: .fog
   variables:
     CTEST_MODE: Nightly
     # CTEST_MODE: Experimental
@@ -165,22 +165,22 @@ sn_deb_i2120_mr:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-sn_rel_i2120_regress:
+fg_rel_i2120_regress:
   stage: test
-  extends: .snow_nightly
+  extends: .fog_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/2.3.2-intel"
     CTEST_BUILD_NAME: "lapse232-intel-Release"
 
-sn_deb_i2120_regress:
+fg_deb_i2120_regress:
   stage: test
-  extends: .snow_nightly
+  extends: .fog_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.3.2-intel"
     CTEST_BUILD_NAME: "lapse232-intel-Debug"
 
 #--------------------------------------------------------------------------------------------------#
-# end .gitlab/ci/snow-jobs.yml
+# end .gitlab/ci/fog-jobs.yml
 #--------------------------------------------------------------------------------------------------#

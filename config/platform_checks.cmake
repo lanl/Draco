@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------------------------ #
 # file   : platform_checks.cmake
 # brief  : Platform Checks for Draco Build System
-# note   : Copyright (C) 2011-2023 Triad National Security, LLC., All rights reserved.
+# note   : Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -41,8 +41,8 @@ function(dbs_set_sitename)
   elseif(${SITENAME} MATCHES "ro")
     set(SITENAME "Rocinante")
     set(SITENAME_FAMILY "ATS-3") # or CTS-2?!
-  elseif(${SITENAME} MATCHES "sn")
-    set(SITENAME "Snow")
+  elseif(${SITENAME} MATCHES "fg")
+    set(SITENAME "Fog")
     set(SITENAME_FAMILY "CTS-1")
   elseif(${SITENAME} MATCHES "cn")
     set(SITENAME "Darwin")
