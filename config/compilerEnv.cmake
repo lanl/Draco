@@ -42,8 +42,8 @@ macro(query_openmp_availability)
   if(WIN32)
     # ~~~
     # /openmp:llvm is broken (see comments/re-git issue above) and other modes are too old.
-    # AND (NOT CMAKE_C_COMPILER_ID STREQUAL "Clang"))
-    # set(OpenMP_C_FLAGS "/openmp:experimental")
+    # set(OpenMP_C_FLAGS "/openmp:llvm") # also consider "/openmp:experimental"
+    # set(OpenMP_CXX_FLAGS "/openmp:llvm")
     # set(OpenMP_FOUND TRUE)
     # set(OpenMP_C_VERSION "3.1")
     # ~~~
