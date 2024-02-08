@@ -150,16 +150,16 @@ else
     if [[ -n "${DRACO_INSTALL_DIR}" ]]; then
       run "rm -rf ${DRACO_INSTALL_DIR}"
       run "mkdir -p ${DRACO_INSTALL_DIR}"
-      run "chgrp ${deploy_group} ${DRACO_INSTALL_DIR}"
-      run "chmod ${chmod_params} ${DRACO_INSTALL_DIR}"
-      run "chmod g+s ${DRACO_INSTALL_DIR}"
+      run "chgrp ${deploy_group} ${DRACO_INSTALL_DIR}" || echo "Unable to chgrp"
+      run "chmod ${chmod_params} ${DRACO_INSTALL_DIR}" || echo "Unable to chmod"
+      run "chmod g+s ${DRACO_INSTALL_DIR}" || echo "Unable to chmod"
     fi
     # run "make -j -l $MAXLOAD install"
     run "cmake --build . --target install --  -j $MAXLOAD -l $MAXLOAD"
 
     # Double check permissions for installed (deployed) files
-    run "chgrp -R ${deploy_group} ${DRACO_INSTALL_DIR}"
-    run "chmod -R ${chmod_params} ${DRACO_INSTALL_DIR}"
+    run "chgrp -R ${deploy_group} ${DRACO_INSTALL_DIR}" || echo "Unable to chgrp"
+    run "chmod -R ${chmod_params} ${DRACO_INSTALL_DIR}" || echo "Unable to chmod"
 
   else
     EXTRA_CTEST_ARGS+=" --output-on-failure --repeat until-pass:2"
