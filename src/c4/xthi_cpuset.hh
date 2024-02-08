@@ -14,7 +14,10 @@
 #ifndef rtt_c4_xthi_cpuset_hh
 #define rtt_c4_xthi_cpuset_hh
 
+#ifndef rtt_c4_bin_ythi_hh
+// Don't pull in the OpenMP headers for ythi.  It doesn't need them.
 #include "c4_omp.h"
+#endif
 #include "ds++/Assert.hh"
 #include "ds++/SystemCall.hh"
 
@@ -22,7 +25,7 @@
 #include <sstream>
 
 #ifdef _MSC_VER
-#include <processthreadsapi.h> // requries SystemCall.hh to be loaded first.
+#include <processthreadsapi.h> // requires SystemCall.hh to be loaded first.
 #endif
 
 /*! \bug Broken on OSX (sched_getaffinity, cpu_set_t, etc. not defined).
@@ -111,7 +114,7 @@ inline std::string cpuset_to_string(unsigned const num_cpu) {
   // return value;
   std::ostringstream cpuset;
   // The thread affinity bitmask functions used below are limited to 64.
-  Insist(num_cpu <= 64, "Might need to use alternate cpu-groups information with this fuction!");
+  Insist(num_cpu <= 64, "Might need to use alternate cpu-groups information with this function!");
 
   DWORD_PTR dwProcessAffinity;
   DWORD_PTR dwSystemAffinity;
