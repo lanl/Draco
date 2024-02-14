@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-clang.cmake
 # brief  Establish flags for Unix clang
-# note   Copyright (C) 2015-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -57,6 +57,9 @@ if(NOT CXX_FLAGS_INITIALIZED)
     " -Wno-switch-enum -Wno-deprecated-declarations -Wno-missing-noreturn -Wno-unreachable-code"
     " -Wno-documentation-deprecated-sync -Wno-documentation -Wno-undefined-func-template"
     " -Wno-weak-template-vtables -Wno-comma")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 16.0 AND NOT MSVC)
+    string(APPEND CMAKE_C_FLAGS " -Wno-unsafe-buffer-usage")
+  endif()
 
   if((NOT CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
      AND (NOT ${CMAKE_GENERATOR} MATCHES Xcode)
