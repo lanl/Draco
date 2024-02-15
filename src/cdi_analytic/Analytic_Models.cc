@@ -404,6 +404,8 @@ Analytic_EICoupling_Model::sf_double Constant_Analytic_EICoupling_Model::get_par
   return {ei_coupling};
 }
 
+#if 0
+
 //================================================================================================//
 // ANALYTIC_KP_ALPHA_ELOSS_MODEL MEMBER DEFINITIONS
 //================================================================================================//
@@ -420,7 +422,6 @@ Analytic_EICoupling_Model::sf_double Constant_Analytic_EICoupling_Model::get_par
  * \param rho material density in g/cm^3
  * \param v incident particle speed in cm/shk
  * \return eloss (vector of time coefficients) in shk^-1
- *
  */
 double Analytic_KP_Alpha_Eloss_Model::calculate_eloss(const double T, const double rho,
                                                       const double v) const {
@@ -439,6 +440,8 @@ double Analytic_KP_Alpha_Eloss_Model::calculate_eloss(const double T, const doub
   // in the above formula)
   return (eloss >= 0.0) ? eloss : 1.0e25;
 }
+
+#endif
 
 } // end namespace rtt_cdi_analytic
 

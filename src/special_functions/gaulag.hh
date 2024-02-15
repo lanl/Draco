@@ -77,7 +77,7 @@ void gaulag(FieldVector &x, FieldVector &w, double const alf, unsigned const n) 
         break;
     }
     if (its >= MAXITS) {
-      throw std::range_error(std::string("too many iterations in gaulag"));
+      throw std::range_error(std::string("too many iterations in gaulag")); // LCOV_EXCL_LINE
     }
     x[i] = z;
     w[i] = -exp(gsl_sf_lngamma(alf + n) - gsl_sf_lngamma(static_cast<double>(n))) / (pp * n * p2);

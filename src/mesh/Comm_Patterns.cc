@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Aug. 1 2023
  * \brief  Comm_Patterns implementation file.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Comm_Patterns.hh"
@@ -17,21 +17,21 @@ namespace rtt_mesh {
 //------------------------------------------------------------------------------------------------//
 /*
  * \brief Build communication patterns between processor's boundary cells.
-
+ *
  * This function uses the Topology class to determine what processors a processor interacts with
  * across its processor boundary. It calculates two information maps:
-
+ *
  * \arg map of processor/boundary cell data that the processor receives from other processors.
-
+ *
  * \arg map of processor/local cell data that the processor sends out to other processors.
-
+ *
  * The former data map, or field, is a list of boundary cells that live on other processors.  For a
  * processor to perform work, it needs to know where it can get data for its boundary cells.  This
  * field tells it from which processors data will come and into which boundary cells that data is to
  * be placed.  The latter field tells the current processor what data it owns that needs to be sent
  * out to other processors so that they may do their boundary work.  This field requires
  * communication to calculate.  The former field can be calculated without communication.
-
+ *
  * We support two basic topology types: domain replication (replication) and domain decomposition
  * (DD).  If the topology is replication then no data is set because there are no boundary cells.
  */
@@ -61,9 +61,9 @@ void Comm_Patterns::calc_patterns(SP_Topology const &topology) {
     ;
   } else if (topology->get_parallel_scheme() == "DD/replication") {
     // we don't support this yet!
-    Insist(0, "We don't support general DD schemes yet!");
+    Insist(0, "We don't support general DD schemes yet!"); // LCOV_EXCL_LINE
   } else {
-    Insist(0, "Don't know your topology!");
+    Insist(0, "Don't know your topology!"); // LCOV_EXCL_LINE
   }
 }
 
@@ -119,7 +119,7 @@ void Comm_Patterns::calc_recv_map_DD(SP_Topology const &topology) {
     count += i->second.size();
   }
   if (count != num_ghost_cells)
-    throw rtt_dsxx::assertion("Improper receive map generated.");
+    throw rtt_dsxx::assertion("Improper receive map generated."); // LCOV_EXCL_LINE
 #endif
 }
 

@@ -4,8 +4,7 @@
  * \author H. Park
  * \date   Aug. 1 2023
  * \brief  Rep_Topology header file.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_Rep_Topology_hh
@@ -23,14 +22,12 @@ namespace rtt_mesh {
  *
  * \brief Specialization of the Topology class for Domain Replication (DR).
  *
- * Rep_Topology is a full replication topology class.  Because full replication
- * topologies are trivial, the Rep_Topology class provides the full
- * functionality of rtt_mesh::Topology with minimal performance and memory
- * overhead.  It must be used instead of rtt_mesh::DD_Topology.
+ * Rep_Topology is a full replication topology class.  Because full replication topologies are
+ * trivial, the Rep_Topology class provides the full functionality of rtt_mesh::Topology with
+ * minimal performance and memory overhead.  It must be used instead of rtt_mesh::DD_Topology.
  *
- * The Rep_Topology class assumes simple replication.  That is, a local cell and
- * global cell have the same index on each processor and all processors hold all
- * cells. No boundary cells exist.
+ * The Rep_Topology class assumes simple replication.  That is, a local cell and global cell have
+ * the same index on each processor and all processors hold all cells. No boundary cells exist.
  *
  * \sa rtt_mesh::Topology
  */
@@ -77,20 +74,20 @@ public:
 
   //! Get the remote local cell index for a boundary cell.
   int remote_local_cell(size_t /*c*/) const override {
-    Insist(0, "Illegal");
-    return 0;
+    Insist(0, "Illegal"); // LCOV_EXCL_LINE
+    return 0;             // LCOV_EXCL_LINE
   }
 
   //! Get the remote processor id for a boundary cell.
   int remote_proc(size_t /*c*/) const override {
-    Insist(0, "Illegal");
-    return 0;
+    Insist(0, "Illegal"); // LCOV_EXCL_LINE
+    return 0;             // LCOV_EXCL_LINE
   }
 
   //! Get the global offset at a rank
   int get_global_offset(int /*rank*/) const override {
-    Insist(0, "Illegal");
-    return 0;
+    Insist(0, "Illegal"); // LCOV_EXCL_LINE
+    return 0;             // LCOV_EXCL_LINE
   }
 
   // Pack function.

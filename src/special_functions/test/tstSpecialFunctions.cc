@@ -132,6 +132,7 @@ void tstFactorial(rtt_dsxx::UnitTest &ut) {
     PASSMSG("Found factorial<long>(1) == long(1), factorial is working.");
   else
     FAILMSG("Found factorial<long>(1) != long(1), factorial is not working.");
+
   return;
 }
 
@@ -160,6 +161,9 @@ void tstFF(rtt_dsxx::UnitTest &ut) {
     PASSMSG("factorial_fraction(100,99) == 100");
   else
     FAILMSG("factorial_fraction(100,99) != 100");
+
+  long lOne(1);
+  FAIL_IF_NOT(rtt_dsxx::soft_equiv(factorial_fraction(lOne, lOne), 1.0));
 
   return;
 }

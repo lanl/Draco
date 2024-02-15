@@ -160,7 +160,7 @@ bool ParallelUnitTest::check_all(bool const i_am_good, std::string const &passms
       out << std::endl;
     }
     if (fatal)
-      throw rtt_dsxx::assertion("assertion thrown on critical check failure");
+      throw rtt_dsxx::assertion("assertion thrown on critical check failure"); // LCOV_EXCL_LINE
   }
   return true;
 }

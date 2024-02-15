@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Nov 13 11:19:59 2001
  * \brief  Compound_Analytic_MultigroupOpacity class definition.
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Compound_Analytic_MultigroupOpacity_hh
@@ -21,45 +20,39 @@ namespace rtt_cdi_analytic {
  *
  * \brief Derived Analytic_MultigroupOpacity class for analytic opacities.
  *
- * The Compound_Analytic_MultigroupOpacity class is a derived
- * Analytic_MultigroupOpacity class.  It provides analytic opacity data. The
- * specific analytic opacity model is derived from the
- * rtt_cdi_analytic::Analytic_Opacity_Model base class.  Several pre-built
- * derived classes are provided in Analytic_Models.hh.
+ * The Compound_Analytic_MultigroupOpacity class is a derived Analytic_MultigroupOpacity class.  It
+ * provides analytic opacity data. The specific analytic opacity model is derived from the
+ * rtt_cdi_analytic::Analytic_Opacity_Model base class.  Several pre-built derived classes are
+ * provided in Analytic_Models.hh.
  *
- * Clients of this class can provide any analytic model class as long as it
- * conforms to the rtt_cdi_analytic::Analytic_Opacity_Model interface.  This
- * interface consists of a single function,
- * Analytic_Opacity_Model::calculate_opacity().
+ * Clients of this class can provide any analytic model class as long as it conforms to the
+ * rtt_cdi_analytic::Analytic_Opacity_Model interface.  This interface consists of a single
+ * function, Analytic_Opacity_Model::calculate_opacity().
  *
- * An rtt_cdi_analytic::Analytic_Opacity_Model is provided for each analytic
- * energy group.  In other words, the user specifies the group structure for
- * the multigroup data and applies a Analytic_Model for each group.  This way
- * a different rtt_cdi_analytic::Analytic_Model can be used in each group.
- * For example, the client could choose to use a
- * rtt_cdi_analytic::Polynomial_Analytic_Opacity_Model for the low frequency
- * groups and a rtt_cdi_analytic::Constant_Analytic_Opacity_Model for the high
- * frequency groups.
+ * An rtt_cdi_analytic::Analytic_Opacity_Model is provided for each analytic energy group.  In other
+ * words, the user specifies the group structure for the multigroup data and applies a
+ * Analytic_Model for each group.  This way a different rtt_cdi_analytic::Analytic_Model can be used
+ * in each group. For example, the client could choose to use a
+ * rtt_cdi_analytic::Polynomial_Analytic_Opacity_Model for the low frequency groups and a
+ * rtt_cdi_analytic::Constant_Analytic_Opacity_Model for the high frequency groups.
  *
- * Note that opacities are returned in units of cm^2/g. Thus the resultant
- * opacity must be multiplied by density to get units of 1/cm.  See the
- * documentation in rtt_cdi_analytic::Analytic_Model for more info.
+ * Note that opacities are returned in units of cm^2/g. Thus the resultant opacity must be
+ * multiplied by density to get units of 1/cm.  See the documentation in
+ * rtt_cdi_analytic::Analytic_Model for more info.
  *
- * The constructors take a rtt_cdi::Reaction argument to determine the
- * reaction type.  The enumeration rtt_cdi::Reaction can have the value
- * TOTAL, ABSORPTION, or SCATTERING.
+ * The constructors take a rtt_cdi::Reaction argument to determine the reaction type.  The
+ * enumeration rtt_cdi::Reaction can have the value TOTAL, ABSORPTION, or SCATTERING.
  *
- * The default rtt_cdi::Model for an Analytic_Gray_Opacity is
- * rtt_cdi::ANALYTIC.  However, this can be overridden in the constructor.
+ * The default rtt_cdi::Model for an Analytic_Gray_Opacity is rtt_cdi::ANALYTIC.  However, this can
+ * be overridden in the constructor.
  *
- * This class conforms to the interface specified by
- * Analytic_MultigroupOpacity and can be used with rtt_cdi::CDI to get
- * analytic opacities.
+ * This class conforms to the interface specified by Analytic_MultigroupOpacity and can be used with
+ * rtt_cdi::CDI to get analytic opacities.
  *
  * \example cdi_analytic/test/tstCompound_Analytic_MultigroupOpacity.cc
  *
- * Example usage of Compound_Analytic_MultigroupOpacity, Analytic_Opacity_Model,
- * and their incorporation into rtt_cdi::CDI.
+ * Example usage of Compound_Analytic_MultigroupOpacity, Analytic_Opacity_Model, and their
+ * incorporation into rtt_cdi::CDI.
  */
 //================================================================================================//
 
@@ -128,7 +121,8 @@ Compound_Analytic_MultigroupOpacity::getDataDescriptor() const {
   else if (rxn == rtt_cdi::SCATTERING)
     descriptor = "Compound Multigroup Scattering";
   else {
-    Insist(rxn == rtt_cdi::TOTAL || rxn == rtt_cdi::ABSORPTION || rxn == rtt_cdi::SCATTERING,
+    Insist(rxn == rtt_cdi::TOTAL || rxn == rtt_cdi::ABSORPTION // LCOV_EXCL_LINE
+               || rxn == rtt_cdi::SCATTERING,
            "Invalid Compound multigroup model opacity!");
   }
 

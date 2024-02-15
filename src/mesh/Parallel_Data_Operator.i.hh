@@ -107,7 +107,7 @@ void Parallel_Data_Operator::local_to_global(FT &local_field, GT &global_field, 
     Check(global_field.size() < INT32_MAX);
     rtt_c4::global_sum(&global_field[0], static_cast<int>(global_field.size()));
   } else {
-    Insist(0, "Haven't done the rest yet!");
+    Insist(0, "Haven't done the rest yet!"); // LCOV_EXCL_LINE
   }
 }
 
@@ -323,7 +323,7 @@ private:
  *               number of ghost nodes on the local processor. Must implement operator[] with the
  *               cell-1 convention.
  * \param[in] vector_size  number of DoFs per cell.
- * 
+ *
  *  NOTE: this function assumes 1D array, size of cell*vector_size.
  *        Default is scalar (vector_size=1)
  */
@@ -472,7 +472,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
  *               number of ghost nodes on the local processor. Must implement operator[] with the
  *               cell-1 convention.
  * \param[in] vector_size  number of DoFs per cell.
- * 
+ *
  *  NOTE: this function assumes 1D array, size of cell*vector_size.
  *        Default is scalar (vector_size=1)
  */

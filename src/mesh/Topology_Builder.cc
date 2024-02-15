@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Aug. 1 2023
  * \brief  Member definitions of class Topology_Builder
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Topology_Builder.hh"
@@ -23,8 +23,8 @@ namespace rtt_mesh {
  * \brief Build a topology.
  *
  * The topology type that is determined by the interface.  Either domain replication
- * (rtt_mesh::Rep_Topology) or domain decomposition (rtt_mesh::DD_Topology) types can be requested.  The
- * number of processors must be greater than 1 for rtt_mesh::DD_Topology.
+ * (rtt_mesh::Rep_Topology) or domain decomposition (rtt_mesh::DD_Topology) types can be requested.
+ * The number of processors must be greater than 1 for rtt_mesh::DD_Topology.
  */
 Topology_Builder::SP_Topology Topology_Builder::build_Topology() {
   using rtt_mesh::DD_Topology;
@@ -55,7 +55,7 @@ Topology_Builder::SP_Topology Topology_Builder::build_Topology() {
     // build the topology
     topology = std::make_shared<DD_Topology>(cells_per_pe, bcells, bprocs);
   } else {
-    throw rtt_dsxx::assertion("Invalid topology-type request.");
+    throw rtt_dsxx::assertion("Invalid topology-type request."); // LCOV_EXCL_LINE
   }
 
   Ensure(topology);
@@ -160,8 +160,6 @@ void Topology_Builder::remap_bnd_data(Vec_Int &bcells, Vec_Int &bprocs) {
   // post receives for the sizes we will receive on each processor
   size_t p = 0;
 
-  //! \bug This should be a range-based for loop (clang-tidy [modernize-loop-convert])
-  // for (map_iterator i = send_full_cells.begin(); i != send_full_cells.end(); ++i) { // NOLINT
   for (auto &cellset : send_full_cells) {
     Check(p < comm_procs);
 

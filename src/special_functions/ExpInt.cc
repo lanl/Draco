@@ -4,7 +4,7 @@
  * \author Paul Talbot
  * \date   Tue July 26 13:39:00 2011
  * \brief  Iterative methods to calculate Ei(x), E_n(x)
- * \note   Copyright (C) 2016-2019 Los Alamos Natinal Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ExpInt.hh"
@@ -70,7 +70,7 @@ double En(unsigned const n, double const x) {
         return ans;
       }
     }
-    Insist(false, "continued fraction failed in En");
+    Insist(false, "continued fraction failed in En"); // LCOV_EXCL_LINE
   } else //do series
   {
     //first term
@@ -95,7 +95,7 @@ double En(unsigned const n, double const x) {
       if (fabs(del) < fabs(ans) * EPS)
         return ans;
     }
-    Insist(false, "series failed in E_n");
+    Insist(false, "series failed in E_n"); // LCOV_EXCL_LINE
   }
 
   Insist(false, "Should never get here.");

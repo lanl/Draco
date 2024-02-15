@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   May 10 2023
  * \brief  CAMR_Mesh class definition.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_CAMR_Mesh_hh
@@ -34,10 +34,10 @@ namespace rtt_mesh {
  * The vertex data is assumed to be stored in x,y[,z] order, then by cell.
  *
  * This class imposes an extra constraint on the data ordering of neighbors in the
- * rtt_mesh::CAMR_Layout object. The neighbors of a cell should be listed in order of
- * *increasing* coordinate values, with the increasing coordinates in the order x, y [,z]. For
- * example, face one of a cell is in the yz plane in a 3D mesh.  The four neighbors in a refined
- * cell should be listed in the order shown below:
+ * rtt_mesh::CAMR_Layout object. The neighbors of a cell should be listed in order of *increasing*
+ * coordinate values, with the increasing coordinates in the order x, y [,z]. For example, face one
+ * of a cell is in the yz plane in a 3D mesh.  The four neighbors in a refined cell should be listed
+ * in the order shown below:
  *
  *\code
  *                     ^ z
@@ -61,7 +61,6 @@ namespace rtt_mesh {
  * \tparam D Dimensionality, one of {1, 2, 3}.
  *
  * \sa CAMR_Mesh.cc for detailed descriptions.
- *
  */
 //================================================================================================//
 
@@ -331,10 +330,10 @@ void CAMR_Mesh<D>::constructor_body(I_IT level_data, D_IT vertex_data, I_IT neig
  * \tparam I_IT - integer type
  * \tparam D_IT - double type
  *
- * \param[in] num_global_cells_   - The number of global cells in the mesh e.g., sum_p(active_size_)
+ * \param[in] num_global_cells_ - The number of global cells in the mesh e.g., sum_p(active_size_)
  * \param[in] active_size_ - The number of active cells in the mesh
  * \param[in] full_size_   - The number of full cells in the mesh
- * \param[in] ghost_size_   - The number of ghost cells in the mesh (counting active cell only)
+ * \param[in] ghost_size_  - The number of ghost cells in the mesh (counting active cell only)
  * \param[in] width_  - The width of all of the cells on level 0 of the mesh.
  * \param vertex_data - An iterator into the data containing the vertex coordinates. See below for
  *                      ordering info.
@@ -347,7 +346,8 @@ void CAMR_Mesh<D>::constructor_body(I_IT level_data, D_IT vertex_data, I_IT neig
  * \param ghost_cells - An iterator into the data containing ghost cell IDs.
  * \param ghost_procs - An iterator into the data containing ghost processor IDs.
  * \param full2active_ - An iterator into the data containing map from full to active mesh.
- *                      full mesh includes parent elements, while active mesh only includes the top level elements.
+ *                      full mesh includes parent elements, while active mesh only includes the top
+ *                      level elements.
  * \param active2full_ - An iterator into the data containing map from active to full mesh.
  * \param[in] submesh_ - A boolean, true if the mesh is a domain decomposed part of a global mesh.
  *
@@ -528,8 +528,9 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
             throw;
           }
         }
-        // this is terrible,, but layout has a size of nfine_face*cells.
-        // and if the face is not refined, we need to fill the all of them with the same neighbor values..
+        // * this is terrible,, but layout has a size of nfine_face*cells.
+        // * and if the face is not refined, we need to fill the all of them with the same neighbor
+        //   values..
         for (uint32_t f = 1; f <= layout->num_amr_faces(); ++f)
           (*layout)(cell, face, f) = *neighbor_values;
         neighbor_values++;
@@ -644,7 +645,8 @@ CAMR_Mesh<D>::CAMR_Mesh(double const width_, D_IT vertex_data, I_IT level_data,
                         rtt_mesh::CAMR_Layout const &layout_, bool const submesh_)
     : layout(layout_), vertices(), levels(), maximum_level(0), number_of_levels(0),
       active_size(layout_.get_num_owned_cells()), // number of cells in the mesh
-      full_size(layout_.get_num_owned_cells()), ghost_size(0), vertices_size(layout_.get_num_owned_cells() * D),
+      full_size(layout_.get_num_owned_cells()), ghost_size(0),
+      vertices_size(layout_.get_num_owned_cells() * D),
       width(width_), local_volume(0.0), widths(), submesh(submesh_) {
   Ensure(layout.validate() == 0);
   constructor_body(level_data, vertex_data);
@@ -703,7 +705,7 @@ template <int D> int CAMR_Mesh<D>::is_coarse(int const cell, uint32_t const face
     }
   }
   // should not be here..
-  Insist(0, "Invalid coarse Face!");
+  Insist(0, "Invalid coarse Face!"); // LCOV_EXCL_LINE
 
   return result;
 }
@@ -785,8 +787,8 @@ size_t CAMR_Mesh<D>::next_face(int const Remember(cell), uint32_t const coarse_f
   case 6:
     return 5; // high-z face -> low-z face
   default:
-    Insist(0, "Invalid Face Index!");
-    return 0;
+    Insist(0, "Invalid Face Index!"); // LCOV_EXCL_LINE
+    return 0;                         // LCOV_EXCL_LINE
   }
 }
 template <int D> size_t CAMR_Mesh<D>::next_face(size_t const cell, size_t const coarse_face) const {
@@ -985,7 +987,7 @@ U3 CAMR_Mesh<D>::get_intersection(const U3 &r, const U3 &omega, const double &di
     intersection[2] = cell_vertex[2] + get_cell_width(cell);
     break;
   default:
-    Insist(0, "Invalid Face Index!");
+    Insist(0, "Invalid Face Index!"); // LCOV_EXCL_LINE
     break;
   }
 

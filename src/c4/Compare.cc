@@ -98,7 +98,7 @@ bool check_global_equiv(unsigned long local_value) {
       if (local_value == neighbors_value)
         pass = true;
     } else {
-      Insist(0, "Something is wrong with nodes!");
+      Insist(0, "Something is wrong with nodes!"); // LCOV_EXCL_LINE
     }
   }
 
@@ -147,7 +147,7 @@ bool check_global_equiv(unsigned long long local_value) {
       if (local_value == neighbors_value)
         pass = true;
     } else {
-      Insist(0, "Something is wrong with nodes!");
+      Insist(0, "Something is wrong with nodes!"); // LCOV_EXCL_LINE
     }
   }
 
@@ -196,7 +196,7 @@ bool check_global_equiv(long local_value) {
       if (local_value == neighbors_value)
         pass = true;
     } else {
-      Insist(0, "Something is wrong with nodes!");
+      Insist(0, "Something is wrong with nodes!"); // LCOV_EXCL_LINE
     }
   }
 
@@ -246,7 +246,7 @@ bool check_global_equiv(long long local_value) {
       if (local_value == neighbors_value)
         pass = true;
     } else {
-      Insist(0, "Something is wrong with nodes!");
+      Insist(0, "Something is wrong with nodes!"); // LCOV_EXCL_LINE
     }
   }
 
@@ -296,7 +296,7 @@ bool check_global_equiv(double local_value, double eps) {
       rtt_c4::receive(&neighbors_value, 1, node + 1, 600);
       pass = soft_equiv(neighbors_value, local_value, eps);
     } else {
-      Insist(0, "Something is wrong with nodes!");
+      Insist(0, "Something is wrong with nodes!"); // LCOV_EXCL_LINE
     }
   }
 

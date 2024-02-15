@@ -182,6 +182,15 @@ void test_exceptions(UnitTest &ut) {
   }
   FAIL_IF(!caught);
   FAIL_IF_NOT(num_rngs == 10);
+
+  try {
+    Counter_RNG rng;
+    control2.initialize(0, rng);
+    PASSMSG("Successfully created a generator on stream 0.");
+  } catch (rtt_dsxx::assertion &) {
+    FAILMSG("Unable to create a generator on stream 0.");
+  }
+
 #endif
 #endif
 

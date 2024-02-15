@@ -153,7 +153,7 @@ Analytic_Gray_Opacity::std_string Analytic_Gray_Opacity::getDataDescriptor() con
   else if (reaction == rtt_cdi::SCATTERING)
     descriptor = "Analytic Gray Scattering";
   else
-    Insist(0, "Invalid analytic gray model opacity!");
+    Insist(0, "Invalid analytic gray model opacity!"); // LCOV_EXCL_LINE
 
   return descriptor;
 }

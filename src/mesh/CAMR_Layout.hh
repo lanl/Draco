@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   May 10 2023
  * \brief  CAMR_Layout class definition.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_CAMR_Layout_hh
@@ -72,7 +72,7 @@ private:
 
 public:
   // Constructor given the dimension of the mesh
-  CAMR_Layout(size_t num_cells, uint32_t faces, uint32_t amr_faces, size_t nghosts = 0);
+  // CAMR_Layout(size_t num_cells, uint32_t faces, uint32_t amr_faces, size_t nghosts = 0);
 
   CAMR_Layout(size_t num_owned_cells, size_t nghosts, uint32_t ndim, int *neighbor_count);
 
