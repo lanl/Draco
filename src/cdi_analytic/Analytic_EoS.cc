@@ -68,7 +68,7 @@ Analytic_EoS::Analytic_EoS(const sf_char &packed) : analytic_model() {
   if (indicator == POLYNOMIAL_SPECIFIC_HEAT_ANALYTIC_EOS_MODEL) {
     analytic_model = std::make_shared<Polynomial_Specific_Heat_Analytic_EoS_Model>(packed_analytic);
   } else {
-    Insist(0, "Unregistered analytic EoS model!");
+    Insist(0, "Unregistered analytic EoS model!"); // LCOV_EXCL_LINE
   }
 
   Ensure(analytic_model);

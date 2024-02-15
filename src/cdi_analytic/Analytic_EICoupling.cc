@@ -69,7 +69,7 @@ Analytic_EICoupling::Analytic_EICoupling(const sf_char &packed) : analytic_model
   if (indicator == CONSTANT_ANALYTIC_EICOUPLING_MODEL) {
     analytic_model = std::make_shared<Constant_Analytic_EICoupling_Model>(packed_analytic);
   } else {
-    Insist(0, "Unregistered analytic EICoupling model!");
+    Insist(0, "Unregistered analytic EICoupling model!"); // LCOV_EXCL_LINE
   }
 
   Ensure(analytic_model);

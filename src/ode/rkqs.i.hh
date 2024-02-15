@@ -3,10 +3,9 @@
  * \file   ode/rkqs.i.hh
  * \author Kent Budge
  * \date   Mon Sep 20 15:15:40 2004
- * \brief  Integrate an ordinary differential equation with local error
- *         control using fifth-order Cash-Karp Runge-Kutta steps.
- * \note   Copyright (C) 2004-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \brief  Integrate an ordinary differential equation with local error control using fifth-order
+ *         Cash-Karp Runge-Kutta steps.
+ * \note   Copyright (C) 2004-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef ode_rkqs_i_hh
@@ -25,9 +24,8 @@ namespace rtt_ode {
  *
  * \arg \a Field A field type, such as \c double or \c std::complex<double>.
 
- * \arg \a Function A function type that maps \f$ N+1 \f$ variables to \f$ N \f$
- *                  variables, supporting <code>operator()(double, const
- *                  FieldVector &, FieldVector &)</code>.
+ * \arg \a Function A function type that maps \f$ N+1 \f$ variables to \f$ N \f$ variables,
+ *                  supporting <code>operator()(double, const FieldVector &, FieldVector &)</code>.
  *
  * \param y Values of dependent variables at start of step.
  * \param dydx Values of derivatives of dependent variables at start of step.
@@ -101,33 +99,23 @@ void rkck(std::vector<Field> const &y, std::vector<Field> const &dydx, double x,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Integrate an ordinary differential equation with local error
- * control using fifth-order Cash-Karp Runge-Kutta steps.
+ * \brief Integrate an ordinary differential equation with local error control using fifth-order
+ *        Cash-Karp Runge-Kutta steps.
  *
  * \arg \a Field A field type.
- * \arg \a Function A function type that maps \f$N+1\f$ variables to \f$N\f$
- * variables, supporting <code>operator()(double, const FieldVector &,
- * FieldVector &)</code>.
+ * \arg \a Function A function type that maps \f$N+1\f$ variables to \f$N\f$ variables, supporting
+ *         <code>operator()(double, const FieldVector &, FieldVector &)</code>.
  *
- * \param y
- * Dependent variables at the start of the step.  On return, contains the
- * dependent variables at the end of the step.
- * \param dydx
- * Derivatives of the dependent variables at the start of the step.
- * \param x
- * The independent variable.
- * \param htry
- * The step size to attempt.
- * \param eps
- * The error tolerance for the integration.
- * \param yscal
- * Points to scaling factors for the error tolerance.
- * \param hdid
- * On return, contains the step actually taken.
- * \param hnext
- * On return, contains the recommended next step.
- * \param derivs
- * Function to calculate derivatives of the independent variables.
+ * \param y Dependent variables at the start of the step.  On return, contains the dependent
+ *          variables at the end of the step.
+ * \param dydx Derivatives of the dependent variables at the start of the step.
+ * \param x The independent variable.
+ * \param htry The step size to attempt.
+ * \param eps The error tolerance for the integration.
+ * \param yscal Points to scaling factors for the error tolerance.
+ * \param hdid On return, contains the step actually taken.
+ * \param hnext On return, contains the recommended next step.
+ * \param derivs Function to calculate derivatives of the independent variables.
  *
  * \pre <code> yscal.size()==y.size() </code>
  * \pre <code> dydx.size()==y.size()</code>
@@ -171,7 +159,7 @@ void rkqs(std::vector<Field> &y, std::vector<Field> const &dydx, double &x, doub
     h = (h >= 0 ? std::max(htemp, 0.1 * h) : std::min(htemp, 0.1 * h));
     double xnew = x + h;
     if (rtt_dsxx::soft_equiv(xnew, x))
-      throw std::range_error("stepsize underflow in rkqs");
+      throw std::range_error("stepsize underflow in rkqs"); // LCOV_EXCL_LINE
   }
   if (errmax > ERRCON)
     hnext = SAFETY * h * std::pow(errmax, PGROW);

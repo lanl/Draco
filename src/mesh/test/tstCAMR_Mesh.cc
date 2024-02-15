@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Mon Jul 10 2023
  * \brief  Unit test for CAMR_Mesh
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ParallelUnitTest.hh"
@@ -3051,7 +3051,12 @@ void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
 
   // mesh.get_Layout().print(std::cout, 1);
 
-  std::cout << mesh.get_Layout();
+  CAMR_Layout const &clo = mesh.get_Layout();
+  std::cout << clo;
+  {
+    CAMR_Layout const &clo2 = mesh.get_Layout();
+    FAIL_IF_NOT(clo == clo2);
+  }
 
   // Test the equality operator
   FAIL_IF(!(mesh == mesh));

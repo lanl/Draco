@@ -660,7 +660,7 @@ public:
   Analytic_Eloss_Model &operator=(Analytic_Eloss_Model &&rhs) noexcept = delete;
 
   //! Interface for derived analytic eloss models.
-  virtual double calculate_eloss(const double T, const double rho, const double v0) const = 0;
+  // virtual double calculate_eloss(const double T, const double rho, const double v0) const = 0;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -683,7 +683,7 @@ public:
   Analytic_KP_Alpha_Eloss_Model() = default;
 
   //! Calculate the eloss rate in units of shk^-1; T given in keV, rho in g/cc, v0 in cm/shk
-  double calculate_eloss(const double T, const double rho, const double v0) const override;
+  // double calculate_eloss(const double T, const double rho, const double v0) const override;
 };
 
 } // end namespace rtt_cdi_analytic

@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   May 16 2023
  * \brief  Member definitions of class CAMR_Mesh
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_CAMR_Mesh_t_hh
@@ -760,7 +760,7 @@ size_t CAMR_Mesh<D>::get_bndface(std::string const &name, int const /*cell*/) co
   else if (name == "hiz")
     face = 6;
   else
-    Insist(0, "Unknown boundary descriptor string.");
+    Insist(0, "Unknown boundary descriptor string."); // LCOV_EXCL_LINE
   Require(face >= 1 && face <= layout->num_coarse_faces());
   return face;
 }

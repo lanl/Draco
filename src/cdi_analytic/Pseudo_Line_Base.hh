@@ -75,6 +75,7 @@ public:
                    double line_peak, double line_width, int number_of_edges, double edge_ratio,
                    double Tref, double Tpow, double emin, double emax, unsigned seed);
 
+#if 0
   /*!
    * \brief Second constructor for Pseudo_Line_Base.
    * \bug No unit test, but needed by Capsaicin thermal_data/microphysics_parser.cc ->
@@ -92,6 +93,7 @@ public:
   Pseudo_Line_Base(double nu0, double C, double Bn, double Bd, double R, int number_of_lines,
                    double line_peak, double line_width, int number_of_edges, double edge_ratio,
                    double Tref, double Tpow, double emin, double emax, unsigned seed);
+#endif
 
   //! Constructor for packed state.
   explicit Pseudo_Line_Base(vector<char> const &packed);
@@ -115,10 +117,7 @@ public:
 
   static double BB(double const T, double const x) {
     double const e = expm1(x / T);
-    if (e > 0.0)
-      return x * x * x / e;
-    else
-      return x * x * T;
+    return (e > 0.0) ? x * x * x / e : x * x * T;
   }
 
   static double DBB(double const T, double const x) {

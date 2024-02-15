@@ -94,10 +94,11 @@ Pseudo_Line_Analytic_MultigroupOpacity::Pseudo_Line_Analytic_MultigroupOpacity(
 //------------------------------------------------------------------------------------------------//
 //! Packing function
 //! \bug No unit tests so commenting out until a test can be added.
-Analytic_MultigroupOpacity::sf_char Pseudo_Line_Analytic_MultigroupOpacity::pack() const {
-  sf_char pdata = Analytic_MultigroupOpacity::pack();
-  Insist(false, "Please add a Draco Unit Test before restoring this code.");
-  return pdata;
+Analytic_MultigroupOpacity::sf_char
+Pseudo_Line_Analytic_MultigroupOpacity::pack() const { // LCOV_EXCL_LINE
+  // return Analytic_MultigroupOpacity::pack();
+  Insist(false, "Please add a Draco Unit Test when creating this code."); // LCOV_EXCL_LINE
+  return {};                                                              // LCOV_EXCL_LINE
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -191,48 +192,57 @@ sf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double T, double /*
     }
   } break;
 
-  default:
-    Insist(false, "bad case");
+  default:                     // LCOV_EXCL_LINE
+    Insist(false, "bad case"); // LCOV_EXCL_LINE
   }
 
   return Result;
 }
 
 //------------------------------------------------------------------------------------------------//
-vf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(sf_double const &T, double rho) const {
-  size_t const n = T.size();
-  vf_double Result(n);
+// * 2024-02-09 The following 3 functions do not have unit tests and they don't appar to be used by
+//   client projects.  Because they are not used, I have commented them out.  They should be
+//   re-enabled if needed.  BUT, unit tests in Draco should be implemented!
+//------------------------------------------------------------------------------------------------//
 
-  for (size_t i = 0; i < n; ++i) {
-    double const Ti = T[i];
-    Result[i] = getOpacity(Ti, rho);
-  }
-  return Result;
+//------------------------------------------------------------------------------------------------//
+vf_double
+Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(sf_double const & /*T*/, // LCOV_EXCL_LINE
+                                                   double /*rho*/) const {
+  Insist(false, "Add unit test for __FILE__ :: __LINE__"); // LCOV_EXCL_LINE
+  // size_t const n = T.size();
+  // vf_double Result(n);
+  // for (size_t i = 0; i < n; ++i) {
+  //   double const Ti = T[i];
+  //   Result[i] = getOpacity(Ti, rho);
+  // }
+  // return Result;
+  return {};
 }
 
 //------------------------------------------------------------------------------------------------//
-vf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double const T,
+vf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double const T, // LCOV_EXCL_LINE
                                                              sf_double const &rho) const {
+  Insist(false, "Add unit test for __FILE__ :: __LINE__"); // LCOV_EXCL_LINE
   return {rho.size(), getOpacity(T, rho[0])};
 }
 
 //------------------------------------------------------------------------------------------------//
-std::string Pseudo_Line_Analytic_MultigroupOpacity::getDataDescriptor() const {
-  std::string descriptor;
-
-  rtt_cdi::Reaction const rxn = getReactionType();
-
-  if (rxn == rtt_cdi::TOTAL)
-    descriptor = "Pseudo Line Multigroup Total";
-  else if (rxn == rtt_cdi::ABSORPTION)
-    descriptor = "Pseudo Line Multigroup Absorption";
-  else if (rxn == rtt_cdi::SCATTERING)
-    descriptor = "Pseudo Line Multigroup Scattering";
-  else {
-    Insist(0, "Invalid Pseudo Line multigroup model opacity!");
-  }
-
-  return descriptor;
+std::string Pseudo_Line_Analytic_MultigroupOpacity::getDataDescriptor() const { // LCOV_EXCL_LINE
+  Insist(false, "Add unit test for __FILE__ :: __LINE__");                      // LCOV_EXCL_LINE
+  // std::string descriptor;
+  // rtt_cdi::Reaction const rxn = getReactionType();
+  // if (rxn == rtt_cdi::TOTAL)
+  //   descriptor = "Pseudo Line Multigroup Total";
+  // else if (rxn == rtt_cdi::ABSORPTION)
+  //   descriptor = "Pseudo Line Multigroup Absorption";
+  // else if (rxn == rtt_cdi::SCATTERING)
+  //   descriptor = "Pseudo Line Multigroup Scattering";
+  // else {
+  //   Insist(0, "Invalid Pseudo Line multigroup model opacity!");
+  // }
+  // return descriptor;
+  return {};
 }
 
 } // end namespace rtt_cdi_analytic

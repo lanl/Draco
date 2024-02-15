@@ -103,6 +103,7 @@ Pseudo_Line_Base::Pseudo_Line_Base(std::shared_ptr<Expression const> const &cont
 }
 
 //------------------------------------------------------------------------------------------------//
+#if 0
 Pseudo_Line_Base::Pseudo_Line_Base(const string &cont_file, int number_of_lines, double line_peak,
                                    double line_width, int number_of_edges, double edge_ratio,
                                    double Tref, double Tpow, double emin, double emax,
@@ -159,12 +160,15 @@ Pseudo_Line_Base::Pseudo_Line_Base(double nu0, double C, double Bn, double Bd, d
 
   setup_(emin, emax);
 }
+#endif
 
 //------------------------------------------------------------------------------------------------//
-//! Packing function for Pseudo_Line_Base objects.
-vector<char> Pseudo_Line_Base::pack() const {
-  throw std::range_error("sorry, pack not implemented for Pseudo_Line_Base");
-  // Because we haven't implemented packing functionality for Expression trees yet.
+/*! \brief Packing function for Pseudo_Line_Base objects.
+ *
+ * \bug Not available because we haven't implemented packing functionality for Expression trees yet.
+ */
+vector<char> Pseudo_Line_Base::pack() const {                                 // LCOV_EXCL_LINE
+  throw std::range_error("sorry, pack not implemented for Pseudo_Line_Base"); // LCOV_EXCL_LINE
 
 #if 0
 // caculate the size in bytes

@@ -69,7 +69,7 @@ fi
 # - generate the text report at the same location as coverage.info (top level of build tree).
 # cmd="$LCOV --keep-going --ignore-errors gcov,gcov --gcov-tool $GCOV --quiet ${basediropt}"
 # cmd+=" --list coverage.info"
-cmd="$LCOV --gcov-tool $GCOV --summary coverage.info"
+cmd="$LCOV --gcov-tool $GCOV --filter brace --summary coverage.info"
 echo "${cmd} --> ${repname}"
 
 # We actually want word splitting in this case.

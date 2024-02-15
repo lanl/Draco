@@ -51,7 +51,7 @@ std::map<KT, std::vector<VT>> X3D_Draco_Mesh_Reader::map_x3d_block(const std::st
       try {
         tmp_vec[i] = rtt_dsxx::parse_number_impl<VT>(j);
       } catch (std::invalid_argument &err) {
-        Insist(false, err.what());
+        Insist(false, err.what()); // LCOV_EXCL_LINE
       }
 
       // increment counter
@@ -84,7 +84,7 @@ template <typename KT> KT X3D_Draco_Mesh_Reader::convert_key(const std::string &
   try {
     ret_key = rtt_dsxx::parse_number_impl<KT>(skey);
   } catch (std::invalid_argument &err) {
-    Insist(false, err.what());
+    Insist(false, err.what()); // LCOV_EXCL_LINE
   }
 
   return ret_key;
