@@ -2,7 +2,7 @@
 # \file   .cmake-format.py
 # \author Kelly Thompson <kgt@lanl.gov>
 # \brief  Options affecting listfile parsing
-# \note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
+# \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
 #
 # https://cmake-format.readthedocs.io/en/latest/configuration.html
 # ------------------------------------------------------------------------------------------------ #
@@ -12,7 +12,7 @@ with section("parse"):  # noqa: F821
     additional_commands = {
 
         "add_component_library": {
-            "pargs": 1,
+            # "pargs": 1,
             "flags": ["NOEXPORT", "PROVIDE_DLL_DEPS"],
             "kwargs": {"TARGET": '*', "LIBRARY_NAME": '*', "SOURCES": '*', "HEADERS": '*',
                        "INCLUDE_DIRS": '*', "TARGET_DEPS": '*', "LANGUAGE": '*',
@@ -23,8 +23,8 @@ with section("parse"):  # noqa: F821
                        "INCLUDE_DIRS": '*', "TARGET_DEPS": '*', "EXE_NAME": '*', "FOLDER": '*'}},
 
         "add_scalar_tests": {
-            "kwargs": {"SOURCES": '*', "DEPS": '*', "TEST_ARGS": '*', "PASS_REGEX": '*', "LABELS":
-                       '*'}},
+            "kwargs": {"SOURCES": '*', "DEPS": '*', "EXTRA_RESOURCES": '*', "FAIL_REGEX": '*',
+                       "LANGUAGE": '*', "PASS_REGEX": '*', "TEST_ARGS": '*', "LABELS": '*'}},
 
         "add_parallel_tests": {
             "flags": ["MPI_PLUS_OMP"],
@@ -59,36 +59,6 @@ with section("parse"):  # noqa: F821
             "pargs": 0,
             "flags": ["FOO_PROPERTIES", "NO_EXTERNAL_INSTALL"],
             "kwargs": {"TARGET": '*', "COMMAND": '*', "CMD_ARGS": '*'}},
-
-        "set_target_properties": {
-            "pargs": 1,
-            "flags": ["PROPERTIES", "NO_EXTERNAL_INSTALL"],
-            "kwargs": {"COMPILE_DEFINITIONS": '*', "DEPENDS": '*', "FOLDER": '*',
-                       "IMPORTED_CONFIGURATIONS": '*',
-                       "IMPORTED_IMPLIB": '*',
-                       "IMPORTED_IMPLIB_DEBUG": '*',
-                       "IMPORTED_IMPLIB_RELEASE": '*',
-                       "IMPORTED_LINK_INTERFACE_LANGUAGES": '*',
-                       "IMPORTED_LOCATION_DEBUG": '*',
-                       "IMPORTED_LOCATION_RELEASE": '*', "IMPORTED_LINK_INTERFACE_LIBRARIES": '*',
-                       "IMPORTED_LINK_INTERFACE_LANGUAGES": '*',
-                       "IMPORTED_LINK_INTERFACE_LIBRARIES_NOCONFIG": '*',
-                       "IMPORTED_LOCATION": '*',
-                       "INTERFACE_INCLUDE_DIRECTORIES": '*',
-                       "LINK_FLAGS": '*',
-                       "LINKER_LANGUAGE": '*',
-                       "OUTPUT_NAME": '*',
-                       "RUNTIME_OUTPUT_DIRECTORY": '*',
-                       "VS_KEYWORD": '*',
-                       "WINDOWS_EXPORT_ALL_SYMBOLS": '*',
-                       "XCODE_ATTRIBUTE_ENABLE_OPENMP_SUPPORT": '*'}},
-
-        "set_tests_properties": {
-            "pargs": 1,
-            "flags": ["FOO_PROPERTIES", "NO_EXTERNAL_INSTALL"],
-            "kwargs": {"DEPENDS": '*', "ENVIRONMENT": '*', "FAIL_REGULAR_EXPRESSION": '*',
-                       "LABELS": '*', "PASS_REGULAR_EXPRESSION": '*', "PROCESSORS": '*',
-                       "RESOURCE_LOCK": '*', "WORKING_DIRECTORY": '*'}},
     }
 
     # Specify variable tags.

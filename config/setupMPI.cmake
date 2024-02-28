@@ -485,8 +485,10 @@ macro(setupMPILibrariesUnix)
       if(NOT EXISTS ${MPIEXEC_EXECUTABLE})
         find_program(MPIEXEC_EXECUTABLE flux) # 1st option is flux
         if(EXISTS ${MPIEXEC_EXECUTABLE})
-          execute_process(COMMAND ${MPIEXEC_EXECUTABLE} jobs
-                          RESULT_VARIABLE fluxfailure OUTPUT_QUIET ERROR_QUIET)
+          execute_process(
+            COMMAND ${MPIEXEC_EXECUTABLE} jobs
+            RESULT_VARIABLE fluxfailure
+            OUTPUT_QUIET ERROR_QUIET)
           if(NOT "${fluxfailure}" STREQUAL "0")
             unset(MPIEXEC_EXECUTABLE CACHE)
           endif()
@@ -662,8 +664,8 @@ macro(setupMPILibrariesWindows)
     execute_process(
       COMMAND "${MPIEXEC_EXECUTABLE}" -help
       OUTPUT_VARIABLE DBS_MPI_VER_OUT
-      ERROR_VARIABLE DBS_MPI_VER_ERR ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
-                     ERROR_STRIP_TRAILING_WHITESPACE)
+      ERROR_VARIABLE DBS_MPI_VER_ERR
+      ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_STRIP_TRAILING_WHITESPACE)
     if("${DBS_MPI_VER_OUT}" MATCHES "Microsoft MPI Startup Program")
       string(REGEX REPLACE ".*Version ([0-9.]+).*" "\\1" DBS_MPI_VER
                            "${DBS_MPI_VER_OUT}${DBS_MPI_VER_ERR}")
@@ -692,12 +694,18 @@ macro(setupMPILibrariesWindows)
           CACHE STRING "Flavor of MPI.")
 
       # Use wmic to learn about the current machine
-      execute_process(COMMAND wmic cpu get NumberOfCores
-                      OUTPUT_VARIABLE MPI_CORES_PER_CPU OUTPUT_STRIP_TRAILING_WHITESPACE)
-      execute_process(COMMAND wmic computersystem get NumberOfLogicalProcessors
-                      OUTPUT_VARIABLE MPIEXEC_MAX_NUMPROCS OUTPUT_STRIP_TRAILING_WHITESPACE)
-      execute_process(COMMAND wmic computersystem get NumberOfProcessors
-                      OUTPUT_VARIABLE MPI_CPUS_PER_NODE OUTPUT_STRIP_TRAILING_WHITESPACE)
+      execute_process(
+        COMMAND wmic cpu get NumberOfCores
+        OUTPUT_VARIABLE MPI_CORES_PER_CPU
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+      execute_process(
+        COMMAND wmic computersystem get NumberOfLogicalProcessors
+        OUTPUT_VARIABLE MPIEXEC_MAX_NUMPROCS
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+      execute_process(
+        COMMAND wmic computersystem get NumberOfProcessors
+        OUTPUT_VARIABLE MPI_CPUS_PER_NODE
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
       string(REGEX REPLACE ".*[\n]([0-9]+$)" "\\1" MPI_CORES_PER_CPU ${MPI_CORES_PER_CPU})
       string(REGEX REPLACE ".*[\n]([0-9]+$)" "\\1" MPIEXEC_MAX_NUMPROCS ${MPIEXEC_MAX_NUMPROCS})
       string(REGEX REPLACE ".*[\n]([0-9]+$)" "\\1" MPI_CPUS_PER_NODE ${MPI_CPUS_PER_NODE})
@@ -757,12 +765,11 @@ macro(setupMPILibrariesWindows)
     # Windows with dlls, but only Release libraries.
     set_target_properties(
       MPI::MPI_CXX
-      PROPERTIES
-      IMPORTED_LOCATION_RELEASE "${MPI_C_LIBRARIES}"
-      IMPORTED_IMPLIB "${MPI_C_LIBRARIES}"
-      INTERFACE_INCLUDE_DIRECTORIES "${MPI_C_INCLUDE_DIRS}"
-      IMPORTED_CONFIGURATIONS Release
-      IMPORTED_LINK_INTERFACE_LANGUAGES "CXX")
+      PROPERTIES IMPORTED_LOCATION_RELEASE "${MPI_C_LIBRARIES}"
+                 IMPORTED_IMPLIB "${MPI_C_LIBRARIES}"
+                 INTERFACE_INCLUDE_DIRECTORIES "${MPI_C_INCLUDE_DIRS}"
+                 IMPORTED_CONFIGURATIONS Release
+                 IMPORTED_LINK_INTERFACE_LANGUAGES "CXX")
 
   endif()
 
