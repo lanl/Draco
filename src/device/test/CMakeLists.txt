@@ -32,13 +32,14 @@ if(HAVE_GPU AND USE_GPU)
   # ---------------------------------------------------------------------------------------------- #
   set(test_deps Lib_device Lib_device_test)
 
-  add_scalar_tests(SOURCES "${test_sources}" DEPS "${test_deps}" LANGUAGE ${GPU_DBS_STRING})
+  add_scalar_tests(
+    SOURCES "${test_sources}"
+    DEPS "${test_deps}"
+    LANGUAGE ${GPU_DBS_STRING})
 
   set_tests_properties(
-    device_gpu_hello_rt_api
-    PROPERTIES
-    PASS_REGULAR_EXPRESSION ".*[Tt]est: PASSED"
-    FAIL_REGULAR_EXPRESSION ".*[Tt]est: FAILED")
+    device_gpu_hello_rt_api PROPERTIES PASS_REGULAR_EXPRESSION ".*[Tt]est: PASSED"
+                                       FAIL_REGULAR_EXPRESSION ".*[Tt]est: FAILED")
 
 endif(HAVE_GPU AND USE_GPU)
 

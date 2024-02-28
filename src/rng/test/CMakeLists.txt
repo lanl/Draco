@@ -63,14 +63,16 @@ add_scalar_tests(SOURCES "${test_sources}" DEPS "Lib_rng")
 add_scalar_tests(
   SOURCES "${random123_unit_tests}"
   DEPS "Lib_rng"
-  PASS_REGEX "OK|SUCCESS" FAIL_REGEX "failed;error;Failure")
+  PASS_REGEX "OK|SUCCESS"
+  FAIL_REGEX "failed;error;Failure")
 
 target_include_directories(Ut_rng_ut_uniform_exe PRIVATE $<BUILD_INTERFACE:${rng_SOURCE_DIR}>)
 
 add_scalar_tests(
   SOURCES "${random123_known_answer_tests}"
   DEPS "Lib_rng"
-  PASS_REGEX "PASSED" FAIL_REGEX "FAILED")
+  PASS_REGEX "PASSED"
+  FAIL_REGEX "FAILED")
 
 if(USE_CUDA AND NOT CMAKE_CXX_COMPILER_ID MATCHES XL)
   # This test is proved by the Random123 project and is requires to nvcc (cuda) and gcc
@@ -79,7 +81,8 @@ if(USE_CUDA AND NOT CMAKE_CXX_COMPILER_ID MATCHES XL)
   add_scalar_tests(
     SOURCES "${test_sources_cuda}"
     DEPS "${test_deps_cuda}"
-    PASS_REGEX "PASSED" FAIL_REGEX "FAILED")
+    PASS_REGEX "PASSED"
+    FAIL_REGEX "FAILED")
 endif()
 
 add_component_executable(TARGET Exe_time_serial SOURCES ${PROJECT_SOURCE_DIR}/time_serial.cc

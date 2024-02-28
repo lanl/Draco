@@ -71,12 +71,8 @@ if(OpenMP_FOUND)
   if(DEFINED ENV{CRAY_ACCEL_TARGET}
      AND "$ENV{CRAY_ACCEL_TARGET}" MATCHES "amd"
      AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set_target_properties(
-      Ut_c4_tstOMP_API_off_exe
-      Ut_c4_tstOMP_API_on_exe
-      Ut_c4_tstOMP_exe
-      PROPERTIES
-      LINK_FLAGS "-fopenmp")
+    set_target_properties(Ut_c4_tstOMP_API_off_exe Ut_c4_tstOMP_API_on_exe Ut_c4_tstOMP_exe
+                          PROPERTIES LINK_FLAGS "-fopenmp")
   endif()
 endif()
 
@@ -107,10 +103,7 @@ if(NOT ${DRACO_C4} STREQUAL "SCALAR")
   # Override PROCESSORS property.  Use 'mpirun -np 4 ...' but reserve half of the cores. The test
   # will actually use all of the cores, but only very briefly.
   math(EXPR half_of_all_cores "${MPI_MAX_NUMPROCS_PHYSICAL} / 2")
-  set_tests_properties(
-    c4_tstQuoWrapper_4
-    PROPERTIES
-    PROCESSORS "${half_of_all_cores}")
+  set_tests_properties(c4_tstQuoWrapper_4 PROPERTIES PROCESSORS "${half_of_all_cores}")
 endif()
 
 # Exclude tstTime from valgrind checks.

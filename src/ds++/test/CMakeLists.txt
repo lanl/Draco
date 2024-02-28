@@ -47,18 +47,13 @@ add_scalar_tests(SOURCES "${test_sources}" DEPS Lib_dsxx)
 # ~~~
 
 # tstData_Table.cc will fail for RelWithDebugInfo. Set extra CPP macros as a work-around:
-set_target_properties(
-  Ut_dsxx_tstData_Table_exe
-  PROPERTIES
-  COMPILE_DEFINITIONS $<UPPER_CASE:$<CONFIG>>)
+set_target_properties(Ut_dsxx_tstData_Table_exe PROPERTIES COMPILE_DEFINITIONS
+                                                           $<UPPER_CASE:$<CONFIG>>)
 
 # create the do_exception executable.
 add_executable(Exe_do_exception ${PROJECT_SOURCE_DIR}/do_exception.cc)
 target_link_libraries(Exe_do_exception Lib_dsxx)
-set_target_properties(
-  Exe_do_exception PROPERTIES
-  FOLDER dsxx_test
-  OUTPUT_NAME do_exception)
+set_target_properties(Exe_do_exception PROPERTIES FOLDER dsxx_test OUTPUT_NAME do_exception)
 dbs_std_tgt_props(Exe_do_exception)
 
 # This is currently broken for clang-cl under MSVC because we are picking up <float.h> from LLVM

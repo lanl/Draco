@@ -3,7 +3,7 @@
 # author Kelly G. Thompson, kgt@lanl.gov
 # date   2010 Dec 1
 # brief  Provide extra macros to simplify CMakeLists.txt for component directories.
-# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 include_guard(GLOBAL)
@@ -50,10 +50,7 @@ function(dbs_std_tgt_props target)
   get_property(project_enabled_languages GLOBAL PROPERTY ENABLED_LANGUAGES)
   foreach(lang ${project_enabled_languages})
     if(${lang} STREQUAL "C")
-      set_target_properties(
-        ${target}
-        PROPERTIES
-        ${Draco_std_target_props_C})
+      set_target_properties(${target} PROPERTIES ${Draco_std_target_props_C})
     elseif(${lang} STREQUAL "CXX")
       set_target_properties(${target} PROPERTIES ${Draco_std_target_props_CXX})
     elseif(${lang} STREQUAL "CUDA")
@@ -211,10 +208,10 @@ macro(add_component_executable)
   endif()
   dbs_std_tgt_props(${ace_TARGET})
   set_target_properties(
-    ${ace_TARGET} PROPERTIES
-    OUTPUT_NAME ${ace_EXE_NAME}
-    FOLDER ${ace_FOLDER}
-    COMPILE_DEFINITIONS
+    ${ace_TARGET}
+    PROPERTIES
+      OUTPUT_NAME ${ace_EXE_NAME} FOLDER ${ace_FOLDER}
+      COMPILE_DEFINITIONS
       "PROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\";PROJECT_BINARY_DIR=\"${PROJECT_BINARY_DIR}\"")
   if(DEFINED ace_PROJECT_LABEL)
     set_target_properties(${ace_TARGET} PROPERTIES PROJECT_LABEL ${ace_PROJECT_LABEL})
@@ -348,13 +345,14 @@ macro(add_component_library)
   add_library(${acl_TARGET} ${acl_LIBRARY_TYPE} ${acl_SOURCES})
   dbs_std_tgt_props(${acl_TARGET})
   set_target_properties(
-    ${acl_TARGET} PROPERTIES
-    OUTPUT_NAME ${acl_LIBRARY_NAME_PREFIX}${acl_LIBRARY_NAME}
-    FOLDER ${folder_name}
-    WINDOWS_EXPORT_ALL_SYMBOLS ON
-    LINKER_LANGUAGE "${acl_LINK_LANGUAGE}")
+    ${acl_TARGET}
+    PROPERTIES OUTPUT_NAME ${acl_LIBRARY_NAME_PREFIX}${acl_LIBRARY_NAME} FOLDER ${folder_name}
+               WINDOWS_EXPORT_ALL_SYMBOLS ON LINKER_LANGUAGE "${acl_LINK_LANGUAGE}")
   if(DEFINED DRACO_LINK_OPTIONS AND NOT "${DRACO_LINK_OPTIONS}x" STREQUAL "x")
-    set_property(TARGET ${acl_TARGET} APPEND PROPERTY LINK_OPTIONS ${DRACO_LINK_OPTIONS})
+    set_property(
+      TARGET ${acl_TARGET}
+      APPEND
+      PROPERTY LINK_OPTIONS ${DRACO_LINK_OPTIONS})
   endif()
 
   if(DBS_GENERATE_OBJECT_LIBRARIES)
@@ -491,11 +489,14 @@ macro(register_scalar_test)
   # set pass fail criteria, processors required, etc.
   set_tests_properties(
     ${rst_TARGET}
-    PROPERTIES
-    PASS_REGULAR_EXPRESSION "${addscalartest_PASS_REGEX}"
-    FAIL_REGULAR_EXPRESSION "${addscalartest_FAIL_REGEX}"
-    PROCESSORS "${num_procs}"
-    WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
+    PROPERTIES PASS_REGULAR_EXPRESSION
+               "${addscalartest_PASS_REGEX}"
+               FAIL_REGULAR_EXPRESSION
+               "${addscalartest_FAIL_REGEX}"
+               PROCESSORS
+               "${num_procs}"
+               WORKING_DIRECTORY
+               "${PROJECT_BINARY_DIR}")
   if(NOT "${addscalartest_RESOURCE_LOCK}none" STREQUAL "none")
     set_tests_properties(${rst_TARGET} PROPERTIES RESOURCE_LOCK "${addscalartest_RESOURCE_LOCK}")
   endif()
@@ -519,15 +520,20 @@ macro(register_scalar_test)
     add_test(NAME memcheck_${rst_TARGET} COMMAND ${CMAKE_MEMORYCHECK_COMMAND} ${valgrindopts}
                                                  ${RUN_CMD} ${rst_COMMAND} ${cmdargs})
     set_tests_properties(
-      memcheck_${rst_TARGET} PROPERTIES
-      PASS_REGULAR_EXPRESSION "${addscalartest_PASS_REGEX}"
-      FAIL_REGULAR_EXPRESSION "${addscalartest_FAIL_REGEX}"
-      PROCESSORS "${num_procs}"
-      WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-      LABELS "memcheck;${addscalartest_LABEL}")
+      memcheck_${rst_TARGET}
+      PROPERTIES PASS_REGULAR_EXPRESSION
+                 "${addscalartest_PASS_REGEX}"
+                 FAIL_REGULAR_EXPRESSION
+                 "${addscalartest_FAIL_REGEX}"
+                 PROCESSORS
+                 "${num_procs}"
+                 WORKING_DIRECTORY
+                 "${PROJECT_BINARY_DIR}"
+                 LABELS
+                 "memcheck;${addscalartest_LABEL}")
     if(NOT "${addscalartest_RESOURCE_LOCK}none" STREQUAL "none")
-      set_tests_properties(memcheck_${rst_TARGET} PROPERTIES
-                           RESOURCE_LOCK "${addscalartest_RESOURCE_LOCK}")
+      set_tests_properties(memcheck_${rst_TARGET} PROPERTIES RESOURCE_LOCK
+                                                             "${addscalartest_RESOURCE_LOCK}")
     endif()
     if(NOT "${addscalartest_RUN_AFTER}none" STREQUAL "none")
       set_tests_properties(memcheck_${rst_TARGET} PROPERTIES DEPENDS "${addscalartest_RUN_AFTER}")
@@ -576,10 +582,9 @@ macro(register_parallel_test)
                      ${MPIRUN_PREFLAGS} ${MPIEXEC_EXTRA_OPTS} ${rpt_COMMAND} ${rpt_CMD_ARGS})
   endif()
   set_tests_properties(
-    ${rpt_TARGET} PROPERTIES
-    PASS_REGULAR_EXPRESSION "${addparalleltest_PASS_REGEX}"
-    FAIL_REGULAR_EXPRESSION "${addparalleltest_FAIL_REGEX}"
-    WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
+    ${rpt_TARGET}
+    PROPERTIES PASS_REGULAR_EXPRESSION "${addparalleltest_PASS_REGEX}" FAIL_REGULAR_EXPRESSION
+               "${addparalleltest_FAIL_REGEX}" WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
   if(NOT "${addparalleltest_RESOURCE_LOCK}none" STREQUAL "none")
     set_tests_properties(${rpt_TARGET} PROPERTIES RESOURCE_LOCK "${addparalleltest_RESOURCE_LOCK}")
   endif()
@@ -601,10 +606,7 @@ macro(register_parallel_test)
     if(MPI_HYPERTHREADING)
       math(EXPR numthreads "2 * ${numthreads}")
     endif()
-    set_tests_properties(
-      ${rpt_TARGET} PROPERTIES
-      PROCESSORS "${numthreads}"
-      LABELS "nomemcheck")
+    set_tests_properties(${rpt_TARGET} PROPERTIES PROCESSORS "${numthreads}" LABELS "nomemcheck")
     unset(numthreads)
     unset(nnodes)
     unset(nnodes_remainder)
@@ -631,14 +633,18 @@ macro(register_parallel_test)
         ${CMAKE_MEMORYCHECK_COMMAND} ${valgrindopts} ${RUN_CMD} ${MPIEXEC_EXECUTABLE}
         ${MPIEXEC_NUMPROC_FLAG} ${rpt_NUMPE} ${MPIRUN_PREFLAGS} ${rpt_COMMAND} ${rpt_CMD_ARGS})
     set_tests_properties(
-      memcheck_${rpt_TARGET} PROPERTIES
-      PASS_REGULAR_EXPRESSION "${addparalleltest_PASS_REGEX}"
-      FAIL_REGULAR_EXPRESSION "${addparalleltest_FAIL_REGEX}"
-      WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-      LABELS "memcheck;${addparalleltest_LABEL}")
+      memcheck_${rpt_TARGET}
+      PROPERTIES PASS_REGULAR_EXPRESSION
+                 "${addparalleltest_PASS_REGEX}"
+                 FAIL_REGULAR_EXPRESSION
+                 "${addparalleltest_FAIL_REGEX}"
+                 WORKING_DIRECTORY
+                 "${PROJECT_BINARY_DIR}"
+                 LABELS
+                 "memcheck;${addparalleltest_LABEL}")
     if(NOT "${addparalleltest_RESOURCE_LOCK}none" STREQUAL "none")
-      set_tests_properties(memcheck_${rpt_TARGET} PROPERTIES
-                           RESOURCE_LOCK "${addparalleltest_RESOURCE_LOCK}")
+      set_tests_properties(memcheck_${rpt_TARGET} PROPERTIES RESOURCE_LOCK
+                                                             "${addparalleltest_RESOURCE_LOCK}")
     endif()
     if(NOT "${addparalleltest_RUN_AFTER}none" STREQUAL "none")
       set_tests_properties(memcheck_${rpt_TARGET} PROPERTIES DEPENDS "${addparalleltest_RUN_AFTER}")
@@ -774,29 +780,52 @@ macro(add_scalar_tests test_sources)
     endif()
     add_executable(Ut_${compname}_${testname}_exe ${file})
     dbs_std_tgt_props(Ut_${compname}_${testname}_exe)
-    set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY OUTPUT_NAME ${testname})
-    set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY VS_KEYWORD ${testname})
-    set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY FOLDER ${compname}_test)
-    set_property(TARGET Ut_${compname}_${testname}_exe APPEND
-                 PROPERTY COMPILE_DEFINITIONS "PROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\"")
-    set_property(TARGET Ut_${compname}_${testname}_exe APPEND
-                 PROPERTY COMPILE_DEFINITIONS "PROJECT_BINARY_DIR=\"${PROJECT_BINARY_DIR}\"")
+    set_property(
+      TARGET Ut_${compname}_${testname}_exe
+      APPEND
+      PROPERTY OUTPUT_NAME ${testname})
+    set_property(
+      TARGET Ut_${compname}_${testname}_exe
+      APPEND
+      PROPERTY VS_KEYWORD ${testname})
+    set_property(
+      TARGET Ut_${compname}_${testname}_exe
+      APPEND
+      PROPERTY FOLDER ${compname}_test)
+    set_property(
+      TARGET Ut_${compname}_${testname}_exe
+      APPEND
+      PROPERTY COMPILE_DEFINITIONS "PROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\"")
+    set_property(
+      TARGET Ut_${compname}_${testname}_exe
+      APPEND
+      PROPERTY COMPILE_DEFINITIONS "PROJECT_BINARY_DIR=\"${PROJECT_BINARY_DIR}\"")
     if(DEFINED DRACO_LINK_OPTIONS AND NOT "${DRACO_LINK_OPTIONS}x" STREQUAL "x")
-      set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY LINK_OPTIONS
-                                                                         ${DRACO_LINK_OPTIONS})
+      set_property(
+        TARGET Ut_${compname}_${testname}_exe
+        APPEND
+        PROPERTY LINK_OPTIONS ${DRACO_LINK_OPTIONS})
       if(lverbose)
         message("set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY LINK_OPTIONS
                                                                          ${DRACO_LINK_OPTIONS})")
       endif()
     endif()
     if(addscalartest_LINK_WITH_FORTRAN)
-      set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY LINKER_LANGUAGE Fortran)
+      set_property(
+        TARGET Ut_${compname}_${testname}_exe
+        APPEND
+        PROPERTY LINKER_LANGUAGE Fortran)
     elseif(addscalartest_LINK_LANGUAGE)
-      set_property(TARGET Ut_${compname}_${testname}_exe APPEND
-                   PROPERTY LINKER_LANGUAGE ${addscalartest_LINK_LANGUAGE})
+      set_property(
+        TARGET Ut_${compname}_${testname}_exe
+        APPEND
+        PROPERTY LINKER_LANGUAGE ${addscalartest_LINK_LANGUAGE})
     endif()
     if(addscalartest_RUN_SERIAL)
-      set_property(TARGET Ut_${compname}_${testname}_exe APPEND PROPERTY RUN_SERIAL ON)
+      set_property(
+        TARGET Ut_${compname}_${testname}_exe
+        APPEND
+        PROPERTY RUN_SERIAL ON)
     endif()
     if(lverbose)
       message("target_link_libraries(Ut_${compname}_${testname}_exe ${test_lib_target_name}
@@ -951,20 +980,19 @@ macro(add_parallel_tests)
     add_executable(Ut_${compname}_${testname}_exe ${file})
     dbs_std_tgt_props(Ut_${compname}_${testname}_exe)
     set_target_properties(
-      Ut_${compname}_${testname}_exe PROPERTIES
-      OUTPUT_NAME ${testname}
-      VS_KEYWORD ${testname}
-      FOLDER ${compname}_test
-      COMPILE_DEFINITIONS
+      Ut_${compname}_${testname}_exe
+      PROPERTIES
+        OUTPUT_NAME ${testname} VS_KEYWORD ${testname} FOLDER ${compname}_test
+        COMPILE_DEFINITIONS
         "PROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\";PROJECT_BINARY_DIR=\"${PROJECT_BINARY_DIR}\"")
     if(DEFINED DRACO_LINK_OPTIONS AND NOT "${DRACO_LINK_OPTIONS}x" STREQUAL "x")
       set_target_properties(Ut_${compname}_${testname}_exe PROPERTIES LINK_OPTIONS
-                            ${DRACO_LINK_OPTIONS})
+                                                                      ${DRACO_LINK_OPTIONS})
     endif()
     if(addparalleltest_MPI_PLUS_OMP)
       if(${CMAKE_GENERATOR} MATCHES Xcode)
-        set_target_properties(Ut_${compname}_${testname}_exe PROPERTIES
-                              XCODE_ATTRIBUTE_ENABLE_OPENMP_SUPPORT YES)
+        set_target_properties(Ut_${compname}_${testname}_exe
+                              PROPERTIES XCODE_ATTRIBUTE_ENABLE_OPENMP_SUPPORT YES)
       endif()
     endif()
     # Do we need to use the Fortran compiler as the linker?
