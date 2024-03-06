@@ -57,18 +57,14 @@ if(NOT HIP_FLAGS_INITIALIZED)
         CACHE STRING "target architecture for gpu code.")
   endif()
 
-  string(CONCAT CMAKE_HIP_FLAGS_DEBUG " -O0")
-  # -O2 or higher causes known answer failures. Maybe due to forced fast-math features? We have also
-  # tried these options that didn't improve solution reproducibility:
-  #
-  # * -fno-fast-math
-  # * -fno-unsafe-math-optimizations
-  # * -ffp-contract=off
-  # * -fgpu-flush-denormals-to-zero
-  # * -ffp-model=precise
-  set(CMAKE_HIP_FLAGS_RELEASE "-O1")
-  set(CMAKE_HIP_FLAGS_MINSIZEREL "-O1")
-  set(CMAKE_HIP_FLAGS_RELWITHDEBINFO "-O1")
+  # -O0 worked with cce-15/rocm-5.4.3, but is broken with cce-16/rocm-5.7.1. A fix is coming in
+  # rocm-6.1. For now, build Debug HIP code at -O1.
+  string(CONCAT CMAKE_HIP_FLAGS_DEBUG " -O1")
+
+  # As of cce-16/rocm-5.7.1, everything is passing at -O3.
+  set(CMAKE_HIP_FLAGS_RELEASE "-O3")
+  set(CMAKE_HIP_FLAGS_MINSIZEREL "-O3")
+  set(CMAKE_HIP_FLAGS_RELWITHDEBINFO "-O3")
 
   # Disable FMA at the compile level if desired
   if(DEFINED FMA_NEVER_HARDWARE)
