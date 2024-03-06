@@ -180,9 +180,9 @@ post_rzansel_regress_results_to_cdash:
 post_rzvernal_regress_results_to_cdash:
   extends: .post_rz_regress_results_to_cdash
   needs:
-    - job: rzvernal_deb_cce1501_regress
+    - job: rzvernal_deb_cce1601_regress
       artifacts: true
-    - job: rzvernal_rel_cce1501_regress
+    - job: rzvernal_rel_cce1601_regress
       artifacts: true
 
 #--------------------------------------------------------------------------------------------------#
