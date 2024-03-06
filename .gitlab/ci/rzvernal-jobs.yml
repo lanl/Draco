@@ -34,7 +34,7 @@
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
-    DRACO_ENV: "lapse/2.3.2-cce"
+    DRACO_ENV: "lapse/2.4.0-cce"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
@@ -93,7 +93,7 @@ rzvernal_deb_cce1501_mr:
   extends: .rzvernal_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.3.2-cce"
+    DRACO_ENV: "lapse/2.4.0-cce"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
 
 #--------------------------------------------------------------------------------------------------#
@@ -106,9 +106,9 @@ rzvernal_deb_cce1501_mr:
   variables:
     CTEST_MODE: Nightly
     CTEST_NPROC: 80
-    DRACO_ENV: "lapse/2.3.2-cce"
+    DRACO_ENV: "lapse/2.4.0-cce"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
-    CTEST_BUILD_NAME: "lapse232-cce-${CMAKE_BUILD_TYPE}"
+    CTEST_BUILD_NAME: "lapse240-cce-${CMAKE_BUILD_TYPE}"
   artifacts:
     when: always
     paths:
