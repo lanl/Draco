@@ -53,12 +53,12 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-rzvernal_rel_cce1501_deploy:
+rzvernal_rel_cce1601_deploy:
   extends: .rzvernal_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
 
-rzvernal_deb_cce1501_deploy:
+rzvernal_deb_cce1601_deploy:
   extends: .rzvernal_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -88,7 +88,7 @@ rzvernal_deb_cce1501_deploy:
 
 # ----- regular test -----
 
-rzvernal_deb_cce1501_mr:
+rzvernal_deb_cce1601_mr:
   stage: test
   extends: .rzvernal_merge
   variables:
@@ -121,13 +121,13 @@ rzvernal_deb_cce1501_mr:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-rzvernal_rel_cce1501_regress:
+rzvernal_rel_cce1601_regress:
   stage: test
   extends: .rzvernal_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
 
-rzvernal_deb_cce1501_regress:
+rzvernal_deb_cce1601_regress:
   stage: test
   extends: .rzvernal_nightly
   variables:
