@@ -52,13 +52,13 @@ ro_rel_intel_classic_deploy:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
 
 ro_deb_intel_classic_deploy:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
 
 ro_rel_oneapi_deploy:
   extends: .ro_deploy
@@ -77,7 +77,7 @@ ro_deb_fulldiag_deploy:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     FLAVOR: intel-fulldiag-static
 
@@ -128,20 +128,20 @@ ro_rel_intel_classic_deploy_release:
   extends: .ro_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
 
 ro_deb_intel_classic_deploy_release:
   extends: .ro_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
 
 ro_rwdi_intel_classic_deploy_release:
   extends: .ro_deploy_release
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
 ro_rel_oneapi_deploy_release:
@@ -208,7 +208,7 @@ ro_deb_intel_classic_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
 
 # ----- regular test -----
 
@@ -217,7 +217,7 @@ ro_rel_intel_classic_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
 
 ro_deb_gnu_mr:
   stage: test
@@ -248,7 +248,7 @@ ro_deb_fulldiag_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
 
 #--------------------------------------------------------------------------------------------------#
@@ -273,13 +273,13 @@ ro_rel_intel_classic_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
 
 ro_deb_intel_classic_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
 
 ro_rel_oneapi_regress:
   extends: .ro_nightly
@@ -298,7 +298,7 @@ ro_deb_fulldiag_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "draco/intel-2023.1.0"
+    DRACO_ENV: "lapse/2.4.0-intel"
     FLAVOR: intel-fulldiag-static
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     CTEST_BUILD_NAME: intel-fulldiag-static
