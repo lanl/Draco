@@ -9,6 +9,7 @@
 
 #include "StackTrace.hh"
 #include <array>
+#include <cstdint>
 #include <iostream>
 #include <sstream>
 #include <string>

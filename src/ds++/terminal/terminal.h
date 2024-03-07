@@ -4,6 +4,7 @@
 // clang-format off
 
 #include "ds++/config.h"
+#include <cstdint>
 
 #ifdef _MSC_FULL_VER
 // - 4996: 'sscanf': This function or variable may be unsafe.

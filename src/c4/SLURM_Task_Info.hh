@@ -11,6 +11,7 @@
 #define SLURM_Task_Info_hh
 
 #include "ds++/Query_Env.hh"
+#include <cstdint>
 
 namespace rtt_c4 {
 
