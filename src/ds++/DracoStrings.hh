@@ -11,6 +11,7 @@
 #define rtt_dsxx_DracoStrings_hh
 
 #include "ds++/config.h"
+#include <cstdint>
 #include <locale>
 #include <map>
 #include <sstream>
