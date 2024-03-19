@@ -34,7 +34,7 @@
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
-    DRACO_ENV: "lapse/2.4.0-xl"
+    DRACO_ENV: "lapse/2.4.0-gnu"
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
   script:
@@ -52,12 +52,12 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-rzansel_rel_xl1611_deploy:
+rzansel_rel_gcc1021_deploy:
   extends: .rzansel_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
 
-rzansel_deb_xl1611_deploy:
+rzansel_deb_gcc1021_deploy:
   extends: .rzansel_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -94,24 +94,24 @@ rzansel_deb_xl1611_deploy:
     - if: '$CI_COMMIT_TAG =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-rzansel_rel_xl_deploy_release:
+rzansel_rel_gnu_deploy_release:
   extends: .rzansel_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.4.0-xl"
+    DRACO_ENV: "lapse/2.4.0-gnu"
     EXTRA_CMAKE_ARGS: -DDRACO_ROUNDOFF_MODE=FAST
 
-rzansel_deb_xl_deploy_release:
+rzansel_deb_gnu_deploy_release:
   extends: .rzansel_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.4.0-xl"
+    DRACO_ENV: "lapse/2.4.0-gnu"
 
-rzansel_rwdi_xl_deploy_release:
+rzansel_rwdi_gnu_deploy_release:
   extends: .rzansel_deploy_release
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/2.4.0-xl"
+    DRACO_ENV: "lapse/2.4.0-gnu"
     EXTRA_CMAKE_FLAGS: -DDRACO_DBC_LEVEL=15
 
 #--------------------------------------------------------------------------------------------------#
@@ -132,12 +132,12 @@ rzansel_rwdi_xl_deploy_release:
 
 # ----- regular test -----
 
-rzansel_deb_xl1611_mr:
+rzansel_deb_gcc1021_mr:
   stage: test
   extends: .rzansel_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.4.0-xl"
+    DRACO_ENV: "lapse/2.4.0-gnu"
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -148,8 +148,8 @@ rzansel_deb_xl1611_mr:
   variables:
     CTEST_MODE: Nightly
     CTEST_NPROC: 20
-    DRACO_ENV: "lapse/2.4.0-xl"
-    CTEST_BUILD_NAME: "lapse240-xl-${CMAKE_BUILD_TYPE}"
+    DRACO_ENV: "lapse/2.4.0-gnu"
+    CTEST_BUILD_NAME: "lapse240-gnu-${CMAKE_BUILD_TYPE}"
   artifacts:
     when: always
     paths:
@@ -162,13 +162,13 @@ rzansel_deb_xl1611_mr:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-rzansel_rel_xl1611_regress:
+rzansel_rel_gcc1021_regress:
   stage: test
   extends: .rzansel_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
 
-rzansel_deb_xl1611_regress:
+rzansel_deb_gcc1021_regress:
   stage: test
   extends: .rzansel_nightly
   variables:
