@@ -172,9 +172,9 @@ checkCoverage_MR:
 post_rzansel_regress_results_to_cdash:
   extends: .post_rz_regress_results_to_cdash
   needs:
-    - job: rzansel_deb_xl1611_regress
+    - job: rzansel_deb_gcc1021_regress
       artifacts: true
-    - job: rzansel_rel_xl1611_regress
+    - job: rzansel_rel_gcc1021_regress
       artifacts: true
 
 post_rzvernal_regress_results_to_cdash:
