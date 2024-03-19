@@ -256,7 +256,7 @@ endmacro()
 macro(setupOpenMPI)
 
   # sanity check, these OpenMPI flags (below) require version >= 1.8
-  if(${MPI_VERSION} VERSION_LESS 1.8)
+  if(MPI_VERSION VERSION_LESS 1.8)
     message(FATAL_ERROR "OpenMPI version < 1.8 found.")
   endif()
 
@@ -285,8 +285,10 @@ macro(setupOpenMPI)
       string(APPEND MPIEXEC_PREFLAGS " -bind-to none")
     endif()
     # Setup for OMP plus MPI
-    if(NOT APPLE AND NOT MPIEXEC_OMP_PREFLAGS MATCHES "--map-by ppr")
-      # -bind-to fails on OSX, See #691
+    if((NOT APPLE)
+       AND (NOT MPIEXEC_OMP_PREFLAGS MATCHES "--map-by ppr")
+       AND (MPI_VERSION VERSION_LESS 5.0))
+      # -bind-to fails on OSX, See #691 OpenMPI version 5.0+ doesn't use this ppr syntax.
       set(MPIEXEC_OMP_PREFLAGS
           "${MPIEXEC_PREFLAGS} --map-by ppr:${MPI_CORES_PER_CPU}:socket --report-bindings")
     endif()

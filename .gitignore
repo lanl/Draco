@@ -30,6 +30,7 @@ vcpkg/
 !.vscode/extensions.json
 out/
 wget-log
+Testing/
 
 # OS Generated Files
 .DS_Store
