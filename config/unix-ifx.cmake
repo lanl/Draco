@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Wednesday, May 26, 2021, 14:12 pm
 # brief  Establish flags for Unix - Intel OneAPI Fortran (ifx)
-# note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 #
@@ -18,7 +18,7 @@ if(NOT Fortran_FLAGS_INITIALIZED)
       CACHE STRING "Fortran compiler version string" FORCE)
   mark_as_advanced(CMAKE_Fortran_COMPILER_VERSION)
 
-  string(APPEND CMAKE_Fortran_FLAGS " -g -mia32 -axSSSE3")
+  string(APPEND CMAKE_Fortran_FLAGS " -g")
   string(CONCAT CMAKE_Fortran_FLAGS_DEBUG "-O0 -DDEBUG")
   if(NOT DEFINED CMAKE_CXX_COMPILER_WRAPPER AND NOT "${CMAKE_CXX_COMPILER_WRAPPER}" STREQUAL
                                                 "CrayPrgEnv")
