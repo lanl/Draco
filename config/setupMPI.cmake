@@ -203,7 +203,9 @@ macro(query_topology)
   set(MPI_CORES_PER_CPU 4)
   set(MPI_PHYSICAL_CORES 1)
 
-  if(SITENAME MATCHES "rznevada" OR SITENAME MATCHES "rzvernal")
+  if(SITENAME MATCHES "RZNevada"
+     OR SITENAME MATCHES "RZVernal"
+     OR SITENAME MATCHES "RZAdams")
     set(MPI_CORES_PER_CPU 2)
     set(MPI_PHYSICAL_CORES 64)
     set(MPIEXEC_MAX_NUMPROCS
