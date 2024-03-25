@@ -211,6 +211,12 @@ macro(query_topology)
     set(MPIEXEC_MAX_NUMPROCS
         64
         CACHE STRING "Max procs on node." FORCE)
+  elseif(SITENAME MATCHES "rzadams")
+    set(MPI_CORES_PER_CPU 2)
+    set(MPI_PHYSICAL_CORES 96)
+    set(MPIEXEC_MAX_NUMPROCS
+        96
+        CACHE STRING "Max procs on node." FORCE)
   elseif(EXISTS "/proc/cpuinfo")
     # read the system's cpuinfo...
     file(READ "/proc/cpuinfo" cpuinfo_data)

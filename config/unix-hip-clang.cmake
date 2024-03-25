@@ -50,8 +50,12 @@ if(NOT HIP_FLAGS_INITIALIZED)
 
   # Discover HIP compute capabilities.
   if(NOT DEFINED HIP_ARCHITECTURES)
-
-    set(HIP_ARCHITECTURES "gfx90a")
+    # see if we are on a 250 or a 300 node
+    if(SITENAME MATCHES "rzvernal")
+      set(HIP_ARCHITECTURES "gfx90a")
+    elseif(SITENAME MATCHES "rzadams")
+      set(HIP_ARCHITECTURES "gfx942")
+    endif()
     set(HIP_ARCHITECTURES
         ${HIP_ARCHITECTURES}
         CACHE STRING "target architecture for gpu code.")
