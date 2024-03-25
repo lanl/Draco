@@ -493,10 +493,16 @@ macro(register_scalar_test)
                "${addscalartest_PASS_REGEX}"
                FAIL_REGULAR_EXPRESSION
                "${addscalartest_FAIL_REGEX}"
+               PROCSSORS
+               "${num_procs}"
                PROCESSORS
                "${num_procs}"
                WORKING_DIRECTORY
                "${PROJECT_BINARY_DIR}")
+  if(NOT "${addscalartest_EXTRA_RESOURCES}none" STREQUAL "none")
+    set_tests_properties(${rst_TARGET} PROPERTIES RESOURCE_GROUPS
+                                                  "${addscalartest_EXTRA_RESOURCES}")
+  endif()
   if(NOT "${addscalartest_RESOURCE_LOCK}none" STREQUAL "none")
     set_tests_properties(${rst_TARGET} PROPERTIES RESOURCE_LOCK "${addscalartest_RESOURCE_LOCK}")
   endif()
@@ -564,8 +570,8 @@ macro(register_parallel_test)
 
   cmake_parse_arguments(rpt "BOOL_OPTION_1" "TARGET;COMMAND" "NUMPE;CMD_ARGS" ${ARGV})
 
-  set(lverbose OFF)
-  if(lverbose)
+  if(rpt_TARGET MATCHES "foo")
+    set(lverbose ON)
     message("      Adding test: ${rpt_TARGET}")
   endif()
   unset(RUN_CMD)
@@ -591,6 +597,10 @@ macro(register_parallel_test)
   if(NOT "${addparalleltest_RUN_AFTER}none" STREQUAL "none")
     set_tests_properties(${rpt_TARGET} PROPERTIES DEPENDS "${addparalleltest_RUN_AFTER}")
   endif()
+  if(NOT "${addparalleltest_EXTRA_RESOURCES}none" STREQUAL "none")
+    set_tests_properties(${rpt_TARGET} PROPERTIES RESOURCE_GROUPS
+                                                  "${addparalleltest_EXTRA_RESOURCES}")
+  endif()
   if(DEFINED addparalleltest_ENV)
     set_tests_properties(${rpt_TARGET} PROPERTIES ENVIRONMENT "${addparalleltest_ENV}")
   endif()
@@ -605,6 +615,15 @@ macro(register_parallel_test)
 
     if(MPI_HYPERTHREADING)
       math(EXPR numthreads "2 * ${numthreads}")
+    endif()
+
+    if(lverbose)
+      message(
+        "    set_tests_properties(
+      ${rpt_TARGET}
+      PROPERTIES
+      PROCESSORS ${numthreads}
+      LABELS \"nomemcheck\")")
     endif()
     set_tests_properties(${rpt_TARGET} PROPERTIES PROCESSORS "${numthreads}" LABELS "nomemcheck")
     unset(numthreads)
@@ -677,6 +696,7 @@ endmacro(register_parallel_test)
 #    [ RESOURCE_LOCK "lockname" ]
 #    [ RUN_AFTER     "test_name" ]
 #    [ APPLICATION_UNIT_TEST ]
+#    [ EXTRA_RESOURCES "gpus:1,mem_gb:2" ] <-- These must match content of ctest_resource_spec.json
 # )
 # ~~~
 #
@@ -694,7 +714,7 @@ macro(add_scalar_tests test_sources)
   # These become variables of the form ${addscalartests_SOURCES}, etc.
   cmake_parse_arguments(
     addscalartest "APPLICATION_UNIT_TEST;LINK_WITH_FORTRAN;RUN_SERIAL;NONE"
-    "LABEL;LANGUAGE;LINK_LANGUAGE"
+    "LABEL;LANGUAGE;LINK_LANGUAGE;EXTRA_RESOURCES"
     "DEPS;ENV;FAIL_REGEX;PASS_REGEX;RESOURCE_LOCK;RUN_AFTER;SOURCES;TEST_ARGS" ${ARGV})
 
   # Sanity Checks
@@ -899,21 +919,31 @@ endmacro(add_scalar_tests)
 #   current test will be allowed to run
 # * SOURCES         - semi-colon delimited list of files.
 # * TEST_ARGS       - Command line arguments to use when running the test.
-#
+# * EXTRA_RESOURCES - "gpus:1,mem_gb:2" <-- These must match content of ctest_resource_spec.json
 # -------------------------------------------------------------------------------------------------#
 macro(add_parallel_tests)
 
-  cmake_parse_arguments(
-    addparalleltest "MPI_PLUS_OMP;LINK_WITH_FORTRAN" "LABEL"
-    "DEPS;ENV;FAIL_REGEX;MPIFLAGS;PASS_REGEX;PE_LIST;RESOURCE_LOCK;RUN_AFTER;SOURCES;TEST_ARGS"
-    ${ARGV})
+  set(apt_multivaluekeywords
+      # cmake-format: sortable
+      DEPS
+      ENV
+      EXTRA_RESOURCES
+      FAIL_REGEX
+      MPIFLAGS
+      PASS_REGEX
+      PE_LIST
+      RESOURCE_LOCK
+      RUN_AFTER
+      SOURCES
+      TEST_ARGS)
+  cmake_parse_arguments(addparalleltest "MPI_PLUS_OMP;LINK_WITH_FORTRAN" "LABEL"
+                        "${apt_multivaluekeywords}" ${ARGV})
+  unset(apt_multivaluekeywords)
 
   set(lverbose OFF)
-  # ~~~
-  # if("${addparalleltest_SOURCES}" MATCHES "tstOMP_API_on")
-  #   set(lverbose ON)
-  # endif()
-  # ~~~
+  if("${addparalleltest_SOURCES}" MATCHES "tstBar")
+    set(lverbose ON)
+  endif()
 
   # Sanity Check
   if("${addparalleltest_SOURCES}none" STREQUAL "none")
@@ -1045,6 +1075,7 @@ macro(add_parallel_tests)
       set(addscalartest_PASS_REGEX "${addparalleltest_PASS_REGEX}")
       set(addscalartest_FAIL_REGEX "${addparalleltest_FAIL_REGEX}")
       set(addscalartest_RESOURCE_LOCK "${addparalleltest_RESOURCE_LOCK}")
+      set(addscalartest_EXTRA_RESOURCES "${addparalleltest_EXTRA_RESOURCES}")
       set(addscalartest_RUN_AFTER "${addparalleltest_RUN_AFTER}")
       if(DEFINED addparalleltest_ENV)
         set(addscalartest_ENV "${addparalleltest_ENV}")
@@ -1067,6 +1098,7 @@ macro(add_parallel_tests)
       unset(addscalartest_ENV)
       unset(addscalartest_RUN_AFTER)
       unset(addscalartest_RESOURCE_LOCK)
+      unset(addscalartest_EXTRA_RESOURCES)
       unset(addscalartest_FAIL_REGEX)
       unset(addscalartest_PASS_REGEX)
 

@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 Nov 2
 # brief  Install the config directory in the target directory
-# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(config)
@@ -13,6 +13,7 @@ include(CMakePackageConfigHelpers)
 file(GLOB CMake_src *.cmake)
 file(GLOB config_helper_sh *.sh)
 file(GLOB Python_src *.py)
+file(GLOB Json_src *.json)
 set(CMake_in cmake_uninstall.cmake.in doxygen_config.in)
 set(CMake_AFSD CMakeAddFortranSubdirectory/config_cafs_proj.cmake.in)
 
@@ -58,6 +59,7 @@ set(file_list
     ${CMake_src}
     ${CMake_in}
     ${Python_src}
+    ${Json_src}
     ${CMAKE_CURRENT_BINARY_DIR}/draco-config.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/draco-config-version.cmake
     ${Draco_SOURCE_DIR}/autodoc/html/doxygen.css

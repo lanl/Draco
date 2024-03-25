@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 April 28
 # brief  Instructions for building root level Makefile.
-# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
 #
 # Build notes:
 #
@@ -95,6 +95,7 @@ query_have_maxpathlen()
 query_have_sys_headers() #< sets HAVE_UNISTD_H, etc.
 query_have_restrict_keyword()
 query_fma_on_hardware()
+provide_ctest_resources_spec() # creates ctest_resource_spec.json in the build dir.
 
 # Find any globally required libraries
 include(FeatureSummary)

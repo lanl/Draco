@@ -82,7 +82,8 @@ if(USE_CUDA AND NOT CMAKE_CXX_COMPILER_ID MATCHES XL)
     SOURCES "${test_sources_cuda}"
     DEPS "${test_deps_cuda}"
     PASS_REGEX "PASSED"
-    FAIL_REGEX "FAILED")
+    FAIL_REGEX "FAILED"
+    EXTRA_RESOURCES "gpus:1")
 endif()
 
 add_component_executable(TARGET Exe_time_serial SOURCES ${PROJECT_SOURCE_DIR}/time_serial.cc
