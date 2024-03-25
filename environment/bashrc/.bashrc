@@ -184,7 +184,7 @@ if [[ ${INTERACTIVE} == true ]]; then
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats2" ;;
 
     # LLNL ATS-4
-    rznevada* | rzvernal*)
+    rznevada* | rzvernal* | rzadams*)
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats4" ;;
 
