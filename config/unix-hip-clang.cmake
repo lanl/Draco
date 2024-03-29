@@ -51,10 +51,13 @@ if(NOT HIP_FLAGS_INITIALIZED)
   # Discover HIP compute capabilities.
   if(NOT DEFINED HIP_ARCHITECTURES)
     # see if we are on a 250 or a 300 node
-    if(SITENAME MATCHES "rzvernal")
+    if(SITENAME MATCHES "RZVernal")
       set(HIP_ARCHITECTURES "gfx90a")
-    elseif(SITENAME MATCHES "rzadams")
+    elseif(SITENAME MATCHES "RZAdams" OR SITENAME MATCHES "ElCapitan")
       set(HIP_ARCHITECTURES "gfx942")
+    else()
+      message(FATAL_ERROR "unix-hip-clang.cmake: Logic error in setting HIP_ARCHITECTURES"
+                          "Unknown platform. Variable not set.")
     endif()
     set(HIP_ARCHITECTURES
         ${HIP_ARCHITECTURES}
