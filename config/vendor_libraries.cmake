@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 June 6
 # brief  Look for any libraries which are required at the top level.
-# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -344,6 +344,7 @@ Looking for Draco...\")
   dbsSetupFortran()
   dbsSetupCuda()
   dbsSetupProfilerTools()
+  dbssetupstdtargetprops()
 
   # CMake macros like 'add_component_library' and 'add_component_executable'
   include(component_macros)

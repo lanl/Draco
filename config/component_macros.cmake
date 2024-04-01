@@ -12,36 +12,6 @@ include(compilerEnv)
 # cmake-lint: disable=E1120,R0915,R0912
 
 # -------------------------------------------------------------------------------------------------#
-# Ensure order of setup is correct
-# -------------------------------------------------------------------------------------------------#
-if(NOT DEFINED USE_IPO)
-  dbssetupcompilers() # sets USE_IPO
-endif()
-
-# -------------------------------------------------------------------------------------------------#
-# Common Standards
-# -------------------------------------------------------------------------------------------------#
-
-# Apply these properties to all targets (libraries, executables)
-set(Draco_std_target_props_C C_STANDARD 11 # Force strict ANSI-C 11 standard
-                             C_EXTENSIONS OFF C_STANDARD_REQUIRED ON)
-set(Draco_std_target_props_CXX CXX_STANDARD 14 # Force strict C++ 14 standard
-                               CXX_EXTENSIONS OFF CXX_STANDARD_REQUIRED ON)
-set(Draco_std_target_props_CUDA
-    CUDA_STANDARD;14 # Force strict C++ 14 standard
-    CUDA_EXTENSIONS;OFF CUDA_STANDARD_REQUIRED;ON CUDA_ARCHITECTURES;${CUDA_ARCHITECTURES})
-# ~~~
-# CUDA_SEPARABLE_COMPILATION ON)
-# CUDA_RESOLVE_DEVICE_SYMBOLS ON )
-# target_include_directories (my lib
-#   PUBLIC $<BUILD_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}> )
-set(Draco_std_target_props_HIP
-    HIP_STANDARD;14 # Force strict C++ 14 standard
-    HIP_EXTENSIONS;OFF HIP_STANDARD_REQUIRED;ON HIP_ARCHITECTURES;${HIP_ARCHITECTURES})
-set(Draco_std_target_props INTERPROCEDURAL_OPTIMIZATION_RELEASE ${USE_IPO}
-                           POSITION_INDEPENDENT_CODE ON)
-
-# -------------------------------------------------------------------------------------------------#
 # Set properties that are common across all packages.  Including the required language standard per
 # target.
 # -------------------------------------------------------------------------------------------------#
@@ -66,8 +36,7 @@ function(dbs_std_tgt_props target)
   if(("${DRACO_STATIC_ANALYZER}" MATCHES "clang-tidy") AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS
                                                             9.0))
     if(NOT CLANG_TIDY_IPATH)
-      message(FATAL_ERROR "Unable to configure clang-tidy build because CLANG_TIDY_IPATH is "
-                          "empty.")
+      message(FATAL_ERROR "Unable to configure clang-tidy build because CLANG_TIDY_IPATH is empty.")
     endif()
     get_target_property(tgt_sources ${target} SOURCES)
     set_source_files_properties(${tgt_sources} PROPERTIES INCLUDE_DIRECTORIES ${CLANG_TIDY_IPATH})

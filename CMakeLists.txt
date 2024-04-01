@@ -110,6 +110,7 @@ dbssetupfortran()
 dbssetupcuda()
 dbssetupprofilertools()
 dbssetupstaticanalyzers()
+dbssetupstdtargetprops()
 
 #
 # Build Draco components:

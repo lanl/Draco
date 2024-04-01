@@ -45,7 +45,7 @@
 # This is a heavily modified version of CMakeAddFortranSubdirectory.cmake that is distributed with
 # CMake
 
-# Copyright (C) 2014-2023 Triad National Security, LLC., All rights reserved.
+# Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved.
 
 # cmake-lint: disable=R0912,R0915,W0106
 
@@ -135,7 +135,7 @@ function(_setup_cafs_config_and_build source_dir build_dir)
 
   # Generate the build_cafs_proj.cmake command file:
   include(ProcessorCount)
-  processorcount(NumProcs)
+  ProcessorCount(NumProcs)
   set(build_command_args "--build . -j ${NumProcs}")
   if(NOT ARGS_NO_EXTERNAL_INSTALL)
     string(APPEND build_command_args " --target install")
@@ -164,17 +164,13 @@ endfunction()
 # _add_fortran_library_link_interface
 # ------------------------------------------------------------------------------------------------ #
 function(_add_fortran_library_link_interface library depend_library)
-  set_target_properties(
-    ${library}
-    PROPERTIES
-    IMPORTED_LINK_INTERFACE_LIBRARIES_NOCONFIG "${depend_library}")
+  set_target_properties(${library} PROPERTIES IMPORTED_LINK_INTERFACE_LIBRARIES_NOCONFIG
+                                              "${depend_library}")
   if(ARGS_VERBOSE)
     message(
       "
-  set_target_properties(
-    ${library}
-    PROPERTIES
-    IMPORTED_LINK_INTERFACE_LIBRARIES_NOCONFIG \"${depend_library}\")
+  set_target_properties(${library} PROPERTIES IMPORTED_LINK_INTERFACE_LIBRARIES_NOCONFIG
+                                              \"${depend_library}\")
 ")
   endif()
 endfunction()
@@ -304,17 +300,18 @@ function(cmake_add_fortran_subdirectory subdir)
         message(
           "    set_target_properties(
         ${tgt}
-        PROPERTIES
-          IMPORTED_LOCATION \"${tmp}/${ep_build_type}/lib${lib}${CMAKE_SHARED_LIBRARY_SUFFIX}\"
-          IMPORTED_LINK_INTERFACE_LANGUAGES \"Fortran\"
-          IMPORTED_LINK_INTERFACE_LIBRARIES \"${ARGS_DEPENDS}\"
+        PROPERTIES IMPORTED_LOCATION
+                   \"${tmp}/${ep_build_type}/lib${lib}${CMAKE_SHARED_LIBRARY_SUFFIX}\"
+                   IMPORTED_LINK_INTERFACE_LANGUAGES \"Fortran\"
+                   IMPORTED_LINK_INTERFACE_LIBRARIES \"${ARGS_DEPENDS}\"
         )    ")
       endif()
       set_target_properties(
-        ${tgt} PROPERTIES
-        IMPORTED_LOCATION "${crod}/${ep_build_type}/lib${lib}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        IMPORTED_LINK_INTERFACE_LANGUAGES "Fortran"
-        IMPORTED_LINK_INTERFACE_LIBRARIES "${ARGS_DEPENDS}")
+        ${tgt}
+        PROPERTIES IMPORTED_LOCATION
+                   "${crod}/${ep_build_type}/lib${lib}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+                   IMPORTED_LINK_INTERFACE_LANGUAGES "Fortran"
+                   IMPORTED_LINK_INTERFACE_LIBRARIES "${ARGS_DEPENDS}")
       unset(crod)
     else()
       if(ARGS_VERBOSE)
@@ -328,10 +325,10 @@ function(cmake_add_fortran_subdirectory subdir)
         )")
       endif()
       set_target_properties(
-        ${tgt} PROPERTIES
-        IMPORTED_LOCATION "${binary_dir}/lib${lib}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        IMPORTED_LINK_INTERFACE_LANGUAGES "Fortran"
-        IMPORTED_LINK_INTERFACE_LIBRARIES "${ARGS_DEPENDS}")
+        ${tgt}
+        PROPERTIES IMPORTED_LOCATION "${binary_dir}/lib${lib}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+                   IMPORTED_LINK_INTERFACE_LANGUAGES "Fortran" IMPORTED_LINK_INTERFACE_LIBRARIES
+                                                               "${ARGS_DEPENDS}")
     endif()
     if(WIN32)
       if(ARGS_VERBOSE)
@@ -348,8 +345,8 @@ function(cmake_add_fortran_subdirectory subdir)
     # Debug mode.
     if(APPLE)
       set_target_properties(
-        ${tgt} PROPERTIES
-        IMPORTED_LOCATION_DEBUG "${binary_dir}/lib${lib}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+        ${tgt} PROPERTIES IMPORTED_LOCATION_DEBUG
+                          "${binary_dir}/lib${lib}${CMAKE_SHARED_LIBRARY_SUFFIX}")
     endif()
     add_dependencies(${tgt} ${cafs_project_name}_build)
 
@@ -530,11 +527,11 @@ function(cafs_fix_mpi_library)
     # 1. Create a new imported target to represent MPI::CAFS
     add_library(MPI::MPI_cafs SHARED IMPORTED)
     set_target_properties(
-      MPI::MPI_cafs PROPERTIES
-      IMPORTED_CONFIGURATIONS RELEASE
-      INTERFACE_INCLUDE_DIRECTORIES "${MPI_C_HEADER_DIR};${MPI_mpifptr_INCLUDE_DIR}"
-      IMPORTED_IMPLIB_RELEASE "${MPI_gfortran_LIBRARIES}"
-      IMPORTED_LOCATION_RELEASE "${MPI_gfortran_LIBRARIES}")
+      MPI::MPI_cafs
+      PROPERTIES IMPORTED_CONFIGURATIONS RELEASE
+                 INTERFACE_INCLUDE_DIRECTORIES "${MPI_C_HEADER_DIR};${MPI_mpifptr_INCLUDE_DIR}"
+                 IMPORTED_IMPLIB_RELEASE "${MPI_gfortran_LIBRARIES}"
+                 IMPORTED_LOCATION_RELEASE "${MPI_gfortran_LIBRARIES}")
     # 1. Strip MPI deps from Lib_c4
     set_target_properties(Lib_c4 PROPERTIES INTERFACE_LINK_LIBRARIES "Lib_dsxx;MPI::MPI_cafs")
 
@@ -621,24 +618,25 @@ function(cafs_create_imported_targets targetName libName targetPath linkLang)
 
   add_library(${targetName} SHARED IMPORTED GLOBAL)
   set_target_properties(
-    ${targetName} PROPERTIES
-    IMPORTED_LOCATION
-      "${dll_loc}/${CMAKE_SHARED_LIBRARY_PREFIX}/${libName}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-    IMPORTED_LINK_INTERFACE_LANGUAGES ${linkLang})
+    ${targetName}
+    PROPERTIES IMPORTED_LOCATION
+               "${dll_loc}/${CMAKE_SHARED_LIBRARY_PREFIX}/${libName}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+               IMPORTED_LINK_INTERFACE_LANGUAGES ${linkLang})
   if(targetName STREQUAL verbose_target_name)
     message(
       "
   add_library( ${targetName} SHARED IMPORTED GLOBAL )
   set_target_properties(
-    ${targetName} PROPERTIES
-    IMPORTED_LOCATION
-      ${dll_loc}/${CMAKE_SHARED_LIBRARY_PREFIX}/${libName}${CMAKE_SHARED_LIBRARY_SUFFIX}
-    IMPORTED_LINK_INTERFACE_LANGUAGES ${linkLang}")
+    ${targetName}
+    PROPERTIES IMPORTED_LOCATION
+               ${dll_loc}/${CMAKE_SHARED_LIBRARY_PREFIX}/${libName}${CMAKE_SHARED_LIBRARY_SUFFIX}
+               IMPORTED_LINK_INTERFACE_LANGUAGES ${linkLang}")
   endif()
   if(lib_debug)
     set_target_properties(
-      ${targetName} PROPERTIES
-      IMPORTED_LOCATION_DEBUG
+      ${targetName}
+      PROPERTIES
+        IMPORTED_LOCATION_DEBUG
         "${dll_loc_debug}/${CMAKE_SHARED_LIBRARY_PREFIX}${libName}${CMAKE_SHARED_LIBRARY_SUFFIX}")
     if(targetName STREQUAL verbose_target_name)
       message("    IMPORTED_LOCATION_DEBUG
@@ -663,17 +661,18 @@ function(cafs_create_imported_targets targetName libName targetPath linkLang)
       set(CMAKE_IMPORT_LIBRARY_SUFFIX ".lib")
     endif()
     set_target_properties(
-      ${targetName} PROPERTIES
-      IMPORTED_IMPLIB
-        "${libloc}/${CMAKE_IMPORT_LIBRARY_PREFIX}${libName}${CMAKE_IMPORT_LIBRARY_SUFFIX}")
+      ${targetName}
+      PROPERTIES IMPORTED_IMPLIB
+                 "${libloc}/${CMAKE_IMPORT_LIBRARY_PREFIX}${libName}${CMAKE_IMPORT_LIBRARY_SUFFIX}")
     if(targetName STREQUAL verbose_target_name)
       message("    IMPORTED_IMPLIB
       ${libloc}/${CMAKE_IMPORT_LIBRARY_PREFIX}${libName}${CMAKE_IMPORT_LIBRARY_SUFFIX}")
     endif()
     if(lib_debug)
       set_target_properties(
-        ${targetName} PROPERTIES
-        IMPORTED_IMPLIB_DEBUG
+        ${targetName}
+        PROPERTIES
+          IMPORTED_IMPLIB_DEBUG
           "${libloc_debug}/${CMAKE_IMPORT_LIBRARY_PREFIX}${libName}${CMAKE_IMPORT_LIBRARY_SUFFIX}")
       if(targetName STREQUAL verbose_target_name)
         message("    IMPORTED_IMPLIB_DEBUG
@@ -798,6 +797,8 @@ macro(CAFS_Fortran_dir_boilerplate_setup)
       include(platform_checks)
       include(compilerEnv)
       dbssetupfortran()
+      dbssetupstdtargetprops()
+
       include(component_macros)
       include(vendor_libraries)
     endif()
