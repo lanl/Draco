@@ -94,6 +94,8 @@ for i in C CXX Fortran CUDA; do
            [[ "${PE_ENV}" == "INTEL" ]] ; then
         # do not add the flag
         echo "Skip adding -Werror to ${i}_FLAGS (FC = ${FC})"
+      elif [[ "${FC}" =~ "crayftn" ]]; then
+        eval export ${i}_FLAGS+=\" -h error_on_warning\"
       else
         eval export ${i}_FLAGS+=\" -Werror\"
       fi

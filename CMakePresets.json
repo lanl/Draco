@@ -76,6 +76,16 @@
       }
     },
     {
+      "name": "linux-debug-clang-tidy",
+      "displayName": "Linux Debug (Clang Tidy)",
+      "description": "Target Linux for Debug build.",
+      "inherits": "linux-ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DRACO_STATIC_ANALYZER": "clang-tidy"
+      }
+    },
+    {
       "name": "darwin-p9",
       "hidden": true,
       "generator": "Unix Makefiles",
@@ -211,6 +221,10 @@
     {
       "name": "linux-debug-valgrind",
       "configurePreset": "linux-debug-valgrind"
+    },
+    {
+      "name": "linux-debug-clang-tidy",
+      "configurePreset": "linux-debug-clang-tidy"
     },
     {
       "name": "darwin-p9-debug",

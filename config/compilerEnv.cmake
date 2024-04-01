@@ -14,9 +14,6 @@ Compiler Setup...
 ")
 endif()
 
-option(ENABLE_CCACHE "If available, use ccache compiler launcher" FALSE)
-option(ENABLE_F90CACHE "If available, use f90cache compiler launcher" FALSE)
-
 # ------------------------------------------------------------------------------------------------ #
 # Query OpenMP availability
 #
@@ -615,7 +612,7 @@ macro(dbsSetupStaticAnalyzers)
     if(CMAKE_CXX_CPPCHECK)
       if(NOT "${CMAKE_CXX_CPPCHECK}" MATCHES "-std=")
         set(CMAKE_CXX_CPPCHECK
-            "${CMAKE_CXX_CPPCHECK};--std=c++14"
+            "${CMAKE_CXX_CPPCHECK};--std=c++${Draco_CXX_LANGUAGE_STANDARD}"
             CACHE STRING "Run cppcheck on each source file before compile." FORCE)
       endif()
     else()
@@ -1004,6 +1001,56 @@ function(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build
 
   endforeach()
 endfunction()
+
+# -------------------------------------------------------------------------------------------------#
+# Common Standards
+#
+# * All Draco targets (libraries, tests) inherit these properties.
+# -------------------------------------------------------------------------------------------------#
+function(dbssetupstdtargetprops)
+
+  # Ensure order of setup is correct
+  if(NOT DEFINED USE_IPO)
+    dbssetupcompilers() # sets USE_IPO
+  endif()
+
+  # Apply these properties to all targets (libraries, executables)
+  # cmake-format: off
+  set(Draco_CXX_LANGUAGE_STANDARD 14 CACHE STRING "Target language standard")
+  set_property(CACHE Draco_CXX_LANGUAGE_STANDARD PROPERTY STRINGS 98 11 14 17 20 23 26)
+  # Intel only supports C11 (not C17).
+  set(Draco_C_LANGUAGE_STANDARD 11 CACHE STRING "Target language standard")
+  set_property(CACHE Draco_C_LANGUAGE_STANDARD PROPERTY STRINGS 90 99 11 17 23)
+  # cmake-format: on
+
+  set(Draco_std_target_props_C
+      C_STANDARD ${Draco_C_LANGUAGE_STANDARD} C_EXTENSIONS OFF C_STANDARD_REQUIRED ON
+      CACHE INTERNAL "Standard target properties for C code.")
+  # Force strict C++ 14 standard
+  set(Draco_std_target_props_CXX
+      CXX_STANDARD ${Draco_CXX_LANGUAGE_STANDARD} CXX_EXTENSIONS OFF CXX_STANDARD_REQUIRED ON
+      CACHE INTERNAL "Standard target properties for C++ code.")
+  set(Draco_std_target_props_CUDA
+      CUDA_STANDARD;${Draco_CXX_LANGUAGE_STANDARD} # Force draco to C++ 14 standard
+      CUDA_EXTENSIONS;OFF CUDA_STANDARD_REQUIRED;ON CUDA_ARCHITECTURES;${CUDA_ARCHITECTURES}
+      CACHE INTERNAL "Standard target properties for Cuda code.")
+  # ~~~
+  # Do we need to add additional CUDA properties like:
+  # CUDA_SEPARABLE_COMPILATION ON)
+  # CUDA_RESOLVE_DEVICE_SYMBOLS ON)
+  # ~~~
+  set(Draco_std_target_props_HIP
+      HIP_STANDARD;${Draco_CXX_LANGUAGE_STANDARD} # Force strict C++ 14 standard
+      HIP_EXTENSIONS;OFF HIP_STANDARD_REQUIRED;ON HIP_ARCHITECTURES;${HIP_ARCHITECTURES}
+      CACHE INTERNAL "Standard target properties for HIP code.")
+  set(Draco_std_target_props
+      INTERPROCEDURAL_OPTIMIZATION_RELEASE ${USE_IPO} POSITION_INDEPENDENT_CODE ON
+      CACHE INTERNAL "Standard target properties for Hip code.")
+
+  option(ENABLE_CCACHE "If available, use ccache compiler launcher" FALSE)
+  option(ENABLE_F90CACHE "If available, use f90cache compiler launcher" FALSE)
+
+endfunction(dbssetupstdtargetprops)
 
 # ------------------------------------------------------------------------------------------------ #
 # End config/compiler_env.cmake
