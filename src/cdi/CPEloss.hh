@@ -72,8 +72,8 @@ public:
    *
    * \return A single Eloss rate coefficient (shk^-1).
    */
-  virtual double getEloss(const double targetTemperature, const double targetDensity,
-                          const double partSpeed) const = 0;
+  NODISCARD virtual double getEloss(const double targetTemperature, const double targetDensity,
+                                    const double partSpeed) const = 0;
   /*!
    * \brief Query whether the data is in tables or functional form.
    */
@@ -82,52 +82,52 @@ public:
   /*!
    * \brief Returns a vector of temperatures that define the cached Eloss data table (keV).
    */
-  virtual std::vector<double> getTemperatureGrid() const = 0;
+  NODISCARD virtual std::vector<double> getTemperatureGrid() const = 0;
 
   /*!
    * \brief Returns a vector of densities that define the cached Eloss data table (g/cm^3).
    */
-  virtual std::vector<double> getDensityGrid() const = 0;
+  NODISCARD virtual std::vector<double> getDensityGrid() const = 0;
 
   /*!
    * \brief Returns a vector of energies that define the cached Eloss data table (keV).
    */
-  virtual std::vector<double> getEnergyGrid() const = 0;
+  NODISCARD virtual std::vector<double> getEnergyGrid() const = 0;
 
   /*!
    * \brief Returns the size of the temperature grid.
    */
-  virtual size_t getNumTemperatures() const = 0;
+  NODISCARD virtual size_t getNumTemperatures() const = 0;
 
   /*!
    * \brief Returns the size of the density grid.
    */
-  virtual size_t getNumDensities() const = 0;
+  NODISCARD virtual size_t getNumDensities() const = 0;
 
   /*!
    * \brief Returns the size of the energy grid.
    */
-  virtual size_t getNumEnergies() const = 0;
+  NODISCARD virtual size_t getNumEnergies() const = 0;
 
   /*!
    * \brief Query to determine the transporting particle type.
    */
-  CParticle getProjectile() const { return projectile; }
+  NODISCARD CParticle getProjectile() const { return projectile; }
 
   /*!
    * \brief Query to determine the target species type.
    */
-  CParticle getTarget() const { return target; }
+  NODISCARD CParticle getTarget() const { return target; }
 
   /*!
    * \brief Query to determine the CP Model type.
    */
-  CPModelType getModelType() const { return model_type; }
+  NODISCARD CPModelType getModelType() const { return model_type; }
 
   /*!
    * \brief Query to determine the angle cutoff used by the CP model.
    */
-  CPModelAngleCutoff getModelAngleCutoff() const { return model_angle_cutoff; }
+  NODISCARD CPModelAngleCutoff getModelAngleCutoff() const { return model_angle_cutoff; }
 
 protected:
   // Particle being transported i.e. subject to energy loss

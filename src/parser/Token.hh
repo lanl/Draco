@@ -60,16 +60,16 @@ public:
   // ACCESSORS
 
   //! Return the token type.
-  Token_Type type() const noexcept { return type_; }
+  NODISCARD Token_Type type() const noexcept { return type_; }
 
   //! Return the token text.
-  std::string const &text() const { return text_; }
+  NODISCARD std::string const &text() const { return text_; }
 
   //! Return the location information.
-  std::string const &location() const { return location_; }
+  NODISCARD std::string const &location() const { return location_; }
 
   //! Check that the class invariants are satisfied.
-  bool check_class_invariant() const;
+  NODISCARD bool check_class_invariant() const;
 
   // MANIPULATORS
 

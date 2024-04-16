@@ -40,7 +40,6 @@
 // ************************************************************************
 //@HEADER
 */
-
 #pragma once
 
 #ifdef _MSC_FULL_VER
@@ -67,6 +66,7 @@
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wundef"
 #endif
 
 #include "__p0009_bits/accessor_basic.hpp"

@@ -73,13 +73,13 @@ public:
   }
 #endif
 
-  int get_int1() const { return my_ints[0]; }
-  int get_int2() const { return my_ints[1]; }
-  int get_int3() const { return my_ints[2]; }
-  double get_double1() const { return my_doubles[0]; }
-  double get_double2() const { return my_doubles[1]; }
-  long get_long1() const { return my_longs[0]; }
-  long get_long2() const { return my_longs[1]; }
+  NODISCARD int get_int1() const { return my_ints[0]; }
+  NODISCARD int get_int2() const { return my_ints[1]; }
+  NODISCARD int get_int3() const { return my_ints[2]; }
+  NODISCARD double get_double1() const { return my_doubles[0]; }
+  NODISCARD double get_double2() const { return my_doubles[1]; }
+  NODISCARD long get_long1() const { return my_longs[0]; }
+  NODISCARD long get_long2() const { return my_longs[1]; }
 
 private:
   std::array<int, 3> my_ints;

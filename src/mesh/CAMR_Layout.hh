@@ -80,24 +80,24 @@ public:
 
   //! Get the number of cells in the layout.
   //  size_t get_num_cells() const { return (cell_face.size() / n_faces_per_cell); }
-  size_t get_num_owned_cells() const { return num_owned_cells; }
-  size_t get_num_ghost_cells() const { return num_ghost_cells; }
-  size_t get_num_total_cells() const { return num_owned_cells + num_ghost_cells; }
+  NODISCARD size_t get_num_owned_cells() const { return num_owned_cells; }
+  NODISCARD size_t get_num_ghost_cells() const { return num_ghost_cells; }
+  NODISCARD size_t get_num_total_cells() const { return num_owned_cells + num_ghost_cells; }
 
   //! Get the number of coarse faces for this layout.
-  inline uint32_t num_coarse_faces() const { return n_coarse_faces; }
+  NODISCARD inline uint32_t num_coarse_faces() const { return n_coarse_faces; }
 
   //! Get the number of AMR faces on a coarse faces for this layout
-  inline uint32_t num_amr_faces() const { return n_fine_faces; }
+  NODISCARD inline uint32_t num_amr_faces() const { return n_fine_faces; }
 
-  inline uint32_t num_max_faces_per_cell() const { return n_faces_per_cell; }
+  NODISCARD inline uint32_t num_max_faces_per_cell() const { return n_faces_per_cell; }
 
   //! Number of cells across a coarse face (Fortran Indexing)
-  inline uint32_t num_cells_across(uint32_t const cell, uint32_t const coarse_face) const;
-  inline uint32_t num_cells_across(size_t const cell, size_t const coarse_face) const;
+  NODISCARD inline uint32_t num_cells_across(uint32_t const cell, uint32_t const coarse_face) const;
+  NODISCARD inline uint32_t num_cells_across(size_t const cell, size_t const coarse_face) const;
 
   //! Get the indices of cells on the boundary at a given direction
-  inline sf_int get_edge_cells(const uint32_t face) const {
+  NODISCARD inline sf_int get_edge_cells(const uint32_t face) const {
     Require(face >= 1 && face <= n_coarse_faces);
     sf_int boundary_cells;
     for (uint32_t cell = 1; cell <= get_num_owned_cells(); ++cell) {
@@ -111,15 +111,15 @@ public:
   }
 
   //! Return the axis and direction of a face
-  inline std::pair<uint32_t, bool> face_axis_sign(const uint32_t face) const {
+  NODISCARD inline std::pair<uint32_t, bool> face_axis_sign(const uint32_t face) const {
     Require(face >= 1 && face <= n_coarse_faces);
     return std::make_pair((face + 1) / 2, static_cast<bool>((face + 1) % 2));
   }
 
   //! Make sure that a meshes neighbor relationship is valid (graph is cyclic)
-  uint32_t validate() const;
+  NODISCARD uint32_t validate() const;
 
-  const std::vector<int> &get_internal_data() const { return cell_face; }
+  NODISCARD const std::vector<int> &get_internal_data() const { return cell_face; }
 
   // >>> OVERLOADED OPERATORS
 

@@ -72,7 +72,7 @@ int dual_call_test(rtt_dsxx::ScalarUnitTest &ut) {
   cuda_conserve_calc_num_src_particles<<<blockSize, gridSize>>>(
       part_per_e, max_particles_pspc, n_cells, D_e_field, D_src_cell_bias, D_n_field, D_n_tot);
   std::cout << gpu.getErrorMessage(cudaGetLastError()) << std::endl;
-  cudaDeviceSynchronize();
+  err = cudaDeviceSynchronize();
   std::cout << gpu.getErrorMessage(cudaGetLastError()) << std::endl;
 
   vector<double> e_field_out(n_cells, 0.0);
@@ -86,10 +86,14 @@ int dual_call_test(rtt_dsxx::ScalarUnitTest &ut) {
   err = cudaDeviceReset();
   std::cout << gpu.getErrorMessage(err) << std::endl;
 
-  cudaFree(D_n_field);
-  cudaFree(D_e_field);
-  cudaFree(D_src_cell_bias);
-  cudaFree(D_n_tot);
+  err = cudaFree(D_n_field);
+  std::cout << gpu.getErrorMessage(cudaGetLastError()) << std::endl;
+  err = cudaFree(D_e_field);
+  std::cout << gpu.getErrorMessage(cudaGetLastError()) << std::endl;
+  err = cudaFree(D_src_cell_bias);
+  std::cout << gpu.getErrorMessage(cudaGetLastError()) << std::endl;
+  err = cudaFree(D_n_tot);
+  std::cout << gpu.getErrorMessage(cudaGetLastError()) << std::endl;
   // reduce the n_tot over all thread blocks
   for (int i = 0; i < n_blocks; ++i)
     device_n_tot += n_tot_block[i];

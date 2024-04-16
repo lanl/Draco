@@ -79,13 +79,13 @@ public:
 
   /*! \brief Construct an information message that includes Draco's version, copyright and basic
    *         build parameters. */
-  std::string fullReport() const;
+  NODISCARD std::string fullReport() const;
 
   //! Version and (C)
-  std::string briefReport() const;
+  NODISCARD std::string briefReport() const;
 
   //! Version only
-  std::string versionReport() const;
+  NODISCARD std::string versionReport() const;
 
 private:
   // DATA

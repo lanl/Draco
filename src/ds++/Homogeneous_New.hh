@@ -108,7 +108,7 @@ public:
 
   // ACCESSORS
 
-  bool check_class_invariants() const;
+  NODISCARD bool check_class_invariants() const;
 
 private:
   // NESTED CLASSES AND TYPEDEFS

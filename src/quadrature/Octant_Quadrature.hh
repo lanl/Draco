@@ -39,10 +39,10 @@ public:
       : Quadrature(sn_order), has_axis_assignments_(true), mu_axis_(mu_axis), eta_axis_(eta_axis) {}
 
   // SERVICES
-  bool has_axis_assignments() const override;
+  NODISCARD bool has_axis_assignments() const override;
 
 protected:
-  std::string as_text(std::string const &indent) const override = 0;
+  NODISCARD std::string as_text(std::string const &indent) const override = 0;
 
   // IMPLEMENTATION
 
@@ -61,15 +61,16 @@ private:
   using Quadrature::create_ordinates_;
 
   //! Virtual hook for create_ordinates
-  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm,
-                                          bool include_starting_directions,
-                                          bool include_extra_directions) const override;
+  NODISCARD std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/,
+                                                    double norm, bool include_starting_directions,
+                                                    bool include_extra_directions) const override;
 
   //! Virtual hook for create_ordinate_set
-  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm,
-                                          unsigned mu_axis, unsigned eta_axis,
-                                          bool include_starting_directions,
-                                          bool include_extra_directions) const override;
+  NODISCARD std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/,
+                                                    double norm, unsigned mu_axis,
+                                                    unsigned eta_axis,
+                                                    bool include_starting_directions,
+                                                    bool include_extra_directions) const override;
 
   // DATA
 

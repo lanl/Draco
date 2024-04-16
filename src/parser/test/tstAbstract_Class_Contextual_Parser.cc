@@ -31,7 +31,7 @@ public:
   // The argument is provided by the parser context and has a magic value, 42, if the parser has
   // handled context correctly.
 
-  int magic() const { return magic_; }
+  NODISCARD int magic() const { return magic_; }
 
   virtual ~Parent() = default;
 
@@ -75,7 +75,7 @@ public:
 
   // SERVICES
 
-  bool allow_exit() const { return false; }
+  NODISCARD bool allow_exit() const { return false; }
 
   void check_completeness(Token_Stream &tokens) {
     if (!child_) {
@@ -87,7 +87,7 @@ public:
 
   // STATICS
 
-  Parse_Table const &parse_table() const { return parse_table_; }
+  NODISCARD Parse_Table const &parse_table() const { return parse_table_; }
 
   static void register_model(string const &keyword,
                              std::shared_ptr<Parent> parse_function(Token_Stream &, int const &)) {
@@ -191,9 +191,9 @@ public:
 
   // SERVICES
 
-  bool allow_exit() const { return false; }
+  NODISCARD bool allow_exit() const { return false; }
 
-  Parse_Table const &parse_table() const { return parse_table_; }
+  NODISCARD Parse_Table const &parse_table() const { return parse_table_; }
 
   void check_completeness(Token_Stream &tokens) {
     if (rtt_dsxx::soft_equiv(snips_and_snails, -1.0, std::numeric_limits<double>::epsilon())) {
@@ -288,9 +288,9 @@ public:
 
   // SERVICES
 
-  bool allow_exit() const { return false; }
+  NODISCARD bool allow_exit() const { return false; }
 
-  Parse_Table const &parse_table() const { return parse_table_; }
+  NODISCARD Parse_Table const &parse_table() const { return parse_table_; }
 
   void check_completeness(Token_Stream &tokens) {
     if (rtt_dsxx::soft_equiv(sugar_and_spice, -1.0, std::numeric_limits<double>::epsilon())) {

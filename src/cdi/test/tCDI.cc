@@ -255,16 +255,11 @@ void test_CDI(rtt_dsxx::UnitTest &ut) {
       auto const m = static_cast<rtt_cdi::Model>(i);
       auto const r = static_cast<rtt_cdi::Reaction>(j);
 
-      if (cdi.isGrayOpacitySet(m, r))
-        ITFAILS;
-      if (cdi.isMultigroupOpacitySet(m, r))
-        ITFAILS;
+      FAIL_IF(cdi.isGrayOpacitySet(m, r));
+      FAIL_IF(cdi.isMultigroupOpacitySet(m, r));
     }
-  if (cdi.isEoSSet())
-    ITFAILS;
-
-  if (cdi.isEICouplingSet())
-    ITFAILS;
+  FAIL_IF(cdi.isEoSSet());
+  FAIL_IF(cdi.isEICouplingSet());
 
   if (cdi.getMatID() == matName)
     PASSMSG("Good, the material identifier was set and fetched correctly.");
@@ -365,7 +360,8 @@ void test_CDI(rtt_dsxx::UnitTest &ut) {
 
   caught = false;
   try {
-    cdi.mg(rtt_cdi::ROSSELAND, rtt_cdi::ABSORPTION);
+    auto mgo = cdi.mg(rtt_cdi::ROSSELAND, rtt_cdi::ABSORPTION);
+    caught = (mg_planck_abs == mgo); // should never get here.
   } catch (const rtt_dsxx::assertion &error) {
     ostringstream message;
     message << "Good, we caught the following exception: \n" << error.what();
@@ -407,7 +403,8 @@ void test_CDI(rtt_dsxx::UnitTest &ut) {
 
   caught = false;
   try {
-    cdi.mg(rtt_cdi::PLANCK, rtt_cdi::ABSORPTION);
+    auto mgo = cdi.mg(rtt_cdi::PLANCK, rtt_cdi::ABSORPTION);
+    FAIL_IF(mg_planck_abs == mgo); // should never get here.
   } catch (const rtt_dsxx::assertion &error) {
     ostringstream message;
     message << "Good, we caught the following exception: \n" << error.what();

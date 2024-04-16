@@ -72,30 +72,30 @@ public:
    * \brief  Returns the cell definition name.
    * \return The cell definition name.
    */
-  string get_name() const { return name; }
+  NODISCARD string get_name() const { return name; }
 
   /*!
    * \brief  Returns the number of nodes associated with the cell definition.
    * \return The number of nodes comprising the cell definition.
    */
-  unsigned get_nnodes() const { return nnodes; }
+  NODISCARD unsigned get_nnodes() const { return nnodes; }
 
   /*!
    * \brief  Returns the number of sides associated with the cell definition.
    * \return The number of sides comprising the cell definition.
    */
-  unsigned get_nsides() const { return nsides; }
+  NODISCARD unsigned get_nsides() const { return nsides; }
 
   /*!
    * \brief Returns the side type number associated with the cell definition specified side index.
    * \param s Side index number.
    * \return  The side type number.
    */
-  int get_side_types(size_t s) const { return side_types[s]; }
+  NODISCARD int get_side_types(size_t s) const { return side_types[s]; }
 
-  vector_uint get_all_side_types() const { return side_types; }
-  vector_vector_uint get_all_sides() const { return sides; }
-  vector_vector_uint get_all_ordered_sides() const { return ordered_sides; }
+  NODISCARD vector_uint get_all_side_types() const { return side_types; }
+  NODISCARD vector_vector_uint get_all_sides() const { return sides; }
+  NODISCARD vector_vector_uint get_all_ordered_sides() const { return ordered_sides; }
 
   /*!
    * \brief Returns the side definition of the specified side index of this cell definition with the
@@ -103,7 +103,7 @@ public:
    * \param[in] s Side index number.
    * \return The side definition (i.e., the cell-node indexes that comprise the side).
    */
-  vector_uint const &get_side(size_t s) const { return sides[s]; }
+  NODISCARD vector_uint const &get_side(size_t s) const { return sides[s]; }
 
   /*!
    * \brief Returns the side definition of the specified side index of this cell definition with the
@@ -112,14 +112,14 @@ public:
    * \param[in] s Side index number.
    * \return The side definition (i.e., the cell-node indexes that comprise the side).
    */
-  vector_uint const &get_ordered_side(size_t s) const { return ordered_sides[s]; }
+  NODISCARD vector_uint const &get_ordered_side(size_t s) const { return ordered_sides[s]; }
 
   //----------------------------------------------------------------------------------------------//
   /*!
    * \brief Returns the new nodes map when cell redefinition has been performed.
    * \return New nodes map.
    */
-  const vector_uint &get_node_map() const { return node_map; }
+  NODISCARD const vector_uint &get_node_map() const { return node_map; }
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -171,7 +171,7 @@ public:
    * \param[in] i Cell definition index number.
    * \return The cell definition name.
    */
-  string get_name(size_t i) const {
+  NODISCARD string get_name(size_t i) const {
     Require(i < defs.size());
     return defs[i]->get_name();
   }
@@ -181,22 +181,22 @@ public:
    * \param[in] i Cell definition index number.
    * \return The cell definition.
    */
-  const CellDef &get_cell_def(size_t i) const { return *(defs[i]); }
-  std::shared_ptr<CellDef> get_def(size_t i) const { return defs[i]; }
+  NODISCARD const CellDef &get_cell_def(size_t i) const { return *(defs[i]); }
+  NODISCARD std::shared_ptr<CellDef> get_def(size_t i) const { return defs[i]; }
 
   /*!
    * \brief Returns the number of nodes associated with the specified cell definition.
    * \param[in] i Cell definition index number.
    * \return The number of nodes comprising the cell definition.
    */
-  size_t get_nnodes(size_t i) const { return defs[i]->get_nnodes(); }
+  NODISCARD size_t get_nnodes(size_t i) const { return defs[i]->get_nnodes(); }
 
   /*!
    * \brief Returns the number of sides associated with the specified cell definition.
    * \param[in] i Cell definition index number.
    * \return The number of sides comprising the cell definition.
    */
-  size_t get_nsides(size_t i) const { return defs[i]->get_nsides(); }
+  NODISCARD size_t get_nsides(size_t i) const { return defs[i]->get_nsides(); }
 
   /*!
    * \brief Returns the side type number associated with the specified side index and cell
@@ -205,7 +205,7 @@ public:
    * \param[in] s Side index number.
    * \return The side type number.
    */
-  int get_side_types(size_t i, size_t s) const { return defs[i]->get_side_types(s); }
+  NODISCARD int get_side_types(size_t i, size_t s) const { return defs[i]->get_side_types(s); }
 
   /*!
    * \brief Returns the side definition associated with the specified cell definition and side index
@@ -214,7 +214,7 @@ public:
    * \param[in] s Side index number.
    * \return The side definition (i.e., the cell-node indexes that comprise the side).
    */
-  vector_uint const &get_side(size_t i, size_t s) const { return defs[i]->get_side(s); }
+  NODISCARD vector_uint const &get_side(size_t i, size_t s) const { return defs[i]->get_side(s); }
 
   /*!
    * \brief Returns the side definition associated with the specified cell definition and side index
@@ -224,7 +224,7 @@ public:
    * \param[in] s Side index number.
    * \return The side definition (i.e., the cell-node indexes that comprise the side).
    */
-  vector_uint const &get_ordered_side(size_t i, size_t s) const {
+  NODISCARD vector_uint const &get_ordered_side(size_t i, size_t s) const {
     return defs[i]->get_ordered_side(s);
   }
 
@@ -232,7 +232,7 @@ public:
    * \brief Returns the status of the flag indicating that the cell definitions have been redefined.
    * \return The status of the redefined flag.
    */
-  bool get_redefined() const { return redefined; }
+  NODISCARD bool get_redefined() const { return redefined; }
 
   /*!
    * \brief Returns the new node map for the specified cell definition when redefinition has been
@@ -240,7 +240,9 @@ public:
    * \param[in] cell_def Cell definition index.
    * \return New cell definition node map.
    */
-  const vector_uint &get_node_map(int cell_def) const { return defs[cell_def]->get_node_map(); }
+  NODISCARD const vector_uint &get_node_map(int cell_def) const {
+    return defs[cell_def]->get_node_map();
+  }
 };
 
 } // end namespace rtt_RTT_Format_Reader

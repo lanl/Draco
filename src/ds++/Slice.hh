@@ -49,9 +49,9 @@ public:
     using pointer = typename traits::pointer;
     using reference = typename traits::reference;
 
-    Ran first() const { return first_; }
-    difference_type offset() const { return offset_; }
-    size_type stride() const { return stride_; }
+    NODISCARD Ran first() const { return first_; }
+    NODISCARD difference_type offset() const { return offset_; }
+    NODISCARD size_type stride() const { return stride_; }
 
     iterator &operator++() {
       offset_ += stride_;
@@ -107,9 +107,9 @@ public:
     using pointer = typename traits::pointer;
     using reference = typename traits::reference;
 
-    Ran first() const { return first_; }
-    difference_type offset() const { return offset_; }
-    size_type stride() const { return stride_; }
+    NODISCARD Ran first() const { return first_; }
+    NODISCARD difference_type offset() const { return offset_; }
+    NODISCARD size_type stride() const { return stride_; }
 
     const_iterator &operator++() {
       offset_ += stride_;
@@ -201,14 +201,14 @@ public:
   // ACCESSORS
 
   iterator begin() { return iterator(first, 0, stride); }
-  const_iterator begin() const { return const_iterator(first, 0, stride); }
+  NODISCARD const_iterator begin() const { return const_iterator(first, 0, stride); }
   iterator end() { return iterator(first, length * stride, stride); }
-  const_iterator end() const { return const_iterator(first, length * stride, stride); }
+  NODISCARD const_iterator end() const { return const_iterator(first, length * stride, stride); }
 
   reverse_iterator rbegin();
-  const_reverse_iterator rbegin() const;
+  NODISCARD const_reverse_iterator rbegin() const;
   reverse_iterator rend();
-  const_reverse_iterator rend() const;
+  NODISCARD const_reverse_iterator rend() const;
 
   reference operator[](size_type n) {
     Require(n < size());
@@ -220,16 +220,16 @@ public:
   }
 
   reference at(size_type n);
-  const_reference at(size_type n) const;
+  NODISCARD const_reference at(size_type n) const;
 
   reference front();
-  const_reference front() const { return first[0]; }
+  NODISCARD const_reference front() const { return first[0]; }
   reference back();
-  const_reference back() const { return first[stride * (size() - 1)]; }
+  NODISCARD const_reference back() const { return first[stride * (size() - 1)]; }
 
-  size_type size() const { return length; }
-  bool empty() const { return size() == 0; }
-  size_type max_size() const;
+  NODISCARD size_type size() const { return length; }
+  NODISCARD bool empty() const { return size() == 0; }
+  NODISCARD size_type max_size() const;
 
 private:
   // DATA

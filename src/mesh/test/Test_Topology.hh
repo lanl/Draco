@@ -28,16 +28,16 @@ namespace rtt_mesh_test {
 class One_Proc {
 public:
   One_Proc() = default;
-  int decomposition_scheme() const;
-  int get_num_global_cells() const { return 6; }
-  int get_num_bnd_cells() const { return 0; }
-  const int *get_bnd_cells() const { return nullptr; }
-  const int *get_bnd_procs() const { return nullptr; }
-  const int *get_full_active() const { return nullptr; }
-  const int *get_active_full() const { return nullptr; }
-  int get_num_cells() const { return 0; }
-  int get_num_full_cells() const { return 0; }
-  bool has_ghost_cells() const { return get_num_full_cells() != 0; }
+  NODISCARD int decomposition_scheme() const;
+  NODISCARD int get_num_global_cells() const { return 6; }
+  NODISCARD int get_num_bnd_cells() const { return 0; }
+  NODISCARD const int *get_bnd_cells() const { return nullptr; }
+  NODISCARD const int *get_bnd_procs() const { return nullptr; }
+  NODISCARD const int *get_full_active() const { return nullptr; }
+  NODISCARD const int *get_active_full() const { return nullptr; }
+  NODISCARD int get_num_cells() const { return 0; }
+  NODISCARD int get_num_full_cells() const { return 0; }
+  NODISCARD bool has_ghost_cells() const { return get_num_full_cells() != 0; }
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -59,22 +59,22 @@ private:
 
 public:
   Two_Proc();
-  int decomposition_scheme() const;
-  int get_num_global_cells() const { return 15; }
-  int get_num_bnd_cells() const;
-  const int *get_bnd_cells() const { return &bnd_cells[0]; }
-  const int *get_bnd_procs() const { return &bnd_procs[0]; }
-  const int *get_full_active() const { return &full_active[0]; }
-  const int64_t *get_active_full() const { return &active_full[0]; }
-  const int *get_active_full_int() const { return &active_full_int[0]; }
-  int get_num_cells() const;
-  int get_num_full_cells() const;
-  bool has_ghost_cells() const { return get_num_full_cells() != 0; }
+  NODISCARD int decomposition_scheme() const;
+  NODISCARD int get_num_global_cells() const { return 15; }
+  NODISCARD int get_num_bnd_cells() const;
+  NODISCARD const int *get_bnd_cells() const { return &bnd_cells[0]; }
+  NODISCARD const int *get_bnd_procs() const { return &bnd_procs[0]; }
+  NODISCARD const int *get_full_active() const { return &full_active[0]; }
+  NODISCARD const int64_t *get_active_full() const { return &active_full[0]; }
+  NODISCARD const int *get_active_full_int() const { return &active_full_int[0]; }
+  NODISCARD int get_num_cells() const;
+  NODISCARD int get_num_full_cells() const;
+  NODISCARD bool has_ghost_cells() const { return get_num_full_cells() != 0; }
 
-  const int *get_num_cells_across_face() const;
-  const int64_t *get_cells_across_face() const;
-  const double *get_r_dimensions() const;
-  const double *get_z_dimensions() const;
+  NODISCARD const int *get_num_cells_across_face() const;
+  NODISCARD const int64_t *get_cells_across_face() const;
+  NODISCARD const double *get_r_dimensions() const;
+  NODISCARD const double *get_z_dimensions() const;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -87,15 +87,15 @@ private:
 
 public:
   Two_Proc_NGC();
-  int decomposition_scheme() const;
-  int get_num_global_cells() const { return 15; }
-  int get_num_bnd_cells() const;
-  const int *get_bnd_cells() const { return &bnd_cells[0]; }
-  const int *get_bnd_procs() const { return &bnd_procs[0]; }
-  const int *get_full_active() const { return nullptr; }
-  int get_num_cells() const;
-  int get_num_full_cells() const { return 0; }
-  bool has_ghost_cells() const { return get_num_full_cells() != 0; }
+  NODISCARD int decomposition_scheme() const;
+  NODISCARD int get_num_global_cells() const { return 15; }
+  NODISCARD int get_num_bnd_cells() const;
+  NODISCARD const int *get_bnd_cells() const { return &bnd_cells[0]; }
+  NODISCARD const int *get_bnd_procs() const { return &bnd_procs[0]; }
+  NODISCARD const int *get_full_active() const { return nullptr; }
+  NODISCARD int get_num_cells() const;
+  NODISCARD int get_num_full_cells() const { return 0; }
+  NODISCARD bool has_ghost_cells() const { return get_num_full_cells() != 0; }
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -119,22 +119,22 @@ public:
   Four_Proc();
 
   // Topology builder interface.
-  int decomposition_scheme() const;
-  int get_num_global_cells() const { return 18; }
-  int get_num_bnd_cells() const;
-  const int *get_bnd_cells() const { return &bnd_cells[0]; }
-  const int *get_bnd_procs() const { return &bnd_procs[0]; }
-  const int *get_full_active() const { return &full_active[0]; }
-  const int64_t *get_active_full() const { return &active_full[0]; }
-  const int *get_active_full_int() const { return &active_full_int[0]; }
-  int get_num_full_cells() const;
-  bool has_ghost_cells() const { return get_num_full_cells() != 0; }
+  NODISCARD int decomposition_scheme() const;
+  NODISCARD int get_num_global_cells() const { return 18; }
+  NODISCARD int get_num_bnd_cells() const;
+  NODISCARD const int *get_bnd_cells() const { return &bnd_cells[0]; }
+  NODISCARD const int *get_bnd_procs() const { return &bnd_procs[0]; }
+  NODISCARD const int *get_full_active() const { return &full_active[0]; }
+  NODISCARD const int64_t *get_active_full() const { return &active_full[0]; }
+  NODISCARD const int *get_active_full_int() const { return &active_full_int[0]; }
+  NODISCARD int get_num_full_cells() const;
+  NODISCARD bool has_ghost_cells() const { return get_num_full_cells() != 0; }
 
-  int get_num_cells() const;
-  const int *get_num_cells_across_face() const;
-  const int64_t *get_cells_across_face() const;
-  const double *get_r_dimensions() const;
-  const double *get_z_dimensions() const;
+  NODISCARD int get_num_cells() const;
+  NODISCARD const int *get_num_cells_across_face() const;
+  NODISCARD const int64_t *get_cells_across_face() const;
+  NODISCARD const double *get_r_dimensions() const;
+  NODISCARD const double *get_z_dimensions() const;
 };
 
 //================================================================================================//

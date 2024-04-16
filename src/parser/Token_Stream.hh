@@ -204,10 +204,10 @@ public:
   // ACCESSORS
 
   //! Return the number of errors reported to the stream since it was last constructed or rewound.
-  unsigned error_count() const noexcept { return error_count_; }
+  NODISCARD unsigned error_count() const noexcept { return error_count_; }
 
   //! Check that all class invariants are satisfied.
-  bool check_class_invariants() const { return true; }
+  NODISCARD bool check_class_invariants() const { return true; }
 
   // STATICS
 

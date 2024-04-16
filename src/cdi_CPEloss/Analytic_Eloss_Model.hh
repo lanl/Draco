@@ -46,7 +46,8 @@ public:
   Analytic_Eloss_Model &operator=(Analytic_Eloss_Model &&rhs) noexcept = delete;
 
   //! Interface for derived analytic eloss models.
-  virtual double calculate_eloss(const double T, const double rho, const double v0) const = 0;
+  NODISCARD virtual double calculate_eloss(const double T, const double rho,
+                                           const double v0) const = 0;
 
 protected:
   //! Constructor initializes generically useful physical quantities.

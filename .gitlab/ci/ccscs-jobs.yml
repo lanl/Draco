@@ -29,7 +29,7 @@ ccs1_clangtidy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm1201
     CTEST_NPROC: 32
-    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
+    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
     EXTRA_CTEST_ARGS: -R dsxx_tstRelease
     SITE_ID: ccscs1
   script:
@@ -70,6 +70,17 @@ ccs1_deb_gcc_1220_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
     SITE_ID: ccscs1
+
+ccs3_deb_gcc_cxx17_deploy:
+  tags:
+    - CCSCS1-setuid-shared
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1220
+    SITE_ID: ccscs3
+    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=17
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-cxx17
 
 ccs1_rwdi_gcc_1220_deploy:
   tags:
@@ -438,6 +449,18 @@ ccs2_gcov:
     EXTRA_CMAKE_ARGS: -G Ninja -DCODE_COVERAGE=ON
     CTEST_NPROC: 20
     SITE_ID: ccscs2
+
+ccs3_deb_gcc_1220_cxx17:
+  tags:
+    - CCSCS3-setuid-shared
+  stage: slowtest
+  extends: .ccscs_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1220
+    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=17
+    CTEST_NPROC: 32
+    SITE_ID: ccscs3
 
 # ccs2_valgrind:
 #   tags:

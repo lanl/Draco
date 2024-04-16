@@ -82,8 +82,8 @@ public:
   // Accessors
   //
 
-  char const *name() const { return name_; }
-  bool is_active() const { return active_ || global_active_; }
+  NODISCARD char const *name() const { return name_; }
+  NODISCARD bool is_active() const { return active_ || global_active_; }
 
   //
   // Manipulators

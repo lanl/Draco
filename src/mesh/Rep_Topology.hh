@@ -49,49 +49,49 @@ public:
   // >>> DERIVED INTERFACE
 
   //! Return the number of cells on a processor.
-  int64_t num_local_cells() const override { return Base::num_global_cells_d; }
+  NODISCARD int64_t num_local_cells() const override { return Base::num_global_cells_d; }
 
-  bool valid_local_cell(int cell) const override {
+  NODISCARD bool valid_local_cell(int cell) const override {
     Require(Base::num_global_cells_d < std::numeric_limits<int>::max());
     return (cell >= 1) && (cell <= static_cast<int>(Base::num_global_cells_d));
   }
 
   //! Get the global cell index on processor.
-  int64_t global_cell(size_t lcell) const override {
+  NODISCARD int64_t global_cell(size_t lcell) const override {
     validate(lcell);
     return lcell;
   }
 
   //! Get the local cell index on processor.
-  int local_cell(size_t gcell) const override {
+  NODISCARD int local_cell(size_t gcell) const override {
     validate(gcell);
     Check(gcell < INT32_MAX);
     return static_cast<int>(gcell);
   }
 
   //! Get the number of boundary cells on a processor.
-  size_t num_ghost_cells() const override { return 0; }
+  NODISCARD size_t num_ghost_cells() const override { return 0; }
 
   //! Get the remote local cell index for a boundary cell.
-  int remote_local_cell(size_t /*c*/) const override {
+  NODISCARD int remote_local_cell(size_t /*c*/) const override {
     Insist(0, "Illegal"); // LCOV_EXCL_LINE
     return 0;             // LCOV_EXCL_LINE
   }
 
   //! Get the remote processor id for a boundary cell.
-  int remote_proc(size_t /*c*/) const override {
+  NODISCARD int remote_proc(size_t /*c*/) const override {
     Insist(0, "Illegal"); // LCOV_EXCL_LINE
     return 0;             // LCOV_EXCL_LINE
   }
 
   //! Get the global offset at a rank
-  int get_global_offset(int /*rank*/) const override {
+  NODISCARD int get_global_offset(int /*rank*/) const override {
     Insist(0, "Illegal"); // LCOV_EXCL_LINE
     return 0;             // LCOV_EXCL_LINE
   }
 
   // Pack function.
-  packed_type pack() const override;
+  NODISCARD packed_type pack() const override;
 
   // Diagnostics.
   void print(std::ostream &out) const override;

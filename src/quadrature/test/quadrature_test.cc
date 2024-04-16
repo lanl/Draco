@@ -42,8 +42,10 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
     FAIL_IF(ordinate_space->bookkeeping_coefficient(
                 static_cast<unsigned>(number_of_ordinates - 1)) <= 0.0);
 
-    ordinate_space->psi_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
-    ordinate_space->source_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
+    double pc = ordinate_space->psi_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
+    double os = ordinate_space->source_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
+    FAIL_IF(std::abs(pc) > 1.0e-12);
+    FAIL_IF(os > -1.0);
     // check that throws no exception
   } else if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
     FAIL_IF_NOT((dimension > 1 && first_angles.size() == number_of_levels) ||
@@ -51,8 +53,13 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
     FAIL_IF(ordinate_space->bookkeeping_coefficient(
                 static_cast<unsigned>(number_of_ordinates - 1)) <= 0.0);
 
-    ordinate_space->psi_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
-    ordinate_space->source_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
+    double pc = ordinate_space->psi_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
+    double os = ordinate_space->source_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(pc, 0.0));
+    FAIL_IF(os > -0.1);
+    std::cout << "==> pc = " << pc << std::endl;
+    std::cout << "==> os = " << os << std::endl;
+
     // check that throws no exception
 
     vector<unsigned> const &levels = ordinate_space->levels();

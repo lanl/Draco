@@ -138,8 +138,8 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
     std::vector<unsigned> test_gn_linkage = mesh_iface->flatten_sn_linkage(go_layout);
 
     // check that cn_linkage is a permutation of the original cell-node linkage
-    std::vector<unsigned>::const_iterator gn_first = ghost_cell_to_node_linkage.begin();
-    std::vector<unsigned>::const_iterator test_gn_first = test_gn_linkage.begin();
+    auto gn_first = ghost_cell_to_node_linkage.begin();
+    auto test_gn_first = test_gn_linkage.begin();
     size_t const num_ghost_cells = ghost_cell_type.size();
     for (unsigned ghost = 0; ghost < num_ghost_cells; ++ghost) {
 
@@ -384,8 +384,8 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
     std::vector<unsigned> test_gn_linkage = mesh_iface->flatten_sn_linkage(go_layout);
 
     // check that cn_linkage is a permutation of the original cell-node linkage
-    std::vector<unsigned>::const_iterator gn_first = ghost_cell_to_node_linkage.begin();
-    std::vector<unsigned>::const_iterator test_gn_first = test_gn_linkage.begin();
+    auto gn_first = ghost_cell_to_node_linkage.begin();
+    auto test_gn_first = test_gn_linkage.begin();
     size_t const num_ghost_cells = ghost_cell_type.size();
     for (unsigned ghost = 0; ghost < num_ghost_cells; ++ghost) {
 

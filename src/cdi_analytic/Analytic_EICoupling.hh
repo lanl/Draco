@@ -59,21 +59,22 @@ public:
   explicit Analytic_EICoupling(const sf_char &packed);
 
   // >>> ACCESSORS
-  const_SP_Model get_Analytic_Model() const { return analytic_model; }
+  NODISCARD const_SP_Model get_Analytic_Model() const { return analytic_model; }
 
   // >>> INTERFACE SPECIFIED BY rtt_cdi::EICoupling
 
   // Get electron ion coupling.
-  double getElectronIonCoupling(const double eTemperature, const double iTemperature,
-                                const double density, const double w_e,
-                                const double w_i) const override;
+  NODISCARD double getElectronIonCoupling(const double eTemperature, const double iTemperature,
+                                          const double density, const double w_e,
+                                          const double w_i) const override;
 
-  sf_double getElectronIonCoupling(const sf_double &vetemperature, const sf_double &vitemperature,
-                                   const sf_double &vdensity, const sf_double &vw_e,
-                                   const sf_double &vw_i) const override;
+  NODISCARD sf_double getElectronIonCoupling(const sf_double &vetemperature,
+                                             const sf_double &vitemperature,
+                                             const sf_double &vdensity, const sf_double &vw_e,
+                                             const sf_double &vw_i) const override;
 
   // Pack the Analytic_EICoupling into a character string.
-  sf_char pack() const override;
+  NODISCARD sf_char pack() const override;
 };
 
 } // end namespace rtt_cdi_analytic

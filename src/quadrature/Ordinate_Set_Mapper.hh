@@ -50,7 +50,7 @@ public:
   // SERVICES
 
   //! Simple check of integrity of the private data
-  bool check_class_invariants() const;
+  NODISCARD bool check_class_invariants() const;
 
   //! Maps an ordinate and weight into the ordinate set
   void map_angle_into_ordinates(const Ordinate &ord_in, const Interpolation_Type &interp_in,
@@ -111,7 +111,7 @@ private:
   };
 
   //! Simple function to integrate the 0th moment
-  double zeroth_moment(const std::vector<double> &weights) const;
+  NODISCARD double zeroth_moment(const std::vector<double> &weights) const;
 };
 
 } // end namespace rtt_quadrature

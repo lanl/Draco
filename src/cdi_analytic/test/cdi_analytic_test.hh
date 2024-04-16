@@ -27,19 +27,22 @@ public:
   explicit Marshak_Model(double a_) noexcept : a(a_) { /*...*/
   }
 
-  double calculate_opacity(double T, double /*rho*/) const override { return a / (T * T * T); }
+  NODISCARD double calculate_opacity(double T, double /*rho*/) const override {
+    return a / (T * T * T);
+  }
 
-  double calculate_opacity(double T, double rho, double /*nu*/) const override {
+  NODISCARD double calculate_opacity(double T, double rho, double /*nu*/) const override {
     return calculate_opacity(T, rho);
   }
 
-  double calculate_opacity(double T, double rho, double /*nu0*/, double /*nu1*/) const override {
+  NODISCARD double calculate_opacity(double T, double rho, double /*nu0*/,
+                                     double /*nu1*/) const override {
     return calculate_opacity(T, rho);
   }
 
-  std::vector<double> get_parameters() const override { return {a}; }
+  NODISCARD std::vector<double> get_parameters() const override { return {a}; }
 
-  std::vector<char> pack() const override {
+  NODISCARD std::vector<char> pack() const override {
     rtt_dsxx::Packer packer;
     std::vector<char> p(sizeof(double) + sizeof(int));
     packer.set_buffer(p.size(), &p[0]);

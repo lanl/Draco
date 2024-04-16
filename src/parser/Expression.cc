@@ -32,7 +32,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
@@ -44,7 +44,7 @@ private:
     return ((std::abs(evaluate_def_(e1_, x)) > eps) && (std::abs(evaluate_def_(e2_, x)) > eps));
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return e1_->is_constant(i) && e2_->is_constant(i);
   }
 
@@ -76,7 +76,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            is_compatible(expression_->units(), dimensionless) &&
            expression_->number_of_variables() == number_of_variables();
@@ -87,7 +87,7 @@ private:
     return cos(evaluate_def_(expression_, x));
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return expression_->is_constant(i);
   }
 
@@ -121,7 +121,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            is_compatible(e1_->units(), e2_->units()) &&
            e1_->number_of_variables() == number_of_variables() &&
@@ -133,7 +133,7 @@ private:
     return evaluate_def_(e1_, x) - evaluate_def_(e2_, x);
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return e1_->is_constant(i) && e2_->is_constant(i);
   }
 
@@ -165,7 +165,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            is_compatible(expression_->units(), dimensionless) &&
            expression_->number_of_variables() == number_of_variables();
@@ -176,7 +176,7 @@ private:
     return exp(evaluate_def_(expression_, x));
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return expression_->is_constant(i);
   }
 
@@ -210,7 +210,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            is_compatible(e1_->units(), e2_->units()) &&
            e1_->number_of_variables() == number_of_variables() &&
@@ -222,7 +222,7 @@ private:
     return evaluate_def_(e1_, x) > evaluate_def_(e2_, x);
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return e1_->is_constant(i) && e2_->is_constant(i);
   }
 
@@ -256,7 +256,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            is_compatible(e1_->units(), e2_->units()) &&
            e1_->number_of_variables() == number_of_variables() &&
@@ -268,7 +268,7 @@ private:
     return evaluate_def_(e1_, x) >= evaluate_def_(e2_, x);
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return e1_->is_constant(i) && e2_->is_constant(i);
   }
 
@@ -302,7 +302,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            is_compatible(e1_->units(), e2_->units()) &&
            e1_->number_of_variables() == number_of_variables() &&
@@ -314,7 +314,7 @@ private:
     return evaluate_def_(e1_, x) < evaluate_def_(e2_, x);
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return e1_->is_constant(i) && e2_->is_constant(i);
   }
 
@@ -348,7 +348,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            is_compatible(e1_->units(), e2_->units()) &&
            e1_->number_of_variables() == number_of_variables() &&
@@ -360,7 +360,7 @@ private:
     return evaluate_def_(e1_, x) <= evaluate_def_(e2_, x);
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return e1_->is_constant(i) && e2_->is_constant(i);
   }
 
@@ -392,7 +392,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            is_compatible(expression_->units(), dimensionless) &&
            expression_->number_of_variables() == number_of_variables();
@@ -403,7 +403,7 @@ private:
     return log(evaluate_def_(expression_, x));
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return expression_->is_constant(i);
   }
 
@@ -435,7 +435,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            expression_->number_of_variables() == number_of_variables();
   }
@@ -445,7 +445,7 @@ private:
     return -evaluate_def_(expression_, x);
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return expression_->is_constant(i);
   }
 
@@ -474,7 +474,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            expression_->number_of_variables() == number_of_variables();
   }
@@ -485,7 +485,7 @@ private:
     return std::abs(evaluate_def_(expression_, x)) < eps;
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return expression_->is_constant(i);
   }
 
@@ -517,7 +517,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
@@ -529,7 +529,7 @@ private:
     return (std::abs(evaluate_def_(e1_, x)) > eps) || (std::abs(evaluate_def_(e2_, x)) > eps);
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return e1_->is_constant(i) && e2_->is_constant(i);
   }
 
@@ -566,7 +566,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
@@ -577,7 +577,7 @@ private:
     return std::pow(evaluate_def_(e1_, x), evaluate_def_(e2_, x));
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return e1_->is_constant(i) && e2_->is_constant(i);
   }
 
@@ -612,7 +612,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
@@ -623,7 +623,7 @@ private:
     return evaluate_def_(e1_, x) * evaluate_def_(e2_, x);
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return e1_->is_constant(i) && e2_->is_constant(i);
   }
 
@@ -656,7 +656,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
@@ -667,7 +667,7 @@ private:
     return evaluate_def_(e1_, x) / evaluate_def_(e2_, x);
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return e1_->is_constant(i) && e2_->is_constant(i);
   }
 
@@ -699,7 +699,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            is_compatible(expression_->units(), dimensionless) &&
            expression_->number_of_variables() == number_of_variables();
@@ -710,7 +710,7 @@ private:
     return sin(evaluate_def_(expression_, x));
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return expression_->is_constant(i);
   }
 
@@ -744,7 +744,7 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const {
+  NODISCARD bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
@@ -755,7 +755,7 @@ private:
     return evaluate_def_(e1_, x) + evaluate_def_(e2_, x);
   }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override {
+  NODISCARD bool is_constant_(unsigned const i) const override {
     return e1_->is_constant(i) && e2_->is_constant(i);
   }
 
@@ -786,12 +786,12 @@ public:
   }
 
   //! Check the class invariant
-  bool check_class_invariant() const { return index_ < number_of_variables(); }
+  NODISCARD bool check_class_invariant() const { return index_ < number_of_variables(); }
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override { return x[index_]; }
 
-  /*virtual*/ bool is_constant_(unsigned const i) const override { return i != index_; }
+  NODISCARD bool is_constant_(unsigned const i) const override { return i != index_; }
 
   /*virtual*/ void write_(Precedence /*precedence*/, vector<string> const &vars,
                           ostream &out) const override {
@@ -915,7 +915,7 @@ static pE parse_primary(unsigned const number_of_variables, Variable_Map const &
           unit_map["jerk"] = jerk;
         }
 
-        map<string, Unit>::const_iterator ii = unit_map.find(variable.text());
+        auto ii = unit_map.find(variable.text());
 
         if (ii != unit_map.end()) {
           Unit units = ii->second;

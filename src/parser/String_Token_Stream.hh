@@ -55,22 +55,22 @@ public:
   // ACCESSORS
 
   //! Return the text to be tokenized.
-  string const &text() const { return text_; }
+  NODISCARD string const &text() const { return text_; }
 
   //! Return the accumulated set of messages.
-  string messages() const { return messages_; }
+  NODISCARD string messages() const { return messages_; }
 
   //! Check the class invariant.
-  bool check_class_invariants() const;
+  NODISCARD bool check_class_invariants() const;
 
 protected:
   //! Generate a locator string.
-  string location_() const override;
+  NODISCARD string location_() const override;
 
   void fill_character_buffer_() override;
 
-  bool error_() const override;
-  bool end_() const override;
+  NODISCARD bool error_() const override;
+  NODISCARD bool end_() const override;
 
   void push_include(std::string &include_file_name) override;
   void pop_include() override;

@@ -104,25 +104,25 @@ public:
   // >>> ACCESSORS
 
   //! Get a pointer to the current position of the data stream.
-  const_pointer get_ptr() const {
+  NODISCARD const_pointer get_ptr() const {
     Require(!size_mode);
     return ptr;
   }
 
   //! Get a pointer to the beginning position of the data stream.
-  const_pointer begin() const {
+  NODISCARD const_pointer begin() const {
     Require(!size_mode);
     return begin_ptr;
   }
 
   //! Get a pointer to the ending position of the data stream.
-  const_pointer end() const {
+  NODISCARD const_pointer end() const {
     Require(!size_mode);
     return end_ptr;
   }
 
   //! Get the size of the data stream.
-  uint64_t size() const { return stream_size; }
+  NODISCARD uint64_t size() const { return stream_size; }
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -352,16 +352,16 @@ public:
   template <typename IT> void extract(uint64_t bytes, IT destination);
 
   //! Get a pointer to the current position of the data stream.
-  const_pointer get_ptr() const { return ptr; }
+  NODISCARD const_pointer get_ptr() const { return ptr; }
 
   //! Get a pointer to the beginning position of the data stream.
-  const_pointer begin() const { return begin_ptr; }
+  NODISCARD const_pointer begin() const { return begin_ptr; }
 
   //! Get a pointer to the ending position of the data stream.
-  const_pointer end() const { return end_ptr; }
+  NODISCARD const_pointer end() const { return end_ptr; }
 
   //! Get the size of the data stream.
-  uint64_t size() const { return stream_size; }
+  NODISCARD uint64_t size() const { return stream_size; }
 };
 
 #if defined(__clang__)

@@ -33,22 +33,22 @@ public:
 
   // ACCESSORS
 
-  std::vector<double> const &mu() const { return mu_; }
-  std::vector<double> const &eta() const { return eta_; }
-  std::vector<double> const &xi() const { return xi_; }
-  std::vector<double> const &wt() const { return wt_; }
+  NODISCARD std::vector<double> const &mu() const { return mu_; }
+  NODISCARD std::vector<double> const &eta() const { return eta_; }
+  NODISCARD std::vector<double> const &xi() const { return xi_; }
+  NODISCARD std::vector<double> const &wt() const { return wt_; }
 
   // SERVICES
 
   // These functions override the virtual member functions specifed in the parent class Quadrature.
 
-  std::string name() const override;
-  std::string parse_name() const override;
-  Quadrature_Class quadrature_class() const override;
-  unsigned number_of_levels() const override;
-  std::string as_text(std::string const &indent) const override;
-  bool is_open_interval() const override;
-  bool check_class_invariants() const;
+  NODISCARD std::string name() const override;
+  NODISCARD std::string parse_name() const override;
+  NODISCARD Quadrature_Class quadrature_class() const override;
+  NODISCARD unsigned number_of_levels() const override;
+  NODISCARD std::string as_text(std::string const &indent) const override;
+  NODISCARD bool is_open_interval() const override;
+  NODISCARD bool check_class_invariants() const;
 
   // STATICS
 

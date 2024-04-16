@@ -178,8 +178,8 @@ private:
 
   /* Private accessors */
 
-  size_t machIdleTime(CPUData const &c) const { return c.times[3] + c.times[4]; }
-  size_t machActiveTime(CPUData const &c) const {
+  NODISCARD size_t machIdleTime(CPUData const &c) const { return c.times[3] + c.times[4]; }
+  NODISCARD size_t machActiveTime(CPUData const &c) const {
     return c.times[0] + c.times[1] + c.times[2] + c.times[5] + c.times[6] + c.times[7] +
            c.times[8] + c.times[9];
   }

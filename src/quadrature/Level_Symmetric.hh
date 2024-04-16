@@ -39,11 +39,11 @@ public:
 
   // These functions override the virtual member functions specifed in the parent class Quadrature.
 
-  std::string name() const override;
-  std::string parse_name() const override;
-  Quadrature_Class quadrature_class() const override;
-  unsigned number_of_levels() const override;
-  std::string as_text(std::string const &indent) const override;
+  NODISCARD std::string name() const override;
+  NODISCARD std::string parse_name() const override;
+  NODISCARD Quadrature_Class quadrature_class() const override;
+  NODISCARD unsigned number_of_levels() const override;
+  NODISCARD std::string as_text(std::string const &indent) const override;
 
   // STATICS
 

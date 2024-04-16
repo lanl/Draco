@@ -41,8 +41,8 @@ public:
 
   // Accessors
 
-  unsigned L() const { return L_; }
-  int M() const { return M_; }
+  NODISCARD unsigned L() const { return L_; }
+  NODISCARD int M() const { return M_; }
 
 private:
   // DATA

@@ -79,7 +79,8 @@ public:
    * \param density The density value for which an opacity value is being requested (g/cm^3).
    * \return A specific electron internal energy (kJ/g).
    */
-  double getSpecificElectronInternalEnergy(double temperature, double density) const override;
+  NODISCARD double getSpecificElectronInternalEnergy(double temperature,
+                                                     double density) const override;
 
   /*!
    * \brief EoS accessor that returns a vector of specific electron internal energies that
@@ -93,7 +94,7 @@ public:
    *        (g/cm^3).
    * \return A vector of specific electron internal energies (kJ/g).
    */
-  std::vector<double>
+  NODISCARD std::vector<double>
   getSpecificElectronInternalEnergy(const std::vector<double> &vtemperature,
                                     const std::vector<double> &vdensity) const override;
 
@@ -107,7 +108,7 @@ public:
    * \param temperature Temperature of the material in Kelvin.
    * \return The electron based heat capacity in kJ/g/K.
    */
-  double getElectronHeatCapacity(double temperature, double density) const override;
+  NODISCARD double getElectronHeatCapacity(double temperature, double density) const override;
 
   /*!
    * \brief Retrieve a set of electron based heat capacities for this material that correspond to
@@ -119,8 +120,9 @@ public:
    * \param vtemperature Temperature of the material in Kelvin.
    * \return The electron based heat capacity in kJ/g/K.
    */
-  std::vector<double> getElectronHeatCapacity(const std::vector<double> &vtemperature,
-                                              const std::vector<double> &vdensity) const override;
+  NODISCARD std::vector<double>
+  getElectronHeatCapacity(const std::vector<double> &vtemperature,
+                          const std::vector<double> &vdensity) const override;
 
   /*!
    * \brief Retrieve the specific ion internal energy for this material at the provided density and
@@ -132,7 +134,7 @@ public:
    * \param temperature Temperature of the material in Kelvin.
    * \return The specific ion internal energy in kJ/g.
    */
-  double getSpecificIonInternalEnergy(double temperature, double density) const override;
+  NODISCARD double getSpecificIonInternalEnergy(double temperature, double density) const override;
 
   /*!
    * \brief Retrieve a set of specific ion internal energies for this material that correspond to
@@ -144,7 +146,7 @@ public:
    * \param vtemperature Temperature of the material in Kelvin.
    * \return A vector of specific ion internal energies in kJ/g.
    */
-  std::vector<double>
+  NODISCARD std::vector<double>
   getSpecificIonInternalEnergy(const std::vector<double> &vtemperature,
                                const std::vector<double> &vdensity) const override;
 
@@ -158,7 +160,7 @@ public:
    * \param temperature Temperature of the material in Kelvin.
    * \return The ion based heat capacity in kJ/g/K.
    */
-  double getIonHeatCapacity(double temperature, double density) const override;
+  NODISCARD double getIonHeatCapacity(double temperature, double density) const override;
 
   /*!
    * \brief Retrieve a set of ion based heat capacities for this material that correspond to the
@@ -170,8 +172,9 @@ public:
    * \param vtemperature Temperature of the material in Kelvin.
    * \return A vector of ion based heat capacities in kJ/g/K.
    */
-  std::vector<double> getIonHeatCapacity(const std::vector<double> &vtemperature,
-                                         const std::vector<double> &vdensity) const override;
+  NODISCARD std::vector<double>
+  getIonHeatCapacity(const std::vector<double> &vtemperature,
+                     const std::vector<double> &vdensity) const override;
 
   /*!
    * \brief Retrieve the number of free electrons per ion for this material at the provided density
@@ -183,7 +186,7 @@ public:
    * \param temperature Temperature of the material in Kelvin.
    * \return The number of free electrons per ion.
    */
-  double getNumFreeElectronsPerIon(double temperature, double density) const override;
+  NODISCARD double getNumFreeElectronsPerIon(double temperature, double density) const override;
 
   /*!
    * \brief Retrieve a set of free electrons per ion averages for this material that correspond to
@@ -193,8 +196,9 @@ public:
    * \param vtemperature Temperature of the material in Kelvin.
    * \return A vector of the number of free electrons per ion.
    */
-  std::vector<double> getNumFreeElectronsPerIon(const std::vector<double> &vtemperature,
-                                                const std::vector<double> &vdensity) const override;
+  NODISCARD std::vector<double>
+  getNumFreeElectronsPerIon(const std::vector<double> &vtemperature,
+                            const std::vector<double> &vdensity) const override;
 
   /*!
    * \brief Retrieve the electron based thermal conductivity for this material at the provided
@@ -206,7 +210,8 @@ public:
    * \param temperature Temperature of the material in Kelvin.
    * \return The electron based thermal conductivity in 1/s/cm.
    */
-  double getElectronThermalConductivity(double temperature, double density) const override;
+  NODISCARD double getElectronThermalConductivity(double temperature,
+                                                  double density) const override;
 
   /*!
    * \brief Retrieve a set of electron based thermal conductivities for this material that
@@ -218,7 +223,7 @@ public:
    * \param vtemperature Temperature of the material in Kelvin.
    * \return A vector of electron based thermal conductivities in 1/s/cm.
    */
-  std::vector<double>
+  NODISCARD std::vector<double>
   getElectronThermalConductivity(const std::vector<double> &vtemperature,
                                  const std::vector<double> &vdensity) const override;
 
@@ -231,8 +236,8 @@ public:
    * \param Tguess A guess for the resulting electron temperature to aid the root finder.
    * \return An electron (material) temperature in keV.
    */
-  double getElectronTemperature(double density, double SpecificElectronInternalEnergy,
-                                double Tguess) const override;
+  NODISCARD double getElectronTemperature(double density, double SpecificElectronInternalEnergy,
+                                          double Tguess) const override;
 
   /*!
    * \brief Retrieve an ion temperature associated with the provided specific ion internal energy
@@ -243,11 +248,11 @@ public:
    * \param Tguess A guess for the resulting ion temperature to aid the root finder.
    * \return Ionic temperature in keV.
    */
-  double getIonTemperature(double density, double SpecificIonInternalEnergy,
-                           double Tguess) const override;
+  NODISCARD double getIonTemperature(double density, double SpecificIonInternalEnergy,
+                                     double Tguess) const override;
 
   // Dummy pack function.
-  std::vector<char> pack() const override { return {}; }
+  NODISCARD std::vector<char> pack() const override { return {}; }
 
 }; // end of class DummyEoS
 

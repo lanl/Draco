@@ -86,7 +86,7 @@ public:
    * \param targetDensity The density value for which an opacity value is being requested (g/cm^3).
    * \return A single interpolated opacity (cm^2/g).
    */
-  double getOpacity(double targetTemperature, double targetDensity) const override;
+  NODISCARD double getOpacity(double targetTemperature, double targetDensity) const override;
 
   /*!
    * \brief Opacity accessor that returns a vector of opacities that correspond to the provided
@@ -99,8 +99,8 @@ public:
    * \param targetDensity The density value for which an opacity value is being requested (g/cm^3).
    * \return A vector of opacities (cm^2/g).
    */
-  std::vector<double> getOpacity(const std::vector<double> &targetTemperature,
-                                 double targetDensity) const override;
+  NODISCARD std::vector<double> getOpacity(const std::vector<double> &targetTemperature,
+                                           double targetDensity) const override;
 
   /*!
    * \brief Opacity accessor that returns a vector of opacities that correspond to the provided
@@ -114,50 +114,54 @@ public:
    *           (g/cm^3).
    * \return A vector of opacities (cm^2/g).
    */
-  std::vector<double> getOpacity(double targetTemperature,
-                                 const std::vector<double> &targetDensity) const override;
+  NODISCARD std::vector<double> getOpacity(double targetTemperature,
+                                           const std::vector<double> &targetDensity) const override;
 
   //! Data is in tables.
-  bool data_in_tabular_form() const override { return true; }
+  NODISCARD bool data_in_tabular_form() const override { return true; }
 
   //! Return the reaction type.
-  rtt_cdi::Reaction getReactionType() const override { return reaction_type; }
+  NODISCARD rtt_cdi::Reaction getReactionType() const override { return reaction_type; }
 
   //! Return the model type.
-  rtt_cdi::Model getModelType() const override { return model_type; }
+  NODISCARD rtt_cdi::Model getModelType() const override { return model_type; }
 
   //! Returns a "plain English" description of the data.
-  std::string getDataDescriptor() const override { return dataDescriptor; }
+  NODISCARD std::string getDataDescriptor() const override { return dataDescriptor; }
 
   /*!
    * \brief Returns a "plain English" description of the energy group structure (gray
    *        vs. multigroup).
    */
-  std::string getEnergyPolicyDescriptor() const override { return energyPolicyDescriptor; }
+  NODISCARD std::string getEnergyPolicyDescriptor() const override {
+    return energyPolicyDescriptor;
+  }
 
   /*!
    * \brief Returns the name of the associated data file.  Since there is no data file associated
    *        with this opacity class the string "none" is returned.
    */
-  std::string getDataFilename() const override { return dataFilename; }
+  NODISCARD std::string getDataFilename() const override { return dataFilename; }
 
   //! Returns a vector of temperatures that define the cached opacity data table.
-  std::vector<double> getTemperatureGrid() const override { return temperatureGrid; }
+  NODISCARD std::vector<double> getTemperatureGrid() const override { return temperatureGrid; }
 
   //*! Returns a vector of densities that define the cached opacity data table.
-  std::vector<double> getDensityGrid() const override { return densityGrid; }
+  NODISCARD std::vector<double> getDensityGrid() const override { return densityGrid; }
 
   //! Returns the size of the temperature grid.
-  size_t getNumTemperatures() const override { return numTemperatures; }
+  NODISCARD size_t getNumTemperatures() const override { return numTemperatures; }
 
   //! Returns the size of the density grid.
-  size_t getNumDensities() const override { return numDensities; }
+  NODISCARD size_t getNumDensities() const override { return numDensities; }
 
   //! Dummy pack function.
-  std::vector<char> pack() const override { return {}; }
+  NODISCARD std::vector<char> pack() const override { return {}; }
 
   //! Returns the general opacity model type, defined in OpacityCommon.hh
-  rtt_cdi::OpacityModelType getOpacityModelType() const override { return rtt_cdi::DUMMY_TYPE; }
+  NODISCARD rtt_cdi::OpacityModelType getOpacityModelType() const override {
+    return rtt_cdi::DUMMY_TYPE;
+  }
 };
 
 } // end namespace rtt_cdi_test

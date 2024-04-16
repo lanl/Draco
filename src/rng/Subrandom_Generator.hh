@@ -48,7 +48,7 @@ public:
 
   // ACCESSORS
 
-  unsigned count() const { return count_; }
+  NODISCARD unsigned count() const { return count_; }
 
 protected:
   /*!

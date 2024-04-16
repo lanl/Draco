@@ -141,8 +141,9 @@ public:
                           const size_t data_size) const;
 
   //! Fetch list of coarse index values bound by the window
-  std::vector<size_t> window_coarse_index_list(const std::array<double, 3> &window_min,
-                                               const std::array<double, 3> &window_max) const;
+  NODISCARD std::vector<size_t>
+  window_coarse_index_list(const std::array<double, 3> &window_min,
+                           const std::array<double, 3> &window_max) const;
 
   //! Map local+ghost data to grid window
   void map_data_to_grid_window(const std::vector<double> &local_data,
@@ -163,8 +164,8 @@ public:
                                const bool normalize, const bool bias) const;
 
   //! Calculate the orthogonal distance between to locations
-  std::array<double, 3> calc_orthogonal_distance(const std::array<double, 3> &r0,
-                                                 const std::array<double, 3> &r) const;
+  NODISCARD std::array<double, 3> calc_orthogonal_distance(const std::array<double, 3> &r0,
+                                                           const std::array<double, 3> &r) const;
 
   // PUBLIC DATA
   // Quick index initialization data

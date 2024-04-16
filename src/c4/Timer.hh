@@ -134,7 +134,7 @@ private:
   int num_intervals{0};
 
   //! determine if MPI Wtime is available.
-  bool setIsMPIWtimeAvailable() const;
+  NODISCARD bool setIsMPIWtimeAvailable() const;
 
 public:
   Timer(); //! default constructor
@@ -146,40 +146,40 @@ public:
   virtual ~Timer() = default;
   inline void start();
   inline void stop();
-  inline double wall_clock() const;
-  inline double system_cpu() const;
-  inline double user_cpu() const;
-  inline double posix_err() const;
+  NODISCARD inline double wall_clock() const;
+  NODISCARD inline double system_cpu() const;
+  NODISCARD inline double user_cpu() const;
+  NODISCARD inline double posix_err() const;
 
-  bool on() const { return timer_on; }
+  NODISCARD bool on() const { return timer_on; }
 
   //! Return the wall clock time in seconds, summed over all intervals.
-  double sum_wall_clock() const {
+  NODISCARD double sum_wall_clock() const {
     Require(!timer_on);
     return sum_wall;
   }
 
   //! Return the system cpu time in seconds, summed over all intervals.
-  double sum_system_cpu() const {
+  NODISCARD double sum_system_cpu() const {
     Require(!timer_on);
     return sum_system;
   }
 
   //! Return the user cpu time in seconds, summed over all intervals.
-  double sum_user_cpu() const {
+  NODISCARD double sum_user_cpu() const {
     Require(!timer_on);
     return sum_user;
   }
 
   //! Return the number of time intervals used in the sums.
-  int intervals() const {
+  NODISCARD int intervals() const {
     Require(!timer_on);
     return num_intervals;
   }
 
-  long long sum_cache_misses() const { return 0; }
-  long long sum_cache_hits() const { return 0; }
-  long long sum_floating_operations() const { return 0; }
+  NODISCARD long long sum_cache_misses() const { return 0; }
+  NODISCARD long long sum_cache_hits() const { return 0; }
+  NODISCARD long long sum_floating_operations() const { return 0; }
 
   inline void reset();
   static void pause(double const pauseSeconds);

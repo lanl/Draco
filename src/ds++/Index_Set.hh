@@ -64,33 +64,33 @@ public:
   //! Uniform size re-assignment operator
   void set_size(const unsigned size);
 
-  bool index_in_range(int index) const {
+  NODISCARD bool index_in_range(int index) const {
     return (index >= OFFSET) && (index < static_cast<int>(m_array_size) + OFFSET);
   }
-  bool index_in_range(int index, unsigned dimension) const;
+  NODISCARD bool index_in_range(int index, unsigned dimension) const;
 
   template <typename IT> bool indices_in_range(IT indices) const;
 
-  unsigned get_size() const { return m_array_size; }
-  int min_of_index() const { return OFFSET; }
-  int max_of_index() const { return OFFSET + m_array_size - 1; }
-  int limit_of_index(const bool positive) const {
+  NODISCARD unsigned get_size() const { return m_array_size; }
+  NODISCARD int min_of_index() const { return OFFSET; }
+  NODISCARD int max_of_index() const { return OFFSET + m_array_size - 1; }
+  NODISCARD int limit_of_index(const bool positive) const {
     return positive ? max_of_index() : min_of_index();
   }
 
-  unsigned get_size(const unsigned d) const {
+  NODISCARD unsigned get_size(const unsigned d) const {
     Check(dimension_okay(d));
     return m_dimensions[d];
   }
-  int min_of_index(const size_t Remember(d)) const {
+  NODISCARD int min_of_index(const size_t Remember(d)) const {
     Check(dimension_okay(d));
     return OFFSET;
   }
-  int max_of_index(const size_t d) const {
+  NODISCARD int max_of_index(const size_t d) const {
     Check(dimension_okay(d));
     return OFFSET + m_dimensions[d] - 1;
   }
-  int limit_of_index(const unsigned d, const bool positive) const {
+  NODISCARD int limit_of_index(const unsigned d, const bool positive) const {
     return positive ? max_of_index(d) : min_of_index(d);
   }
 
@@ -105,13 +105,13 @@ private:
 
 protected:
   // Make sure the index sizes are all positive when creating or resizing:
-  bool sizes_okay() const {
+  NODISCARD bool sizes_okay() const {
     return (std::find(m_dimensions.begin(), m_dimensions.begin() + D, 0U) ==
             m_dimensions.begin() + D);
   }
 
   // Allow derived classes const access to the dimensions.
-  std::array<unsigned, D> const get_dimensions() const { return m_dimensions; }
+  NODISCARD std::array<unsigned, D> const get_dimensions() const { return m_dimensions; }
 };
 
 } // end namespace rtt_dsxx

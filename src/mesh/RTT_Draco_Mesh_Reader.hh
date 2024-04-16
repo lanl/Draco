@@ -41,23 +41,25 @@ public:
 
   // >>> ACCESSORS
 
-  unsigned get_numdim() const override { return rtt_reader->get_dims_ndim(); }
-  size_t get_numcells() const override { return rtt_reader->get_dims_ncells(); }
-  size_t get_numnodes() const override { return rtt_reader->get_dims_nnodes(); }
-  std::vector<double> get_nodecoord(size_t node) const override {
+  NODISCARD unsigned get_numdim() const override { return rtt_reader->get_dims_ndim(); }
+  NODISCARD size_t get_numcells() const override { return rtt_reader->get_dims_ncells(); }
+  NODISCARD size_t get_numnodes() const override { return rtt_reader->get_dims_nnodes(); }
+  NODISCARD std::vector<double> get_nodecoord(size_t node) const override {
     return rtt_reader->get_nodes_coords(node);
   }
-  size_t get_numsides() const override { return rtt_reader->get_dims_nsides(); }
-  unsigned get_sideflag(size_t side) const override { return rtt_reader->get_sides_flags(side, 0); }
-  std::vector<unsigned> get_sidenodes(size_t side) const override {
+  NODISCARD size_t get_numsides() const override { return rtt_reader->get_dims_nsides(); }
+  NODISCARD unsigned get_sideflag(size_t side) const override {
+    return rtt_reader->get_sides_flags(side, 0);
+  }
+  NODISCARD std::vector<unsigned> get_sidenodes(size_t side) const override {
     return rtt_reader->get_sides_nodes(side);
   }
 
   // accessors with deferred implementation
-  unsigned get_celltype(size_t cell) const override;
-  size_t get_sidetype(size_t side) const override;
-  std::vector<unsigned> get_cellnodes(size_t cell) const override;
-  std::vector<unsigned> get_cellfacenodes(size_t cell, size_t face) const;
+  NODISCARD unsigned get_celltype(size_t cell) const override;
+  NODISCARD size_t get_sidetype(size_t side) const override;
+  NODISCARD std::vector<unsigned> get_cellnodes(size_t cell) const override;
+  NODISCARD std::vector<unsigned> get_cellfacenodes(size_t cell, size_t face) const;
 };
 
 } // end namespace rtt_mesh

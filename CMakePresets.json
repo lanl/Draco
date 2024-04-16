@@ -82,7 +82,8 @@
       "inherits": "linux-ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "DRACO_STATIC_ANALYZER": "clang-tidy"
+        "DRACO_STATIC_ANALYZER": "clang-tidy",
+        "Draco_CXX_LANGUAGE_STANDARD": "17"
       }
     },
     {

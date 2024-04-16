@@ -29,10 +29,10 @@ public:
   explicit Test_Field(vector<vector<T>> data_in) : data(std::move(data_in)) {}
 
   T operator()(size_t i, size_t j) const { return data[i][j]; }
-  size_t nrows() const { return data.size(); }
-  size_t ncols(size_t r) const { return data[r].size(); }
-  size_t size() const { return data.size(); }
-  vector<T> operator[](size_t i) const { return data[i]; }
+  NODISCARD size_t nrows() const { return data.size(); }
+  NODISCARD size_t ncols(size_t r) const { return data[r].size(); }
+  NODISCARD size_t size() const { return data.size(); }
+  NODISCARD vector<T> operator[](size_t i) const { return data[i]; }
 };
 
 //------------------------------------------------------------------------------------------------//

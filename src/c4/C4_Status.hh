@@ -42,10 +42,10 @@ class C4_Status {
 
 public:
   //! Returns the message size (in bytes) of the last communication.
-  int get_message_size() const;
+  NODISCARD int get_message_size() const;
 
   //! Returns the sending rank of the last communication.
-  int get_source() const;
+  NODISCARD int get_source() const;
 
   //! Return a handle to the underlying data status object.
   status_type *get_status_obj() { return &d_status; }

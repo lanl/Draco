@@ -26,8 +26,7 @@ public:
   }
 
   /*! \brief Returns \c true if the specified type index has the predicate dimensionality; \c false
-   *         otherwise.
-   */
+   *         otherwise. */
   bool operator()(Element_Definition::Element_Type const type) {
     return (Element_Definition(type).get_dimension() == dimensionality);
   }
@@ -125,11 +124,10 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
         std::cout << " There are " << nsides << " sides in the mesh" << std::endl;
       }
 
-      for (map<string, set<unsigned>>::const_iterator it = element_sets.begin();
-           it != element_sets.end(); ++it) {
+      for (auto const &it : element_sets) {
         // See if this is a side or cell flag.
 
-        unsigned const representative_element = *it->second.begin();
+        unsigned const representative_element = *it.second.begin();
 
         auto const type_index =
             static_cast<Element_Definition::Element_Type>(element_types[representative_element]);
@@ -137,14 +135,14 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
         shared_ptr<Element_Definition const> type(new Element_Definition(type_index));
 
         if (type->get_dimension() == ndim) {
-          std::cout << " Elements with flags " + it->first << " are cell elements " << std::endl;
+          std::cout << " Elements with flags " + it.first << " are cell elements " << std::endl;
         } else {
           // It has to be a side flag.
           if (type->get_dimension() + 1 != ndim) {
-            throw invalid_argument(" Elements with flags " + it->first +
-                                   " have the wrong dimension for a side element");
+            throw invalid_argument(" Elements with flags " + it.first + " have the wrong " +
+                                   "dimension for a side element");
           } else {
-            std::cout << " Elements with flags " + it->first << " are side elements" << std::endl;
+            std::cout << " Elements with flags " + it.first << " are side elements" << std::endl;
           }
         }
       }

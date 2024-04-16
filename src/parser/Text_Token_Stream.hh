@@ -31,18 +31,18 @@ public:
   // ACCESSORS
 
   //! Return the current line in the text stream.
-  unsigned line() const {
+  NODISCARD unsigned line() const {
     Ensure(line_ > 0);
     return line_;
   }
 
-  bool no_nonbreaking_ws() const { return no_nonbreaking_ws_; }
+  NODISCARD bool no_nonbreaking_ws() const { return no_nonbreaking_ws_; }
 
   //! Return the current set of whitespace characters.
-  std::set<char> const &whitespace() const { return whitespace_; }
+  NODISCARD std::set<char> const &whitespace() const { return whitespace_; }
 
   //! Check the class invariants.
-  bool check_class_invariants() const;
+  NODISCARD bool check_class_invariants() const;
 
   // MANIPULATORS
 
@@ -51,10 +51,10 @@ public:
   // SERVICES
 
   //! Does the Token_Stream consider \c c to be whitespace?
-  bool is_whitespace(char c) const;
+  NODISCARD bool is_whitespace(char c) const;
 
   //! Does the Token_Stream consider \e c to be non-breaking
-  bool is_nb_whitespace(char c) const;
+  NODISCARD bool is_nb_whitespace(char c) const;
 
   // CONST DATA
 
@@ -79,9 +79,9 @@ protected:
   //! Move one or more characters from the text stream into the character buffer.
   virtual void fill_character_buffer_() = 0;
 
-  virtual bool error_() const = 0;
-  virtual bool end_() const = 0;
-  virtual std::string location_() const = 0;
+  NODISCARD virtual bool error_() const = 0;
+  NODISCARD virtual bool end_() const = 0;
+  NODISCARD virtual std::string location_() const = 0;
 
   //! Pop a character off the internal buffer.
   char pop_char_();

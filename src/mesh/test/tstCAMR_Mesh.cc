@@ -251,7 +251,8 @@ void test_2D_mesh(rtt_c4::ParallelUnitTest &ut) {
     // For completeness, be sure you can't access a cell across an invalid face:
     bool caught(false);
     try {
-      mesh.next_face(7, 7);
+      size_t const nf = mesh.next_face(7, 7);
+      FAIL_IF(nf == 0); // should never get here.
     } catch (...) {
       caught = true;
     }

@@ -128,10 +128,10 @@ public:
   // ACCESSORS
 
   //! return the list of known field descriptors
-  std::vector<std::string> listDataFieldNames() const { return fieldNames; }
+  NODISCARD std::vector<std::string> listDataFieldNames() const { return fieldNames; }
 
   //! return the vector of data associated with a field name.
-  std::vector<double> data(std::string const &fieldName) const {
+  NODISCARD std::vector<double> data(std::string const &fieldName) const {
     Require(fieldName.size() > 0);
     Require(find(fieldNames.begin(), fieldNames.end(), fieldName) != fieldNames.end());
     return fieldValues[getFieldIndex(fieldName)];
@@ -141,7 +141,7 @@ private:
   // IMPLEMENTATION
 
   //! Return the index of the provided string as stored in member data 'fieldNames'
-  size_t getFieldIndex(std::string const &fieldName) const {
+  NODISCARD size_t getFieldIndex(std::string const &fieldName) const {
     Require(fieldName.size() > 0);
     Remember(auto pos = find(fieldNames.begin(), fieldNames.end(), fieldName));
     Check(pos != fieldNames.end());

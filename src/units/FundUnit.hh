@@ -36,12 +36,12 @@ public:
   // ACCESSORS
 
   //! return defining enumeration as specified in units/UnitSystemEnums.hh
-  F enumVal() const { return d_definingEnum; }
+  NODISCARD F enumVal() const { return d_definingEnum; }
   //! return conversion factor.
   //! Multiply by this number to get a value in SI units.
-  double cf() const { return d_cf; }
+  NODISCARD double cf() const { return d_cf; }
   //! return unit label (e.g.: cm or keV)
-  std::string label() const { return d_label; }
+  NODISCARD std::string label() const { return d_label; }
 
 private:
   // DATA

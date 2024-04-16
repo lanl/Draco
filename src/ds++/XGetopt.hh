@@ -171,17 +171,17 @@ public:
 
   /*! \brief fetch the value associated with current option. E.g.: for the option '-v foobar',
    *         return string 'foobar' associated with option 'v'. */
-  std::string get_option_value() const { return optarg; }
+  NODISCARD std::string get_option_value() const { return optarg; }
 
   /*! \brief Return a vector of strings that were provided on the command line but do not match any
    *         registered arguments. */
-  std::vector<std::string> get_unmatched_arguments() const { return unmatched_arguments; }
+  NODISCARD std::vector<std::string> get_unmatched_arguments() const { return unmatched_arguments; }
 
   //! reset the global counters
   // void reset(void) { optind=0; optarg=std::string(""); return; }
 
   //! Print a help/usage message.
-  std::string display_help(std::string const &appName) const;
+  NODISCARD std::string display_help(std::string const &appName) const;
 
 private:
   // >>> DATA

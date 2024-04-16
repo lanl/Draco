@@ -81,27 +81,27 @@ public:
   explicit Compound_Analytic_MultigroupOpacity(const sf_char &packed);
 
   // Check that the class invariant is not violated.
-  bool check_class_invariant() const;
+  NODISCARD bool check_class_invariant() const;
 
   // >>> ACCESSORS
-  const_Model get_Analytic_Model(size_t g) const { return group_models[g - 1]; }
+  NODISCARD const_Model get_Analytic_Model(size_t g) const { return group_models[g - 1]; }
 
   // >>> INTERFACE SPECIFIED BY rtt_cdi::MultigroupOpacity
 
   // Get the group opacities.
-  sf_double getOpacity(double temperature, double density) const override;
+  NODISCARD sf_double getOpacity(double temperature, double density) const override;
 
   // Get the group opacity fields given a field of temperatures.
-  vf_double getOpacity(const sf_double &temperature, double density) const override;
+  NODISCARD vf_double getOpacity(const sf_double &temperature, double density) const override;
 
   // Get the group opacity fields given a field of densities.
-  vf_double getOpacity(double temperature, const sf_double &density) const override;
+  NODISCARD vf_double getOpacity(double temperature, const sf_double &density) const override;
 
   // Get the data description of the opacity.
-  inline std_string getDataDescriptor() const override;
+  NODISCARD inline std_string getDataDescriptor() const override;
 
   // Pack the Compound_Analytic_MultigroupOpacity into a character string.
-  sf_char pack() const override;
+  NODISCARD sf_char pack() const override;
 };
 
 //------------------------------------------------------------------------------------------------//

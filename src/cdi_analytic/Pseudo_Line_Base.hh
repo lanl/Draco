@@ -104,16 +104,15 @@ public:
   Pseudo_Line_Base &operator=(Pseudo_Line_Base const &rhs) = delete;
   Pseudo_Line_Base &operator=(Pseudo_Line_Base &&rhs) noexcept = delete;
 
-  double line_width() const { return line_width_; }
-
-  double Tref() const { return Tref_; }
-  double Tpow() const { return Tpow_; }
+  NODISCARD double line_width() const { return line_width_; }
+  NODISCARD double Tref() const { return Tref_; }
+  NODISCARD double Tpow() const { return Tpow_; }
 
   //! Pack up the class for persistence.
-  vector<char> pack() const;
+  NODISCARD vector<char> pack() const;
 
   //! Compute a monochromatic opacity
-  double monoOpacity(double nu, double T) const;
+  NODISCARD double monoOpacity(double nu, double T) const;
 
   static double BB(double const T, double const x) {
     double const e = expm1(x / T);

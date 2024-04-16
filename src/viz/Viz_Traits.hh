@@ -83,23 +83,23 @@ public:
   }
 
   //! Row size accessor.
-  size_t nrows() const { return field.size(); }
+  NODISCARD size_t nrows() const { return field.size(); }
 
   //! Column size accessor.
-  size_t ncols(size_t row) const {
+  NODISCARD size_t ncols(size_t row) const {
     Require(row < field.size());
     return field[row].size();
   }
 
   //! Depth size accessor for 2D fields
   template <typename U = elementType, enable_if_t<std::is_pod<U>::value, bool> = true>
-  size_t ndpth(size_t /*row*/, size_t /*col*/) const {
+  NODISCARD size_t ndpth(size_t /*row*/, size_t /*col*/) const {
     return 0;
   }
 
   //! Depth size accessor for 3D fields
   template <typename U = elementType, enable_if_t<!std::is_pod<U>::value, bool> = true>
-  size_t ndpth(size_t row, size_t col) const {
+  NODISCARD size_t ndpth(size_t row, size_t col) const {
     Require(row < field.size());
     Require(col < field[row].size());
     return field[row][col].size();

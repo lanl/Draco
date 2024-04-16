@@ -147,13 +147,11 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
 
     EICoupling = eiCouplingData.ei_coupling()->getElectronIonCoupling(Te, Ti, rho, w_e, w_i);
 
-    if (EICoupling.size() != 6)
-      ITFAILS;
+    FAIL_IF_NOT(EICoupling.size() == 6);
 
     for (int i = 0; i < 6; i++) {
       double ei_coupling_ref = 1.1;
-      if (!soft_equiv(EICoupling[i], ei_coupling_ref))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(EICoupling[i], ei_coupling_ref));
     }
   }
 
@@ -163,7 +161,8 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
   // should catch this
   bool caught = false;
   try {
-    eiCouplingData.ei_coupling();
+    auto eic = eiCouplingData.ei_coupling();
+    caught = (eic == ei_coupling); // should never get here.
   } catch (const rtt_dsxx::assertion & /* except */) {
     PASSMSG("Good, caught an unreferenced EICoupling shared_ptr!");
     caught = true;
@@ -190,13 +189,11 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
   {
     EICoupling = eiCouplingData.ei_coupling()->getElectronIonCoupling(Te, Ti, rho, w_e, w_i);
 
-    if (EICoupling.size() != 6)
-      ITFAILS;
+    FAIL_IF_NOT(EICoupling.size() == 6);
 
     for (int i = 0; i < 6; i++) {
       double ei_coupling_ref = 1.1;
-      if (!soft_equiv(EICoupling[i], ei_coupling_ref))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(EICoupling[i], ei_coupling_ref));
     }
   }
 

@@ -11,6 +11,7 @@
 #define rtt_cdi_eospac_SesameTables_hh
 
 #include "eos_Interface.h"
+#include "ds++/config.h" // defines NODISCARD
 #include <map>
 #include <string>
 #include <vector>
@@ -166,13 +167,13 @@ public:
   // Get functions
 
   //! Return the material identifier associated with a Sesame return type.
-  unsigned matID(EOS_INTEGER returnType) const;
+  NODISCARD unsigned matID(EOS_INTEGER returnType) const;
 
   //! Return the enumerated data type associated with the integer index.
-  std::vector<EOS_INTEGER> returnTypes(unsigned const index) const;
+  NODISCARD std::vector<EOS_INTEGER> returnTypes(unsigned const index) const;
 
   //! Return a list of table/material identifiers associated with this SesameTables object.
-  std::vector<unsigned> matList() const {
+  NODISCARD std::vector<unsigned> matList() const {
     std::vector<unsigned> mlist;
     for (auto const &it : rtMap)
       mlist.push_back(it.first);
@@ -180,7 +181,7 @@ public:
   }
 
   //! Pack a SesameTables object into a vector<char> stream.
-  std::vector<char> pack() const;
+  NODISCARD std::vector<char> pack() const;
 
   //! Print a list of EOS tables that EOSPAC knows about
   void printEosTableList() const;

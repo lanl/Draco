@@ -51,14 +51,14 @@ public:
    * \brief Returns all of the data field values for each of the nodes.
    * \return The data field values for each of the nodes.
    */
-  vector_vector_dbl get_data() const { return data; }
+  NODISCARD vector_vector_dbl get_data() const { return data; }
 
   /*!
    * \brief Returns all of the data field values for the specified node.
    * \param node_numb Node number.
    * \return The node data field values.
    */
-  vector_dbl get_data(size_t node_numb) const { return data[node_numb]; }
+  NODISCARD vector_dbl get_data(size_t node_numb) const { return data[node_numb]; }
 
   /*!
    * \brief Returns the specified data field value for the specified node.
@@ -66,7 +66,9 @@ public:
    * \param data_index Data field.
    * \return The node data field value.
    */
-  double get_data(size_t node_numb, size_t data_index) const { return data[node_numb][data_index]; }
+  NODISCARD double get_data(size_t node_numb, size_t data_index) const {
+    return data[node_numb][data_index];
+  }
 };
 
 } // end namespace rtt_RTT_Format_Reader

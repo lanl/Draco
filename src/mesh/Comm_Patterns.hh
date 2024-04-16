@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Aug. 1 2023
  * \brief  Comm_Patterns header file.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_Comm_Patterns_hh
@@ -97,22 +97,22 @@ public:
   // ACCESSORS
 
   //! Get number of processors from which data is received.
-  size_t get_num_recv_procs() const { return recv_query_map.size(); }
+  NODISCARD size_t get_num_recv_procs() const { return recv_query_map.size(); }
 
   //! Get number of processors to which data is sent.
-  size_t get_num_send_procs() const { return send_query_map.size(); }
+  NODISCARD size_t get_num_send_procs() const { return send_query_map.size(); }
 
   //! Get iterator to beginning of receive data map.
-  const_iterator get_recv_begin() const { return recv_query_map.begin(); }
+  NODISCARD const_iterator get_recv_begin() const { return recv_query_map.begin(); }
 
   //! Get iterator to end of receive data map.
-  const_iterator get_recv_end() const { return recv_query_map.end(); }
+  NODISCARD const_iterator get_recv_end() const { return recv_query_map.end(); }
 
   //! Get iterator to beginning of send data map.
-  const_iterator get_send_begin() const { return send_query_map.begin(); }
+  NODISCARD const_iterator get_send_begin() const { return send_query_map.begin(); }
 
   //! Get iterator to end of send data map.
-  const_iterator get_send_end() const { return send_query_map.end(); }
+  NODISCARD const_iterator get_send_end() const { return send_query_map.end(); }
 };
 
 } // end namespace rtt_mesh

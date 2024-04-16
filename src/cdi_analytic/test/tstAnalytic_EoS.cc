@@ -30,8 +30,9 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
   using Polynomial_Model = Polynomial_Specific_Heat_Analytic_EoS_Model;
 
   // make an analytic model (polynomial specific heats)
-  // elec specific heat = a + bT^c
-  // ion specific heat  = d + eT^f
+  //
+  // * elec specific heat = a + bT^c
+  // * ion specific heat  = d + eT^f
   shared_ptr<Polynomial_Model> model(new Polynomial_Model(0.0, 1.0, 3.0, 0.2, 0.0, 0.0));
 
   if (!model)
@@ -99,18 +100,12 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
     vector<double> nfe = analytic.getNumFreeElectronsPerIon(T, rho);
     vector<double> etc = analytic.getElectronThermalConductivity(T, rho);
 
-    if (Cve.size() != 6)
-      ITFAILS;
-    if (Cvi.size() != 6)
-      ITFAILS;
-    if (eie.size() != 6)
-      ITFAILS;
-    if (iie.size() != 6)
-      ITFAILS;
-    if (nfe.size() != 6)
-      ITFAILS;
-    if (etc.size() != 6)
-      ITFAILS;
+    FAIL_IF_NOT(Cve.size() == 6);
+    FAIL_IF_NOT(Cvi.size() == 6);
+    FAIL_IF_NOT(eie.size() == 6);
+    FAIL_IF_NOT(iie.size() == 6);
+    FAIL_IF_NOT(nfe.size() == 6);
+    FAIL_IF_NOT(etc.size() == 6);
 
     for (int i = 0; i < 6; i++) {
       double cve_ref = T[i] * T[i] * T[i];
@@ -121,20 +116,14 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
 
       double Ui_ref = 0.2 * T[i];
 
-      if (!soft_equiv(Cve[i], cve_ref))
-        ITFAILS;
-      if (!soft_equiv(Cvi[i], cvi_ref))
-        ITFAILS;
-      if (!soft_equiv(eie[i], Ue_ref))
-        ITFAILS;
-      if (!soft_equiv(iie[i], Ui_ref))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(Cve[i], cve_ref));
+      FAIL_IF_NOT(soft_equiv(Cvi[i], cvi_ref));
+      FAIL_IF_NOT(soft_equiv(eie[i], Ue_ref));
+      FAIL_IF_NOT(soft_equiv(iie[i], Ui_ref));
 
       // all else are zero
-      if (!soft_equiv(nfe[i], 0.0))
-        ITFAILS;
-      if (!soft_equiv(etc[i], 0.0))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(nfe[i], 0.0));
+      FAIL_IF_NOT(soft_equiv(etc[i], 0.0));
     }
   }
 
@@ -167,13 +156,13 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
     if (soft_equiv(params.begin(), params.end(), expectedValue.begin(), expectedValue.end(), tol))
       PASSMSG("get_parameters() returned the analytic expression coefficients.");
     else
-      FAILMSG("get_parameters() did not return the analytic expression "
-              "coefficients.");
+      FAILMSG("get_parameters() did not return the analytic expression coefficients.");
   }
 
   // make an analytic model like Su-Olson (polynomial specific heats)
-  // elec specific heat = a + bT^c
-  // ion specific heat  = d + eT^f
+  //
+  // * elec specific heat = a + bT^c
+  // * ion specific heat  = d + eT^f
   shared_ptr<Polynomial_Model> so_model(new Polynomial_Model(0.0, 54880.0, 3.0, 0.2, 0.0, 0.0));
   // make an analtyic eos
   Analytic_EoS so_analytic(so_model);
@@ -289,18 +278,12 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
     nfe = eosdata.eos()->getNumFreeElectronsPerIon(T, rho);
     etc = eosdata.eos()->getElectronThermalConductivity(T, rho);
 
-    if (Cve.size() != 6)
-      ITFAILS;
-    if (Cvi.size() != 6)
-      ITFAILS;
-    if (eie.size() != 6)
-      ITFAILS;
-    if (iie.size() != 6)
-      ITFAILS;
-    if (nfe.size() != 6)
-      ITFAILS;
-    if (etc.size() != 6)
-      ITFAILS;
+    FAIL_IF_NOT(Cve.size() == 6);
+    FAIL_IF_NOT(Cvi.size() == 6);
+    FAIL_IF_NOT(eie.size() == 6);
+    FAIL_IF_NOT(iie.size() == 6);
+    FAIL_IF_NOT(nfe.size() == 6);
+    FAIL_IF_NOT(etc.size() == 6);
 
     for (int i = 0; i < 6; i++) {
       double cve_ref = T[i] * T[i] * T[i];
@@ -312,14 +295,10 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
         ITFAILS;
 
       // all else are zero
-      if (!soft_equiv(Cvi[i], 0.0))
-        ITFAILS;
-      if (!soft_equiv(iie[i], 0.0))
-        ITFAILS;
-      if (!soft_equiv(nfe[i], 0.0))
-        ITFAILS;
-      if (!soft_equiv(etc[i], 0.0))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(Cvi[i], 0.0));
+      FAIL_IF_NOT(soft_equiv(iie[i], 0.0));
+      FAIL_IF_NOT(soft_equiv(nfe[i], 0.0));
+      FAIL_IF_NOT(soft_equiv(etc[i], 0.0));
     }
   }
 
@@ -329,7 +308,8 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
   // should catch this
   bool caught = false;
   try {
-    eosdata.eos();
+    auto myeos = eosdata.eos();
+    caught = (myeos == analytic_eos); // should never get here.
   } catch (const rtt_dsxx::assertion & /* except */) {
     PASSMSG("Good, caught an unreferenced EoS shared_ptr!");
     caught = true;

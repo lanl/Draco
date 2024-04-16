@@ -115,8 +115,8 @@ void Comm_Patterns::calc_recv_map_DD(SP_Topology const &topology) {
 
 #ifdef ENSURE_ON
   size_t count = 0;
-  for (const_iterator i = recv_query_map.begin(); i != recv_query_map.end(); ++i) {
-    count += i->second.size();
+  for (auto const &rq : recv_query_map) {
+    count += rq.second.size();
   }
   if (count != num_ghost_cells)
     throw rtt_dsxx::assertion("Improper receive map generated."); // LCOV_EXCL_LINE
@@ -151,8 +151,8 @@ void Comm_Patterns::calc_send_map_DD(SP_Topology const &topology) {
   vector<int *> list_of_cells(num_bproc);
 
   // iterators to beginning and end of recv_query_map
-  const_iterator recv_begin = recv_query_map.begin();
-  const_iterator recv_end = recv_query_map.end();
+  auto recv_begin = recv_query_map.begin();
+  auto recv_end = recv_query_map.end();
 
   // post receives to other processors for the number of cells that they require information about
   // and send out to those processors the number of cells that we need information from them about

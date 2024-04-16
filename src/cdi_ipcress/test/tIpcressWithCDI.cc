@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Oct 29 17:16:32 2001
  * \brief  Ipcress + CDI test.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ipcress_test.hh"
@@ -35,16 +34,14 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
   // ----------------------------------------------- //
 
   // -----------------------------------------------------------------
-  // The Opacities in this file are computed from the following analytic
-  // formula:
+  // The Opacities in this file are computed from the following analytic formula:
   //     opacity = rho * T^4,
   // rho is the density and T is the temperature.
   //
   // The grid in this data file has the following structure:
   //    T   = { 0.1, 1.0, 10.0 } keV.
   //    rho = { 0.1, 0.5, 1.0 } g/cm^3
-  //    E_bounds = { 0.01, 0.03, 0.07, 0.1, 0.3, 0.7, 1.0, 3.0, 7.0
-  //                 10.0, 30.0, 70.0 100.0 } keV.
+  //    E_bounds = { 0.01, 0.03, 0.07, 0.1, 0.3, 0.7, 1.0, 3.0, 7.0, 10.0, 30.0, 70.0 100.0 } keV.
   //-----------------------------------------------------------------
 
   // Ipcress data filename (IPCRESS format required)
@@ -62,10 +59,7 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
     spGFAnalytic = std::make_shared<const IpcressFile>(op_data_file);
   } catch (rtt_dsxx::assertion const &excpt) {
     FAILMSG(excpt.what());
-    ostringstream message;
-    message << "Aborting tests because unable to instantiate IpcressFile "
-            << "object";
-    FAILMSG(message.str());
+    FAILMSG("Aborting tests because unable to instantiate IpcressFile object");
     return;
   }
 
@@ -76,8 +70,7 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
   // Create a IpcressGrayOpacity object. //
   // ----------------------------------- //
 
-  // Material identifier.  This data file has two materials: First has mat tag
-  // "10001".
+  // Material identifier.  This data file has two materials: First has mat tag "10001".
   int const matid = 10001;
 
   // Create a smart pointer to an opacity object.
@@ -89,20 +82,15 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
         spGFAnalytic, matid, rtt_cdi::ROSSELAND, rtt_cdi::ABSORPTION);
   } catch (rtt_dsxx::assertion const &excpt) {
     ostringstream message;
-    message << "Failed to create shared_ptr to new IpcressGrayOpacity object for "
-            << "two-mats.ipcress data.\n\t" << excpt.what();
+    message << "Failed to create shared_ptr to new IpcressGrayOpacity object for two-mats.ipcress "
+            << "data.\n\t" << excpt.what();
     FAILMSG(message.str());
     FAILMSG("Aborting tests.");
     return;
   }
 
   // If we get here then the object was successfully instantiated.
-  {
-    ostringstream message;
-    message << "shared_ptr to new IpcressGrayOpacity object created for "
-            << "analyticOpacities.ipcress.";
-    PASSMSG(message.str());
-  }
+  { PASSMSG("shared_ptr to new IpcressGrayOpacity object created for analyticOpacities.ipcress."); }
 
   // ----------------- //
   // Create CDI object //
@@ -149,9 +137,7 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
 
   // try using a vector of temps.
 
-  vector<double> vtemperature(2);
-  vtemperature[0] = 0.5; // keV
-  vtemperature[1] = 0.7; // keV
+  vector<double> vtemperature = {0.5, 0.7}; // keV
   density = 0.35;        // g/cm^3
   vector<double> vRefOpacity(vtemperature.size());
   for (size_t i = 0; i < vtemperature.size(); ++i)
@@ -173,8 +159,7 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
 
   // STL-like accessor
   //
-  // The virtual base class does not support STL-like accessors so we don't test
-  // this feature.
+  // The virtual base class does not support STL-like accessors so we don't test this feature.
 
   // ----------------------------------------- //
   // Create a IpcressMultigorupOpacity object. //
@@ -189,8 +174,8 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
         spGFAnalytic, matid, rtt_cdi::ROSSELAND, rtt_cdi::ABSORPTION);
   } catch (rtt_dsxx::assertion const &excpt) {
     ostringstream message;
-    message << "Failed to create shared_ptr to new IpcressMultigroupOpacity "
-            << "object for two-mats.ipcress data.\n\t" << excpt.what();
+    message << "Failed to create shared_ptr to new IpcressMultigroupOpacity object for "
+            << "two-mats.ipcress data.\n\t" << excpt.what();
     FAILMSG(message.str());
     FAILMSG("Aborting tests.");
     return;
@@ -245,7 +230,8 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
   // multigroup access
   bool caught = false;
   try {
-    spCDI_Analytic->mg(r, rtt_cdi::SCATTERING);
+    auto mgo = spCDI_Analytic->mg(r, rtt_cdi::SCATTERING);
+    caught = (mgo == spOp_Analytic_ramg); // should never get here.
   } catch (const rtt_dsxx::assertion & /*excpt*/) {
     PASSMSG("Good, caught illegal accessor to CDI-mg().");
     caught = true;
@@ -256,7 +242,8 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
   // gray access
   caught = false;
   try {
-    spCDI_Analytic->gray(rtt_cdi::ANALYTIC, a);
+    auto op = spCDI_Analytic->gray(rtt_cdi::ANALYTIC, a);
+    caught = (op == spOp_Analytic_ragray); // should never get here.
   } catch (const rtt_dsxx::assertion & /*excpt*/) {
     PASSMSG("Good, caught illegal accessor to CDI-gray().");
     caught = true;

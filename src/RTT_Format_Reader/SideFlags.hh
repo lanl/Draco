@@ -52,7 +52,7 @@ public:
    * \param flag Flag number.
    * \return The existance of the side flag type and number.
    */
-  bool allowed_flag(size_t flagtype, int flag) const {
+  NODISCARD bool allowed_flag(size_t flagtype, int flag) const {
     Insist(flagtype <= dims.get_nside_flag_types() - 1, "Invalid side flag type number!");
     return flagTypes[flagtype]->allowed_flag(flag);
   }
@@ -62,12 +62,12 @@ public:
    * \param flagtype Side flag type number.
    * \return The side flag type name.
    */
-  string get_flag_type(size_t flagtype) const {
+  NODISCARD string get_flag_type(size_t flagtype) const {
     Insist(flagtype <= dims.get_nside_flag_types() - 1, "Invalid side flag type number!");
     return flagTypes[flagtype]->getFlagType();
   }
 
-  int get_flag_type_index(string &desired_flag_type) const;
+  NODISCARD int get_flag_type_index(string &desired_flag_type) const;
 
   /*!
    * \brief Returns the side flag number associated with the specified side flag type and side flag
@@ -76,7 +76,7 @@ public:
    * \param flag_index Side flag index.
    * \return The side flag number.
    */
-  int get_flag_number(size_t flagtype, size_t flag_index) const {
+  NODISCARD int get_flag_number(size_t flagtype, size_t flag_index) const {
     Insist(flagtype <= dims.get_nside_flag_types() - 1, "Invalid side flag type number!");
     Insist(flag_index <= flagTypes[flagtype]->getFlagSize() - 1,
            "Invalid side flag number index number!");
@@ -88,7 +88,7 @@ public:
    * \param flagtype Side flag type number.
    * \return The number of side flags.
    */
-  size_t get_flag_size(size_t flagtype) const {
+  NODISCARD size_t get_flag_size(size_t flagtype) const {
     Insist(flagtype <= dims.get_nside_flag_types() - 1, "Invalid side flag type number!");
     return flagTypes[flagtype]->getFlagSize();
   }
@@ -99,7 +99,7 @@ public:
    * \param flag_index Side flag index.
    * \return The side flag name.
    */
-  string get_flag_name(size_t flagtype, size_t flag_index) const {
+  NODISCARD string get_flag_name(size_t flagtype, size_t flag_index) const {
     Insist(flagtype <= dims.get_nside_flag_types() - 1, "Invalid side flag type number!");
     Insist(flag_index <= flagTypes[flagtype]->getFlagSize() - 1,
            "Invalid side flag name index number!");

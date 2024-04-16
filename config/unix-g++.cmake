@@ -93,7 +93,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
     string(APPEND CMAKE_C_FLAGS " -ffp-contract=off")
   endif()
 
-  string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS}")
+  string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS} -Wno-psabi")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Woverloaded-virtual -Wsuggest-override")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")

@@ -66,7 +66,7 @@ public:
   bool complete(C4_Status *status = nullptr);
   void free();
 
-  bool inuse() const {
+  NODISCARD bool inuse() const {
 #ifdef C4_MPI
     if (assigned) {
       Check(r != MPI_REQUEST_NULL);
@@ -114,7 +114,7 @@ public:
   void wait(C4_Status *status = nullptr) { p->wait(status); }
   bool complete(C4_Status *status = nullptr) { return p->complete(status); }
   void free() { p->free(); }
-  bool inuse() const {
+  NODISCARD bool inuse() const {
 #ifndef __clang_analyzer__
     Insist(p != nullptr, "attempting to use freed memory.");
     return p->inuse();

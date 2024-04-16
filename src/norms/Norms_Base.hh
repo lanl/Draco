@@ -70,19 +70,19 @@ public:
   // ACCESSORS
 
   /// Returns the current \f$ L_1 \f$ norm.
-  double L1() const {
+  NODISCARD double L1() const {
     Require(d_sum_weights > 0.0);
     return d_sum_L1 / d_sum_weights;
   }
 
   /// Returns the current \f$ L_2 \f$ norm.
-  double L2() const {
+  NODISCARD double L2() const {
     Require(d_sum_weights > 0.0);
     return std::sqrt(d_sum_L2 / d_sum_weights);
   }
 
   /// Returns the current \f$ L_{\infty} \f$ norm.
-  double Linf() const { return d_Linf; }
+  NODISCARD double Linf() const { return d_Linf; }
 };
 
 } // namespace rtt_norms
