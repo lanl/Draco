@@ -44,18 +44,18 @@ public:
       : reflect_boundary(reflect_boundary_) {}
 
   //! Reconstruct distribution
-  std::vector<double> reconstruction(const std::vector<double> &distribution,
-                                     const std::vector<int> &reconstruction_mask,
-                                     const std::vector<std::array<double, 3>> &one_over_band_width,
-                                     const quick_index &qindex,
-                                     const double discontinuity_cutoff = 1.0) const;
-  std::vector<std::vector<double>>
+  NODISCARD std::vector<double>
+  reconstruction(const std::vector<double> &distribution,
+                 const std::vector<int> &reconstruction_mask,
+                 const std::vector<std::array<double, 3>> &one_over_band_width,
+                 const quick_index &qindex, const double discontinuity_cutoff = 1.0) const;
+  NODISCARD std::vector<std::vector<double>>
   reconstruction(const std::vector<std::vector<double>> &distribution, const size_t data_size,
                  const std::vector<int> &reconstruction_mask,
                  const std::vector<std::array<double, 3>> &one_over_band_width,
                  const quick_index &qindex, const double discontinuity_cutoff = 1.0) const;
 
-  std::vector<double>
+  NODISCARD std::vector<double>
   weighted_reconstruction(const std::vector<double> &distribution,
                           const std::vector<double> &bandwidthweights,
                           const std::vector<int> &reconstruction_mask,
@@ -63,14 +63,14 @@ public:
                           const quick_index &qindex, const double discontinuity_cutoff = 1.0) const;
 
   //! Reconstruct distribution by sampling the surrounding distribution to a fixed integration grid
-  std::vector<double>
+  NODISCARD std::vector<double>
   sampled_reconstruction(const std::vector<double> &distribution,
                          const std::vector<int> &reconstruction_mask,
                          const std::vector<std::array<double, 3>> &one_over_band_width,
                          const quick_index &qindex, const double discontinuity_cutoff = 1.0) const;
 
   //! Reconstruct distribution in logarithmic space
-  std::vector<double>
+  NODISCARD std::vector<double>
   log_reconstruction(const std::vector<double> &distribution,
                      const std::vector<int> &reconstruction_mask,
                      const std::vector<std::array<double, 3>> &one_over_band_width,
@@ -79,23 +79,24 @@ public:
   // STATICS
 
   //! Epanechikov Kernel
-  inline double epan_kernel(const double x) const;
+  NODISCARD inline double epan_kernel(const double x) const;
 
   //! Integrate the Epanechikov Kernel
-  inline double int_epan_kernel(const double x0, const double x1) const;
+  NODISCARD inline double int_epan_kernel(const double x0, const double x1) const;
 
   //! Transform the solution into log space
-  inline double log_transform(const double value, const double bias) const;
+  NODISCARD inline double log_transform(const double value, const double bias) const;
 
   //! Move the solution back from log space
-  inline double log_inv_transform(const double log_value, const double bias) const;
+  NODISCARD inline double log_inv_transform(const double log_value, const double bias) const;
 
 private:
   //! Private function to calculate kernel weight
-  double calc_weight(const std::array<double, 3> &r0, const std::array<double, 3> &one_over_h0,
-                     const std::array<double, 3> &r, const std::array<double, 3> &delta,
-                     const std::array<double, 3> &one_over_h, const quick_index &qindex,
-                     const double &discontinuity_cutoff, const double scale = 1.0) const;
+  NODISCARD double calc_weight(const std::array<double, 3> &r0,
+                               const std::array<double, 3> &one_over_h0,
+                               const std::array<double, 3> &r, const std::array<double, 3> &delta,
+                               const std::array<double, 3> &one_over_h, const quick_index &qindex,
+                               const double &discontinuity_cutoff, const double scale = 1.0) const;
 
   //! Private function to calculate the window bounds
   void calc_win_min_max(const quick_index &qindex, const std::array<double, 3> &position,
@@ -103,18 +104,16 @@ private:
                         std::array<double, 3> &max) const;
 
   //! Private function to calculate the reconstruction wight on a spherical grid
-  double calc_spherical_weight(const std::array<double, 3> &r0,
-                               const std::array<double, 3> &one_over_h0,
-                               const std::array<double, 3> &r,
-                               const std::array<double, 3> &one_over_h, const quick_index &qindex,
-                               const double &discontinuity_cutoff) const;
+  NODISCARD double
+  calc_spherical_weight(const std::array<double, 3> &r0, const std::array<double, 3> &one_over_h0,
+                        const std::array<double, 3> &r, const std::array<double, 3> &one_over_h,
+                        const quick_index &qindex, const double &discontinuity_cutoff) const;
 
   //! Private function to calculate the reconstruction weight on a Cartesian weight
-  double calc_cartesian_weight(const std::array<double, 3> &r0,
-                               const std::array<double, 3> &one_over_h0,
-                               const std::array<double, 3> &r,
-                               const std::array<double, 3> &one_over_h, const quick_index &qindex,
-                               const double &discontinuity_cutoff) const;
+  NODISCARD double
+  calc_cartesian_weight(const std::array<double, 3> &r0, const std::array<double, 3> &one_over_h0,
+                        const std::array<double, 3> &r, const std::array<double, 3> &one_over_h,
+                        const quick_index &qindex, const double &discontinuity_cutoff) const;
 
   // DATA
   //! reflecting boundary conditions [lower_x, upper_x, lower_y, upper_y, lower_z, upper_z]

@@ -62,7 +62,7 @@ public:
   void set_size(unsigned size);
 
   //! Re-implement base function.
-  int limit_of_index(unsigned d, bool pos) const { return Base::limit_of_index(d, pos); }
+  NODISCARD int limit_of_index(unsigned d, bool pos) const { return Base::limit_of_index(d, pos); }
 
   // ACCESSORS
 
@@ -70,23 +70,23 @@ public:
   template <typename IT> int get_index(IT indices) const;
 
   //! Convert 1-index to N-index
-  std::vector<int> get_indices(int index) const;
+  NODISCARD std::vector<int> get_indices(int index) const;
 
   //! Convert 1-index to N-index and store in provided iterator.
   template <typename IT> void get_indices(int index, IT begin) const;
 
   //! Extract a single N-index from the 1-index
-  int get_single_index(int index, unsigned dimension) const;
+  NODISCARD int get_single_index(int index, unsigned dimension) const;
 
   //! Get the next index from a 1-index and direction
-  int get_next_index(int index, int direction) const;
+  NODISCARD int get_next_index(int index, int direction) const;
 
   //! Get the next index from an Index_Counter and direction
-  int get_next_index(const typename Index_Converter<D, OFFSET>::Counter &counter,
-                     int direction) const;
+  NODISCARD int get_next_index(const typename Index_Converter<D, OFFSET>::Counter &counter,
+                               int direction) const;
 
   //! Create an iterator over the index set
-  Counter counter() const { return Counter(*this); }
+  NODISCARD Counter counter() const { return Counter(*this); }
 
 private:
   // DATA
@@ -127,7 +127,7 @@ inline void Index_Converter<D, OFFSET>::set_size(unsigned dimension) {
 //! Convert an N-index to a 1-index
 template <unsigned D, int OFFSET>
 template <typename IT>
-int Index_Converter<D, OFFSET>::get_index(IT indices) const {
+NODISCARD int Index_Converter<D, OFFSET>::get_index(IT indices) const {
 
   Check(Base::indices_in_range(indices));
 

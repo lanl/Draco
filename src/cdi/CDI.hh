@@ -727,11 +727,12 @@ public:
   // GETTERS
   // -------
 
-  SP_GrayOpacity gray(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
-  SP_MultigroupOpacity mg(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
-  SP_CPEloss eloss(rtt_cdi::CPModelAngleCutoff mAC, int32_t proj_zaid, int32_t targ_zaid) const;
-  SP_EoS eos() const;
-  SP_EICoupling ei_coupling() const;
+  NODISCARD SP_GrayOpacity gray(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
+  NODISCARD SP_MultigroupOpacity mg(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
+  NODISCARD SP_CPEloss eloss(rtt_cdi::CPModelAngleCutoff mAC, int32_t proj_zaid,
+                             int32_t targ_zaid) const;
+  NODISCARD SP_EoS eos() const;
+  NODISCARD SP_EICoupling ei_coupling() const;
 
   //! Collapse Multigroup data to single-interval data with Planck weighting.
   static double collapseMultigroupOpacitiesPlanck(std::vector<double> const &groupBounds,
@@ -757,13 +758,13 @@ public:
                                                      std::vector<double> const &rosselendSpectrum);
 
   //! Return material ID string.
-  const std_string &getMatID() const { return matID; }
+  NODISCARD const std_string &getMatID() const { return matID; }
 
-  bool isGrayOpacitySet(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
-  bool isMultigroupOpacitySet(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
-  bool isCPElossSet(rtt_cdi::CPModelAngleCutoff mAC, int32_t pz, int32_t tz) const;
-  bool isEoSSet() const;
-  bool isEICouplingSet() const;
+  NODISCARD bool isGrayOpacitySet(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
+  NODISCARD bool isMultigroupOpacitySet(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
+  NODISCARD bool isCPElossSet(rtt_cdi::CPModelAngleCutoff mAC, int32_t pz, int32_t tz) const;
+  NODISCARD bool isEoSSet() const;
+  NODISCARD bool isEICouplingSet() const;
 
   //! Copies the vector of the stored frequency group boundary vector
   static std::vector<double> getFrequencyGroupBoundaries();

@@ -59,14 +59,14 @@ public:
    * \brief Returns the coordinate values for each of the nodes.
    * \return The coordinate values for the nodes.
    */
-  vector_vector_dbl get_coords() const { return coords; }
+  NODISCARD vector_vector_dbl get_coords() const { return coords; }
 
   /*!
    * \brief Returns all of the coordinate values for the specified node.
    * \param node_numb Node number.
    * \return The node coordinate values.
    */
-  vector_dbl get_coords(size_t node_numb) const { return coords[node_numb]; }
+  NODISCARD vector_dbl get_coords(size_t node_numb) const { return coords[node_numb]; }
 
   /*!
    * \brief Returns the coordinate value for the specified node and direction (i.e., x, y, and z).
@@ -74,7 +74,7 @@ public:
    * \param coord_index Coordinate index number (x = 0, y = 1, z = 2).
    * \return The node coordinate value.
    */
-  double get_coords(size_t node_numb, size_t coord_index) const {
+  NODISCARD double get_coords(size_t node_numb, size_t coord_index) const {
     return coords[node_numb][coord_index];
   }
 
@@ -83,7 +83,7 @@ public:
    * \param node_numb Node number.
    * \return The node parent.
    */
-  int get_parents(size_t node_numb) const { return parents[node_numb]; }
+  NODISCARD int get_parents(size_t node_numb) const { return parents[node_numb]; }
 
   /*!
    * \brief Returns the node flag for the specified node and flag index.
@@ -91,7 +91,9 @@ public:
    * \param flag_numb Node flag index.
    * \return The node flag.
    */
-  int get_flags(size_t node_numb, size_t flag_numb) const { return flags[node_numb][flag_numb]; }
+  NODISCARD int get_flags(size_t node_numb, size_t flag_numb) const {
+    return flags[node_numb][flag_numb];
+  }
 };
 
 } // end namespace rtt_RTT_Format_Reader

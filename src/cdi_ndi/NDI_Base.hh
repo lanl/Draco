@@ -76,13 +76,13 @@ public:
   NDI_Base &operator=(NDI_Base &&rhs) noexcept = delete;
 
   //! Get the name of the gendir file
-  inline std::string get_gendir() const & { return gendir; }
+  NODISCARD inline std::string get_gendir() const & { return gendir; }
 
   //! Get the dataset
-  inline std::string get_dataset() const & { return dataset; }
+  NODISCARD inline std::string get_dataset() const & { return dataset; }
 
   //! Get the library
-  inline std::string get_library() const & { return library; }
+  NODISCARD inline std::string get_library() const & { return library; }
 
   // >> Non-interacting helper functions.
 

@@ -44,7 +44,7 @@ public:
   }
 
   //! Return the next available stream number.
-  uint64_t get_num() const { return d_streamnum; }
+  NODISCARD uint64_t get_num() const { return d_streamnum; }
 
   //! Reset the stream number.
   void set_num(const uint64_t num) {
@@ -54,10 +54,10 @@ public:
   }
 
   //! Return the seed value.
-  uint32_t get_seed() const { return d_seed; }
+  NODISCARD uint32_t get_seed() const { return d_seed; }
 
   //! Return the maximum number of streams allowed.
-  uint64_t get_max_streams() const { return d_max_streams; }
+  NODISCARD uint64_t get_max_streams() const { return d_max_streams; }
 
   GPU_HOST_DEVICE
   inline void initialize(const uint64_t snum, Counter_RNG &cbrng);

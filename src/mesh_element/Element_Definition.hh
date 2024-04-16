@@ -265,33 +265,33 @@ public:
    * \brief Returns the name of an element.
    * \return Returns the element name as a string.
    */
-  std::string get_name() const { return name; }
+  NODISCARD std::string get_name() const { return name; }
 
   /*!
    * \brief Returns the type of an element.
    * \return Returns the element type.
    */
-  Element_Type get_type() const { return type; }
+  NODISCARD Element_Type get_type() const { return type; }
 
   /*!
    * \brief Returns the total number of nodes in an element.
    * \return Total number of nodes in an element.
    */
-  unsigned get_number_of_nodes() const { return number_of_nodes; }
+  NODISCARD unsigned get_number_of_nodes() const { return number_of_nodes; }
   /*!
    * \brief Returns the dimension of an element. i.e. nodes return 0, lines return 1, quads return
    *        2, hexahedra return 3.
    *
    * \return The element dimension (0, 1, 2, or 3).
    */
-  unsigned get_dimension() const { return dimension; }
+  NODISCARD unsigned get_dimension() const { return dimension; }
   /*!
    * \brief Returns the number of sides on an element.
    *
    * \return The number of n-1 dimensional entities that compose an n dimensional
    *         element. i.e. nodes return 0, lines return 2, quads return 4, hexahedra return 6.
    */
-  unsigned get_number_of_sides() const { return number_of_sides; }
+  NODISCARD unsigned get_number_of_sides() const { return number_of_sides; }
 
   /*!
    * \brief Returns the type (i.e. quad, tri, etc.) of a specified element side.
@@ -305,7 +305,7 @@ public:
    * Note that there is no valid side number for a "NODE" element.  "Side" in the context of this
    * method means the (n-1) dimensional element that composes a n dimensional element.
    */
-  Element_Definition get_side_type(unsigned const side_number) const {
+  NODISCARD Element_Definition get_side_type(unsigned const side_number) const {
     Insist(side_number < side_type.size(), "Side index out of range!");
     return elem_defs[side_type[side_number]];
   }
@@ -337,12 +337,12 @@ public:
    *
    * Note that there is no valid side number for a "NODE" element.
    */
-  std::vector<unsigned> get_side_nodes(unsigned const side_number) const {
+  NODISCARD std::vector<unsigned> get_side_nodes(unsigned const side_number) const {
     Insist(side_number < side_nodes.size(), "Side index out of range!");
     return side_nodes[side_number];
   }
 
-  std::vector<unsigned> get_number_of_face_nodes() const {
+  NODISCARD std::vector<unsigned> get_number_of_face_nodes() const {
     std::vector<unsigned> number_of_face_nodes(side_type.size());
 
     for (unsigned s = 0; s < side_type.size(); ++s)
@@ -351,7 +351,7 @@ public:
     return number_of_face_nodes;
   }
 
-  std::vector<std::vector<unsigned>> get_face_nodes() const {
+  NODISCARD std::vector<std::vector<unsigned>> get_face_nodes() const {
     std::vector<std::vector<unsigned>> face_nodes(side_nodes.size());
 
     for (unsigned s = 0; s < face_nodes.size(); ++s) {
@@ -368,7 +368,7 @@ public:
    * \brief Performs some simple sanity checks on the private data of the Element_Description
    *        class. Note that this only works with DBC turned on.
    */
-  bool invariant_satisfied() const;
+  NODISCARD bool invariant_satisfied() const;
 
   //! Prints the element description.
   std::ostream &print(std::ostream &os_out) const;

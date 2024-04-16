@@ -50,19 +50,21 @@ public:
   explicit Pseudo_Line_Analytic_MultigroupOpacity(const sf_char &packed);
 
   //! Get the group opacities.
-  sf_double getOpacity(double targetTemperature, double targetDensity) const override;
+  NODISCARD sf_double getOpacity(double targetTemperature, double targetDensity) const override;
 
   //! Get the group opacity fields given a field of temperatures.
-  vf_double getOpacity(const sf_double &targetTemperature, double targetDensity) const override;
+  NODISCARD vf_double getOpacity(const sf_double &targetTemperature,
+                                 double targetDensity) const override;
 
   //! Get the group opacity fields given a field of densities.
-  vf_double getOpacity(double targetTemperature, const sf_double &targetDensity) const override;
+  NODISCARD vf_double getOpacity(double targetTemperature,
+                                 const sf_double &targetDensity) const override;
 
   //! Get the data description of the opacity.
-  std::string getDataDescriptor() const override;
+  NODISCARD std::string getDataDescriptor() const override;
 
   //! Pack up the class for persistence.
-  sf_char pack() const override;
+  NODISCARD sf_char pack() const override;
 };
 
 } // end namespace rtt_cdi_analytic

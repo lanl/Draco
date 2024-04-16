@@ -34,18 +34,18 @@ public:
 
   // ACCESSORS
 
-  Quadrature_Class quadrature_class() const override;
+  NODISCARD Quadrature_Class quadrature_class() const override;
 
-  bool has_axis_assignments() const override;
+  NODISCARD bool has_axis_assignments() const override;
 
-  double mu(unsigned const m) const {
+  NODISCARD double mu(unsigned const m) const {
     Require(mu_.size() == sn_order());
     Require(m < mu_.size());
 
     return mu_[m];
   }
 
-  double wt(unsigned const m) const {
+  NODISCARD double wt(unsigned const m) const {
     Require(wt_.size() == sn_order());
     Require(m < wt_.size());
 
@@ -58,18 +58,19 @@ protected:
   using Quadrature::create_ordinates_;
 
   //! Virtual hook for create_ordinate_set
-  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm,
-                                          unsigned mu_axis, unsigned eta_axis,
-                                          bool include_starting_directions,
-                                          bool include_extra_directions) const override;
+  NODISCARD std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/,
+                                                    double norm, unsigned mu_axis,
+                                                    unsigned eta_axis,
+                                                    bool include_starting_directions,
+                                                    bool include_extra_directions) const override;
 
   //! Virtual hook for create_ordinate_set
-  std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm,
-                                          bool include_starting_directions,
-                                          bool include_extra_directions) const override;
+  NODISCARD std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/,
+                                                    double norm, bool include_starting_directions,
+                                                    bool include_extra_directions) const override;
 
   //! Virtual hook for create_ordinate_set
-  virtual std::vector<Ordinate> create_level_ordinates_(double norm) const = 0;
+  NODISCARD virtual std::vector<Ordinate> create_level_ordinates_(double norm) const = 0;
 
   // DATA
 

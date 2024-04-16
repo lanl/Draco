@@ -33,17 +33,17 @@ public:
   explicit Double_Gauss(unsigned sn_order);
 
   // SERVICES
-  std::string name() const override;
-  std::string parse_name() const override;
-  unsigned number_of_levels() const override;
-  std::string as_text(std::string const &indent) const override;
-  bool check_class_invariants() const;
+  NODISCARD std::string name() const override;
+  NODISCARD std::string parse_name() const override;
+  NODISCARD unsigned number_of_levels() const override;
+  NODISCARD std::string as_text(std::string const &indent) const override;
+  NODISCARD bool check_class_invariants() const;
 
   // STATICS
   static std::shared_ptr<Quadrature> parse(Token_Stream &tokens);
 
 protected:
-  std::vector<Ordinate> create_level_ordinates_(double norm) const override;
+  NODISCARD std::vector<Ordinate> create_level_ordinates_(double norm) const override;
 };
 
 } // end namespace rtt_quadrature

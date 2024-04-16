@@ -48,40 +48,43 @@ public:
                     CPModelAngleCutoff model_angle_cutoff_in);
 
   // >>> ACCESSORS
-  const_SP_Model get_Analytic_Model() const { return analytic_model; }
+  NODISCARD const_SP_Model get_Analytic_Model() const { return analytic_model; }
 
   // >>> INTERFACE SPECIFIED BY rtt_cdi::CPEloss
 
   // Get an eloss.
-  double getEloss(const double temperature, const double density, const double v0) const override;
+  NODISCARD double getEloss(const double temperature, const double density,
+                            const double v0) const override;
 
   //! Query to see if data is in tabular or functional form (false).
   constexpr static bool is_data_in_tabular_form() { return false; }
 
   //! Get the temperature grid (size 0 for function-based analytic data).
-  sf_double getTemperatureGrid() const override { return sf_double(0); }
+  NODISCARD sf_double getTemperatureGrid() const override { return sf_double(0); }
 
   //! Get the density grid (size 0 for function-based analytic data).
-  sf_double getDensityGrid() const override { return sf_double(0); }
+  NODISCARD sf_double getDensityGrid() const override { return sf_double(0); }
 
   //! Get the density grid (size 0 for function-based analytic data).
-  sf_double getEnergyGrid() const override { return sf_double(0); }
+  NODISCARD sf_double getEnergyGrid() const override { return sf_double(0); }
 
   //! Get the size of the temperature grid (size 0).
-  size_t getNumTemperatures() const override { return 0; }
+  NODISCARD size_t getNumTemperatures() const override { return 0; }
 
   //! Get the size of the density grid (size 0).
-  size_t getNumDensities() const override { return 0; }
+  NODISCARD size_t getNumDensities() const override { return 0; }
 
   //! Get the size of the density grid (size 0).
-  size_t getNumEnergies() const override { return 0; }
+  NODISCARD size_t getNumEnergies() const override { return 0; }
 
   /*!
    * \brief Returns the general eloss model type
    *
    * Since this is an analytic model, return 1 (rtt_cdi::ANALYTIC_ETYPE)
    */
-  rtt_cdi::CPModelType getModelType() const { return rtt_cdi::CPModelType::ANALYTIC_ETYPE; }
+  NODISCARD rtt_cdi::CPModelType getModelType() const {
+    return rtt_cdi::CPModelType::ANALYTIC_ETYPE;
+  }
 };
 
 } // namespace rtt_cdi_cpeloss

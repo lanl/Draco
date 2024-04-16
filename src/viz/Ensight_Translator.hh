@@ -252,7 +252,7 @@ public:
   // >>> ACCESSORS
 
   //! Get the list of dump times.
-  const sf_double &get_dump_times() const { return d_dump_times; }
+  NODISCARD const sf_double &get_dump_times() const { return d_dump_times; }
 };
 
 } // end namespace rtt_viz

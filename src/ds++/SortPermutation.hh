@@ -109,7 +109,7 @@ private:
       return *this;
     }
 
-    const value_type &value() const { return *iters[pos]; }
+    NODISCARD const value_type &value() const { return *iters[pos]; }
 
     operator SortPermutation::value_type() { return pos; } // NOLINT [hicpp-explicit-conversions]
   };
@@ -167,10 +167,10 @@ public:
   value_type operator[](unsigned i) const { return indexTable_m[i]; }
 
   //! Returns the begin const_iterator into the index table.
-  const_iterator begin() const { return indexTable_m.begin(); }
+  NODISCARD const_iterator begin() const { return indexTable_m.begin(); }
 
   //! Returns the end const_iterator into the index table.
-  const_iterator end() const { return indexTable_m.end(); }
+  NODISCARD const_iterator end() const { return indexTable_m.end(); }
 
   /*!
    * \brief Returns the i'th entry into the rank table.
@@ -186,16 +186,16 @@ public:
    * \endcode
    * results in sorted containing the sorted elements of [first, last).
    */
-  value_type inv(int i) const { return rankTable_m[i]; }
+  NODISCARD value_type inv(int i) const { return rankTable_m[i]; }
 
   //! Returns the begin const_iterator into the rank table.
-  const_iterator inv_begin() const { return rankTable_m.begin(); }
+  NODISCARD const_iterator inv_begin() const { return rankTable_m.begin(); }
 
   //! Returns the end const_iterator into the rank table.
-  const_iterator inv_end() const { return rankTable_m.end(); }
+  NODISCARD const_iterator inv_end() const { return rankTable_m.end(); }
 
   //! Returns the size of the index and rank tables.
-  int size() const { return static_cast<int>(indexTable_m.size()); }
+  NODISCARD int size() const { return static_cast<int>(indexTable_m.size()); }
 
 private:
   // IMPLEMENTATION

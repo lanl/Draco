@@ -58,11 +58,11 @@ protected:
   // IMPLEMENTATION
 
   //! Return a locator string.
-  string location_() const override;
+  NODISCARD string location_() const override;
 
   void fill_character_buffer_() override;
-  bool error_() const override;
-  bool end_() const override;
+  NODISCARD bool error_() const override;
+  NODISCARD bool end_() const override;
 
   void push_include(std::string &include_file_name) override;
   void pop_include() override;

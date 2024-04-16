@@ -345,14 +345,9 @@ void multigroup_opacity_test(rtt_dsxx::UnitTest &ut) {
 
   std::shared_ptr<rtt_cdi_test::DummyMultigroupOpacity> spDumMgOp;
   if ((spDumMgOp = std::make_shared<rtt_cdi_test::DummyMultigroupOpacity>()), spDumMgOp) {
-    ostringstream message;
-    message << "shared_ptr to new DummyMultigroupOpacity object created.";
-    PASSMSG(message.str());
+    PASSMSG("shared_ptr to new DummyMultigroupOpacity object created.");
   } else {
-    ostringstream message;
-    message << "Unable to create a shared_ptr "
-            << "to a new DummyMultigroupOpacity object.";
-    FAILMSG(message.str());
+    FAILMSG("Unable to create a shared_ptr to a new DummyMultigroupOpacity object.");
   }
 
   // The STL-like accessors only work with 1-D containers.
@@ -369,8 +364,9 @@ void multigroup_opacity_test(rtt_dsxx::UnitTest &ut) {
                                   (energyBoundaries[ig] + energyBoundaries[ig + 1]);
 
   // Obtain values using getOpacity() accessor.
-  spDumMgOp->getOpacity(vtemperature.begin(), vtemperature.end(), vdensity.begin(), vdensity.end(),
-                        vOpacity.begin());
+  auto it = spDumMgOp->getOpacity(vtemperature.begin(), vtemperature.end(), vdensity.begin(),
+                                  vdensity.end(), vOpacity.begin());
+  FAIL_IF_NOT(it == vOpacity.end());
 
   // Compare the results:
   if (soft_equiv(vOpacity.begin(), vOpacity.end(), vRefOpacity.begin(), vRefOpacity.end())) {

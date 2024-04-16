@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Aug. 1 2023
  * \brief  DD_Topology class definition.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef mesh_DD_Topology_hh
@@ -92,32 +92,32 @@ public:
   // >>> DERIVED INTERFACE
 
   //! Number of cells on this processor.
-  int64_t num_local_cells() const override { return num_local_d; }
+  NODISCARD int64_t num_local_cells() const override { return num_local_d; }
 
-  bool valid_local_cell(int cell) const override {
+  NODISCARD bool valid_local_cell(int cell) const override {
     return (cell >= 1) && (cell <= static_cast<int>(num_local_d));
   }
 
   // Get the global cell index.
-  inline int64_t global_cell(size_t local_cell) const override;
+  NODISCARD inline int64_t global_cell(size_t local_cell) const override;
 
   // Get the local cell index.
-  inline int local_cell(size_t global_cell) const override;
+  NODISCARD inline int local_cell(size_t global_cell) const override;
 
   //! Get the number of boundary cells on a given processor.
-  size_t num_ghost_cells() const override { return ghost_cells_d.size(); }
+  NODISCARD size_t num_ghost_cells() const override { return ghost_cells_d.size(); }
 
   // Get the remote local cell index for a boundary cell.
-  inline int remote_local_cell(size_t ghost_cell) const override;
+  NODISCARD inline int remote_local_cell(size_t ghost_cell) const override;
 
   // Get the remote processor id for a boundary cell.
-  inline int remote_proc(size_t ghost_cell) const override;
+  NODISCARD inline int remote_proc(size_t ghost_cell) const override;
 
   //! Get the global offset at a rank
-  int get_global_offset(int rank) const override { return global_offset_d[rank]; }
+  NODISCARD int get_global_offset(int rank) const override { return global_offset_d[rank]; }
 
   // Packing function.
-  packed_type pack() const override;
+  NODISCARD packed_type pack() const override;
 
   // Diagnostic printing.
   void print(std::ostream &out) const override;

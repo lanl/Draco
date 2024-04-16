@@ -1053,15 +1053,17 @@ bool test_hexa_27(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Defini
 #ifndef __clang_analyzer__
   // clang-analyze sees the throw and warns that 'ldum=false' is 'deadcode'.
   try {
-    elem_def.get_side_type(6);
-    ldum = false;
+    Element_Definition result = elem_def.get_side_type(6);
+    ldum = (result.get_type() == Element_Definition::HEXA_27); // should never get here
   } catch (...) {
+    // Do nothing - this path is the desired result.
   }
 
   try {
-    elem_def.get_side_nodes(6);
-    ldum = false;
+    auto result = elem_def.get_side_nodes(6);
+    ldum = (result == std::vector<unsigned>{0}); // should never get here
   } catch (...) {
+    // Do nothing - this path is the desired result.
   }
 #endif
 

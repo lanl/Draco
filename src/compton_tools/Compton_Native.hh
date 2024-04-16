@@ -10,6 +10,7 @@
 #ifndef rtt_compton_tools_Compton_Native_hh
 #define rtt_compton_tools_Compton_Native_hh
 
+#include "ds++/config.h" // defines NODISCARD
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -131,18 +132,18 @@ public:
   //----------------------------------------------------------------------------------------------//
 
   // Accessor functions
-  size_t get_num_temperatures() const { return num_temperatures_; }
-  size_t get_num_groups() const { return num_groups_; }
-  size_t get_num_leg_moments() const { return num_leg_moments_; }
-  size_t get_num_evals() const { return num_evals_; }
-  size_t get_num_points() const { return num_points_; }
-  size_t get_highest_leg_moment() const { return num_leg_moments_ - 1U; }
-  const std::vector<double> &get_Ts() const { return Ts_; }
-  const std::vector<double> &get_Egs() const { return Egs_; }
+  NODISCARD size_t get_num_temperatures() const { return num_temperatures_; }
+  NODISCARD size_t get_num_groups() const { return num_groups_; }
+  NODISCARD size_t get_num_leg_moments() const { return num_leg_moments_; }
+  NODISCARD size_t get_num_evals() const { return num_evals_; }
+  NODISCARD size_t get_num_points() const { return num_points_; }
+  NODISCARD size_t get_highest_leg_moment() const { return num_leg_moments_ - 1U; }
+  NODISCARD const std::vector<double> &get_Ts() const { return Ts_; }
+  NODISCARD const std::vector<double> &get_Egs() const { return Egs_; }
 
   //----------------------------------------------------------------------------------------------//
   // Size checks for valid state
-  bool check_class_invariants() const {
+  NODISCARD bool check_class_invariants() const {
     bool all_good = (num_temperatures_ > 0U) && (num_groups_ > 0U) && (num_leg_moments_ > 0U) &&
                     (num_evals_ >= 2U) && (num_evals_ <= 3U) &&
                     (num_points_ == num_evals_ + num_leg_moments_ - 1U) &&

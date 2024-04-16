@@ -52,14 +52,14 @@ public:
    * \brief Returns all of the data field values for each of the cells.
    * \return The data field values for each of the cells.
    */
-  vector_vector_dbl get_data() const { return data; }
+  NODISCARD vector_vector_dbl get_data() const { return data; }
 
   /*!
    * \brief Returns all of the data field values for the specified cell.
    * \param cell_numb Cell number.
    * \return The cell data field values.
    */
-  vector_dbl get_data(size_t cell_numb) const { return data[cell_numb]; }
+  NODISCARD vector_dbl get_data(size_t cell_numb) const { return data[cell_numb]; }
 
   /*!
    * \brief Returns the specified data field value for the specified cel.
@@ -67,7 +67,9 @@ public:
    * \param data_index Data field.
    * \return The cell data field value.
    */
-  double get_data(size_t cell_numb, size_t data_index) const { return data[cell_numb][data_index]; }
+  NODISCARD double get_data(size_t cell_numb, size_t data_index) const {
+    return data[cell_numb][data_index];
+  }
 };
 
 } // end namespace rtt_RTT_Format_Reader

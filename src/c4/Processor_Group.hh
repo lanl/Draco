@@ -49,9 +49,9 @@ public:
   // ACCESSORS
 
   //! Get the number of processors in the group.
-  unsigned size() const { return size_; }
+  NODISCARD unsigned size() const { return size_; }
 
-  bool check_class_invariants() const { return (size() > 0); }
+  NODISCARD bool check_class_invariants() const { return (size() > 0); }
 
   // SERVICES
 

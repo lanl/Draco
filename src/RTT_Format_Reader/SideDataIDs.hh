@@ -57,7 +57,7 @@ public:
    * \param id_numb side_data_id index number.
    * \return The side_data_id name.
    */
-  string get_data_id_name(size_t id_numb) const {
+  NODISCARD string get_data_id_name(size_t id_numb) const {
     Insist(id_numb <= dims.get_nside_data() - 1, "Invalid side data id number!");
     return names[id_numb];
   }
@@ -67,7 +67,7 @@ public:
    * \param id_numb side_data_id index number.
    * \return The side_data_id units.
    */
-  string get_data_id_units(size_t id_numb) const {
+  NODISCARD string get_data_id_units(size_t id_numb) const {
     Insist(id_numb <= dims.get_nside_data() - 1, "Invalid side data id number!");
     return units[id_numb];
   }

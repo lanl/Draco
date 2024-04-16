@@ -93,13 +93,13 @@ public:
 
   //! Return a FundUnit type when requested.
 
-  FundUnit<Ltype> L() const { return d_L; }
-  FundUnit<Mtype> M() const { return d_M; }
-  FundUnit<ttype> t() const { return d_t; }
-  FundUnit<Ttype> T() const { return d_T; }
-  FundUnit<Itype> I() const { return d_I; }
-  FundUnit<Atype> A() const { return d_A; }
-  FundUnit<Qtype> Q() const { return d_Q; }
+  NODISCARD FundUnit<Ltype> L() const { return d_L; }
+  NODISCARD FundUnit<Mtype> M() const { return d_M; }
+  NODISCARD FundUnit<ttype> t() const { return d_t; }
+  NODISCARD FundUnit<Ttype> T() const { return d_T; }
+  NODISCARD FundUnit<Itype> I() const { return d_I; }
+  NODISCARD FundUnit<Atype> A() const { return d_A; }
+  NODISCARD FundUnit<Qtype> Q() const { return d_Q; }
 
 private:
   //! Fundamental unit types.

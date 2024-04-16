@@ -52,7 +52,7 @@ public:
    * \param id_numb node_data_id index number.
    * \return The node_data_id name.
    */
-  string get_data_id_name(size_t id_numb) const {
+  NODISCARD string get_data_id_name(size_t id_numb) const {
     Insist(id_numb <= dims.get_nnode_data() - 1, "Invalid node data id number!");
     return names[id_numb];
   }
@@ -62,7 +62,7 @@ public:
    * \param id_numb node_data_id index number.
    * \return The node_data_id units.
    */
-  string get_data_id_units(size_t id_numb) const {
+  NODISCARD string get_data_id_units(size_t id_numb) const {
     Insist(id_numb <= dims.get_nnode_data() - 1, "Invalid node data id number!");
     return units[id_numb];
   }

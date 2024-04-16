@@ -123,13 +123,13 @@ public:
     return;
   }
 
-  bool dbcRequire() const { return m_dbcRequire; }
-  bool dbcCheck() const { return m_dbcCheck; }
-  bool dbcEnsure() const { return m_dbcEnsure; }
-  bool dbcNothrow() const { return m_dbcNothrow; }
-  bool dbcOn() const { return m_dbcRequire || m_dbcCheck || m_dbcEnsure; }
-  std::string getTestPath() const { return testPath; }
-  std::string getTestName() const { return testName; }
+  NODISCARD bool dbcRequire() const { return m_dbcRequire; }
+  NODISCARD bool dbcCheck() const { return m_dbcCheck; }
+  NODISCARD bool dbcEnsure() const { return m_dbcEnsure; }
+  NODISCARD bool dbcNothrow() const { return m_dbcNothrow; }
+  NODISCARD bool dbcOn() const { return m_dbcRequire || m_dbcCheck || m_dbcEnsure; }
+  NODISCARD std::string getTestPath() const { return testPath; }
+  NODISCARD std::string getTestName() const { return testName; }
   /*!
    * \brief Returns the path of the test binary directory (useful for locating input files).
    *
@@ -190,7 +190,7 @@ public:
 
 protected:
   // IMPLEMENTATION
-  std::string resultMessage() const;
+  NODISCARD std::string resultMessage() const;
 
   // DATA
 

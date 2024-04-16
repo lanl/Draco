@@ -48,7 +48,8 @@ GPU_Device::GPU_Device() : deviceCount(0), computeCapability(), deviceName() {
     cudaDeviceGetAttribute(&major, cudaDevAttrComputeCapabilityMajor, device);
     cudaDeviceGetAttribute(&minor, cudaDevAttrComputeCapabilityMinor, device);
 #else
-    hipDeviceComputeCapability(&major, &minor, device);
+    err = hipDeviceComputeCapability(&major, &minor, device);
+    checkForCudaError(err);
 #endif
     computeCapability[device].push_back(major);
     computeCapability[device].push_back(minor);

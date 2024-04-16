@@ -35,7 +35,7 @@ public:
   // SERVICES
 
   //! Returns a smart pointer to the Quadrature object
-  std::shared_ptr<Ordinate_Set> get_Ordinate_Set() const;
+  NODISCARD std::shared_ptr<Ordinate_Set> get_Ordinate_Set() const;
 
 private:
   // DATA

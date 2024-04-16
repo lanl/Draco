@@ -75,7 +75,7 @@ public:
   // ACCESSORS
 
   /// Returns the index location of the \f$ L_{\infty} \f$ norm.
-  Index_t index_Linf() const { return d_index_Linf; }
+  NODISCARD Index_t index_Linf() const { return d_index_Linf; }
 };
 
 } // namespace rtt_norms

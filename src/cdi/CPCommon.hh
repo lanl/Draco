@@ -10,6 +10,7 @@
 #ifndef rtt_cdi_CPCommon_hh
 #define rtt_cdi_CPCommon_hh
 
+#include "ds++/config.h" // defines NODISCARD
 #include <cstdint>
 
 namespace rtt_cdi {
@@ -41,8 +42,8 @@ private:
   double mass;
 
 public:
-  int32_t get_zaid() const { return zaid; }
-  int32_t get_z() const {
+  NODISCARD int32_t get_zaid() const { return zaid; }
+  NODISCARD int32_t get_z() const {
     if (zaid != -1) {
       // Integer division to extract the ZZZ from ZAID format ZZZAAA
       return zaid / 1000;
@@ -51,8 +52,8 @@ public:
       return -1;
     }
   }
-  int32_t get_a() const { return zaid % 1000; }
-  double get_mass() const { return mass; }
+  NODISCARD int32_t get_a() const { return zaid % 1000; }
+  NODISCARD double get_mass() const { return mass; }
 
   CParticle(const int32_t zaid_in, const double mass_in) : zaid(zaid_in), mass(mass_in) {}
 };

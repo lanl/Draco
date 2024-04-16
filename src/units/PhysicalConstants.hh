@@ -73,76 +73,76 @@ public:
   constexpr double Na() { return avogadro(); }
 
   //! access the Planck constant (units of energy-time)
-  constexpr double planck() const { return d_planck; }
+  NODISCARD constexpr double planck() const { return d_planck; }
   //! see planck()
-  constexpr double h() const { return planck(); }
+  NODISCARD constexpr double h() const { return planck(); }
 
   //! access the Gas constant (units of energy/mol/temp)
-  constexpr double gasConstant() const { return d_gasConstant; }
+  NODISCARD constexpr double gasConstant() const { return d_gasConstant; }
   //! see gasConstant()
-  constexpr double R() const { return gasConstant(); }
+  NODISCARD constexpr double R() const { return gasConstant(); }
 
   //! accesses the Boltzmann constant (Energy/Temp)
-  constexpr double boltzmann() const { return d_boltzmann; }
+  NODISCARD constexpr double boltzmann() const { return d_boltzmann; }
   //! see boltzmann()
-  constexpr double k() const { return boltzmann(); }
+  NODISCARD constexpr double k() const { return boltzmann(); }
 
   //! accesses the electron charge (Charge)
-  constexpr double electronCharge() const { return d_electronCharge; }
+  NODISCARD constexpr double electronCharge() const { return d_electronCharge; }
   //! see electronCharge()
-  constexpr double e() const { return electronCharge(); }
+  NODISCARD constexpr double e() const { return electronCharge(); }
 
   //! accesses the speed of light (units of velocity)
-  constexpr double speedOfLight() const { return d_cLight; }
+  NODISCARD constexpr double speedOfLight() const { return d_cLight; }
   //! see speedOfLight()
-  constexpr double c() const { return speedOfLight(); }
+  NODISCARD constexpr double c() const { return speedOfLight(); }
 
   //! accesses the StefanBoltzmann constant (Work/Area/Temp^4 )
-  constexpr double stefanBoltzmann() const { return d_stefanBoltzmann; }
+  NODISCARD constexpr double stefanBoltzmann() const { return d_stefanBoltzmann; }
   //! see stefanBoltzmann()
-  constexpr double sigma() const { return stefanBoltzmann(); }
+  NODISCARD constexpr double sigma() const { return stefanBoltzmann(); }
 
   //! accesses the gravitational constant
-  constexpr double gravitationalConstant() const { return d_gravitationalConstant; }
+  NODISCARD constexpr double gravitationalConstant() const { return d_gravitationalConstant; }
   //! see gravitationalConstant()
-  constexpr double G() const { return gravitationalConstant(); }
+  NODISCARD constexpr double G() const { return gravitationalConstant(); }
 
   //! access the acceleration due to gravity (standard).
-  constexpr double accelerationFromGravity() const { return d_accelerationFromGravity; }
+  NODISCARD constexpr double accelerationFromGravity() const { return d_accelerationFromGravity; }
   //! see accelerationFromGravity()
-  constexpr double g() const { return accelerationFromGravity(); }
+  NODISCARD constexpr double g() const { return accelerationFromGravity(); }
 
   //! access the Faraday constant
-  constexpr double faradayConstant() const { return d_faradayConstant; }
+  NODISCARD constexpr double faradayConstant() const { return d_faradayConstant; }
   //! see faradayConstant()
-  constexpr double F() const { return faradayConstant(); }
+  NODISCARD constexpr double F() const { return faradayConstant(); }
 
   //! access the Permeability of vacuum (free space)
-  constexpr double permeabilityOfVacuum() const { return d_permeabilityOfVacuum; }
+  NODISCARD constexpr double permeabilityOfVacuum() const { return d_permeabilityOfVacuum; }
   //! see permeabilityOfVacuum()
-  constexpr double mu0() const { return permeabilityOfVacuum(); }
+  NODISCARD constexpr double mu0() const { return permeabilityOfVacuum(); }
 
   //! accesses the permittivity of free space (units of force/length)
-  constexpr double permittivityOfFreeSpace() const { return d_permittivityOfFreeSpace; }
+  NODISCARD constexpr double permittivityOfFreeSpace() const { return d_permittivityOfFreeSpace; }
   //! see permittivityOfFreeSpace()
-  constexpr double epsi0() const { return permittivityOfFreeSpace(); }
+  NODISCARD constexpr double epsi0() const { return permittivityOfFreeSpace(); }
 
   //! accesses the classical electron radius (units of length)
-  constexpr double classicalElectronRadius() const { return d_classicalElectronRadius; }
+  NODISCARD constexpr double classicalElectronRadius() const { return d_classicalElectronRadius; }
   //! see classicalElectronRadius()
-  constexpr double re() const { return classicalElectronRadius(); }
+  NODISCARD constexpr double re() const { return classicalElectronRadius(); }
 
   //! accesses the electron mass (units of mass)
-  constexpr double electronMass() const { return d_electronMass; }
+  NODISCARD constexpr double electronMass() const { return d_electronMass; }
   //! see electronMass()
-  constexpr double me() const { return electronMass(); }
+  NODISCARD constexpr double me() const { return electronMass(); }
 
   //! accesses the proton mass (units of mass)
-  constexpr double protonMass() const { return d_protonMass; }
+  NODISCARD constexpr double protonMass() const { return d_protonMass; }
   //! see protonMass()
-  constexpr double mp() const { return protonMass(); }
+  NODISCARD constexpr double mp() const { return protonMass(); }
 
-  double unit_convert_boltzmann(UnitSystem const &u) const;
+  NODISCARD double unit_convert_boltzmann(UnitSystem const &u) const;
 
 private:
   // Base physical constants in SI units:

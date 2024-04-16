@@ -4,13 +4,19 @@
  * \author Kendra P. Long, Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Interpolation functions.
- * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ds++/Interpolate.hh"
 
+#ifdef __cplusplus
+#if __cplusplus > 201402L
+namespace rtt_dsxx::interpolate {
+#else
 namespace rtt_dsxx {
 namespace interpolate {
+#endif
+#endif
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -72,8 +78,8 @@ double linear_3d(double const x0, double const x1, double const y0, double const
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Compute the Lagrange multipliers for a set of breakpoint regions,
- *        each with n_local points. Return the multipliers to to the calling function.
+ * \brief Compute the Lagrange multipliers for a set of breakpoint regions, each with n_local
+ *        points. Return the multipliers to to the calling function.
  *
  * \param[in] n_break The global number of breakpoints (each pair defines a sub-region)
  * \param[in] n_local The number of points per (sub-)region
@@ -105,15 +111,14 @@ std::vector<double> lagrange_multipliers(const size_t n_break, const size_t n_lo
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Perform one-dimensional polynomial interpolation, given y values
- *         (data), x values (xs), multipliers (cxs), and the value to interpolate to (x)
+ * \brief Perform one-dimensional polynomial interpolation, given y values (data), x values (xs),
+ *         multipliers (cxs), and the value to interpolate to (x)
  *
  * \param[in] data y values
  * \param[in] xs   x data points
  * \param[in] cxs  Lagrange multipliers for data points
  * \param[in] x    value to interpolate to.
  * \return The y value associated with x based on Lagrange polynomial interpolation).
- *
  */
 double lagrange_1d(const std::vector<double> &data, const std::vector<double> &xs,
                    const std::vector<double> &cxs, const double x) {
@@ -123,8 +128,8 @@ double lagrange_1d(const std::vector<double> &data, const std::vector<double> &x
 
   const size_t nx_local{cxs.size()};
 
-  // Here, we check to see if the data point lies directly on one of our
-  // eval points. If it does, we just return the value at the data point.
+  // Here, we check to see if the data point lies directly on one of our eval points. If it does, we
+  // just return the value at the data point.
   double phi = 1.0;
   for (size_t j = 0; j < nx_local; ++j) {
     // use the relative diff (scaled by x) if x is "big enough", or absolute diff if x is O(eps):
@@ -144,5 +149,15 @@ double lagrange_1d(const std::vector<double> &data, const std::vector<double> &x
   return val;
 }
 
+#ifdef __cplusplus
+#if __cplusplus > 201402L
+} // namespace rtt_dsxx::interpolate
+#else
 } // namespace interpolate
 } // namespace rtt_dsxx
+#endif
+#endif
+
+//------------------------------------------------------------------------------------------------//
+// End ds++/Interpolate.cc
+//------------------------------------------------------------------------------------------------//

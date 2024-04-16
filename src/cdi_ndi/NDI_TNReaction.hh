@@ -59,43 +59,49 @@ public:
   NDI_TNReaction &operator=(NDI_TNReaction &&rhs) noexcept = delete;
 
   //! Return spectrum PDF at a given temperature
-  std::vector<double> get_PDF(const int product_zaid, const double temperature) const;
+  NODISCARD std::vector<double> get_PDF(const int product_zaid, const double temperature) const;
 
   //! Get the reaction
-  inline std::string get_reaction() const & { return reaction; }
+  NODISCARD inline std::string get_reaction() const & { return reaction; }
 
   //! Get the name of the reaction from the NDI file
-  inline std::string get_reaction_name() const & { return reaction_name; }
+  NODISCARD inline std::string get_reaction_name() const & { return reaction_name; }
 
   //! Get number of reaction products
-  inline uint32_t get_num_products() const { return static_cast<uint32_t>(products.size()); }
+  NODISCARD inline uint32_t get_num_products() const {
+    return static_cast<uint32_t>(products.size());
+  }
 
   //! Get vector of reaction products
-  inline std::vector<int> get_products() const & { return products; }
+  NODISCARD inline std::vector<int> get_products() const & { return products; }
 
   //! Get vector of reaction product multiplicities
-  inline std::vector<int> get_product_multiplicities() const & { return product_multiplicities; }
+  NODISCARD inline std::vector<int> get_product_multiplicities() const & {
+    return product_multiplicities;
+  }
 
   //! Get vector of reaction temperature grid support points
-  inline std::vector<double> get_reaction_temperature() const & { return reaction_temperature; }
+  NODISCARD inline std::vector<double> get_reaction_temperature() const & {
+    return reaction_temperature;
+  }
 
   //! Get vector of incident energy support points
-  inline std::vector<double> get_einbar() const & { return einbar; }
+  NODISCARD inline std::vector<double> get_einbar() const & { return einbar; }
 
   //! Get vector of cross section support points
-  inline std::vector<double> get_sigvbar() const & { return sigvbar; }
+  NODISCARD inline std::vector<double> get_sigvbar() const & { return sigvbar; }
 
   //! Get change in energy due to reaction
-  inline double get_reaction_q() const { return q_reaction; }
+  NODISCARD inline double get_reaction_q() const { return q_reaction; }
 
   //! Get number of groups
-  inline int get_num_groups() const { return num_groups; }
+  NODISCARD inline int get_num_groups() const { return num_groups; }
 
   //! Get group boundaries
-  inline std::vector<double> get_group_bounds() const & { return group_bounds; }
+  NODISCARD inline std::vector<double> get_group_bounds() const & { return group_bounds; }
 
   //! Get group energies
-  inline std::vector<double> get_group_energies() const & { return group_energies; }
+  NODISCARD inline std::vector<double> get_group_energies() const & { return group_energies; }
 
 private:
   //! Name of reaction to read

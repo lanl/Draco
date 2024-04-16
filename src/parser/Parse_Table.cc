@@ -214,8 +214,7 @@ Token Parse_Table::parse(Token_Stream &tokens) const {
       // pointing to the first keyword in the table whose lexical ordering is greater than or equal
       // to the keyword token.  The lexical ordering is supplied by the comp object.
 
-      vector<Keyword>::const_iterator const match =
-          lower_bound(vec.begin(), vec.end(), token, comp);
+      auto match = lower_bound(vec.begin(), vec.end(), token, comp);
 
       if (match == vec.end() || comp.kt_comparison(match->moniker, token.text().c_str()) != 0) {
         // The token was not lexically equal to anything in the keyword table.  In other words, the
@@ -354,8 +353,7 @@ Token Parse_Table::parseforkeyword(Token_Stream &tokens) const {
       // pointing to the first keyword in the table whose lexical ordering is greater than or equal
       // to the keyword token.  The lexical ordering is supplied by the comp object.
 
-      vector<Keyword>::const_iterator const match =
-          lower_bound(vec.begin(), vec.end(), token, comp);
+      auto match = lower_bound(vec.begin(), vec.end(), token, comp);
 
       if (match == vec.end() || comp.kt_comparison(match->moniker, token.text().c_str()) != 0) {
         // The token was not lexically equal to anything in the keyword table.  In other words, the

@@ -72,12 +72,12 @@ void Parallel_Data_Operator::local_to_global(FT &local_field, GT &global_field, 
     Check(static_cast<int>(global_field.size()) == static_cast<int>(topology->num_cells()));
 
     // iterators for local field
-    const typename FT::iterator begin = local_field.begin();
-    const typename FT::iterator end = local_field.end();
+    auto begin = local_field.begin();
+    auto end = local_field.end();
 
     // iterators for global field
-    const typename GT::iterator global_begin = global_field.begin();
-    Remember(const typename GT::iterator global_end = global_field.end());
+    auto global_begin = global_field.begin();
+    Remember(auto global_end = global_field.end());
 
     // iterators for reading/writing
     typename FT::iterator itr;
@@ -213,8 +213,8 @@ public:
   }
 
   // C4_Req.complete should be const
-  bool complete() { return request.complete(); }
-  bool inuse() const { return request.inuse(); }
+  NODISCARD bool complete() { return request.complete(); }
+  NODISCARD bool inuse() const { return request.inuse(); }
 
   void post(int processor, int tag) {
     Check(data_size < INT32_MAX);
@@ -222,9 +222,9 @@ public:
   }
 
   T *get_data() { return data; }
-  T get_data(int c) const { return data[c]; }
+  NODISCARD T get_data(int c) const { return data[c]; }
 
-  size_t size() const { return data_size; }
+  NODISCARD size_t size() const { return data_size; }
 
   //! Copy constructor
   Data_Request(Data_Request const &rhs) : data(nullptr), data_size(rhs.data_size), request() {
@@ -284,7 +284,7 @@ public:
   T *get_data() { return data; }
   T &get_data(int c) { return data[c]; }
 
-  size_t size() const { return data_size; }
+  NODISCARD size_t size() const { return data_size; }
 
 private:
   void assign(T *data_, size_t size) {

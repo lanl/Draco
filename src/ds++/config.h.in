@@ -326,6 +326,21 @@
 #define VARIABLE_IS_NOT_USED
 #endif
 
+/* Allow the use of some C++17 features when targeting C++14. Values:
+ * * 199711L (until C++11)
+ * * 201103L (C++11)
+ * * 201402L (C++14)
+ * * 201703L (C++17)
+ * * 202002L (C++20)
+ */
+#ifdef __cplusplus
+#if __cplusplus > 201402L
+#define NODISCARD [[nodiscard]]
+#else
+#define NODISCARD
+#endif
+#endif
+
 #endif /* __dsxx_config_h__ */
 
 /*------------------------------------------------------------------------------------------------*/

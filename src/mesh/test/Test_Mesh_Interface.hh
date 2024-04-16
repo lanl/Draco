@@ -55,10 +55,10 @@ public:
 
   // >>> SERVICES
 
-  std::vector<unsigned> flatten_cn_linkage(const Layout &layout, const Layout &bd_layout,
-                                           const Layout &go_layout) const;
+  NODISCARD std::vector<unsigned> flatten_cn_linkage(const Layout &layout, const Layout &bd_layout,
+                                                     const Layout &go_layout) const;
 
-  std::vector<unsigned> flatten_sn_linkage(const Layout &bd_layout) const;
+  NODISCARD std::vector<unsigned> flatten_sn_linkage(const Layout &bd_layout) const;
 };
 
 //------------------------------------------------------------------------------------------------//

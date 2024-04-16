@@ -257,7 +257,7 @@ public:
 
   // SERVICES
 
-  bool allow_exit() const { return allow_an_exit; }
+  NODISCARD bool allow_exit() const { return allow_an_exit; }
 
   // STATIC
 

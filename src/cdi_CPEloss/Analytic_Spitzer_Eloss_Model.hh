@@ -34,7 +34,8 @@ public:
 
   //! Calculate the eloss rate in units of shk^-1;
   //! T given in keV, rho in g/cc, v0 in cm/shk
-  double calculate_eloss(const double T, const double rho, const double v0) const override;
+  NODISCARD double calculate_eloss(const double T, const double rho,
+                                   const double v0) const override;
 };
 
 } // namespace rtt_cdi_cpeloss

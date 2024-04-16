@@ -186,10 +186,10 @@ public:
   // ACCESSORS
 
   //! Return the number of elements in the vector
-  std::vector<Keyword>::size_type size() const { return vec.size(); }
+  NODISCARD std::vector<Keyword>::size_type size() const { return vec.size(); }
 
   //! Return the current parser options.
-  unsigned char get_flags() const { return flags_; }
+  NODISCARD unsigned char get_flags() const { return flags_; }
 
   // SERVICES
 
@@ -200,7 +200,7 @@ public:
   Token parseforkeyword(Token_Stream &tokens) const;
 
   //! Check the class invariants
-  bool check_class_invariants() const;
+  NODISCARD bool check_class_invariants() const;
 
 private:
   // TYPEDEFS AND ENUMERATIONS

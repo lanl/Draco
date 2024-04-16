@@ -54,34 +54,34 @@ public:
   // ACCESSORS
 
   //! Return the ordinates.
-  std::vector<Ordinate> const &ordinates() const { return ordinates_; }
+  NODISCARD std::vector<Ordinate> const &ordinates() const { return ordinates_; }
 
   //! Return the ordinates.
-  std::vector<Ordinate> &ordinates() { return ordinates_; }
+  NODISCARD std::vector<Ordinate> &ordinates() { return ordinates_; }
 
   //! Return the geometry.
-  rtt_mesh_element::Geometry geometry() const { return geometry_; }
+  NODISCARD rtt_mesh_element::Geometry geometry() const { return geometry_; }
 
   //! Return the dimension.
-  unsigned dimension() const { return dimension_; }
+  NODISCARD unsigned dimension() const { return dimension_; }
 
   //! Return the norm.
-  double norm() const { return norm_; }
+  NODISCARD double norm() const { return norm_; }
 
   //! Does this set include starting directions?
-  bool has_starting_directions() const { return has_starting_directions_; }
+  NODISCARD bool has_starting_directions() const { return has_starting_directions_; }
 
   //! Does this set include extra starting directions?
-  bool has_extra_starting_directions() const { return has_extra_starting_directions_; }
+  NODISCARD bool has_extra_starting_directions() const { return has_extra_starting_directions_; }
 
-  Ordering ordering() const { return ordering_; }
+  NODISCARD Ordering ordering() const { return ordering_; }
 
   // SERVICES
 
   //! Print a description of the quadrature set to the terminal.
   void display() const;
 
-  bool check_class_invariants() const;
+  NODISCARD bool check_class_invariants() const;
 
   // STATIC
 

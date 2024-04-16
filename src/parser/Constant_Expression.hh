@@ -50,7 +50,7 @@ public:
 
   // ACCESSORS
 
-  bool is_constant() const override { return true; }
+  NODISCARD bool is_constant() const override { return true; }
 
 private:
   // IMPLEMENTATION
@@ -66,7 +66,7 @@ private:
     }
   }
 
-  /*virtual*/ bool is_constant_(unsigned /*unused*/) const override { return true; }
+  NODISCARD bool is_constant_(unsigned /*unused*/) const override { return true; }
 };
 
 } // end namespace rtt_parser

@@ -1031,7 +1031,7 @@ function(dbssetupstdtargetprops)
       CXX_STANDARD ${Draco_CXX_LANGUAGE_STANDARD} CXX_EXTENSIONS OFF CXX_STANDARD_REQUIRED ON
       CACHE INTERNAL "Standard target properties for C++ code.")
   set(Draco_std_target_props_CUDA
-      CUDA_STANDARD;${Draco_CXX_LANGUAGE_STANDARD} # Force draco to C++ 14 standard
+      CUDA_STANDARD;${Draco_CXX_LANGUAGE_STANDARD} # Force strict C++ 14 standard
       CUDA_EXTENSIONS;OFF CUDA_STANDARD_REQUIRED;ON CUDA_ARCHITECTURES;${CUDA_ARCHITECTURES}
       CACHE INTERNAL "Standard target properties for Cuda code.")
   # ~~~

@@ -147,47 +147,51 @@ public:
 
   // >>> ACCESSORS
 
-  unsigned get_dimension() const { return dimension; }
-  Geometry get_geometry() const { return geometry; }
-  unsigned get_num_cells() const { return num_cells; }
-  unsigned get_num_nodes() const { return num_nodes; }
-  std::vector<unsigned> get_side_set_flag() const { return side_set_flag; }
-  std::vector<int> get_ghost_cell_numbers() const { return ghost_cell_number; }
-  std::vector<int> get_ghost_cell_ranks() const { return ghost_cell_rank; }
-  std::vector<std::vector<double>> get_node_coord_vec() const { return node_coord_vec; }
-  std::vector<unsigned> get_num_faces_per_cell() const { return m_num_faces_per_cell; }
-  std::vector<unsigned> get_num_nodes_per_face_per_cell() const {
+  NODISCARD unsigned get_dimension() const { return dimension; }
+  NODISCARD Geometry get_geometry() const { return geometry; }
+  NODISCARD unsigned get_num_cells() const { return num_cells; }
+  NODISCARD unsigned get_num_nodes() const { return num_nodes; }
+  NODISCARD std::vector<unsigned> get_side_set_flag() const { return side_set_flag; }
+  NODISCARD std::vector<int> get_ghost_cell_numbers() const { return ghost_cell_number; }
+  NODISCARD std::vector<int> get_ghost_cell_ranks() const { return ghost_cell_rank; }
+  NODISCARD std::vector<std::vector<double>> get_node_coord_vec() const { return node_coord_vec; }
+  NODISCARD std::vector<unsigned> get_num_faces_per_cell() const { return m_num_faces_per_cell; }
+  NODISCARD std::vector<unsigned> get_num_nodes_per_face_per_cell() const {
     return m_num_nodes_per_face_per_cell;
   }
-  std::vector<std::vector<std::vector<unsigned>>> get_cell_to_node_linkage() const {
+  NODISCARD std::vector<std::vector<std::vector<unsigned>>> get_cell_to_node_linkage() const {
     return m_cell_to_node_linkage;
   }
-  std::vector<unsigned> get_side_node_count() const { return m_side_node_count; }
-  std::vector<unsigned> get_side_to_node_linkage() const { return m_side_to_node_linkage; }
-  Layout get_cc_linkage() const { return cell_to_cell_linkage; }
-  Layout get_cs_linkage() const { return cell_to_side_linkage; }
-  Layout get_cg_linkage() const { return cell_to_ghost_cell_linkage; }
-  Dual_Layout get_nc_linkage() const { return node_to_cellnode_linkage; }
-  Dual_Ghost_Layout get_ngc_linkage() const { return node_to_ghost_cell_linkage; }
-  Dual_Ghost_Layout_Coords get_ngcoord_linkage() const { return node_to_ghost_coord_linkage; }
+  NODISCARD std::vector<unsigned> get_side_node_count() const { return m_side_node_count; }
+  NODISCARD std::vector<unsigned> get_side_to_node_linkage() const {
+    return m_side_to_node_linkage;
+  }
+  NODISCARD Layout get_cc_linkage() const { return cell_to_cell_linkage; }
+  NODISCARD Layout get_cs_linkage() const { return cell_to_side_linkage; }
+  NODISCARD Layout get_cg_linkage() const { return cell_to_ghost_cell_linkage; }
+  NODISCARD Dual_Layout get_nc_linkage() const { return node_to_cellnode_linkage; }
+  NODISCARD Dual_Ghost_Layout get_ngc_linkage() const { return node_to_ghost_cell_linkage; }
+  NODISCARD Dual_Ghost_Layout_Coords get_ngcoord_linkage() const {
+    return node_to_ghost_coord_linkage;
+  }
 
   // >>> SERVICES
 
-  const std::vector<unsigned> get_cell_nodes(const unsigned cell) const;
-  const std::vector<unsigned> get_flat_cell_node_linkage() const;
+  NODISCARD const std::vector<unsigned> get_cell_nodes(const unsigned cell) const;
+  NODISCARD const std::vector<unsigned> get_flat_cell_node_linkage() const;
 
   //! Get face index of adjacent face in neighboring cell
-  int32_t next_face(const int32_t cell, const int32_t face) const;
+  NODISCARD int32_t next_face(const int32_t cell, const int32_t face) const;
 
 private:
   // >>> SUPPORT FUNCTIONS
 
   //! Calculate (merely deserialize) the vector of node coordinates
-  std::vector<std::vector<double>>
+  NODISCARD std::vector<std::vector<double>>
   compute_node_coord_vec(const std::vector<double> &coordinates) const;
 
   //! Convert cell-node linkage into tensor for easier indexing by cell, face
-  std::vector<std::vector<std::vector<unsigned>>>
+  NODISCARD std::vector<std::vector<std::vector<unsigned>>>
   compute_cell_to_node_tensor(const std::vector<unsigned> &num_faces_per_cell,
                               const std::vector<unsigned> &num_nodes_per_face_per_cell,
                               const std::vector<unsigned> &cell_to_node_linkage) const;
@@ -202,7 +206,7 @@ private:
                                     const std::vector<unsigned> &ghost_cell_to_node_linkage);
 
   //! Calculate a map of node vectors to indices (sides, ghost cells)
-  std::map<std::set<unsigned>, unsigned>
+  NODISCARD std::map<std::set<unsigned>, unsigned>
   compute_node_vec_indx_map(const std::vector<unsigned> &indx_type,
                             const std::vector<unsigned> &indx_to_node_linkage) const;
 

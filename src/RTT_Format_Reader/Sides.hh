@@ -65,32 +65,36 @@ public:
    * \param side_numb Side number.
    * \return The side type.
    */
-  int get_type(size_t side_numb) const { return sideType[side_numb]; }
+  NODISCARD int get_type(size_t side_numb) const { return sideType[side_numb]; }
   /*!
    * \brief Returns the node numbers associated with each side.
    * \return The node numbers for all of the sides.
    */
-  vector_vector_uint get_nodes() const { return nodes; }
+  NODISCARD vector_vector_uint get_nodes() const { return nodes; }
   /*!
    * \brief Returns the node numbers associated with the specified side.
    * \param side_numb Side number.
    * \return The side node numbers.
    */
-  vector_uint get_nodes(size_t side_numb) const { return nodes[side_numb]; }
+  NODISCARD vector_uint get_nodes(size_t side_numb) const { return nodes[side_numb]; }
   /*!
    * \brief Returns the node number associated with the specified side and side-node index.
    * \param side_numb Side number.
    * \param node_numb Side-node index number.
    * \return The side node number.
    */
-  int get_nodes(size_t side_numb, size_t node_numb) const { return nodes[side_numb][node_numb]; }
+  NODISCARD int get_nodes(size_t side_numb, size_t node_numb) const {
+    return nodes[side_numb][node_numb];
+  }
   /*!
    * \brief Returns the side flag for the specified side and flag index
    * \param side_numb Side number.
    * \param flag_numb Side flag index.
    * \return The side flag.
    */
-  int get_flags(size_t side_numb, size_t flag_numb) const { return flags[side_numb][flag_numb]; }
+  NODISCARD int get_flags(size_t side_numb, size_t flag_numb) const {
+    return flags[side_numb][flag_numb];
+  }
 };
 
 } // end namespace rtt_RTT_Format_Reader

@@ -79,58 +79,60 @@ public:
   explicit Analytic_Gray_Opacity(const sf_char &packed);
 
   // >>> ACCESSORS
-  const_SP_Model get_Analytic_Model() const { return analytic_model; }
+  NODISCARD const_SP_Model get_Analytic_Model() const { return analytic_model; }
 
   // >>> INTERFACE SPECIFIED BY rtt_cdi::GrayOpacity
 
   // Get an opacity.
-  double getOpacity(double temperature, double density) const override;
+  NODISCARD double getOpacity(double temperature, double density) const override;
 
   // Get an opacity field given a field of temperatures.
-  sf_double getOpacity(const sf_double &temperature, double density) const override;
+  NODISCARD sf_double getOpacity(const sf_double &temperature, double density) const override;
 
   // Get an opacity field given a field of densities.
-  sf_double getOpacity(double temperature, const sf_double &density) const override;
+  NODISCARD sf_double getOpacity(double temperature, const sf_double &density) const override;
 
   //! Query to see if data is in tabular or functional form (false).
-  bool data_in_tabular_form() const override { return false; }
+  NODISCARD bool data_in_tabular_form() const override { return false; }
 
   //! Query to get the reaction type.
-  rtt_cdi::Reaction getReactionType() const override { return reaction; }
+  NODISCARD rtt_cdi::Reaction getReactionType() const override { return reaction; }
 
   //! Query for model type.
-  rtt_cdi::Model getModelType() const override { return model; }
+  NODISCARD rtt_cdi::Model getModelType() const override { return model; }
 
   // Return the energy policy (gray).
-  inline std_string getEnergyPolicyDescriptor() const override;
+  NODISCARD inline std_string getEnergyPolicyDescriptor() const override;
 
   // Get the data description of the opacity.
-  inline std_string getDataDescriptor() const override;
+  NODISCARD inline std_string getDataDescriptor() const override;
 
   // Get the name of the associated data file.
-  inline std_string getDataFilename() const override;
+  NODISCARD inline std_string getDataFilename() const override;
 
   //! Get the temperature grid (size 0 for function-based analytic data).
-  sf_double getTemperatureGrid() const override { return sf_double(0); }
+  NODISCARD sf_double getTemperatureGrid() const override { return sf_double(0); }
 
   //! Get the density grid (size 0 for function-based analytic data).
-  sf_double getDensityGrid() const override { return sf_double(0); }
+  NODISCARD sf_double getDensityGrid() const override { return sf_double(0); }
 
   //! Get the size of the temperature grid (size 0).
-  size_t getNumTemperatures() const override { return 0; }
+  NODISCARD size_t getNumTemperatures() const override { return 0; }
 
   //! Get the size of the density grid (size 0).
-  size_t getNumDensities() const override { return 0; }
+  NODISCARD size_t getNumDensities() const override { return 0; }
 
   // Pack the Analytic_Gray_Opacity into a character string.
-  sf_char pack() const override;
+  NODISCARD sf_char pack() const override;
 
   /*!
    * \brief Returns the general opacity model type, defined in OpacityCommon.hh
    *
    * Since this is an analytic model, return 1 (rtt_cdi::ANALYTIC_TYPE)
    */
-  rtt_cdi::OpacityModelType getOpacityModelType() const override { return rtt_cdi::ANALYTIC_TYPE; }
+  NODISCARD rtt_cdi::OpacityModelType getOpacityModelType() const override {
+    return rtt_cdi::ANALYTIC_TYPE;
+  }
 };
 
 //------------------------------------------------------------------------------------------------//

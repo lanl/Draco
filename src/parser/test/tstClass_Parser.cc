@@ -20,7 +20,7 @@ using namespace rtt_parser;
 class DummyClass {
 public:
   explicit DummyClass(double const insouciance_in) noexcept : insouciance(insouciance_in) {}
-  double Get_Insouciance() const { return insouciance; }
+  NODISCARD double Get_Insouciance() const { return insouciance; }
 
 private:
   double insouciance;

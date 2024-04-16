@@ -95,8 +95,8 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
         mesh->get_cc_linkage(), mesh->get_cs_linkage(), mesh->get_cg_linkage());
 
     // check that cn_linkage is a permutation of the ref cell-node linkage
-    std::vector<unsigned>::const_iterator ref_cn_first = ref_cn_linkage.begin();
-    std::vector<unsigned>::const_iterator cn_first = cn_linkage.begin();
+    auto ref_cn_first = ref_cn_linkage.begin();
+    auto cn_first = cn_linkage.begin();
 
     unsigned fc_indx = 0;
     for (unsigned cell = 0; cell < mesh_iface.num_cells; ++cell) {
@@ -129,8 +129,8 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
     std::vector<unsigned> sn_linkage = mesh_iface.flatten_sn_linkage(mesh->get_cs_linkage());
 
     // check that sn_linkage is a permutation of the original side-node linkage
-    std::vector<unsigned>::const_iterator ref_sn_first = ref_sn_linkage.begin();
-    std::vector<unsigned>::const_iterator sn_first = sn_linkage.begin();
+    auto ref_sn_first = ref_sn_linkage.begin();
+    auto sn_first = sn_linkage.begin();
     for (unsigned side = 0; side < mesh_iface.num_sides; ++side) {
 
       // check that sn_linkage is a permutation of the original side-node linkage

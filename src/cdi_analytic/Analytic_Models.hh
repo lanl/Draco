@@ -97,23 +97,24 @@ public:
   Analytic_Opacity_Model &operator=(Analytic_Opacity_Model &&rhs) noexcept = delete;
 
   //! Interface for derived analytic opacity models.
-  virtual double calculate_opacity(double T, double rho) const = 0;
+  NODISCARD virtual double calculate_opacity(double T, double rho) const = 0;
 
   //! Interface for derived analytic opacity models.
-  virtual double calculate_opacity(double T, double rho, double /*nu*/) const {
+  NODISCARD virtual double calculate_opacity(double T, double rho, double /*nu*/) const {
     return calculate_opacity(T, rho);
   }
 
   //! Interface for derived analytic opacity models.
-  virtual double calculate_opacity(double T, double rho, double /*nu0*/, double /*nu1*/) const {
+  NODISCARD virtual double calculate_opacity(double T, double rho, double /*nu0*/,
+                                             double /*nu1*/) const {
     return calculate_opacity(T, rho);
   }
 
   //! Return parameters.
-  virtual sf_double get_parameters() const = 0;
+  NODISCARD virtual sf_double get_parameters() const = 0;
 
   //! Return a char string of packed data.
-  virtual sf_char pack() const = 0;
+  NODISCARD virtual sf_char pack() const = 0;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -142,24 +143,24 @@ public:
   explicit Constant_Analytic_Opacity_Model(const sf_char &packed);
 
   //! Calculate the opacity in units of cm^2/g.
-  double calculate_opacity(double /*T*/, double /*rho*/) const override { return sigma; }
+  NODISCARD double calculate_opacity(double /*T*/, double /*rho*/) const override { return sigma; }
 
   //! Calculate the opacity in units of cm^2/g.
-  double calculate_opacity(double /*T*/, double /*rho*/, double /*nu*/) const override {
+  NODISCARD double calculate_opacity(double /*T*/, double /*rho*/, double /*nu*/) const override {
     return sigma;
   }
 
   //! Calculate the opacity in units of cm^2/g.
-  double calculate_opacity(double /*T*/, double /*rho*/, double /*nu0*/,
-                           double /*nu1*/) const override {
+  NODISCARD double calculate_opacity(double /*T*/, double /*rho*/, double /*nu0*/,
+                                     double /*nu1*/) const override {
     return sigma;
   }
 
   //! Return the model parameters.
-  sf_double get_parameters() const override;
+  NODISCARD sf_double get_parameters() const override;
 
   //! Pack up the class for persistence.
-  sf_char pack() const override;
+  NODISCARD sf_char pack() const override;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -225,7 +226,7 @@ public:
   explicit Polynomial_Analytic_Opacity_Model(const sf_char &packed);
 
   //! Calculate the opacity in units of cm^2/g
-  double calculate_opacity(double T, double rho, double nu) const override {
+  NODISCARD double calculate_opacity(double T, double rho, double nu) const override {
     using std::pow;
     Require(c < 0.0 ? T > 0.0 : T >= 0.0);
     Require(i > 0.0 ? T > 0.0 : T >= 0.0);
@@ -245,7 +246,7 @@ public:
   }
 
   //! Calculate the opacity in units of cm^2/g
-  double calculate_opacity(double T, double rho, double nu0, double nu1) const override {
+  NODISCARD double calculate_opacity(double T, double rho, double nu0, double nu1) const override {
     Require(nu1 > nu0);
 
     //double nu = 0.5*(nu0+nu1);
@@ -254,7 +255,7 @@ public:
   }
 
   //! Calculate the opacity in units of cm^2/g
-  double calculate_opacity(double T, double rho) const override {
+  NODISCARD double calculate_opacity(double T, double rho) const override {
     using std::pow;
     Require(c < 0.0 ? T > 0.0 : T >= 0.0);
     Require(rho >= 0.0);
@@ -266,10 +267,10 @@ public:
   }
 
   //! Return the model parameters.
-  sf_double get_parameters() const override;
+  NODISCARD sf_double get_parameters() const override;
 
   //! Pack up the class for persistence.
-  sf_char pack() const override;
+  NODISCARD sf_char pack() const override;
 };
 
 //================================================================================================//
@@ -323,36 +324,38 @@ public:
   Analytic_EoS_Model &operator=(Analytic_EoS_Model &&rhs) noexcept = delete;
 
   //! Calculate the electron internal energy
-  virtual double calculate_electron_internal_energy(double T, double rho) const = 0;
+  NODISCARD virtual double calculate_electron_internal_energy(double T, double rho) const = 0;
 
   //! Calculate the electron heat capacity.
-  virtual double calculate_electron_heat_capacity(double T, double rho) const = 0;
+  NODISCARD virtual double calculate_electron_heat_capacity(double T, double rho) const = 0;
 
   //! Calculate the ion internal energy.
-  virtual double calculate_ion_internal_energy(double T, double rho) const = 0;
+  NODISCARD virtual double calculate_ion_internal_energy(double T, double rho) const = 0;
 
   //! Calculate the ion heat capacity.
-  virtual double calculate_ion_heat_capacity(double T, double rho) const = 0;
+  NODISCARD virtual double calculate_ion_heat_capacity(double T, double rho) const = 0;
 
   //! Calculate the number of electrons per ion.
-  virtual double calculate_num_free_elec_per_ion(double T, double rho) const = 0;
+  NODISCARD virtual double calculate_num_free_elec_per_ion(double T, double rho) const = 0;
 
   //! Calculate the electron thermal conductivity.
-  virtual double calculate_elec_thermal_conductivity(double T, double rho) const = 0;
+  NODISCARD virtual double calculate_elec_thermal_conductivity(double T, double rho) const = 0;
 
   /*! \brief Calculate the electron temperature given density, Electron internal energy and the
    *         starting electron temperature. */
-  virtual double calculate_elec_temperature(double rho, double Ue, double Tguess) const = 0;
+  NODISCARD virtual double calculate_elec_temperature(double rho, double Ue,
+                                                      double Tguess) const = 0;
 
   /*! \brief Calculate the ion temperature given density, Ion internal energy and the starting ion
    *         temperature. */
-  virtual double calculate_ion_temperature(double rho, double Uic, double Tguess) const = 0;
+  NODISCARD virtual double calculate_ion_temperature(double rho, double Uic,
+                                                     double Tguess) const = 0;
 
   //! Return the model parameters.
-  virtual sf_double get_parameters() const = 0;
+  NODISCARD virtual sf_double get_parameters() const = 0;
 
   //! Return a char string of packed data.
-  virtual sf_char pack() const = 0;
+  NODISCARD virtual sf_char pack() const = 0;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -408,7 +411,7 @@ public:
   explicit Polynomial_Specific_Heat_Analytic_EoS_Model(const sf_char &packed);
 
   //! Calculate the electron heat capacity in kJ/g/keV.
-  double calculate_electron_heat_capacity(double T, double Remember(rho)) const override {
+  NODISCARD double calculate_electron_heat_capacity(double T, double Remember(rho)) const override {
     Require(T >= 0.0);
     Require(rho >= 0.0);
 
@@ -420,7 +423,7 @@ public:
   }
 
   //! Calculate the ion heat capacity in kJ/g/keV.
-  double calculate_ion_heat_capacity(double T, double Remember(rho)) const override {
+  NODISCARD double calculate_ion_heat_capacity(double T, double Remember(rho)) const override {
     Require(T >= 0.0);
     Require(rho >= 0.0);
 
@@ -444,7 +447,7 @@ public:
    * \pre \c rho>=0
    * \post \c U>=0
    */
-  double calculate_electron_internal_energy(double T, double /*rho*/) const override {
+  NODISCARD double calculate_electron_internal_energy(double T, double /*rho*/) const override {
     Require(T >= 0.0);
 
     Check(c >= 0.0);
@@ -468,7 +471,7 @@ public:
    * \pre \c rho>=0
    * \post \c U>=0
    */
-  double calculate_ion_internal_energy(double T, double /*rho*/) const override {
+  NODISCARD double calculate_ion_internal_energy(double T, double /*rho*/) const override {
     Require(T >= 0.0);
 
     Check(f >= 0.0);
@@ -480,31 +483,32 @@ public:
   }
 
   //! Return 0 for the number of electrons per ion.
-  double calculate_num_free_elec_per_ion(double /*T*/, double /*rho*/) const override {
+  NODISCARD double calculate_num_free_elec_per_ion(double /*T*/, double /*rho*/) const override {
     return 0.0;
   }
 
   //! Return 0 for the electron thermal conductivity.
-  double calculate_elec_thermal_conductivity(double /*T*/, double /*rho*/) const override {
+  NODISCARD double calculate_elec_thermal_conductivity(double /*T*/,
+                                                       double /*rho*/) const override {
     return 0.0;
   }
 
   /*!
    * \brief Calculate the electron temperature given density and Electron internal energy and
    *        initial temperature. */
-  double calculate_elec_temperature(double const /*rho*/, double const Ue,
-                                    double const Te0) const override;
+  NODISCARD double calculate_elec_temperature(double const /*rho*/, double const Ue,
+                                              double const Te0) const override;
 
   /*!
    * \brief Calculate the ion temperature given density and ion internal energy and initial
    *        temperature. */
-  double calculate_ion_temperature(double const /*rho*/, double const Uic,
-                                   double const Ti0) const override;
+  NODISCARD double calculate_ion_temperature(double const /*rho*/, double const Uic,
+                                             double const Ti0) const override;
   //! Return the model parameters.
-  sf_double get_parameters() const override;
+  NODISCARD sf_double get_parameters() const override;
 
   //! Pack up the class for persistence.
-  sf_char pack() const override;
+  NODISCARD sf_char pack() const override;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -576,14 +580,14 @@ public:
   Analytic_EICoupling_Model &operator=(Analytic_EICoupling_Model &&rhs) noexcept = delete;
 
   //! Interface for derived analytic opacity models.
-  virtual double calculate_ei_coupling(double /*Te*/, double /*Ti*/, double /*rho*/, double /*w_e*/,
-                                       double /*w_i*/) const = 0;
+  NODISCARD virtual double calculate_ei_coupling(double /*Te*/, double /*Ti*/, double /*rho*/,
+                                                 double /*w_e*/, double /*w_i*/) const = 0;
 
   //! Return parameters.
-  virtual sf_double get_parameters() const = 0;
+  NODISCARD virtual sf_double get_parameters() const = 0;
 
   //! Return a char string of packed data.
-  virtual sf_char pack() const = 0;
+  NODISCARD virtual sf_char pack() const = 0;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -614,16 +618,16 @@ public:
   explicit Constant_Analytic_EICoupling_Model(const sf_char &packed);
 
   //! Calculate the ei_coupling in units of kJ/cc/keV/s.
-  double calculate_ei_coupling(double /*Te*/, double /*Ti*/, double /*rho*/, double /*w_e*/,
-                               double /*w_i*/) const override {
+  NODISCARD double calculate_ei_coupling(double /*Te*/, double /*Ti*/, double /*rho*/,
+                                         double /*w_e*/, double /*w_i*/) const override {
     return ei_coupling;
   }
 
   //! Return the model parameters.
-  sf_double get_parameters() const override;
+  NODISCARD sf_double get_parameters() const override;
 
   //! Pack up the class for persistence.
-  sf_char pack() const override;
+  NODISCARD sf_char pack() const override;
 };
 
 //================================================================================================//

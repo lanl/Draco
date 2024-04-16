@@ -125,71 +125,71 @@ public:
 
   // ACCESSORS
 
-  int expansion_order() const { return expansion_order_; }
+  NODISCARD int expansion_order() const { return expansion_order_; }
 
-  bool has_extra_starting_directions() const { return has_extra_starting_directions_; }
+  NODISCARD bool has_extra_starting_directions() const { return has_extra_starting_directions_; }
 
-  unsigned number_of_levels() const { return number_of_levels_; }
+  NODISCARD unsigned number_of_levels() const { return number_of_levels_; }
 
-  std::vector<unsigned> const &levels() const { return levels_; }
+  NODISCARD std::vector<unsigned> const &levels() const { return levels_; }
 
   //! Return the angle index for the most positively outward-directed angle on every level.
-  std::vector<unsigned> const &first_angles() const { return first_angles_; }
+  NODISCARD std::vector<unsigned> const &first_angles() const { return first_angles_; }
 
   //! Is an ordinate on the same level as the preceding ordinate?
-  bool is_dependent(unsigned const ordinate) const {
+  NODISCARD bool is_dependent(unsigned const ordinate) const {
     Require(ordinate < ordinates().size());
 
     return is_dependent_[ordinate];
   }
 
   //! Return \f$\alpha_{m+1/2}\f$ for ordinate \f$m\f$
-  std::vector<double> const &alpha() const { return alpha_; }
+  NODISCARD std::vector<double> const &alpha() const { return alpha_; }
 
   //! Return \f$P\tau_m\f$ for ordinate \f$m\f$
-  std::vector<double> const &tau() const { return tau_; }
+  NODISCARD std::vector<double> const &tau() const { return tau_; }
 
   //! Return \f$P_m\f$ for ordinate \f$m\f$
-  double psi_coefficient(unsigned ordinate_index) const;
+  NODISCARD double psi_coefficient(unsigned ordinate_index) const;
 
   //! Return \f$S_m\f$ for ordinate \f$m\f$
-  double source_coefficient(unsigned ordinate_index) const;
+  NODISCARD double source_coefficient(unsigned ordinate_index) const;
 
   //! Return \f$B_m\f$ for ordinate \f$m\f$
-  double bookkeeping_coefficient(unsigned ordinate_index) const;
+  NODISCARD double bookkeeping_coefficient(unsigned ordinate_index) const;
 
-  unsigned number_of_moments() const { return number_of_moments_; }
+  NODISCARD unsigned number_of_moments() const { return number_of_moments_; }
 
   //! Return the moment descriptions of the moment space.
-  std::vector<Moment> const &moments() const { return moments_; }
+  NODISCARD std::vector<Moment> const &moments() const { return moments_; }
 
   //! Return vector containing the number of moments for each L
-  std::vector<unsigned> const &moments_per_order() const { return moments_per_order_; }
+  NODISCARD std::vector<unsigned> const &moments_per_order() const { return moments_per_order_; }
 
   //! Return mu reflection map
-  std::vector<unsigned> const &reflect_mu() const { return reflect_mu_; }
+  NODISCARD std::vector<unsigned> const &reflect_mu() const { return reflect_mu_; }
 
   //! Return eta reflection map
-  std::vector<unsigned> const &reflect_eta() const { return reflect_eta_; }
+  NODISCARD std::vector<unsigned> const &reflect_eta() const { return reflect_eta_; }
 
   //! Return xi reflection map
-  std::vector<unsigned> const &reflect_xi() const { return reflect_xi_; }
+  NODISCARD std::vector<unsigned> const &reflect_xi() const { return reflect_xi_; }
 
-  bool check_class_invariants() const;
+  NODISCARD bool check_class_invariants() const;
 
   // SERVICES
 
   //! What was the quadrature interpolation model?
-  virtual QIM quadrature_interpolation_model() const = 0;
+  NODISCARD virtual QIM quadrature_interpolation_model() const = 0;
 
   //! Return the discrete to moment transform matrix
-  virtual std::vector<double> D() const = 0;
+  NODISCARD virtual std::vector<double> D() const = 0;
 
   //! Return the moment to discrete transform matrix
-  virtual std::vector<double> M() const = 0;
+  NODISCARD virtual std::vector<double> M() const = 0;
 
   //! Should the moment space be pruned to the specified order?
-  virtual bool prune() const {
+  NODISCARD virtual bool prune() const {
     return true;
     // By default, prune any moments beyond the user-specified expansion order.  Overridden by
     // Galerkin_Ordinate_Space::prune().
@@ -203,20 +203,20 @@ public:
 
   // STATICS
 
-  double compute_azimuthalAngle(double mu, double eta);
+  NODISCARD double compute_azimuthalAngle(double mu, double eta);
 
 protected:
   // IMPLEMENTATION
 
   void compute_moments_(Quadrature_Class quadrature_class, int sn_order);
 
-  std::vector<Moment> compute_n2lk_(Quadrature_Class quadrature_class, unsigned sn_order);
+  NODISCARD std::vector<Moment> compute_n2lk_(Quadrature_Class quadrature_class, unsigned sn_order);
 
-  virtual std::vector<Moment> compute_n2lk_1D_(Quadrature_Class, unsigned sn_order) = 0;
-  virtual std::vector<Moment> compute_n2lk_1Da_(Quadrature_Class, unsigned sn_order) = 0;
-  virtual std::vector<Moment> compute_n2lk_2D_(Quadrature_Class, unsigned sn_order) = 0;
-  virtual std::vector<Moment> compute_n2lk_2Da_(Quadrature_Class, unsigned sn_order) = 0;
-  virtual std::vector<Moment> compute_n2lk_3D_(Quadrature_Class, unsigned sn_order) = 0;
+  NODISCARD virtual std::vector<Moment> compute_n2lk_1D_(Quadrature_Class, unsigned sn_order) = 0;
+  NODISCARD virtual std::vector<Moment> compute_n2lk_1Da_(Quadrature_Class, unsigned sn_order) = 0;
+  NODISCARD virtual std::vector<Moment> compute_n2lk_2D_(Quadrature_Class, unsigned sn_order) = 0;
+  NODISCARD virtual std::vector<Moment> compute_n2lk_2Da_(Quadrature_Class, unsigned sn_order) = 0;
+  NODISCARD virtual std::vector<Moment> compute_n2lk_3D_(Quadrature_Class, unsigned sn_order) = 0;
 
 private:
   // IMPLEMENTATION

@@ -53,22 +53,22 @@ public:
 
   // ACCESSORS
 
-  bool check_class_invariants() const;
+  NODISCARD bool check_class_invariants() const;
 
   // SERVICES
 
-  QIM quadrature_interpolation_model() const override;
+  NODISCARD QIM quadrature_interpolation_model() const override;
 
   //! Return the discrete to moment transform matrix
-  std::vector<double> D() const override;
+  NODISCARD std::vector<double> D() const override;
 
   //! Return the moment to discrete transform matrix
-  std::vector<double> M() const override;
+  NODISCARD std::vector<double> M() const override;
 
   /*! Prune any moments beyond the user-specified expansion order. Such moments are included in
    *  Galerkin methods for purposes of computing the M and D matrices, but are then removed from the
    *  moment space unless the GQF interpolation model has been specified. */
-  bool prune() const override { return method_ != GQF; }
+  NODISCARD bool prune() const override { return method_ != GQF; }
 
   // STATICS
 

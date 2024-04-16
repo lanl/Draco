@@ -51,14 +51,14 @@ public:
    * \brief Returns all of the data field values for each of the sides.
    * \return The data field values for each of the sides.
    */
-  vector_vector_dbl get_data() const { return data; }
+  NODISCARD vector_vector_dbl get_data() const { return data; }
 
   /*!
    * \brief Returns all of the data field values for the specified side.
    * \param side_numb Side number.
    * \return The side data field values.
    */
-  vector_dbl get_data(size_t side_numb) const { return data[side_numb]; }
+  NODISCARD vector_dbl get_data(size_t side_numb) const { return data[side_numb]; }
 
   /*!
    * \brief Returns the specified data field value for the specified side.
@@ -66,7 +66,9 @@ public:
    * \param data_index Data field.
    * \return The side data field value.
    */
-  double get_data(size_t side_numb, size_t data_index) const { return data[side_numb][data_index]; }
+  NODISCARD double get_data(size_t side_numb, size_t data_index) const {
+    return data[side_numb][data_index];
+  }
 };
 
 } // end namespace rtt_RTT_Format_Reader

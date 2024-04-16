@@ -102,13 +102,13 @@ public:
   // ACCESSORS
 
   //! Return the number of variables in the expression.
-  unsigned number_of_variables() const { return number_of_variables_; }
+  NODISCARD unsigned number_of_variables() const { return number_of_variables_; }
 
   /*! Return the dimensions of the expression.
    *
    * The conversion factor <code> units().conv </code> is not significant.
    */
-  Unit units() const { return units_; }
+  NODISCARD Unit units() const { return units_; }
 
   // SERVICES
 
@@ -116,10 +116,10 @@ public:
   double operator()(vector<double> const &x) const;
 
   //! Indicate whether this is a constant expression.
-  virtual bool is_constant() const { return false; }
+  NODISCARD virtual bool is_constant() const { return false; }
 
   //! Indicate whether this expression is constant wrt a particular variable.
-  bool is_constant(unsigned i) const {
+  NODISCARD bool is_constant(unsigned i) const {
     Require(i < number_of_variables_);
 
     return is_constant_(i);
@@ -168,7 +168,7 @@ private:
   virtual double evaluate_(double const *const x) const = 0;
 
   //! virtual hook for is_constant(unsigned)
-  virtual bool is_constant_(unsigned) const = 0;
+  NODISCARD virtual bool is_constant_(unsigned) const = 0;
 
   //! virtual hook for write
   virtual void write_(Precedence precedence, vector<string> const &vars, ostream &) const = 0;

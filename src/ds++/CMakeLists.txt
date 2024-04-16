@@ -46,17 +46,9 @@ set(DRACO_DIAGNOSTICS
     "0"
     CACHE STRING "Diagnostics verbosity level (0-7). Default is 0.")
 # provide a constrained drop down menu for cmake-gui
-set_property(
-  CACHE DRACO_DIAGNOSTICS
-  PROPERTY STRINGS
-           0
-           1
-           2
-           3
-           4
-           5
-           6
-           7)
+# cmake-format: off
+set_property(CACHE DRACO_DIAGNOSTICS PROPERTY STRINGS 0 1 2 3 4 5 6 7)
+# cmake-format: on
 
 # Provide an enum from CMAKE_CXX_COMPILER_VERSION
 if(NOT "${CMAKE_CXX_COMPILER_VERSION}x" STREQUAL "x")

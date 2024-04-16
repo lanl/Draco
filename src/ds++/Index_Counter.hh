@@ -65,15 +65,15 @@ public:
   }
 
   // Accessors for the 1-index
-  int get_index() const { return index; }
+  NODISCARD int get_index() const { return index; }
 
   // Accessors for the N-indices
-  int get_index(unsigned d) const {
+  NODISCARD int get_index(unsigned d) const {
     Check(dimension_okay(d));
     return indices[d];
   }
 
-  std::vector<int> get_indices() const {
+  NODISCARD std::vector<int> get_indices() const {
     return std::vector<int>(indices.begin(), indices.begin() + D);
   }
 
@@ -81,7 +81,7 @@ public:
     std::copy(indices.begin(), indices.begin() + D, out);
   }
 
-  bool is_in_range() const { return in_range; }
+  NODISCARD bool is_in_range() const { return in_range; }
 
 private:
   // DATA
@@ -97,7 +97,7 @@ private:
   void increment();
   void decrement();
 
-  bool dimension_okay(size_t d) const { return d < D; }
+  NODISCARD bool dimension_okay(size_t d) const { return d < D; }
 };
 
 //------------------------------------------------------------------------------------------------//

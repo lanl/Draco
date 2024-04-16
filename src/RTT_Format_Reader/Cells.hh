@@ -53,20 +53,20 @@ public:
    * \param cell_numb Cell number.
    * \return The cell type.
    */
-  int get_type(size_t cell_numb) const { return cellType[cell_numb]; }
+  NODISCARD int get_type(size_t cell_numb) const { return cellType[cell_numb]; }
 
   /*!
    * \brief Returns all of the node numbers for each of the cells.
    * \return The node numbers for all cells.
   */
-  vector_vector_uint get_nodes() const { return nodes; }
+  NODISCARD vector_vector_uint get_nodes() const { return nodes; }
 
   /*!
    * \brief Returns all of the node numbers associated with the specified cell.
    * \param cell_numb Cell number.
    * \return The cell node numbers.
    */
-  vector_uint get_nodes(size_t cell_numb) const { return nodes[cell_numb]; }
+  NODISCARD vector_uint get_nodes(size_t cell_numb) const { return nodes[cell_numb]; }
 
   /*!
    * \brief Returns the node number associated with the specified cell and cell-node index.
@@ -74,7 +74,9 @@ public:
    * \param node_numb Cell-node index number.
    * \return The cell node number.
    */
-  int get_nodes(size_t cell_numb, size_t node_numb) const { return nodes[cell_numb][node_numb]; }
+  NODISCARD int get_nodes(size_t cell_numb, size_t node_numb) const {
+    return nodes[cell_numb][node_numb];
+  }
 
   /*!
    * \brief Returns the cell flag for the specified cell and flag index
@@ -82,7 +84,9 @@ public:
    * \param flag_numb Cell flag index.
    * \return The cell flag.
    */
-  int get_flags(size_t cell_numb, size_t flag_numb) const { return flags[cell_numb][flag_numb]; }
+  NODISCARD int get_flags(size_t cell_numb, size_t flag_numb) const {
+    return flags[cell_numb][flag_numb];
+  }
 
 private:
   void readKeyword(ifstream &meshfile);

@@ -38,9 +38,9 @@ public:
 
   // SERVICES
 
-  Parse_Table const &parse_table() const { return parse_table_; }
+  NODISCARD Parse_Table const &parse_table() const { return parse_table_; }
 
-  bool allow_exit() const { return true; }
+  NODISCARD bool allow_exit() const { return true; }
 
   void check_completeness(Token_Stream &tokens);
 

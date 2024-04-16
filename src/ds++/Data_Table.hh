@@ -50,12 +50,12 @@ public:
   //! Access operator
   constexpr inline T const &operator[](const unsigned i) const;
   //! begin iterator
-  constexpr inline const_iterator begin() const { return d_begin; }
+  NODISCARD constexpr inline const_iterator begin() const { return d_begin; }
   //! end iterator
-  constexpr inline const_iterator end() const { return d_end - 1; }
-  constexpr inline uint64_t size() const { return d_end - d_begin; }
-  constexpr inline T const &front() const;
-  constexpr inline T const &back() const;
+  NODISCARD constexpr inline const_iterator end() const { return d_end - 1; }
+  NODISCARD constexpr inline uint64_t size() const { return d_end - d_begin; }
+  NODISCARD constexpr inline T const &front() const;
+  NODISCARD constexpr inline T const &back() const;
   constexpr inline T *access();
 
 private:

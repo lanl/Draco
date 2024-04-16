@@ -47,14 +47,14 @@ public:
 
   // Accessors
 
-  double mu() const { return mu_; }
-  double eta() const { return eta_; }
-  double xi() const { return xi_; }
-  double wt() const { return wt_; }
+  NODISCARD double mu() const { return mu_; }
+  NODISCARD double eta() const { return eta_; }
+  NODISCARD double xi() const { return xi_; }
+  NODISCARD double wt() const { return wt_; }
 
   void set_wt(double const wt) { wt_ = wt; }
 
-  double const *cosines() const {
+  NODISCARD double const *cosines() const {
     // This is a little crufty, but guaranteed to work according to C++ object layout rules.
     return &mu_;
   }

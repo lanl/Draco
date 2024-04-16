@@ -10,6 +10,7 @@
 #ifndef rtt_RTT_Format_Reader_Flags_hh
 #define rtt_RTT_Format_Reader_Flags_hh
 
+#include "ds++/config.h" // defines NODISCARD
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -54,7 +55,7 @@ public:
    * \param flag Flag index.
    * \return The existence of the flag.
    */
-  bool allowed_flag(size_t flag) const {
+  NODISCARD bool allowed_flag(size_t flag) const {
     return flag_nums.end() != std::find(flag_nums.begin(), flag_nums.end(), static_cast<int>(flag));
   }
 
@@ -62,27 +63,27 @@ public:
    * \brief Returns the name of specified flag type
    * \return The Flag type name.
    */
-  string getFlagType() const { return name; }
+  NODISCARD string getFlagType() const { return name; }
 
   /*!
    * \brief Returns the flag number associated with the specified flag index.
    * \param flag Flag index.
    * \return The Flag number.
    */
-  int getFlagNumber(size_t flag) const { return flag_nums[flag]; }
+  NODISCARD int getFlagNumber(size_t flag) const { return flag_nums[flag]; }
 
   /*!
    * \brief Returns the flag name associated with the specified index.
    * \param flag Flag index.
    * \return The flag name.
    */
-  string getFlagName(size_t flag) const { return flag_names[flag]; }
+  NODISCARD string getFlagName(size_t flag) const { return flag_names[flag]; }
 
   /*!
    * \brief Returns the number of flags.
    * \return The number of flags.
    */
-  size_t getFlagSize() const { return nflags; }
+  NODISCARD size_t getFlagSize() const { return nflags; }
 };
 
 } // end namespace rtt_RTT_Format_Reader

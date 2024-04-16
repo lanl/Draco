@@ -64,32 +64,34 @@ public:
   // >>> ACCESSORS
 
   //! Get a stopping power.
-  double getEloss(const double temperature, const double density,
-                  const double partSpeed) const override;
+  NODISCARD double getEloss(const double temperature, const double density,
+                            const double partSpeed) const override;
 
   //! Query to see if data is in tabular or functional form (true)
   static constexpr bool is_data_in_tabular_form() { return true; }
 
   //! Get the material temperature grid.
-  sf_double getTemperatureGrid() const override { return temperatures; }
+  NODISCARD sf_double getTemperatureGrid() const override { return temperatures; }
 
   //! Get the material density grid.
-  sf_double getDensityGrid() const override { return densities; }
+  NODISCARD sf_double getDensityGrid() const override { return densities; }
 
   //! Get the projectile energy grid.
-  sf_double getEnergyGrid() const override { return energies; }
+  NODISCARD sf_double getEnergyGrid() const override { return energies; }
 
   //! Get the number of material temperature grid points.
-  size_t getNumTemperatures() const override { return n_temperature; }
+  NODISCARD size_t getNumTemperatures() const override { return n_temperature; }
 
   //! Get the number of material density grid points.
-  size_t getNumDensities() const override { return n_density; }
+  NODISCARD size_t getNumDensities() const override { return n_density; }
 
   //! Get the number of projectile energy grid points.
-  size_t getNumEnergies() const override { return n_energy; }
+  NODISCARD size_t getNumEnergies() const override { return n_energy; }
 
   //! Get the general eloss model type
-  rtt_cdi::CPModelType getModelType() const { return rtt_cdi::CPModelType::TABULAR_ETYPE; }
+  NODISCARD rtt_cdi::CPModelType getModelType() const {
+    return rtt_cdi::CPModelType::TABULAR_ETYPE;
+  }
 
 private:
 // Only implemented if NDI is found
@@ -128,7 +130,7 @@ private:
   sf_double stopping_data_1d{};
 
   //! 3D indexing of 1D stopping power data
-  inline double get_stopping_data(int i_e, int i_d, int i_t) const {
+  NODISCARD inline double get_stopping_data(int i_e, int i_d, int i_t) const {
     return stopping_data_1d[i_t + n_temperature * (i_d + n_density * i_e)];
   }
 };

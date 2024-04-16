@@ -48,7 +48,7 @@ public:
    * \param flag Flag number.
    * \return The existance of the cell flag type and number.
    */
-  bool allowed_flag(size_t flagtype, size_t flag) const {
+  NODISCARD bool allowed_flag(size_t flagtype, size_t flag) const {
     Insist(flagtype <= dims.get_ncell_flag_types() - 1, "Invalid cell flag type number!");
     return flagTypes[flagtype]->allowed_flag(flag);
   }
@@ -58,7 +58,7 @@ public:
    * \param flagtype Cell flag type number.
    * \return The cell flag type name.
    */
-  string get_flag_type(size_t flagtype) const {
+  NODISCARD string get_flag_type(size_t flagtype) const {
     Insist(flagtype <= dims.get_ncell_flag_types() - 1, "Invalid cell flag type number!");
     return flagTypes[flagtype]->getFlagType();
   }
@@ -72,7 +72,7 @@ public:
    * \param flag_index Cell flag index.
    * \return The cell flag number.
    */
-  int get_flag_number(size_t flagtype, size_t flag_index) const {
+  NODISCARD int get_flag_number(size_t flagtype, size_t flag_index) const {
     Insist(flagtype <= dims.get_ncell_flag_types() - 1, "Invalid cell flag type number!");
     Insist(flag_index <= flagTypes[flagtype]->getFlagSize() - 1,
            "Invalid cell flag number index number!");
@@ -84,7 +84,7 @@ public:
    * \param flagtype Cell flag type number.
    * \return The number of cell flags.
    */
-  size_t get_flag_size(size_t flagtype) const {
+  NODISCARD size_t get_flag_size(size_t flagtype) const {
     Insist(flagtype <= dims.get_ncell_flag_types() - 1, "Invalid cell flag type number!");
     return flagTypes[flagtype]->getFlagSize();
   }
@@ -96,7 +96,7 @@ public:
    * \param flag_index Cell flag index.
    * \return The cell flag name.
    */
-  string get_flag_name(size_t flagtype, size_t flag_index) const {
+  NODISCARD string get_flag_name(size_t flagtype, size_t flag_index) const {
     Insist(flagtype <= dims.get_ncell_flag_types() - 1, "Invalid cell flag type number!");
     Insist(flag_index <= flagTypes[flagtype]->getFlagSize() - 1,
            "Invalid cell flag name index number!");

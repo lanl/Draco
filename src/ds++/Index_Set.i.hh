@@ -56,7 +56,7 @@ inline bool Index_Set<D, OFFSET>::operator==(const Index_Set &rhs) const {
  */
 template <unsigned D, int OFFSET>
 template <typename IT>
-bool Index_Set<D, OFFSET>::indices_in_range(IT indices) const {
+NODISCARD bool Index_Set<D, OFFSET>::indices_in_range(IT indices) const {
 
   int dimension = 0;
   for (unsigned index = 0; index < D; ++index, ++dimension)
