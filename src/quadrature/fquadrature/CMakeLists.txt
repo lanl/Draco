@@ -35,10 +35,8 @@ add_component_library(
   NOEXPORT)
 if(WIN32)
   # The library must be installed in the master project's RUNTIME_OUTPUT_DIR
-  set_target_properties(
-    Lib_quadrature_fquadrature
-    PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${draco_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+  set_target_properties(Lib_quadrature_fquadrature
+                        PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${draco_BINARY_DIR}/${CMAKE_BUILD_TYPE})
 endif()
 
 # ------------------------------------------------------------------------------------------------ #

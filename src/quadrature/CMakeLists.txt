@@ -100,7 +100,8 @@ if(BUILD_TESTING)
       LIBRARIES rtt_quadrature_ftest # new library will have this name.
                 # --> librtt_quadrature_ftest.dll.
       TARGET_NAMES Lib_quadrature_ftest
-      DEPENDS "Lib_quadrature_test;Lib_quadrature;Lib_quadrature_fquadrature" NO_EXTERNAL_INSTALL
+      DEPENDS "Lib_quadrature_test;Lib_quadrature;Lib_quadrature_fquadrature"
+      NO_EXTERNAL_INSTALL
       CMAKE_COMMAND_LINE "${build_system_state}"
       # VERBOSE
     )

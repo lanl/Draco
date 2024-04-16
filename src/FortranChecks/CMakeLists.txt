@@ -30,10 +30,7 @@ add_component_library(
   LIBRARY_NAME FC_Derived_Type
   SOURCES "${Csources}"
   NOEXPORT)
-set_target_properties(
-  Lib_FC_Derived_Type
-  PROPERTIES
-  FOLDER FortranChecks)
+set_target_properties(Lib_FC_Derived_Type PROPERTIES FOLDER FortranChecks)
 
 # ------------------------------------------------------------------------------------------------ #
 # Build a library from Fortran sources

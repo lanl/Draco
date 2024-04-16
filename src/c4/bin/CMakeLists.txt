@@ -25,10 +25,7 @@ if(OpenMP_FOUND)
   if(DEFINED ENV{CRAY_ACCEL_TARGET}
      AND "$ENV{CRAY_ACCEL_TARGET}" MATCHES "amd"
      AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set_target_properties(
-      Exe_xthi
-      PROPERTIES
-      LINK_FLAGS "-fopenmp")
+    set_target_properties(Exe_xthi PROPERTIES LINK_FLAGS "-fopenmp")
   endif()
 endif()
 

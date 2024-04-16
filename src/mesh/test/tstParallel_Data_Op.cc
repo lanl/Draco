@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Mar 15 13:15:10 2005
  * \brief  Parallel_Data_Op test.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Topology.hh"
