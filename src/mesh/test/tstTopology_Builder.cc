@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Wed May 11 09:47:27 2005
  * \brief  Topology_Builder test.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

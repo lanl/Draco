@@ -175,6 +175,7 @@ public:
   double face_area(size_t const cell, const size_t face) const;
   double mean_chord_length(int const cell) const;
   double get_min_width(size_t cell) const;
+  // this returns dx*dy or dr*dz, not true volume for rz.
   double volume(size_t const cell) const;
   vf_double get_vertices(int const cell) const;
   vf_double get_vertices(int const cell, const uint32_t face) const;
@@ -668,7 +669,6 @@ template <int D> bool CAMR_Mesh<D>::is_refined(int const cell, uint32_t const co
 // if it is coarse, return 1 (for lower) and 2 (for upper) connection.
 template <int D> int CAMR_Mesh<D>::is_coarse(int const cell, uint32_t const face) const {
 
-  // FIXME: this works only on 2D..
   std::vector<int> opposite_face{2, 1, 4, 3, 6, 5};
 
   int result = 0;
@@ -681,19 +681,24 @@ template <int D> int CAMR_Mesh<D>::is_coarse(int const cell, uint32_t const face
     if (neighbor_cell[0] == 0) {
       // boundary.
       return 0;
+    } else if (neighbor_cell[0] == cell) {
+      // reflection bc
+      return 0;
     }
+
     int cid = neighbor_cell[0];
     if (cid < 0) {
       // neighbor is off-proc.
       // boundary.(1base), neighbor cell id.
       cid = static_cast<int>(active_size) - neighbor_cell[0];
     }
-    // list of cells across face (from cid).
+    // list of cells across face (from cid, neighbor cell).
     auto next_cell = next_cells(cid, opposite_face[face - 1]);
     //check size of next_cell to find out if cell is coarser than cid.
     if (next_cell.size() == 1)
       return result;
     else {
+      // neighbor is coarser!
       if (D == 2)
         return next_cell[0] == cell ? 1 : 2;
 
