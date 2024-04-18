@@ -386,7 +386,136 @@ void gather_vector_data(rtt_dsxx::UnitTest &ut) {
 
   if (ut.numFails == 0) {
     std::ostringstream m;
-    m << "test_gather_vector_data finished on " << rtt_c4::node();
+    m << "test_gather_variable_vector_data finished on " << rtt_c4::node();
+    PASSMSG(m.str());
+  }
+}
+
+//------------------------------------------------------------------------------------------------//
+// TEST GATHER VARIABLE DATA
+//------------------------------------------------------------------------------------------------//
+
+void gather_variable_data(rtt_dsxx::UnitTest &ut) {
+  if (rtt_c4::nodes() != 4)
+    return;
+
+  // make topology of 9 cell mesh
+  std::shared_ptr<Topology> topology = rtt_mesh_test::build_DD_Topology();
+
+  // make a comm patterns
+  std::shared_ptr<Comm_Patterns> pattern(new Comm_Patterns());
+  pattern->calc_patterns(topology);
+
+  // make the parallel data operator class
+  Parallel_Data_Operator pdop(topology);
+
+  // Make local multiplicity list
+  std::vector<size_t> local_multiplicity(topology->num_local_cells(), rtt_c4::node() + 1);
+
+  // Communicate local multiplicity lists to get multiplicity for each ghost cell
+  std::vector<size_t> ghost_multiplicity;
+  pdop.gather_ghost_cell_data(pattern, local_multiplicity, ghost_multiplicity);
+
+  // Make local data field on each processor
+  std::vector<std::vector<int>> local_field(topology->num_local_cells());
+  for (auto cell = 0; cell < topology->num_local_cells(); cell++) {
+    local_field[cell] = std::vector<int>(local_multiplicity[cell]);
+    for (size_t m = 0; m < local_multiplicity[cell]; m++) {
+      local_field[cell][m] = 100 * rtt_c4::node() + 10 * (cell + 1) + static_cast<int>(m);
+    }
+  }
+
+  // Make buffer for ghost cell data
+  std::vector<std::vector<int>> ghost_field;
+
+  // Communicate data
+  pdop.gather_ghost_cell_data(pattern, local_field, ghost_field, local_multiplicity,
+                              ghost_multiplicity);
+
+  FAIL_IF_NOT(ghost_field.size() == topology->num_ghost_cells());
+
+  // Check that every ghost value has the right processor, cell, and multiplicity information
+  for (size_t gc = 0; gc < topology->num_ghost_cells(); gc++) {
+    const int ghost_rank = pdop.get_remote_proc(gc + 1);
+    const int ghost_local_cell = pdop.get_remote_local_cell(gc + 1);
+    for (size_t m = 0; m < ghost_multiplicity[gc]; m++) {
+      const int compare_field = 100 * ghost_rank + 10 * ghost_local_cell + static_cast<int>(m);
+      FAIL_IF_NOT(ghost_field[gc][m] == compare_field);
+    }
+  }
+
+  if (ut.numFails == 0) {
+    std::ostringstream m;
+    m << "test_gather_variable_data finished on " << rtt_c4::node();
+    PASSMSG(m.str());
+  }
+}
+
+//------------------------------------------------------------------------------------------------//
+// TEST GATHER VARIABLE VECTOR DATA
+//------------------------------------------------------------------------------------------------//
+
+void gather_variable_vector_data(rtt_dsxx::UnitTest &ut) {
+  if (rtt_c4::nodes() != 4)
+    return;
+
+  // make topology of 9 cell mesh
+  std::shared_ptr<Topology> topology = rtt_mesh_test::build_DD_Topology();
+
+  // make a comm patterns
+  std::shared_ptr<Comm_Patterns> pattern(new Comm_Patterns());
+  pattern->calc_patterns(topology);
+
+  // make the parallel data operator class
+  Parallel_Data_Operator pdop(topology);
+
+  // Make local multiplicity list
+  std::vector<size_t> local_multiplicity(topology->num_local_cells(), rtt_c4::node() + 1);
+
+  // Communicate local multiplicity lists to get multiplicity for each ghost cell
+  std::vector<size_t> ghost_multiplicity;
+  pdop.gather_ghost_cell_data(pattern, local_multiplicity, ghost_multiplicity);
+
+  // Fixed length vector size on top of per-cell multiplicity
+  const int Nv = 5;
+
+  // Make local data field on each processor
+  std::vector<std::vector<std::vector<int>>> local_field(topology->num_local_cells());
+  for (auto cell = 0; cell < topology->num_local_cells(); cell++) {
+    local_field[cell] = std::vector<std::vector<int>>(local_multiplicity[cell]);
+    for (size_t m = 0; m < local_multiplicity[cell]; m++) {
+      local_field[cell][m] = std::vector<int>(Nv);
+      for (int n = 0; n < Nv; n++) {
+        local_field[cell][m][n] =
+            1000 * rtt_c4::node() + 100 * (cell + 1) + 10 * static_cast<int>(m) + n;
+      }
+    }
+  }
+
+  // Make buffer for ghost cell data
+  std::vector<std::vector<std::vector<int>>> ghost_field;
+
+  // Communicate data
+  pdop.gather_ghost_cell_data(pattern, local_field, ghost_field, local_multiplicity,
+                              ghost_multiplicity, Nv);
+  FAIL_IF_NOT(ghost_field.size() == topology->num_ghost_cells());
+
+  // Check that every ghost value has the right processor, cell, and multiplicity information
+  for (size_t gc = 0; gc < topology->num_ghost_cells(); gc++) {
+    const int ghost_rank = pdop.get_remote_proc(gc + 1);
+    const int ghost_local_cell = pdop.get_remote_local_cell(gc + 1);
+    for (size_t m = 0; m < ghost_multiplicity[gc]; m++) {
+      for (int n = 0; n < Nv; n++) {
+        const int compare_field =
+            1000 * ghost_rank + 100 * ghost_local_cell + 10 * static_cast<int>(m) + n;
+        FAIL_IF(ghost_field[gc][m][n] != compare_field);
+      }
+    }
+  }
+
+  if (ut.numFails == 0) {
+    std::ostringstream m;
+    m << "test_gather_variable_data finished on " << rtt_c4::node();
     PASSMSG(m.str());
   }
 }
@@ -402,6 +531,8 @@ int main(int argc, char *argv[]) {
     // test gathers
     gather(ut);
     gather_vector_data(ut);
+    gather_variable_data(ut);
+    gather_variable_vector_data(ut);
   }
   UT_EPILOG(ut);
 }
