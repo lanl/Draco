@@ -33,14 +33,12 @@ set(pkg_config_h "${header_prefix_binary}/rng/config.h")
 # ------------------------------------------------------------------------------------------------ #
 # Source files
 # ------------------------------------------------------------------------------------------------ #
-file(
-  GLOB sources
-  RELATIVE "${PROJECT_SOURCE_DIR}"
-  *.cc *.c)
-file(
-  GLOB headers
-  RELATIVE "${PROJECT_SOURCE_DIR}"
-  *.hh *.h *.hpp)
+set(sources Random_Inline.cc Subrandom_Generator.cc)
+set(headers Counter_RNG.hh Random_Inline.hh Rnd_Control_Inline.hh Subrandom_Generator.hh)
+if(TARGET GSL::gsl)
+  list(APPEND sources LC_Subrandom_Generator.cc)
+  list(APPEND headers LC_Subrandom_Generator.hh)
+endif()
 
 # prefix header files with appropriate paths (build vs install).
 foreach(file ${headers})
@@ -51,10 +49,12 @@ list(APPEND headers_public "${pkg_config_h}")
 # ------------------------------------------------------------------------------------------------ #
 # Build package library
 # ------------------------------------------------------------------------------------------------ #
+set(deps Lib_dsxx)
 if(HAVE_GPU AND USE_GPU)
-  set(deps Lib_dsxx Lib_device GSL::gsl)
-else()
-  set(deps Lib_dsxx GSL::gsl)
+  list(APPEND deps Lib_device)
+endif()
+if(TARGET GSL::gsl)
+  list(APPEND deps GSL::gsl)
 endif()
 
 # remove 'src/device' when 'device/CMakeFiles.txt' is updated?
