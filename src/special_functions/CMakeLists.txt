@@ -8,42 +8,46 @@
 cmake_minimum_required(VERSION 3.21.0)
 project(special_functions CXX)
 
-# ------------------------------------------------------------------------------------------------ #
-# Source files
-# ------------------------------------------------------------------------------------------------ #
-file(GLOB template_implementations *.t.hh *.i.hh)
-file(GLOB sources *.cc)
-file(GLOB explicit_instantiations *_pt.cc)
-file(GLOB headers *.hh)
-list(REMOVE_ITEM headers ${template_implementations})
+if(TARGET GSL::gsl)
 
-# ------------------------------------------------------------------------------------------------ #
-# Build package library
-# ------------------------------------------------------------------------------------------------ #
-add_component_library(
-  TARGET Lib_special_functions
-  TARGET_DEPS "Lib_units;Lib_roots;GSL::gsl"
-  LIBRARY_NAME ${PROJECT_NAME}
-  HEADERS "${headers}"
-  SOURCES "${sources}")
+  # ---------------------------------------------------------------------------------------------- #
+  # Source files
+  # ---------------------------------------------------------------------------------------------- #
+  file(GLOB template_implementations *.t.hh *.i.hh)
+  file(GLOB sources *.cc)
+  file(GLOB explicit_instantiations *_pt.cc)
+  file(GLOB headers *.hh)
+  list(REMOVE_ITEM headers ${template_implementations})
 
-# ------------------------------------------------------------------------------------------------ #
-# Installation instructions
-# ------------------------------------------------------------------------------------------------ #
-install(FILES ${headers} ${template_implementations}
-        DESTINATION ${DBSCFGDIR}include/special_functions)
+  # ---------------------------------------------------------------------------------------------- #
+  # Build package library
+  # ---------------------------------------------------------------------------------------------- #
+  add_component_library(
+    TARGET Lib_special_functions
+    TARGET_DEPS "Lib_units;Lib_roots;GSL::gsl"
+    LIBRARY_NAME ${PROJECT_NAME}
+    HEADERS "${headers}"
+    SOURCES "${sources}")
 
-# ------------------------------------------------------------------------------------------------ #
-# Unit tests
-# ------------------------------------------------------------------------------------------------ #
-if(BUILD_TESTING)
-  add_subdirectory(test)
-endif()
+  # ---------------------------------------------------------------------------------------------- #
+  # Installation instructions
+  # ---------------------------------------------------------------------------------------------- #
+  install(FILES ${headers} ${template_implementations}
+          DESTINATION ${DBSCFGDIR}include/special_functions)
 
-# ------------------------------------------------------------------------------------------------ #
-# Autodoc
-# ------------------------------------------------------------------------------------------------ #
-process_autodoc_pages()
+  # ---------------------------------------------------------------------------------------------- #
+  # Unit tests
+  # ---------------------------------------------------------------------------------------------- #
+  if(BUILD_TESTING)
+    add_subdirectory(test)
+  endif()
+
+  # ---------------------------------------------------------------------------------------------- #
+  # Autodoc
+  # ---------------------------------------------------------------------------------------------- #
+  process_autodoc_pages()
+
+endif(TARGET GSL::gsl)
 
 # ------------------------------------------------------------------------------------------------ #
 # End special_functions/CMakeLists.txt

@@ -25,7 +25,7 @@
 #include <sys/param.h> // MAXPATHLEN
 #endif
 
-#endif // C++17?
+#endif // C++17
 
 #if defined UNIX || defined MINGW
 #include <cstring>  // strncpy()

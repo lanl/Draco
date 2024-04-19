@@ -24,15 +24,18 @@ endif()
 # ------------------------------------------------------------------------------------------------ #
 # Source files
 # ------------------------------------------------------------------------------------------------ #
-set(test_sources
-    ${PROJECT_SOURCE_DIR}/tstRnd_Control_Inline.cc ${PROJECT_SOURCE_DIR}/tstSubrandom_Sequence.cc
-    ${PROJECT_SOURCE_DIR}/tstCounter_RNG.cc)
+set(test_sources ${PROJECT_SOURCE_DIR}/tstRnd_Control_Inline.cc
+                 ${PROJECT_SOURCE_DIR}/tstCounter_RNG.cc)
 
 # Random123 unit tests (these tests have special PASS/FAIL REGEX conditions)
 set(random123_unit_tests
     ${PROJECT_SOURCE_DIR}/ut_M128.cpp ${PROJECT_SOURCE_DIR}/ut_aes.cpp
     ${PROJECT_SOURCE_DIR}/ut_ars.c ${PROJECT_SOURCE_DIR}/ut_carray.cpp
-    ${PROJECT_SOURCE_DIR}/ut_gsl.c ${PROJECT_SOURCE_DIR}/ut_uniform.cpp)
+    ${PROJECT_SOURCE_DIR}/ut_uniform.cpp)
+if(TARGET GSL::gsl)
+  list(APPEND test_sources ${PROJECT_SOURCE_DIR}/tstSubrandom_Sequence.cc)
+  list(APPEND random123_unit_tests ${PROJECT_SOURCE_DIR}/ut_gsl.c)
+endif()
 
 # [2020-08-21 KT] The code in ut_gsl.c is not valid C++.  Because this test is a mix of C and C++,
 # it causes issues. Most compilers are happy to compile this code with C. However, LLVM clang and

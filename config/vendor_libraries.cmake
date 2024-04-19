@@ -88,16 +88,14 @@ function(setupGSL)
       endif()
     endif()
 
-    # * Module mode.
-    #
-    # Locate GSL by using the value of GSL_ROOT_DIR or by looking in standard locations. We add
-    # 'REQUIRED' here because if this fails, then we abort the built.
-    find_package(GSL REQUIRED QUIET)
+    # Module mode.
+    find_package(GSL QUIET)
 
   endif()
 
   # Print a report
   if(TARGET GSL::gsl)
+    mark_as_advanced(GSL_FOUND)
     if(TARGET GSL::gsl AND NOT GSL_LIBRARY)
       foreach(config NOCONFIG DEBUG RELEASE RELWITHDEBINFO)
         get_target_property(tmp GSL::gsl IMPORTED_LOCATION_${config})
