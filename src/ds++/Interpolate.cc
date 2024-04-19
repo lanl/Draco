@@ -9,13 +9,11 @@
 
 #include "ds++/Interpolate.hh"
 
-#ifdef __cplusplus
-#if __cplusplus > 201402L
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 namespace rtt_dsxx::interpolate {
 #else
 namespace rtt_dsxx {
 namespace interpolate {
-#endif
 #endif
 
 //------------------------------------------------------------------------------------------------//
@@ -149,13 +147,11 @@ double lagrange_1d(const std::vector<double> &data, const std::vector<double> &x
   return val;
 }
 
-#ifdef __cplusplus
-#if __cplusplus > 201402L
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 } // namespace rtt_dsxx::interpolate
 #else
 } // namespace interpolate
 } // namespace rtt_dsxx
-#endif
 #endif
 
 //------------------------------------------------------------------------------------------------//

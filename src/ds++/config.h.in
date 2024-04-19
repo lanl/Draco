@@ -333,12 +333,10 @@
  * * 201703L (C++17)
  * * 202002L (C++20)
  */
-#ifdef __cplusplus
-#if __cplusplus > 201402L
+#if defined(__cplusplus) && __cplusplus > 201402L
 #define NODISCARD [[nodiscard]]
 #else
 #define NODISCARD
-#endif
 #endif
 
 #endif /* __dsxx_config_h__ */

@@ -12,13 +12,11 @@
 #include "ds++/fpe_trap.hh"
 #include <sstream>
 
-#ifdef __cplusplus
-#if __cplusplus > 201402L
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 namespace rtt_diagnostics::Diagnostics {
 #else
 namespace rtt_diagnostics {
 namespace Diagnostics {
-#endif
 #endif
 
 //------------------------------------------------------------------------------------------------//
@@ -30,13 +28,11 @@ std::map<std::string, double> doubles;
 std::map<std::string, std::vector<int>> vec_integers;
 std::map<std::string, std::vector<double>> vec_doubles;
 
-#ifdef __cplusplus
-#if __cplusplus > 201402L
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 } // end namespace rtt_diagnostics::Diagnostics
 #else
 } // end namespace Diagnostics
 } // end namespace rtt_diagnostics
-#endif
 #endif
 
 //------------------------------------------------------------------------------------------------//
