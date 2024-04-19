@@ -34,7 +34,8 @@ set(pkg_config_h "${header_prefix_binary}/rng/config.h")
 # Source files
 # ------------------------------------------------------------------------------------------------ #
 set(sources Random_Inline.cc Subrandom_Generator.cc)
-set(headers Counter_RNG.hh Random_Inline.hh Rnd_Control_Inline.hh Subrandom_Generator.hh)
+set(headers Counter_RNG.hh Random_Inline.hh Rnd_Control_Inline.hh Subrandom_Generator.hh
+            uniform.hpp)
 if(TARGET GSL::gsl)
   list(APPEND sources LC_Subrandom_Generator.cc)
   list(APPEND headers LC_Subrandom_Generator.hh)
