@@ -71,14 +71,14 @@ ccs1_deb_gcc_1220_deploy:
     DRACO_ENV: gcc1220
     SITE_ID: ccscs1
 
-ccs3_deb_gcc_cxx17_deploy:
+ccs1_deb_gcc_cxx17_deploy:
   tags:
     - CCSCS1-setuid-shared
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs3
+    SITE_ID: ccscs1
     EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=17
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-cxx17
 

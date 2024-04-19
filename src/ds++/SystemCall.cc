@@ -10,20 +10,30 @@
 #include "Assert.hh"
 
 #include <cerrno>  // errno
-#include <cstdio>  // remove()
-#include <cstdlib> // _fullpath
-#include <cstring> // strncpy()
-#if defined UNIX || defined MINGW
-#include <sys/param.h> // MAXPATHLEN
-#include <unistd.h>    // gethostname
-#endif
+
+#if defined(__cplusplus) & __cplusplus > 201402L // C++17 or newer
+#include <filesystem>
+#else // older than C++17
+
 #ifdef _MSC_VER
-#include <direct.h>  // _getcwd
-#include <process.h> // _getpid
+#include <cstdlib>  // _fullpath
+#include <direct.h> // _getcwd
 #include <sstream>
 #endif
-#include <array>
-#include <iostream>
+#if defined UNIX || defined MINGW
+#include <cstdio>      // remove()
+#include <sys/param.h> // MAXPATHLEN
+#endif
+
+#endif // C++17?
+
+#if defined UNIX || defined MINGW
+#include <cstring>  // strncpy()
+#include <unistd.h> // gethostname
+#endif
+#ifdef _MSC_VER
+#include <process.h> // _getpid
+#endif
 
 namespace rtt_dsxx {
 
@@ -34,17 +44,9 @@ namespace rtt_dsxx {
 //------------------------------------------------------------------------------------------------//
 /*! \brief Wrapper for system dependent hostname call.
  *
- * Windows:
- *     \c HOST_NAME_MAX set to \c MAX_COMPUTERNAME_LENGTH in config.h
- *
- * Catamount systems:
- *     \c HOST_NAME_MAX hard coded by CMake in config.h
- *
- * Unix/Linux:
- *     \c HOST_NAME_MAX loaded from \<climit\>
- *
- * Mac OSX:
- *     \c HOST_NAME_MAX set to \c _POSIX_HOST_NAME_MAX in config.h
+ * * Windows: \c HOST_NAME_MAX set to \c MAX_COMPUTERNAME_LENGTH in config.h
+ * * Unix/Linux: \c HOST_NAME_MAX loaded from \<climit\>
+ * * Mac OSX: \c HOST_NAME_MAX set to \c _POSIX_HOST_NAME_MAX in config.h
  *
  * \sa sec_HOST_NAME_MAX
  */
@@ -98,12 +100,16 @@ int draco_getpid() {
 } // draco_pid
 
 //------------------------------------------------------------------------------------------------//
-/*! \brief Wrapper for system dependent getcwd call.
+/*! \brief Wrapper for system dependent getcwd call.  Identify the current working directory.
  *
- *  This should always return a trailing directory separator.
- */
+ *  This should always return a trailing directory separator. */
 std::string draco_getcwd() {
-// Identify the current working directory.
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17 or newer
+
+  return std::filesystem::current_path().generic_string() + rtt_dsxx::dirSep;
+
+#else // C++14 or older
+
 #ifdef _MSC_VER
   char *buffer;
   Insist((buffer = _getcwd(nullptr, 0)) != nullptr,
@@ -116,13 +122,14 @@ std::string draco_getcwd() {
   Insist(getcwd(&curr_path[0], MAXPATHLEN) != nullptr,
          "getcwd failed: " + std::string(strerror(errno)));
   std::string cwd(curr_path.data());
-#endif
+#endif // MSC?
 
   // Ensure that the last character is a directory separator.
   if (cwd.at(cwd.length() - 1) != rtt_dsxx::dirSep)
     cwd = cwd + rtt_dsxx::dirSep;
-
   return cwd;
+
+#endif // C++17 or newer
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -132,6 +139,9 @@ std::string draco_getcwd() {
  *    http://msdn.microsoft.com/en-us/library/14h5k7ff%28v=vs.80%29.aspx
  * Linux
  *    http://en.wikipedia.org/wiki/Stat_%28system_call%29
+ *
+ * \todo Once C++17 is the minimum language standard for Draco, mark this function as
+ *       [[deprecated]].  Use C++17's filesystem functions instead of this cumbersome structure.
  */
 #ifdef _MSC_VER
 draco_getstat::draco_getstat(std::string const &fqName) {
@@ -218,6 +228,12 @@ bool draco_getstat::has_permission_bit(int mask) {
 //------------------------------------------------------------------------------------------------//
 //! Wrapper for system dependent realpath call.
 std::string draco_getrealpath(std::string const &path) {
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17 or newer
+
+  return std::filesystem::canonical(path).generic_string() + rtt_dsxx::dirSep;
+
+#else // C++14 or older
+
   std::array<char, MAXPATHLEN> buffer{}; // _MAX_PATH
   buffer.fill('a');
 #ifdef _MSC_VER
@@ -233,6 +249,8 @@ std::string draco_getrealpath(std::string const &path) {
   }
 #endif
   return retVal;
+
+#endif
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -241,14 +259,22 @@ std::string draco_getrealpath(std::string const &path) {
  *
  * \sa  boost::filesystem::create_directories("/tmp/a/b/c");
  *
- * \todo Do we need a permissions argument?
+ * \todo Do we need a permissions argument?  For now, just create directories with 0700 permission.
  */
 void draco_mkdir(std::string const &path) {
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17 or newer
+
+  namespace fs = std::filesystem;
+  fs::create_directories(path);
+  fs::permissions(path, fs::perms::owner_all, fs::perm_options::replace);
+
+#else // C++14 or older
+
 #ifdef _MSC_VER
   draco_getstat dirInfo(path);
   if (!dirInfo.isdir()) {
-    /*! \note If path contains the location of a directory, it cannot contain a trailing
-     * backslash. If it does, -1 will be returned and errno will be set to ENOENT. */
+    /*! \note If path contains the location of a directory, it cannot contain a trailing backslash.
+     *        If it does, -1 will be returned and errno will be set to ENOENT. */
     std::string clean_fqName;
     if (path[path.size() - 1] == rtt_dsxx::WinDirSep ||
         path[path.size() - 1] == rtt_dsxx::UnixDirSep)
@@ -261,12 +287,12 @@ void draco_mkdir(std::string const &path) {
     if (errorCode == -1) {
       switch (errno) {
       case EEXIST:
-        Insist(errno != EEXIST, "ERROR: Unable to create directory," + clean_fqName +
-                                    ", because it already exists.");
+        Insist(errno != EEXIST, "ERROR: Unable to create directory," + clean_fqName + ", because" +
+                                    " it already exists.");
         break;
       case ENOENT:
-        Insist(errno != ENOENT, "ERROR: Unable to create directory," + clean_fqName +
-                                    ", because the path is not found.");
+        Insist(errno != ENOENT, "ERROR: Unable to create directory," + clean_fqName + ", because " +
+                                    "the path is not found.");
         break;
       default:
         /* should never get here */
@@ -277,6 +303,7 @@ void draco_mkdir(std::string const &path) {
 #else
   mkdir(path.c_str(), 0700);
 // S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
+#endif
 #endif
 }
 
@@ -293,10 +320,15 @@ void draco_mkdir(std::string const &path) {
  *
  * Sample implementation for Unix
  * http://www.linuxquestions.org/questions/programming-9/deleting-a-directory-using-c-in-linux-248696/
- *
- * Consider using Boost.FileSystem
  */
 void draco_remove(std::string const &dirpath) {
+
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17 or newer
+
+  std::filesystem::remove_all(dirpath);
+
+#else // C++14 or older
+
   // remove() works for all unix items but only for files (not directories) for windows.
 #ifdef _MSC_VER
   if (draco_getstat(dirpath).isdir()) {
@@ -322,6 +354,8 @@ void draco_remove(std::string const &dirpath) {
   }
 #else
   remove(dirpath.c_str());
+#endif
+
 #endif
   // If the file still exists this check will fail.
   Ensure(!draco_getstat(dirpath).valid());

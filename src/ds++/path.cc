@@ -6,10 +6,6 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "path.hh"
-#include <cerrno>     // errno
-#include <cstdlib>    // realpath
-#include <cstring>    // strerror
-#include <sys/stat.h> // stat
 
 namespace rtt_dsxx {
 
@@ -21,14 +17,28 @@ namespace rtt_dsxx {
  * 3. If we were not able to get the file attributes.  This may mean that we don't have permission
  *    to access the folder which contains this file. If you need to do that level of checking,
  *    lookup the return values of stat which will give you more details on why stat failed.
+ *
+ * \todo add attribute [[deprecated]] once C++17 is minimum supported language standard.
  */
 bool fileExists(std::string const &strFilename) {
+#if defined(__cplusplus) & __cplusplus > 201402L // C++17 or newer
+  return std::filesystem::exists(strFilename);
+#else // older than C++17
   return draco_getstat(strFilename).errorCode() == 0;
+#endif
 }
 
 //------------------------------------------------------------------------------------------------//
-//! Does the 'path' represent a directory?
+/*! \brief Does the 'path' represent a directory?
+*
+* * https://en.cppreference.com/w/cpp/filesystem/is_directory
+*
+* \todo add attribute [[deprecated]] once C++17 is minimum supported language standard.
+*/
 bool isDirectory(std::string const &path) {
+#if defined(__cplusplus) & __cplusplus > 201402L // C++17 or newer
+  return std::filesystem::is_directory(path);
+#else // older than C++17
   // If the path does not exist, then it cannot be a directory.
   if (!fileExists(path))
     return false;
@@ -38,6 +48,7 @@ bool isDirectory(std::string const &path) {
   Check(fileStatus.valid());
   retVal = fileStatus.isdir();
   return retVal;
+#endif
 }
 
 //------------------------------------------------------------------------------------------------//

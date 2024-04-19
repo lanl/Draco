@@ -2,9 +2,7 @@
 /*!
  * \file   ds++/path.hh
  * \brief  Encapsulate path information (path separator, etc.)
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- *
- * \bug Consider replacing path.cc and path.hh with C++17 filesystem */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_path_hh
@@ -13,9 +11,14 @@
 #include "Assert.hh"
 #include "SystemCall.hh"
 #include <iostream>
+
+#if defined(__cplusplus) & __cplusplus > 201402L // C++17 or newer
+#include <filesystem>
+#else
 #if defined UNIX || defined MINGW
 #include <dirent.h>   // struct DIR
 #include <sys/stat.h> // struct stat; S_ISDIR
+#endif
 #endif
 
 namespace rtt_dsxx {
@@ -74,25 +77,34 @@ public:
  *
  * Sample implementation for Unix
  * http://www.linuxquestions.org/questions/programming-9/deleting-a-directory-using-c-in-linux-248696/
- *
- * Consider using Boost.FileSystem
- * \c boost::filesystem::remove_all(path);
- *
- * \code
- #include "boost/filesystem.hpp"
- #include <iostream>
- using namespace boost::filesystem;
- int main()
- {
- path current_dir("."); //
- for (recursive_directory_iterator iter(current_dir), end; iter != end; ++iter)
- std::cout << iter->path() << "\n";
- return 0;
- }
- * \endcode
  */
 template <typename T>
 void draco_walk_directory_tree(std::string const &dirname, T const &myOperator) {
+
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
+
+  namespace fs = std::filesystem;
+
+  // If file does not exist, report and continue.
+  if (!fs::exists(dirname)) {
+    std::cout << "File/directory \"" << dirname << "\"does not exist.  Continuing..." << std::endl;
+    return;
+  }
+
+  if (fs::is_directory(dirname)) {
+    // Loop over all entries in the current directory.
+    for (auto const &dir_entry : fs::directory_iterator(dirname)) {
+      if (fs::is_directory(dir_entry.path()))
+        draco_walk_directory_tree(dir_entry.path().generic_string(), myOperator);
+      else
+        myOperator(dir_entry.path().generic_string());
+    }
+  }
+  // Perform action on the top level entry
+  myOperator(dirname);
+
+#else // prior to C++17
+
   // If file does not exist, report and continue.
   if (!fileExists(dirname)) {
     std::cout << "File/directory \"" << dirname << "\"does not exist.  Continuing..." << std::endl;
@@ -144,7 +156,6 @@ void draco_walk_directory_tree(std::string const &dirname, T const &myOperator) 
   }
 
   // Perform action on the top level entry
-
   myOperator(d_name);
 
 #else
@@ -184,8 +195,8 @@ void draco_walk_directory_tree(std::string const &dirname, T const &myOperator) 
   // Perform action on the top level entry
   myOperator(dirname);
 
-#endif
-
+#endif // MSVC
+#endif // C++17
   return;
 }
 
@@ -197,7 +208,7 @@ void draco_dir_print(std::string const &path);
 
 } // end namespace rtt_dsxx
 
-#endif // rtt_dsxx_path_hh
+#endif
 
 //------------------------------------------------------------------------------------------------//
 // end of path.hh
