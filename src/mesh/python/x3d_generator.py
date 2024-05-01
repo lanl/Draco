@@ -3,7 +3,7 @@
 # file  src/mesh/python/x3d_generator.py
 # date  Monday, Jul 19, 2021, 12:14 pm
 # brief This script generates X3D mesh files from a mesh object (assumed to have certain data).
-# note  Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
+# note  Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import mesh_types
 import numpy as np
@@ -39,6 +39,8 @@ parser.add_argument('--rnd_seed', type=int, default=1,
 parser.add_argument('--reg_ids', type=int, nargs='+', default=[], help='List of region ids.')
 parser.add_argument('--reg_bnd_per_dim', type=float, nargs='+', default=[],
                     help='Bounds per dimension of region.')
+parser.add_argument('--tri_cells', type=int, nargs='+', default=[], help='List of cells to be'
+                    ' triangulated.')
 
 # -- parse arguments from command line
 args = parser.parse_args()
@@ -62,7 +64,9 @@ assert (len(args.reg_bnd_per_dim) == 2 * ndim * len(args.reg_ids)), \
 bnd_per_dim = [[args.bnd_per_dim[2 * i], args.bnd_per_dim[2 * i + 1]] for i in range(ndim)]
 
 # -- instantiate the class for the mesh type selected
-if args.mesh_type in ['orth_1d_mesh', 'orth_2d_mesh', 'orth_3d_mesh', 'fcc_3d_mesh']:
+if args.mesh_type in ['orth_2d_mesh']:
+    mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim, args.tri_cells)
+if args.mesh_type in ['orth_1d_mesh', 'orth_3d_mesh', 'fcc_3d_mesh']:
     mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim)
 elif args.mesh_type in ['vor_2d_mesh']:
     mesh = mesh_type_dict[args.mesh_type](bnd_per_dim, args.num_per_dim)

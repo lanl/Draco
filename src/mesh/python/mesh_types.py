@@ -3,7 +3,7 @@
 # file  src/mesh/python/mesh_types.py
 # date  Monday, Jul 19, 2021, 12:14 pm
 # brief This script provides mesh classes that calculate and contain unstructred mesh data.
-# note  Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
+# note  Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import numpy as np
 
@@ -99,9 +99,10 @@ class orth_2d_mesh(base_mesh):
     Class for orthogonally structured 2D mesh data.
     This class generates an orthogonally structured mesh in an unstructured
     format suitable for creating unstructured-mesh input files.
+    Optionally triangularlize the cell list.
     '''
 
-    def __init__(self, bounds_per_dim, num_cells_per_dim):
+    def __init__(self, bounds_per_dim, num_cells_per_dim, triangularize_list=[]):
 
         # -- short-cuts
         nx = num_cells_per_dim[0]
@@ -129,35 +130,75 @@ class orth_2d_mesh(base_mesh):
                 self.coordinates_per_node[node, 1] = grid_per_dim[1][j]
 
         # -- set total number of cells and faces
-        num_cells = nx * ny
-        self.num_cells = num_cells
-        self.num_faces = 4 * num_cells
+        num_cells_original = nx * ny
+        self.num_cells = num_cells_original + len(triangularize_list)
+        self.num_faces = 4 * num_cells_original + 2*len(triangularize_list)
 
         # -- constants for this mesh
-        self.num_faces_per_cell = 4 * np.ones((num_cells), dtype=int)
-        self.num_nodes_per_face = 2 * np.ones((4 * num_cells), dtype=int)
+        self.num_faces_per_cell = 4 * np.ones((self.num_cells), dtype=int)
+        self.num_nodes_per_face = 2 * np.ones((self.num_faces), dtype=int)
+        for cell in range(self.num_cells):
+            if (cell in triangularize_list):
+                self.num_faces_per_cell[cell] = 3
+            if (cell >= num_cells_original):
+                self.num_faces_per_cell[cell] = 3
 
-        # -- set nodes per face and faces per cell
-        self.faces_per_cell = np.zeros((num_cells, 4), dtype=int)
-        self.nodes_per_face = np.zeros((4 * num_cells, 2), dtype=int)
+        # -- set nodes per face and faces per cell for original cell list
+        self.faces_per_cell = [[]]*self.num_cells
+        self.nodes_per_face = np.zeros((self.num_faces, 2), dtype=int)
+        face_count = 0
         for j in range(ny):
             for i in range(nx):
                 # -- cell index
                 cell = i + nx * j
                 # -- faces per cell
-                self.faces_per_cell[cell, 0] = 4 * cell
-                self.faces_per_cell[cell, 1] = 4 * cell + 1
-                self.faces_per_cell[cell, 2] = 4 * cell + 2
-                self.faces_per_cell[cell, 3] = 4 * cell + 3
-                # -- nodes per face (per cell)
-                self.nodes_per_face[4 * cell, 0] = i + j * (nx + 1)
-                self.nodes_per_face[4 * cell, 1] = i + 1 + j * (nx + 1)
-                self.nodes_per_face[4 * cell + 1, 0] = i + 1 + j * (nx + 1)
-                self.nodes_per_face[4 * cell + 1, 1] = i + 1 + (j + 1) * (nx + 1)
-                self.nodes_per_face[4 * cell + 2, 0] = i + 1 + (j + 1) * (nx + 1)
-                self.nodes_per_face[4 * cell + 2, 1] = i + (j + 1) * (nx + 1)
-                self.nodes_per_face[4 * cell + 3, 0] = i + (j + 1) * (nx + 1)
-                self.nodes_per_face[4 * cell + 3, 1] = i + j * (nx + 1)
+                if (cell in triangularize_list):
+                    self.faces_per_cell[cell] = [0, 0, 0]
+                    self.faces_per_cell[cell][0] = face_count
+                    self.faces_per_cell[cell][1] = face_count + 1
+                    self.faces_per_cell[cell][2] = face_count + 2
+                    # -- nodes per face (per cell)
+                    self.nodes_per_face[face_count][0] = i + j * (nx + 1)
+                    self.nodes_per_face[face_count][1] = i + 1 + j * (nx + 1)
+                    self.nodes_per_face[face_count + 1][0] = i + 1 + j * (nx + 1)
+                    self.nodes_per_face[face_count + 1][1] = i + (j + 1) * (nx + 1)
+                    self.nodes_per_face[face_count + 3][0] = i + (j + 1) * (nx + 1)
+                    self.nodes_per_face[face_count + 3][1] = i + j * (nx + 1)
+                    face_count += 3
+                else:
+                    self.faces_per_cell[cell] = [0, 0, 0, 0]
+                    self.faces_per_cell[cell][0] = face_count
+                    self.faces_per_cell[cell][1] = face_count + 1
+                    self.faces_per_cell[cell][2] = face_count + 2
+                    self.faces_per_cell[cell][3] = face_count + 3
+                    # -- nodes per face (per cell)
+                    self.nodes_per_face[face_count][0] = i + j * (nx + 1)
+                    self.nodes_per_face[face_count][1] = i + 1 + j * (nx + 1)
+                    self.nodes_per_face[face_count + 1][0] = i + 1 + j * (nx + 1)
+                    self.nodes_per_face[face_count + 1][1] = i + 1 + (j + 1) * (nx + 1)
+                    self.nodes_per_face[face_count + 2][0] = i + 1 + (j + 1) * (nx + 1)
+                    self.nodes_per_face[face_count + 2][1] = i + (j + 1) * (nx + 1)
+                    self.nodes_per_face[face_count + 3][0] = i + (j + 1) * (nx + 1)
+                    self.nodes_per_face[face_count + 3][1] = i + j * (nx + 1)
+                    face_count += 4
+
+        # -- Complete triangularization
+        for extra_tri_i, tri_cell in enumerate(triangularize_list):
+            j = int(np.floor(tri_cell/nx))
+            i = tri_cell - nx*j
+            cell = num_cells_original+extra_tri_i
+            self.faces_per_cell[cell] = [0, 0, 0]
+            self.faces_per_cell[cell][0] = face_count
+            self.faces_per_cell[cell][1] = face_count + 1
+            self.faces_per_cell[cell][2] = face_count + 2
+            # -- nodes per face (per cell)
+            self.nodes_per_face[face_count][0] = i + 1 + j * (nx + 1)
+            self.nodes_per_face[face_count][1] = i + 1 + (j + 1) * (nx + 1)
+            self.nodes_per_face[face_count + 1][0] = i + 1 + (j + 1) * (nx + 1)
+            self.nodes_per_face[face_count + 1][1] = i + (j + 1) * (nx + 1)
+            self.nodes_per_face[face_count + 2][0] = i + (j + 1) * (nx + 1)
+            self.nodes_per_face[face_count + 2][1] = i + 1 + j * (nx + 1)
+            face_count += 3
 
         # -- enumerate boundary nodes per face ("side")
         # -- faces at x extrema
