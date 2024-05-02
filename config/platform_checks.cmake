@@ -208,51 +208,6 @@ macro(check_eight_byte_int_type)
 endmacro()
 
 # ------------------------------------------------------------------------------------------------ #
-# Detect support for the C99 restrict keyword Borrowed from
-# http://cmake.3232098.n2.nabble.com/AC-C-RESTRICT-td7582761.html
-#
-# A restrict-qualified pointer (or reference) is basically a promise to the compiler that for the
-# scope of the pointer, the target of the pointer will only be accessed through that pointer (and
-# pointers copied from it).
-#
-# http://www.research.scea.com/research/pdfs/GDC2003_Memory_Optimization_18Mar03.pdf
-# ------------------------------------------------------------------------------------------------ #
-macro(query_have_restrict_keyword)
-
-  if(NOT PLATFORM_CHECK_RESTRICT_KYEWORD_DONE)
-    set(PLATFORM_CHECK_RESTRICT_KYEWORD_DONE
-        TRUE
-        CACHE BOOL "Is restrict keyword check done?")
-    mark_as_advanced(PLATFORM_CHECK_RESTRICT_KYEWORD_DONE)
-    message(STATUS "Looking for the C99 restrict keyword")
-    include(CheckCSourceCompiles)
-    foreach(ac_kw __restrict __restrict__ _Restrict restrict)
-      check_c_source_compiles(
-        "
-         typedef int * int_ptr;
-         int foo ( int_ptr ${ac_kw} ip ) { return ip[0]; }
-         int main (void) {
-            int s[1];
-            int * ${ac_kw} t = s;
-            t[0] = 0;
-            return foo(t); }
-         "
-        HAVE_RESTRICT)
-
-      if(HAVE_RESTRICT)
-        set(RESTRICT_KEYWORD ${ac_kw})
-        message(STATUS "Looking for the C99 restrict keyword - found ${RESTRICT_KEYWORD}")
-        break()
-      endif()
-    endforeach()
-    if(NOT HAVE_RESTRICT)
-      message(STATUS "Looking for the C99 restrict keyword - not found")
-    endif()
-  endif()
-
-endmacro()
-
-# ------------------------------------------------------------------------------------------------ #
 # Query if hardware has FMA, AVX2
 #
 # This code is adopted from

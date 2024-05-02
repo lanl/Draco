@@ -93,7 +93,6 @@ set_draco_uname()
 query_have_gethostname()
 query_have_maxpathlen()
 query_have_sys_headers() #< sets HAVE_UNISTD_H, etc.
-query_have_restrict_keyword()
 query_fma_on_hardware()
 provide_ctest_resources_spec() # creates ctest_resource_spec.json in the build dir.
 

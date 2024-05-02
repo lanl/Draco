@@ -143,15 +143,16 @@
       }
     },
     {
-      "name": "windows-base",
+      "name": "windows-msbuild",
       "description": "Target Windows with the Visual Studio development environment.",
       "hidden": true,
-      "generator": "Ninja",
+      "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "installDir": "${sourceDir}/install/${presetName}",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl.exe",
-        "CMAKE_CXX_COMPILER": "cl.exe"
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/.gitlab/ci/vs2022-toolchain.cmake"
       },
       "condition": {
         "type": "equals",
@@ -160,14 +161,22 @@
       }
     },
     {
-      "name": "windows-msbuild",
-      "description": "Target Windows with the Visual Studio development environment.",
+      "name": "windows-ninja",
+      "description": "Target Windows with Ninja",
       "hidden": true,
-      "generator": "Visual Studio 17 2022",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "installDir": "${sourceDir}/install/${presetName}",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/.gitlab/ci/vs2022-toolchain.cmake"
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "DRACO_LIBRARY_TYPE": "SHARED",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/.gitlab/ci/vs2022-toolchain.cmake",
+        "CMAKE_MAKE_PROGRAM": "C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe"
       },
       "condition": {
         "type": "equals",
@@ -191,6 +200,26 @@
       "inherits": "windows-msbuild",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "win-x64-cxx17-debug",
+      "displayName": "Windows x64 Debug with C++17 (Ninja)",
+      "description": "Target Windows (64-bit) with Ninja (Debug) and C++17",
+      "inherits": "windows-ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "Draco_CXX_LANGUAGE_STANDARD": "17"
+      }
+    },
+    {
+      "name": "win-x64-cxx17-release",
+      "displayName": "Windows x64 Release with C++17 (Ninja)",
+      "description": "Target Windows (64-bit) with Ninja (Release) and C++17",
+      "inherits": "windows-ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "Draco_CXX_LANGUAGE_STANDARD": "17"
       }
     }
   ],

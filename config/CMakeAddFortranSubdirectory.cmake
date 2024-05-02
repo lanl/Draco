@@ -260,6 +260,10 @@ function(cmake_add_fortran_subdirectory subdir)
   else()
     set(ep_build_type "${CMAKE_BUILD_TYPE}")
   endif()
+  unset(mybyproducts)
+  foreach(lib ${libraries})
+    list(APPEND mybyproducts ${build_dir}/lib${lib}${CMAKE_STATIC_LIBRARY_SUFFIX})
+  endforeach()
   # create the external project
   if(ARGS_VERBOSE)
     message(
@@ -271,6 +275,7 @@ function(cmake_add_fortran_subdirectory subdir)
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=${ep_build_type}
                       -P ${build_dir}/config_cafs_proj.cmake
     BUILD_COMMAND     ${CMAKE_COMMAND} -P ${build_dir}/build_cafs_proj.cmake
+    BYPRODUCTS        ${mybyproducts}
     BUILD_ALWAYS 1
     INSTALL_COMMAND   \"\"
     )
@@ -283,7 +288,7 @@ function(cmake_add_fortran_subdirectory subdir)
     BINARY_DIR ${build_dir}
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=${ep_build_type} -P
                       ${build_dir}/config_cafs_proj.cmake
-    BUILD_COMMAND ${CMAKE_COMMAND} -P ${build_dir}/build_cafs_proj.cmake
+    BUILD_COMMAND ${CMAKE_COMMAND} -P ${build_dir}/build_cafs_proj.cmake BYPRODUCTS ${mybyproducts}
     BUILD_ALWAYS 1
     INSTALL_COMMAND "")
   # create imported targets for all libraries

@@ -4,7 +4,7 @@
 # date   2010 June 5
 # brief  Establish flags for Visual Studio on Windows. These settings are shared by cl.exe and
 #        clang-cl.exe.
-# note   Copyright (C) 2020-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -15,8 +15,9 @@ include_guard(GLOBAL)
 #
 # Sanity Checks
 #
-if(NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio" AND NOT ${CMAKE_GENERATOR} MATCHES
-                                                      "NMake Makefiles")
+if(NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio"
+   AND NOT ${CMAKE_GENERATOR} MATCHES "NMake Makefiles"
+   AND NOT ${CMAKE_GENERATOR} MATCHES "Ninja")
   message(FATAL_ERROR "config/windows-msvc.cmake must be taught to build for this compiler "
                       "(CMAKE_GENERATOR = ${CMAKE_GENERATOR}). Yell at kt for help on this error.")
 endif()
@@ -88,9 +89,10 @@ if(NOT CXX_FLAGS_INITIALIZED)
     string(APPEND CMAKE_C_FLAGS_DEBUG " /Z7")
   endif()
 
+  string(REPLACE "EHsc" "EHa" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
   # /Zc:__cplusplus - enables the __cplusplus preprocessor macro to report an updated value for
   # recent C++ language standards
-  string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS} /EHa /Zc:__cplusplus")
+  string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS} /Zc:__cplusplus")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_MINSIZEREL "/${MD_or_MT} /O1 /DNDEBUG")
