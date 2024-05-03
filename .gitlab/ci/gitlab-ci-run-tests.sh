@@ -129,6 +129,7 @@ export OMPI_MCA_btl=^openib
 echo -e "\n========== Draco ==========\n"
 if ! [[ -d ${DRACO_BINARY_DIR} ]]; then run "mkdir -p ${DRACO_BINARY_DIR}"; fi
 run "cd ${DRACO_BINARY_DIR}"
+set > ci-env.log
 echo -e "\n========"
 run "cmake ${EXTRA_CMAKE_ARGS} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} ${DRACO_SOURCE_DIR}"
 echo " "

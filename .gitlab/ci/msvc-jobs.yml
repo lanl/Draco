@@ -43,7 +43,7 @@
     MAXLOAD: 24
     CTEST_NPROC: 24
     SESAMEPATH: "C:\\work\\vendors-ec\\physical_data\\eos"
-  resource_group: ${CI_RUNNER_TAGS}-${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+  resource_group: ${SITE_ID}-${DRACO_ENV}-${CMAKE_BUILD_TYPE}
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/glr.log
