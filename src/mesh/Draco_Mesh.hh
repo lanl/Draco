@@ -105,6 +105,9 @@ protected:
   std::vector<unsigned> m_side_node_count;
   std::vector<unsigned> m_side_to_node_linkage;
 
+  // Map from local node index to global node index. Identity map for single rank.
+  std::vector<unsigned> global_node_number;
+
   // Layout of mesh: vector index is cell index, vector element is description of cell's adjacency
   // to other cells in the mesh.
   Layout cell_to_cell_linkage;
@@ -179,6 +182,7 @@ public:
 
   NODISCARD const std::vector<unsigned> get_cell_nodes(const unsigned cell) const;
   NODISCARD const std::vector<unsigned> get_flat_cell_node_linkage() const;
+  NODISCARD unsigned get_global_node_index(const unsigned local_node_index) const;
 
   //! Get face index of adjacent face in neighboring cell
   NODISCARD int32_t next_face(const int32_t cell, const int32_t face) const;
@@ -212,8 +216,7 @@ private:
 
   //! Calculate cell-corner-cell layouts (adjacent cells not sharing a face)
   void compute_node_to_cell_linkage(const std::vector<unsigned> &ghost_cell_type,
-                                    const std::vector<unsigned> &ghost_cell_to_node_linkage,
-                                    const std::vector<unsigned> &global_node_number);
+                                    const std::vector<unsigned> &ghost_cell_to_node_linkage);
 };
 
 } // end namespace rtt_mesh

@@ -47,11 +47,12 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
 
   // generate a constainer for data needed in mesh construction
   std::shared_ptr<Test_Mesh_Interface> mesh_iface;
+  std::vector<unsigned> global_node_number;
   if (rtt_c4::node() == 0) {
-    std::vector<unsigned> global_node_number = {0, 1, 3, 4};
+    global_node_number = {0, 1, 3, 4};
     mesh_iface = std::make_shared<Test_Mesh_Interface>(num_xdir, num_ydir, global_node_number);
   } else {
-    std::vector<unsigned> global_node_number = {1, 2, 4, 5};
+    global_node_number = {1, 2, 4, 5};
     mesh_iface =
         std::make_shared<Test_Mesh_Interface>(num_xdir, num_ydir, global_node_number, 1.0, 0.0);
   }
@@ -112,6 +113,11 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
 
   // check that the ghost cell layout has been generated
   FAIL_IF_NOT(go_layout.size() == mesh_iface->num_cells);
+
+  // check global node indices
+  for (unsigned local_node_idx = 0; local_node_idx < mesh->get_num_nodes(); local_node_idx++) {
+    FAIL_IF_NOT(mesh->get_global_node_index(local_node_idx) == global_node_number[local_node_idx]);
+  }
 
   // check that cell-to-node linkage data is correct
   {
@@ -277,19 +283,20 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
 
   // generate a constainer for data needed in mesh construction
   std::shared_ptr<Test_Mesh_Interface> mesh_iface;
+  std::vector<unsigned> global_node_number;
   if (rtt_c4::node() == 0) {
-    std::vector<unsigned> global_node_number = {0, 1, 3, 4};
+    global_node_number = {0, 1, 3, 4};
     mesh_iface = std::make_shared<Test_Mesh_Interface>(num_xdir, num_ydir, global_node_number);
   } else if (rtt_c4::node() == 1) {
-    std::vector<unsigned> global_node_number = {1, 2, 4, 5};
+    global_node_number = {1, 2, 4, 5};
     mesh_iface =
         std::make_shared<Test_Mesh_Interface>(num_xdir, num_ydir, global_node_number, 1.0, 0.0);
   } else if (rtt_c4::node() == 2) {
-    std::vector<unsigned> global_node_number = {3, 4, 6, 7};
+    global_node_number = {3, 4, 6, 7};
     mesh_iface =
         std::make_shared<Test_Mesh_Interface>(num_xdir, num_ydir, global_node_number, 0.0, 1.0);
   } else {
-    std::vector<unsigned> global_node_number = {4, 5, 7, 8};
+    global_node_number = {4, 5, 7, 8};
     mesh_iface =
         std::make_shared<Test_Mesh_Interface>(num_xdir, num_ydir, global_node_number, 1.0, 1.0);
   }
@@ -358,6 +365,11 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
 
   // check that the ghost cell layout has been generated
   FAIL_IF_NOT(go_layout.size() == mesh_iface->num_cells);
+
+  // check global node indices
+  for (unsigned local_node_idx = 0; local_node_idx < mesh->get_num_nodes(); local_node_idx++) {
+    FAIL_IF_NOT(mesh->get_global_node_index(local_node_idx) == global_node_number[local_node_idx]);
+  }
 
   // check that cell-to-node linkage data is correct
   {
