@@ -69,7 +69,8 @@ Draco_Mesh::Draco_Mesh(
       m_num_nodes_per_face_per_cell(num_nodes_per_face_per_cell_),
       m_cell_to_node_linkage(compute_cell_to_node_tensor(
           num_faces_per_cell_, num_nodes_per_face_per_cell_, cell_to_node_linkage_)),
-      m_side_node_count(side_node_count_), m_side_to_node_linkage(side_to_node_linkage_) {
+      m_side_node_count(side_node_count_), m_side_to_node_linkage(side_to_node_linkage_),
+      global_node_number(global_node_number_) {
 
   Require(dimension_ <= 3);
   Require(side_to_node_linkage_.size() ==
@@ -89,8 +90,7 @@ Draco_Mesh::Draco_Mesh(
 
   // build cell-to-corner-cell layout (\todo: extend to 3D)
   if (dimension_ == 2) {
-    compute_node_to_cell_linkage(ghost_cell_type_, ghost_cell_to_node_linkage_,
-                                 global_node_number_);
+    compute_node_to_cell_linkage(ghost_cell_type_, ghost_cell_to_node_linkage_);
   }
 }
 
@@ -126,7 +126,7 @@ const std::vector<unsigned> Draco_Mesh::get_cell_nodes(const unsigned cell) cons
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Return a flattended version of the cell-node tensor
+ * \brief Return a flattened version of the cell-node tensor
  *
  * \return a flattened cell-node linkage vector
  */
@@ -155,7 +155,18 @@ const std::vector<unsigned> Draco_Mesh::get_flat_cell_node_linkage() const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Obtain the face index of a neihbor cell across a particular face
+ * \brief Return the global node index given a local node index on this rank
+ *
+ * \return global node index
+ */
+unsigned Draco_Mesh::get_global_node_index(const unsigned local_node_index) const {
+  Check(local_node_index < num_nodes);
+  return global_node_number[local_node_index];
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Obtain the face index of a neighbor cell across a particular face
  *
  * \param[in] cell the index of the cell, starting from 1
  * \param[in] face the index of the cell's face, starting from 1
@@ -502,12 +513,10 @@ Draco_Mesh::compute_node_vec_indx_map(const std::vector<unsigned> &indx_type,
  *
  * \param[in] ghost_cell_type number of common vertices per ghost cell (sharing a full face).
  * \param[in] ghost_cell_to_node_linkage vertices in common per ghost cell (sharing a full face).
- * \param[in] global_node_number vector indexed by local node with global node index as values.
  */
 void Draco_Mesh::compute_node_to_cell_linkage(
     const std::vector<unsigned> &ghost_cell_type,
-    const std::vector<unsigned> &ghost_cell_to_node_linkage,
-    const std::vector<unsigned> &global_node_number) {
+    const std::vector<unsigned> &ghost_cell_to_node_linkage) {
 
   // (1a) create map of (single) nodes to set of cells
 
