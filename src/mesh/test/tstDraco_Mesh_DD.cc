@@ -179,13 +179,13 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(ngc_layout.at(1)[0].first.first == 0);
       FAIL_IF_NOT(ngc_layout.at(3)[0].first.first == 0);
 
-      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // check nodes (global indexing) adjacent to layout nodes ...
       // ... lower right node (index 1) to rank 1 cell
-      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 1);
-      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[1] == 2);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[1] == 4);
       // ... upper right node (index 3) to rank 1 cell
-      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 0);
-      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 3);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 1);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 5);
 
       // check that the other rank is rank 1
       FAIL_IF_NOT(ngc_layout.at(1)[0].second == 1);
@@ -216,12 +216,12 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(ngc_layout.at(0)[0].first.first == 0);
       FAIL_IF_NOT(ngc_layout.at(2)[0].first.first == 0);
 
-      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // check nodes (global indexing) adjacent to layout nodes ...
       // ... lower left node (index 0) to rank 0 cell
-      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[0] == 3);
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[0] == 4);
       FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[1] == 0);
       // ... upper left node (index 2) to rank 0 cell
-      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 3);
       FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[1] == 1);
 
       // check that the other rank is rank 0
@@ -435,22 +435,22 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(ngc_layout.at(3)[2].first.first == 0);
       FAIL_IF_NOT(ngc_layout.at(2)[0].first.first == 0);
 
-      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // check nodes (global indexing) adjacent to layout nodes ...
       // ... lower right node (index 1) to rank 1 cell
-      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 1);
-      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[1] == 2);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[1] == 4);
       // ... upper right node (index 3) to rank 1 cell
-      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 0);
-      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 3);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 1);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 5);
       // ... upper right node (index 3) to rank 2 cell
-      FAIL_IF_NOT(ngc_layout.at(3)[1].first.second[0] == 3);
-      FAIL_IF_NOT(ngc_layout.at(3)[1].first.second[1] == 0);
+      FAIL_IF_NOT(ngc_layout.at(3)[1].first.second[0] == 7);
+      FAIL_IF_NOT(ngc_layout.at(3)[1].first.second[1] == 3);
       // ... upper right node (index 3) to rank 3 cell
-      FAIL_IF_NOT(ngc_layout.at(3)[2].first.second[0] == 1);
-      FAIL_IF_NOT(ngc_layout.at(3)[2].first.second[1] == 2);
+      FAIL_IF_NOT(ngc_layout.at(3)[2].first.second[0] == 5);
+      FAIL_IF_NOT(ngc_layout.at(3)[2].first.second[1] == 7);
       // ... upper left node (index 2) to rank 2 cell
-      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 1);
-      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[1] == 2);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 4);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[1] == 6);
 
       // check the other ranks
       FAIL_IF_NOT(ngc_layout.at(1)[0].second == 1);
@@ -502,22 +502,22 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(ngc_layout.at(2)[2].first.first == 0);
       FAIL_IF_NOT(ngc_layout.at(3)[0].first.first == 0);
 
-      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // check nodes (global indexing) adjacent to layout nodes ...
       // ... lower left node (index 0) to rank 0 cell
-      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[0] == 3);
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[0] == 4);
       FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[1] == 0);
       // ... upper left node (index 2) to rank 0 cell
-      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 3);
       FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[1] == 1);
       // ... upper left node (index 2) to rank 2 cell
-      FAIL_IF_NOT(ngc_layout.at(2)[1].first.second[0] == 3);
-      FAIL_IF_NOT(ngc_layout.at(2)[1].first.second[1] == 0);
+      FAIL_IF_NOT(ngc_layout.at(2)[1].first.second[0] == 7);
+      FAIL_IF_NOT(ngc_layout.at(2)[1].first.second[1] == 3);
       // ... upper left node (index 2) to rank 3 cell
-      FAIL_IF_NOT(ngc_layout.at(2)[2].first.second[0] == 1);
-      FAIL_IF_NOT(ngc_layout.at(2)[2].first.second[1] == 2);
+      FAIL_IF_NOT(ngc_layout.at(2)[2].first.second[0] == 5);
+      FAIL_IF_NOT(ngc_layout.at(2)[2].first.second[1] == 7);
       // ... upper right node (index 3) to rank 3 cell
-      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 3);
-      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 0);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 8);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 4);
 
       // check the other ranks
       FAIL_IF_NOT(ngc_layout.at(0)[0].second == 0);
@@ -569,22 +569,22 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(ngc_layout.at(1)[2].first.first == 0);
       FAIL_IF_NOT(ngc_layout.at(3)[0].first.first == 0);
 
-      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // check nodes (global indexing) adjacent to layout nodes ...
       // ... lower left node (index 0) to rank 0 cell
       FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[0] == 0);
-      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[1] == 3);
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[1] == 4);
       // ... lower right node (index 1) to rank 0 cell
-      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 3);
       FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[1] == 1);
-      // ... lower right node (index 1) to rank 2 cell
-      FAIL_IF_NOT(ngc_layout.at(1)[1].first.second[0] == 0);
-      FAIL_IF_NOT(ngc_layout.at(1)[1].first.second[1] == 3);
+      // ... lower right node (index 1) to rank 1 cell
+      FAIL_IF_NOT(ngc_layout.at(1)[1].first.second[0] == 1);
+      FAIL_IF_NOT(ngc_layout.at(1)[1].first.second[1] == 5);
       // ... lower right node (index 1) to rank 3 cell
-      FAIL_IF_NOT(ngc_layout.at(1)[2].first.second[0] == 1);
-      FAIL_IF_NOT(ngc_layout.at(1)[2].first.second[1] == 2);
+      FAIL_IF_NOT(ngc_layout.at(1)[2].first.second[0] == 5);
+      FAIL_IF_NOT(ngc_layout.at(1)[2].first.second[1] == 7);
       // ... upper right node (index 3) to rank 3 cell
-      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 0);
-      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 3);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[0] == 4);
+      FAIL_IF_NOT(ngc_layout.at(3)[0].first.second[1] == 8);
 
       // check the other ranks
       FAIL_IF_NOT(ngc_layout.at(0)[0].second == 0);
@@ -629,22 +629,22 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(ngc_layout.at(1).size() == 1);
       FAIL_IF_NOT(ngc_layout.at(2).size() == 1);
 
-      // check nodes (with indexing local to other rank) adjacent to layout nodes ...
+      // check nodes (global indexing) adjacent to layout nodes ...
       // ... lower left node (index 0) to rank 0 cell
-      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[0] == 2);
+      FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[0] == 3);
       FAIL_IF_NOT(ngc_layout.at(0)[0].first.second[1] == 1);
       // ... lower left node (index 0) to rank 1 cell
-      FAIL_IF_NOT(ngc_layout.at(0)[1].first.second[0] == 0);
-      FAIL_IF_NOT(ngc_layout.at(0)[1].first.second[1] == 3);
+      FAIL_IF_NOT(ngc_layout.at(0)[1].first.second[0] == 1);
+      FAIL_IF_NOT(ngc_layout.at(0)[1].first.second[1] == 5);
       // ... lower left node (index 0) to rank 2 cell
-      FAIL_IF_NOT(ngc_layout.at(0)[2].first.second[0] == 3);
-      FAIL_IF_NOT(ngc_layout.at(0)[2].first.second[1] == 0);
+      FAIL_IF_NOT(ngc_layout.at(0)[2].first.second[0] == 7);
+      FAIL_IF_NOT(ngc_layout.at(0)[2].first.second[1] == 3);
       // ... lower right node (index 1) to rank 1 cell
-      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 2);
-      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[1] == 1);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[0] == 4);
+      FAIL_IF_NOT(ngc_layout.at(1)[0].first.second[1] == 2);
       // ... upper right node (index 2) to rank 2 cell
-      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 2);
-      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[1] == 1);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[0] == 6);
+      FAIL_IF_NOT(ngc_layout.at(2)[0].first.second[1] == 4);
 
       // check the other ranks
       FAIL_IF_NOT(ngc_layout.at(0)[0].second == 0);
