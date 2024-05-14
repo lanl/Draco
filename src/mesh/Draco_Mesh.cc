@@ -603,11 +603,14 @@ void Draco_Mesh::compute_node_to_cell_linkage(
     // get the number of cell neighbors
     const size_t num_cell_nbrs = global_node_cellnode_pair.second.size();
 
-    // flatten cell+node neighbor data for each cell
+    // flatten cell+node neighbor data for each cell, and convert neighbor nodes to global node
+    // index space
     for (size_t j = 0; j < num_cell_nbrs; ++j) {
       cellnodes_per_serial.emplace_back(global_node_cellnode_pair.second[j].first);
-      cellnodes_per_serial.emplace_back(global_node_cellnode_pair.second[j].second[0]);
-      cellnodes_per_serial.emplace_back(global_node_cellnode_pair.second[j].second[1]);
+      cellnodes_per_serial.emplace_back(
+          global_node_number[global_node_cellnode_pair.second[j].second[0]]);
+      cellnodes_per_serial.emplace_back(
+          global_node_number[global_node_cellnode_pair.second[j].second[1]]);
     }
   }
 
