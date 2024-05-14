@@ -32,8 +32,10 @@ function(provide_ctest_resources_spec)
   # These files will be at $draco/config or at $draco_install/cmake.
   if("${PROJECT_NAME}" STREQUAL "Draco")
     set(json_dir "${PROJECT_SOURCE_DIR}/config")
-  else()
+  elseif(EXISTS "${DRACO_DIR}")
     set(json_dir "${DRACO_DIR}/cmake") # we are building a client that uses the draco build sys.
+  elseif(EXISTS "${draco_DIR}")
+    set(json_dir "${draco_DIR}")
   endif()
 
   # Look for a platform specific resource file.

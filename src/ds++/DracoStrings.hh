@@ -96,6 +96,8 @@ std::vector<std::string> tokenize(std::string const &str, std::string const &del
  * \return A numeric value.
  *
  * \tparam T The template type will be deduced based on the return type ("-> T").
+ *
+ * \todo After C++17, these can be replace with `std::from_chars`
  */
 template <typename T> auto parse_number_impl(std::string const &str) -> T;
 
