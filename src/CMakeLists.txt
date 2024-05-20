@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 April 28
 # brief  Instructions for building src level Makefile.
-# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(draco_src_dir)
@@ -82,7 +82,7 @@ add_subdirectory(special_functions) #< needs roots, units, GSL
 message(" ")
 message(STATUS "Configuring Level 5 packages --")
 add_subdirectory(compton_tools) #< needs ds++, units, cdi_analtyic
-add_subdirectory(mesh) #< needs c4, ds++, mesh_element, viz
+add_subdirectory(mesh) #< needs parser, RTT_Format_Reader, c4
 add_subdirectory(quadrature) #< needs mesh_element, parser, special_functions
 
 # Summary
