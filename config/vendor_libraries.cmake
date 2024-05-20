@@ -68,7 +68,6 @@ function(setupGSL)
     # found somewhere in this installation tree, then the targets defined by gsl-config.cmake will
     # be used.
     find_package(GSL CONFIG QUIET)
-
   endif()
 
   if(NOT TARGET GSL::gsl) # if option #1 was successful, skip this.
@@ -95,6 +94,9 @@ function(setupGSL)
 
   # Print a report
   if(TARGET GSL::gsl)
+    set(GSL_FOUND
+        True
+        CACHE STRING "Did we find the GSL library?")
     mark_as_advanced(GSL_FOUND)
     if(TARGET GSL::gsl AND NOT GSL_LIBRARY)
       foreach(config NOCONFIG DEBUG RELEASE RELWITHDEBINFO)

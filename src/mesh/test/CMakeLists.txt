@@ -37,7 +37,7 @@ set(two_pe_only_tests ${PROJECT_SOURCE_DIR}/tstCAMR_Mesh_DD.cc)
 # Build Unit tests
 # ------------------------------------------------------------------------------------------------ #
 
-set(libs_for_tests Lib_mesh_test Lib_c4 Lib_mesh Lib_quadrature)
+set(libs_for_tests Lib_mesh_test Lib_c4 Lib_mesh)
 
 add_parallel_tests(
   SOURCES "${one_pe_tests}"

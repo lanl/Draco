@@ -9,14 +9,18 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Quadrature_Interface.hh"
-#include "Ordinate_Set_Factory.hh"
+#include "ds++/Assert.hh"
+#include "quadrature/config.h"
 #include <iostream>
-
-using std::vector;
+#include <vector>
+#ifdef GSL_FOUND
+#include "Ordinate_Set_Factory.hh"
+#endif
 
 //! An extern "C" interface to default constructor
 void init_quadrature(quadrature_data &quad) { quad = quadrature_data(); }
 
+#ifdef GSL_FOUND
 // Function to check basic validity of quadrature_data
 void check_quadrature_validity(const quadrature_data &quad) {
   // We only support 1, 2, and 3D problems
@@ -56,7 +60,7 @@ void get_quadrature(quadrature_data &quad) {
   Ordinate_Set_Factory osf(quad);
   std::shared_ptr<Ordinate_Set> ordinate_set = osf.get_Ordinate_Set();
 
-  vector<Ordinate> const ordinates(ordinate_set->ordinates());
+  std::vector<Ordinate> const ordinates(ordinate_set->ordinates());
   size_t i(0);
   if (quad.dimension == 1) {
     for (auto ord = ordinates.begin(); ord != ordinates.end(); ++ord, ++i) {
@@ -75,7 +79,18 @@ void get_quadrature(quadrature_data &quad) {
 
   return;
 }
+#else
+// Function to check basic validity of quadrature_data
+void check_quadrature_validity(const quadrature_data & /*quad*/) {
+  Insist(0, "check_quadrature_validity not supported if GSL is not set");
+}
 
+//------------------------------------------------------------------------------------------------//
+void get_quadrature(quadrature_data & /*quad*/) {
+  Insist(0, "get_quadrature not supported if GSL is not set");
+}
+
+#endif
 //------------------------------------------------------------------------------------------------//
 // end of quadrature/Quadrature_Interface.cc
 //------------------------------------------------------------------------------------------------//
