@@ -95,8 +95,8 @@ function(setupGSL)
   # Print a report
   if(TARGET GSL::gsl)
     set(GSL_FOUND
-        True
-        CACHE STRING "Did we find the GSL library?")
+        TRUE
+        CACHE BOOL "Did we find the GSL library?" FORCE)
     mark_as_advanced(GSL_FOUND)
     if(TARGET GSL::gsl AND NOT GSL_LIBRARY)
       foreach(config NOCONFIG DEBUG RELEASE RELWITHDEBINFO)
