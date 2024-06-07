@@ -12,7 +12,7 @@
 #define rtt_cdi_CPEloss_Analytic_KP_Alpha_Eloss_Model_hh
 
 #include "Analytic_Eloss_Model.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 
 namespace rtt_cdi_cpeloss {
 //================================================================================================//

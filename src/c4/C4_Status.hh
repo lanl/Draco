@@ -11,8 +11,8 @@
 #define c4_C4_Status_hh
 
 // C4 package configure
+#include "dsxx/Assert.hh"
 #include "c4/config.h"
-#include "ds++/Assert.hh"
 
 #ifdef C4_MPI
 #include "c4_mpi.h"

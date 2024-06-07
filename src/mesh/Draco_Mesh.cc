@@ -8,9 +8,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Draco_Mesh.hh"
+#include "dsxx/Assert.hh"
 #include "c4/C4_Functions.hh"
 #include "c4/gatherv.hh"
-#include "ds++/Assert.hh"
 #include <algorithm>
 #include <numeric>
 

@@ -10,8 +10,8 @@
 #ifndef rtt_test_TestRTT_Format_Reader_hh
 #define rtt_test_TestRTT_Format_Reader_hh
 
+#include "dsxx/UnitTest.hh"
 #include "RTT_Format_Reader/RTT_Format_Reader.hh"
-#include "ds++/UnitTest.hh"
 #include <map>
 
 using rtt_dsxx::UnitTest;

@@ -10,8 +10,8 @@
 #ifndef rtt_cdi_analytic_Analytic_Models_hh
 #define rtt_cdi_analytic_Analytic_Models_hh
 
+#include "dsxx/Assert.hh"
 #include "cdi/OpacityCommon.hh"
-#include "ds++/Assert.hh"
 #include <cmath>
 #include <vector>
 

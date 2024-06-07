@@ -22,8 +22,8 @@
 #ifndef diagnostics_Procmon_hh
 #define diagnostics_Procmon_hh
 
+#include "dsxx/config.h"
 #include "diagnostics/config.h"
-#include "ds++/config.h"
 #include <iostream>
 #include <string>
 #include <vector>

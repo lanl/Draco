@@ -10,7 +10,7 @@
 #ifndef rtt_cdi_CPCommon_hh
 #define rtt_cdi_CPCommon_hh
 
-#include "ds++/config.h" // defines NODISCARD
+#include "dsxx/config.h" // defines NODISCARD
 #include <cstdint>
 
 namespace rtt_cdi {

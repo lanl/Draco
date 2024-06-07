@@ -8,8 +8,8 @@
  */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
 #include "parser/File_Token_Stream.hh"
 #include <sstream>
 

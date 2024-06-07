@@ -11,10 +11,10 @@
 #ifndef cdi_CPEloss_Tabular_CP_Eloss_hh
 #define cdi_CPEloss_Tabular_CP_Eloss_hh
 
+#include "dsxx/Assert.hh"
+#include "dsxx/DracoMath.hh"
 #include "cdi/CPCommon.hh"
 #include "cdi/CPEloss.hh"
-#include "ds++/Assert.hh"
-#include "ds++/DracoMath.hh"
 #include "experimental/mdspan"
 #include "units/PhysicalConstexprs.hh"
 #include <cmath>

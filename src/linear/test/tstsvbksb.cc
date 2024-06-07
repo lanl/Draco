@@ -6,10 +6,10 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
 
-#include "ds++/Release.hh"
+#include "dsxx/Release.hh"
 #include "linear/svbksb.hh"
 #include "linear/svdcmp.hh"
 

@@ -10,7 +10,7 @@
 #ifndef linear_svdcmp_t_hh
 #define linear_svdcmp_t_hh
 
-#include "ds++/DracoMath.hh"
+#include "dsxx/DracoMath.hh"
 #include "linear/svdcmp.hh"
 #include <sstream>
 #include <vector>

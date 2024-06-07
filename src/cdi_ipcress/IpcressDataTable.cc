@@ -10,8 +10,8 @@
 
 #include "IpcressDataTable.hh"
 #include "IpcressFile.hh"
+#include "dsxx/Assert.hh"
 #include "cdi/OpacityCommon.hh"
-#include "ds++/Assert.hh"
 #include <cmath> // we need to define log(double)
 
 // ------------------------- //
@@ -46,7 +46,7 @@ double unary_log(double x) { return std::log(x); }
  *     IpcressDataTable object is created.
  * \param in_matID The material identifier that specifies a particular material
  *     in the IPCRESS file to associate with the IpcressDataTable container.
- * \param spIpcressFile A ds++ SmartPointer to a IpcressFile object.  One
+ * \param spIpcressFile A dsxx SmartPointer to a IpcressFile object.  One
  *     GanolfFile object should exist for each IPCRESS file.  Many
  *     IpcressOpacity (and thus IpcressDataTable) objects may point to the
  *     same IpcressFile object.

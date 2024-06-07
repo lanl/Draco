@@ -6,9 +6,9 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "ds++/DracoMath.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
+#include "dsxx/DracoMath.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "special_functions/gaulag.hh"
 
 using namespace std;

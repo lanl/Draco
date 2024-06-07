@@ -16,7 +16,7 @@
 
 #include "C4_Functions.hh"
 #include "C4_sys_times.h"
-#include "ds++/SystemCall.hh"
+#include "dsxx/SystemCall.hh"
 #include <chrono>
 #include <cstdlib>
 #include <ctime>

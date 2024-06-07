@@ -8,9 +8,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Mesh_Interface.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
 
 using rtt_mesh::Draco_Mesh;
 using rtt_mesh_test::Test_Mesh_Interface;

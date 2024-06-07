@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Diagnostics.hh"
-#include "ds++/Release.hh"
-#include "ds++/fpe_trap.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/fpe_trap.hh"
 #include <sstream>
 
 #if defined(__cplusplus) && __cplusplus > 201402L // C++17

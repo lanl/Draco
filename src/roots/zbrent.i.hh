@@ -10,7 +10,7 @@
 #ifndef roots_zbrent_i_hh
 #define roots_zbrent_i_hh
 
-#include "ds++/DracoMath.hh"
+#include "dsxx/DracoMath.hh"
 #include <limits>
 
 namespace rtt_roots {

@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Timer.hh"
-#include "ds++/XGetopt.hh"
+#include "dsxx/XGetopt.hh"
 #include <array>
 #include <cmath>
 #include <cstdlib>

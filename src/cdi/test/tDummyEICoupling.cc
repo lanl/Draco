@@ -8,10 +8,10 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "DummyEICoupling.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "cdi/EICoupling.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include <memory>
 #include <sstream>
 

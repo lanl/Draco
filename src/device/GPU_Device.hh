@@ -9,8 +9,8 @@
 #ifndef device_GPU_Device_hh
 #define device_GPU_Device_hh
 
+#include "dsxx/Assert.hh"
 #include "device/config.h"
-#include "ds++/Assert.hh"
 #include <array>
 #include <iostream>
 #include <string>

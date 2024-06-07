@@ -9,7 +9,7 @@
 #ifndef rng_Subrandom_Generator_hh
 #define rng_Subrandom_Generator_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_rng {
 

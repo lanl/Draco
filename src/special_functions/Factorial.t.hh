@@ -10,7 +10,7 @@
 #ifndef sf_factorial_i_hh
 #define sf_factorial_i_hh
 
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include "special_functions/Factorial.hh"
 #include <array>
 

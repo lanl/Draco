@@ -5,9 +5,9 @@
  * \date   Tue Sep 21 11:57:47 2004
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "special_functions/F3.hh"
 #include "units/PhysicalConstants.hh"
 

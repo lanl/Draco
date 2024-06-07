@@ -10,7 +10,7 @@
 #ifndef roots_cubic1_hh
 #define roots_cubic1_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_roots {
 

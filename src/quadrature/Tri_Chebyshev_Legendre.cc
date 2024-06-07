@@ -8,7 +8,7 @@
 
 #include "Tri_Chebyshev_Legendre.hh"
 #include "Gauss_Legendre.hh"
-#include "ds++/DracoStrings.hh"
+#include "dsxx/DracoStrings.hh"
 #include "units/MathConstants.hh"
 
 namespace rtt_quadrature {

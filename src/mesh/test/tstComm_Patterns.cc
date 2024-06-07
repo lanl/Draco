@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Topology.hh"
+#include "dsxx/Release.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
 #include "mesh/Comm_Patterns.hh"
 #include "mesh/DD_Topology.hh"
 #include "mesh/Rep_Topology.hh"

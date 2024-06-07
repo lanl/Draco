@@ -10,7 +10,7 @@
 #ifndef ode_quad_i_hh
 #define ode_quad_i_hh
 
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <cmath>
 #include <limits>
 #include <stdexcept>

@@ -7,8 +7,8 @@
  * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "quadrature/Gauss_Legendre.hh"
 #include "quadrature/Level_Symmetric.hh"
 #include "quadrature/Ordinate_Set_Mapper.hh"

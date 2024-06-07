@@ -786,7 +786,7 @@ macro(CAFS_Fortran_dir_boilerplate_setup)
       unset(CROD)
     else()
       get_filename_component(draco_BINARY_DIR ${PROJECT_BINARY_DIR}/../../.. ABSOLUTE)
-      cafs_create_imported_targets(Lib_dsxx "rtt_ds++" "${draco_BINARY_DIR}/src/ds++" CXX)
+      cafs_create_imported_targets(Lib_dsxx "rtt_dsxx" "${draco_BINARY_DIR}/src/dsxx" CXX)
       cafs_create_imported_targets(Lib_c4 "rtt_c4" "${draco_BINARY_DIR}/src/c4" CXX)
 
       # If we get here, we also need to use the Draco scripts to setup compiler flags and MPI

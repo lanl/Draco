@@ -7,11 +7,11 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/XGetopt.hh"
 #include "cdi/CDI.hh"
-#include "ds++/Assert.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
-#include "ds++/XGetopt.hh"
 #include "units/PhysicalConstants.hh"
 #include "units/UnitSystem.hh"
 #include <algorithm>

@@ -18,8 +18,8 @@
 #pragma warning(pop)
 #endif
 
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include <array>
 #include <vector>
 

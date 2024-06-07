@@ -10,7 +10,7 @@
 #ifndef sf_KroneckerDelta_hh
 #define sf_KroneckerDelta_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include <type_traits>
 
 namespace rtt_sf {

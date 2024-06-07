@@ -6,10 +6,10 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/SystemCall.hh"
 #include "c4/SLURM_Task_Info.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/SystemCall.hh"
 #include <array>
 #include <cstdlib>
 #include <functional> // std::function

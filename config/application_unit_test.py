@@ -4,7 +4,7 @@
 # date     Monday, August 12, 2016, 5:44 pm
 # brief    Provide a python class that aids in creating unit tests that run interactive user codes
 #                (i.e.: run a binary that reads an input file and diff the resulting output file).
-# note     Copyright (C) 2016-2022 Triad National Security, LLC., All rights reserved.
+# note     Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved.
 # -------------------------------------------------------------------------------------------------#
 
 import platform

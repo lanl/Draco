@@ -7,12 +7,12 @@
  * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/Timer.hh"
 #include "c4/c4_omp.h"
 #include "c4/gatherv.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include <array>
 #include <complex>
 #include <numeric>

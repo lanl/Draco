@@ -8,9 +8,9 @@
  */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/opstream.hh"
-#include "ds++/Release.hh"
 #include <cmath>
 
 using namespace std;

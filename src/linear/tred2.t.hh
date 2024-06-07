@@ -10,8 +10,8 @@
 #ifndef linear_tred2_t_hh
 #define linear_tred2_t_hh
 
-#include "ds++/Assert.hh"
-#include "ds++/DracoMath.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/DracoMath.hh"
 #include "linear/tred2.hh"
 
 namespace rtt_linear {

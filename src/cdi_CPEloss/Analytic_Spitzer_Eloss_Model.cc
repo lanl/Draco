@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Analytic_Spitzer_Eloss_Model.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 
 namespace rtt_cdi_cpeloss {
 

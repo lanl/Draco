@@ -11,9 +11,9 @@
 #define rtt_cdi_ipcress_IpcressGrayOpacity_hh
 
 #include "IpcressDataTable.hh" // IpcressDataTable object.
+#include "dsxx/Assert.hh"
 #include "cdi/GrayOpacity.hh"
 #include "cdi/OpacityCommon.hh"
-#include "ds++/Assert.hh"
 #include <string>
 #include <vector>
 

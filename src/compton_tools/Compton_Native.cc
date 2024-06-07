@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "compton_tools/Compton_Native.hh"
+#include "dsxx/Assert.hh"
 #include "c4/global.hh"
-#include "ds++/Assert.hh"
 #include <array>
 #include <fstream>
 

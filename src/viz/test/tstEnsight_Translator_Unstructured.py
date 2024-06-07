@@ -4,7 +4,7 @@
 # date   Wednesday, September 14, 2016, 14:16 pm
 # brief  This is a Python script that is used to check the output from
 #        viz/test/tstEnsight_Translator
-# note   Copyright (C) 2018-2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 import sys

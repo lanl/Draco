@@ -7,9 +7,9 @@
  */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/Termination_Detector.hh"
-#include "ds++/Release.hh"
 
 using namespace std;
 using namespace rtt_dsxx;

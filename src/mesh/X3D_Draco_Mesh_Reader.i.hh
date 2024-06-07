@@ -7,7 +7,7 @@
  * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "ds++/DracoStrings.hh"
+#include "dsxx/DracoStrings.hh"
 
 namespace rtt_mesh {
 

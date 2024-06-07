@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "PhysicalConstants.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include <iomanip>
 #include <iostream>
 

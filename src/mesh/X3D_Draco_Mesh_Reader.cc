@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "X3D_Draco_Mesh_Reader.hh"
-#include "ds++/DracoStrings.hh"
+#include "dsxx/DracoStrings.hh"
 #include <fstream>
 #include <iostream>
 #include <set>

@@ -10,10 +10,10 @@
 #include "IpcressFile.hh"
 #include "IpcressGrayOpacity.hh"
 #include "IpcressMultigroupOpacity.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/XGetopt.hh"
 #include "cdi/OpacityCommon.hh"
-#include "ds++/Assert.hh"
-#include "ds++/Release.hh"
-#include "ds++/XGetopt.hh"
 #include <cmath>
 #include <iomanip>
 #include <iostream>

@@ -10,8 +10,8 @@
 #ifndef rtt_viz_Ensight_Stream_hh
 #define rtt_viz_Ensight_Stream_hh
 
+#include "dsxx/config.h"
 #include "c4/ofpstream.hh"
-#include "ds++/config.h"
 #include <fstream>
 #include <iostream>
 #include <memory>

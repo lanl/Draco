@@ -10,7 +10,7 @@
 #ifndef rtt_diagnostics_draco_info_hh
 #define rtt_diagnostics_draco_info_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include <string>
 #include <vector>
 

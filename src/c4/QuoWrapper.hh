@@ -10,8 +10,8 @@
 #ifndef rtt_c4_quowrapper_hh
 #define rtt_c4_quowrapper_hh
 
+#include "dsxx/Assert.hh"
 #include "c4/config.h"
-#include "ds++/Assert.hh"
 #include <cstdint>
 #include <string>
 

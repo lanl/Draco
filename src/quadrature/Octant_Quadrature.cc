@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Octant_Quadrature.hh"
-#include "ds++/DracoStrings.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/DracoStrings.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "units/PhysicalConstants.hh"
 #include <algorithm>
 #include <cmath>

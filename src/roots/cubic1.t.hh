@@ -10,8 +10,8 @@
 #ifndef roots_cubic1_t_hh
 #define roots_cubic1_t_hh
 
-#include "ds++/Assert.hh"
-#include "ds++/Field_Traits.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Field_Traits.hh"
 #include "roots/cubic1.hh"
 
 namespace rtt_roots {

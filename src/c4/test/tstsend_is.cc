@@ -7,9 +7,9 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include <array>
 #include <numeric>
 #include <sstream>
@@ -239,10 +239,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<int>() in a "
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<int>() in a "
               "C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<int>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<int>().");
 #endif
     }
   }
@@ -289,10 +289,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<double>() in a "
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<double>() in a "
               "C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<double>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<double>().");
 #endif
     }
   }
@@ -340,10 +340,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<float>() in a "
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<float>() in a "
               "C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<float>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<float>().");
 #endif
     }
   }
@@ -391,10 +391,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use "
+      PASSMSG("Successfully caught a dsxx exception while trying to use "
               "send_is<long double>() in a C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<long double>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<long double>().");
 #endif
     }
   }
@@ -441,10 +441,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<unsigned int>() in "
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<unsigned int>() in "
               "a C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<unsigned int>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<unsigned int>().");
 #endif
     }
   }
@@ -498,10 +498,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<unsigned long>() in"
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<unsigned long>() in"
               " a C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<unsigned long>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<unsigned long>().");
 #endif
     }
   }
@@ -548,10 +548,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<unsigned short>() "
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<unsigned short>() "
               "in a C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<unsigned long>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<unsigned long>().");
 #endif
     }
   }
@@ -599,10 +599,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<unsigned long "
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<unsigned long "
               "long>() in a C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<unsigned long>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<unsigned long>().");
 #endif
     }
   }
@@ -648,10 +648,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<long>() in a "
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<long>() in a "
               "C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<unsigned long>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<unsigned long>().");
 #endif
     }
   }
@@ -697,10 +697,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<short>() in a "
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<short>() in a "
               "C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<unsigned short>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<unsigned short>().");
 #endif
     }
   }
@@ -747,10 +747,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<long long>() in a "
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<long long>() in a "
               "C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<unsigned long long>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<unsigned long long>().");
 #endif
     }
   }
@@ -797,10 +797,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<bool>() in a "
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<bool>() in a "
               "C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<unsigned bool>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<unsigned bool>().");
 #endif
     }
   }
@@ -850,10 +850,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use "
+      PASSMSG("Successfully caught a dsxx exception while trying to use "
               "send_is<char>() in a C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<char>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<char>().");
 #endif
     }
   }
@@ -905,10 +905,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
     } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-      PASSMSG("Successfully caught a ds++ exception while trying to use send_is<unsigned char>() "
+      PASSMSG("Successfully caught a dsxx exception while trying to use send_is<unsigned char>() "
               "in a C4_SCALAR build.");
 #else
-      FAILMSG("Encountered a ds++ exception while testing send_is<unsigned char>().");
+      FAILMSG("Encountered a dsxx exception while testing send_is<unsigned char>().");
 #endif
     }
   }
@@ -1000,10 +1000,10 @@ void test_send_custom(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(expected_custom.get_long2() == recv_custom_object.get_long2());
   } catch (rtt_dsxx::assertion const & /*error*/) {
 #ifdef C4_SCALAR
-    PASSMSG("Successfully caught a ds++ exception while trying to use send_is_custom() in a "
+    PASSMSG("Successfully caught a dsxx exception while trying to use send_is_custom() in a "
             "C4_SCALAR build.");
 #else
-    FAILMSG("Encountered a ds++ exception while testing send_is_custom().");
+    FAILMSG("Encountered a dsxx exception while testing send_is_custom().");
 #endif
   }
 #endif

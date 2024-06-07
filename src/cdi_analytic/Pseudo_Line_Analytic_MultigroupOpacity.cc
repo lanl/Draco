@@ -7,9 +7,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Pseudo_Line_Analytic_MultigroupOpacity.hh"
+#include "dsxx/DracoMath.hh"
+#include "dsxx/Packing_Utils.hh"
 #include "cdi/CDI.hh"
-#include "ds++/DracoMath.hh"
-#include "ds++/Packing_Utils.hh"
 #include "ode/quad.hh"
 #include "ode/rkqs.hh"
 

@@ -67,7 +67,7 @@ New systems will be added as required by the Draco development and user communit
 \par Note on semantics
 
 We use \e package to refer to the components sitting in Draco.  Thus, each directory in draco/src is
-a package.  Examples are \c ds++ , \c c4, \c quadrature , etc. This usage is historical.  We realize
+a package.  Examples are \c dsxx , \c c4, \c quadrature , etc. This usage is historical.  We realize
 that the word \e de \e jour in LANL software circles is \e component.  Certainly, Draco is a
 component library, and its constituent packages could be called components.  However, the DBS uses
 the term package to refer to code components sitting in draco/src, and that is the convention that
@@ -209,8 +209,8 @@ The targets for each package directory in Draco are
 The targets are determined by the package \c CMakeLists.txt file.  Generating this file is the
 subject of \ref pkg.  By default the executable will be the package name.  The library will have the
 name \c lib${LIB_PREFIX}package.  The \c LIB_PREFIX variable can be set at configure time, see \ref
-config_options.  By default \c LIB_PREFIX is set to \c rtt_. For example, the \c ds++ package will
-produce a library called \c librtt_ds++.a(so).  As described above, libraries are installed in
+config_options.  By default \c LIB_PREFIX is set to \c rtt_. For example, the \c dsxx package will
+produce a library called \c librtt_dsxx.a(so).  As described above, libraries are installed in
 $INSTALL/lib, headers in $INSTALL/include/pkg, and executables in $INSTALL/bin.  Draco libraries
 have a custom prefix to prevent name clashes between system libraries and Draco libraries.
 
@@ -270,7 +270,7 @@ to the \c quadrature package example, the \c rng package uses Random123 and the 
 use MPI; thus, the total link line should be:
 
 \verbatim
-  -lrtt_quadrature -lrtt_viz -lrtt_meshReaders -lrtt_rng -lrtt_c4 -lrtt_ds++ -lmpi -lgsl -lgsl_cblas
+  -lrtt_quadrature -lrtt_viz -lrtt_meshReaders -lrtt_rng -lrtt_c4 -lrtt_dsxx -lmpi -lgsl -lgsl_cblas
 \endverbatim
 
 where \c libgsl.a(so) is the GSL library.  The DBS automatically includes these vendor libraries;
@@ -302,7 +302,7 @@ This command queries the user for a list of options with descriptions.  After an
 configuration, <code>ccmake .</code> can be used as an interactive tool for modifying variables that
 control the build.
 
-\anchor dbc The \c ds++ package contains a Design-by-Contract implementation in Assert.hh.  The
+\anchor dbc The \c dsxx package contains a Design-by-Contract implementation in Assert.hh.  The
 compile level of Design-by-Contract is controlled by the \c --with-dbc configure option.  The
 following settings apply
 
@@ -381,7 +381,7 @@ Draco for this exercise using the Intel compiler.  Draco has been checked out in
 /scratch/$USER/draco.  The following packages sit under \c /scratch/$USER/draco/src:
 
 \verbatim
-  ds++/ cdi/ cdi_ndi/
+  dsxx/ cdi/ cdi_ndi/
 \endverbatim
 
 We will install Draco in /scratch/$USER/draco-cdi.  Here are the steps:

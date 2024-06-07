@@ -9,7 +9,7 @@
 #ifndef quadrature_Moment_hh
 #define quadrature_Moment_hh
 
-#include "ds++/DracoMath.hh"
+#include "dsxx/DracoMath.hh"
 
 namespace rtt_quadrature {
 

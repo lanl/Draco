@@ -6,7 +6,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "UnitSystem.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include <limits>
 
 namespace rtt_units {

@@ -9,7 +9,7 @@
 #ifndef rtt_rng_config_h
 #define rtt_rng_config_h
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 /* Enable Random123 C++11 support */
 #cmakedefine R123_USE_CXX11 @R123_USE_CXX11@

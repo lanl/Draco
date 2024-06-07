@@ -6,8 +6,8 @@
  * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
 #include <parmetis.h>
 #include <sstream>
 #include <vector>

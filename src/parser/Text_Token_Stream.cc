@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Text_Token_Stream.hh"
-#include "ds++/path.hh"
+#include "dsxx/path.hh"
 #include <cctype>
 #include <cstring>
 #include <string>

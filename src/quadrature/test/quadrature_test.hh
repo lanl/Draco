@@ -9,7 +9,7 @@
 #ifndef quadrature_quadrature_test_hh
 #define quadrature_quadrature_test_hh
 
-#include "ds++/UnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "quadrature/Quadrature.hh"
 #include "quadrature/Quadrature_Interface.hh"
 

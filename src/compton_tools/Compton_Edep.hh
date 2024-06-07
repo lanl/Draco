@@ -4,13 +4,13 @@
  * \author Kendra Long
  * \date   10 October 2022
  * \brief  Header file for Compton energy deposition data handling
- * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_compton_tools_Compton_Edep_hh
 #define rtt_compton_tools_Compton_Edep_hh
 
-#include "ds++/Interpolate.hh"
+#include "dsxx/Interpolate.hh"
 #include <string>
 
 namespace compton_edep {

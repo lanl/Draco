@@ -80,7 +80,7 @@
 #pragma warning(pop)
 #endif
 
-#include "ds++/Data_Table.hh"
+#include "dsxx/Data_Table.hh"
 #include <algorithm>
 
 namespace rtt_rng {

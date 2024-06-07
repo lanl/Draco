@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "TestHexMeshReader.hh"
-#include "ds++/Release.hh"
+#include "dsxx/Release.hh"
 #include "meshReaders/Hex_Mesh_Reader.hh"
 #include <cmath>
 #include <sstream>

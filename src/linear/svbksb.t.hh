@@ -10,8 +10,8 @@
 #ifndef linear_svbksb_t_hh
 #define linear_svbksb_t_hh
 
-#include "ds++/Assert.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "linear/svbksb.hh"
 #include <limits>
 #include <vector>

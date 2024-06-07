@@ -10,8 +10,8 @@
 #ifndef SLURM_Task_Info_hh
 #define SLURM_Task_Info_hh
 
-#include "ds++/Query_Env.hh"
-#include "ds++/config.h" // defines NODISCARD
+#include "dsxx/Query_Env.hh"
+#include "dsxx/config.h" // defines NODISCARD
 #include <cstdint>
 #include <tuple>
 

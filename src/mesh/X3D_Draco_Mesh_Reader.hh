@@ -11,8 +11,8 @@
 #define rtt_mesh_X3D_Draco_Mesh_Reader_hh
 
 #include "Draco_Mesh_Reader.hh"
-#include "ds++/Assert.hh"
-#include "ds++/config.h"
+#include "dsxx/Assert.hh"
+#include "dsxx/config.h"
 #include <map>
 #include <string>
 #include <vector>

@@ -10,7 +10,7 @@
 #ifndef linear_rsolv_i_hh
 #define linear_rsolv_i_hh
 
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 
 namespace rtt_linear {
 

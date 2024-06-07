@@ -10,7 +10,7 @@
 #ifndef min_brent_hh
 #define min_brent_hh
 
-#include "ds++/DracoMath.hh"
+#include "dsxx/DracoMath.hh"
 
 namespace rtt_min {
 

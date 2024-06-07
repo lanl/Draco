@@ -7,10 +7,10 @@
  * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/dbc.hh"
 #include "kde/quick_index.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
-#include "ds++/dbc.hh"
 #include <numeric>
 
 using namespace rtt_dsxx;

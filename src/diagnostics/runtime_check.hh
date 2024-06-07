@@ -9,7 +9,7 @@
 #ifndef diagnostics_runtime_check_hh
 #define diagnostics_runtime_check_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_diagnostics {
 

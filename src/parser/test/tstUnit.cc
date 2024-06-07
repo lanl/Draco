@@ -7,8 +7,8 @@
  */
 //------------------------------------------------------------------------------------------------//
 
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "parser/Unit.hh"
 #include <sstream>
 

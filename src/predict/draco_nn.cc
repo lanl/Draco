@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "draco_nn.hh"
-#include "ds++/FMA.hh"
-#include "ds++/dbc.hh"
+#include "dsxx/FMA.hh"
+#include "dsxx/dbc.hh"
 #include <fstream>
 #include <numeric>
 #include <string>

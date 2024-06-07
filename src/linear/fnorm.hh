@@ -10,7 +10,7 @@
 #ifndef linear_fnorm_hh
 #define linear_fnorm_hh
 
-#include "ds++/DracoMath.hh"
+#include "dsxx/DracoMath.hh"
 
 namespace rtt_linear {
 

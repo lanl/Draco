@@ -29,28 +29,28 @@ endif()
 # Level 1
 message(" ")
 message(STATUS "Configuring Level 1 packages --")
-add_subdirectory(ds++)
+add_subdirectory(dsxx)
 
 # Only test selected components if CI_CLANG_TIDY is running
 
 # Level 2
 message(" ")
 message(STATUS "Configuring Level 2 packages --")
-add_subdirectory(c4) #< needs ds++
-add_subdirectory(cdi) #< needs ds++
-add_subdirectory(device) #< needs ds++
-add_subdirectory(FortranChecks) #< needs ds++
-add_subdirectory(linear) #< needs ds++
-add_subdirectory(memory) #< needs ds++
-add_subdirectory(mesh_element) #< needs ds++
-add_subdirectory(ode) #< needs ds++
-add_subdirectory(units) #< needs ds++
+add_subdirectory(c4) #< needs dsxx
+add_subdirectory(cdi) #< needs dsxx
+add_subdirectory(device) #< needs dsxx
+add_subdirectory(FortranChecks) #< needs dsxx
+add_subdirectory(linear) #< needs dsxx
+add_subdirectory(memory) #< needs dsxx
+add_subdirectory(mesh_element) #< needs dsxx
+add_subdirectory(ode) #< needs dsxx
+add_subdirectory(units) #< needs dsxx
 
 # Level 3
 message(" ")
 message(STATUS "Configuring Level 3 packages --")
 if(USE_MDSPAN)
-  add_subdirectory(experimental) #< only the tests need ds++
+  add_subdirectory(experimental) #< only the tests need dsxx
   add_subdirectory(cdi_CPEloss) #< needs cdi, units, experimental
 endif()
 add_subdirectory(cdi_eospac) #< needs parser, ode, cdi
@@ -63,7 +63,7 @@ add_subdirectory(min) #< needs linear
 add_subdirectory(norms) #< needs c4
 add_subdirectory(parser) #< needs units, c4, mesh_element
 if(RANDOM123_FOUND)
-  add_subdirectory(rng) #< needs ds++, device
+  add_subdirectory(rng) #< needs dsxx, device
 endif()
 add_subdirectory(roots) #< needs linear
 add_subdirectory(VendorChecks) #< needs c4
@@ -74,14 +74,14 @@ add_subdirectory(predict)
 message(" ")
 message(STATUS "Configuring Level 4 packages --")
 add_subdirectory(cdi_analytic) #< needs parser, roots, ode, cdi
-add_subdirectory(cdi_ndi) #< needs ds++, rng, cdi
+add_subdirectory(cdi_ndi) #< needs dsxx, rng, cdi
 add_subdirectory(RTT_Format_Reader) #< needs meshReaders
 add_subdirectory(special_functions) #< needs roots, units, GSL
 
 # Level 5
 message(" ")
 message(STATUS "Configuring Level 5 packages --")
-add_subdirectory(compton_tools) #< needs ds++, units, cdi_analtyic
+add_subdirectory(compton_tools) #< needs dsxx, units, cdi_analtyic
 add_subdirectory(mesh) #< needs parser, RTT_Format_Reader, c4
 add_subdirectory(quadrature) #< needs mesh_element, parser, special_functions
 

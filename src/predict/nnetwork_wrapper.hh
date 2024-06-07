@@ -3,13 +3,13 @@
  * \file   predict/nnetwork_wrapper.hh
  * \author Mathew Cleveland
  * \brief  Definition of the neural network backend to enable build specific implementations.
- * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef predict_nnetwork_wrapper_hh
 #define predict_nnetwork_wrapper_hh
 
-#include "ds++/dbc.hh"
+#include "dsxx/dbc.hh"
 #include <string>
 #include <vector>
 #ifdef LIBTORCH

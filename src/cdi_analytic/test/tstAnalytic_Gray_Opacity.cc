@@ -8,11 +8,11 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_analytic_test.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "cdi/CDI.hh"
 #include "cdi_analytic/Analytic_Gray_Opacity.hh"
 #include "cdi_analytic/Compound_Analytic_MultigroupOpacity.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
 #include <sstream>
 
 using namespace std;

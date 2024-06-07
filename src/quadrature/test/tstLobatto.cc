@@ -9,9 +9,9 @@
 // $Id: template_test.cc 5830 2011-05-05 19:43:43Z kellyt $
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "quadrature_test.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
 #include "quadrature/Lobatto.hh"
 
 using namespace std;

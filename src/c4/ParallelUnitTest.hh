@@ -14,7 +14,7 @@
 #define c4_ParallelUnitTest_hh
 
 #include "C4_Functions.hh"
-#include "ds++/ScalarUnitTest.hh"
+#include "dsxx/ScalarUnitTest.hh"
 
 namespace rtt_c4 {
 
@@ -42,7 +42,7 @@ namespace rtt_c4 {
  }
  * \endcode
  *
- * \test All of the member functions of this class are tested by ds++/test/tstScalarUnitTest.cc,
+ * \test All of the member functions of this class are tested by dsxx/test/tstScalarUnitTest.cc,
  *       including the early exit caused by \c --version on the command line.
  *
  * \warning The output from this class is closely tied to the DBS python script \c

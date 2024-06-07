@@ -11,7 +11,7 @@
 #ifndef rtt_meshReaders_test_TestHexMeshReader_hh
 #define rtt_meshReaders_test_TestHexMeshReader_hh
 
-#include "ds++/ScalarUnitTest.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include <set>
 
 namespace rtt_meshReaders {

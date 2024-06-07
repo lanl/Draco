@@ -6,8 +6,8 @@
  * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "memory/memory.hh"
 #include <sstream>
 

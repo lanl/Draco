@@ -11,7 +11,7 @@
 #define rtt_cdi_CPEloss_hh
 
 #include "CPCommon.hh"
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include <string>
 #include <vector>
 

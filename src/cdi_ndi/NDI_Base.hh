@@ -12,8 +12,8 @@
 
 #include "cdi_ndi/config.h" // Definition of NDI_FOUND
 
-#include "ds++/Assert.hh"
-#include "ds++/path.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/path.hh"
 #include <algorithm>
 #include <limits>
 #include <map>

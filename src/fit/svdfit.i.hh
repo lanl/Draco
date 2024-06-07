@@ -10,7 +10,7 @@
 #ifndef fit_svdfit_i_hh
 #define fit_svdfit_i_hh
 
-#include "ds++/DracoMath.hh"
+#include "dsxx/DracoMath.hh"
 #include "linear/svbksb.hh"
 #include "linear/svdcmp.hh"
 

@@ -9,7 +9,7 @@
 #ifndef sf_F1_hh
 #define sf_F1_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_sf {
 //! Compute the Fermi-Dirac function of index 1.

@@ -8,11 +8,11 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ipcress_test.hh"
+#include "dsxx/Release.hh"
 #include "cdi/CDI.hh" // this includes everything from CDI
 #include "cdi_ipcress/IpcressFile.hh"
 #include "cdi_ipcress/IpcressGrayOpacity.hh"
 #include "cdi_ipcress/IpcressMultigroupOpacity.hh"
-#include "ds++/Release.hh"
 
 using namespace std;
 
@@ -138,7 +138,7 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
   // try using a vector of temps.
 
   vector<double> vtemperature = {0.5, 0.7}; // keV
-  density = 0.35;        // g/cm^3
+  density = 0.35;                           // g/cm^3
   vector<double> vRefOpacity(vtemperature.size());
   for (size_t i = 0; i < vtemperature.size(); ++i)
     vRefOpacity[i] = density * pow(vtemperature[i], 4);

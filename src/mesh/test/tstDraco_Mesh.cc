@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Mesh_Interface.hh"
+#include "dsxx/Release.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
 
 using rtt_mesh::Draco_Mesh;
 

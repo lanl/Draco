@@ -1,0 +1,82 @@
+//---------------------------------*-c++-*-----------------------------------//
+// dsxx.dcc
+// dsxx Overview page
+// Thomas M. Evans
+// Mon Apr 19 09:27:15 2004
+//------------------------------------------------------------------------------------------------//
+
+/*!
+
+\page overview_dsxx Overview of the dsxx package
+\version Draco-@Draco_VERSION@
+\author Kelly G. Thompson, Thomas M. Evans, Rob Lowrie, Mike Buksas,
+Geoffrey Furnish, Paul Henning, Randy Roberts, and Todd Urbatsch
+
+--------------------------------------------------------------------------------
+\section dsxx_abstract Abstract
+
+This package provides data structures and other miscellaneous support
+for the Draco system. Classes for matrices, design-by-contract,
+smart-pointers, and a variety of other utilities are included.
+
+The significant services provided in dsxx are:
+- \b SP (rtt_dsxx::SP) a smart pointer class
+- \b Packer \b Unpacker (rtt_dsxx::Packer, rtt_dsxx::Unpacker) utilities that
+     pack data types into a char *
+- \b soft_equiv (rtt_dsxx::soft_equiv()) a soft equivalence function for
+     floating point comparisons
+- \b ScalarUnitTest (rtt_dsxx::ScalarUnitTest) provides a unit test
+     framework for scalar code.
+.
+
+Additionally, a usefull Design-by-Contract implementation can be found in
+Assert.hh.
+
+--------------------------------------------------------------------------------
+\section sp Smart Pointer
+
+The smart pointer is used exhaustively by Draco and codes build on top of the
+DBS.
+
+--------------------------------------------------------------------------------
+\section assert Design-by-Contract Assertions
+
+See the \ref Draco_DBC section.
+
+--------------------------------------------------------------------------------
+\section brief_scalarunittest Scalar Unit Test Template
+
+The \ref rtt_dsxx::ScalarUnitTest "ScalarUnitTest" class provides some basic
+functionality for the creation of scalar unit tests within the Draco Build
+System.  This type of unit test corresponds directly to the \c configure.ac
+command \c AC_RUN_TESTS( \c testname, \c scalar).  Example usage is demonstrated
+in the unit test file <a href="dsxx_2test_2tst_array_8cc-example.html#_a1">
+dsxx/test/tstScalarUnitTest.cc </a>.  The ScalarUnitTest should always be
+instantiated inside of a try-catch block.
+
+--------------------------------------------------------------------------------
+\section sec_HOST_NAME_MAX HOST_NAME_MAX
+
+The selection of a value for HOST_NAME_MAX is completed by
+dsxx/CMakeLists.txt and dsxx/config.h.in.
+
+- For most Linux platforms, \c HOST_NAME_MAX is defined in \c \<limits.h\>.
+  However, according to the POSIX standard, \c HOST_NAME_MAX is a
+  \em possibly \em indeterminate definition meaning that it
+
+\note ...shall be omitted from \c \<limits.h\> on specific implementations where
+      the corresponding value is equal to or greater than the stated minimum,
+      but is unspecified.
+
+- The minimum POSIX guarantee is \c HOST_NAME_MAX = \c 256.
+- An alternate value used by some Unix systems is \c MAXHOSTNAMELEN as
+  defined in \c \<sys/param.h\>
+- On Windows, the variable \c MAX_COMPUTERNAME_LENGTH from \c \<windows.h\>
+  can be used. See http://msdn.microsoft.com/en-us/library/windows/desktop/ms738527%28v=vs.85%29.aspx
+- On Mac OSX, we use \c _POSIX_HOST_NAME_MAX.
+
+*/
+
+//------------------------------------------------------------------------------------------------//
+// end of dsxx.dcc
+//------------------------------------------------------------------------------------------------//

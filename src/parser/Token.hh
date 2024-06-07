@@ -9,7 +9,7 @@
 #ifndef rtt_Token_HH
 #define rtt_Token_HH
 
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 
 #if defined(MSVC)
 #undef ERROR

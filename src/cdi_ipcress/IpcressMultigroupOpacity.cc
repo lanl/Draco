@@ -10,8 +10,8 @@
 #include "IpcressMultigroupOpacity.hh"
 #include "IpcressDataTable.hh"
 #include "IpcressFile.hh"
-#include "ds++/Assert.hh"
-#include "ds++/Packing_Utils.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Packing_Utils.hh"
 #include <cmath>
 #include <memory>
 

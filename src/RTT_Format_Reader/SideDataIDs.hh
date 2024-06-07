@@ -11,7 +11,7 @@
 #define rtt_RTT_Format_Reader_SideDataIDs_hh
 
 #include "Dims.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <fstream>
 #include <iostream>
 #include <string>

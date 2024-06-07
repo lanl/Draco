@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "LC_Subrandom_Generator.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 
 namespace rtt_rng {
 

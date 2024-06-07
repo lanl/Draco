@@ -10,8 +10,8 @@
 #ifndef diagnostics_Diagnostics_hh
 #define diagnostics_Diagnostics_hh
 
+#include "dsxx/config.h"
 #include "diagnostics/config.h"
-#include "ds++/config.h"
 #include <map>
 #include <string>
 #include <vector>
@@ -91,7 +91,7 @@ extern DLL_PUBLIC_diagnostics std::map<std::string, std::vector<double>> vec_dou
  * User "Education").  Levels 2 and 3 are for low-level diagnostics that could incur a performance
  * penalty.  However, all of these usages are up to the client.
  *
- * The value for \c DRACO_DIAGNOSTICS is set and saved in ds++'s \c CMakeLists.txt and \c config.h,
+ * The value for \c DRACO_DIAGNOSTICS is set and saved in dsxx's \c CMakeLists.txt and \c config.h,
  * respectively.
  */
 /*!

@@ -7,9 +7,9 @@
  */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "quadrature_test.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
 #include "quadrature/Double_Gauss.hh"
 
 using namespace std;

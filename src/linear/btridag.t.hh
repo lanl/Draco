@@ -10,7 +10,7 @@
 #ifndef linear_btridag_t_hh
 #define linear_btridag_t_hh
 
-#include "ds++/Slice.hh"
+#include "dsxx/Slice.hh"
 #include "linear/btridag.hh"
 #include "linear/ludcmp.hh"
 #include <vector>

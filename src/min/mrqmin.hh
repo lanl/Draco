@@ -11,7 +11,7 @@
 #ifndef min_mrqmin_hh
 #define min_mrqmin_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_min {
 //! Perform a nonlinear least-squares fit using Levenberg-Marquardt method

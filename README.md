@@ -46,7 +46,7 @@ Spack - Draco can be installed via the [spack package manager](https:://github.c
     heterogeneous architecture platforms (GPU machines).
 * diagnostics - CPP macros that are activated at compile time that can provide
   additional diagnostic verbosity during calculations.
-* ds++ - Basic services and data structures library.
+* dsxx - Basic services and data structures library.
   * Array containers, assertion and Design-by-Contract, access to low level OS functions, file and
     path manipulation, unit test system, etc.
 * experimental - Implementations of C++ features that are not yet available to all compilers that

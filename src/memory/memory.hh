@@ -14,7 +14,7 @@
 #ifndef memory_memory_hh
 #define memory_memory_hh
 
-#include "ds++/config.h" // defines DRACO_DIAGNOSTICS
+#include "dsxx/config.h" // defines DRACO_DIAGNOSTICS
 #include <cstdint>       // cstdint not available on PGI
 #include <cstdlib>
 #include <iostream>

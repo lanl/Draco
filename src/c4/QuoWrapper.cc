@@ -9,7 +9,7 @@
 
 #include "QuoWrapper.hh"
 #include "C4_Functions.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 
 namespace rtt_c4 {
 

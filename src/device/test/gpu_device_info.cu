@@ -7,15 +7,15 @@
  * \note   Copyright (C) 2019-2020 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
+#include "dsxx/DracoStrings.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/SystemCall.hh"
+#include "dsxx/path.hh"
 #include "device/GPU_Device.hh"
 #include "device/config.h"
-#include "ds++/Assert.hh"
-#include "ds++/DracoStrings.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/Soft_Equivalence.hh"
-#include "ds++/SystemCall.hh"
-#include "ds++/path.hh"
 #include <iostream>
 #include <sstream>
 #include <time.h>

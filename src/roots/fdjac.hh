@@ -10,8 +10,8 @@
 #ifndef roots_fdjac_hh
 #define roots_fdjac_hh
 
-#include "ds++/Assert.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include <algorithm>
 #include <cfloat>
 #include <cmath>

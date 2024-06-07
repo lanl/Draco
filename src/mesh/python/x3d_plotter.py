@@ -3,7 +3,7 @@
 # file  src/mesh/python/x3d_plotter.py
 # date  Monday, Aug 9, 2021
 # brief This script plots X3D mesh files.
-# note  Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
+# note  Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import matplotlib.pyplot as plt
 import argparse

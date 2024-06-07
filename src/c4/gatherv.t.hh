@@ -11,9 +11,9 @@
 #define c4_gatherv_t_hh
 
 #include "C4_Functions.hh"
+#include "dsxx/Assert.hh"
 #include "gatherv.hh"
 #include "c4/config.h"
-#include "ds++/Assert.hh"
 #include <algorithm>
 #include <limits>
 

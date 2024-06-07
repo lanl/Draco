@@ -8,10 +8,10 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Topology.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "c4/Compare.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include "mesh/DD_Topology.hh"
 #include "mesh/Parallel_Data_Operator.hh"
 #include "mesh/Rep_Topology.hh"

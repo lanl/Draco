@@ -10,7 +10,7 @@
 #ifndef rtt_compton_tools_Compton_Native_hh
 #define rtt_compton_tools_Compton_Native_hh
 
-#include "ds++/config.h" // defines NODISCARD
+#include "dsxx/config.h" // defines NODISCARD
 #include <cstdint>
 #include <string>
 #include <vector>

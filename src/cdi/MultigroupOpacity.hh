@@ -11,7 +11,7 @@
 #define rtt_cdi_MultigroupOpacity_hh
 
 #include "OpacityCommon.hh"
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include <string>
 #include <vector>
 

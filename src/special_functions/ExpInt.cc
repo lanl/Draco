@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "ExpInt.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include <cstdio>
 #include <cstdlib>
 #include <iomanip>
@@ -71,7 +71,7 @@ double En(unsigned const n, double const x) {
       }
     }
     Insist(false, "continued fraction failed in En"); // LCOV_EXCL_LINE
-  } else //do series
+  } else                                              //do series
   {
     //first term
     if (nm1 != 0)

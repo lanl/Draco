@@ -7,10 +7,10 @@
  * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "device/GPU_CheckError.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include <iostream>
 #include <string>
 #include <vector>

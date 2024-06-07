@@ -8,10 +8,10 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "NDI_Base.hh"
-#include "ds++/DracoStrings.hh"
-#include "ds++/Query_Env.hh"
-#include "ds++/SystemCall.hh"
-#include "ds++/dbc.hh"
+#include "dsxx/DracoStrings.hh"
+#include "dsxx/Query_Env.hh"
+#include "dsxx/SystemCall.hh"
+#include "dsxx/dbc.hh"
 #include <algorithm>
 
 namespace rtt_cdi_ndi {

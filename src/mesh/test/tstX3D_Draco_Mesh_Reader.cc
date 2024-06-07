@@ -8,9 +8,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Mesh_Interface.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include "mesh/Draco_Mesh_Builder.hh"
 #include "mesh/X3D_Draco_Mesh_Reader.hh"
 

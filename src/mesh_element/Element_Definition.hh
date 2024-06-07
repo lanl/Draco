@@ -10,7 +10,7 @@
 #ifndef rtt_mesh_element_Element_Definition_hh
 #define rtt_mesh_element_Element_Definition_hh
 
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <ostream>
 #include <stdexcept>
 #include <string>

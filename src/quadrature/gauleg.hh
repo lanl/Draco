@@ -11,7 +11,7 @@
 #ifndef rtt_quadrature_gauleg_hh
 #define rtt_quadrature_gauleg_hh
 
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "units/PhysicalConstants.hh"
 #include <gsl/gsl_sf_legendre.h>
 #include <limits>

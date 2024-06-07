@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Procmon.hh"
-#include "ds++/DracoStrings.hh" // tokenize()
-#include "ds++/path.hh"
+#include "dsxx/DracoStrings.hh" // tokenize()
+#include "dsxx/path.hh"
 #include <cstdlib> // atof (XLC)
 #include <fstream>
 #include <iomanip>

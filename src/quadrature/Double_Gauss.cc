@@ -11,7 +11,7 @@
 
 #include "Double_Gauss.hh"
 #include "Gauss_Legendre.hh"
-#include "ds++/DracoStrings.hh"
+#include "dsxx/DracoStrings.hh"
 #include <numeric>
 
 namespace rtt_quadrature {

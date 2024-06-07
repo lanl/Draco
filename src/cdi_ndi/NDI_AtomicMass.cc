@@ -9,8 +9,8 @@
 
 #include "NDI_AtomicMass.hh"
 #include "NDI_Base.hh"
-#include "ds++/DracoStrings.hh"
-#include "ds++/SystemCall.hh"
+#include "dsxx/DracoStrings.hh"
+#include "dsxx/SystemCall.hh"
 #include <array>
 
 namespace rtt_cdi_ndi {

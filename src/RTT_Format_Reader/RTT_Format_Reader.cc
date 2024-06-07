@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "RTT_Format_Reader.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <sstream>
 
 namespace rtt_RTT_Format_Reader {

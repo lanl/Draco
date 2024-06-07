@@ -7,12 +7,12 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/DracoStrings.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "cdi_eospac/Eospac.hh"
 #include "cdi_eospac/EospacException.hh"
-#include "ds++/DracoStrings.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include <iomanip>
 #include <sstream>
 

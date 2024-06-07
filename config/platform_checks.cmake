@@ -9,7 +9,7 @@ include_guard(GLOBAL)
 # cmake-lint: disable=R0912,R0915
 
 # ------------------------------------------------------------------------------------------------ #
-# Identify machine and save name in ds++/config.h
+# Identify machine and save name in dsxx/config.h
 # ------------------------------------------------------------------------------------------------ #
 function(dbs_set_sitename)
 
@@ -84,7 +84,7 @@ dbs_set_sitename()
 # ------------------------------------------------------------------------------------------------ #
 # Determine System Type and System Names
 #
-# Used by ds++ and c4.
+# Used by dsxx and c4.
 # ------------------------------------------------------------------------------------------------ #
 macro(set_draco_uname)
   # Store platform information in config.h
@@ -109,7 +109,7 @@ endmacro()
 # ------------------------------------------------------------------------------------------------ #
 # Determine if gethostname() is available. Determine the value of HOST_NAME_MAX.
 #
-# Used by ds++/SystemCall.cc and ds++/path.cc
+# Used by dsxx/SystemCall.cc and dsxx/path.cc
 # ------------------------------------------------------------------------------------------------ #
 macro(query_have_gethostname)
   # Platform checks for gethostname()
@@ -157,7 +157,7 @@ endmacro()
 # ------------------------------------------------------------------------------------------------ #
 # Determine if gethostname() is available. Determine the value of HOST_NAME_MAX.
 #
-# Used by ds++/SystemCall.cc and ds++/path.cc
+# Used by dsxx/SystemCall.cc and dsxx/path.cc
 # ------------------------------------------------------------------------------------------------ #
 macro(query_have_maxpathlen)
   include(CheckSymbolExists)

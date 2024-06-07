@@ -9,7 +9,7 @@
 
 #ifndef rtt_mesh_CAMR_Layout_hh
 #define rtt_mesh_CAMR_Layout_hh
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <iosfwd>
 #include <map>
 #include <memory>

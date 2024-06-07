@@ -7,9 +7,9 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/swap.hh"
-#include "ds++/Release.hh"
 #include <cmath>
 
 using namespace std;

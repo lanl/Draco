@@ -11,7 +11,7 @@
 #define rtt_units_UnitSystem_hh
 
 #include "UnitSystemType.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <cmath>
 
 namespace rtt_units {

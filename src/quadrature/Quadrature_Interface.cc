@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Quadrature_Interface.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include "quadrature/config.h"
 #include <iostream>
 #include <vector>

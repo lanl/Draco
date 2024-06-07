@@ -10,7 +10,7 @@
 #ifndef ode_Function_Traits_hh
 #define ode_Function_Traits_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include <complex>
 
 namespace rtt_ode {

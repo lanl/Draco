@@ -10,7 +10,7 @@
 #ifndef rtt_viz_Viz_Traits_hh
 #define rtt_viz_Viz_Traits_hh
 
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <set>
 #include <vector>
 

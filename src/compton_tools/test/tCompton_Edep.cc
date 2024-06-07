@@ -4,14 +4,14 @@
  * \author Kendra P. Long
  * \date   2022 Oct 7
  * \brief  Implementation file for tCompton_Edep
- * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "compton_tools/Compton_Edep.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include <fstream>
 #include <iomanip>
 #include <sstream>

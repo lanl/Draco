@@ -10,7 +10,7 @@
 #ifndef linear_btridag_hh
 #define linear_btridag_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_linear {
 

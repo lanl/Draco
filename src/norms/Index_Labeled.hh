@@ -10,7 +10,7 @@
 #ifndef rtt_norms_Index_Labeled_hh
 #define rtt_norms_Index_Labeled_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include <string>
 
 namespace rtt_norms {

@@ -7,10 +7,10 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/Soft_Equivalence.hh"
-#include "ds++/config.h" // OPENMP_FOUND will be set here
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/config.h" // OPENMP_FOUND will be set here
 #include <functional>    // std::function
 
 #ifdef OPENMP_FOUND
