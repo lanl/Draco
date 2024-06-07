@@ -32,7 +32,11 @@
 #define GPU_HOST_DEVICE __host__ __device__
 #define GPU_DEVICE __device__
 #define GPU_KERNEL __global__
+#if (defined __CUDA_ARCH__ || defined __HIP_DEVICE_COMPILE__)
 #define CONSTANT __constant__
+#else
+#define CONSTANT constexpr
+#endif
 
 #else
 
