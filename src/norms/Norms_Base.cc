@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Norms_Base.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Soft_Equivalence.hh"
 
 using namespace rtt_norms;
 

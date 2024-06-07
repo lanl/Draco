@@ -10,7 +10,7 @@
 #ifndef sf_factorial_hh
 #define sf_factorial_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_sf {
 

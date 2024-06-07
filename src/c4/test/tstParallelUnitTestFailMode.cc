@@ -16,11 +16,11 @@
  * be exposed during normal use.
  */
 
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/SystemCall.hh"
 #include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/SystemCall.hh"
 #include <sstream>
 
 using namespace std;

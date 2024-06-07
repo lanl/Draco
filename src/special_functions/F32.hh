@@ -10,7 +10,7 @@
 #ifndef sf_F32_hh
 #define sf_F32_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_sf {
 //! Calculate Fermi-Dirac integral of index 3/2.

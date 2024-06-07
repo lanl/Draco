@@ -10,7 +10,7 @@
 #ifndef rtt_special_functions_gaulag_hh
 #define rtt_special_functions_gaulag_hh
 
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "units/PhysicalConstants.hh"
 #include <gsl/gsl_sf_gamma.h>
 #include <limits>

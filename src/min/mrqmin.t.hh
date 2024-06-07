@@ -10,9 +10,9 @@
 #ifndef min_mrqmin_t_hh
 #define min_mrqmin_t_hh
 
-#include "ds++/Assert.hh"
-#include "ds++/DracoMath.hh"
-#include "ds++/dbc.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/DracoMath.hh"
+#include "dsxx/dbc.hh"
 #include "linear/gaussj.hh"
 #include "min/mrqmin.hh"
 #include <cmath>

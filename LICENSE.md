@@ -109,5 +109,5 @@ packages may are listed below:
    partitioning unstructured graphs, meshes, and for computing fill-reducing orderings of sparse
    matrices.
 
-9. `ds++/terminal.h` and `ds++/terminal_base.h` developed by Ondřej Čertík,
+9. `dsxx/terminal.h` and `dsxx/terminal_base.h` developed by Ondřej Čertík,
    [link](https://github.com/certik/terminal) MIT License

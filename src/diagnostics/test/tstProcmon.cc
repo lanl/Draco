@@ -8,10 +8,10 @@
  */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/DracoStrings.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "diagnostics/Procmon.hh"
-#include "ds++/DracoStrings.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
 #include <cstdlib> // atof (XLC)
 #include <sstream>
 

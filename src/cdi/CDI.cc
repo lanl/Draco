@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "CDI.hh"
-#include "ds++/Safe_Divide.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Safe_Divide.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include <iostream>
 #include <limits>
 #include <numeric>

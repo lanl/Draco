@@ -9,9 +9,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ipcress_test.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "cdi_ipcress/IpcressFile.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
 
 using namespace std;
 

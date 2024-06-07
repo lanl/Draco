@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "diagnostics/runtime_check.hh"
+#include "dsxx/DracoStrings.hh"
 #include "c4/C4_Functions.hh"
-#include "ds++/DracoStrings.hh"
 #include <exception>
 
 namespace rtt_diagnostics {

@@ -10,7 +10,7 @@
 #ifndef norms_norm_hh
 #define norms_norm_hh
 
-#include "ds++/DracoMath.hh"
+#include "dsxx/DracoMath.hh"
 
 namespace rtt_norms {
 

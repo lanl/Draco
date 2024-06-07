@@ -10,10 +10,10 @@
 #ifndef cdi_ndi_NDI_AtomicMass_hh
 #define cdi_ndi_NDI_AtomicMass_hh
 
+#include "dsxx/Assert.hh"
+#include "dsxx/Query_Env.hh"
+#include "dsxx/path.hh"
 #include "cdi_ndi/config.h" // definition of NDI_FOUND
-#include "ds++/Assert.hh"
-#include "ds++/Query_Env.hh"
-#include "ds++/path.hh"
 #include "units/PhysicalConstexprs.hh"
 #include <string>
 

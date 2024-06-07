@@ -7,10 +7,10 @@
  * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/path.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
-#include "ds++/path.hh"
 #include "viz/Ensight_Translator.hh"
 
 using rtt_viz::Ensight_Translator;

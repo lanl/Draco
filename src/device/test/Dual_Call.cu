@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Dual_Call.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 
 namespace rtt_device_test {
 

@@ -7,7 +7,7 @@
  * \note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "ds++/DracoTerminal.hh"
+#include "dsxx/DracoTerminal.hh"
 
 //------------------------------------------------------------------------------------------------//
 // forward declaration of f90 functions

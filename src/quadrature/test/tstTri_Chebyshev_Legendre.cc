@@ -7,9 +7,9 @@
  */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "quadrature_test.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
 #include "quadrature/Tri_Chebyshev_Legendre.hh"
 
 using namespace std;

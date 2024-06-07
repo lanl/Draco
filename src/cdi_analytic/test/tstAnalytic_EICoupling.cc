@@ -7,10 +7,10 @@
  * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "cdi/CDI.hh"
 #include "cdi_analytic/Analytic_EICoupling.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
 
 using namespace std;
 

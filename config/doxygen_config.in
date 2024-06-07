@@ -907,7 +907,7 @@ EXCLUDE_SYMLINKS       = NO
 
 # Attempt to avoid this warning:
 # /scratch/kellyt/gcc-mpid/install/autodoc/Draco.tag:66701: warning: Duplicate anchor HOST_NAME_MAX found
-EXCLUDE_PATTERNS       = */ds++/config.h
+EXCLUDE_PATTERNS       = */dsxx/config.h
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the

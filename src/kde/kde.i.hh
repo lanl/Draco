@@ -11,7 +11,7 @@
 #ifndef kde_kde_i_hh
 #define kde_kde_i_hh
 
-#include "ds++/dbc.hh"
+#include "dsxx/dbc.hh"
 
 namespace rtt_kde {
 

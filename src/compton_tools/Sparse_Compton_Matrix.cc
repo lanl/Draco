@@ -9,8 +9,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "compton_tools/Sparse_Compton_Matrix.hh"
+#include "dsxx/Assert.hh"
 #include "c4/global.hh"
-#include "ds++/Assert.hh"
 #include <iostream>
 
 namespace rtt_compton_tools {

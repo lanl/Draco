@@ -9,9 +9,9 @@
 #ifndef linear_gaussj_t_hh
 #define linear_gaussj_t_hh
 
-#include "ds++/Assert.hh"
-#include "ds++/DracoMath.hh"
-#include "ds++/Field_Traits.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/DracoMath.hh"
+#include "dsxx/Field_Traits.hh"
 #include "linear/gaussj.hh"
 #include <algorithm>
 #include <sstream>

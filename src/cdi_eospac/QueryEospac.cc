@@ -10,9 +10,9 @@
 #include "Eospac.hh"
 #include "EospacException.hh"
 #include "SesameTables.hh"
-#include "ds++/Assert.hh"
-#include "ds++/Release.hh"
-#include "ds++/XGetopt.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/XGetopt.hh"
 #include <cmath>
 #include <cstdlib> // defines atoi
 #include <iostream>

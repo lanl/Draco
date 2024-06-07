@@ -27,7 +27,7 @@ digraph RTT_Format_Reader_package_level {
     Sides [shape=box, color=black, label="Sides"];
 
     /* draco nodes */
-    rtt_dsxx [shape=house, color=blue, label="rtt_ds++"];
+    rtt_dsxx [shape=house, color=blue, label="rtt_dsxx"];
     rtt_meshReaders [shape=house, color=blue, label="rtt_meshReaders"];
 
     /* vendor nodes */

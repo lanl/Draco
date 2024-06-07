@@ -14,8 +14,8 @@
 #include "Parallel_Data_Operator.hh"
 #include "Topology.hh"
 #include "Topology_Builder.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "c4/C4_Functions.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include "mesh/CAMR_Layout.hh"
 #include <algorithm>
 #include <array>

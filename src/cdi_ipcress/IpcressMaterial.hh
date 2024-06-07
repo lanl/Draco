@@ -10,7 +10,7 @@
 #ifndef rtt_cdi_ipcress_IpcressMaterial_hh
 #define rtt_cdi_ipcress_IpcressMaterial_hh
 
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <algorithm>
 #include <cctype>
 #include <fstream>

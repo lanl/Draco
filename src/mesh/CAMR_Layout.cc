@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "CAMR_Layout.hh"
+#include "dsxx/Endian.hh"
 #include "c4/C4_Functions.hh"
-#include "ds++/Endian.hh"
 #include <algorithm>
 #include <array>
 #include <cmath>

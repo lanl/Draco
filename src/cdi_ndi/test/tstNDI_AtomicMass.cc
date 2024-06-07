@@ -7,14 +7,14 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/SystemCall.hh"
+#include "dsxx/dbc.hh"
+#include "dsxx/path.hh"
 #include "cdi/CDI.hh"
 #include "cdi_ndi/NDI_AtomicMass.hh"
 #include "cdi_ndi/config.h"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/SystemCall.hh"
-#include "ds++/dbc.hh"
-#include "ds++/path.hh"
 #include <fstream>
 #include <iostream>
 #include <sstream>

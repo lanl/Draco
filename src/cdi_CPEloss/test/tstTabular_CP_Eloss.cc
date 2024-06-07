@@ -7,11 +7,11 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/dbc.hh"
 #include "cdi/CDI.hh"
 #include "cdi_CPEloss/Tabular_CP_Eloss.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/dbc.hh"
 #include <sstream>
 
 using rtt_cdi_cpeloss::Tabular_CP_Eloss;

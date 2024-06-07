@@ -3,24 +3,23 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2016 Feb 13
 # brief  Generate dll_declspec.h used to define DLL_PUBLIC_<pkg> definitions.
-# note   Copyright (C) 2016-2020, Triad National Security, LLC.
-#        All rights reserved.
+# note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 include_guard(GLOBAL)
 
-function( generate_dll_declspec dir components )
+# Generate a file used to define DLL_PUBLIC_pkg> definitions
+function(generate_dll_declspec dir components)
 
-string( REPLACE "+" "x" safedir ${dir} )
+  string(REPLACE "+" "x" safedir ${dir})
 
-set( dll_declspec_content
-"/*---------------------------------------------*-C-*----------------------------------------------*/
+  set(dll_declspec_content
+      "/*------------------------------------------*-C-*------------------------------------------*/
 /*!
  * file   dll_declspec.h
  * brief  Defined macros that are used as declarators to control dllexport
  *        or dllimport linkage for dll files.
- * note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *        All rights reserved.
+ * note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved.
  *
  * Provide toolset for hiding symbols from shared libraries.  By default MSVC
  * hides everying unless they are marked as 'dllexport'.  By default
@@ -52,7 +51,7 @@ set( dll_declspec_content
  *    static void foo(int a);
  * };
  *
- * // ds++/isFinite_pt.cc file:
+ * // dsxx/isFinite_pt.cc file:
  * template DLL_PUBLIC_foo
  * bool isInfinity( float const & x );
  */
@@ -65,15 +64,17 @@ set( dll_declspec_content
 #ifndef rtt_${safedir}_declspec_h
 #define rtt_${safedir}_declspec_h")
 
-if(CMAKE_COMPILER_IS_GNUCXX)
-set( dll_declspec_content "${dll_declspec_content}
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    set(dll_declspec_content
+        "${dll_declspec_content}
 
 #define CMAKE_COMPILER_IS_GNUCXX 1
 
 ")
-endif()
+  endif()
 
-set( dll_declspec_content "${dll_declspec_content}
+  set(dll_declspec_content
+      "${dll_declspec_content}
 
 #ifdef DRACO_SHARED_LIBS /* building shared or static libs? */
 
@@ -81,8 +82,9 @@ set( dll_declspec_content "${dll_declspec_content}
   #if defined _WIN32 || defined __CYGWIN__
 ")
 
-foreach(pkg ${components} )
-  set( dll_declspec_content "${dll_declspec_content}
+  foreach(pkg ${components})
+    set(dll_declspec_content
+        "${dll_declspec_content}
     #ifdef Lib_${pkg}_EXPORTS /* building dll or importing symbols? */
       #ifdef __GNUC__
         #define DLL_PUBLIC_${pkg} __attribute__((dllexport))
@@ -99,26 +101,23 @@ foreach(pkg ${components} )
       #endif /* __GNUC__ */
     #endif
 ")
-endforeach()
+  endforeach()
 
-set( dll_declspec_content "${dll_declspec_content}
+  set(dll_declspec_content "${dll_declspec_content}
     #define DLL_LOCAL")
 
-#set( dll_declspec_content "${dll_declspec_content}
-#  #else /* DRACO_SHARED_LIBS */
-#    /* when building static libraries, no need to export symbols. */")
+  # set( dll_declspec_content "${dll_declspec_content} #else /* DRACO_SHARED_LIBS */ /* when
+  # building static libraries, no need to export symbols. */")
 
-# foreach(pkg ${components} )
-  # set( dll_declspec_content "${dll_declspec_content}
-    # #define DLL_PUBLIC_${pkg}")
-# endforeach()
+  # foreach(pkg ${components} ) set( dll_declspec_content "${dll_declspec_content} #define
+  # DLL_PUBLIC_${pkg}") endforeach()
 
-# set( dll_declspec_content "${dll_declspec_content}
-    # #define DLL_LOCAL
+  # set( dll_declspec_content "${dll_declspec_content} #define DLL_LOCAL
 
   # #endif /* DRACO_SHARED_LIBS */")
 
-set( dll_declspec_content "${dll_declspec_content}
+  set(dll_declspec_content
+      "${dll_declspec_content}
 
   /* Linux ---------------------------------------- */
   #else
@@ -136,15 +135,17 @@ distiction, I am disabling setting attributes when GCC is used.
 (KT 2016-03-04) */
 ")
 
-foreach(pkg ${components} )
-  set( dll_declspec_content "${dll_declspec_content}
+  foreach(pkg ${components})
+    set(dll_declspec_content
+        "${dll_declspec_content}
       // #define DLL_PUBLIC_${pkg} __attribute__ ((visibility(\"default\")))
       #define DLL_PUBLIC_${pkg} ")
-endforeach()
+  endforeach()
 
-set( dll_declspec_content "${dll_declspec_content}
+  set(dll_declspec_content
+      "${dll_declspec_content}
       #define DLL_LOCAL  __attribute__ ((visibility(\"hidden\")))
-      /* These defines are taken from ds++/Compiler.hh written by Paul Henning */
+      /* These defines are taken from dsxx/Compiler.hh written by Paul Henning */
       /* #define HIDE_FUNC __attribute__ ((visibility (\"hidden\"))) */
       /* #define EXPORT_FUNC __attribute__ ((visibility (\"default\"))) */
       /* #define HIDE_CLASS __attribute ((visibility (\"hidden\"))) */
@@ -152,12 +153,13 @@ set( dll_declspec_content "${dll_declspec_content}
     #else
 ")
 
-foreach(pkg ${components} )
-  set( dll_declspec_content "${dll_declspec_content}
+  foreach(pkg ${components})
+    set(dll_declspec_content "${dll_declspec_content}
       #define DLL_PUBLIC_${pkg}")
-endforeach()
+  endforeach()
 
-set( dll_declspec_content "${dll_declspec_content}
+  set(dll_declspec_content
+      "${dll_declspec_content}
       #define DLL_LOCAL
     #endif /* __GNUC__ >=4 */
   #endif /* Win or Linux */
@@ -165,18 +167,20 @@ set( dll_declspec_content "${dll_declspec_content}
 /* When building static libraries, no need to export symbols. ---------------*/
 #else /* DRACO_SHARED_LIBS */
 ")
-foreach(pkg ${components} )
-  set( dll_declspec_content "${dll_declspec_content}
+  foreach(pkg ${components})
+    set(dll_declspec_content "${dll_declspec_content}
   #define DLL_PUBLIC_${pkg}")
-endforeach()
+  endforeach()
 
-set( dll_declspec_content "${dll_declspec_content}
+  set(dll_declspec_content
+      "${dll_declspec_content}
   #define DLL_LOCAL
 
 #endif /* DRACO_SHARED_LIBS */
 ")
 
-set( dll_declspec_content "${dll_declspec_content}
+  set(dll_declspec_content
+      "${dll_declspec_content}
 #endif /* __${safedir}_declspec_h__ */
 
 /*------------------------------------------------------------------------------------------------*/
@@ -184,10 +188,10 @@ set( dll_declspec_content "${dll_declspec_content}
 /*------------------------------------------------------------------------------------------------*/
 ")
 
-file( WRITE ${PROJECT_BINARY_DIR}/${dir}/dll_declspec.h ${dll_declspec_content})
+  file(WRITE ${PROJECT_BINARY_DIR}/${dir}/dll_declspec.h ${dll_declspec_content})
 
 endfunction()
 
-#--------------------------------------------------------------------------------------------------#
+# -------------------------------------------------------------------------------------------------#
 # end config/generate_dll
-#--------------------------------------------------------------------------------------------------#
+# -------------------------------------------------------------------------------------------------#

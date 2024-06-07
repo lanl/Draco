@@ -7,7 +7,7 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include <cmath>
 #include <iostream>
 

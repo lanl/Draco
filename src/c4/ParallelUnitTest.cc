@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "ParallelUnitTest.hh"
-#include "ds++/Release.hh"
-#include "ds++/XGetopt.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/XGetopt.hh"
 #include <iostream>
 #include <sstream>
 #include <string>

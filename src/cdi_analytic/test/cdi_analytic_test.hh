@@ -10,8 +10,8 @@
 #ifndef rtt_cdi_analytic_test_hh
 #define rtt_cdi_analytic_test_hh
 
+#include "dsxx/Packing_Utils.hh"
 #include "cdi_analytic/Analytic_Models.hh"
-#include "ds++/Packing_Utils.hh"
 
 namespace rtt_cdi_analytic_test {
 

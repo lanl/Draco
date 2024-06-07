@@ -8,8 +8,8 @@
  */
 //------------------------------------------------------------------------------------------------//
 
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "parser/Console_Token_Stream.hh"
 #include <sstream>
 

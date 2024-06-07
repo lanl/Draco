@@ -1,14 +1,14 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-pgi.cmake
 # brief  Establish flags for Linux64 - Portland Group C/C++
-# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
 
 set(draco_isPGI
     1
-    CACHE BOOL "Are we using PGI CXX? -> ds++/config.h")
+    CACHE BOOL "Are we using PGI CXX? -> dsxx/config.h")
 
 # NOTE: You may need to set TMPDIR to a location that the compiler can write temporary files to.
 # Sometimes the default space on HPC is not sufficient.

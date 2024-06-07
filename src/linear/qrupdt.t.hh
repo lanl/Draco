@@ -10,10 +10,10 @@
 #ifndef linear_qrupdt_t_hh
 #define linear_qrupdt_t_hh
 
+#include "dsxx/Assert.hh"
+#include "dsxx/DracoMath.hh"
 #include "qrupdt.hh"
 #include "rotate.hh"
-#include "ds++/Assert.hh"
-#include "ds++/DracoMath.hh"
 
 namespace rtt_linear {
 //------------------------------------------------------------------------------------------------//

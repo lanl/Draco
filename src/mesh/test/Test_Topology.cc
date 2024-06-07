@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Topology.hh"
+#include "dsxx/Assert.hh"
 #include "c4/global.hh"
-#include "ds++/Assert.hh"
 #include "mesh/DD_Topology.hh"
 #include <vector>
 

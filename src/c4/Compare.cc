@@ -8,7 +8,7 @@
 
 #include "Compare.hh"
 #include "C4_Functions.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Soft_Equivalence.hh"
 
 namespace rtt_c4 {
 

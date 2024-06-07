@@ -7,10 +7,10 @@
  * \note   Copyright (C) 2019-2020 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "device/GPU_Device.hh"
 #include "device/test/Dual_Call.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
 
 #include <iostream>
 #include <stdio.h>

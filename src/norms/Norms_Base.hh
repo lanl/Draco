@@ -10,7 +10,7 @@
 #ifndef rtt_norms_Norms_Base_hh
 #define rtt_norms_Norms_Base_hh
 
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <cmath>
 
 namespace rtt_norms {

@@ -11,9 +11,9 @@
 #define rtt_cdi_ipcress_IpcressFile_t_hh
 
 #include "IpcressFile.hh"
-#include "ds++/Assert.hh"
-#include "ds++/Endian.hh"
-#include "ds++/path.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Endian.hh"
+#include "dsxx/path.hh"
 
 namespace rtt_cdi_ipcress {
 

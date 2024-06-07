@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Analytic_CP_Eloss.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 
 namespace rtt_cdi_cpeloss {
 

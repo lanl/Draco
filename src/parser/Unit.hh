@@ -9,7 +9,7 @@
 #ifndef rtt_parser_Unit_hh
 #define rtt_parser_Unit_hh
 
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "units/PhysicalConstantsSI.hh"
 
 namespace rtt_parser {

@@ -10,7 +10,7 @@
 #ifndef special_functions_Ylm_hh
 #define special_functions_Ylm_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_sf {
 

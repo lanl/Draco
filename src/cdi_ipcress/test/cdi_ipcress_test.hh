@@ -10,8 +10,8 @@
 #ifndef rtt_cdi_ipcress_test_hh
 #define rtt_cdi_ipcress_test_hh
 
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include <sstream>
 
 namespace rtt_cdi_ipcress_test {

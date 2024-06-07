@@ -4,13 +4,13 @@
  * \author Mathew Cleveland
  * \date   Nov. 10th 2020
  * \brief  KDE function tests
- * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "predict/nnetwork_interface.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include <numeric>
 #include <string>
 

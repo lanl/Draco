@@ -8,9 +8,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "NDI_CP_Eloss.hh"
-#include "ds++/DracoStrings.hh"
-#include "ds++/Interpolate.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/DracoStrings.hh"
+#include "dsxx/Interpolate.hh"
+#include "dsxx/Soft_Equivalence.hh"
 
 #include <cmath>
 

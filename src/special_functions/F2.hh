@@ -9,7 +9,7 @@
 #ifndef sf_F2_hh
 #define sf_F2_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_sf {
 //! Calculate Fermi-Dirac integral of index 2.

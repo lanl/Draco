@@ -10,7 +10,7 @@
 #ifndef rtt_mesh_Draco_Mesh_Reader_hh
 #define rtt_mesh_Draco_Mesh_Reader_hh
 
-#include "ds++/config.h" // defines NODISCARD
+#include "dsxx/config.h" // defines NODISCARD
 #include <cstddef>
 #include <vector>
 

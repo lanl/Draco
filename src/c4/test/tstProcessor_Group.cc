@@ -8,10 +8,10 @@
  */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/Processor_Group.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
 
 using namespace std;
 using namespace rtt_dsxx;

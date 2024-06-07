@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Token_Equivalence.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include <cstdlib>
 #include <sstream>
 #include <string>

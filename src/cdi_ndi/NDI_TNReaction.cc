@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "NDI_TNReaction.hh"
-#include "ds++/Query_Env.hh"
-#include "ds++/dbc.hh"
+#include "dsxx/Query_Env.hh"
+#include "dsxx/dbc.hh"
 #include <array>
 #include <cmath>
 

@@ -7,8 +7,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Compound_Analytic_MultigroupOpacity.hh"
-#include "ds++/Packing_Utils.hh"
-#include "ds++/dbc.hh"
+#include "dsxx/Packing_Utils.hh"
+#include "dsxx/dbc.hh"
 
 namespace rtt_cdi_analytic {
 

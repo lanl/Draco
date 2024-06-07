@@ -8,11 +8,11 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "draco_info.hh"
+#include "dsxx/DracoStrings.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
 #include "c4/config.h"
 #include "diagnostics/config.h"
-#include "ds++/DracoStrings.hh"
-#include "ds++/Release.hh"
-#include "ds++/UnitTest.hh"
 #include <algorithm> // tolower
 #include <iostream>
 #include <iterator>

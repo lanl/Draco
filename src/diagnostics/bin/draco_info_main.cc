@@ -7,10 +7,10 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/XGetopt.hh"
 #include "diagnostics/draco_info.hh"
-#include "ds++/Assert.hh"
-#include "ds++/Release.hh"
-#include "ds++/XGetopt.hh"
 #include <iostream>
 
 int main(int argc, char *argv[]) {

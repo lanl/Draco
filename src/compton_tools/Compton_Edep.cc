@@ -4,11 +4,11 @@
  * \author Kendra Long
  * \date   10 October 2022
  * \brief  Implementation file for native Compton binary-read and temperature interpolation
- * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Compton_Edep.hh"
-#include "ds++/dbc.hh"
+#include "dsxx/dbc.hh"
 #include "units/PhysicalConstexprs.hh"
 #include <fstream>
 #include <limits>

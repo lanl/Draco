@@ -10,7 +10,7 @@
 #ifndef utils_svdfit_hh
 #define utils_svdfit_hh
 
-#include "ds++/dll_declspec.h"
+#include "dsxx/dll_declspec.h"
 
 namespace rtt_utils {
 

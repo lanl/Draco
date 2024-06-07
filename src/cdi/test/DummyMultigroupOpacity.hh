@@ -10,8 +10,8 @@
 #ifndef rtt_cdi_DummyMultigroupOpacity_hh
 #define rtt_cdi_DummyMultigroupOpacity_hh
 
+#include "dsxx/Assert.hh"
 #include "cdi/MultigroupOpacity.hh"
-#include "ds++/Assert.hh"
 
 namespace rtt_cdi_test {
 

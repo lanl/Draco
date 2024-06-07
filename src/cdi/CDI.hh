@@ -15,10 +15,10 @@
 #include "EoS.hh"
 #include "GrayOpacity.hh"
 #include "MultigroupOpacity.hh"
+#include "dsxx/Constexpr_Functions.hh"
+#include "dsxx/FMA.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "device/config.h"
-#include "ds++/Constexpr_Functions.hh"
-#include "ds++/FMA.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include <algorithm>
 #include <array>
 #include <limits>

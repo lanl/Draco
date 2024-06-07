@@ -9,8 +9,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Gauss_Legendre.hh"
+#include "dsxx/DracoStrings.hh"
 #include "gauleg.hh"
-#include "ds++/DracoStrings.hh"
 #include <numeric>
 
 namespace rtt_quadrature {

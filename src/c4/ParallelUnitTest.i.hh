@@ -26,5 +26,5 @@ int do_parallel_unit_test(int argc, char **argv, Release release, Lambda const &
 #endif // dsxx_test_i_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of ds++/parallel_unit_test.i.hh
+// end of dsxx/parallel_unit_test.i.hh
 //------------------------------------------------------------------------------------------------//

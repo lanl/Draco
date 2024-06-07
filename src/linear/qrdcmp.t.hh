@@ -10,9 +10,9 @@
 #ifndef linear_qrdcmp_t_hh
 #define linear_qrdcmp_t_hh
 
+#include "dsxx/Assert.hh"
+#include "dsxx/DracoMath.hh"
 #include "qrdcmp.hh"
-#include "ds++/Assert.hh"
-#include "ds++/DracoMath.hh"
 #include <cmath>
 
 namespace rtt_linear {

@@ -10,8 +10,8 @@
 #ifndef rtt_quadrature_Ordinate_hh
 #define rtt_quadrature_Ordinate_hh
 
-#include "ds++/Soft_Equivalence.hh"
-#include "ds++/config.h"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/config.h"
 
 namespace rtt_quadrature {
 

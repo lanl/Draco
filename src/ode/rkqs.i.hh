@@ -12,8 +12,8 @@
 #define ode_rkqs_i_hh
 
 #include "Function_Traits.hh"
-#include "ds++/Assert.hh"
-#include "ds++/Soft_Equivalence.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include <algorithm>
 #include <cmath>
 

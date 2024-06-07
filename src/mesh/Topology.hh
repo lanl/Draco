@@ -10,7 +10,7 @@
 #ifndef rtt_mesh_Topology_hh
 #define rtt_mesh_Topology_hh
 
-#include "ds++/config.h" // defines NODISCARD
+#include "dsxx/config.h" // defines NODISCARD
 #include <iosfwd>
 #include <string>
 #include <vector>

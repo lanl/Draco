@@ -13,8 +13,8 @@
 #ifndef min_mnbrak_hh
 #define min_mnbrak_hh
 
-#include "ds++/DracoMath.hh"
-#include "ds++/dbc.hh"
+#include "dsxx/DracoMath.hh"
+#include "dsxx/dbc.hh"
 
 namespace rtt_min {
 

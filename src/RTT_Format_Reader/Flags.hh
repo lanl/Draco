@@ -10,7 +10,7 @@
 #ifndef rtt_RTT_Format_Reader_Flags_hh
 #define rtt_RTT_Format_Reader_Flags_hh
 
-#include "ds++/config.h" // defines NODISCARD
+#include "dsxx/config.h" // defines NODISCARD
 #include <algorithm>
 #include <fstream>
 #include <iostream>

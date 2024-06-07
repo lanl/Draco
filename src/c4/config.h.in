@@ -9,7 +9,7 @@
 #ifndef rtt_c4_config_h
 #define rtt_c4_config_h
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 /* C4 Environments */
 

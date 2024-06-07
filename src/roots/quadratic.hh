@@ -10,7 +10,7 @@
 #ifndef roots_quadratic_hh
 #define roots_quadratic_hh
 
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <cmath>
 
 namespace rtt_roots {

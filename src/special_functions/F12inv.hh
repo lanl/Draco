@@ -10,7 +10,7 @@
 #ifndef sf_F12inv_hh
 #define sf_F12inv_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_sf {
 //! Compute the inverse Fermi-Dirac function of index 1/2.

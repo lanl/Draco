@@ -10,9 +10,9 @@
 #ifndef linear_qr_unpack_t_hh
 #define linear_qr_unpack_t_hh
 
+#include "dsxx/Assert.hh"
+#include "dsxx/DracoMath.hh"
 #include "qr_unpack.hh"
-#include "ds++/Assert.hh"
-#include "ds++/DracoMath.hh"
 #include <algorithm>
 #include <limits>
 #include <sstream>

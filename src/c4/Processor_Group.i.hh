@@ -13,7 +13,7 @@
 #endif // C4_MPI
 
 #include "Processor_Group.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 
 namespace rtt_c4 {
 

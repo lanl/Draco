@@ -24,7 +24,7 @@ set(DRACO_CALIPER
 # Special options for this component
 # ------------------------------------------------------------------------------------------------ #
 
-# DRACO_DIAGNOSICS is set in ds++ (ds++/config.h).
+# DRACO_DIAGNOSICS is set in dsxx (dsxx/config.h).
 
 # From autoconf build system: "yes" --> 2, "no" --> 0
 set(DRACO_TIMING

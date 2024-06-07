@@ -9,8 +9,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Topology.hh"
+#include "dsxx/Release.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
 #include "mesh/Topology_Builder.hh"
 #include <sstream>
 #include <vector>

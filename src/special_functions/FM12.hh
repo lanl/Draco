@@ -10,7 +10,7 @@
 #ifndef sf_FM12_hh
 #define sf_FM12_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_sf {
 //! Calculate Fermi-Dirac integral of index -1/2.

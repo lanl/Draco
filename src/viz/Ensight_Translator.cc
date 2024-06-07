@@ -8,9 +8,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Ensight_Translator.hh"
-#include "ds++/Check_Strings.hh"
-#include "ds++/SystemCall.hh"
-#include "ds++/path.hh"
+#include "dsxx/Check_Strings.hh"
+#include "dsxx/SystemCall.hh"
+#include "dsxx/path.hh"
 #include <cerrno>
 #include <cstring>
 #include <iomanip>

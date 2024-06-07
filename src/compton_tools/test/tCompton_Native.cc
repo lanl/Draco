@@ -8,10 +8,10 @@
  */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "compton_tools/Compton_Native.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include "units/PhysicalConstants.hh"
 #include <fstream>
 #include <iomanip>

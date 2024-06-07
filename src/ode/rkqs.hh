@@ -12,7 +12,7 @@
 #ifndef ode_rkqs_hh
 #define ode_rkqs_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include <vector>
 
 namespace rtt_ode {

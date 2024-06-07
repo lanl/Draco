@@ -8,10 +8,10 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "TestRTTFormatReader.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "RTT_Format_Reader/RTT_Mesh_Reader.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include <array>
 #include <sstream>
 

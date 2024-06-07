@@ -10,7 +10,7 @@
 #ifndef rtt_cdi_EICoupling_hh
 #define rtt_cdi_EICoupling_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include <vector>
 
 namespace rtt_cdi {

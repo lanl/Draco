@@ -7,7 +7,7 @@ digraph quadrature_package_level {
 
     /* draco nodes */
     rtt_units [shape=house, color=blue, label="rtt_units"];
-    rtt_dsxx [shape=house, color=blue, label="rtt_ds++"];
+    rtt_dsxx [shape=house, color=blue, label="rtt_dsxx"];
     rtt_special_functions [shape=house, color=blue, label="rtt_special_functions"];
     rtt_mesh_element [shape=house, color=blue, label="rtt_mesh_element"];
 

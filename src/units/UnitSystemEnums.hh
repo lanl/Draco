@@ -9,7 +9,7 @@
 #ifndef rtt_units_UnitSystemEnums_hh
 #define rtt_units_UnitSystemEnums_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include <array>
 #include <string>
 

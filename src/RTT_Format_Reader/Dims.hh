@@ -10,7 +10,7 @@
 #ifndef rtt_RTT_Format_Reader_Dims_hh
 #define rtt_RTT_Format_Reader_Dims_hh
 
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <algorithm>
 #include <fstream>
 #include <iostream>

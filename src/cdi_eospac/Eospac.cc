@@ -9,8 +9,8 @@
 
 #include "Eospac.hh"
 #include "EospacException.hh"
-#include "ds++/Assert.hh"
-#include "ds++/Packing_Utils.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Packing_Utils.hh"
 #include <array>
 #include <iostream>
 #include <sstream>

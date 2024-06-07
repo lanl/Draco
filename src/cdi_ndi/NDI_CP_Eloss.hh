@@ -13,9 +13,9 @@
 #define NDI_DEDX_SUPPORT (NDI_MAJOR > 2 || (NDI_MAJOR == 2 && NDI_MINOR >= 2))
 
 #include "NDI_Base.hh"
+#include "dsxx/Assert.hh"
 #include "cdi/CPCommon.hh"
 #include "cdi/CPEloss.hh"
-#include "ds++/Assert.hh"
 #include "units/PhysicalConstexprs.hh"
 
 namespace rtt_cdi_ndi {

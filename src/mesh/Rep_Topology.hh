@@ -11,7 +11,7 @@
 #define rtt_mesh_Rep_Topology_hh
 
 #include "Topology.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <limits>
 
 namespace rtt_mesh {

@@ -5,7 +5,7 @@
 # date   February 22nd 2022
 # brief  This script converts py-torch *.pt files to a simple draco Neural Network format
 #
-# note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 import torch

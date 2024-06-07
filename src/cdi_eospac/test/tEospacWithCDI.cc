@@ -7,13 +7,13 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "cdi/CDI.hh"
 #include "cdi_eospac/Eospac.hh"
 #include "cdi_eospac/EospacException.hh"
 #include "cdi_eospac/SesameTables.hh"
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
-#include "ds++/Soft_Equivalence.hh"
 #include <iostream>
 #include <sstream>
 #include <string>

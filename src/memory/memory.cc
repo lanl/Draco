@@ -7,8 +7,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "memory/memory.hh"
-#include "ds++/Assert.hh"
-#include "ds++/StackTrace.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/StackTrace.hh"
 #include <iostream>
 #include <limits>
 #include <map>

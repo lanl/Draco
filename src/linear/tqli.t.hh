@@ -11,8 +11,8 @@
 #ifndef linear_tqli_t_hh
 #define linear_tqli_t_hh
 
-#include "ds++/Assert.hh"
-#include "ds++/DracoMath.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/DracoMath.hh"
 #include "linear/tqli.hh"
 #include <stdexcept>
 

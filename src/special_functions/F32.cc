@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "F32.t.hh"
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include <cmath>
 
 namespace rtt_sf {

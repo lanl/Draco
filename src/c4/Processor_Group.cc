@@ -10,7 +10,7 @@
 
 #include "C4_Functions.hh"
 #include "Processor_Group.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 
 namespace rtt_c4 {
 

@@ -10,8 +10,8 @@
 #ifndef diagnostics_Timing_hh
 #define diagnostics_Timing_hh
 
+#include "dsxx/config.h"
 #include "diagnostics/config.h"
-#include "ds++/config.h"
 #include <map>
 #include <string>
 #include <vector>

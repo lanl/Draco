@@ -7,12 +7,12 @@
  * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/DracoMath.hh"
+#include "dsxx/Release.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/QuoWrapper.hh"
 #include "c4/SLURM_Task_Info.hh"
 #include "c4/bin/ythi.hh"
-#include "ds++/DracoMath.hh"
-#include "ds++/Release.hh"
 #include <chrono>
 
 //------------------------------------------------------------------------------------------------//

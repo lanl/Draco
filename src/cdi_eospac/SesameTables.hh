@@ -10,8 +10,8 @@
 #ifndef rtt_cdi_eospac_SesameTables_hh
 #define rtt_cdi_eospac_SesameTables_hh
 
+#include "dsxx/config.h" // defines NODISCARD
 #include "eos_Interface.h"
-#include "ds++/config.h" // defines NODISCARD
 #include <map>
 #include <string>
 #include <vector>

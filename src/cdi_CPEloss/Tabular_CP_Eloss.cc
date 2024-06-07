@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Tabular_CP_Eloss.hh"
-#include "ds++/DracoStrings.hh"
-#include "ds++/Interpolate.hh"
+#include "dsxx/DracoStrings.hh"
+#include "dsxx/Interpolate.hh"
 #include <utility>
 
 namespace rtt_cdi_cpeloss {

@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Rep_Topology.hh"
-#include "ds++/Packing_Utils.hh"
+#include "dsxx/Packing_Utils.hh"
 
 namespace rtt_mesh {
 

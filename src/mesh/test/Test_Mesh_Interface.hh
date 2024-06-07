@@ -10,7 +10,7 @@
 #ifndef rtt_mesh_test_Test_Mesh_Interface_hh
 #define rtt_mesh_test_Test_Mesh_Interface_hh
 
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include "mesh/Draco_Mesh.hh"
 #include <algorithm>
 

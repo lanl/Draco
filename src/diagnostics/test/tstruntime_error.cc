@@ -8,10 +8,10 @@
  */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/swap.hh"
 #include "diagnostics/runtime_check.hh"
-#include "ds++/Release.hh"
 #include <cmath>
 
 using namespace std;

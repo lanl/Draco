@@ -13,7 +13,7 @@
 #define rtt_Token_Equivalence_hh
 
 #include "String_Token_Stream.hh"
-#include "ds++/UnitTest.hh"
+#include "dsxx/UnitTest.hh"
 
 namespace rtt_parser {
 //! Search tokens for existance of keyword.

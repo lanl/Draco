@@ -9,7 +9,7 @@
 #ifndef c4_Compare_hh
 #define c4_Compare_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 
 namespace rtt_c4 {
 

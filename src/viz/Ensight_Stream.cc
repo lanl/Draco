@@ -8,9 +8,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Ensight_Stream.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Packing_Utils.hh"
 #include "c4/C4_Functions.hh"
-#include "ds++/Assert.hh"
-#include "ds++/Packing_Utils.hh"
 #include <iomanip>
 
 namespace rtt_viz {

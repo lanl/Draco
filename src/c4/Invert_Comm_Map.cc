@@ -9,7 +9,7 @@
 
 #include "Invert_Comm_Map.hh"
 #include "MPI_Traits.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <vector>
 
 namespace rtt_c4 {

@@ -9,7 +9,7 @@
 
 #include "Draco_Mesh.hh"
 #include "Draco_Mesh_Builder.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <algorithm>
 #include <iostream>
 #include <numeric>

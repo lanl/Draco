@@ -8,9 +8,9 @@
  */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
 #include "c4/Global_Timer.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "ds++/Release.hh"
 #include <chrono>
 #include <sstream>
 #include <thread>

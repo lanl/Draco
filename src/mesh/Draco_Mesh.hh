@@ -10,7 +10,7 @@
 #ifndef rtt_mesh_Draco_Mesh_hh
 #define rtt_mesh_Draco_Mesh_hh
 
-#include "ds++/config.h"
+#include "dsxx/config.h"
 #include "mesh_element/Geometry.hh"
 #include <array>
 #include <cstdint>

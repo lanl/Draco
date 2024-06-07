@@ -7,13 +7,13 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ipcress_test.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/path.hh"
 #include "cdi/OpacityCommon.hh"
 #include "cdi_ipcress/IpcressFile.hh"
 #include "cdi_ipcress/IpcressGrayOpacity.hh"
 #include "cdi_ipcress/IpcressMultigroupOpacity.hh"
-#include "ds++/Release.hh"
-#include "ds++/Soft_Equivalence.hh"
-#include "ds++/path.hh"
 #include <algorithm>
 
 using namespace std;

@@ -11,9 +11,9 @@
 #define c4_swap_t_hh
 
 #include "C4_Functions.hh"
+#include "dsxx/Assert.hh"
 #include "swap.hh"
 #include "c4/config.h"
-#include "ds++/Assert.hh"
 
 namespace rtt_c4 {
 

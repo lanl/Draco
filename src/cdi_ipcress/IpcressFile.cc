@@ -9,8 +9,8 @@
 
 #include "IpcressFile.hh"
 #include "IpcressFile.t.hh"
-#include "ds++/Assert.hh"
-#include "ds++/Endian.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Endian.hh"
 
 namespace rtt_cdi_ipcress {
 

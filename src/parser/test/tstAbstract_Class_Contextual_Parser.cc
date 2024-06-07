@@ -7,8 +7,8 @@
  * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "ds++/Release.hh"
-#include "ds++/ScalarUnitTest.hh"
+#include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "parser/Abstract_Class_Parser.hh"
 #include "parser/Class_Parse_Table.hh"
 #include "parser/File_Token_Stream.hh"

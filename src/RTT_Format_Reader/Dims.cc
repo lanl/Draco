@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Dims.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 
 namespace rtt_RTT_Format_Reader {
 /*!

@@ -22,9 +22,9 @@ digraph bubba_package_level {
    special_functions_Ylmhh [shape=box, label="special_functions/Ylm.hh" color=red];
    mesh_element_Geometryhh [shape=box, label="mesh_element/Geometry.hh" color=red];
    gsl_gsl_blash [shape=box, label="gsl/gsl_blas.h" color=red];
-   dsxx_Asserthh [shape=box, label="ds++/Assert.hh" color=red];
+   dsxx_Asserthh [shape=box, label="dsxx/Assert.hh" color=red];
    gsl_gsl_linalgh [shape=box, label="gsl/gsl_linalg.h" color=red];
-   dsxx_Soft_Equivalencehh [shape=box, label="ds++/Soft_Equivalence.hh" color=red];
+   dsxx_Soft_Equivalencehh [shape=box, label="dsxx/Soft_Equivalence.hh" color=red];
    units_PhysicalConstantshh [shape=box, label="units/PhysicalConstants.hh" color=red];
    Releasehh [shape=box, label="Release.hh"];
 

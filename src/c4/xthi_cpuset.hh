@@ -18,8 +18,8 @@
 // Don't pull in the OpenMP headers for ythi.  It doesn't need them.
 #include "c4_omp.h"
 #endif
-#include "ds++/Assert.hh"
-#include "ds++/SystemCall.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/SystemCall.hh"
 
 #include <bitset>
 #include <sstream>

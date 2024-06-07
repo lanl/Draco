@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Analytic_TR_Eloss_Model.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <cmath>
 
 namespace rtt_cdi_cpeloss {

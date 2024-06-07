@@ -4,11 +4,11 @@
  * \author H.Park
  * \date   Aug. 1 2023
  * \brief  Topology class implementation file.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Topology.hh"
-#include "ds++/Assert.hh"
+#include "dsxx/Assert.hh"
 #include <iostream>
 
 namespace rtt_mesh {

@@ -10,8 +10,8 @@
 #ifndef rtt_c4_C4_Serial_hh
 #define rtt_c4_C4_Serial_hh
 
+#include "dsxx/Assert.hh"
 #include "c4/config.h"
-#include "ds++/Assert.hh"
 #include <algorithm>
 
 #if !defined(rtt_c4_global_hh) && !defined(rtt_c4_C4_Functions_hh)
