@@ -71,6 +71,7 @@ set script=%DRACO_SOURCE_DIR%\.gitlab\ci\draco-nightly.cmake
 
 echo ctest -VV -C %CMAKE_BUILD_TYPE% -S %script%,%modes%
 ctest -VV -C %CMAKE_BUILD_TYPE% -S %script%,%modes%
+if %errorlevel% NEQ 0 exit /b 255
 
 goto :done
 
