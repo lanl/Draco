@@ -23,7 +23,8 @@
     CTEST_NPROC: 112
     EXTRA_CMAKE_ARGS: -G Ninja
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-    SCHEDULER_PARAMETERS: -N 1 -L none@slurmdb -A asc-ci --partition=ci --qos=ci --reservation=ci
+    SCHEDULER_PARAMETERS: -N 1 -t 30:00 -L none@slurmdb -A asc-ci --partition=ci --qos=ci
+      --reservation=ci
     # CI_DEBUG_TRACE: "true"
 
 #--------------------------------------------------------------------------------------------------#
@@ -191,6 +192,9 @@ ro_rwdi_gnu_deploy_release:
 .ro_merge:
   extends: .ro
   allow_failure: true
+  variables:
+    SCHEDULER_PARAMETERS: -N 1 -L none@slurmdb -t 12:00 -A asc-ci --partition=ci --qos=ci
+      --reservation=ci
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
