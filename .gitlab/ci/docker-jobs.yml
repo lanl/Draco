@@ -185,6 +185,14 @@ post_rzvernal_regress_results_to_cdash:
     - job: rzvernal_rel_cce1601_regress
       artifacts: true
 
+post_rzadams_regress_results_to_cdash:
+  extends: .post_rz_regress_results_to_cdash
+  needs:
+    - job: rzadams_deb_cce1700_regress
+      artifacts: true
+    - job: rzadams_rel_cce1700_regress
+      artifacts: true
+
 #--------------------------------------------------------------------------------------------------#
 # Use MR action to trigger restart of CI pipleline via webhook when MR title changes.
 #

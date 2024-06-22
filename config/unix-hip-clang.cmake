@@ -50,15 +50,18 @@ if(NOT HIP_FLAGS_INITIALIZED)
 
   # Discover HIP compute capabilities.
   if(NOT DEFINED HIP_ARCHITECTURES)
-    # see if we are on a 250 or a 300 node
-    if(SITENAME MATCHES "RZVernal")
-      set(HIP_ARCHITECTURES "gfx90a")
-    elseif(SITENAME MATCHES "RZAdams" OR SITENAME MATCHES "ElCapitan")
-      set(HIP_ARCHITECTURES "gfx942")
-    else()
-      message(FATAL_ERROR "unix-hip-clang.cmake: Logic error in setting HIP_ARCHITECTURES"
-                          "Unknown platform. Variable not set.")
-    endif()
+    # This logic is from Bob Robey, see
+    # https://github.com/amd/HPCTrainingExamples/blob/main/tests/CMakeLists.txt
+    execute_process(
+      COMMAND rocminfo
+      COMMAND grep gfx
+      COMMAND sed "s/Name://"
+      COMMAND head -1
+      COMMAND sed "s/ //g"
+      OUTPUT_VARIABLE GFXMODEL
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    set(HIP_ARCHITECTURES "${GFXMODEL}")
     set(HIP_ARCHITECTURES
         ${HIP_ARCHITECTURES}
         CACHE STRING "target architecture for gpu code.")
