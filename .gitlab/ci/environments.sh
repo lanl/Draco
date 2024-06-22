@@ -57,7 +57,8 @@ elif [[ "${SITE_ID}" =~ "ccscs" ]]; then
 #------------------------------------------------------------------------------#
 # RZ systems (LLNL)
 #------------------------------------------------------------------------------#
-elif [[ "${SITE_ID}" =~ "rzvernal" ]] || [[ "${SITE_ID}" =~ "rzansel" ]]; then
+elif [[ "${SITE_ID}" =~ "rzvernal" ]] || [[ "${SITE_ID}" =~ "rzansel" ]] || \
+  [[ "${SITE_ID}" =~ "rzadams" ]]; then
   run "module use --append /usr/gapps/jayenne/Modules/${SITE_ID}"
   for sm in draco lapse; do
     [[ $(module list 2>&1 | grep -c $sm) -gt 0 ]] && module unload $sm

@@ -14,6 +14,8 @@
 # * rzvernal (MI250):
 #   * 64 cores / node
 #   * 8 effective GPU chiplets
+#
+#   Vernal CI/deploy support will likely be retired in late 2024.
 #--------------------------------------------------------------------------------------------------#
 
 ---

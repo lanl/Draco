@@ -103,6 +103,20 @@ if((${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "N
   endif()
 endif()
 
+# Set dualmemspace flag if dual-mem gpu system
+if(DEFINED HIP_ARCHITECTURES)
+ if("${HIP_ARCHITECTURES}" MATCHES "gfx942")
+   # only single memory space arch currently supported
+   set(SINGLEMEMSPACE 1)
+ else()
+   set(SINGLEMEMSPACE 0)
+ endif()
+elseif(DEFINED CUDA_ARCHITECTURES)
+   # All current supported Nvidia devices are dual memory space
+   set(SINGLEMEMSPACE 0)
+else()
+endif()
+
 get_property(_LANGUAGES_ GLOBAL PROPERTY ENABLED_LANGUAGES)
 
 # Python
