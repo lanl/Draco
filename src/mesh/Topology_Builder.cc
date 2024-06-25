@@ -73,7 +73,7 @@ void Topology_Builder::build_cell_numbers(Vec_Int &cells_per_pe) {
   using std::accumulate;
 
   Require(static_cast<int>(cells_per_pe.size()) == rtt_c4::nodes());
-  Require(accumulate(cells_per_pe.begin(), cells_per_pe.end(), 0) == 0);
+  Require(accumulate(cells_per_pe.begin(), cells_per_pe.end(), 0LL) == 0);
 
   // node info
   int nodes = rtt_c4::nodes();
@@ -86,7 +86,7 @@ void Topology_Builder::build_cell_numbers(Vec_Int &cells_per_pe) {
   rtt_c4::global_sum(&cells_per_pe[0], nodes);
 
   Ensure(static_cast<uint32_t>(cells_per_pe[node]) == num_active_cells_);
-  Ensure(accumulate(cells_per_pe.begin(), cells_per_pe.end(), 0) == num_global_cells_);
+  Ensure(accumulate(cells_per_pe.begin(), cells_per_pe.end(), 0LL) == num_global_cells_);
 }
 
 //------------------------------------------------------------------------------------------------//
