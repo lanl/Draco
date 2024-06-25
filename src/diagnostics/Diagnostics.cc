@@ -24,6 +24,7 @@ namespace Diagnostics {
 //------------------------------------------------------------------------------------------------//
 
 std::map<std::string, int> integers;
+std::map<std::string, int64_t> long_integers;
 std::map<std::string, double> doubles;
 std::map<std::string, std::vector<int>> vec_integers;
 std::map<std::string, std::vector<double>> vec_doubles;

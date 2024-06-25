@@ -42,6 +42,25 @@ void test_ints(rtt_dsxx::UnitTest &ut) {
     PASSMSG("Diagnostics integers ok.");
 }
 
+void test_longints(rtt_dsxx::UnitTest &ut) {
+  // add a long integer quantity
+  Diagnostics::long_integers["AL"];
+  FAIL_IF_NOT(Diagnostics::long_integers["AL"] == 0);
+
+  // now update some values
+  Diagnostics::long_integers["AL"] = static_cast<int64_t>(std::numeric_limits<int32_t>::max()) - 10;
+  Diagnostics::long_integers["AL"] += 20;
+
+  FAIL_IF_NOT(Diagnostics::long_integers["AL"] ==
+              static_cast<int64_t>(std::numeric_limits<int32_t>::max()) + 10);
+
+  // add another
+  Diagnostics::long_integers["BL"] = 51;
+
+  if (ut.numFails == 0)
+    PASSMSG("Diagnostics long integers ok.");
+}
+
 //------------------------------------------------------------------------------------------------//
 
 void test_floats(rtt_dsxx::UnitTest &ut) {
@@ -172,6 +191,7 @@ int main(int argc, char *argv[]) {
   rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
     test_ints(ut);
+    test_longints(ut);
     test_floats(ut);
     test_vectors(ut);
     test_macro(ut);

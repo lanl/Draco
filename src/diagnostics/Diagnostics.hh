@@ -50,6 +50,9 @@ namespace Diagnostics {
 //! Map of integer data.
 extern DLL_PUBLIC_diagnostics std::map<std::string, int> integers;
 
+//! Map of integer data.
+extern DLL_PUBLIC_diagnostics std::map<std::string, int64_t> long_integers;
+
 //! Map of floating point data.
 extern DLL_PUBLIC_diagnostics std::map<std::string, double> doubles;
 
