@@ -3,7 +3,7 @@ rem ----------------------------------------------------------------------------
 rem File  : gitlab-nightly-regress.bat
 rem Date  : Friday, Aug 14, 2020, 14:20 pm
 rem Author: Kelly Thompson <kgt@lanl.gov>
-rem Note  : Copyright (C) 2020-2022, Triad National Security, LLC., All rights are reserved.
+rem Note  : Copyright (C) 2020-2024, Triad National Security, LLC., All rights are reserved.
 rem -----------------------------------------------------------------------------------------------
 
 echo This is windows...
@@ -71,7 +71,7 @@ set script=%DRACO_SOURCE_DIR%\.gitlab\ci\draco-nightly.cmake
 
 echo ctest -VV -C %CMAKE_BUILD_TYPE% -S %script%,%modes%
 ctest -VV -C %CMAKE_BUILD_TYPE% -S %script%,%modes%
-if %errorlevel% NEQ 0 exit /b 255
+if %errorlevel% NEQ 0 goto errctest
 
 goto :done
 
@@ -101,6 +101,11 @@ goto:eof
 
 :errnonumdiff
 echo FATAL ERROR :: numdiff was not found in PATH.
+goto:eof
+
+:errctest
+echo FATAL ERROR :: Error code returned from ctest.
+exit /b 255
 goto:eof
 
 :done

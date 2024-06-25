@@ -46,7 +46,8 @@
   resource_group: ${SITE_ID}-${DRACO_ENV}-${CMAKE_BUILD_TYPE}
   artifacts:
     paths:
-      - ${CI_PROJECT_DIR}/glr.log
+      - ${CI_PROJECT_DIR}\\glr.log
+      - ${CI_PROJECT_DIR}\\${CMAKE_BUILD_TYPE}\\CMakeCache.txt
 
 #-------------------------------------------------------------------------------------------------#
 # Merge Requests
