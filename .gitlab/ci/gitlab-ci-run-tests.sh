@@ -54,8 +54,10 @@ fi
 # run "lstopo --no-io --no-bridges --no-icaches"
 
 echo -e "\n========== printenv ==========\n"
-[[ -z "${SLURM_NODELIST}" ]] || echo "SLURM_NODELIST = ${SLURM_NODELIST}"
 echo "HOSTNAME       = ${HOSTNAME}"
+echo -e "SITE_ID     = ${SITE_ID}\n"
+[[ -z "${SLURM_JOBID}" ]] || echo "SLURM_NODELIST = ${SLURM_JOBID}"
+[[ -z "${SLURM_NODELIST}" ]] || echo "SLURM_NODELIST = ${SLURM_NODELIST}"
 echo -e "NPROC       = ${NPROC}\n"
 echo -e "CTEST_NPROC = ${CTEST_NPROC}\n"
 echo -e "MAXLOAD     = ${MAXLOAD}\n"
