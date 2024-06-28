@@ -2502,6 +2502,16 @@
    fun:PMPI_Win_fence
    ...
 }
+{
+   openmpi/416/001
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   fun:ompi_op_base_op_select
+   ...
+   fun:MPI_INIT
+   ...
+}
 
 # ------------------------------------------------------------------------------------------------ #
 # Python 2.7
