@@ -3,7 +3,7 @@
 # Author:  Kelly Thompson <kgt@lanl.gov>
 # Date:    Mon Feb 27 14:41:34 MST 2023
 # Purpose: gitlab jacamar runner commands for LLNL rzvernal
-# Note:    Copyright (C) 2023 Triad National Security, LLC., All rights reserved.
+# Note:    Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved.
 #
 # * https://lc.llnl.gov/confluence/display/GITLAB/GitLab+CI
 #--------------------------------------------------------------------------------------------------#
@@ -41,7 +41,7 @@
   variables:
     DEPLOY: 'TRUE'
     DRACO_ENV: "lapse/2.4.0-cce"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
+    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
   script:
@@ -100,7 +100,7 @@ rzvernal_deb_cce1601_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.4.0-cce"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
+    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -113,7 +113,7 @@ rzvernal_deb_cce1601_mr:
     CTEST_MODE: Nightly
     CTEST_NPROC: 128
     DRACO_ENV: "lapse/2.4.0-cce"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
+    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
     CTEST_BUILD_NAME: "lapse240-cce-${CMAKE_BUILD_TYPE}"
   artifacts:
     when: always
