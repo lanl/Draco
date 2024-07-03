@@ -56,6 +56,14 @@ public:
   }
 
   // accessors with deferred implementation
+
+  /*!
+  * \brief Get the number of nodes for a cell.
+  *
+  * \param[in] cell index of cell (0-based)
+  *
+  * \return number of nodes for cell
+  */
   NODISCARD unsigned get_celltype(size_t cell) const override;
   NODISCARD size_t get_sidetype(size_t side) const override;
   NODISCARD std::vector<unsigned> get_cellnodes(size_t cell) const override;

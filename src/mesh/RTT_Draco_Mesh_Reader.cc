@@ -45,13 +45,7 @@ void RTT_Draco_Mesh_Reader::read_mesh() {
 }
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Get the number of nodes for a cell.
- *
- * \param[in] cell index of cell (0-based)
- *
- * \return number of nodes for cell
- */
+//! Get the number of nodes for a cell.
 unsigned RTT_Draco_Mesh_Reader::get_celltype(size_t cell) const {
 
   // first obtain a cell definition index
