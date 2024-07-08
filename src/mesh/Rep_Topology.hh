@@ -40,7 +40,15 @@ public:
   using packed_type = Base::packed_type;
 
 public:
-  // Constructor.
+  /*!
+  * \brief Rep_Topology constructor.
+  *
+  * The Rep_Topology constructor only requires the number of global cells in the problem to build an
+  * instance of Rep_Topology.  All other functions are trivially derived based on the simplicity of
+  * a full replication topology.
+  *
+  * \param[in] num_global_cells number of global cells in the problem
+  */
   explicit Rep_Topology(int64_t num_global_cells);
 
   // Unpacking constructor.
