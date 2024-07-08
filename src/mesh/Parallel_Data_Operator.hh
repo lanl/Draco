@@ -79,7 +79,7 @@ public:
   NODISCARD int get_remote_local_cell(size_t boundary_cell) const {
     return topology->remote_local_cell(boundary_cell);
   }
-  NODISCARD int get_global_offset(int rank) const { return topology->get_global_offset(rank); }
+  NODISCARD int64_t get_global_offset(int rank) const { return topology->get_global_offset(rank); }
 
   //! Map local data fields to global data fields.
   template <typename FT, typename GT, typename Op>

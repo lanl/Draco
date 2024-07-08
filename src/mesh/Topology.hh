@@ -126,7 +126,7 @@ public:
   NODISCARD virtual int64_t global_cell(size_t local_cell) const = 0;
 
   //! Get the local cell index on-processor.
-  NODISCARD virtual int local_cell(size_t global_cell) const = 0;
+  NODISCARD virtual int local_cell(int64_t global_cell) const = 0;
 
   //! Get the number of boundary cells on a processor.
   NODISCARD virtual size_t num_ghost_cells() const = 0;
@@ -138,7 +138,7 @@ public:
   NODISCARD virtual int remote_proc(size_t boundary_cell) const = 0;
 
   //! Get the global offset at a rank
-  NODISCARD virtual int get_global_offset(int rank) const = 0;
+  NODISCARD virtual int64_t get_global_offset(int rank) const = 0;
 
   //! Packing function.
   NODISCARD virtual packed_type pack() const = 0;

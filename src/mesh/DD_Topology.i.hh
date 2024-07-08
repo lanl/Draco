@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Aug. 1 2023
  * \brief  Member definitions of class DD_Topology
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef mesh_DD_Topology_i_hh
@@ -47,16 +47,16 @@ int64_t DD_Topology::global_cell(size_t local_cell) const {
  * \return local cell index of global cell on processor or 0 if the global cell does not live on the
  *        current processor
  */
-int DD_Topology::local_cell(size_t global_cell) const {
+int DD_Topology::local_cell(int64_t global_cell) const {
   size_t const node = rtt_c4::node();
   Require(Base::num_global_cells_d < std::numeric_limits<int>::max());
-  Require(global_cell <= static_cast<size_t>(Base::num_global_cells_d));
+  Require(global_cell <= Base::num_global_cells_d);
 
   // convert to local
-  size_t local_cell = global_cell - global_offset_d[node];
+  auto local_cell = global_cell - global_offset_d[node];
 
   // check if it is in range and return
-  if (local_cell > 0 && local_cell < num_local_d + 1) {
+  if (local_cell > 0 && local_cell < static_cast<int64_t>(num_local_d + 1)) {
     Check(local_cell < INT32_MAX);
     return static_cast<int>(local_cell);
   }
