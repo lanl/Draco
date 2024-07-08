@@ -43,7 +43,7 @@ DD_Topology::DD_Topology(const Vec_Int &local_cell_num, Vec_Int ghost_cells, Vec
   Base::num_global_cells_d = global_offset_d[nodes];
 
   // set the number of local cells
-  num_local_d = global_offset_d[node + 1] - global_offset_d[node];
+  num_local_d = static_cast<size_t>(local_cell_num[node]);
 
   Ensure(global_offset_d[0] == 0);
   Ensure(global_offset_d[nodes] == Base::num_global_cells_d);
@@ -53,7 +53,7 @@ DD_Topology::DD_Topology(const Vec_Int &local_cell_num, Vec_Int ghost_cells, Vec
 //------------------------------------------------------------------------------------------------//
 //! Unpacking constructor.
 DD_Topology::DD_Topology(const packed_type &packed)
-    : Topology(std::string("DD")), global_offset_d(std::vector<int>(rtt_c4::nodes() + 1, 0)),
+    : Topology(std::string("DD")), global_offset_d(std::vector<int64_t>(rtt_c4::nodes() + 1, 0)),
       ghost_cells_d(std::vector<int>()), ghost_procs_d(std::vector<int>()), num_local_d(0) {
   size_t const nodes = rtt_c4::nodes();
   size_t const node = rtt_c4::node();
@@ -76,7 +76,7 @@ DD_Topology::DD_Topology(const packed_type &packed)
   ghost_procs_d.resize(ghost_cells_size);
 
   // unpack the vectors
-  Remember(int last = -1);
+  Remember(int64_t last = -1);
   for (size_t i = 0, s = nodes + 1; i < s; ++i) {
     u >> global_offset_d[i];
 
@@ -110,9 +110,9 @@ DD_Topology::packed_type DD_Topology::pack() const {
   Require(ghost_cells_d.size() == ghost_procs_d.size());
 
   // calculate the size
-  size_t size =
-      sizeof(int) * (1 + global_offset_d.size() + ghost_cells_d.size() + ghost_procs_d.size());
-  Check(size >= 4 * sizeof(int));
+  size_t size = sizeof(int64_t) * global_offset_d.size() +
+                sizeof(int) * (1 + ghost_cells_d.size() + ghost_procs_d.size());
+  Check(size >= 3 * sizeof(int) + sizeof(int64_t));
 
   // make packed data
   packed_type packed(size);
@@ -126,7 +126,7 @@ DD_Topology::packed_type DD_Topology::pack() const {
 
   // store the arrays
   for (size_t i = 0, s = nodes + 1; i < s; ++i)
-    p << static_cast<int>(global_offset_d[i]);
+    p << global_offset_d[i];
 
   for (size_t i = 0, s = ghost_cells_d.size(); i < s; ++i) {
     p << ghost_cells_d[i];

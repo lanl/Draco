@@ -71,7 +71,7 @@ public:
   }
 
   //! Get the local cell index on processor.
-  NODISCARD int local_cell(size_t gcell) const override {
+  NODISCARD int local_cell(int64_t gcell) const override {
     validate(gcell);
     Check(gcell < INT32_MAX);
     return static_cast<int>(gcell);
@@ -93,7 +93,7 @@ public:
   }
 
   //! Get the global offset at a rank
-  NODISCARD int get_global_offset(int /*rank*/) const override {
+  NODISCARD int64_t get_global_offset(int /*rank*/) const override {
     Insist(0, "Illegal"); // LCOV_EXCL_LINE
     return 0;             // LCOV_EXCL_LINE
   }

@@ -66,12 +66,13 @@ public:
   using Base = Topology;
   using packed_type = Base::packed_type;
   using Vec_Int = std::vector<int>;
+  using Vec_Int64 = std::vector<int64_t>;
 
 private:
   // >>> DATA
 
   //! Global cell offset for each processor.
-  Vec_Int global_offset_d;
+  Vec_Int64 global_offset_d;
 
   //! Boundary cells.
   Vec_Int ghost_cells_d;
@@ -102,7 +103,7 @@ public:
   NODISCARD inline int64_t global_cell(size_t local_cell) const override;
 
   // Get the local cell index.
-  NODISCARD inline int local_cell(size_t global_cell) const override;
+  NODISCARD inline int local_cell(int64_t global_cell) const override;
 
   //! Get the number of boundary cells on a given processor.
   NODISCARD size_t num_ghost_cells() const override { return ghost_cells_d.size(); }
@@ -114,7 +115,7 @@ public:
   NODISCARD inline int remote_proc(size_t ghost_cell) const override;
 
   //! Get the global offset at a rank
-  NODISCARD int get_global_offset(int rank) const override { return global_offset_d[rank]; }
+  NODISCARD int64_t get_global_offset(int rank) const override { return global_offset_d[rank]; }
 
   // Packing function.
   NODISCARD packed_type pack() const override;
