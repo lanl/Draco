@@ -2507,6 +2507,7 @@
    Memcheck:Leak
    match-leak-kinds: possible
    fun:malloc
+   ...
    fun:ompi_op_base_op_select
    ...
    fun:MPI_INIT
