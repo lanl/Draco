@@ -16,7 +16,6 @@
   tags:
     - rocinante
     - batch
-    - ro-rfe1
   variables:
     SITE_ID: rocinante
     CTEST_SITE: ${SITE_ID}
