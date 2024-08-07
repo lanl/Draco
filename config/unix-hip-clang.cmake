@@ -68,20 +68,20 @@ if(NOT HIP_FLAGS_INITIALIZED)
   # ~~~
   #
   # For better compiler performance we need to reverse the two boolean values (as per discussion
-  # with lc-hotline, email to KT, 6/25/2024)
+  # with lc-hotline, email to KT, 6/25/2024) MAC 8/5/2024 - Removed because switching this flag
+  # causes unexplained segfault errors in CCE/18.0
 
   get_target_property(current_value hip-lang::device INTERFACE_COMPILE_OPTIONS)
-  if(current_value MATCHES "amdgpu-early-inline-all=true")
-    string(REPLACE "amdgpu-early-inline-all=true" "amdgpu-early-inline-all=false" current_value
-                   "${current_value}")
-    string(REPLACE "amdgpu-function-calls=false" "amdgpu-function-calls=true" current_value
-                   "${current_value}")
-    set_target_properties(hip-lang::device PROPERTIES INTERFACE_COMPILE_OPTIONS "${current_value}")
-  endif()
+  # if(current_value MATCHES "amdgpu-early-inline-all=true") string(REPLACE
+  # "amdgpu-early-inline-all=true" "amdgpu-early-inline-all=false" current_value "${current_value}")
+  # string(REPLACE "amdgpu-function-calls=false" "amdgpu-function-calls=true" current_value
+  # "${current_value}") set_target_properties(hip-lang::device PROPERTIES INTERFACE_COMPILE_OPTIONS
+  # "${current_value}") endif()
 
 endif()
 
 string(APPEND CMAKE_CXX_FLAGS " -D__HIP_PLATFORM_HCC__= -D__HIP_PLATFORM_AMD__=")
+string(APPEND CMAKE_CXX_FLAGS " -Wno-switch-default")
 
 # ------------------------------------------------------------------------------------------------ #
 # Ensure cache values always match current selection
