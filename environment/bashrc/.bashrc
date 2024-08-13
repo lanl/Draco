@@ -164,17 +164,28 @@ if [[ ${INTERACTIVE} == true ]]; then
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_darwin_fe" ;;
 
-    # Cyclone | Fire | Ice | Snow | Fog
-    cy* | fi* | ic* | sn* | fg*)
+    # Cyclone | Fog
+    cy* | fg*)
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_cts1" ;;
+
+    # compute nodes for ATS-3 (Roci, Tycho, Crossroads) or Venado
+    nid*)
+      if [[ "${CPU}" == "aarch64" ]]; then
+        # shellcheck source=/dev/null
+        source "${DRACO_ENV_DIR}/bashrc/.bashrc_venado"
+      else
+        # shellcheck source=/dev/null
+        source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats3"
+      fi
+      ;;
 
     # wtrw and rfta
     red-wtrw* | rfta* | redcap* )
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_rfta" ;;
 
-    ro-rfe* | ty-fe* | nid* )
+    ro-rfe* | ty-fe*)
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats3" ;;
 
@@ -192,6 +203,11 @@ if [[ ${INTERACTIVE} == true ]]; then
     vc*)
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_vm" ;;
+
+    # LANL Venado
+    ve-rfe*)
+      # shellcheck source=/dev/null
+      source "${DRACO_ENV_DIR}/bashrc/.bashrc_venado" ;;
 
     ccscs[1-9]* | ccsnet[1-9]*)
       # shellcheck source=/dev/null
