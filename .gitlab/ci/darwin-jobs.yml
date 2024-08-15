@@ -16,6 +16,7 @@
 
 ---
 .darwin:
+  extends: .jacamar
   tags:
     - darwin-slurm-shared
   variables:
