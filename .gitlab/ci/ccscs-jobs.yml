@@ -13,6 +13,9 @@
 
 ---
 .ccscs:
+  id_tokens:
+    CI_JOB_JWT:
+      aud: https://re-git.lanl.gov
   variables:
     # CI_DEBUG_TRACE: "true"
 
