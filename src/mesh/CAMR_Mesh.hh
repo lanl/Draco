@@ -110,6 +110,7 @@ public:
   NODISCARD size_t get_maximum_level() const { return maximum_level; }
   NODISCARD size_t get_size() const { return active_size; }
   NODISCARD size_t num_cells() const { return active_size; }
+  NODISCARD size_t get_num_global_cells() const { return num_global_cells; }
   NODISCARD size_t get_num_full_cells() const { return full_size; }
   NODISCARD size_t get_num_ghost_cells() const { return ghost_size; }
 
@@ -128,6 +129,12 @@ public:
 
   NODISCARD inline sf_int next_cells(int const cell, int const coarse_face) const;
   NODISCARD inline sf_int next_cells(size_t const cell, size_t const coarse_face) const;
+
+  NODISCARD int64_t global_cell(size_t const cell) const { return topology_->global_cell(cell); }
+  NODISCARD int64_t get_global_offset(int rank) const { return topology_->get_global_offset(rank); }
+  NODISCARD int remote_proc(size_t boundary_cell) const {
+    return topology_->remote_proc(boundary_cell);
+  }
 
   //! Comparison operator
   bool operator==(CAMR_Mesh<D> const &rhs) const;
@@ -248,6 +255,8 @@ private:
   sf_int bnd_procs;
   sf_int active2full;
   sf_int full2active;
+
+  SP_Topology topology_;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -275,6 +284,7 @@ void CAMR_Mesh<D>::constructor_body(I_IT level_data, D_IT vertex_data) {
                                 bnd_procs.data(), full_size, active_size, full2active.data());
 
   SP_Topology topo_ = topo_builder.build_Topology();
+  topology_ = topo_;
 
   SP_Comm_Patterns comm_pat_;
   // Make the communications patterns
@@ -311,6 +321,7 @@ void CAMR_Mesh<D>::constructor_body(I_IT level_data, D_IT vertex_data, I_IT neig
                                 static_cast<uint32_t>(active_size), full2active.data());
 
   SP_Topology topo_ = topo_builder.build_Topology();
+  topology_ = topo_;
 
   SP_Comm_Patterns comm_pat_;
   // Make the communications patterns
