@@ -1006,7 +1006,7 @@ function(toggle_compiler_flag switch compiler_flag compiler_flag_var_names build
   endforeach()
 endfunction()
 
-# -------------------------------------------------------------------------------------------------#
+# ------------------------------------------------------------------------------------------------ #
 # Common Standards
 #
 # * All Draco targets (libraries, tests) inherit these properties.
