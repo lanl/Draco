@@ -19,7 +19,8 @@
   variables:
     SITE_ID: fog
     CTEST_SITE: ${SITE_ID}
-    SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --partition=ci --qos=ci --reservation=ci -L none@slurmdb"
+    SCHEDULER_PARAMETERS: -N 1 -A asc-ci --partition=ci --qos=ci --reservation=ci -L none@slurmdb
+      --exclude fg010
     EXTRA_CMAKE_ARGS: -GNinja
     # CI_DEBUG_TRACE: "true"
 
@@ -157,6 +158,9 @@ fg_deb_i2120_mr:
     CTEST_MODE: Nightly
     # CTEST_MODE: Experimental
     CTEST_NPROC: 36
+  artifacts:
+    paths:
+      - environment.log
   script:
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
       "Configure,Build,Test"
