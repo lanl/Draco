@@ -33,7 +33,7 @@ set(pkg_config_h "${header_prefix_binary}/rng/config.h")
 # ------------------------------------------------------------------------------------------------ #
 # Source files
 # ------------------------------------------------------------------------------------------------ #
-set(sources Random_Inline.cc Subrandom_Generator.cc)
+set(sources Random_Inline.cc)
 set(headers Counter_RNG.hh Random_Inline.hh Rnd_Control_Inline.hh Subrandom_Generator.hh
             uniform.hpp)
 if(TARGET GSL::gsl)

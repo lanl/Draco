@@ -76,6 +76,16 @@
       }
     },
     {
+      "name": "linux-debug-cxx17",
+      "displayName": "Linux Debug with c++17 enabled",
+      "description": "Target Linux for Debug build.",
+      "inherits": "linux-ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "Draco_CXX_LANGUAGE_STANDARD": "17"
+      }
+    },
+    {
       "name": "linux-debug-clang-tidy",
       "displayName": "Linux Debug (Clang Tidy)",
       "description": "Target Linux for Debug build.",
@@ -83,6 +93,52 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "DRACO_STATIC_ANALYZER": "clang-tidy",
+        "Draco_CXX_LANGUAGE_STANDARD": "17",
+        "Draco_C_LANGUAGE_STANDARD": "17"
+      }
+    },
+    {
+      "name": "darwin-haswell",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}-$env{SLURM_JOB_PARTITION}",
+      "installDir": "${sourceDir}/install/${presetName}-$env{SLURM_JOB_PARTITION}",
+      "condition": {
+        "type": "inList",
+        "string": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
+        "list": [
+          "darwin-general",
+          "darwin-sid-spr"
+        ]
+      }
+    },
+    {
+      "name": "darwin-haswell-debug",
+      "displayName": "Darwin Debug",
+      "description": "Target Linux for Debug build.",
+      "inherits": "darwin-haswell",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "darwin-haswell-release",
+      "displayName": "Darwin Release",
+      "description": "Target Linux for Debug build.",
+      "inherits": "darwin-haswell",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "darwin-haswell-clang-tidy",
+      "displayName": "Darwin Debug (Clang Tidy)",
+      "description": "Target Linux for Debug build.",
+      "inherits": "darwin-haswell",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DRACO_STATIC_ANALYZER": "clang-tidy",
+        "Draco_C_LANGUAGE_STANDARD": "17",
         "Draco_CXX_LANGUAGE_STANDARD": "17"
       }
     },
@@ -96,11 +152,6 @@
         "type": "equals",
         "lhs": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
         "rhs": "darwin-power9"
-      },
-      "vendor": {
-        "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
-          "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
-        }
       }
     },
     {
@@ -135,11 +186,6 @@
         "type": "equals",
         "lhs": "${hostSystemName}",
         "rhs": "Darwin"
-      },
-      "vendor": {
-        "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
-          "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
-        }
       }
     },
     {
@@ -253,8 +299,24 @@
       "configurePreset": "linux-debug-valgrind"
     },
     {
+      "name": "linux-debug-cxx17",
+      "configurePreset": "linux-debug-cxx17"
+    },
+    {
       "name": "linux-debug-clang-tidy",
       "configurePreset": "linux-debug-clang-tidy"
+    },
+    {
+      "name": "darwin-haswell-debug",
+      "configurePreset": "darwin-haswell-debug"
+    },
+    {
+      "name": "darwin-haswell-release",
+      "configurePreset": "darwin-haswell-release"
+    },
+    {
+      "name": "darwin-haswell-clang-tidy",
+      "configurePreset": "darwin-haswell-clang-tidy"
     },
     {
       "name": "darwin-p9-debug",
@@ -298,6 +360,34 @@
       "description": "Run all tests",
       "displayName": "Ctest",
       "configurePreset": "linux-release"
+    },
+    {
+      "name": "linux-debug-scalar",
+      "inherits": "linux-ctest",
+      "description": "Run all tests",
+      "displayName": "Ctest",
+      "configurePreset": "linux-debug-scalar"
+    },
+    {
+      "name": "linux-debug-fd-static",
+      "inherits": "linux-ctest",
+      "description": "Run all tests",
+      "displayName": "Ctest",
+      "configurePreset": "linux-debug-fd-static"
+    },
+    {
+      "name": "linux-debug-cxx17",
+      "inherits": "linux-ctest",
+      "description": "Run all tests",
+      "displayName": "Ctest",
+      "configurePreset": "linux-debug-cxx17"
+    },
+    {
+      "name": "linux-debug-clang-tidy",
+      "inherits": "linux-ctest",
+      "description": "Run all tests",
+      "displayName": "Ctest",
+      "configurePreset": "linux-debug-clang-tidy"
     },
     {
       "name": "darwin-p9-ctest",
