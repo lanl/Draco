@@ -121,9 +121,9 @@ private:
 
   unsigned object_size_;
   unsigned default_block_size_;
-  unsigned total_number_of_segments_;
-  void *first_block_;
-  void *first_segment_;
+  unsigned total_number_of_segments_{0};
+  void *first_block_{nullptr};
+  void *first_segment_{nullptr};
 };
 
 } // end namespace rtt_dsxx

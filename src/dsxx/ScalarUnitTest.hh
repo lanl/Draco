@@ -41,7 +41,7 @@ namespace rtt_dsxx {
  */
 /*!
  * \example dsxx/test/tstScalarUnitTest.cc
- * The unit test for and example usage of the ScalarUnitTest class.
+ *          The unit test for and example usage of the ScalarUnitTest class.
  */
 //================================================================================================//
 
@@ -63,7 +63,7 @@ public:
 
   //! Destructor.
   ~ScalarUnitTest() override {
-    out << resultMessage() << std::endl;
+    out << resultMessage() << '\n';
     return;
   }
 };

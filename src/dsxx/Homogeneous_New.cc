@@ -9,14 +9,12 @@
 #include "Homogeneous_New.hh"
 #include "Assert.hh"
 #include <algorithm>
-#include <cstdlib>
 
 namespace rtt_dsxx {
 
 //------------------------------------------------------------------------------------------------//
 Homogeneous_New::Homogeneous_New(unsigned const object_size, unsigned const default_block_size)
-    : object_size_(object_size), default_block_size_(default_block_size),
-      total_number_of_segments_(0), first_block_(nullptr), first_segment_(nullptr) {
+    : object_size_(object_size), default_block_size_(default_block_size) {
 
   Require(object_size >= sizeof(void *));
   Require(default_block_size > sizeof(void *));

@@ -10,7 +10,11 @@
 #include "fpe_trap.hh"
 #include "Assert.hh"
 #include "StackTrace.hh"
+#include <string>
+
+#ifdef FPETRAP_WINDOWS_X86
 #include <sstream>
+#endif
 
 //------------------------------------------------------------------------------------------------//
 // Linux_x86
@@ -21,43 +25,42 @@
 #include <csignal>
 
 /* Signal handler for floating point exceptions. */
+// NOLINTNEXTLINE
 extern "C" [[noreturn]] void catch_sigfpe(int sig, siginfo_t *psSiginfo, void * /*psContext*/) {
   // generate a message:
-  std::string error_type;
+  std::string error_type("FATAL ERROR: ");
 
   if (sig != SIGFPE) {
-    error_type = "FATAL ERROR: Floating point exception problem.";
+    error_type += "Floating point exception problem.";
   } else {
+    error_type += "(SIGNAL) Caught SIGFPE ";
     switch (psSiginfo->si_code) {
     case FPE_INTDIV:
-      error_type = "FATAL ERROR (SIGNAL) Caught SIGFPE (Integer divide by zero)";
+      error_type += "(Integer divide by zero)";
       break;
     case FPE_INTOVF:
-      error_type = "FATAL ERROR (SIGNAL) Caught SIGFPE (Integer overflow)";
+      error_type += "(Integer overflow)";
       break;
     case FPE_FLTDIV:
-      error_type = "FATAL ERROR (SIGNAL) Caught SIGFPE (Floating point divide by zero)";
+      error_type += "(Floating point divide by zero)";
       break;
     case FPE_FLTOVF:
-      error_type = "FATAL ERROR (SIGNAL) Caught SIGFPE (Floating point overflow)";
+      error_type += "(Floating point overflow)";
       break;
     case FPE_FLTUND:
-      error_type = "FATAL ERROR (SIGNAL) Caught SIGFPE (Floating point underflow)";
+      error_type += "(Floating point underflow)";
       break;
     case FPE_FLTRES:
-      error_type = "FATAL ERROR (SIGNAL) Caught SIGFPE (Floating point inexact result)";
+      error_type += "(Floating point inexact result)";
       break;
     case FPE_FLTINV:
-      error_type = "FATAL ERROR (SIGNAL) Caught SIGFPE (Invalid floating point "
-                   "operation)";
+      error_type += "(Invalid floating point operation)";
       break;
     case FPE_FLTSUB:
-      error_type = "FATAL ERROR (SIGNAL) Caught SIGFPE (Floating point "
-                   "subscript out of range)";
+      error_type += "(Floating point subscript out of range)";
       break;
     default:
-      error_type = "FATAL ERROR (SIGNAL) Caught SIGFPE (Unknown floating point "
-                   "exception)";
+      error_type += "(Unknown floating point exception)";
       break;
     }
   }
@@ -75,7 +78,7 @@ namespace rtt_dsxx {
  * A \b false return value is typically because the platform is not supported.
  */
 bool fpe_trap::enable() {
-  struct sigaction act {};
+  struct sigaction act {}; // NOLINT(misc-include-cleaner)
 
   // Choose to use Draco's DbC Insist.  If set to false, the compiler should print a stack trace
   // instead of the pretty print message defined above in catch_sigfpe.
@@ -418,9 +421,7 @@ void CCrashHandler::ActionOnException(std::string const &message, EXCEPTION_POIN
   // Provide a report
   std::ostringstream msg;
   msg << "\nERROR: " << message << "\nA fatal error has occured and a dump file was generated "
-      << "(crashdump.dmp)."
-      << "\nThe dump file can be viewed by loading it into "
-      << "Visual Studio." << std::endl;
+      << "(crashdump.dmp).\nThe dump file can be viewed by loading it into Visual Studio.\n";
   std::cout << msg.str() << std::endl;
 
   // Terminate process

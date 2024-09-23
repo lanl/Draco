@@ -8,12 +8,17 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Interpolate.hh"
+#include "dsxx/Assert.hh"
+#include <cmath>   // fabs
+#include <cstddef> // size_t
+#include <limits>  // numeric_limits
+#include <vector>
 
 #if defined(__cplusplus) && __cplusplus > 201402L // C++17
 namespace rtt_dsxx::interpolate {
 #else
-namespace rtt_dsxx {
-namespace interpolate {
+namespace rtt_dsxx {    // NOLINT
+namespace interpolate { // NOLINT
 #endif
 
 //------------------------------------------------------------------------------------------------//
@@ -131,7 +136,7 @@ double lagrange_1d(const std::vector<double> &data, const std::vector<double> &x
   double phi = 1.0;
   for (size_t j = 0; j < nx_local; ++j) {
     // use the relative diff (scaled by x) if x is "big enough", or absolute diff if x is O(eps):
-    double rel_dx =
+    double const rel_dx =
         fabs(x) > std::numeric_limits<double>::epsilon() ? (fabs(x - xs[j]) / x) : fabs(x - xs[j]);
     if (rel_dx < 1.0e-6) {
       return data[j];

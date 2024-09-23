@@ -144,8 +144,13 @@ template <typename Ordered_Group> inline Ordered_Group sign(Ordered_Group a, Ord
  * If concerned about overflow, consider 1 + ((n-1)/d).
  */
 template <typename T>
-constexpr inline typename std::enable_if<std::is_integral<T>::value, T>::type
-ceil_int_division(T const n, T const d) {
+constexpr inline typename
+#if defined(__cplusplus) && __cplusplus > 201402L
+    std::enable_if_t<std::is_integral_v<T>, T>
+#else
+    std::enable_if_t<std::is_integral<T>::value, T>
+#endif
+    ceil_int_division(T const n, T const d) {
   Require(d != 0);
   return (n + d - 1) / d;
 }

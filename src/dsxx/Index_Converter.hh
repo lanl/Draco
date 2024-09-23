@@ -225,8 +225,8 @@ int Index_Converter<D, OFFSET>::get_next_index(int index, int direction) const {
 
   --direction;
 
-  unsigned dimension = direction / 2;
-  int sign = 2 * (direction % 2) - 1;
+  unsigned const dimension = direction / 2;
+  int const sign = 2 * (direction % 2) - 1;
 
   const int sub_index = get_single_index(index, dimension) + sign;
 
@@ -249,8 +249,8 @@ int Index_Converter<D, OFFSET>::get_next_index(
     const typename Index_Converter<D, OFFSET>::Counter &counter, int direction) const {
   --direction;
 
-  unsigned dimension = direction / 2;
-  int sign = 2 * (direction % 2) - 1;
+  unsigned const dimension = direction / 2;
+  int const sign = 2 * (direction % 2) - 1;
 
   const int index = counter.get_index();
   const int sub_index = counter.get_index(dimension) + sign;

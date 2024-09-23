@@ -40,13 +40,20 @@ namespace rtt_dsxx {
  */
 template <typename T>
 std::pair<bool, T> get_env_val(std::string const &key, T default_value = T{}) {
+
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
+  static_assert(std::is_default_constructible_v<T>,
+                "get_env_val only usable with default constructible types");
+#else
   static_assert(std::is_default_constructible<T>::value,
                 "get_env_val only usable with default constructible types");
+#endif
+
   T val{default_value};
   char *s_val = getenv(key.c_str());
   bool is_defined(false);
   if (s_val) {
-    std::stringstream val_str(s_val);
+    std::stringstream val_str(s_val); // NOLINT(misc-const-correctness)
     val_str >> val;
     is_defined = true;
   }

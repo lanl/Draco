@@ -232,7 +232,7 @@ template <> inline double byte_swap_copy<double>(double const input) {
 
   // change meaning of bits in b64.
   b64.u = tmp;
-  double output = b64.d;
+  double const output = b64.d;
 #endif // __use_x86_gnu_asm
 
   return output;

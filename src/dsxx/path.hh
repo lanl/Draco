@@ -47,7 +47,7 @@ bool isDirectory(std::string const &path);
 //! Functor for printing all items in a directory tree
 class wdtOpPrint {
 public:
-  void operator()(std::string const &dirpath) const { std::cout << dirpath << std::endl; }
+  void operator()(std::string const &dirpath) const { std::cout << dirpath << '\n'; }
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -55,7 +55,7 @@ public:
 class wdtOpRemove {
 public:
   void operator()(std::string const &dirpath) const {
-    std::cout << "Removing \"" << dirpath << "\"" << std::endl;
+    std::cout << "Removing \"" << dirpath << "\"" << '\n';
     draco_remove(dirpath);
   }
 };
@@ -87,7 +87,7 @@ void draco_walk_directory_tree(std::string const &dirname, T const &myOperator) 
 
   // If file does not exist, report and continue.
   if (!fs::exists(dirname)) {
-    std::cout << "File/directory \"" << dirname << "\"does not exist.  Continuing..." << std::endl;
+    std::cout << "File/directory \"" << dirname << "\"does not exist.  Continuing...\n";
     return;
   }
 
@@ -107,7 +107,7 @@ void draco_walk_directory_tree(std::string const &dirname, T const &myOperator) 
 
   // If file does not exist, report and continue.
   if (!fileExists(dirname)) {
-    std::cout << "File/directory \"" << dirname << "\"does not exist.  Continuing..." << std::endl;
+    std::cout << "File/directory \"" << dirname << "\"does not exist.  Continuing...\n";
     return;
   }
 

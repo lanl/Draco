@@ -44,7 +44,7 @@ namespace rtt_dsxx {
  * \sa http://en.cppreference.com/w/cpp/types/numeric_limits/epsilon
  */
 template <typename T>
-constexpr inline typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type
+constexpr inline typename std::enable_if_t<!std::numeric_limits<T>::is_integer, bool>
 soft_equiv(const T &value, const T &reference, const T precision = static_cast<T>(1.0e-12F)) {
   using std::fabs;
   bool passed = false;

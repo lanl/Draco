@@ -13,6 +13,7 @@
 #include "dsxx/config.h"
 #include <cstring> // memcpy
 #include <sstream>
+#include <string>
 
 namespace rtt_dsxx {
 
@@ -38,7 +39,7 @@ std::string print_devs(size_t const maxlinelen, std::string const &line_name, mm
     std::string const name = it->second;
     if (remove_color(current_line).length() + name.length() + 2 > maxlinelen) {
       // flush current line to the real output
-      msg << current_line << std::endl;
+      msg << current_line << '\n';
       // reset the string that contains the current line.
       current_line.clear();
       // tab over to the colon
@@ -50,7 +51,7 @@ std::string print_devs(size_t const maxlinelen, std::string const &line_name, mm
     else
       current_line += name + std::string(", ");
   }
-  msg << current_line << "." << std::endl;
+  msg << current_line << ".\n";
 
   return msg.str();
 }
@@ -180,7 +181,7 @@ const std::string copyright() {
       << Term::ccolor(Term::fg::green)
       << "Copyright (C) 2024 Triad National Security, LLC. "
          "(C19028, LA-CC-16-016),\n     Released under a 3-Clause BSD License."
-      << Term::ccolor(Term::fg::reset) << std::endl;
+      << Term::ccolor(Term::fg::reset) << '\n';
 
   return msg.str();
 }

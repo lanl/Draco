@@ -6,6 +6,11 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "path.hh"
+#include <string>
+
+#if defined(__cplusplus) & __cplusplus > 201402L // C++17 or newer
+#include <filesystem>
+#endif
 
 namespace rtt_dsxx {
 

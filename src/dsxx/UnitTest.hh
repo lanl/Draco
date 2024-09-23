@@ -47,9 +47,8 @@ namespace rtt_dsxx {
 
  * \endcode
  *
- * \test All of the member functions of this class are tested by
- * dsxx/test/tstScalarUnitTest.cc, including the early exit caused by
- * \c --version on the command line.
+ * \test All of the member functions of this class are tested by dsxx/test/tstScalarUnitTest.cc,
+ *       including the early exit caused by \c --version on the command line.
  */
 //================================================================================================//
 
@@ -80,9 +79,7 @@ public:
 
   // MANIPULATORS
 
-  /*!
-   * \brief Only special cases should use these (like the unit test tstScalarUnitTest.cc).
-   */
+  //! Only special cases should use these (like the unit test tstScalarUnitTest.cc).
   void dbcRequire(bool b) {
     m_dbcRequire = b;
     return;
@@ -113,7 +110,7 @@ public:
    * concerning the status of UnitTest.
    */
   void status() const {
-    out << resultMessage() << std::endl;
+    out << resultMessage() << '\n';
     return;
   }
   //! Reset the pass and fail counts to zero.
@@ -181,12 +178,12 @@ public:
 
   // DATA
   //! The number of passes found for this test.
-  unsigned numPasses;
+  unsigned numPasses{0};
   //! The number of failures found for this test.
-  unsigned numFails;
+  unsigned numFails{0};
 
   //! Is fpe_traping active?
-  bool fpe_trap_active;
+  bool fpe_trap_active{false};
 
 protected:
   // IMPLEMENTATION
@@ -205,13 +202,11 @@ protected:
   //! Where should output be sent (default is std::cout)
   std::ostream &out;
 
-  /*! Save the state of DBC so that it is easily accessible from within a unit
-   * test.
-   */
-  bool m_dbcRequire;
-  bool m_dbcCheck;
-  bool m_dbcEnsure;
-  bool m_dbcNothrow;
+  //! Save the state of DBC so that it is easily accessible from within a unit test.
+  bool m_dbcRequire{false};
+  bool m_dbcCheck{false};
+  bool m_dbcEnsure{false};
+  bool m_dbcNothrow{false};
 
   /* Report successful tests? */
   bool verbose;
@@ -235,37 +230,37 @@ protected:
   catch (rtt_dsxx::assertion & err) {                                                              \
     std::cout << "DRACO ERROR: While testing " << foo.getTestName() << ", "                        \
               << "the following error was thrown...\n"                                             \
-              << err.what() << std::endl;                                                          \
+              << err.what() << '\n';                                                               \
     foo.numFails++;                                                                                \
   }                                                                                                \
   catch (std::exception & err) {                                                                   \
     std::cout << "ERROR: While testing " << foo.getTestName() << ", "                              \
               << "the following error was thrown...\n"                                             \
-              << err.what() << std::endl;                                                          \
+              << err.what() << '\n';                                                               \
     foo.numFails++;                                                                                \
   }                                                                                                \
   catch (...) {                                                                                    \
     std::cout << "ERROR: While testing " << foo.getTestName() << ", "                              \
-              << "An unknown exception was thrown on processor " << std::endl;                     \
+              << "An unknown exception was thrown on processor " << '\n';                          \
     foo.numFails++;                                                                                \
-  };                                                                                               \
+  }                                                                                                \
   return foo.numFails;
 #define UT_EPILOG2(foo, bar)                                                                       \
   catch (rtt_dsxx::assertion & err) {                                                              \
     std::cout << "DRACO ERROR: While testing " << foo.getTestName() << ", "                        \
               << "the following error was thrown...\n"                                             \
-              << err.what() << std::endl;                                                          \
+              << err.what() << '\n';                                                               \
     foo.numFails++;                                                                                \
   }                                                                                                \
   catch (std::exception & err) {                                                                   \
     std::cout << "ERROR: While testing " << foo.getTestName() << ", "                              \
               << "the following error was thrown...\n"                                             \
-              << err.what() << std::endl;                                                          \
+              << err.what() << '\n';                                                               \
     foo.numFails++;                                                                                \
   }                                                                                                \
   catch (...) {                                                                                    \
     std::cout << "ERROR: While testing " << foo.getTestName() << ", "                              \
-              << "An unknown exception was thrown on processor " << std::endl;                     \
+              << "An unknown exception thrown on processor " << '\n';                              \
     foo.numFails++;                                                                                \
   };                                                                                               \
   return foo.numFails + bar.numFails;

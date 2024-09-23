@@ -26,7 +26,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <execinfo.h> // backtrace
-#include <ucontext.h>
+#include <sys/types.h> // NOLINT(misc-include-cleaner)
 #include <unistd.h> // readlink
 
 //------------------------------------------------------------------------------------------------//
@@ -44,7 +44,7 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
   std::ostringstream msg;
 
   // Get our PID and build the name of the link in /proc
-  pid_t const pid = getpid();
+  pid_t const pid = getpid(); // NOLINT(misc-include-cleaner)
 
   // Now read the symbolic link (process name)
   unsigned constexpr buf_size(512);
@@ -144,8 +144,7 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
 #else
   msg << "\n==> Try to run 'addr2line -e " << process_name << " 0x99999' "
       << "\n    to find where each part of the stack relates to your source code."
-      << "\n    Replace the 0x99999 with the actual address from the stack trace above."
-      << std::endl;
+      << "\n    Replace the 0x99999 with the actual address from the stack trace above.\n";
 #endif
   return msg.str();
 }

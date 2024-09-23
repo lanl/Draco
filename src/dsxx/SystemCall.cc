@@ -8,14 +8,15 @@
 
 #include "SystemCall.hh"
 #include "Assert.hh"
-
-#include <cerrno> // errno
+#include <array>
+#include <string>
 
 #if defined(__cplusplus) & __cplusplus > 201402L // C++17 or newer
 #include <filesystem>
 #else // older than C++17
 
 #ifdef _MSC_VER
+#include <cerrno>   // errno
 #include <cstdlib>  // _fullpath
 #include <direct.h> // _getcwd
 #include <sstream>
@@ -28,8 +29,9 @@
 #endif // C++17
 
 #if defined UNIX || defined MINGW
-#include <cstring>  // strncpy()
-#include <unistd.h> // gethostname
+#include <cstring>    // strncpy()
+#include <sys/stat.h> // stat
+#include <unistd.h>   // gethostname
 #endif
 #ifdef _MSC_VER
 #include <process.h> // _getpid
@@ -45,7 +47,7 @@ namespace rtt_dsxx {
 /*! \brief Wrapper for system dependent hostname call.
  *
  * * Windows: \c HOST_NAME_MAX set to \c MAX_COMPUTERNAME_LENGTH in config.h
- * * Unix/Linux: \c HOST_NAME_MAX loaded from \<climit\>
+ * * Unix/Linux: \c HOST_NAME_MAX loaded from \<climits\>
  * * Mac OSX: \c HOST_NAME_MAX set to \c _POSIX_HOST_NAME_MAX in config.h
  *
  * \sa sec_HOST_NAME_MAX
@@ -65,11 +67,11 @@ std::string draco_gethostname() {
 
 // Linux: gethostname from <unistd.h>
 #ifdef HAVE_GETHOSTNAME
-  std::array<char, HOST_NAME_MAX> hostname{};
+  std::array<char, HOST_NAME_MAX> hostname{}; // NOLINT(misc-include-cleaner)
   hostname.fill('y');
-  int err = gethostname(&hostname[0], HOST_NAME_MAX);
+  int const err = gethostname(&hostname[0], HOST_NAME_MAX); // NOLINT(misc-include-cleaner)
   if (err)
-    strncpy(&hostname[0], "gethostname() failed", HOST_NAME_MAX);
+    strncpy(&hostname[0], "gethostname() failed", HOST_NAME_MAX); // NOLINT(misc-include-cleaner)
   return hostname.data();
 
 // Catamount systems do not have gethostname().

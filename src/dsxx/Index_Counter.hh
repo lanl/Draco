@@ -90,7 +90,7 @@ private:
 
   std::array<int, D> indices;
   int index;
-  bool in_range;
+  bool in_range{true};
 
   // IMPLEMENTATION
 
@@ -104,7 +104,7 @@ private:
 //! Construct from an Index_Set object
 template <unsigned D, int OFFSET>
 Index_Counter<D, OFFSET>::Index_Counter(const Index_Set<D, OFFSET> &converter)
-    : index_set(converter), index(OFFSET), in_range(true) {
+    : index_set(converter), index(OFFSET) {
   for (size_t d = 0; d < D; ++d)
     indices[d] = OFFSET;
 }
