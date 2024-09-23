@@ -236,15 +236,6 @@ ccs2_valgrind_deploy:
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
     SITE_ID: ccscs2
 
-ccs4_rel_gcc850_deploy:
-  tags:
-    - CCSCS4-setuid-shared
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc850
-    SITE_ID: ccscs4
-
 ccs5_deb_llvm12_deploy:
   tags:
     - CCSCS5-setuid-shared
@@ -366,17 +357,6 @@ ccs3_deb_llvm12:
     DRACO_ENV: llvm1201
     CTEST_NPROC: 32
     SITE_ID: ccscs3
-
-ccs4_rel_gcc850:
-  tags:
-    - CCSCS4-setuid-shared
-  stage: test
-  extends: .ccscs_merge
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc850
-    CTEST_NPROC: 40
-    SITE_ID: ccscs4
 
 ccs2_autodoc:
   tags:
@@ -631,16 +611,6 @@ pages:
   artifacts:
     paths:
       - public
-
-rel_gcc_8.5.0_regress:
-  tags:
-    - CCSCS4-setuid-shared
-  extends: .ccscs_nightly
-  variables:
-    SITE_ID: ccscs4
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc850
-    CTEST_NPROC: 40
 
 #--------------------------------------------------------------------------------------------------#
 # Re-deploy dependent projects

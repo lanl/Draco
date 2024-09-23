@@ -6,6 +6,10 @@
 
 include_guard(GLOBAL)
 
+if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0 AND NOT MSVC)
+  message(FATAL_ERROR "Draco requires GNU gcc/g++ version >= 9.0.")
+endif()
+
 # Note: In config/compilerEnv.cmake, the build system sets flags for
 #
 # * the language standard (C++14, C99, etc)
