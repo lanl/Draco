@@ -4,13 +4,17 @@
  * \author Kent G. Budge
  * \date   Wed Nov 10 09:35:09 2010
  * \brief  Test functions defined in dsxx/draco_math.hh.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoMath.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include <complex>
+#include <cstdint>
+#include <cstdlib>
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -22,7 +26,7 @@ void tstconj(rtt_dsxx::UnitTest &ut) {
   else
     FAILMSG("conj(double) is NOT correct");
 
-  std::complex<double> c(2.7, -1.4);
+  std::complex<double> const c(2.7, -1.4);
   if (rtt_dsxx::soft_equiv((rtt_dsxx::conj(c) * c).real(), rtt_dsxx::square(abs(c))))
     PASSMSG("conj(std::complex) is correct");
   else

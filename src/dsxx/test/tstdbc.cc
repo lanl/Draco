@@ -9,8 +9,14 @@
 #include "dsxx/DracoMath.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "dsxx/dbc.hh"
+#include <algorithm> // std::find_if
 #include <array>
+#include <cmath> // std::isnan
+#include <limits>
+#include <string>
+#include <utility> // std::pair
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -59,11 +65,10 @@ void dbc_test(UnitTest &ut) {
   // point.
 
   if (!is_monotonic_increasing(sum_test_array.begin(), sum_test_array.begin() + 1))
-    FAILMSG(string("is_monotonic_increasing function template ") +
-            "incorrectly reported length=1 container non-monotonic.");
+    FAILMSG(string("is_monotonic_increasing function template incorrectly reported length=1") +
+            " container non-monotonic.");
   else
-    PASSMSG(string("is_monotonic_increasing function template worked for ") +
-            string("length=1 test."));
+    PASSMSG(string("is_monotonic_increasing function template worked for length=1 test."));
 
   if (is_strict_monotonic_increasing(sum_test_array.begin(), sum_test_array.end()) ||
       !is_strict_monotonic_increasing(sum_test_array.begin(), sum_test_array.begin() + 2))
@@ -75,11 +80,10 @@ void dbc_test(UnitTest &ut) {
   // data point.
 
   if (is_strict_monotonic_increasing(sum_test_array.begin(), sum_test_array.begin() + 1))
-    PASSMSG(string("is_strict_monotonic_increasing function template worked ") +
-            string("for length=1 test."));
+    PASSMSG(string("is_strict_monotonic_increasing function template worked for length=1 test."));
   else
-    FAILMSG(string("is_strict_monotonic_increasing function template ") +
-            string("incorrectly reported length=1 container non-monotonic."));
+    FAILMSG(string("is_strict_monotonic_increasing function template incorrectly reported ") +
+            string("length=1 container non-monotonic."));
 
   if (is_strict_monotonic_decreasing(sum_test_array.begin() + 1, sum_test_array.begin() + 3) &&
       !is_strict_monotonic_decreasing(sum_test_array.begin(), sum_test_array.end()))
@@ -91,11 +95,10 @@ void dbc_test(UnitTest &ut) {
   // data point.
 
   if (is_strict_monotonic_decreasing(sum_test_array.begin(), sum_test_array.begin() + 1))
-    PASSMSG(string("is_strict_monotonic_decreasing function template ") +
-            string("worked for length=1 test."));
+    PASSMSG(string("is_strict_monotonic_decreasing function template worked for length=1 test."));
   else
-    FAILMSG(string("is_strict_monotonic_decreasing function template ") +
-            string("incorrectly reported length=1 container monotonic."));
+    FAILMSG(string("is_strict_monotonic_decreasing function template incorrectly reported ") +
+            string("length=1 container monotonic."));
 
   if (std::find_if(sum_test_array.begin(), sum_test_array.end(),
                    [](double x) { return x > 2.0; }) != sum_test_array.begin() + 1)

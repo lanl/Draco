@@ -6,10 +6,13 @@
  * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Data_Table.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include <array>
+#include <iostream>
 
 using namespace std;
 using rtt_dsxx::Data_Table;
@@ -20,7 +23,7 @@ void test_array(rtt_dsxx::UnitTest &ut) {
 
   bool caught = false;
   try {
-    Data_Table<int> dt(&(myarray.front()), &(myarray.back()));
+    Data_Table<int> const dt(&(myarray.front()), &(myarray.back()));
   } catch (rtt_dsxx::assertion & /* error */) {
     caught = true;
   }
@@ -28,7 +31,7 @@ void test_array(rtt_dsxx::UnitTest &ut) {
 
   caught = false;
   try {
-    Data_Table<int> dt(&(myarray.back()), &(myarray.front()));
+    Data_Table<int> const dt(&(myarray.back()), &(myarray.front()));
   } catch (rtt_dsxx::assertion & /* error */) {
     caught = true;
   }
@@ -51,7 +54,7 @@ void test_array(rtt_dsxx::UnitTest &ut) {
     {
       // Suppress clang-tidy warning since we don't care about performance and really want to test
       // this form of the ctor.
-      Data_Table<int> dt3(dt); // NOLINT(performance-unnecessary-copy-initialization)
+      Data_Table<int> const dt3(dt); // NOLINT(performance-unnecessary-copy-initialization)
       FAIL_IF_NOT(dt3.size() == dt.size());
       FAIL_IF_NOT(dt3.begin() == dt.begin());
       FAIL_IF_NOT(dt3.end() == dt.end());
@@ -114,7 +117,7 @@ void test_scalar(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(*(dt.begin()) == 32);
     FAIL_IF_NOT(dt2.size() == 1);
 
-    Data_Table<int> dt3(dt2);
+    Data_Table<int> const dt3(dt2);
     FAIL_IF_NOT(dt[0] == dt3[0]);
     FAIL_IF(&(dt[0]) == &(dt3[0]));
 
@@ -155,12 +158,12 @@ int main(int argc, char *argv[]) {
       test_array(ut);
       test_scalar(ut);
     } catch (rtt_dsxx::assertion &error) {
-      cout << "ERROR: While testing tstData_Table_Ptr, " << error.what() << endl;
+      cout << "ERROR: While testing tstData_Table_Ptr, " << error.what() << '\n';
       ut.numFails++;
     }
 
     catch (...) {
-      cout << "ERROR: While testing " << argv[0] << ", An unknown exception was thrown" << endl;
+      cout << "ERROR: While testing " << argv[0] << ", An unknown exception was thrown\n";
       ut.numFails++;
     }
   } else {

@@ -4,13 +4,14 @@
  * \author Kent Budge
  * \date   Tue Nov 28 09:17:23 2006
  * \brief  test the Homogeneous_New allocator class.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Homogeneous_New.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
+#include <iostream>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -20,20 +21,20 @@ using namespace rtt_dsxx;
 //------------------------------------------------------------------------------------------------//
 
 void tstHomogeneous_New(UnitTest &ut) {
-  { Homogeneous_New allocator(34); }
+  { Homogeneous_New const allocator(34); }
   ut.passes("Construction/destruction did not throw an exception");
 
   {
     Homogeneous_New allocator(56);
     void *first_object = allocator.allocate();
-    cout << "First address: " << first_object << endl;
+    cout << "First address: " << first_object << '\n';
     void *second_object = allocator.allocate();
-    cout << "Second address: " << second_object << endl;
+    cout << "Second address: " << second_object << '\n';
     allocator.deallocate(first_object);
     first_object = allocator.allocate();
-    cout << "Reallocated first address: " << first_object << endl;
+    cout << "Reallocated first address: " << first_object << '\n';
     void *third_object = allocator.allocate();
-    cout << "Third address: " << third_object << endl;
+    cout << "Third address: " << third_object << '\n';
   }
 
   {

@@ -3,15 +3,17 @@
  * \file   dsxx/test/tstEndian.cc
  * \author Mike Buksas
  * \date   Tue Oct 23 16:20:59 2007
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Endian.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include <array>
+#include <cstdint> // uint64_t
+#include <cstdlib> // std::abs
 #include <limits>
 #include <sstream>
 
@@ -23,7 +25,7 @@ using namespace rtt_dsxx;
 //------------------------------------------------------------------------------------------------//
 void test_char_data(ScalarUnitTest &ut) {
   array<unsigned char, 3> data = {'a', 'b', 'c'};
-  unsigned int length = sizeof(data) / sizeof(unsigned char);
+  unsigned int const length = sizeof(data) / sizeof(unsigned char);
 
   char_byte_swap(data.data(), length);
 
@@ -31,7 +33,7 @@ void test_char_data(ScalarUnitTest &ut) {
     FAILMSG("unsigned char_byte_swap function failed");
 
   array<char, 3> pdata = {'a', 'b', 'c'};
-  unsigned int plength = sizeof(pdata) / sizeof(char);
+  unsigned int const plength = sizeof(pdata) / sizeof(char);
 
   char_byte_swap(pdata.data(), plength);
 
@@ -58,9 +60,9 @@ void test_integer(ScalarUnitTest &ut) {
     FAILMSG("byte_swap failed for for unsigned integer type");
 
   // uint32_t, to test the specialized version of byte_swap_copy
-  uint32_t uint32_moo = 0xDEADBEEF;
+  uint32_t const uint32_moo = 0xDEADBEEF;
 
-  uint32_t uint32_moo_swapped = byte_swap_copy(uint32_moo);
+  uint32_t const uint32_moo_swapped = byte_swap_copy(uint32_moo);
 
   if (uint32_moo_swapped != 0xEFBEADDE)
     FAILMSG("byte_swap_copy failed for for unsigned integer type");
@@ -89,19 +91,18 @@ void test_int64(ScalarUnitTest &ut) {
     FAILMSG("2x byte_swap failed for for uint64 integer type");
 
   // Swap again, using byte_swap_copy
-  uint64_t u_moo_swapped = byte_swap_copy(u_moo);
+  uint64_t const u_moo_swapped = byte_swap_copy(u_moo);
 
   if (u_moo_swapped != 0xADFBEEDBEADDDEFA)
     FAILMSG("byte_swap_copy failed for for uint64 integer type");
 }
 
 //------------------------------------------------------------------------------------------------//
-/* This test demonstrates that two applications of byte-swap in succession
- * return the original value.
+/* This test demonstrates that two applications of byte-swap in succession return the original
+ * value.
  *
- * To do this, we sweep over a lot of double values. We use a non-integral
- * multiplier for successive values to avoid small subsets of the available
- * patterns of bits. E.g. multiples of 2.
+ * To do this, we sweep over a lot of double values. We use a non-integral multiplier for successive
+ * values to avoid small subsets of the available patterns of bits. E.g. multiples of 2.
  */
 void test_idempotence(ScalarUnitTest &ut) {
 

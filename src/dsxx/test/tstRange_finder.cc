@@ -3,14 +3,16 @@
  * \file   dsxx/test/tstRange_finder.cc
  * \author Mike Buksas
  * \date   Thu Feb  6 12:43:22 2003
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Range_Finder.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include <array>
+#include <utility>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;

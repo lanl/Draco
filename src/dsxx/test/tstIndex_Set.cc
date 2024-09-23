@@ -3,13 +3,14 @@
  * \file   dsxx/test/tstIndex_Set.cc
  * \author Mike Buksas
  * \date   Thu Feb  2 13:46:36 2006
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Index_Set.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
+#include <array>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -43,54 +44,34 @@ void test_index_set(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(box.limit_of_index(false) == 1);
 
   // Test for indices in the total range and the range of each dimension.
-  if (box.index_in_range(0))
-    ITFAILS;
-  if (!box.index_in_range(1))
-    ITFAILS;
-  if (!box.index_in_range(60))
-    ITFAILS;
-  if (box.index_in_range(61))
-    ITFAILS;
+  FAIL_IF(box.index_in_range(0));
+  FAIL_IF_NOT(box.index_in_range(1));
+  FAIL_IF_NOT(box.index_in_range(60));
+  FAIL_IF(box.index_in_range(61));
 
-  if (box.index_in_range(0, 0))
-    ITFAILS;
-  if (!box.index_in_range(1, 0))
-    ITFAILS;
-  if (!box.index_in_range(3, 0))
-    ITFAILS;
-  if (box.index_in_range(4, 0))
-    ITFAILS;
+  FAIL_IF(box.index_in_range(0, 0));
+  FAIL_IF_NOT(box.index_in_range(1, 0));
+  FAIL_IF_NOT(box.index_in_range(3, 0));
+  FAIL_IF(box.index_in_range(4, 0));
 
-  if (box.index_in_range(0, 0))
-    ITFAILS;
-  if (!box.index_in_range(1, 0))
-    ITFAILS;
-  if (!box.index_in_range(3, 0))
-    ITFAILS;
-  if (box.index_in_range(4, 0))
-    ITFAILS;
+  FAIL_IF(box.index_in_range(0, 0));
+  FAIL_IF_NOT(box.index_in_range(1, 0));
+  FAIL_IF_NOT(box.index_in_range(3, 0));
+  FAIL_IF(box.index_in_range(4, 0));
 
-  array<unsigned, 3> indices = {4, 5, 6};
-  if (box.indices_in_range(indices))
-    ITFAILS;
+  array<unsigned, 3> const indices = {4, 5, 6};
+  FAIL_IF(box.indices_in_range(indices));
 
   // Test the functions for vetting direction and dimension arguments.
-  if (box.direction_okay(0))
-    ITFAILS;
-  if (!box.direction_okay(1))
-    ITFAILS;
-  if (!box.direction_okay(6))
-    ITFAILS;
-  if (box.direction_okay(7))
-    ITFAILS;
+  FAIL_IF(box.direction_okay(0));
+  FAIL_IF_NOT(box.direction_okay(1));
+  FAIL_IF_NOT(box.direction_okay(6));
+  FAIL_IF(box.direction_okay(7));
 
   // if (box.dimension_okay(-1)) ITFAILS;
-  if (!box.dimension_okay(0))
-    ITFAILS;
-  if (!box.dimension_okay(2))
-    ITFAILS;
-  if (box.dimension_okay(3))
-    ITFAILS;
+  FAIL_IF_NOT(box.dimension_okay(0));
+  FAIL_IF_NOT(box.dimension_okay(2));
+  FAIL_IF(box.dimension_okay(3));
 
   // Resize the object and repeat some of the tests:
 
@@ -115,8 +96,7 @@ void test_index_set(rtt_dsxx::UnitTest &ut) {
 
   // Test for equality and not-inequality
   FAIL_IF_NOT(box2 == box);
-  if (!(box2 == box))
-    ITFAILS;
+  FAIL_IF_NOT((box2 == box));
 
   // Resize the copy:
   box2.set_size(3);
@@ -125,7 +105,7 @@ void test_index_set(rtt_dsxx::UnitTest &ut) {
   FAIL_IF(box2 == box);
   FAIL_IF_NOT(box2 != box);
 
-  Index_Set<2, 0> csquare(4);
+  Index_Set<2, 0> const csquare(4);
 
   // Check the sizes and ranges of each dimensions
   FAIL_IF_NOT(csquare.get_size() == 16);

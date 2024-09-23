@@ -13,6 +13,8 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include <algorithm> // std::copy
 #include <iostream>
 #include <iterator>
 #include <string>
@@ -77,7 +79,7 @@ struct Banana {
 void move_semantics_example(rtt_dsxx::UnitTest &ut) {
   using namespace std;
 
-  cout << ">>> Begin demonstration...\n" << endl;
+  cout << ">>> Begin demonstration...\n\n";
 
   // Create a complex object.
   cout << "Create a vector v1.\n";
@@ -163,15 +165,15 @@ void report_memory_locations(std::vector<double> const &v, std::string const &na
   using namespace std;
   cout << name << " @ " << &v << ", " << name << " data @ ";
   if (!v.empty())
-    cout << &v[0] << endl; // NOLINT [hicpp-invalid-access-moved]
+    cout << &v[0] << '\n'; // NOLINT [hicpp-invalid-access-moved]
   else
-    cout << "nullptr" << endl;
+    cout << "nullptr\n";
   cout << name << " = {";
   if (!v.empty()) {
     copy(v.begin(), prev(v.end()), ostream_iterator<double>(cout, ","));
     cout << v.back();
   }
-  cout << "}" << endl;
+  cout << "}\n";
   return;
 }
 

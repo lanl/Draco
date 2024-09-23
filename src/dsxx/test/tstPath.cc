@@ -9,8 +9,12 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/SystemCall.hh"
+#include "dsxx/UnitTest.hh"
 #include "dsxx/path.hh"
 #include <fstream>
+#include <iostream>
+#include <string>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -19,7 +23,8 @@ using namespace rtt_dsxx;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 void test_currentPath(ScalarUnitTest &ut) {
-  cout << "\nTesting currentPath() function ... \n" << endl;
+  cout << "\nTesting currentPath() function ... \n\n";
+  ;
 
   // currentPath
   string const cp = draco_getcwd();
@@ -50,7 +55,8 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
   // Convert path to Native format
   std::string const fqpn = getFilenameComponent(fqp, rtt_dsxx::FC_NATIVE);
 
-  cout << "\nTesting getFilenameComponent() function with fqpn = " << fqpn << " ...\n" << endl;
+  cout << "\nTesting getFilenameComponent() function with fqpn = " << fqpn << " ...\n\n";
+  ;
 
   bool usesUnixDirSep = true;
 
@@ -65,7 +71,7 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
     usesUnixDirSep = false;
 
   // retrieve the path w/o the filename.
-  string mypath = getFilenameComponent(fqpn, rtt_dsxx::FC_PATH);
+  string const mypath = getFilenameComponent(fqpn, rtt_dsxx::FC_PATH);
   if (usesUnixDirSep) {
     // If we are using UnixDirSep, we have 2 cases (./tstPath or ../test/tstPath).  Look for the
     // case with 'test' first:
@@ -100,8 +106,8 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
 
   // value if not found
 
-  string mypath2 = getFilenameComponent(string("foobar"), rtt_dsxx::FC_PATH);
-  string expected = string(".") + string(1, rtt_dsxx::dirSep);
+  string const mypath2 = getFilenameComponent(string("foobar"), rtt_dsxx::FC_PATH);
+  string const expected = string(".") + string(1, rtt_dsxx::dirSep);
   if (mypath2 == expected)
     PASSMSG(string("FC_PATH: name w/o path successfully returned ") + expected);
   else
@@ -110,7 +116,7 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
   // test the FC_NAME mode
   // ------------------------------------------------------------
 
-  string myname = getFilenameComponent(fqpn, rtt_dsxx::FC_NAME);
+  string const myname = getFilenameComponent(fqpn, rtt_dsxx::FC_NAME);
 
   idx = myname.find(string("tstPath"));
   if (idx != string::npos)
@@ -128,7 +134,7 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
 
   // value if not found
 
-  string myname2 = getFilenameComponent(string("foobar"), rtt_dsxx::FC_NAME);
+  string const myname2 = getFilenameComponent(string("foobar"), rtt_dsxx::FC_NAME);
   if (myname2 == string("foobar"))
     PASSMSG("name w/o path successfully returned");
   else
@@ -136,7 +142,7 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
 
   // test the FC_REALPATH
   // ------------------------------------------------------------
-  string realpath = getFilenameComponent(fqp, rtt_dsxx::FC_REALPATH);
+  string const realpath = getFilenameComponent(fqp, rtt_dsxx::FC_REALPATH);
 
 #if defined(_MSC_VER)
   { // The binary should exist.  Windows does not provide an execute bit.
@@ -182,14 +188,14 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
   }
 #endif
 
-  string absolutepath = getFilenameComponent(fqp, rtt_dsxx::FC_ABSOLUTE);
+  string const absolutepath = getFilenameComponent(fqp, rtt_dsxx::FC_ABSOLUTE);
 
   // These are not implemented yet
   // ------------------------------------------------------------
 
   bool caught = false;
   try {
-    string extension = getFilenameComponent(fqp, rtt_dsxx::FC_EXT);
+    string const extension = getFilenameComponent(fqp, rtt_dsxx::FC_EXT);
   } catch (...) {
     caught = true;
     PASSMSG("FC_EXT throws.");
@@ -199,7 +205,7 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
 
   caught = false;
   try {
-    string extension = getFilenameComponent(fqp, rtt_dsxx::FC_NAME_WE);
+    string const extension = getFilenameComponent(fqp, rtt_dsxx::FC_NAME_WE);
   } catch (...) {
     caught = true;
     PASSMSG("FC_NAME_WE throws.");
@@ -210,7 +216,7 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
   // FC_LASTVALUE should always throw.
   caught = false;
   try {
-    string foo = getFilenameComponent(fqp, rtt_dsxx::FC_LASTVALUE);
+    string const foo = getFilenameComponent(fqp, rtt_dsxx::FC_LASTVALUE);
   } catch (...) {
     caught = true;
     PASSMSG("FC_LASTVALUE throws.");
@@ -223,11 +229,11 @@ void test_getFilenameComponent(ScalarUnitTest &ut, string const &fqp) {
 
 //------------------------------------------------------------------------------------------------//
 void test_draco_remove(rtt_dsxx::ScalarUnitTest &ut) {
-  std::cout << "\nBegin test tstPath::test_draco_remove.\n" << std::endl;
+  std::cout << "\nBegin test tstPath::test_draco_remove.\n\n";
   {
     // create a file.
-    std::cout << "Creating a file..." << std::endl;
-    std::string dummyFile("dummyFile.txt");
+    std::cout << "Creating a file...\n";
+    std::string const dummyFile("dummyFile.txt");
     std::ofstream outfile(dummyFile.c_str());
     outfile.close();
 
@@ -252,13 +258,13 @@ void test_draco_remove(rtt_dsxx::ScalarUnitTest &ut) {
   {
     // Test a more complex sytem of directories and files.
 
-    std::cout << "\nCreating files in a directory structure...\n" << std::endl;
+    std::cout << "\nCreating files in a directory structure...\n\n";
 
-    std::string dummyFile1("dummydir/d1/dummyFile1.txt");
-    std::string dummyFile2("dummydir/d1/dummyFile2.txt");
-    std::string dummyFile3("dummydir/dummyFile3.txt");
-    std::string dummyDir1(getFilenameComponent(dummyFile1, FC_PATH));
-    std::string dummyDir2(getFilenameComponent(dummyDir1, FC_PATH));
+    std::string const dummyFile1("dummydir/d1/dummyFile1.txt");
+    std::string const dummyFile2("dummydir/d1/dummyFile2.txt");
+    std::string const dummyFile3("dummydir/dummyFile3.txt");
+    std::string const dummyDir1(getFilenameComponent(dummyFile1, FC_PATH));
+    std::string const dummyDir2(getFilenameComponent(dummyDir1, FC_PATH));
 
     // Create directories.
 
@@ -300,11 +306,11 @@ void test_draco_remove(rtt_dsxx::ScalarUnitTest &ut) {
       return;
     }
     // Print the directory tree
-    std::cout << "The directory tree contains: " << std::endl;
+    std::cout << "The directory tree contains: \n";
     draco_dir_print(dummyDir2);
 
     // Recursively remove the file and subdirectory.
-    std::cout << "Removing all entries in " << dummyDir2 << std::endl;
+    std::cout << "Removing all entries in " << dummyDir2 << '\n';
     draco_remove_dir(dummyDir2);
     if (fileExists(dummyDir2))
       FAILMSG(string("Failed to remove directory = ") + dummyDir2);

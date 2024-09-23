@@ -9,6 +9,10 @@
 #include "dsxx/Index_Converter.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
+#include <algorithm>
+#include <array>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -21,10 +25,10 @@ void test_index_converter(rtt_dsxx::UnitTest &ut) {
   vector<int> result(3);
   array<unsigned, 3> dimensions = {3, 4, 5};
 
-  { Index_Converter<3, 1> box; }
+  { Index_Converter<3, 1> const box; }
 
   {
-    Index_Converter<3, 1> box(dimensions.data());
+    Index_Converter<3, 1> const box(dimensions.data());
 
     FAIL_IF_NOT(box.limit_of_index(0, true) == 3);
     FAIL_IF_NOT(box.get_index(dimensions) == 60);
@@ -35,7 +39,7 @@ void test_index_converter(rtt_dsxx::UnitTest &ut) {
     indices[0] = 2;
     indices[1] = 3;
     indices[2] = 4;
-    int one_index = (2 - 1) + 3 * (3 - 1) + 12 * (4 - 1) + 1;
+    int const one_index = (2 - 1) + 3 * (3 - 1) + 12 * (4 - 1) + 1;
     FAIL_IF_NOT(box.get_index(indices) == one_index);
 
     result = box.get_indices(one_index);
@@ -48,7 +52,7 @@ void test_index_converter(rtt_dsxx::UnitTest &ut) {
   }
 
   {
-    Index_Converter<3, 0> box(dimensions.data());
+    Index_Converter<3, 0> const box(dimensions.data());
 
     array<int, 3> indices = {0, 0, 0};
     FAIL_IF_NOT(box.get_index(indices) == 0);
@@ -71,7 +75,7 @@ void test_index_converter(rtt_dsxx::UnitTest &ut) {
     if (!std::equal(result.begin(), result.end(), indices.begin()))
       ITFAILS;
 
-    int index = box.get_index(indices);
+    int const index = box.get_index(indices);
     FAIL_IF_NOT(index == 30);
 
     FAIL_IF_NOT(box.get_next_index(index, 1) == -1);
@@ -86,7 +90,7 @@ void test_index_converter(rtt_dsxx::UnitTest &ut) {
   }
 
   {
-    Index_Converter<5, 1> big_box(10);
+    Index_Converter<5, 1> const big_box(10);
     FAIL_IF_NOT(big_box.get_size(3) == 10);
     FAIL_IF_NOT(big_box.get_size() == 100000);
   }

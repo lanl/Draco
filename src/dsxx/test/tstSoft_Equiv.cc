@@ -10,10 +10,11 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include <array>
+#include <cstddef> // size_t
 #include <deque>
-#include <sstream>
-#include <typeinfo>
+#include <vector>
 
 using namespace std;
 using rtt_dsxx::soft_equiv;
@@ -25,13 +26,13 @@ using rtt_dsxx::soft_equiv_deep;
 
 void test_soft_equiv_scalar(rtt_dsxx::ScalarUnitTest &ut) {
 
-  double x = 0.9876543212345678;
-  double y = 0.9876543212345678;
+  double const x = 0.9876543212345678;
+  double const y = 0.9876543212345678;
 
   FAIL_IF_NOT(soft_equiv(x, y, 1.e-16));
   FAIL_IF_NOT(soft_equiv(x, y));
 
-  double z = 0.9876543212345679;
+  double const z = 0.9876543212345679;
   FAIL_IF(soft_equiv(x, z, 1.e-16));
 
   double a = 0.987654321234;
@@ -41,7 +42,7 @@ void test_soft_equiv_scalar(rtt_dsxx::ScalarUnitTest &ut) {
   FAIL_IF(soft_equiv(x, a));
 
   // checks for the new "reference=zero" coding 4aug00
-  double zero = 0.0;
+  double const zero = 0.0;
   FAIL_IF(soft_equiv(1.0e-10, zero));
   FAIL_IF(soft_equiv(-1.0e-10, zero));
   FAIL_IF_NOT(soft_equiv(-1.0e-35, zero));
@@ -162,8 +163,8 @@ void test_vector_specialization(rtt_dsxx::ScalarUnitTest &ut) {
   double const epsilon(1.0e-27);
   {
     // 1-d vector comparison.
-    std::vector<double> v(27, epsilon);
-    std::vector<double> r(27, epsilon);
+    std::vector<double> const v(27, epsilon);
+    std::vector<double> const r(27, epsilon);
     FAIL_IF_NOT(soft_equiv(v, r));
   }
   {
@@ -192,15 +193,15 @@ void test_vector_specialization(rtt_dsxx::ScalarUnitTest &ut) {
   }
   {
     // expect a failure for mismatched data.
-    std::vector<double> v(27, 42.42);
+    std::vector<double> const v(27, 42.42);
     std::vector<double> r(27, 42.42);
     r[5] = 42.44; // mismatch value
     FAIL_IF(soft_equiv(v, r));
   }
   {
     // expect a failure for mismatched size.
-    std::vector<double> v(27, 42.42);
-    std::vector<double> r(7, 42.42);
+    std::vector<double> const v(27, 42.42);
+    std::vector<double> const r(7, 42.42);
     if (soft_equiv(v, r))
       FAILMSG("Comparing different size vectors should not pass!");
     else

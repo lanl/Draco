@@ -7,14 +7,23 @@
  * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/SystemCall.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/path.hh"
 #include <algorithm>
 #include <cstring>
+#include <exception>
 #include <fstream>
+#include <iostream>
 #include <iterator>
+#include <map>
 #include <sstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -72,7 +81,7 @@ void tstTwo(UnitTest &unitTest) {
 
 //------------------------------------------------------------------------------------------------//
 void tstTwoCheck(UnitTest &unitTest, ostringstream &msg) {
-  bool verbose(true);
+  bool const verbose(true);
   std::ostringstream const msg_nocolor(rtt_dsxx::remove_color(msg.str()));
   map<string, unsigned> word_list(rtt_dsxx::get_word_count(msg_nocolor, verbose));
 
@@ -104,10 +113,10 @@ void tstTwoCheck(UnitTest &unitTest, ostringstream &msg) {
 
 //------------------------------------------------------------------------------------------------//
 void tstGetWordCountFile(UnitTest &unitTest) {
-  cout << "\ntstGetWordCountFile...\n" << endl;
+  cout << "\ntstGetWordCountFile...\n\n";
 
   // Generate a text file
-  string filename("tstScalarUnitTest.sample.txt");
+  string const filename("tstScalarUnitTest.sample.txt");
   ofstream myfile(filename.c_str());
   if (myfile.is_open()) {
     myfile << "This is a text file.\n"
@@ -122,9 +131,9 @@ void tstGetWordCountFile(UnitTest &unitTest) {
   map<string, unsigned> word_list(get_word_count(filename, false));
 
   // Some output
-  cout << "The world_list has the following statistics (word, count):\n" << endl;
+  cout << "The world_list has the following statistics (word, count):\n\n";
   for (auto &it : word_list)
-    cout << it.first << "\t::\t" << it.second << endl;
+    cout << it.first << "\t::\t" << it.second << '\n';
 
   // Spot checks on file contents:
   if (word_list[string("This")] != 1)
@@ -137,7 +146,7 @@ void tstGetWordCountFile(UnitTest &unitTest) {
     ITFAILS;
 
   if (unitTest.numFails == 0) {
-    cout << endl;
+    cout << '\n';
     PASSMSG("Successfully parsed text file and generated word_list");
   }
   return;
@@ -145,8 +154,7 @@ void tstGetWordCountFile(UnitTest &unitTest) {
 
 //------------------------------------------------------------------------------------------------//
 void tstdbcsettersandgetters(UnitTest &unitTest, int argc, char **argv) {
-  std::cout << "Testing Design-by-Contract setters and getters "
-            << "for the UnitTest class..." << std::endl;
+  std::cout << "Testing Design-by-Contract setters and getters for the UnitTest class...\n";
 
   // Silent version.
   ostringstream messages;
@@ -233,8 +241,8 @@ void tstVersion(UnitTest &unitTest, char *test) {
 
   char **argv = &vc[0];
   try {
-    std::cout << "Testing ctor... ScalarUnitTest(argc, argv, release)" << std::endl;
-    ScalarUnitTest myut(argc, argv, release);
+    std::cout << "Testing ctor... ScalarUnitTest(argc, argv, release)\n";
+    ScalarUnitTest const myut(argc, argv, release);
     FAILMSG("version construction NOT correct");
   } catch (assertion &err) {
     if (!strcmp(err.what(), "Success"))
@@ -256,7 +264,7 @@ void tstPaths(UnitTest &unitTest, char *test) {
 
   using std::string;
 
-  std::cout << "Begin testing tstPaths(ut)..." << std::endl;
+  std::cout << "Begin testing tstPaths(ut)...\n";
 
   // Checkpoint
   size_t const nf = unitTest.numFails;
@@ -277,8 +285,7 @@ void tstPaths(UnitTest &unitTest, char *test) {
   std::cout << "\nThe unitTest system reports the following paths:"
             << "\n\tTest Path         = " << testBinaryDir << "\n\tTest Name         = " << testName
             << "\n\tBinary Input Path = " << testBinaryInputDir
-            << "\n\tSource Input Path = " << testSourceDir << "\n"
-            << std::endl;
+            << "\n\tSource Input Path = " << testSourceDir << "\n\n";
 
   // Checks
   string const stest = rtt_dsxx::getFilenameComponent(
@@ -307,7 +314,7 @@ void tstPaths(UnitTest &unitTest, char *test) {
         buildType.substr(buildType.length() - 1, 1) == string("/"))
       buildType = buildType.substr(0, buildType.length() - 1);
     std::cout << "This appears to be a multi-config build tool like Xcode or "
-              << "Visual Studio where build type = " << buildType << "." << std::endl;
+              << "Visual Studio where build type = " << buildType << ".\n";
     if (buildType != string("Release") && buildType != string("Debug") &&
         buildType != string("DebWithRelInfo") && buildType != string("MinSizeRel"))
       FAILMSG(string("Unexpected build type = ") + buildType);
@@ -328,7 +335,7 @@ int main(int argc, char *argv[]) {
     ScalarUnitTest ut(argc, argv, release);
 
     // Try to print the copyright and author list
-    std::cout << copyright() << std::endl;
+    std::cout << copyright() << '\n';
 
     tstOne(ut);
 
@@ -355,18 +362,18 @@ int main(int argc, char *argv[]) {
   }
 
   catch (rtt_dsxx::assertion &err) {
-    string msg = err.what();
+    string const msg = err.what();
     if (msg != string("Success")) {
-      cout << "ERROR: While testing " << argv[0] << ", " << err.what() << endl;
+      cout << "ERROR: While testing " << argv[0] << ", " << err.what() << '\n';
       return 1;
     }
     return 0;
   } catch (exception &err) {
-    cout << "ERROR: While testing " << argv[0] << ", " << err.what() << endl;
+    cout << "ERROR: While testing " << argv[0] << ", " << err.what() << '\n';
     return 1;
   } catch (...) {
     cout << "ERROR: While testing " << argv[0] << ", "
-         << "An unknown exception was thrown" << endl;
+         << "An unknown exception was thrown\n";
     return 1;
   }
 
