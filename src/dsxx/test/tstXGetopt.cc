@@ -4,21 +4,25 @@
  * \author Kelly Thompson <kgt@lanl.gov>
  * \date   Wed Nov 10 09:35:09 2010
  * \brief  Test functions defined in dsxx/XGetopt.cc
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "dsxx/XGetopt.hh"
 #include <array>
+#include <iostream>
+#include <map>
 #include <sstream>
+#include <string>
 
 //------------------------------------------------------------------------------------------------//
 // Test 1: shortopts, no arguments
 void tst_shortopts_noargs(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 1..." << std::endl;
+  std::cout << "\n>>> Begin test 1...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 1> my_argv = {"tstXGetopt"};
@@ -51,7 +55,7 @@ void tst_shortopts_noargs(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 2: shortopts, version argument.
 void tst_shortopts_args_v(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 2..." << std::endl;
+  std::cout << "\n>>> Begin test 2...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 2> my_argv = {"tstXGetopt", "-v"};
@@ -67,8 +71,7 @@ void tst_shortopts_args_v(rtt_dsxx::UnitTest &ut) {
 
     case 'v': {
       std::ostringstream msg;
-      msg << "shortopts_args_v: XGetopt with '-v' argument and short options"
-          << " works as expected.";
+      msg << "shortopts_args_v: XGetopt with '-v' argument and short options works as expected.";
       PASSMSG(msg.str());
       break;
     }
@@ -87,7 +90,7 @@ void tst_shortopts_args_v(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 3: shortopts, unknown argument.
 void tst_shortopts_args_x(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 3..." << std::endl;
+  std::cout << "\n>>> Begin test 3...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 2> my_argv = {"tstXGetopt", "-x"};
@@ -120,7 +123,7 @@ void tst_shortopts_args_x(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 4: shortopts, 2 args (known and unknown)
 void tst_shortopts_args_vx(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 4..." << std::endl;
+  std::cout << "\n>>> Begin test 4...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 3> my_argv = {"tstXGetopt", "-x", "-v"};
@@ -136,8 +139,7 @@ void tst_shortopts_args_vx(rtt_dsxx::UnitTest &ut) {
 
     case 'v': {
       std::ostringstream msg;
-      msg << "shortopts_args_vx: XGetopt with '-v' argument and short options"
-          << " works as expected.";
+      msg << "shortopts_args_vx: XGetopt with '-v' argument and short options works as expected.";
       PASSMSG(msg.str());
       break;
     }
@@ -151,8 +153,7 @@ void tst_shortopts_args_vx(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(program_options.get_option_value() == std::string(""));
   FAIL_IF_NOT(program_options.get_unmatched_arguments()[0] == "-x");
   std::ostringstream msg;
-  msg << "XGetopt with known and unknown arguments and short options works as"
-      << " expected.";
+  msg << "XGetopt with known and unknown arguments and short options works as expected.";
   PASSMSG(msg.str());
   return;
 }
@@ -160,7 +161,7 @@ void tst_shortopts_args_vx(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 5: shortopts, 2 args (one with value)
 void tst_shortopts_args_vc(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 5..." << std::endl;
+  std::cout << "\n>>> Begin test 5...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 4> my_argv = {"tstXGetopt", "-v", "-c", "pink"};
@@ -188,8 +189,7 @@ void tst_shortopts_args_vc(rtt_dsxx::UnitTest &ut) {
 
     case 'v': {
       std::ostringstream msg;
-      msg << "shortopts_args_vx: XGetopt with '-v' argument and short options"
-          << " works as expected.";
+      msg << "shortopts_args_vx: XGetopt with '-v' argument and short options works as expected.";
       PASSMSG(msg.str());
       break;
     }
@@ -208,7 +208,7 @@ void tst_shortopts_args_vc(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 6: shortopts, help message
 void tst_shortopts_args_h(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 6..." << std::endl;
+  std::cout << "\n>>> Begin test 6...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 2> my_argv = {"tstXGetopt", "-h"};
@@ -242,8 +242,8 @@ void tst_shortopts_args_h(rtt_dsxx::UnitTest &ut) {
   std::ostringstream helpmsg;
   helpmsg << program_options.display_help("tst_shortopts_args_h");
   FAIL_IF(helpmsg.str().size() == 0);
-  std::cout << helpmsg.str() << std::endl;
-  bool verbose(true);
+  std::cout << helpmsg.str() << '\n';
+  bool const verbose(true);
   std::map<std::string, unsigned> word_list(rtt_dsxx::get_word_count(helpmsg, verbose));
   FAIL_IF_NOT(word_list[std::string("Options")] == 2);
   FAIL_IF_NOT(word_list[std::string("<value>")] == 1);
@@ -254,7 +254,7 @@ void tst_shortopts_args_h(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 7: shortopts, double dash
 void tst_shortopts_args_doubledash(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 7..." << std::endl;
+  std::cout << "\n>>> Begin test 7...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 4> my_argv = {"tstXGetopt", "-h", "--", "-v"};
@@ -274,8 +274,7 @@ void tst_shortopts_args_doubledash(rtt_dsxx::UnitTest &ut) {
 
     case 'v': {
       std::ostringstream msg;
-      msg << "shortopts_args_doubledash: version option selected. Should not"
-          << " have arrived here.";
+      msg << "shortopts_args_doubledash: version option selected. Should not have arrived here.";
       FAILMSG(msg.str());
       break;
     }
@@ -294,14 +293,15 @@ void tst_shortopts_args_doubledash(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 8: shorotps, missing argument
 void tst_shortopts_args_missingarg(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 8..." << std::endl;
+  std::cout << "\n>>> Begin test 8...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 2> my_argv = {"tstXGetopt", "-c"};
 
   // Register options
   try {
-    rtt_dsxx::XGetopt program_options(static_cast<int>(my_argv.size()), my_argv.data(), "hvc:");
+    rtt_dsxx::XGetopt const program_options(static_cast<int>(my_argv.size()), my_argv.data(),
+                                            "hvc:");
     FAILMSG("Insist failed to fire with missing required argument.");
   } catch (rtt_dsxx::assertion & /*error*/) {
     PASSMSG("As expected, Insist fired with missing required argument.");
@@ -312,15 +312,16 @@ void tst_shortopts_args_missingarg(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 9: shortopts, help message with help strings
 void tst_shortopts_args_helpstrings(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 9..." << std::endl;
+  std::cout << "\n>>> Begin test 9...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 2> my_argv = {"tstXGetopt", "-h"};
 
   // Register options
-  std::map<char, std::string> help_strings = {{'c', "create a new file with provided\nfilename."},
-                                              {'h', "print this message."},
-                                              {'v', "print version information and exit."}};
+  std::map<char, std::string> const help_strings = {
+      {'c', "create a new file with provided\nfilename."},
+      {'h', "print this message."},
+      {'v', "print version information and exit."}};
 
   rtt_dsxx::XGetopt program_options(static_cast<int>(my_argv.size()), my_argv.data(),
                                     "hvc:", help_strings);
@@ -351,8 +352,8 @@ void tst_shortopts_args_helpstrings(rtt_dsxx::UnitTest &ut) {
   std::ostringstream helpmsg;
   helpmsg << program_options.display_help("tst_shortopts_args_h");
   FAIL_IF(helpmsg.str().size() == 0);
-  std::cout << helpmsg.str() << std::endl;
-  bool verbose(true);
+  std::cout << helpmsg.str() << '\n';
+  bool const verbose(true);
   std::map<std::string, unsigned> word_list(rtt_dsxx::get_word_count(helpmsg, verbose));
   FAIL_IF_NOT(word_list[std::string("Options")] == 2);
   FAIL_IF_NOT(word_list[std::string("<value>")] == 1);
@@ -365,13 +366,13 @@ void tst_shortopts_args_helpstrings(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 10: long options, no arguments
 void tst_lopts_noargs(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 10..." << std::endl;
+  std::cout << "\n>>> Begin test 10...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 1> my_argv = {"tstXGetopt"};
 
   // Register options
-  rtt_dsxx::XGetopt::csmap long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
+  rtt_dsxx::XGetopt::csmap const long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
 
   rtt_dsxx::XGetopt program_options(static_cast<int>(my_argv.size()), my_argv.data(), long_options);
   int c(0);
@@ -394,8 +395,7 @@ void tst_lopts_noargs(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(program_options.get_option_value() == std::string(""));
   FAIL_IF_NOT(program_options.get_unmatched_arguments().size() == 0);
   std::ostringstream msg;
-  msg << "tst_lopts_noargs: XGetopt with no arguments and long options works as"
-      << " expected.";
+  msg << "tst_lopts_noargs: XGetopt with no arguments and long options works as expected.";
   PASSMSG(msg.str());
   return;
 }
@@ -403,13 +403,13 @@ void tst_lopts_noargs(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 11: longopts, version argument.
 void tst_lopts_args_v(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 11..." << std::endl;
+  std::cout << "\n>>> Begin test 11...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 2> my_argv = {"tstXGetopt", "-v"};
 
   // Register options
-  rtt_dsxx::XGetopt::csmap long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
+  rtt_dsxx::XGetopt::csmap const long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
 
   rtt_dsxx::XGetopt program_options(static_cast<int>(my_argv.size()), my_argv.data(), long_options);
   int c(0);
@@ -421,8 +421,7 @@ void tst_lopts_args_v(rtt_dsxx::UnitTest &ut) {
 
     case 'v': {
       std::ostringstream msg;
-      msg << "lopts_args_v: XGetopt with '-v' argument and long "
-          << "options works as expected.";
+      msg << "lopts_args_v: XGetopt with '-v' argument and long options works as expected.";
       PASSMSG(msg.str());
       break;
     }
@@ -441,13 +440,13 @@ void tst_lopts_args_v(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 12: lopts, version argument.
 void tst_lopts_args_version(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 12..." << std::endl;
+  std::cout << "\n>>> Begin test 12...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 2> my_argv = {"tstXGetopt", "--version"};
 
   // Register options
-  rtt_dsxx::XGetopt::csmap long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
+  rtt_dsxx::XGetopt::csmap const long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
 
   rtt_dsxx::XGetopt program_options(static_cast<int>(my_argv.size()), my_argv.data(), long_options);
   int c(0);
@@ -459,8 +458,7 @@ void tst_lopts_args_version(rtt_dsxx::UnitTest &ut) {
 
     case 'v': {
       std::ostringstream msg;
-      msg << "lopts_args_v: XGetopt with '--version' argument and "
-          << "long options works as expected.";
+      msg << "lopts_args_v: XGetopt with '--version' argument and long options works as expected.";
       PASSMSG(msg.str());
       break;
     }
@@ -479,13 +477,13 @@ void tst_lopts_args_version(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 13: lopts, unknown argument.
 void tst_lopts_args_xray(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 13..." << std::endl;
+  std::cout << "\n>>> Begin test 13...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 3> my_argv = {"tstXGetopt", "--xray", "yellow"};
 
   // Register options
-  rtt_dsxx::XGetopt::csmap long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
+  rtt_dsxx::XGetopt::csmap const long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
 
   rtt_dsxx::XGetopt program_options(static_cast<int>(my_argv.size()), my_argv.data(), long_options);
   int c(0);
@@ -516,13 +514,13 @@ void tst_lopts_args_xray(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 14: lopts, 2 args (long and short)
 void tst_lopts_args_vhelp(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 14..." << std::endl;
+  std::cout << "\n>>> Begin test 14...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 3> my_argv = {"tstXGetopt", "-v", "--help"};
 
   // Register options
-  rtt_dsxx::XGetopt::csmap long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
+  rtt_dsxx::XGetopt::csmap const long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
 
   rtt_dsxx::XGetopt program_options(static_cast<int>(my_argv.size()), my_argv.data(), long_options);
 
@@ -547,8 +545,8 @@ void tst_lopts_args_vhelp(rtt_dsxx::UnitTest &ut) {
 
   if (hflag && vflag) {
     std::ostringstream msg;
-    msg << "lopts_args_vhelp: XGetopt with '-v' and '--help' arguments and long"
-        << " options works as expected.";
+    msg << "lopts_args_vhelp: XGetopt with '-v' and '--help' arguments and long options works as"
+        << " expected.";
     PASSMSG(msg.str());
   }
   FAIL_IF_NOT(program_options.get_option_value() == std::string(""));
@@ -560,13 +558,13 @@ void tst_lopts_args_vhelp(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 15: lopts, 2 args (one with value)
 void tst_lopts_args_versioncreate(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 15..." << std::endl;
+  std::cout << "\n>>> Begin test 15...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 4> my_argv = {"tstXGetopt", "--version", "--create", "pink"};
 
   // Register options
-  rtt_dsxx::XGetopt::csmap long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
+  rtt_dsxx::XGetopt::csmap const long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
 
   rtt_dsxx::XGetopt program_options(static_cast<int>(my_argv.size()), my_argv.data(), long_options);
 
@@ -584,8 +582,7 @@ void tst_lopts_args_versioncreate(rtt_dsxx::UnitTest &ut) {
         PASSMSG(msg.str());
       } else {
         std::ostringstream msg;
-        msg << "lopts_args_versioncreate: Did not read user specified value"
-            << " correctly.";
+        msg << "lopts_args_versioncreate: Did not read user specified value correctly.";
         FAILMSG(msg.str());
       }
       break;
@@ -614,13 +611,13 @@ void tst_lopts_args_versioncreate(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 16: lopts, help message
 void tst_lopts_args_help(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 16..." << std::endl;
+  std::cout << "\n>>> Begin test 16...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 2> my_argv = {"tstXGetopt", "--help"};
 
   // Register options
-  rtt_dsxx::XGetopt::csmap long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
+  rtt_dsxx::XGetopt::csmap const long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
 
   rtt_dsxx::XGetopt program_options(static_cast<int>(my_argv.size()), my_argv.data(), long_options);
 
@@ -651,8 +648,8 @@ void tst_lopts_args_help(rtt_dsxx::UnitTest &ut) {
   std::ostringstream helpmsg;
   helpmsg << program_options.display_help("tst_lopts_args_h");
   FAIL_IF(helpmsg.str().size() == 0);
-  std::cout << helpmsg.str() << std::endl;
-  bool verbose(true);
+  std::cout << helpmsg.str() << '\n';
+  bool const verbose(true);
   std::map<std::string, unsigned> word_list(rtt_dsxx::get_word_count(helpmsg, verbose));
   FAIL_IF_NOT(word_list[std::string("Options")] == 2);
   FAIL_IF_NOT(word_list[std::string("--help")] == 1);
@@ -663,13 +660,13 @@ void tst_lopts_args_help(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 17: lopts, double dash
 void tst_lopts_args_doubledash(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 17..." << std::endl;
+  std::cout << "\n>>> Begin test 17...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 4> my_argv = {"tstXGetopt", "--help", "--", "--version"};
 
   // Register options
-  rtt_dsxx::XGetopt::csmap long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
+  rtt_dsxx::XGetopt::csmap const long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
 
   rtt_dsxx::XGetopt program_options(static_cast<int>(my_argv.size()), my_argv.data(), long_options);
 
@@ -686,8 +683,7 @@ void tst_lopts_args_doubledash(rtt_dsxx::UnitTest &ut) {
 
     case 'v': {
       std::ostringstream msg;
-      msg << "lopts_args_doubledash: version option selected. Should not have"
-          << " arrived here.";
+      msg << "lopts_args_doubledash: version option selected. Should not have arrived here.";
       FAILMSG(msg.str());
       break;
     }
@@ -706,17 +702,18 @@ void tst_lopts_args_doubledash(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 18: shorotps, missing argument
 void tst_lopts_args_missingarg(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 18..." << std::endl;
+  std::cout << "\n>>> Begin test 18...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 2> my_argv = {"tstXGetopt", "--create"};
 
   // Register options
   try {
-    rtt_dsxx::XGetopt::csmap long_options = {{'c', "create:"}, {'h', "help"}, {'v', "version"}};
+    rtt_dsxx::XGetopt::csmap const long_options = {
+        {'c', "create:"}, {'h', "help"}, {'v', "version"}};
 
-    rtt_dsxx::XGetopt program_options(static_cast<int>(my_argv.size()), my_argv.data(),
-                                      long_options);
+    rtt_dsxx::XGetopt const program_options(static_cast<int>(my_argv.size()), my_argv.data(),
+                                            long_options);
 
     FAILMSG("Insist failed to fire with missing required argument.");
   } catch (rtt_dsxx::assertion & /*error*/) {
@@ -728,16 +725,16 @@ void tst_lopts_args_missingarg(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Test 19: lopts, help message with help strings
 void tst_lopts_args_helpstrings(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n>>> Begin test 19..." << std::endl;
+  std::cout << "\n>>> Begin test 19...\n";
 
   // Simulate argc and argv for no arguments case.
   std::array<char const *, 2> my_argv = {"tstXGetopt", "--help"};
 
   // Register options
-  rtt_dsxx::XGetopt::csmap long_options = {
+  rtt_dsxx::XGetopt::csmap const long_options = {
       {'a', "appendtoit:"}, {'c', "create:"}, {'h', "help"}, {'v', "version"}};
 
-  std::map<char, std::string> help_strings = {
+  std::map<char, std::string> const help_strings = {
       {'a', "append to an existing file with\nprovided filename."},
       {'c', "create a new file with provided\nfilename."},
       {'h', "print this message."}};
@@ -773,8 +770,8 @@ void tst_lopts_args_helpstrings(rtt_dsxx::UnitTest &ut) {
   std::ostringstream helpmsg;
   helpmsg << program_options.display_help("tst_lopts_args_helpstrings");
   FAIL_IF(helpmsg.str().size() == 0);
-  std::cout << helpmsg.str() << std::endl;
-  bool verbose(true);
+  std::cout << helpmsg.str() << '\n';
+  bool const verbose(true);
   std::map<std::string, unsigned> word_list(rtt_dsxx::get_word_count(helpmsg, verbose));
   FAIL_IF_NOT(word_list[std::string("Options")] == 2);
   FAIL_IF_NOT(word_list[std::string("<value>")] == 2);

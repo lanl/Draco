@@ -4,14 +4,13 @@
  * \author Kelly Thompson <kgt@lanl.gov>
  * \date   Friday, Jul 29, 2016, 10:05 am
  * \brief  Check basic functionality of Release.hh/cc files.
- * \note   Copyright (C) 2024 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoStrings.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include <iostream>
 #include <map>
 #include <sstream>
@@ -29,14 +28,14 @@ void maintest(UnitTest &ut) {
     // ----------------------------------------
     // Print the release information
     ostringstream const releaseString(release());
-    cout << "\nrelease() = \n" << releaseString.str() << "\n" << endl;
+    cout << "\nrelease() = \n" << releaseString.str() << "\n\n";
 
     if (releaseString.str().length() > 0)
       PASSMSG("releaseString len > 0");
     else
       FAILMSG("releaseString len == 0");
 
-    bool verbose(false);
+    bool const verbose(false);
     std::map<std::string, unsigned> wc = rtt_dsxx::get_word_count(releaseString, verbose);
 
     FAIL_IF_NOT(wc[string("DRACO_DIAGNOSTICS")] == 1);
@@ -47,14 +46,14 @@ void maintest(UnitTest &ut) {
     // ----------------------------------------
     // Print the copyright statement and author list
     ostringstream const copyrightString(rtt_dsxx::remove_color(copyright()));
-    cout << "\ncopyright() = \n" << copyrightString.str() << endl;
+    cout << "\ncopyright() = \n" << copyrightString.str() << '\n';
 
     if (copyrightString.str().length() > 0)
       PASSMSG("copyrightString len > 0");
     else
       FAILMSG("copyrightString len == 0");
 
-    bool verbose(false);
+    bool const verbose(false);
     std::map<std::string, unsigned> wc = rtt_dsxx::get_word_count(copyrightString, verbose);
 
     FAIL_IF_NOT(wc[string("CCS-2")] == 1);

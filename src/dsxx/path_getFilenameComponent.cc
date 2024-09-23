@@ -5,9 +5,12 @@
  * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
+#include "dsxx/SystemCall.hh"
 #include "path.hh"
 #include <algorithm> // std::replace()
 #include <sstream>
+#include <string>
 
 namespace rtt_dsxx {
 
@@ -80,8 +83,8 @@ std::string getFilenameComponent(std::string const &fqName, FilenameComponent fc
   }
 
   case FC_REALPATH: {
-    std::string path(getFilenameComponent(fqName, FC_PATH));
-    std::string name(getFilenameComponent(fqName, FC_NAME));
+    std::string const path(getFilenameComponent(fqName, FC_PATH));
+    std::string const name(getFilenameComponent(fqName, FC_NAME));
     if (!draco_getstat(path).valid()) {
       retVal = std::string(); // On error, return empty string.
     } else {
@@ -92,8 +95,8 @@ std::string getFilenameComponent(std::string const &fqName, FilenameComponent fc
 
   case FC_ABSOLUTE: {
     // Same as FC_REALPATH?
-    std::string path(getFilenameComponent(fqName, FC_PATH));
-    std::string name(getFilenameComponent(fqName, FC_NAME));
+    std::string const path(getFilenameComponent(fqName, FC_PATH));
+    std::string const name(getFilenameComponent(fqName, FC_NAME));
     if (!draco_getstat(path).valid()) {
       retVal = std::string(); // On error, return empty string.
     } else {

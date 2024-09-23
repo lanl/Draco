@@ -4,15 +4,18 @@
  * \author Kelly Thompson
  * \date   Thursday, Dec 19, 2013, 15:09 pm
  * \brief  Demonstrate/Test fpe_trap's print_stacktrace function.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoStrings.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/StackTrace.hh"
+#include "dsxx/UnitTest.hh"
+#include <iostream>
+#include <map>
 #include <sstream>
+#include <string>
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -30,7 +33,7 @@ void sr1(std::string &msg) {
 
 //------------------------------------------------------------------------------------------------//
 void runtest(rtt_dsxx::UnitTest &ut) {
-  std::cout << "Running tstStackTrace...\nRequesting a trace..." << std::endl;
+  std::cout << "Running tstStackTrace...\nRequesting a trace...\n";
 
   // Create a stack trace.  It should look something like this:
 
@@ -47,11 +50,11 @@ void runtest(rtt_dsxx::UnitTest &ut) {
 
   std::string trace("demo stack trace message");
   sr1(trace);
-  std::cout << trace << std::endl;
+  std::cout << trace << '\n';
 
   // store the trace in an ostring stream.
   std::ostringstream msg;
-  msg << trace << std::endl;
+  msg << trace << '\n';
 
   // Check for word counts
   bool const verbose(false);

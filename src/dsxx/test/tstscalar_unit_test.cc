@@ -9,6 +9,7 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 
 using namespace rtt_dsxx;
 

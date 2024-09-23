@@ -7,10 +7,17 @@
  * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/StackTrace.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/config.h"
+#include <iostream>
+#include <new>
 #include <regex>
+#include <stdexcept>
+#include <string>
 
 using namespace std;
 
@@ -60,13 +67,12 @@ void t2(rtt_dsxx::UnitTest &ut) {
 
   // Make sure we can extract the error message.
   std::string const compare_value("Assertion: hello1, failed in myfile, line 42.");
-  std::regex rgx(std::string(".*") + compare_value + ".*");
+  std::regex const rgx(std::string(".*") + compare_value + ".*");
   std::smatch match;
 
   if (!std::regex_search(error_message, match, rgx)) {
     ITFAILS;
-    std::cout << "compare_value = \"" << compare_value << "\"\nmatch = \"" << match[1] << "\n"
-              << std::endl;
+    std::cout << "compare_value = \"" << compare_value << "\"\nmatch = \"" << match[1] << "\n\n";
   }
 
   return;
@@ -186,7 +192,7 @@ void trequire(rtt_dsxx::UnitTest &ut) {
   try {
     if (ut.dbcNothrow()) {
       std::cout << "(NOTHROW=ON) The next line should be the output from Require(0) w/o an "
-                << "exception thrown." << std::endl;
+                << "exception thrown.\n";
     }
     Require(0);
     if (!ut.dbcNothrow())
@@ -197,9 +203,9 @@ void trequire(rtt_dsxx::UnitTest &ut) {
     if (ut.dbcRequire()) {
       PASSMSG("trequire: caught rtt_dsxx::assertion");
       std::cout << "t-Require message value test: ";
-      std::string msg(a.what());
-      std::string expected_value("Assertion: 0, failed in");
-      string::size_type idx = msg.find(expected_value);
+      std::string const msg(a.what());
+      std::string const expected_value("Assertion: 0, failed in");
+      string::size_type const idx = msg.find(expected_value);
       FAIL_IF(idx == string::npos);
     }
     // If require is off we should never get here.
@@ -222,7 +228,7 @@ void tcheck(rtt_dsxx::UnitTest &ut) {
   try {
     if (ut.dbcNothrow()) {
       std::cout << "(NOTHROW=ON) The next line should be the output from Check(false) w/o an "
-                << "exception thrown." << std::endl;
+                << "exception thrown.\n";
     }
     Check(false);
     if (!ut.dbcNothrow())
@@ -233,9 +239,9 @@ void tcheck(rtt_dsxx::UnitTest &ut) {
     if (ut.dbcCheck()) {
       PASSMSG("tcheck: caught rtt_dsxx::assertion");
       std::cout << "t-Check message value test: ";
-      std::string msg(a.what());
-      std::string expected_value("Assertion: false, failed in");
-      string::size_type idx = msg.find(expected_value);
+      std::string const msg(a.what());
+      std::string const expected_value("Assertion: false, failed in");
+      string::size_type const idx = msg.find(expected_value);
       FAIL_IF(idx == string::npos);
     }
     // If check is off we should never get here.
@@ -257,7 +263,7 @@ void tensure(rtt_dsxx::UnitTest &ut) {
   try {
     if (ut.dbcNothrow()) {
       std::cout << "(NOTHROW=ON) The next line should be the output from Ensure(0) w/o an "
-                << "exception thrown." << std::endl;
+                << "exception thrown.\n";
     }
     Ensure(0);
     if (!ut.dbcNothrow())
@@ -269,9 +275,9 @@ void tensure(rtt_dsxx::UnitTest &ut) {
     if (ut.dbcEnsure()) {
       PASSMSG("tensure: caught rtt_dsxx::assertion");
       std::cout << "t-Ensure message value test: ";
-      std::string msg(a.what());
-      std::string expected_value("Assertion: 0, failed in");
-      string::size_type idx = msg.find(expected_value);
+      std::string const msg(a.what());
+      std::string const expected_value("Assertion: 0, failed in");
+      string::size_type const idx = msg.find(expected_value);
       if (idx == string::npos)
         ITFAILS;
     } else {
@@ -307,7 +313,7 @@ void tassert(rtt_dsxx::UnitTest &ut) {
   try {
     if (ut.dbcNothrow()) {
       std::cout << "(NOTHROW=ON) The next line should be the output from Assert(0) w/o an "
-                << "exception thrown." << std::endl;
+                << "exception thrown.\n";
     }
     Assert(0);
     if (!ut.dbcNothrow())
@@ -318,9 +324,9 @@ void tassert(rtt_dsxx::UnitTest &ut) {
     if (ut.dbcCheck()) {
       PASSMSG("tassert: caught rtt_dsxx::assertion");
       std::cout << "t-Assert message value test: ";
-      std::string msg(a.what());
-      std::string expected_value("Assertion: 0, failed in");
-      string::size_type idx = msg.find(expected_value);
+      std::string const msg(a.what());
+      std::string const expected_value("Assertion: 0, failed in");
+      string::size_type const idx = msg.find(expected_value);
       if (idx == string::npos)
         ITFAILS;
     } else {
@@ -339,7 +345,7 @@ void tassert(rtt_dsxx::UnitTest &ut) {
 void tinsist(rtt_dsxx::UnitTest &ut) {
   {
     std::cout << "t-Insist test: ";
-    std::string insist_message("You must be kidding!");
+    std::string const insist_message("You must be kidding!");
     try {
       Insist(0, insist_message);
       throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
@@ -348,8 +354,8 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
       std::cout << "t-Insist message value test: ";
       {
         bool passed(true);
-        std::string msg(a.what());
-        std::string expected_value("You must be kidding!");
+        std::string const msg(a.what());
+        std::string const expected_value("You must be kidding!");
         string::size_type idx(msg.find(expected_value));
         if (idx == string::npos)
           passed = false;
@@ -374,8 +380,8 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
       std::cout << "t-Insist ptr message value test: ";
       {
         bool passed(true);
-        std::string msg(a.what());
-        std::string expected_value("You must be kidding!");
+        std::string const msg(a.what());
+        std::string const expected_value("You must be kidding!");
         string::size_type idx(msg.find(expected_value));
         if (idx == string::npos)
           passed = false;
@@ -401,8 +407,8 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
       std::cout << "t-Insist device message value test: ";
       {
         bool passed(true);
-        std::string msg(a.what());
-        std::string expected_value("You must be kidding!");
+        std::string const msg(a.what());
+        std::string const expected_value("You must be kidding!");
         string::size_type idx(msg.find(expected_value));
         if (idx == string::npos)
           passed = false;
@@ -431,9 +437,9 @@ void tinsist_ptr(rtt_dsxx::UnitTest &ut) {
     PASSMSG("tinsist_ptr: caught  rtt_dsxx::assertion");
     std::cout << "t-Insist_ptr message value test: ";
     {
-      std::string msg(a.what());
-      std::string expected_value("You must be kidding!");
-      string::size_type idx(msg.find(expected_value));
+      std::string const msg(a.what());
+      std::string const expected_value("You must be kidding!");
+      string::size_type const idx(msg.find(expected_value));
       FAIL_IF(idx == string::npos);
     }
   } catch (...) {
@@ -459,7 +465,7 @@ void tverbose_error(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void t_catch_bad_alloc(rtt_dsxx::UnitTest &ut) {
 
-  std::cout << "tstAssert::t_catch_bad_alloc()..." << std::endl;
+  std::cout << "tstAssert::t_catch_bad_alloc()...\n";
 
   try {
     // instead of 'int * big = new int(999999999999999);'
@@ -467,7 +473,7 @@ void t_catch_bad_alloc(rtt_dsxx::UnitTest &ut) {
     //FAILMSG("failed to catch std::bad_alloc exception.");
   } catch (std::bad_alloc & /*err*/) {
     PASSMSG("caught a manually thrown std::bad_alloc exception.");
-    std::cout << rtt_dsxx::print_stacktrace("Caught a std::bad_alloc") << std::endl;
+    std::cout << rtt_dsxx::print_stacktrace("Caught a std::bad_alloc") << '\n';
   } catch (...) {
     FAILMSG("failed to catch std::bad_alloc exception.");
   }

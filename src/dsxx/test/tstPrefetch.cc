@@ -9,8 +9,11 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include <cmath>
+#include <cstddef> // size_t
 #include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;

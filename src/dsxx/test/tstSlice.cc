@@ -10,7 +10,9 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Slice.hh"
+#include "dsxx/UnitTest.hh"
 #include <array>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -56,13 +58,13 @@ void tstSlice(UnitTest &ut) {
   FAIL_IF_NOT(s2[1] == 2);
 
   array<double, 6> da = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  Slice<double *> das(da.data(), 2, 3);
+  Slice<double *> const das(da.data(), 2, 3);
   FAIL_IF_NOT(das.size() == 2);
 
   vector<double> db_vector(6);
   double *const db = &db_vector[0];
   db[0] = 0;
-  Slice<vector<double>::iterator> dbs(db_vector.begin(), 2, 3);
+  Slice<vector<double>::iterator> const dbs(db_vector.begin(), 2, 3);
   FAIL_IF_NOT(dbs.size() == 2);
 
   Slice<vector<unsigned>::iterator> const cs = s;

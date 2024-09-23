@@ -3,21 +3,25 @@
  * \file   dsxx/test/tstSortPermutation.cc
  * \author Randy M. Roberts
  * \date   Mon Feb 14 14:20:45 2000
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "dsxx/Release.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/SortPermutation.hh"
+#include <algorithm> // std::copy
 #include <array>
+#include <cstddef>    // size_t
+#include <functional> // std::greater
 #include <iostream>
+#include <iterator> // std::ostream_iterator
 #include <list>
+#include <string>
+#include <vector>
 
 namespace {
 
 using std::array;
 using std::cout;
-using std::endl;
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -35,13 +39,12 @@ void printStatus(const std::string &name, bool passed) {
     cout << "**** " << name << " Self Test: PASSED ****\n";
   else
     cout << "**** " << name << " Self Test: FAILED ****\n";
-  cout << "********" << stars << "********************\n";
-  cout << endl;
+  cout << "********" << stars << "********************\n\n";
 }
 
 //------------------------------------------------------------------------------------------------//
 template <typename IT> inline bool testit(const std::string & /*name*/, IT first, IT last) {
-  rtt_dsxx::SortPermutation lfsp(first, last);
+  rtt_dsxx::SortPermutation const lfsp(first, last);
 
   using value_type = typename std::iterator_traits<IT>::value_type;
   std::vector<value_type> vv1(first, last);
@@ -55,19 +58,19 @@ template <typename IT> inline bool testit(const std::string & /*name*/, IT first
     vv1[lfsp.inv(i)] = *lfi;
 
   std::copy(first, last, std::ostream_iterator<value_type>(cout, " "));
-  cout << endl;
+  cout << '\n';
 
   std::copy(lfsp.begin(), lfsp.end(), std::ostream_iterator<int>(cout, " "));
-  cout << endl;
+  cout << '\n';
 
   std::copy(vv2.begin(), vv2.end(), std::ostream_iterator<value_type>(cout, " "));
-  cout << endl;
+  cout << '\n';
 
   std::copy(lfsp.inv_begin(), lfsp.inv_end(), std::ostream_iterator<int>(cout, " "));
-  cout << endl;
+  cout << '\n';
 
   using rtt_dsxx::isSorted;
-  bool passed = isSorted(vv2.begin(), vv2.end()) && isSorted(vv1.begin(), vv1.end());
+  bool const passed = isSorted(vv2.begin(), vv2.end()) && isSorted(vv1.begin(), vv1.end());
 
   return passed;
 }
@@ -75,7 +78,7 @@ template <typename IT> inline bool testit(const std::string & /*name*/, IT first
 //------------------------------------------------------------------------------------------------//
 template <typename IT, typename CMP>
 inline bool testit(const std::string & /*name*/, IT first, IT last, const CMP &comp) {
-  rtt_dsxx::SortPermutation lfsp(first, last, comp);
+  rtt_dsxx::SortPermutation const lfsp(first, last, comp);
 
   using value_type = typename std::iterator_traits<IT>::value_type;
   std::vector<value_type> vv1(first, last);
@@ -89,16 +92,17 @@ inline bool testit(const std::string & /*name*/, IT first, IT last, const CMP &c
     vv1[lfsp.inv(i)] = *lfi;
 
   std::copy(first, last, std::ostream_iterator<value_type>(cout, " "));
-  cout << endl;
+  cout << '\n';
 
   std::copy(lfsp.begin(), lfsp.end(), std::ostream_iterator<int>(cout, " "));
-  cout << endl;
+  cout << '\n';
 
   std::copy(vv2.begin(), vv2.end(), std::ostream_iterator<value_type>(cout, " "));
-  cout << endl;
+  cout << '\n';
 
   using rtt_dsxx::isSorted;
-  bool passed = isSorted(vv2.begin(), vv2.end(), comp) && isSorted(vv1.begin(), vv1.end(), comp);
+  bool const passed =
+      isSorted(vv2.begin(), vv2.end(), comp) && isSorted(vv1.begin(), vv1.end(), comp);
 
   return passed;
 }
@@ -184,11 +188,11 @@ int main(int /*argc*/, char * /*argv*/[]) {
     printStatus(name, passed);
 
   } catch (rtt_dsxx::assertion &a) {
-    cout << "Failed assertion: " << a.what() << endl;
+    cout << "Failed assertion: " << a.what() << '\n';
     printStatus(name, false);
     return 1;
   } catch (...) {
-    cout << "tstSortPermulation: Caught unknown exception." << endl;
+    cout << "tstSortPermulation: Caught unknown exception." << '\n';
     printStatus(name, false);
     return 1;
   }

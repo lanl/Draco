@@ -8,8 +8,12 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Index_Converter.hh"
+#include "dsxx/Index_Counter.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
+#include <array>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -19,8 +23,8 @@ using namespace rtt_dsxx;
 //------------------------------------------------------------------------------------------------//
 
 void test_index_counter(rtt_dsxx::UnitTest &ut) {
-  array<unsigned, 3> dimensions = {3, 4, 5};
-  Index_Converter<3, 1> box(dimensions.data());
+  array<unsigned, 3> const dimensions = {3, 4, 5};
+  Index_Converter<3, 1> const box(dimensions.data());
   Index_Converter<3, 1>::Counter it = box.counter();
 
   FAIL_IF_NOT(it.get_index() == 1);
@@ -58,7 +62,7 @@ void test_index_counter(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void test_looping(rtt_dsxx::UnitTest &ut) {
   array<unsigned, 3> dimensions = {3, 4, 5};
-  Index_Converter<3, 1> box(dimensions.data());
+  Index_Converter<3, 1> const box(dimensions.data());
 
   int index = 1;
   for (Index_Counter<3, 1> it(box); it.is_in_range(); ++it) {
@@ -77,8 +81,8 @@ void test_looping(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void test_next_index(rtt_dsxx::UnitTest &ut) {
   array<unsigned, 3> dimensions = {3, 4, 5};
-  Index_Converter<3, 1> box(dimensions.data());
-  Index_Counter<3, 1> it = box.counter();
+  Index_Converter<3, 1> const box(dimensions.data());
+  Index_Counter<3, 1> const it = box.counter();
 
   FAIL_IF_NOT(it.get_index() == 1);
   FAIL_IF_NOT(box.get_next_index(it, 1) == -1);

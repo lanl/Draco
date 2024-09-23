@@ -10,6 +10,9 @@
 #include "dsxx/Query_Env.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
+#include <string>
+#include <tuple>
 
 //------------------------------------------------------------------------------------------------//
 // TESTS

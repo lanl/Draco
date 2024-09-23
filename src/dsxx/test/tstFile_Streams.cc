@@ -1,18 +1,20 @@
-//----------------------------------*-c++-*----------------------------------//
+//--------------------------------------------*-c++-*---------------------------------------------//
 /*!
  * \file   dsxx/test/tstFile_Streams.cc
  * \author Rob Lowrie
  * \date   Sun Nov 21 19:36:12 2004
  * \brief  Tests File_Input and File_Output.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/File_Streams.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include <cstddef>
 #include <sstream>
+#include <string>
 
 using namespace std;
 using rtt_dsxx::File_Input;
@@ -27,11 +29,11 @@ void test_fileio(rtt_dsxx::UnitTest &ut, const bool is_fformat_binary) {
 
   string const filename("file_streams." + string(is_fformat_binary ? "binary" : "ascii"));
 
-  int i = 5;
+  int const i = 5;
   string s = "  a string with spaces  ";
-  double x = 5.6;
-  bool bf = false;
-  bool bt = true;
+  double const x = 5.6;
+  bool const bf = false;
+  bool const bt = true;
 
   // write the data
 
@@ -40,7 +42,7 @@ void test_fileio(rtt_dsxx::UnitTest &ut, const bool is_fformat_binary) {
     f << i;
 
     // here's how you write strings:
-    size_t ssize = s.size();
+    size_t const ssize = s.size();
     f << ssize;
     for (size_t k = 0; k < ssize; k++)
       f << s[k];
@@ -77,7 +79,7 @@ void test_fileio(rtt_dsxx::UnitTest &ut, const bool is_fformat_binary) {
     FAIL_IF_NOT(bf == bf_in);
     FAIL_IF_NOT(bt == bt_in);
 
-    File_Input fnull("");
+    File_Input const fnull("");
   }
 
   // test some corner cases

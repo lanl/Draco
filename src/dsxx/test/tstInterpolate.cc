@@ -4,14 +4,16 @@
  * \author Kent G. Budge, Kendra P. Long
  * \date   Tues Nov 15 2022
  * \brief  Test functions defined in dsxx/Interpolate.hh.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Interpolate.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/dbc.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include <cstddef>
+#include <vector>
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -55,20 +57,20 @@ void tst1dlin(rtt_dsxx::UnitTest &ut) {
 void tst3dlin(rtt_dsxx::UnitTest &ut) {
   const auto initfails = ut.numFails;
   // define boundary points
-  double x0{1.0};
-  double x1{2.0};
-  double y0{3.0};
-  double y1{4.0};
-  double z0{5.0};
-  double z1{6.0};
-  double f000{1.0};
-  double f100{1.0};
-  double f001{3.0};
-  double f101{3.0};
-  double f010{5.0};
-  double f110{5.0};
-  double f011{7.0};
-  double f111{7.0};
+  double const x0{1.0};
+  double const x1{2.0};
+  double const y0{3.0};
+  double const y1{4.0};
+  double const z0{5.0};
+  double const z1{6.0};
+  double const f000{1.0};
+  double const f100{1.0};
+  double const f001{3.0};
+  double const f101{3.0};
+  double const f010{5.0};
+  double const f110{5.0};
+  double const f011{7.0};
+  double const f111{7.0};
 
   double x{1.75};
   double y{3.25};
@@ -104,7 +106,7 @@ void tst1dlag(rtt_dsxx::UnitTest &ut) {
   const size_t n_local = 3;
   const std::vector<double> points{0.0, 0.5, 1.0};
   const std::vector<double> yvals{0.0, 2.5, 5.0};
-  std::vector<double> multipliers =
+  std::vector<double> const multipliers =
       rtt_dsxx::interpolate::lagrange_multipliers(n_break, n_local, points);
   double x{0.75};
   double fx = rtt_dsxx::interpolate::lagrange_1d(yvals, points, multipliers, x);
