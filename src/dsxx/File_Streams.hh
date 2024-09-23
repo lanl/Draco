@@ -221,7 +221,7 @@ template <class T> File_Input &File_Input::operator>>(T &i) {
   {
     std::getline(d_stream, d_line);
     Check(!d_line.empty());
-    std::istringstream s(d_line);
+    std::istringstream s(d_line); // NOLINT
 
     s >> i;
     d_char_line = -1;

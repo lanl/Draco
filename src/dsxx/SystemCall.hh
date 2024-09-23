@@ -202,10 +202,10 @@ public:
   //! Report cpu usage
   void report_cpu_utilization() {
     // initial state
-    CPUData entry1 = ReadStatsCPU();
+    CPUData const entry1 = ReadStatsCPU();
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     // state after 0.1 sec.
-    CPUData entry2 = ReadStatsCPU();
+    CPUData const entry2 = ReadStatsCPU();
 
     auto const activeTime = static_cast<float>(machActiveTime(entry2) - machActiveTime(entry1));
     auto const idleTime = static_cast<float>(machIdleTime(entry2) - machIdleTime(entry1));
@@ -213,7 +213,7 @@ public:
     std::cout.width(6);
     std::cout.precision(2);
     std::cout << "Average CPU Utilization      : " << 100.0F * activeTime / totalTime << "%\n"
-              << "Number of cores (hw threads) :" << entry1.num_cpus << std::endl;
+              << "Number of cores (hw threads) :" << entry1.num_cpus << '\n';
   }
 
   //! Report load average
@@ -221,7 +221,7 @@ public:
     // 1, 5, and 15 minute load averages reported by /proc/loadavg.
     std::array<float, 3> loadAvg = ReadLoadAvg();
     std::cout << "Load Average: " << loadAvg[0] << ", " << loadAvg[1] << ", " << loadAvg[2]
-              << " (1 min, 5 min, 15 min)" << std::endl;
+              << " (1 min, 5 min, 15 min)" << '\n';
   }
 };
 #endif

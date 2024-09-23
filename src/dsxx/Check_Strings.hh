@@ -20,6 +20,7 @@
 #define rtt_dsxx_Check_Strings_hh
 
 #include <algorithm>
+#include <cstddef>
 #include <string>
 #include <utility>
 #include <vector>
@@ -32,7 +33,7 @@ struct char_in_string {
   std::string str2;
   explicit char_in_string(std::string s) : str2(std::move(s)) {}
   bool operator()(const std::string &str1) const {
-    size_t out = str1.find_first_of(str2);
+    size_t const out = str1.find_first_of(str2);
     return out != std::string::npos;
   }
 };
@@ -44,7 +45,7 @@ struct string_length_out_of_range {
       : low(static_cast<size_t>(l)), high(static_cast<size_t>(h)) { /* empty */
   }
   bool operator()(const std::string &str1) const {
-    size_t i = str1.size();
+    size_t const i = str1.size();
     return (i < low) || (i > high);
   }
 };

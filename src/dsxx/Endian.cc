@@ -9,6 +9,8 @@
 
 #include "Endian.hh"
 #include <array>
+#include <cstdint>
+#include <cstring> // memcpy
 
 namespace rtt_dsxx {
 //------------------------------------------------------------------------------------------------//

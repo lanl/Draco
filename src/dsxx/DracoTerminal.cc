@@ -13,6 +13,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "DracoTerminal.hh"
+#include <array>
+#include <cstdint> // uint32_t
+#include <string>
 
 //------------------------------------------------------------------------------------------------//
 /*! \brief Initialize other static const data (color map)

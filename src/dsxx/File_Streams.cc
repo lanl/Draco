@@ -8,7 +8,10 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "File_Streams.hh"
-#include <iomanip>
+#include "Assert.hh"
+#include <cstddef> // size_t
+#include <ios>
+#include <string>
 
 namespace {
 
@@ -74,7 +77,7 @@ void File_Output::open(const std::string &filename, const bool binary) {
 void File_Output::close() {
   if (d_stream.is_open()) {
     if (d_last_was_char)
-      d_stream << std::endl;
+      d_stream << '\n';
     d_stream.close();
   }
 }
@@ -143,7 +146,7 @@ void File_Input::open(const std::string &filename) {
 
   // Check if the binary header is present.
 
-  for (char s : BINARY_FILE_HEADER) {
+  for (char const s : BINARY_FILE_HEADER) {
     char c('x');
     d_stream >> c;
     if (c != s || (!d_stream.good())) {

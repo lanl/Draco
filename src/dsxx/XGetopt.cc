@@ -8,8 +8,12 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "XGetopt.hh"
+#include "dsxx/Assert.hh"
 #include <algorithm>
+#include <cstddef> // size_t
 #include <sstream>
+#include <string>
+#include <vector>
 
 namespace rtt_dsxx {
 
@@ -122,7 +126,7 @@ void XGetopt::match_args_to_options() {
       if (std::find(vshortopts.begin(), vshortopts.end(), shortarg) != vshortopts.end()) {
         matched_arguments.push_back(cmd_line_args[iarg][1]);
         if (vshortopts_hasarg[shortarg]) {
-          bool cmd_line_option_requires_value(iarg + 1 < cmd_line_args.size());
+          bool const cmd_line_option_requires_value(iarg + 1 < cmd_line_args.size());
           Insist(cmd_line_option_requires_value, std::string("The command argument '-") + shortarg +
                                                      "' expected a value to be provided.");
           matched_arguments_values[shortarg] = cmd_line_args[++iarg];
@@ -146,7 +150,7 @@ void XGetopt::match_args_to_options() {
           // Save the match and associated data.
           matched_arguments.push_back(shortarg);
           if (vshortopts_hasarg[shortarg]) {
-            bool cmd_line_option_requires_value(iarg + 1 < cmd_line_args.size());
+            bool const cmd_line_option_requires_value(iarg + 1 < cmd_line_args.size());
             Insist(cmd_line_option_requires_value, std::string("The command argument '--") +
                                                        longarg +
                                                        "' expected a value to be provided.");
@@ -215,16 +219,16 @@ std::string XGetopt::display_help(std::string const &appName) const {
     // find the longest longopt string, excluding args with options:
     size_t max_len(0);
     for (auto const &it : longopts) {
-      bool hasarg = vshortopts_hasarg.find(it.first)->second;
+      bool const hasarg = vshortopts_hasarg.find(it.first)->second;
       if (!hasarg && it.second.length() > max_len)
         max_len = it.second.length();
     }
 
     // show options w/o arguments first
     for (auto const &it : longopts) {
-      char shortopt = it.first;
+      char const shortopt = it.first;
       std::string longopt = it.second;
-      bool hasarg = vshortopts_hasarg.find(shortopt)->second;
+      bool const hasarg = vshortopts_hasarg.find(shortopt)->second;
       std::string helpmsg("");
 
       if (helpstrings.count(shortopt) > 0)
@@ -241,7 +245,7 @@ std::string XGetopt::display_help(std::string const &appName) const {
     // find the longest longopt string, including args with options:
     max_len = 0;
     for (auto const &it : longopts) {
-      bool hasarg = vshortopts_hasarg.find(it.first)->second;
+      bool const hasarg = vshortopts_hasarg.find(it.first)->second;
       if (hasarg && it.second.length() > max_len)
         max_len = it.second.length();
     }
@@ -249,9 +253,9 @@ std::string XGetopt::display_help(std::string const &appName) const {
     // show options that require arguments
     msg << "\nOptions requiring arguments:\n";
     for (auto const &it : longopts) {
-      char shortopt = it.first;
-      std::string longopt = it.second;
-      bool hasarg = vshortopts_hasarg.find(shortopt)->second;
+      char const shortopt = it.first;
+      std::string const longopt = it.second;
+      bool const hasarg = vshortopts_hasarg.find(shortopt)->second;
       std::string helpmsg("");
 
       if (helpstrings.count(shortopt) > 0)
@@ -259,7 +263,7 @@ std::string XGetopt::display_help(std::string const &appName) const {
 
       if (hasarg) {
         // format the help string by replacing '\n' with '\n'+hanging_indent.
-        std::string hanging_indent(21 + max_len, ' ');
+        std::string const hanging_indent(21 + max_len, ' ');
         std::string formatted_help_msg(helpmsg);
         size_t index(0);
         while (true) {
@@ -280,10 +284,10 @@ std::string XGetopt::display_help(std::string const &appName) const {
   } else {
     // show options w/o arguments first
 
-    for (char shortopt : vshortopts) {
+    for (char const shortopt : vshortopts) {
       if (shortopt == ':')
         continue;
-      bool hasarg = vshortopts_hasarg.find(shortopt)->second;
+      bool const hasarg = vshortopts_hasarg.find(shortopt)->second;
       std::string helpmsg("");
       if (helpstrings.count(shortopt) > 0)
         helpmsg = helpstrings.find(shortopt)->second;
@@ -295,15 +299,15 @@ std::string XGetopt::display_help(std::string const &appName) const {
     // show options that require arguments
 
     msg << "\nOptions requiring arguments:\n";
-    for (char shortopt : vshortopts) {
-      bool hasarg = vshortopts_hasarg.find(shortopt)->second;
+    for (char const shortopt : vshortopts) {
+      bool const hasarg = vshortopts_hasarg.find(shortopt)->second;
       std::string helpmsg("");
       if (helpstrings.count(shortopt) > 0)
         helpmsg = helpstrings.find(shortopt)->second;
 
       if (hasarg) {
         // format the help string by replacing '\n' with '\n'+hanging_indent.
-        std::string hanging_indent(16, ' ');
+        std::string const hanging_indent(16, ' ');
         std::string formatted_help_msg(helpmsg);
         size_t index(0);
         while (true) {
@@ -318,12 +322,12 @@ std::string XGetopt::display_help(std::string const &appName) const {
         }
 
         msg << "   -" << shortopt << " <value>"
-            << " : " << formatted_help_msg << std::endl;
+            << " : " << formatted_help_msg << '\n';
       }
     }
   }
 
-  msg << "   -- : Stop processing any further arguments." << std::endl;
+  msg << "   -- : Stop processing any further arguments.\n";
   return msg.str();
 }
 

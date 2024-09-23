@@ -8,10 +8,12 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "ScalarUnitTest.hh"
-#include "Assert.hh"
-#include "XGetopt.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/XGetopt.hh"
 #include <iostream>
-#include <sstream>
+#include <map>
+#include <string>
 
 namespace rtt_dsxx {
 //------------------------------------------------------------------------------------------------//
@@ -32,7 +34,6 @@ namespace rtt_dsxx {
 ScalarUnitTest::ScalarUnitTest(int &argc, char **&argv, string_fp_void release_, std::ostream &out_,
                                bool const verbose_)
     : UnitTest(argc, argv, release_, out_, verbose_) {
-  using std::endl;
   using std::string;
 
   Require(argc > 0);
@@ -41,11 +42,10 @@ ScalarUnitTest::ScalarUnitTest(int &argc, char **&argv, string_fp_void release_,
   // header
   out << "\n============================================="
       << "\n=== Scalar Unit Test: " << testName
-      << "\n=============================================\n"
-      << endl;
+      << "\n=============================================\n\n";
 
   // version tag
-  out << testName << ": version " << release() << "\n" << endl;
+  out << testName << ": version " << release() << "\n\n";
 
   // Handle arguments:
   rtt_dsxx::XGetopt::csmap long_options;
@@ -63,7 +63,7 @@ ScalarUnitTest::ScalarUnitTest(int &argc, char **&argv, string_fp_void release_,
       throw rtt_dsxx::assertion(string("Success"));
 
     case 'h': // --help
-      std::cout << program_options.display_help("tstXGetopt") << std::endl;
+      std::cout << program_options.display_help("tstXGetopt") << '\n';
       return;
 
     default:
