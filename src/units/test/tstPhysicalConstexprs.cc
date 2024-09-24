@@ -10,9 +10,13 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "units/MathConstants.hh"
 #include "units/PhysicalConstexprs.hh"
 #include <iomanip>
+#include <iostream>
 #include <sstream>
+#include <string>
 
 namespace rtt_units_test {
 
@@ -27,10 +31,10 @@ void compare_constant(std::string const &name, double expected, double value_a, 
     PASSMSG("Found expected value for " + name + ".");
   } else {
     std::ostringstream msg;
-    msg << "Did not find expected value for " + name + "." << endl
-        << "\tThe value expected was " << setprecision(16) << expected << "." << endl
+    msg << "Did not find expected value for " + name + ".\n"
+        << "\tThe value expected was " << setprecision(16) << expected << ".\n"
         << "\tThe values returned were " << setprecision(16) << value_a << " and "
-        << setprecision(16) << value_b << "." << endl;
+        << setprecision(16) << value_b << ".\n";
     FAILMSG(msg.str());
   }
 }
@@ -43,7 +47,6 @@ void compare_constant(std::string const &name, double expected, double value_a, 
 void test_si(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::PI;
-  using std::endl;
   using std::ostringstream;
 
   constexpr rtt_units::PhysicalConstexprs<rtt_units::SI> pc;
@@ -77,7 +80,6 @@ void test_si(rtt_dsxx::UnitTest &ut) {
 void test_cgs(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::PI;
-  using std::endl;
   using std::ostringstream;
 
   constexpr rtt_units::PhysicalConstexprs<rtt_units::CGS> pc;
@@ -111,7 +113,6 @@ void test_cgs(rtt_dsxx::UnitTest &ut) {
 void test_cgsh(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::PI;
-  using std::endl;
   using std::ostringstream;
 
   constexpr rtt_units::PhysicalConstexprs<rtt_units::CGSH> pc;

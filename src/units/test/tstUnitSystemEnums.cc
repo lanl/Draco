@@ -10,9 +10,13 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
-#include "units/PhysicalConstants.hh"
+#include "dsxx/UnitTest.hh"
+#include "units/UnitSystemEnums.hh"
+#include <array>
+#include <cstddef> // size_t
 #include <iomanip>
 #include <sstream>
+#include <string>
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -40,7 +44,7 @@ void test_enumValues(rtt_dsxx::UnitTest &ut) {
     UT_MSG(rtt_units::L_long_labels == sSenVal2, "L_long_labels has the expected values.");
   }
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   {
     int constexpr iSenVal(3);
     constexpr std::array<double, iSenVal> adSenVal = {0.0, 1.0, 1000.0};
@@ -66,13 +70,12 @@ void test_enumValues(rtt_dsxx::UnitTest &ut) {
     else
       PASSMSG("M_long_labels does not have the expected values.");
   }
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   {
     int constexpr iSenVal(6);
     constexpr std::array<double, iSenVal> adSenVal = {0.0, 1.0, 1000.0, 1.0e6, 1.0e8, 1.0e9};
     string const sSenVal("NA,s,ms,us,sh,ns");
-    string const sSenVal2("no time unit "
-                          "specified,second,milisecond,microsecond,shake,"
+    string const sSenVal2("no time unit specified,second,milisecond,microsecond,shake,"
                           "nanosecond");
 
     constexpr bool is_iSenVal = rtt_units::num_ttype == iSenVal;
@@ -94,7 +97,7 @@ void test_enumValues(rtt_dsxx::UnitTest &ut) {
     else
       PASSMSG("t_long_labels does not have the expected values.");
   }
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   {
     double constexpr keV2K(1.16045193028089e7);
     int constexpr iSenVal(4);
@@ -121,7 +124,7 @@ void test_enumValues(rtt_dsxx::UnitTest &ut) {
     else
       PASSMSG("T_labels does not have the expected values.");
   }
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   {
     int constexpr iSenVal(2);
     constexpr std::array<double, iSenVal> adSenVal = {0.0, 1.0};
@@ -141,7 +144,7 @@ void test_enumValues(rtt_dsxx::UnitTest &ut) {
     else
       PASSMSG("I_labels does not have the expected values.");
   }
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   {
     int constexpr iSenVal(3);
     constexpr std::array<double, iSenVal> adSenVal = {0.0, 1.0, 57.295779512896171};
@@ -161,7 +164,7 @@ void test_enumValues(rtt_dsxx::UnitTest &ut) {
     else
       PASSMSG("A_labels does not have the expected values.");
   }
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   {
     int constexpr iSenVal(2);
     constexpr std::array<double, iSenVal> adSenVal = {0.0, 1.0};

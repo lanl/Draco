@@ -8,9 +8,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "PhysicalConstants.hh"
-#include "dsxx/Soft_Equivalence.hh"
-#include <iomanip>
-#include <iostream>
+#include "units/PhysicalConstantsSI.hh"
+#include "units/UnitSystem.hh"
+#include <cmath>
 
 namespace rtt_units {
 

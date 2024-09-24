@@ -9,8 +9,11 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "units/UnitSystemEnums.hh"
 #include "units/UnitSystemType.hh"
 #include <sstream>
+#include <utility> // std::move
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -21,7 +24,6 @@ void test_copy_ctor(rtt_dsxx::UnitTest &ut) {
   using rtt_units::FundUnit;
   using rtt_units::Ltype;
   using rtt_units::UnitSystemType;
-  using std::endl;
   using std::ostringstream;
 
   //Let's use the default SI units to test
@@ -31,25 +33,15 @@ void test_copy_ctor(rtt_dsxx::UnitTest &ut) {
 
   //Only testing one element
   if (si.L().enumVal() == si2.L().enumVal()) {
-    ostringstream msg;
-    msg << "Copied UnitSystemType container has "
-        << "orig.L() == L_copy.L()." << endl;
-    PASSMSG(msg.str());
+    PASSMSG("Copied UnitSystemType container has orig.L() == L_copy.L().\n");
   } else {
-    ostringstream msg;
-    msg << "Copied UnitSystemType container does not have "
-        << "orig.L() == L_copy.L()." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("Copied UnitSystemType container does not have orig.L() == L_copy.L().\n");
   }
 
   if (&si != &si2) {
-    ostringstream msg;
-    msg << "Orig and copied object are seperate. " << endl;
-    PASSMSG(msg.str());
+    PASSMSG("Orig and copied object are seperate. \n");
   } else {
-    ostringstream msg;
-    msg << "Orig and copied object point to same memory. " << endl;
-    FAILMSG(msg.str());
+    FAILMSG("Orig and copied object point to same memory. \n");
   }
 }
 
@@ -58,7 +50,6 @@ void test_move_ctor(rtt_dsxx::UnitTest &ut) {
   using rtt_units::FundUnit;
   using rtt_units::Ltype;
   using rtt_units::UnitSystemType;
-  using std::endl;
   using std::ostringstream;
 
   //Let's use the default SI units to test
@@ -67,19 +58,13 @@ void test_move_ctor(rtt_dsxx::UnitTest &ut) {
 
   auto Ltest = si.L().enumVal();
 
-  UnitSystemType si2(std::move(si));
+  UnitSystemType const si2(std::move(si));
 
   //Only testing one element
   if (si2.L().enumVal() == Ltest) {
-    ostringstream msg;
-    msg << "Moved UnitSystemType container has "
-        << "orig.L() == L_copy.L()." << endl;
-    PASSMSG(msg.str());
+    PASSMSG("Moved UnitSystemType container has orig.L() == L_copy.L().\n");
   } else {
-    ostringstream msg;
-    msg << "Moved UnitSystemType container does not have "
-        << "orig.L() == L_copy.L()." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("Moved UnitSystemType container does not have orig.L() == L_copy.L().\n");
   }
 }
 
@@ -88,7 +73,6 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
   using rtt_units::FundUnit;
   using rtt_units::Ltype;
   using rtt_units::UnitSystemType;
-  using std::endl;
   using std::ostringstream;
 
   // Create a container with no data...
@@ -96,31 +80,19 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
 
   // ensure that the container is empty but valid...
   if (ust.L().enumVal() == 0) {
-    ostringstream msg;
-    msg << "Empty UnitSystemType container has "
-        << "L().enumVal() == L_null." << endl;
-    PASSMSG(msg.str());
+    PASSMSG("Empty UnitSystemType container has L().enumVal() == L_null.\n");
   } else {
-    ostringstream msg;
-    msg << "Empty UnitSystemType container does not have "
-        << "L().enumVal() == L_null." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("Empty UnitSystemType container does not have L().enumVal() == L_null.\n");
   }
   if (soft_equiv(ust.L().cf(), 0.0)) {
     PASSMSG("Empty UnitSystemType container has L().cf() == 0.0).");
   } else {
-    ostringstream msg;
-    msg << "Empty UnitSystemType container does not have"
-        << "L().cf() == 0.0)." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("Empty UnitSystemType container does not have L().cf() == 0.0).\n");
   }
   if (ust.L().label() == "NA") {
     PASSMSG("Empty UnitSystemType container has L().label() == NA).");
   } else {
-    ostringstream msg;
-    msg << "Empty UnitSystemType container does not have "
-        << "L().label() == NA)." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("Empty UnitSystemType container does not have L().label() == NA).\n");
   }
 
   // Establish a fundamental unit for the length, mass and Temperature portions of UnitSystemType...
@@ -130,10 +102,7 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
   if (ust.L().enumVal() == rtt_units::L_m) {
     PASSMSG("UnitSystemType container has L().enumVal() == L_m).");
   } else {
-    ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "L().enumVal() == L_m)." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("UnitSystemType container does not have L().enumVal() == L_m).\n");
   }
   if (soft_equiv(ust.L().cf(), 1.0))
     PASSMSG("UnitSystemType container has L().cf() == 1.0).");
@@ -142,20 +111,14 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
   if (ust.L().label() == "m") {
     PASSMSG("UnitSystemType container has L().label() == \"m\").");
   } else {
-    ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "L().label() == \"m\")." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("UnitSystemType container does not have L().label() == \"m\").\n");
   }
 
   // Ensure that other empty parts of ust are valid...
   if (ust.Q().enumVal() == rtt_units::Q_null) {
     PASSMSG("UnitSystemType container has Q().enumVal() == Q_null).");
   } else {
-    ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "Q().enumVal() == Q_null)." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("UnitSystemType container does not have Q().enumVal() == Q_null).\n");
   }
   if (soft_equiv(ust.Q().cf(), 0.0))
     PASSMSG("UnitSystemType container has Q().cf() == 0.0).");
@@ -164,19 +127,13 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
   if (ust.Q().label() == "NA") {
     PASSMSG("UnitSystemType container has Q().label() == \"NA\").");
   } else {
-    ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "Q().label() == \"NA\")." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("UnitSystemType container does not have Q().label() == \"NA\").\n");
   }
   //---------------------------------------------------------------------//
   if (ust.A().enumVal() == rtt_units::A_null) {
     PASSMSG("UnitSystemType container has A().enumVal() == A_null).");
   } else {
-    ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "A().enumVal() == A_null)." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("UnitSystemType container does not have A().enumVal() == A_null).\n");
   }
   if (soft_equiv(ust.A().cf(), 0.0))
     PASSMSG("UnitSystemType container has A().cf() == 0.0).");
@@ -185,10 +142,7 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
   if (ust.A().label() == "NA") {
     PASSMSG("UnitSystemType container has A().label() == \"NA\").");
   } else {
-    ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "A().label() == \"NA\"." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("UnitSystemType container does not have A().label() == \"NA\".\n");
   }
   //---------------------------------------------------------------------//
 
@@ -205,16 +159,16 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
     PASSMSG("UnitSystemType container has Q().enumVal() == Q_mol).");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "Q().enumVal() == Q_mol.  Instead the valued retuned was: " << ust.Q().enumVal() << endl;
+    msg << "UnitSystemType container does not have Q().enumVal() == Q_mol.  Instead the valued "
+        << "retuned was: " << ust.Q().enumVal() << '\n';
     FAILMSG(msg.str());
   }
   if (soft_equiv(ust.Q().cf(), 1.0)) {
     PASSMSG("UnitSystemType container has Q().cf() == 1.0).");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "Q().cf() == 1.0.  Instead the value returned was: " << ust.Q().cf() << endl;
+    msg << "UnitSystemType container does not have Q().cf() == 1.0.  Instead the value returned"
+        << " was: " << ust.Q().cf() << '\n';
     FAILMSG(msg.str());
   }
   if (ust.Q().label() == "mol") {
@@ -222,8 +176,8 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
   } else {
     ostringstream msg;
     msg << "UnitSystemType container does not have "
-        << R"(Q().label() == "mol".  Instead the value returned was: ")" << ust.Q().label() << "\""
-        << endl;
+        << R"(Q().label() == "mol".  Instead the value returned was: ")" << ust.Q().label()
+        << "\"\n";
     // " fix emacs font-lock issue with odd number of quotes.
     FAILMSG(msg.str());
   }
@@ -232,27 +186,24 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
     PASSMSG("UnitSystemType container has A().enumVal() == A_rad).");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "A().enumVal() == A_rad." << endl
-        << "\tInstead the returned value was: " << ust.A().enumVal() << endl;
+    msg << "UnitSystemType container does not have A().enumVal() == A_rad.\n"
+        << "\tInstead the returned value was: " << ust.A().enumVal() << '\n';
     FAILMSG(msg.str());
   }
   if (soft_equiv(ust.A().cf(), 1.0)) {
     PASSMSG("UnitSystemType container has A().cf() == 1.0).");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "A().cf() == 1.0." << endl
-        << "\tInstead the returned value was:" << ust.A().cf() << endl;
+    msg << "UnitSystemType container does not have A().cf() == 1.0.\n"
+        << "\tInstead the returned value was:" << ust.A().cf() << '\n';
     FAILMSG(msg.str());
   }
   if (ust.A().label() == "rad") {
     PASSMSG("UnitSystemType container has A().label() == \"rad\").");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "A().label() == \"rad\"." << endl
-        << "\tInstead the returned value was: \"" << ust.A().label() << "\"" << endl;
+    msg << "UnitSystemType container does not have A().label() == \"rad\".\n"
+        << "\tInstead the returned value was: \"" << ust.A().label() << "\"\n";
     FAILMSG(msg.str());
   }
   //---------------------------------------------------------------------//
@@ -260,231 +211,181 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
     PASSMSG("UnitSystemType container has I().enumVal() == I_amp).");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "I().enumVal() == I_amp." << endl
-        << "\tInstead the returned value was: " << ust.I().enumVal() << endl;
+    msg << "UnitSystemType container does not have I().enumVal() == I_amp.\n"
+        << "\tInstead the returned value was: " << ust.I().enumVal() << '\n';
     FAILMSG(msg.str());
   }
   if (soft_equiv(ust.I().cf(), 1.0)) {
     PASSMSG("UnitSystemType container has I().cf() == 1.0).");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "I().cf() == 1.0." << endl
-        << "\tInstead the returned value was:" << ust.I().cf() << endl;
+    msg << "UnitSystemType container does not have I().cf() == 1.0.\n"
+        << "\tInstead the returned value was:" << ust.I().cf() << '\n';
     FAILMSG(msg.str());
   }
   if (ust.I().label() == "Amp") {
     PASSMSG("UnitSystemType container has I().label() == \"Amp\").");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "I().label() == \"Amp\"." << endl
-        << "\tInstead the returned value was: \"" << ust.I().label() << "\"" << endl;
+    msg << "UnitSystemType container does not have I().label() == \"Amp\".\n"
+        << "\tInstead the returned value was: \"" << ust.I().label() << "\"\n";
     FAILMSG(msg.str());
   }
-  //---------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   if (ust.t().enumVal() == rtt_units::t_sh) {
     PASSMSG("UnitSystemType container has t().enumVal() == t_sh.");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "t().enumVal() == t_rad." << endl
-        << "\tInstead the returned value was: " << ust.t().enumVal() << endl;
+    msg << "UnitSystemType container does not have t().enumVal() == t_rad.\n"
+        << "\tInstead the returned value was: " << ust.t().enumVal() << '\n';
     FAILMSG(msg.str());
   }
   if (soft_equiv(ust.t().cf(), 1.0e8)) {
     PASSMSG("UnitSystemType container has t().cf() == 1.0e8.");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "t().cf() == 1.0e8." << endl
-        << "\tInstead the returned value was:" << ust.t().cf() << endl;
+    msg << "UnitSystemType container does not have t().cf() == 1.0e8.\n"
+        << "\tInstead the returned value was:" << ust.t().cf() << '\n';
     FAILMSG(msg.str());
   }
   if (ust.t().label() == "shake") {
     PASSMSG("UnitSystemType container has t().label() == \"shake\".");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType container does not have "
-        << "t().label() == \"shake\"." << endl
-        << "\tInstead the returned value was: \"" << ust.t().label() << "\"" << endl;
+    msg << "UnitSystemType container does not have t().label() == \"shake\".\n"
+        << "\tInstead the returned value was: \"" << ust.t().label() << "\"\n";
     FAILMSG(msg.str());
   }
 
   return;
 }
 
-//------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 void test_qualified_ctor(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::UnitSystemType;
-  using std::endl;
   using std::ostringstream;
 
-  UnitSystemType ust(rtt_units::L_cm, rtt_units::M_g, rtt_units::t_us, rtt_units::T_K,
-                     rtt_units::I_amp, rtt_units::A_rad, rtt_units::Q_mol);
+  UnitSystemType const ust(rtt_units::L_cm, rtt_units::M_g, rtt_units::t_us, rtt_units::T_K,
+                           rtt_units::I_amp, rtt_units::A_rad, rtt_units::Q_mol);
 
   //----------------------------------------//
 
   if (ust.M().enumVal() == rtt_units::M_g) {
-    ostringstream msg;
-    msg << "UnitSystemType has "
-        << "ust.M().enumVal() == rtt_units::M_g" << endl;
-    PASSMSG(msg.str());
+    PASSMSG("UnitSystemType has ust.M().enumVal() == rtt_units::M_g\n");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType does not have "
-        << "ust.M().enumVal() == rtt_units::M_g" << endl
-        << "The value reported was " << ust.M().enumVal() << endl;
+    msg << "UnitSystemType does not have ust.M().enumVal() == rtt_units::M_g\n"
+        << "The value reported was " << ust.M().enumVal() << '\n';
     FAILMSG(msg.str());
   }
   if (soft_equiv(ust.M().cf(), 1000.0)) {
-    ostringstream msg;
-    msg << "UnitSystemType has "
-        << "ust.M().cf() == 1000.0" << endl;
-    PASSMSG(msg.str());
+    PASSMSG("UnitSystemType has ust.M().cf() == 1000.0\n");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType does not have "
-        << "ust.M().cf() == 1000.0" << endl
-        << "The value reported was " << ust.M().cf() << endl;
+    msg << "UnitSystemType does not have ust.M().cf() == 1000.0\n"
+        << "The value reported was " << ust.M().cf() << '\n';
     FAILMSG(msg.str());
   }
   if (ust.M().label() == "g") {
-    ostringstream msg;
-    msg << "UnitSystemType has "
-        << "ust.M().label() == \"g\"" << endl;
-    PASSMSG(msg.str());
+    PASSMSG("UnitSystemType has ust.M().label() == \"g\"\n");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType did not return the expected value " << endl
-        << "( ust.M().label() == \"g\" ).  Instead it returned the " << endl
-        << "value: \"" << ust.M().label() << "\"" << endl;
+    msg << "UnitSystemType did not return the expected value \n"
+        << "( ust.M().label() == \"g\" ).  Instead it returned the \n"
+        << "value: \"" << ust.M().label() << "\"\n";
     FAILMSG(msg.str());
   }
 
   //----------------------------------------//
 
   if (ust.t().enumVal() == rtt_units::t_us) {
-    ostringstream msg;
-    msg << "UnitSystemType has "
-        << "ust.t().enumVal() == rtt_units::t_us" << endl;
-    PASSMSG(msg.str());
+    PASSMSG("UnitSystemType has ust.t().enumVal() == rtt_units::t_us\n");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType does not have "
-        << "ust.t().enumVal() == rtt_units::t_us" << endl
-        << "\tThe value reported was " << ust.t().enumVal() << endl;
+    msg << "UnitSystemType does not have ust.t().enumVal() == rtt_units::t_us\n"
+        << "\tThe value reported was " << ust.t().enumVal() << '\n';
     FAILMSG(msg.str());
   }
   if (soft_equiv(ust.t().cf(), 1.0e6)) {
-    ostringstream msg;
-    msg << "UnitSystemType has "
-        << "ust.t().cf() == 1.0e6" << endl;
-    PASSMSG(msg.str());
+    PASSMSG("UnitSystemType has ust.t().cf() == 1.0e6\n");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType does not have "
-        << "ust.t().cf() == 1.0e6" << endl
-        << "\tThe value reported was " << ust.t().cf() << endl;
+    msg << "UnitSystemType does not have ust.t().cf() == 1.0e6\n"
+        << "\tThe value reported was " << ust.t().cf() << '\n';
     FAILMSG(msg.str());
   }
   if (ust.t().label() == "us") {
-    ostringstream msg;
-    msg << "UnitSystemType has "
-        << "ust.t().label() == \"us\"" << endl;
-    PASSMSG(msg.str());
+    PASSMSG("UnitSystemType has ust.t().label() == \"us\"\n");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType did not return the expected value " << endl
-        << "\t( ust.t().label() == \"us\" ).  Instead it returned the " << endl
-        << "\tvalue: \"" << ust.t().label() << "\"" << endl;
+    msg << "UnitSystemType did not return the expected value \n"
+        << "\t( ust.t().label() == \"us\" ).  Instead it returned the \n"
+        << "\tvalue: \"" << ust.t().label() << "\"\n";
     FAILMSG(msg.str());
   }
 
   //----------------------------------------//
 
   if (ust.T().enumVal() == rtt_units::T_K) {
-    ostringstream msg;
-    msg << "UnitSystemType has "
-        << "ust.T().enumVal() == rtt_units::t_us" << endl;
-    PASSMSG(msg.str());
+    PASSMSG("UnitSystemType has ust.T().enumVal() == rtt_units::t_us\n");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType does not have "
-        << "ust.T().enumVal() == rtt_units::T_K" << endl
-        << "\tThe value reported was " << ust.T().enumVal() << endl;
+    msg << "UnitSystemType does not have ust.T().enumVal() == rtt_units::T_K\n"
+        << "\tThe value reported was " << ust.T().enumVal() << '\n';
     FAILMSG(msg.str());
   }
   if (soft_equiv(ust.T().cf(), 1.0)) {
     ostringstream msg;
-    msg << "UnitSystemType has "
-        << "ust.T().cf() == 1.0" << endl;
+    msg << "UnitSystemType has ust.T().cf() == 1.0\n";
     PASSMSG(msg.str());
   } else {
     ostringstream msg;
-    msg << "UnitSystemType does not have "
-        << "ust.T().cf() == 1.0" << endl
-        << "\tThe value reported was " << ust.T().cf() << endl;
+    msg << "UnitSystemType does not have ust.T().cf() == 1.0\n"
+        << "\tThe value reported was " << ust.T().cf() << '\n';
     FAILMSG(msg.str());
   }
   if (ust.T().label() == "K") {
-    ostringstream msg;
-    msg << "UnitSystemType has "
-        << "ust.T().label() == \"K\"" << endl;
-    PASSMSG(msg.str());
+    PASSMSG("UnitSystemType has ust.T().label() == \"K\"\n");
   } else {
     ostringstream msg;
-    msg << "UnitSystemType did not return the expected value " << endl
-        << "\t( ust.T().label() == \"K\" ).  Instead it returned the " << endl
-        << "\tvalue: \"" << ust.T().label() << "\"" << endl;
+    msg << "UnitSystemType did not return the expected value \n"
+        << "\t( ust.T().label() == \"K\" ).  Instead it returned the \n"
+        << "\tvalue: \"" << ust.T().label() << "\"\n";
     FAILMSG(msg.str());
   }
 
   return;
 }
 
-//------------------------------------------------------------------------//
-/*!
- * \brief Test special unit system types.
- */
+//------------------------------------------------------------------------------------------------//
+//! Test special unit system types.
 void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::UnitSystemType;
-  using std::endl;
   using std::ostringstream;
 
   // Create the two "speical" unit system types.
 
-  UnitSystemType si(UnitSystemType().SI());
-  UnitSystemType x4(UnitSystemType().X4());
-  UnitSystemType cgs(UnitSystemType().CGS());
+  UnitSystemType const si(UnitSystemType().SI());
+  UnitSystemType const x4(UnitSystemType().X4());
+  UnitSystemType const cgs(UnitSystemType().CGS());
 
   // Check Length data...
   if (si.L().enumVal() == rtt_units::L_m) {
     PASSMSG("si has L().enumVal() == L_m).");
   } else {
-    ostringstream msg;
-    msg << "si does not have "
-        << "L().enumVal() == L_m)." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si does not have L().enumVal() == L_m).\n");
   }
   if (x4.L().enumVal() == rtt_units::L_cm) {
     PASSMSG("x4 has L().enumVal() == L_cm).");
   } else {
-    ostringstream msg;
-    msg << "x4 does not have "
-        << "L().enumVal() == L_cm." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 does not have L().enumVal() == L_cm.\n");
   }
   if (cgs.L().enumVal() == rtt_units::L_cm) {
     PASSMSG("cgs has L().enumVal() == L_cm).");
   } else {
-    ostringstream msg;
-    msg << "cgs does not have "
-        << "L().enumVal() == L_cm." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("cgs does not have L().enumVal() == L_cm.\n");
   }
 
   if (soft_equiv(si.L().cf(), 1.0)) {
@@ -495,10 +396,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.L().label() == "m") {
     PASSMSG("si container has L().label() == \"m\").");
   } else {
-    ostringstream msg;
-    msg << "si container does not have "
-        << "L().label() == \"m\")." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si container does not have L().label() == \"m\").\n");
   }
   if (soft_equiv(x4.L().cf(), 100.0)) {
     PASSMSG("x4 units container has L().cf() == 100.0.");
@@ -508,10 +406,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (x4.L().label() == "cm") {
     PASSMSG("x4 units container has L().label() == \"cm\").");
   } else {
-    ostringstream msg;
-    msg << "x4 units container does not have "
-        << "L().label() == \"cm\")." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 units container does not have L().label() == \"cm\").\n");
   }
 
   // Check Mass data...
@@ -520,18 +415,12 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.M().enumVal() == rtt_units::M_kg) {
     PASSMSG("si has M().enumVal() == L_m).");
   } else {
-    ostringstream msg;
-    msg << "si does not have "
-        << "M().enumVal() == L_m)." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si does not have M().enumVal() == L_m).\n");
   }
   if (x4.M().enumVal() == rtt_units::M_g) {
     PASSMSG("x4 has M().enumVal() == M_g.");
   } else {
-    ostringstream msg;
-    msg << "x4 does not have "
-        << "M().enumVal() == M_g." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 does not have M().enumVal() == M_g.\n");
   }
   if (soft_equiv(si.M().cf(), 1.0)) {
     PASSMSG("si container has M().cf() == 1.0.");
@@ -541,10 +430,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.M().label() == "kg") {
     PASSMSG("si container has M().label() == \"kg\").");
   } else {
-    ostringstream msg;
-    msg << "si container does not have "
-        << "M().label() == \"kg\")." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si container does not have M().label() == \"kg\").\n");
   }
   if (soft_equiv(x4.M().cf(), 1000.0)) {
     PASSMSG("x4 units container has M().cf() == 1000.0.");
@@ -554,10 +440,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (x4.M().label() == "g") {
     PASSMSG("x4 units container has M().label() == \"g\".");
   } else {
-    ostringstream msg;
-    msg << "x4 units container does not have "
-        << "M().label() == \"g\"." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 units container does not have M().label() == \"g\".\n");
   }
 
   // Check time data...
@@ -566,18 +449,12 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.t().enumVal() == rtt_units::t_s) {
     PASSMSG("si has t().enumVal() == t_s.");
   } else {
-    ostringstream msg;
-    msg << "si does not have "
-        << "t().enumVal() == t_s." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si does not have t().enumVal() == t_s.\n");
   }
   if (x4.t().enumVal() == rtt_units::t_sh) {
     PASSMSG("x4 has t().enumVal() == t_sh.");
   } else {
-    ostringstream msg;
-    msg << "x4 does not have "
-        << "t().enumVal() == t_sh." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 does not have t().enumVal() == t_sh.\n");
   }
   if (soft_equiv(si.t().cf(), 1.0)) {
     PASSMSG("si container has t().cf() == 1.0.");
@@ -588,8 +465,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
     PASSMSG("si container has t().label() == \"s\").");
   } else {
     ostringstream msg;
-    msg << "si container does not have "
-        << "t().label() == \"s\"." << endl;
+    msg << "si container does not have t().label() == \"s\".\n";
     FAILMSG(msg.str());
   }
   if (soft_equiv(x4.t().cf(), 1.0e8)) {
@@ -600,10 +476,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (x4.t().label() == "sh") {
     PASSMSG("x4 units container has t().label() == \"sh\".");
   } else {
-    ostringstream msg;
-    msg << "x4 units container does not have "
-        << "t().label() == \"sh\"." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 units container does not have t().label() == \"sh\".\n");
   }
 
   // Check Temperature data...
@@ -612,18 +485,12 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.T().enumVal() == rtt_units::T_K) {
     PASSMSG("si has T().enumVal() == T_K).");
   } else {
-    ostringstream msg;
-    msg << "si does not have "
-        << "T().enumVal() == T_K)." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si does not have T().enumVal() == T_K).\n");
   }
   if (x4.T().enumVal() == rtt_units::T_keV) {
     PASSMSG("x4 has T().enumVal() == T_kev.");
   } else {
-    ostringstream msg;
-    msg << "x4 does not have "
-        << "T().enumVal() == T_kev." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 does not have T().enumVal() == T_kev.\n");
   }
   if (soft_equiv(si.T().cf(), 1.0)) {
     PASSMSG("si container has T().cf() == 1.0).");
@@ -633,10 +500,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.T().label() == "K") {
     PASSMSG("si container has T().label() == \"K\".");
   } else {
-    ostringstream msg;
-    msg << "si container does not have "
-        << "T().label() == \"K\"." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si container does not have T().label() == \"K\".\n");
   }
 
   double const keV2K(1.16045193028089e7);
@@ -653,10 +517,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (x4.T().label() == "keV") {
     PASSMSG("x4 units container has T().label() == \"keV\").");
   } else {
-    ostringstream msg;
-    msg << "x4 units container does not have "
-        << "T().label() == \"keV\")." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 units container does not have T().label() == \"keV\").\n");
   }
 
   // Check Angle data...
@@ -665,18 +526,12 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.A().enumVal() == rtt_units::A_rad) {
     PASSMSG("si has A().enumVal() == A_rad.");
   } else {
-    ostringstream msg;
-    msg << "si does not have "
-        << "A().enumVal() == A_rad." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si does not have A().enumVal() == A_rad.\n");
   }
   if (x4.A().enumVal() == rtt_units::A_rad) {
     PASSMSG("x4 has A().enumVal() == A_rad.");
   } else {
-    ostringstream msg;
-    msg << "x4 does not have "
-        << "A().enumVal() == A_rad." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 does not have A().enumVal() == A_rad.\n");
   }
   if (soft_equiv(si.A().cf(), 1.0)) {
     PASSMSG("si container has A().cf() == 1.0.");
@@ -686,10 +541,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.A().label() == "rad") {
     PASSMSG("si container has A().label() == \"rad\".");
   } else {
-    ostringstream msg;
-    msg << "si container does not have "
-        << "A().label() == \"rad\"." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si container does not have A().label() == \"rad\".\n");
   }
   if (soft_equiv(x4.A().cf(), 1.0)) {
     PASSMSG("x4 units container has A().cf() == 1.0.");
@@ -699,10 +551,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (x4.A().label() == "rad") {
     PASSMSG("x4 units container has A().label() == \"rad\").");
   } else {
-    ostringstream msg;
-    msg << "x4 units container does not have "
-        << "A().label() == \"rad\")." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 units container does not have A().label() == \"rad\").\n");
   }
 
   // Check Current data...
@@ -711,18 +560,12 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.I().enumVal() == rtt_units::I_amp) {
     PASSMSG("si has I().enumVal() == I_amp).");
   } else {
-    ostringstream msg;
-    msg << "si does not have "
-        << "I().enumVal() == I_amp)." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si does not have I().enumVal() == I_amp).\n");
   }
   if (x4.I().enumVal() == rtt_units::I_amp) {
     PASSMSG("x4 has I().enumVal() == I_amp.");
   } else {
-    ostringstream msg;
-    msg << "x4 does not have "
-        << "I().enumVal() == I_amp." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 does not have I().enumVal() == I_amp.\n");
   }
   if (soft_equiv(si.I().cf(), 1.0)) {
     PASSMSG("si container has I().cf() == 1.0.");
@@ -732,10 +575,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.I().label() == "Amp") {
     PASSMSG("si container has I().label() == \"Amp\".");
   } else {
-    ostringstream msg;
-    msg << "si container does not have "
-        << "I().label() == \"Amp\"." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si container does not have I().label() == \"Amp\".\n");
   }
   if (soft_equiv(x4.I().cf(), 1.0)) {
     PASSMSG("x4 units container has I().cf() == 1.0");
@@ -745,10 +585,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (x4.I().label() == "Amp") {
     PASSMSG("x4 units container has I().label() == \"Amp\").");
   } else {
-    ostringstream msg;
-    msg << "x4 units container does not have "
-        << "I().label() == \"Amp\")." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 units container does not have I().label() == \"Amp\").\n");
   }
 
   // Check Quantity data...
@@ -757,18 +594,12 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.Q().enumVal() == rtt_units::Q_mol) {
     PASSMSG("si has Q().enumVal() == Q_mol.");
   } else {
-    ostringstream msg;
-    msg << "si does not have "
-        << "Q().enumVal() == Q_mol." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si does not have Q().enumVal() == Q_mol.\n");
   }
   if (x4.Q().enumVal() == rtt_units::Q_mol) {
     PASSMSG("x4 has Q().enumVal() == Q_mol.");
   } else {
-    ostringstream msg;
-    msg << "x4 does not have "
-        << "Q().enumVal() == Q_mol." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 does not have Q().enumVal() == Q_mol.\n");
   }
   if (soft_equiv(si.Q().cf(), 1.0)) {
     PASSMSG("si container has Q().cf() == 1.0.");
@@ -778,10 +609,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (si.Q().label() == "mol") {
     PASSMSG("si container has Q().label() == \"mol\".");
   } else {
-    ostringstream msg;
-    msg << "si container does not have "
-        << "Q().label() == \"mol\"." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("si container does not have Q().label() == \"mol\".\n");
   }
   if (soft_equiv(x4.Q().cf(), 1.0)) {
     PASSMSG("x4 units container has Q().cf() == 1.0.");
@@ -791,10 +619,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   if (x4.Q().label() == "mol") {
     PASSMSG("x4 units container has Q().label() == \"mol\").");
   } else {
-    ostringstream msg;
-    msg << "x4 units container does not have "
-        << "Q().label() == \"mol\")." << endl;
-    FAILMSG(msg.str());
+    FAILMSG("x4 units container does not have Q().label() == \"mol\").\n");
   }
 
   return;

@@ -7,13 +7,14 @@
 
 #include "UnitSystem.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "units/UnitSystemEnums.hh"
 #include <limits>
 
 namespace rtt_units {
 
 //! Ensure that all unit conversions are valid (larger than some minimum value.)
 bool UnitSystem::validUnits() const {
-  double minConversion(std::numeric_limits<double>::min());
+  double const minConversion(std::numeric_limits<double>::min());
 
   // Only perform check if the fundamental unit type has been defined.
   if (d_ust.L().enumVal() != L_null && d_ust.L().cf() < minConversion)

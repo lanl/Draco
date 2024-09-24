@@ -8,6 +8,7 @@
 
 #include "UnitSystemEnums.hh"
 #include "dsxx/Assert.hh"
+#include <cstddef> // size_t
 #include <string>
 #include <vector>
 
