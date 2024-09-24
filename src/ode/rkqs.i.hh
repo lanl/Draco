@@ -16,6 +16,7 @@
 #include "dsxx/Soft_Equivalence.hh"
 #include <algorithm>
 #include <cmath>
+#include <vector>
 
 namespace rtt_ode {
 
@@ -23,7 +24,7 @@ namespace rtt_ode {
 /*! Perform a single fifth-order Cash-Karp Runge-Kutta step.
  *
  * \arg \a Field A field type, such as \c double or \c std::complex<double>.
-
+ *
  * \arg \a Function A function type that maps \f$ N+1 \f$ variables to \f$ N \f$ variables,
  *                  supporting <code>operator()(double, const FieldVector &, FieldVector &)</code>.
  *
@@ -155,9 +156,9 @@ void rkqs(std::vector<Field> &y, std::vector<Field> const &dydx, double &x, doub
     errmax /= eps;
     if (errmax <= 1.0)
       break;
-    double htemp = SAFETY * h * std::pow(errmax, PSHRNK);
+    double const htemp = SAFETY * h * std::pow(errmax, PSHRNK);
     h = (h >= 0 ? std::max(htemp, 0.1 * h) : std::min(htemp, 0.1 * h));
-    double xnew = x + h;
+    double const xnew = x + h;
     if (rtt_dsxx::soft_equiv(xnew, x))
       throw std::range_error("stepsize underflow in rkqs"); // LCOV_EXCL_LINE
   }

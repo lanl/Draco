@@ -4,18 +4,16 @@
  * \author Kent Budge
  * \date   Tue Sep 21 09:28:30 2004
  * \brief  Test the rkqs integrator function template.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
-//------------------------------------------------------------------------------------------------//
-
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "ode/rkqs.hh"
-
 #include <cmath>
 #include <limits>
+#include <vector>
 
 using namespace std;
 using namespace rtt_ode;

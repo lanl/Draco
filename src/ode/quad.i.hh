@@ -46,7 +46,7 @@ typename Function_Traits<Function>::return_type quad(Function func, double x1, d
 
   using namespace std;
 
-  Quad_To_ODE<Function> derivs(func);
+  Quad_To_ODE<Function> const derivs(func);
 
   using Field = typename Function_Traits<Function>::return_type;
 
