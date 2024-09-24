@@ -7,8 +7,7 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "btridag.t.hh"
-#include <vector>
+#include "btridag.t.hh" // NOLINT
 
 namespace rtt_linear {
 

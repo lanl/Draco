@@ -9,7 +9,10 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "linear/rotate.hh"
+#include <cmath> // sqrt
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;

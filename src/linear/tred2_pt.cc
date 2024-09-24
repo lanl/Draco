@@ -7,9 +7,7 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "tred2.t.hh"
-#include <cmath>
-#include <vector>
+#include "tred2.t.hh" // NOLINT(misc-include-cleaner)
 
 namespace rtt_linear {
 

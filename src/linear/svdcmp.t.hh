@@ -28,7 +28,7 @@ namespace rtt_linear {
  * and nearly singular square matrices.  The following routine is very robust.
  *
  * \tparam RandomContainer A random access container type
- * 
+ *
  * \param a Matrix to be decomposed.  On exit, contains \f$ U \f$.
  * \param m Number of rows in a
  * \param n Number of columns in a
@@ -73,7 +73,7 @@ void svdcmp(RandomContainer &a, const unsigned m, const unsigned n, RandomContai
       for (unsigned k = i; k < m; k++)
         scale += fabs(a[k + m * i]);
       if (std::abs(scale) > mrv) {
-        double rscale = 1 / scale;
+        double const rscale = 1 / scale;
         for (unsigned k = i; k < m; k++) {
           a[k + m * i] *= rscale;
           s += square(a[k + m * i]);
@@ -82,7 +82,7 @@ void svdcmp(RandomContainer &a, const unsigned m, const unsigned n, RandomContai
         g = sqrt(s);
         if (f > 0.0)
           g = -g;
-        double h = f * g - s;
+        double const h = f * g - s;
         a[i + m * i] = f - g;
         for (unsigned j = l; j < n; j++) {
           s = 0;
@@ -105,18 +105,18 @@ void svdcmp(RandomContainer &a, const unsigned m, const unsigned n, RandomContai
       for (unsigned k = l; k < n; k++)
         scale += fabs(a[i + m * k]);
       if (std::abs(scale) > mrv) {
-        double rscale = 1 / scale;
+        double const rscale = 1 / scale;
         for (unsigned k = l; k < n; k++) {
           a[i + m * k] *= rscale;
           s += square(a[i + m * k]);
         }
-        double f = a[i + m * l];
+        double const f = a[i + m * l];
         g = sqrt(s);
         if (f > 0.0)
           g = -g;
-        double h = f * g - s;
+        double const h = f * g - s;
         a[i + m * l] = f - g;
-        double rh = 1 / h;
+        double const rh = 1 / h;
         for (unsigned k = l; k < n; k++)
           rv1[k] = a[i + m * k] * rh;
         for (unsigned j = l; j < m; j++) {
@@ -136,7 +136,7 @@ void svdcmp(RandomContainer &a, const unsigned m, const unsigned n, RandomContai
   for (unsigned i = n - 1; i < n; i--) {
     if (i != n - 1) {
       if (std::abs(g) > mrv) {
-        double rg = 1 / g;
+        double const rg = 1 / g;
         for (unsigned j = l; j < n; j++)
           v[j + n * i] = rg * (a[i + m * j] / a[i + m * l]);
         // ordering of above expression important to prevent underflow
@@ -162,12 +162,12 @@ void svdcmp(RandomContainer &a, const unsigned m, const unsigned n, RandomContai
     for (unsigned j = l; j < n; j++)
       a[i + m * j] = 0.0;
     if (std::abs(g) > mrv) {
-      double rg = 1 / g;
+      double const rg = 1 / g;
       for (unsigned j = l; j < n; j++) {
         double s = 0;
         for (unsigned k = l; k < m; k++)
           s += a[k + m * i] * a[k + m * j];
-        double f = rg * (s / a[i + m * i]);
+        double const f = rg * (s / a[i + m * i]);
         // ordering of above expression important to prevent underflow
         for (unsigned k = i; k < m; k++)
           a[k + m * j] += f * a[k + m * i];
@@ -183,7 +183,7 @@ void svdcmp(RandomContainer &a, const unsigned m, const unsigned n, RandomContai
 
   // Reduce to diagonal form.
   for (unsigned k = n - 1; k < n; k--) {
-    unsigned k1 = k - 1;
+    unsigned const k1 = k - 1;
     unsigned its = 0;
     for (; its < 30; its++) // Allow up to 30 iterations.
     {
@@ -192,7 +192,7 @@ void svdcmp(RandomContainer &a, const unsigned m, const unsigned n, RandomContai
       Check(rtt_dsxx::soft_equiv(rv1[0] + norm, norm));
       unsigned ell = k;
       for (; ell <= k; ell--) {
-        unsigned l1 = ell - 1;
+        unsigned const l1 = ell - 1;
         if (rtt_dsxx::soft_equiv(fabs(rv1[ell]) + norm, norm, eps)) {
           flag = false;
           break;
@@ -201,21 +201,21 @@ void svdcmp(RandomContainer &a, const unsigned m, const unsigned n, RandomContai
           break;
       }
       if (flag) {
-        unsigned l1 = ell - 1;
+        unsigned const l1 = ell - 1;
         double c = 0;
         double s = 1;
         for (unsigned i = ell; i <= k; i++) {
-          double f = s * rv1[i];
+          double const f = s * rv1[i];
           rv1[i] *= c;
           if (!rtt_dsxx::soft_equiv(fabs(f) + norm, norm, eps)) {
             g = w[i];
-            double h = pythag(f, g);
+            double const h = pythag(f, g);
             w[i] = h;
             c = g / h;
             s = -f / h;
             for (unsigned j = 0; j < m; j++) {
-              double y = a[j + m * l1];
-              double z = a[j + m * i];
+              double const y = a[j + m * l1];
+              double const z = a[j + m * i];
               a[j + m * l1] = y * c + z * s;
               a[j + m * i] = -y * s + z * c;
             }
@@ -243,7 +243,7 @@ void svdcmp(RandomContainer &a, const unsigned m, const unsigned n, RandomContai
         double c = 1;
         double s = 1;
         for (unsigned j = ell; j < k; j++) {
-          int i = j + 1;
+          int const i = j + 1;
           g = rv1[i];
           y = w[i];
           h = s * g;

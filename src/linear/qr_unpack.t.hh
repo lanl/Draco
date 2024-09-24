@@ -27,7 +27,7 @@ namespace rtt_linear {
  * because this is what is usually required for further computation (as with qrupdt).
  *
  * \tparam RandomContainer A random access container
- * 
+ *
  * \param r \f$N\times N\f$ matrix containing, in its lower triangular part, the Householder vectors
  *          \f$u\f$ of the QR decomposition, and, in its strict upper triangular part, the strict
  *          upper triangular part of \f$R\f$.  On exit, contains \f$R\f$.
@@ -66,7 +66,7 @@ void qr_unpack(RandomContainer &r, const unsigned n, const RandomContainer &c,
   // Explicitly form Q transpose
   for (unsigned i = 0; i + 1 < n; ++i) {
     if (fabs(c[i]) > mrv) {
-      double rscale = -1 / c[i];
+      double const rscale = -1 / c[i];
       for (unsigned j = 0; j < n; ++j) {
         double sum = r[i + n * i] * qt[i + n * j];
         for (unsigned k = i + 1; k < n; ++k) {

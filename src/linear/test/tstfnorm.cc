@@ -9,7 +9,10 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "linear/fnorm.hh"
+#include <cmath> // cos, sin
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -26,7 +29,7 @@ void func(const vector<double> &x, vector<double> &fvec) {
 
 //------------------------------------------------------------------------------------------------//
 void tstfnorm(UnitTest &ut) {
-  vector<double> x = {0.235, 3.2};
+  vector<double> const x = {0.235, 3.2};
   vector<double> fvec;
 
   if (soft_equiv(fnorm(x, fvec, &func), 0.5 * 3.2 * 3.2)) {

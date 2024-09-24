@@ -9,9 +9,11 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "linear/tqli.hh"
 #include "linear/tred2.hh"
+#include <cmath> // fabs, sqrt
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -36,7 +38,7 @@ void tsttqli(UnitTest &ut) {
   tred2(A, 2, d, e);
   tqli(d, e, 2, A);
 
-  double e0 = d[0];
+  double const e0 = d[0];
   double xx0 = A[0 + 2 * 0];
   double xx1 = A[1 + 2 * 0];
 
@@ -49,7 +51,7 @@ void tsttqli(UnitTest &ut) {
     ut.failure("first eigenvector is NOT correct");
   }
 
-  double e1 = d[1];
+  double const e1 = d[1];
   xx0 = A[0 + 2 * 1];
   xx1 = A[1 + 2 * 1];
 
