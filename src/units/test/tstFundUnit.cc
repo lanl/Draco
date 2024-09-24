@@ -9,8 +9,12 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "units/FundUnit.hh"
+#include "units/UnitSystemEnums.hh"
+#include <iostream>
 #include <sstream>
+#include <string>
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -28,15 +32,14 @@ void test_construction(rtt_dsxx::UnitTest &ut) {
   using std::ostringstream;
   using std::string;
 
-  FundUnit<Ltype> myLength(L_null, L_cf.data(), L_labels);
+  FundUnit<Ltype> const myLength(L_null, L_cf.data(), L_labels);
 
   // Is the enum value correct?
   if (myLength.enumVal() == L_null) {
     PASSMSG("Enum Value was set correctly.");
   } else {
     ostringstream msg;
-    msg << "Enum Value was not set correctly "
-        << "(" << myLength.enumVal() << " != L_null (0) )" << endl;
+    msg << "Enum Value was not set correctly (" << myLength.enumVal() << " != L_null (0) )\n";
     FAILMSG(msg.str());
   }
 
@@ -45,8 +48,7 @@ void test_construction(rtt_dsxx::UnitTest &ut) {
     PASSMSG("Conversion Factor was set correctly.");
   } else {
     ostringstream msg;
-    msg << "Conversion Factor was not set correctly "
-        << "(" << myLength.cf() << " != 0.0)" << endl;
+    msg << "Conversion Factor was not set correctly (" << myLength.cf() << " != 0.0)\n";
     FAILMSG(msg.str());
   }
 
@@ -55,8 +57,7 @@ void test_construction(rtt_dsxx::UnitTest &ut) {
     PASSMSG("Unit label was set correctly.");
   } else {
     ostringstream msg;
-    msg << "Unit label was not set correctly "
-        << "(\"" << myLength.label() << R"(" != "NA"))" << endl; // " fix emacs
+    msg << "Unit label was not set correctly (\"" << myLength.label() << R"(" != "NA"))" << '\n';
     FAILMSG(msg.str());
   }
 
@@ -64,16 +65,17 @@ void test_construction(rtt_dsxx::UnitTest &ut) {
 
   // Use "long labels" string...
 
-  FundUnit<Ltype> myLength2(rtt_units::L_cm, rtt_units::L_cf.data(), rtt_units::L_long_labels);
+  FundUnit<Ltype> const myLength2(rtt_units::L_cm, rtt_units::L_cf.data(),
+                                  rtt_units::L_long_labels);
 
   // Is the label correct?
-  std::string sentinelValue("centimeter");
+  std::string const sentinelValue("centimeter");
   if (myLength2.label() == sentinelValue) {
     PASSMSG("Unit long label was set correctly.");
   } else {
     ostringstream msg;
-    msg << "Unit long label was not set correctly "
-        << "(\"" << myLength2.label() << "\" != \"" << sentinelValue << "\")" << endl;
+    msg << "Unit long label was not set correctly (\"" << myLength2.label() << "\" != \""
+        << sentinelValue << "\")\n";
     FAILMSG(msg.str());
   }
   // Is the conversion factor correct?
@@ -81,8 +83,7 @@ void test_construction(rtt_dsxx::UnitTest &ut) {
     PASSMSG("Conversion Factor was set correctly.");
   } else {
     ostringstream msg;
-    msg << "Conversion Factor was not set correctly "
-        << "(" << myLength2.cf() << " != 100.0)" << endl;
+    msg << "Conversion Factor was not set correctly (" << myLength2.cf() << " != 100.0)\n";
     FAILMSG(msg.str());
   }
 

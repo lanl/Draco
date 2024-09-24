@@ -7,6 +7,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "UnitSystemType.hh"
+#include "units/FundUnit.hh"
+#include "units/UnitSystemEnums.hh"
+#include <string>
 
 namespace rtt_units {
 

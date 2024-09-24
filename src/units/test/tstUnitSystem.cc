@@ -2,14 +2,21 @@
 /*!
  * \file   src/units/test/tstUnitSystem.cc
  * \brief  test the UnitSystem class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ *\note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "units/UnitSystem.hh"
+#include "units/UnitSystemEnums.hh"
+#include "units/UnitSystemType.hh"
+#include <array>
+#include <iostream>
 #include <sstream>
+#include <string>
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -20,68 +27,59 @@ void test_ctor(rtt_dsxx::UnitTest &ut) {
   using rtt_units::UnitSystem;
   using rtt_units::UnitSystemType;
   using std::cout;
-  using std::endl;
   using std::ostringstream;
   using std::string;
 
   {
-    UnitSystem uX4(UnitSystemType().X4());
+    UnitSystem const uX4(UnitSystemType().X4());
 
     // Test the length conversion factor for uX4
-    double expVal(100.0);
+    double const expVal(100.0);
     if (soft_equiv(uX4.L(), expVal)) {
-      ostringstream msg;
-      msg << "Conversion Value for X4 UnitSystem is correct." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Conversion Value for X4 UnitSystem is correct.\n");
     } else {
       ostringstream msg;
-      msg << "Conversion Value for X4 UnitSystem is incorrect." << endl
-          << "\tThe value returned was " << uX4.L() << " != " << expVal << endl;
+      msg << "Conversion Value for X4 UnitSystem is incorrect.\n\tThe value returned was "
+          << uX4.L() << " != " << expVal << '\n';
       FAILMSG(msg.str());
     }
 
     // Test the length lable for uX4
-    string expValS("cm");
+    string const expValS("cm");
     if (uX4.Lname() == expValS) {
-      ostringstream msg;
-      msg << "Unit label for X4 UnitSystem is correct." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Unit label for X4 UnitSystem is correct.\n");
     } else {
       ostringstream msg;
-      msg << "Unit label for X4 UnitSystem is incorrect." << endl
-          << "\tThe value returned was " << uX4.Lname() << " != " << expValS << endl;
+      msg << "Unit label for X4 UnitSystem is incorrect.\n\tThe value returned was " << uX4.Lname()
+          << " != " << expValS << '\n';
       FAILMSG(msg.str());
     }
   }
 
-  //--------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
 
   {
-    UnitSystem uSI(UnitSystemType().SI());
+    UnitSystem const uSI(UnitSystemType().SI());
 
     // Test the length conversion factor for uSI
-    double expVal(1.0);
+    double const expVal(1.0);
     if (soft_equiv(uSI.M(), expVal)) {
-      ostringstream msg;
-      msg << "Conversion Value for SI UnitSystem is correct." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Conversion Value for SI UnitSystem is correct.\n");
     } else {
       ostringstream msg;
-      msg << "Conversion Value for SI UnitSystem is incorrect." << endl
-          << "\tThe value returned was " << uSI.M() << " != " << expVal << endl;
+      msg << "Conversion Value for SI UnitSystem is incorrect.\n\tThe value returned was "
+          << uSI.M() << " != " << expVal << '\n';
       FAILMSG(msg.str());
     }
 
     // Test the length lable for uSI
-    string expValS("kg");
+    string const expValS("kg");
     if (uSI.Mname() == expValS) {
-      ostringstream msg;
-      msg << "Unit label for SI UnitSystem is correct." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Unit label for SI UnitSystem is correct.\n");
     } else {
       ostringstream msg;
-      msg << "Unit label for SI UnitSystem is incorrect." << endl
-          << "\tThe value returned was " << uSI.Mname() << " != " << expValS << endl;
+      msg << "Unit label for SI UnitSystem is incorrect.\n\tThe value returned was " << uSI.Mname()
+          << " != " << expValS << '\n';
       FAILMSG(msg.str());
     }
   }
@@ -96,167 +94,142 @@ void test_def_ctor(rtt_dsxx::UnitTest &ut) {
   using rtt_units::UnitSystem;
   using rtt_units::UnitSystemType;
   using std::cout;
-  using std::endl;
   using std::ostringstream;
   using std::string;
 
   {
-    UnitSystem uDef;
-    UnitSystem uSI(UnitSystemType().SI());
+    UnitSystem const uDef;
+    UnitSystem const uSI(UnitSystemType().SI());
 
     // Test the time conversion factor for uDef
     double expVal(uSI.t());
     if (soft_equiv(uDef.t(), expVal)) {
-      ostringstream msg;
-      msg << "Time Conversion Value for Default UnitSystem is correct." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Time Conversion Value for Default UnitSystem is correct.\n");
     } else {
       ostringstream msg;
-      msg << "Time Conversion Value for Default UnitSystem is incorrect." << endl
-          << "\tThe value returned was " << uDef.t() << " != " << expVal << endl;
+      msg << "Time Conversion Value for Default UnitSystem is incorrect.\n"
+          << "\tThe value returned was " << uDef.t() << " != " << expVal << '\n';
       FAILMSG(msg.str());
     }
 
     // Test the time lable for uDef
     string expValS(uSI.tname());
     if (uDef.tname() == expValS) {
-      ostringstream msg;
-      msg << "Time Unit label for Default UnitSystem is correct." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Time Unit label for Default UnitSystem is correct.\n");
     } else {
       ostringstream msg;
-      msg << "Time Unit label for Default UnitSystem is incorrect." << endl
-          << "\tThe value returned was " << uDef.tname() << " != " << expValS << endl;
+      msg << "Time Unit label for Default UnitSystem is incorrect.\n"
+          << "\tThe value returned was " << uDef.tname() << " != " << expValS << '\n';
       FAILMSG(msg.str());
     }
 
-    //------------------------------------------------------------------------------------------------//
+    //--------------------------------------------------------------------------------------------//
 
     // Test the Temperature conversion factor for uDef
     expVal = uSI.T();
     if (soft_equiv(uDef.T(), expVal)) {
-      ostringstream msg;
-      msg << "Temperature Conversion Value for Default UnitSystem is correct." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Temperature Conversion Value for Default UnitSystem is correct.\n");
     } else {
       ostringstream msg;
-      msg << "Temperature Conversion Value for Default UnitSystem is incorrect." << endl
-          << "\tThe value returned was " << uDef.T() << " != " << expVal << endl;
+      msg << "Temperature Conversion Value for Default UnitSystem is incorrect.\n"
+          << "\tThe value returned was " << uDef.T() << " != " << expVal << '\n';
       FAILMSG(msg.str());
     }
 
     // Test the tetmperature lable for uDef
     expValS = uSI.Tname();
     if (uDef.Tname() == expValS) {
-      ostringstream msg;
-      msg << "Temperature Unit label for Default UnitSystem is correct." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Temperature Unit label for Default UnitSystem is correct.\n");
     } else {
       ostringstream msg;
-      msg << "Temperature Unit label for Default UnitSystem is incorrect." << endl
-          << "\tThe value returned was " << uDef.Tname() << " != " << expValS << endl;
+      msg << "Temperature Unit label for Default UnitSystem is incorrect.\n"
+          << "\tThe value returned was " << uDef.Tname() << " != " << expValS << '\n';
       FAILMSG(msg.str());
     }
   }
 }
 
-//--------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
 void test_more_accessors(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::UnitSystem;
   using rtt_units::UnitSystemType;
   using std::cout;
-  using std::endl;
   using std::ostringstream;
   using std::string;
 
   // Create a custom UnitSystem
-  UnitSystem myus(UnitSystemType().I(rtt_units::I_amp).A(rtt_units::A_deg).Q(rtt_units::Q_mol));
+  UnitSystem const myus(
+      UnitSystemType().I(rtt_units::I_amp).A(rtt_units::A_deg).Q(rtt_units::Q_mol));
 
   // Test the electric current conversion factor.
   double expVal(1.0);
   if (soft_equiv(myus.I(), expVal)) {
-    ostringstream msg;
-    msg << "Electric Current Conversion Value for Default UnitSystem is "
-           "correct."
-        << endl;
-    PASSMSG(msg.str());
+    PASSMSG("Electric Current Conversion Value for Default UnitSystem is correct.\n");
   } else {
     ostringstream msg;
-    msg << "Electric Current Conversion Value for Default UnitSystem is "
-           "incorrect."
-        << endl
-        << "\tThe value returned was " << myus.I() << " != " << expVal << endl;
+    msg << "Electric Current Conversion Value for Default UnitSystem is incorrect.\n"
+        << "\tThe value returned was " << myus.I() << " != " << expVal << '\n';
     FAILMSG(msg.str());
   }
 
   // Test the electric current label
   string expValS("Amp");
   if (myus.Iname() == expValS) {
-    ostringstream msg;
-    msg << " Electric Current Unit label for UnitSystem is correct." << endl;
-    PASSMSG(msg.str());
+    PASSMSG(" Electric Current Unit label for UnitSystem is correct.\n");
   } else {
     ostringstream msg;
-    msg << "Electric Current Unit label for UnitSystem is incorrect." << endl
-        << "\tThe value returned was " << myus.Iname() << " != " << expValS << endl;
+    msg << "Electric Current Unit label for UnitSystem is incorrect.\n"
+        << "\tThe value returned was " << myus.Iname() << " != " << expValS << '\n';
     FAILMSG(msg.str());
   }
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
 
   // Test the angle conversion factor
   expVal = 57.295779512896171;
   if (soft_equiv(myus.A(), expVal)) {
-    ostringstream msg;
-    msg << "Angle Conversion Value for Default UnitSystem is correct." << endl;
-    PASSMSG(msg.str());
+    PASSMSG("Angle Conversion Value for Default UnitSystem is correct.\n");
   } else {
     ostringstream msg;
-    msg << "Angle Conversion Value for Default UnitSystem is incorrect." << endl
-        << "\tThe value returned was " << myus.A() << " != " << expVal << endl;
+    msg << "Angle Conversion Value for Default UnitSystem is incorrect.\n"
+        << "\tThe value returned was " << myus.A() << " != " << expVal << '\n';
     FAILMSG(msg.str());
   }
 
   // Test the Angle label
   expValS = "deg";
   if (myus.Aname() == expValS) {
-    ostringstream msg;
-    msg << " Angle Unit label for UnitSystem is correct." << endl;
-    PASSMSG(msg.str());
+    PASSMSG(" Angle Unit label for UnitSystem is correct.\n");
   } else {
     ostringstream msg;
-    msg << "Angle Unit label for UnitSystem is incorrect." << endl
-        << "\tThe value returned was " << myus.Aname() << " != " << expValS << endl;
+    msg << "Angle Unit label for UnitSystem is incorrect.\n"
+        << "\tThe value returned was " << myus.Aname() << " != " << expValS << '\n';
     FAILMSG(msg.str());
   }
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
 
   // Test the quantity conversion factor.
   expVal = 1.0;
   if (soft_equiv(myus.Q(), expVal)) {
-    ostringstream msg;
-    msg << "Quantity Conversion Value for Default UnitSystem is correct." << endl;
-    PASSMSG(msg.str());
+    PASSMSG("Quantity Conversion Value for Default UnitSystem is correct.\n");
   } else {
     ostringstream msg;
-    msg << "Quantity Conversion Value for Default UnitSystem is incorrect." << endl
-        << "\tThe value returned was " << myus.Q() << " != " << expVal << endl;
+    msg << "Quantity Conversion Value for Default UnitSystem is incorrect.\n"
+        << "\tThe value returned was " << myus.Q() << " != " << expVal << '\n';
     FAILMSG(msg.str());
   }
 
   // Test the quantity label
   expValS = "mol";
   if (myus.Qname() == expValS) {
-    ostringstream msg;
-    msg << "Quantity Unit label for UnitSystem is correct." << endl;
-    PASSMSG(msg.str());
+    PASSMSG("Quantity Unit label for UnitSystem is correct.\n");
   } else {
     ostringstream msg;
-    msg << "Quantity Unit label for UnitSystem is incorrect." << endl
-        << "\tThe value returned was " << myus.Qname() << " != " << expValS << endl;
+    msg << "Quantity Unit label for UnitSystem is incorrect.\n"
+        << "\tThe value returned was " << myus.Qname() << " != " << expValS << '\n';
     FAILMSG(msg.str());
   }
 
@@ -270,24 +243,21 @@ void test_aux_accessors(rtt_dsxx::UnitTest &ut) {
   using rtt_units::UnitSystem;
   using rtt_units::UnitSystemType;
   using std::cout;
-  using std::endl;
   using std::ostringstream;
   using std::string;
 
   // Create SI and X4 UnitSystem
-  UnitSystem uX4(UnitSystemType().X4());
+  UnitSystem const uX4(UnitSystemType().X4());
 
   // velocity
   {
-    double vel_cf = uX4.L() / uX4.t();
+    double const vel_cf = uX4.L() / uX4.t();
     if (soft_equiv(vel_cf, uX4.v())) {
-      ostringstream msg;
-      msg << "velocity conversion succeeded." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("velocity conversion succeeded.\n");
     } else {
       ostringstream msg;
       msg << "Velocity conversion failed. Found uX4.v()"
-          << " = " << uX4.v() << " != " << vel_cf << endl;
+          << " = " << uX4.v() << " != " << vel_cf << '\n';
       FAILMSG(msg.str());
     }
   }
@@ -301,126 +271,111 @@ void logic_test(rtt_dsxx::UnitTest &ut) {
   using rtt_units::UnitSystem;
   using rtt_units::UnitSystemType;
   using std::cout;
-  using std::endl;
   using std::ostringstream;
   using std::string;
 
   // Create SI and X4 UnitSystem
-  UnitSystem si;
-  UnitSystem uX4(UnitSystemType().X4());
+  UnitSystem const si;
+  UnitSystem const uX4(UnitSystemType().X4());
 
   // Look at auxillary conversion factors.
   {
-    double myL = 1;                        // 1.0 cm
-    double myLsi = myL * si.L() / uX4.L(); // 0.01 m
+    double const myL = 1;                        // 1.0 cm
+    double const myLsi = myL * si.L() / uX4.L(); // 0.01 m
     if (soft_equiv(myLsi, 0.01)) {
-      ostringstream msg;
-      msg << "Length conversion succeeded." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Length conversion succeeded.\n");
     } else {
       ostringstream msg;
       msg << "Length conversion failed. Found " << myL << " " << uX4.Lname() << " = " << myLsi
-          << " " << si.Lname() << endl;
+          << " " << si.Lname() << '\n';
       FAILMSG(msg.str());
     }
   }
 
   // Mass
   {
-    double myM = 1;                        // 1.0 g
-    double myMsi = myM * si.M() / uX4.M(); // 0.001 kg
+    double const myM = 1;                        // 1.0 g
+    double const myMsi = myM * si.M() / uX4.M(); // 0.001 kg
     if (soft_equiv(myMsi, 0.001)) {
-      ostringstream msg;
-      msg << "Mass conversion succeeded." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Mass conversion succeeded.\n");
     } else {
       ostringstream msg;
       msg << "Mass conversion failed. Found " << myM << " " << uX4.Mname() << " = " << myMsi << " "
-          << si.Mname() << endl;
+          << si.Mname() << '\n';
       FAILMSG(msg.str());
     }
   }
 
   // velocity
   {
-    double myV = 1.0;                      // 1.0 cm/sh
-    double myVsi = myV * si.v() / uX4.v(); // 1e6 m/s
+    double const myV = 1.0;                      // 1.0 cm/sh
+    double const myVsi = myV * si.v() / uX4.v(); // 1e6 m/s
     if (soft_equiv(myVsi, 1.0e+6)) {
-      ostringstream msg;
-      msg << "Velocity conversion succeeded." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Velocity conversion succeeded.\n");
     } else {
       ostringstream msg;
       msg << "Velocity conversion failed. Found " << myV << " " << uX4.Lname() << "/" << uX4.tname()
-          << " = " << myVsi << " " << si.Lname() << "/" << si.tname() << endl;
+          << " = " << myVsi << " " << si.Lname() << "/" << si.tname() << '\n';
       FAILMSG(msg.str());
     }
   }
 
   // acceleration
   {
-    double mya = 1.0;                      // 1.0 cm/sh/sh
-    double myasi = mya * si.a() / uX4.a(); // 1e14 m/s/s
+    double const mya = 1.0;                      // 1.0 cm/sh/sh
+    double const myasi = mya * si.a() / uX4.a(); // 1e14 m/s/s
     if (soft_equiv(myasi, 1.0e+14)) {
-      ostringstream msg;
-      msg << "Acceleration conversion succeeded." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Acceleration conversion succeeded.\n");
     } else {
       ostringstream msg;
       msg << "Acceleration conversion failed. Found " << mya << " " << uX4.Lname() << "/"
           << uX4.tname() << "^2 = " << myasi << " " << si.Lname() << "/" << si.tname() << "^2"
-          << endl;
+          << '\n';
       FAILMSG(msg.str());
     }
   }
 
   // force
   {
-    double myF = 1.0;                      // 1.0 g*cm/sh/sh
-    double myFsi = myF * si.f() / uX4.f(); // 1e11 kg*m/s/s
+    double const myF = 1.0;                      // 1.0 g*cm/sh/sh
+    double const myFsi = myF * si.f() / uX4.f(); // 1e11 kg*m/s/s
     if (soft_equiv(myFsi, 1.0e+11)) {
-      ostringstream msg;
-      msg << "Force conversion succeeded." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Force conversion succeeded.\n");
     } else {
       ostringstream msg;
       msg << "Force conversion failed. Found " << myF << " " << uX4.Mname() << "*" << uX4.Lname()
           << "/" << uX4.tname() << "^2 = " << myFsi << " " << si.Mname() << "*" << si.Lname() << "/"
-          << si.tname() << "^2" << endl;
+          << si.tname() << "^2\n";
       FAILMSG(msg.str());
     }
   }
 
   // energy
   {
-    double myE = 1.0;                      // 1.0 g*cm*cm/sh/sh
-    double myEsi = myE * si.e() / uX4.e(); // 1e11 kg*m*m/s/s
+    double const myE = 1.0;                      // 1.0 g*cm*cm/sh/sh
+    double const myEsi = myE * si.e() / uX4.e(); // 1e11 kg*m*m/s/s
     if (soft_equiv(myEsi, 1.0e+9)) {
-      ostringstream msg;
-      msg << "Energy conversion succeeded." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Energy conversion succeeded.\n");
     } else {
       ostringstream msg;
       msg << "Energy conversion failed. Found " << myE << " " << uX4.Mname() << "*" << uX4.Lname()
           << "^2/" << uX4.tname() << "^2 = " << myEsi << " " << si.Mname() << "*" << si.Lname()
-          << "^2/" << si.tname() << "^2" << endl;
+          << "^2/" << si.tname() << "^2\n";
       FAILMSG(msg.str());
     }
   }
 
   // power
   {
-    double myP = 1.0;                      // 1.0 g*cm*cm/sh/sh/sh
-    double myPsi = myP * si.p() / uX4.p(); // 1e11 kg*m*m/s/s/s
+    double const myP = 1.0;                      // 1.0 g*cm*cm/sh/sh/sh
+    double const myPsi = myP * si.p() / uX4.p(); // 1e11 kg*m*m/s/s/s
     if (soft_equiv(myPsi, 1.0e+17)) {
-      ostringstream msg;
-      msg << "Power conversion succeeded." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Power conversion succeeded.\n");
     } else {
       ostringstream msg;
       msg << "Power conversion failed. Found " << myP << " " << uX4.Mname() << "*" << uX4.Lname()
           << "^2/" << uX4.tname() << "^3 = " << myPsi << " " << si.Mname() << "*" << si.Lname()
-          << "^2/" << si.tname() << "^3" << endl;
+          << "^2/" << si.tname() << "^3\n";
       FAILMSG(msg.str());
     }
   }
@@ -435,143 +390,106 @@ void test_eq_op(rtt_dsxx::UnitTest &ut) {
   using rtt_units::UnitSystem;
   using rtt_units::UnitSystemType;
   using std::cout;
-  using std::endl;
   using std::ostringstream;
   using std::string;
 
   // Create SI and X4 UnitSystem
-  UnitSystem si;
-  UnitSystem uX4(UnitSystemType().X4());
+  UnitSystem const si;
+  UnitSystem const uX4(UnitSystemType().X4());
 
   if (si == uX4) {
-    ostringstream msg;
-    msg << "Equality operator failed. " << endl;
-    FAILMSG(msg.str());
+    FAILMSG("Equality operator failed.\n");
   } else {
-    ostringstream msg;
-    msg << "Equality operator succeeded." << endl;
-    PASSMSG(msg.str());
+    PASSMSG("Equality operator succeeded.\n");
   }
 
   if (si != uX4) {
-    ostringstream msg;
-    msg << "Inequality operator succeeded." << endl;
-    PASSMSG(msg.str());
+    PASSMSG("Inequality operator succeeded.\n");
   } else {
-    ostringstream msg;
-    msg << "Inequality operator failed. " << endl;
-    FAILMSG(msg.str());
+    FAILMSG("Inequality operator failed.\n");
   }
 
   // More thorough branch coverage for equality operator.
   {
-    UnitSystem u1(UnitSystemType().L(rtt_units::L_m));
+    UnitSystem const u1(UnitSystemType().L(rtt_units::L_m));
     if (si == u1) {
-      ostringstream msg;
-      msg << "Equality operator failed for M. " << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Equality operator failed for M.\n");
     } else {
-      ostringstream msg;
-      msg << "Equality operator succeeded for M." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Equality operator succeeded for M.\n");
     }
   }
   // More thorough branch coverage for equality operator.
   {
-    UnitSystem u1(UnitSystemType().L(rtt_units::L_m).M(rtt_units::M_kg));
+    UnitSystem const u1(UnitSystemType().L(rtt_units::L_m).M(rtt_units::M_kg));
     if (si == u1) {
-      ostringstream msg;
-      msg << "Equality operator failed for t. " << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Equality operator failed for t.\n");
     } else {
-      ostringstream msg;
-      msg << "Equality operator succeeded for t." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Equality operator succeeded for t.\n");
     }
   }
 
   // More thorough branch coverage for equality operator.
   {
-    UnitSystem u1(UnitSystemType().L(rtt_units::L_m).M(rtt_units::M_kg).t(rtt_units::t_s));
+    UnitSystem const u1(UnitSystemType().L(rtt_units::L_m).M(rtt_units::M_kg).t(rtt_units::t_s));
     if (si == u1) {
-      ostringstream msg;
-      msg << "Equality operator failed for T. " << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Equality operator failed for T.\n");
     } else {
-      ostringstream msg;
-      msg << "Equality operator succeeded for T." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Equality operator succeeded for T.\n");
     }
   }
   // More thorough branch coverage for equality operator.
   {
-    UnitSystem u1(
+    UnitSystem const u1(
         UnitSystemType().L(rtt_units::L_m).M(rtt_units::M_kg).t(rtt_units::t_s).T(rtt_units::T_K));
     if (si == u1) {
-      ostringstream msg;
-      msg << "Equality operator failed for I." << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Equality operator failed for I.\n");
     } else {
-      ostringstream msg;
-      msg << "Equality operator succeeded for I." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Equality operator succeeded for I.\n");
     }
   }
   // More thorough branch coverage for equality operator.
   {
-    UnitSystem u1(UnitSystemType()
-                      .L(rtt_units::L_m)
-                      .M(rtt_units::M_kg)
-                      .t(rtt_units::t_s)
-                      .T(rtt_units::T_K)
-                      .I(rtt_units::I_amp));
+    UnitSystem const u1(UnitSystemType()
+                            .L(rtt_units::L_m)
+                            .M(rtt_units::M_kg)
+                            .t(rtt_units::t_s)
+                            .T(rtt_units::T_K)
+                            .I(rtt_units::I_amp));
     if (si == u1) {
-      ostringstream msg;
-      msg << "Equality operator failed for A." << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Equality operator failed for A.\n");
     } else {
-      ostringstream msg;
-      msg << "Equality operator succeeded for A." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Equality operator succeeded for A.\n");
     }
   }
   // More thorough branch coverage for equality operator.
   {
-    UnitSystem u1(UnitSystemType()
-                      .L(rtt_units::L_m)
-                      .M(rtt_units::M_kg)
-                      .t(rtt_units::t_s)
-                      .T(rtt_units::T_K)
-                      .I(rtt_units::I_amp)
-                      .A(rtt_units::A_rad));
+    UnitSystem const u1(UnitSystemType()
+                            .L(rtt_units::L_m)
+                            .M(rtt_units::M_kg)
+                            .t(rtt_units::t_s)
+                            .T(rtt_units::T_K)
+                            .I(rtt_units::I_amp)
+                            .A(rtt_units::A_rad));
     if (si == u1) {
-      ostringstream msg;
-      msg << "Equality operator failed for Q." << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Equality operator failed for Q.\n");
     } else {
-      ostringstream msg;
-      msg << "Equality operator succeeded for Q." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Equality operator succeeded for Q.\n");
     }
   }
   // More thorough branch coverage for equality operator.
   {
-    UnitSystem u1(UnitSystemType()
-                      .L(rtt_units::L_m)
-                      .M(rtt_units::M_kg)
-                      .t(rtt_units::t_s)
-                      .T(rtt_units::T_K)
-                      .I(rtt_units::I_amp)
-                      .A(rtt_units::A_rad)
-                      .Q(rtt_units::Q_mol));
+    UnitSystem const u1(UnitSystemType()
+                            .L(rtt_units::L_m)
+                            .M(rtt_units::M_kg)
+                            .t(rtt_units::t_s)
+                            .T(rtt_units::T_K)
+                            .I(rtt_units::I_amp)
+                            .A(rtt_units::A_rad)
+                            .Q(rtt_units::Q_mol));
     if (si == u1) {
-      ostringstream msg;
-      msg << "Equality operator succeeded for SI." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Equality operator succeeded for SI.\n");
     } else {
-      ostringstream msg;
-      msg << "Equality operator failed for SI." << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Equality operator failed for SI.\n");
     }
   }
 
@@ -585,35 +503,26 @@ void test_valid_units(rtt_dsxx::UnitTest &ut) {
   using rtt_units::UnitSystem;
   using rtt_units::UnitSystemType;
   using std::cout;
-  using std::endl;
   using std::ostringstream;
   using std::string;
 
   // Create X4 UnitSystem
-  UnitSystem uX4(UnitSystemType().X4());
+  UnitSystem const uX4(UnitSystemType().X4());
 
   if (uX4.validUnits()) {
-    ostringstream msg;
-    msg << "validUnits() is working for uX4" << endl;
-    PASSMSG(msg.str());
+    PASSMSG("validUnits() is working for uX4\n");
   } else {
-    ostringstream msg;
-    msg << "validUnits() is not working got uX4" << endl;
-    FAILMSG(msg.str());
+    FAILMSG("validUnits() is not working got uX4\n");
   }
 
   // Create empty UnitSystem
-  UnitSystemType empty;
-  UnitSystem uempty(empty);
+  UnitSystemType const empty;
+  UnitSystem const uempty(empty);
 
   if (uempty.validUnits()) {
-    ostringstream msg;
-    msg << "validUnits() is working for uempty" << endl;
-    PASSMSG(msg.str());
+    PASSMSG("validUnits() is working for uempty\n");
   } else {
-    ostringstream msg;
-    msg << "validUnits() is not working for uempty" << endl;
-    FAILMSG(msg.str());
+    FAILMSG("validUnits() is not working for uempty\n");
   }
 
   // Create a faulty UnitSystem (negative cf)
@@ -626,22 +535,18 @@ void test_valid_units(rtt_dsxx::UnitTest &ut) {
     // If DRACO_DBC_LEVE=7, a rtt_dsxx:assertion will be fired when myus is constructed.  If not, we
     // must test the validUnits() member function explicitly.
     try {
-      UnitSystem myus(UnitSystemType().L(rtt_units::L_m, my_cf.data()));
+      UnitSystem const myus(UnitSystemType().L(rtt_units::L_m, my_cf.data()));
       // If DRACO_DBC_LEVE=0 we will get here so call validUnits by manually.
       with_dbc = false;
       if (!myus.validUnits()) {
-        ostringstream msg;
-        msg << "validUnits() is working for myus (L)." << endl;
-        PASSMSG(msg.str());
+        PASSMSG("validUnits() is working for myus (L).\n");
       } else {
-        ostringstream msg;
-        msg << "validUnits() is not working for myus (L)." << endl;
-        FAILMSG(msg.str());
+        FAILMSG("validUnits() is not working for myus (L).\n");
       }
     } catch (rtt_dsxx::assertion & /*assert*/) {
       ostringstream msg;
-      msg << "Expected assertion caught with invalid cf for L." << endl;
-      //  << "The message was: " << assert.what() << endl;
+      msg << "Expected assertion caught with invalid cf for L.\n";
+      //  << "The message was: " << assert.what() << '\n';
       PASSMSG(msg.str());
       found_assert = true;
     } catch (...) {
@@ -649,9 +554,7 @@ void test_valid_units(rtt_dsxx::UnitTest &ut) {
     }
 
     if (with_dbc && !found_assert) {
-      ostringstream msg;
-      msg << "Expected assertion was not caught with invalid cf for L." << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Expected assertion was not caught with invalid cf for L.\n");
     }
   }
 
@@ -662,22 +565,16 @@ void test_valid_units(rtt_dsxx::UnitTest &ut) {
     // If DRACO_DBC_LEVEL=7 a rtt_dsxx:assertion will be fired when myus is constructed.  If not, we
     // must test the validUnits() member function explicitly.
     try {
-      UnitSystem myus(UnitSystemType().M(rtt_units::M_kg, my_cf.data()));
+      UnitSystem const myus(UnitSystemType().M(rtt_units::M_kg, my_cf.data()));
       // If DRACO_DBC_LEVEL == 0 we will get here so call validUnits by manually.
       with_dbc = false;
       if (myus.validUnits()) {
-        ostringstream msg;
-        msg << "validUnits() is not working for myus (M)." << endl;
-        FAILMSG(msg.str());
+        FAILMSG("validUnits() is not working for myus (M).\n");
       } else {
-        ostringstream msg;
-        msg << "validUnits() is working for myus (M)." << endl;
-        PASSMSG(msg.str());
+        PASSMSG("validUnits() is working for myus (M).\n");
       }
     } catch (rtt_dsxx::assertion & /*assert*/) {
-      ostringstream msg;
-      msg << "Expected assertion caught with invalid cf for M." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Expected assertion caught with invalid cf for M.\n");
       found_assert = true;
     } catch (...) {
       FAILMSG("Should not get here: Fail with L.");
@@ -685,7 +582,7 @@ void test_valid_units(rtt_dsxx::UnitTest &ut) {
 
     if (with_dbc && !found_assert) {
       ostringstream msg;
-      msg << "Expected assertion was not caught with invalid cf for M." << endl;
+      msg << "Expected assertion was not caught with invalid cf for M.\n";
       FAILMSG(msg.str());
     }
   }
@@ -697,28 +594,20 @@ void test_valid_units(rtt_dsxx::UnitTest &ut) {
     // If DRACO_DBC_LEVEL=7 a rtt_dsxx:assertion will be fired when myus is constructed.  If not, we
     // must test the validUnits() member function explicitly.
     try {
-      UnitSystem myus(UnitSystemType().t(rtt_units::t_s, my_cf.data()));
+      UnitSystem const myus(UnitSystemType().t(rtt_units::t_s, my_cf.data()));
       // If DRACO_DBC_LEVEL == 0 we will get here so call validUnits by manually.
       with_dbc = false;
       if (myus.validUnits()) {
-        ostringstream msg;
-        msg << "validUnits() is not working for myus (t)." << endl;
-        FAILMSG(msg.str());
+        FAILMSG("validUnits() is not working for myus (t).\n");
       } else {
-        ostringstream msg;
-        msg << "validUnits() is working for myus (t)." << endl;
-        PASSMSG(msg.str());
+        PASSMSG("validUnits() is working for myus (t).\n");
       }
     } catch (rtt_dsxx::assertion & /*assert*/) {
-      ostringstream msg;
-      msg << "Expected assertion caught with invalid cf for t." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Expected assertion caught with invalid cf for t.\n");
       found_assert = true;
     }
     if (with_dbc && !found_assert) {
-      ostringstream msg;
-      msg << "Expected assertion was not caught with invalid cf for t." << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Expected assertion was not caught with invalid cf for t.\n");
     }
   }
 
@@ -729,28 +618,20 @@ void test_valid_units(rtt_dsxx::UnitTest &ut) {
     // If DRACO_DBC_LEVEL=7 a rtt_dsxx:assertion will be fired when myus is constructed.  If not, we
     // must test the validUnits() member function explicitly.
     try {
-      UnitSystem myus(UnitSystemType().T(rtt_units::T_K, my_cf.data()));
+      UnitSystem const myus(UnitSystemType().T(rtt_units::T_K, my_cf.data()));
       // If DRACO_DBC_LEVEL == 0 we will get here so call validUnits by manually.
       with_dbc = false;
       if (myus.validUnits()) {
-        ostringstream msg;
-        msg << "validUnits() is not working for myus (T)." << endl;
-        FAILMSG(msg.str());
+        FAILMSG("validUnits() is not working for myus (T).\n");
       } else {
-        ostringstream msg;
-        msg << "validUnits() is working for myus (T)." << endl;
-        PASSMSG(msg.str());
+        PASSMSG("validUnits() is working for myus (T).\n");
       }
     } catch (rtt_dsxx::assertion & /*assert*/) {
-      ostringstream msg;
-      msg << "Expected assertion caught with invalid cf for T." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Expected assertion caught with invalid cf for T.\n");
       found_assert = true;
     }
     if (with_dbc && !found_assert) {
-      ostringstream msg;
-      msg << "Expected assertion was not caught with invalid cf for T." << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Expected assertion was not caught with invalid cf for T.\n");
     }
   }
 
@@ -761,28 +642,20 @@ void test_valid_units(rtt_dsxx::UnitTest &ut) {
     // If DRACO_DBC_LEVEL=7 a rtt_dsxx:assertion will be fired when myus is constructed.  If not, we
     // must test the validUnits() member function explicitly.
     try {
-      UnitSystem myus(UnitSystemType().I(rtt_units::I_amp, my_cf.data()));
+      UnitSystem const myus(UnitSystemType().I(rtt_units::I_amp, my_cf.data()));
       // If DRACO_DBC_LEVEL == 0 we will get here so call validUnits by manually.
       with_dbc = false;
       if (myus.validUnits()) {
-        ostringstream msg;
-        msg << "validUnits() is not working for myus (I)." << endl;
-        FAILMSG(msg.str());
+        FAILMSG("validUnits() is not working for myus (I).\n");
       } else {
-        ostringstream msg;
-        msg << "validUnits() is working for myus (I)." << endl;
-        PASSMSG(msg.str());
+        PASSMSG("validUnits() is working for myus (I).\n");
       }
     } catch (rtt_dsxx::assertion & /*assert*/) {
-      ostringstream msg;
-      msg << "Expected assertion caught with invalid cf for I." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Expected assertion caught with invalid cf for I.\n");
       found_assert = true;
     }
     if (with_dbc && !found_assert) {
-      ostringstream msg;
-      msg << "Expected assertion was not caught with invalid cf for I." << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Expected assertion was not caught with invalid cf for I.\n");
     }
   }
 
@@ -793,28 +666,20 @@ void test_valid_units(rtt_dsxx::UnitTest &ut) {
     // If DRACO_DBC_LEVEL=7 a rtt_dsxx:assertion will be fired when myus is constructed.  If not, we
     // must test the validUnits() member function explicitly.
     try {
-      UnitSystem myus(UnitSystemType().A(rtt_units::A_rad, my_cf.data()));
+      UnitSystem const myus(UnitSystemType().A(rtt_units::A_rad, my_cf.data()));
       // If DRACO_DBC_LEVEL == 0 we will get here so call validUnits by manually.
       with_dbc = false;
       if (myus.validUnits()) {
-        ostringstream msg;
-        msg << "validUnits() is not working for myus (A)." << endl;
-        FAILMSG(msg.str());
+        FAILMSG("validUnits() is not working for myus (A).\n");
       } else {
-        ostringstream msg;
-        msg << "validUnits() is working for myus (A)." << endl;
-        PASSMSG(msg.str());
+        PASSMSG("validUnits() is working for myus (A).\n");
       }
     } catch (rtt_dsxx::assertion & /*assert*/) {
-      ostringstream msg;
-      msg << "Expected assertion caught with invalid cf for A." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Expected assertion caught with invalid cf for A.\n");
       found_assert = true;
     }
     if (with_dbc && !found_assert) {
-      ostringstream msg;
-      msg << "Expected assertion was not caught with invalid cf for A." << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Expected assertion was not caught with invalid cf for A.\n");
     }
   }
 
@@ -825,28 +690,20 @@ void test_valid_units(rtt_dsxx::UnitTest &ut) {
     // If DRACO_DBC_LEVEL=7 a rtt_dsxx:assertion will be fired when myus is constructed.  If not, we
     // must test the validUnits() member function explicitly.
     try {
-      UnitSystem myus(UnitSystemType().Q(rtt_units::Q_mol, my_cf.data()));
+      UnitSystem const myus(UnitSystemType().Q(rtt_units::Q_mol, my_cf.data()));
       // If DRACO_DBC_LEVEL == 0 we will get here so call validUnits by manually.
       with_dbc = false;
       if (myus.validUnits()) {
-        ostringstream msg;
-        msg << "validUnits() is not working for myus (Q)." << endl;
-        FAILMSG(msg.str());
+        FAILMSG("validUnits() is not working for myus (Q).\n");
       } else {
-        ostringstream msg;
-        msg << "validUnits() is working for myus (Q)." << endl;
-        PASSMSG(msg.str());
+        PASSMSG("validUnits() is working for myus (Q).\n");
       }
     } catch (rtt_dsxx::assertion & /*assert*/) {
-      ostringstream msg;
-      msg << "Expected assertion caught with invalid cf for Q." << endl;
-      PASSMSG(msg.str());
+      PASSMSG("Expected assertion caught with invalid cf for Q.\n");
       found_assert = true;
     }
     if (with_dbc && !found_assert) {
-      ostringstream msg;
-      msg << "Expected assertion was not caught with invalid cf for Q." << endl;
-      FAILMSG(msg.str());
+      FAILMSG("Expected assertion was not caught with invalid cf for Q.\n");
     }
   }
 
