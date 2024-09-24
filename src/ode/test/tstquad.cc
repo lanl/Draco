@@ -3,15 +3,17 @@
  * \file   ode/test/tstquad.cc
  * \author Kent Budge
  * \date   Tue Sep 21 11:45:44 2004
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "ode/quad.hh"
 #include "ode/rkqs.hh"
+#include <cmath> // std::exp
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
