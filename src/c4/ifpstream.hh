@@ -15,11 +15,12 @@
 #ifndef c4_ifpstream_hh
 #define c4_ifpstream_hh
 
+#include "c4/C4_Functions.hh"
+#include "c4/config.h"
+#include <cstddef> // size_t
 #include <fstream>
 #include <sstream>
 #include <vector>
-
-#include "c4/config.h"
 
 namespace rtt_c4 {
 

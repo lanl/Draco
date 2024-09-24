@@ -8,11 +8,14 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "ParallelUnitTest.hh"
-#include "dsxx/Release.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/UnitTest.hh"
 #include "dsxx/XGetopt.hh"
+#include "c4/C4_Functions.hh"
 #include <iostream>
-#include <sstream>
+#include <map>
 #include <string>
+#include <vector>
 
 namespace rtt_c4 {
 //------------------------------------------------------------------------------------------------//
@@ -24,7 +27,7 @@ namespace rtt_c4 {
  * \arg out_ A user specified iostream that defaults to std::cout.
  * \arg verbose_ flags whether to print messages for successful tests. Defaults to true.
  * \exception rtt_dsxx::assertion An exception with the message "Success" will be thrown if \c
- * --version is found in the argument list.
+ *      --version is found in the argument list.
  *
  * The constructor initializes the parallel communicator (MPI) and then initializes the base class
  * UnitTest by setting numPasses and numFails to zero.  It also prints a message that declares this
@@ -45,13 +48,12 @@ ParallelUnitTest::ParallelUnitTest(int &argc, char **&argv, string_fp_void relea
   if (node() == 0)
     out << "\n============================================="
         << "\n=== Parallel Unit Test: " << testName << "\n=== Number of Processors: " << nodes()
-        << "\n=============================================\n"
-        << std::endl;
+        << "\n=============================================\n\n";
 
   // version tag
 
   if (node() == 0)
-    out << testName << ": version " << release() << "\n" << std::endl;
+    out << testName << ": version " << release() << "\n\n";
 
   // Register and process command line arguments:
   rtt_dsxx::XGetopt::csmap long_options;
@@ -102,11 +104,11 @@ ParallelUnitTest::~ParallelUnitTest() {
   global_sum(numPasses);
   global_sum(numFails);
   if (node() == 0)
-    out << resultMessage() << std::endl;
+    out << resultMessage() << '\n';
   // global_barrier();
-  // out << resultMessage() << std::endl;
+  // out << resultMessage() << '\n';
   global_barrier();
-  // std::cout << "==> In ~ParallelUnitTest.  Calling mpi_finalize..." << std::endl;
+  // std::cout << "==> In ~ParallelUnitTest.  Calling mpi_finalize...\n";
   finalize();
   return;
 }
@@ -119,9 +121,9 @@ void ParallelUnitTest::status() {
     // find ourselves in a race condition between this function and the destructor (in the case of
     // an exception).]
     if (node() == 0)
-      out << std::endl;
+      out << '\n';
   }
-  { out << "Done testing " << testName << " on node " << node() << "." << std::endl; }
+  { out << "Done testing " << testName << " on node " << node() << ".\n"; }
   return;
 }
 
@@ -142,7 +144,7 @@ bool ParallelUnitTest::check_all(bool const i_am_good, std::string const &passms
                                  bool const fatal) {
   unsigned good = i_am_good;
   rtt_c4::global_min(good);
-  unsigned p = rtt_c4::node();
+  unsigned const p = rtt_c4::node();
   if (good) {
     if (p == 0)
       passes(passmsg);
@@ -157,7 +159,7 @@ bool ParallelUnitTest::check_all(bool const i_am_good, std::string const &passms
         if (!ps[i])
           out << ' ' << i;
       }
-      out << std::endl;
+      out << '\n';
     }
     if (fatal)
       throw rtt_dsxx::assertion("assertion thrown on critical check failure"); // LCOV_EXCL_LINE

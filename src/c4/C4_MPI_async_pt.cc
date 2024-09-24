@@ -11,9 +11,9 @@
 #include "c4/config.h"
 
 #ifdef C4_MPI
-#include "C4_MPI.t.hh"
+#include "C4_MPI.t.hh" // NOLINT(misc-include-cleaner)
 #else
-#include "C4_Serial.t.hh"
+#include "C4_Serial.t.hh" // NOLINT(misc-include-cleaner)
 #endif
 
 namespace rtt_c4 {

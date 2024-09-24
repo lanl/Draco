@@ -98,7 +98,7 @@ public:
 #ifdef HAVE_LIBQUO
   static QUO_t *fetch_quo() {
     // Construct on first use.
-    Remember(bool isinit =) QuoWrapper::is_initialized();
+    Remember(bool const isinit =) QuoWrapper::is_initialized();
     Check(isinit);
     return quo;
   }

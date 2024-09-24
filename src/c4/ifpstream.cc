@@ -12,8 +12,12 @@
  */
 //------------------------------------------------------------------------------------------------//
 
-#include "ifpstream.hh"
-#include "C4_Functions.hh"
+#include "c4/ifpstream.hh"
+#include "dsxx/Assert.hh"
+#include "c4/C4_Functions.hh"
+#include <ios> // ios_base::openmode
+#include <string>
+#include <vector>
 
 namespace rtt_c4 {
 using namespace std;

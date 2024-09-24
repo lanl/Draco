@@ -10,13 +10,13 @@
 #ifndef c4_C4_MPI_t_hh
 #define c4_C4_MPI_t_hh
 
-#include "C4_Functions.hh"
+#include "c4/C4_Functions.hh"
 #include <vector>
 
 #ifdef C4_MPI
 
-#include "C4_Req.hh"
-#include "MPI_Traits.hh"
+#include "c4/C4_Req.hh"
+#include "c4/MPI_Traits.hh"
 
 namespace rtt_c4 {
 
@@ -40,7 +40,7 @@ template <typename T> int receive(T *buffer, int size, int source, int tag) {
   MPI_Status status;
 
   // do the blocking receive
-  Remember(int check =)
+  Remember(int const check =)
       MPI_Recv(buffer, size, MPI_Traits<T>::element_type(), source, tag, communicator, &status);
   Check(check == MPI_SUCCESS);
 
@@ -85,9 +85,9 @@ int send_receive(TS *sendbuf, int sendcount, int destination, TR *recvbuf, int r
   // buffers must not overlap
   Require(recvbuf + recvcount <= sendbuf || recvbuf >= sendbuf + sendcount);
 
-  int check = MPI_Sendrecv(sendbuf, sendcount, MPI_Traits<TS>::element_type(), destination, sendtag,
-                           recvbuf, recvcount, MPI_Traits<TR>::element_type(), source, recvtag,
-                           communicator, MPI_STATUS_IGNORE);
+  int const check = MPI_Sendrecv(sendbuf, sendcount, MPI_Traits<TS>::element_type(), destination,
+                                 sendtag, recvbuf, recvcount, MPI_Traits<TR>::element_type(),
+                                 source, recvtag, communicator, MPI_STATUS_IGNORE);
   return check;
 }
 
@@ -183,15 +183,15 @@ void receive_async(C4_Req &request, T *buffer, int size, int source, int tag) {
 
 template <typename T> int broadcast(T *buffer, int size, int root) {
   Require(root >= 0 && root < nodes());
-  int r = MPI_Bcast(buffer, size, MPI_Traits<T>::element_type(), root, communicator);
+  int const r = MPI_Bcast(buffer, size, MPI_Traits<T>::element_type(), root, communicator);
   return r;
 }
 template <typename T> int broadcast(T *buffer, size_t size, size_t root) {
   Require(root < nranks());
   Check(size < INT32_MAX);
   Check(root < INT32_MAX);
-  int r = MPI_Bcast(buffer, static_cast<int>(size), MPI_Traits<T>::element_type(),
-                    static_cast<int>(root), communicator);
+  int const r = MPI_Bcast(buffer, static_cast<int>(size), MPI_Traits<T>::element_type(),
+                          static_cast<int>(root), communicator);
   return r;
 }
 
@@ -200,28 +200,28 @@ template <typename T> int broadcast(T *buffer, size_t size, size_t root) {
 //------------------------------------------------------------------------------------------------//
 
 template <typename T> int gather(T *send_buffer, T *receive_buffer, int size) {
-  int Result = MPI_Gather(send_buffer, size, MPI_Traits<T>::element_type(), receive_buffer, size,
-                          MPI_Traits<T>::element_type(),
-                          0, // root is always processor 0 at present
-                          communicator);
+  int const Result = MPI_Gather(send_buffer, size, MPI_Traits<T>::element_type(), receive_buffer,
+                                size, MPI_Traits<T>::element_type(),
+                                0, // root is always processor 0 at present
+                                communicator);
 
   return Result;
 }
 
 //------------------------------------------------------------------------------------------------//
 template <typename T> int allgather(T *send_buffer, T *receive_buffer, int size) {
-  int Result = MPI_Allgather(send_buffer, size, MPI_Traits<T>::element_type(), receive_buffer, size,
-                             MPI_Traits<T>::element_type(), communicator);
+  int const Result = MPI_Allgather(send_buffer, size, MPI_Traits<T>::element_type(), receive_buffer,
+                                   size, MPI_Traits<T>::element_type(), communicator);
 
   return Result;
 }
 
 //------------------------------------------------------------------------------------------------//
 template <typename T> int scatter(T *send_buffer, T *receive_buffer, int size) {
-  int Result = MPI_Scatter(send_buffer, size, MPI_Traits<T>::element_type(), receive_buffer, size,
-                           MPI_Traits<T>::element_type(),
-                           0, // root is always processor 0 at present
-                           communicator);
+  int const Result = MPI_Scatter(send_buffer, size, MPI_Traits<T>::element_type(), receive_buffer,
+                                 size, MPI_Traits<T>::element_type(),
+                                 0, // root is always processor 0 at present
+                                 communicator);
 
   return Result;
 }
@@ -230,10 +230,11 @@ template <typename T> int scatter(T *send_buffer, T *receive_buffer, int size) {
 template <typename T>
 int gatherv(T *send_buffer, int send_size, T *receive_buffer, int *receive_sizes,
             int *receive_displs) {
-  int Result = MPI_Gatherv(send_buffer, send_size, MPI_Traits<T>::element_type(), receive_buffer,
-                           receive_sizes, receive_displs, MPI_Traits<T>::element_type(),
-                           0, // root is always processor 0 at present
-                           communicator);
+  int const Result =
+      MPI_Gatherv(send_buffer, send_size, MPI_Traits<T>::element_type(), receive_buffer,
+                  receive_sizes, receive_displs, MPI_Traits<T>::element_type(),
+                  0, // root is always processor 0 at present
+                  communicator);
 
   return Result;
 }
@@ -242,7 +243,7 @@ int gatherv(T *send_buffer, int send_size, T *receive_buffer, int *receive_sizes
 template <typename T>
 int allgatherv(T *send_buffer, int send_size, T *receive_buffer, int *receive_sizes,
                int *receive_displs) {
-  int Result =
+  int const Result =
       MPI_Allgatherv(send_buffer, send_size, MPI_Traits<T>::element_type(), receive_buffer,
                      receive_sizes, receive_displs, MPI_Traits<T>::element_type(), communicator);
 
@@ -253,7 +254,7 @@ int allgatherv(T *send_buffer, int send_size, T *receive_buffer, int *receive_si
 template <typename T>
 int scatterv(T *send_buffer, int *send_sizes, int *send_displs, T *receive_buffer,
              int receive_size) {
-  int Result =
+  int const Result =
       MPI_Scatterv(send_buffer, send_sizes, send_displs, MPI_Traits<T>::element_type(),
                    receive_buffer, receive_size, MPI_Traits<T>::element_type(), 0, communicator);
 
@@ -267,7 +268,7 @@ int scatterv(T *send_buffer, int *send_sizes, int *send_displs, T *receive_buffe
 template <typename T> void global_sum(T &x) {
 
   // do global MPI reduction (result is on all processors) into x
-  Remember(int check =)
+  Remember(int const check =)
       MPI_Allreduce(MPI_IN_PLACE, &x, 1, MPI_Traits<T>::element_type(), MPI_SUM, communicator);
   Check(check == MPI_SUCCESS);
   return;
@@ -277,8 +278,9 @@ template <typename T> void global_sum(T &x) {
 template <typename T> void global_isum(T &send_buffer, T &recv_buffer, C4_Req &request) {
 
   // do global MPI non-blocking reduction (result is on all processors) into recv_buffer
-  Remember(int check =) MPI_Iallreduce(&send_buffer, &recv_buffer, 1, MPI_Traits<T>::element_type(),
-                                       MPI_SUM, communicator, &(request.r()));
+  Remember(int const check =)
+      MPI_Iallreduce(&send_buffer, &recv_buffer, 1, MPI_Traits<T>::element_type(), MPI_SUM,
+                     communicator, &(request.r()));
   request.set();
   Check(check == MPI_SUCCESS);
   return;

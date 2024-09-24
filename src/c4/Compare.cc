@@ -6,9 +6,10 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Compare.hh"
-#include "C4_Functions.hh"
+#include "c4/Compare.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "c4/C4_Functions.hh"
 
 namespace rtt_c4 {
 
@@ -272,8 +273,8 @@ bool check_global_equiv(double local_value, double eps) {
   using rtt_dsxx::soft_equiv;
 
   // nodes
-  int node = rtt_c4::node();
-  int nodes = rtt_c4::nodes();
+  int const node = rtt_c4::node();
+  int const nodes = rtt_c4::nodes();
 
   // passing condition
   bool pass = false;

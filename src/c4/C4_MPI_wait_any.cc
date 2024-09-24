@@ -20,6 +20,8 @@ namespace rtt_c4 {
 unsigned wait_any(unsigned count, C4_Req *requests) {
   using std::vector;
 
+  // NOLINTBEGIN(misc-include-cleaner)
+
   vector<MPI_Request> array_of_requests(count);
   for (unsigned i = 0; i < count; ++i) {
     if (requests[i].inuse())
@@ -30,6 +32,8 @@ unsigned wait_any(unsigned count, C4_Req *requests) {
   int index;
   MPI_Waitany(count, &array_of_requests[0], &index, MPI_STATUSES_IGNORE);
   requests[index] = C4_Req();
+
+  // NOLINTEND(misc-include-cleaner)
 
   return index;
 }

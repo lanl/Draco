@@ -7,8 +7,13 @@
  * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "ofpstream.hh"
-#include "C4_Functions.hh"
+#include "c4/ofpstream.hh"
+#include "dsxx/Assert.hh"
+#include "c4/C4_Functions.hh"
+#include <climits> // UINT_MAX
+#include <ios>     // ios_base::openmode
+#include <ostream>
+#include <string>
 
 namespace rtt_c4 {
 using namespace std;
@@ -18,8 +23,7 @@ using namespace std;
  *
  * Create an ofpstream that synchronizes output to the specified file by MPI rank.
  *
- * \param[in] filename Name of the file to which synchronized output is to be
- *               written.
+ * \param[in] filename Name of the file to which synchronized output is to be written.
  * \param[in] mode File write mode (ascii/binary)-- defaults to ascii
  */
 ofpstream::ofpstream(std::string const &filename, ios_base::openmode const mode)

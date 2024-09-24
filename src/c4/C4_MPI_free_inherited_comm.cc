@@ -4,13 +4,11 @@
  * \author Thomas M. Evans
  * \date   Thu Mar 21 16:56:17 2002
  * \brief  C4 MPI implementation.
- * \note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "C4_Functions.hh"
 #include "c4/config.h"
-#include <vector>
 
 #ifdef C4_MPI
 
@@ -19,6 +17,8 @@ namespace rtt_c4 {
 //------------------------------------------------------------------------------------------------//
 // MPI COMMUNICATOR
 //------------------------------------------------------------------------------------------------//
+
+// NOLINTBEGIN(misc-include-cleaner)
 
 extern MPI_Comm communicator;
 
@@ -31,6 +31,8 @@ void free_inherited_comm() {
   }
   return;
 }
+
+// NOLINTEND(misc-include-cleaner)
 
 } // end namespace rtt_c4
 

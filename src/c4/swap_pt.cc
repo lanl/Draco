@@ -7,10 +7,7 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "C4_Functions.hh"
-#include "C4_Req.hh"
-#include "swap.t.hh"
-#include <c4/config.h>
+#include "c4/swap.t.hh" // NOLINT(misc-include-cleaner)
 
 namespace rtt_c4 {
 

@@ -7,7 +7,7 @@
  * \note   Copyright (C) 2017-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "C4_Status.hh"
+#include "c4/C4_Status.hh"
 
 namespace rtt_c4 {
 
@@ -15,7 +15,7 @@ namespace rtt_c4 {
 int C4_Status::get_message_size() const {
   int ms(0); // return value
 #ifdef C4_MPI
-  MPI_Get_count(&d_status, MPI_CHAR, &ms);
+  MPI_Get_count(&d_status, MPI_CHAR, &ms); // NOLINT(misc-include-cleaner)
 #endif
   return ms;
 }

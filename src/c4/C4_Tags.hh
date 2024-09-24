@@ -13,9 +13,7 @@
 namespace rtt_c4 {
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief C4 Success tag.
- */
+//! C4 Success tag.
 const int C4_SUCCESS = 0;
 
 } // end namespace rtt_c4

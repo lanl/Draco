@@ -7,21 +7,26 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "c4/config.h"
+#include <cstdint> // uint32_t
 #include <vector>
 
 #ifdef C4_MPI
 
-#include "C4_Functions.hh"
-#include "C4_Req.hh"
-#include "C4_sys_times.h"
-#include "QuoWrapper.hh"
+#include "c4/C4_Datatype.hh"
+#include "c4/C4_Functions.hh"
+#include "c4/C4_Req.hh"
+#include "c4/C4_sys_times.h"
+#include "c4/QuoWrapper.hh"
 
 namespace rtt_c4 {
 
 //------------------------------------------------------------------------------------------------//
 // MPI COMMUNICATOR
 //------------------------------------------------------------------------------------------------//
+
+// NOLINTBEGIN(misc-include-cleaner)
 
 MPI_Comm communicator = MPI_COMM_WORLD;
 bool initialized(false);
@@ -44,12 +49,12 @@ const int proc_null = MPI_PROC_NULL;
 
 int initialize(int &argc, char **&argv, int required) {
   int provided;
-  int result = MPI_Init_thread(&argc, &argv, required, &provided);
+  int const result = MPI_Init_thread(&argc, &argv, required, &provided);
   initialized = (result == MPI_SUCCESS);
   Check(initialized);
 
   // Resync clocks for Darwin mpich
-  Remember(double foo(MPI_Wtick()););
+  Remember(double const foo(MPI_Wtick()););
   Ensure(foo > 0.0);
   return provided;
 }
@@ -178,7 +183,7 @@ void wait_all(const unsigned count, C4_Req *const requests) {
     else
       array_of_requests[i] = MPI_REQUEST_NULL;
   }
-  Remember(int check =) MPI_Waitall(count, &array_of_requests[0], MPI_STATUSES_IGNORE);
+  Remember(int const check =) MPI_Waitall(count, &array_of_requests[0], MPI_STATUSES_IGNORE);
   Check(check == MPI_SUCCESS);
   return;
 }
@@ -202,7 +207,7 @@ std::vector<int> wait_all_with_source(const unsigned count, C4_Req *const reques
     else
       array_of_requests[i] = MPI_REQUEST_NULL;
   }
-  Remember(int check =) MPI_Waitall(count, &array_of_requests[0], &array_of_statuses[0]);
+  Remember(int const check =) MPI_Waitall(count, &array_of_requests[0], &array_of_statuses[0]);
   Check(check == MPI_SUCCESS);
 
   for (unsigned p = 0; p < count; p++) {
@@ -216,7 +221,7 @@ std::vector<int> wait_all_with_source(const unsigned count, C4_Req *const reques
 // ABORT
 //------------------------------------------------------------------------------------------------//
 int abort(int error) {
-  int rerror = MPI_Abort(communicator, error);
+  int const rerror = MPI_Abort(communicator, error);
   return rerror;
 }
 
@@ -225,6 +230,8 @@ int abort(int error) {
 //------------------------------------------------------------------------------------------------//
 bool isScalar() { return !initialized; }
 bool isMpiInit() { return initialized; }
+
+// NOLINTEND(misc-include-cleaner)
 
 } // end namespace rtt_c4
 
