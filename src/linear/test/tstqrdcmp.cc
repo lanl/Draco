@@ -10,9 +10,9 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "linear/qrdcmp.hh"
 #include <array>
-#include <iostream>
 #include <vector>
 
 using namespace std;

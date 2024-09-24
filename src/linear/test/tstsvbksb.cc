@@ -6,12 +6,13 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
-
-#include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
 #include "linear/svbksb.hh"
 #include "linear/svdcmp.hh"
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;

@@ -10,7 +10,6 @@
 #include "dsxx/Assert.hh"
 #include "dsxx/DracoMath.hh"
 #include "dsxx/Soft_Equivalence.hh"
-#include "ludcmp.hh"
 #include <stdexcept>
 #include <vector>
 
@@ -78,7 +77,7 @@ void ludcmp(FieldVector &a, IntVector &indx, typename FieldVector::value_type &d
     }
     if (j != imax) {
       for (unsigned k = 0; k < n; ++k) {
-        Field dum = a[imax + n * k];
+        Field const dum = a[imax + n * k];
         a[imax + n * k] = a[j + n * k];
         a[j + n * k] = dum;
       }
@@ -87,7 +86,7 @@ void ludcmp(FieldVector &a, IntVector &indx, typename FieldVector::value_type &d
     }
     indx[j] = imax;
     if (j != n - 1) {
-      Field dum = 1.0 / a[j + n * j];
+      Field const dum = 1.0 / a[j + n * j];
       if (std::isinf(dum)) {
         throw std::domain_error("ludcmp:  singular matrix");
       }
@@ -127,7 +126,7 @@ void lubksb(FieldVector1 const &a, IntVector const &indx, FieldVector2 &b) {
   unsigned ii = 0;
 
   for (unsigned i = 0; i < n; ++i) {
-    unsigned ip = indx[i];
+    unsigned const ip = indx[i];
     Field sum = b[ip];
     b[ip] = b[i];
     if (ii != 0) {

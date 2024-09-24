@@ -7,8 +7,7 @@
  * \note   Copyright (C) 2004-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "qrupdt.t.hh"
-#include <vector>
+#include "qrupdt.t.hh" // NOLINT(misc-include-cleaner)
 
 namespace rtt_linear {
 

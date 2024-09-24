@@ -7,8 +7,7 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "svbksb.t.hh"
-#include <vector>
+#include "svbksb.t.hh" // NOLINT(misc-include-cleaner)
 
 namespace rtt_linear {
 

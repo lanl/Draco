@@ -62,27 +62,27 @@ void rotate(RandomContainer &r, RandomContainer &qt, const unsigned n, unsigned 
     c = 0.0;
     s = (b > 0.0 ? 1.0 : -1.0);
   } else if (fabs(a) > fabs(b)) {
-    double fact = b / a;
+    double const fact = b / a;
     c = 1.0 / sqrt(1.0 + fact * fact);
     if (a < 0)
       c = -c;
     s = fact * c;
   } else {
-    double fact = a / b;
+    double const fact = a / b;
     s = 1.0 / sqrt(1.0 + fact * fact);
     if (b < 0)
       s = -s;
     c = fact * s;
   }
   for (unsigned j = i; j < n; j++) {
-    double y = r[i + n * j];
-    double w = r[i + 1 + n * j];
+    double const y = r[i + n * j];
+    double const w = r[i + 1 + n * j];
     r[i + n * j] = c * y - s * w;
     r[i + 1 + n * j] = s * y + c * w;
   }
   for (unsigned j = 0; j < n; j++) {
-    double y = qt[i + n * j];
-    double w = qt[i + 1 + n * j];
+    double const y = qt[i + n * j];
+    double const w = qt[i + 1 + n * j];
     qt[i + n * j] = c * y - s * w;
     qt[i + 1 + n * j] = s * y + c * w;
   }

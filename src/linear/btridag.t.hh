@@ -50,7 +50,7 @@ void btridag(FieldVector const &a, FieldVector const &b, FieldVector const &c, F
     return;
   } else {
     std::vector<Field> gam(n * m * m);
-    std::vector<Field> piv(m * m);
+    std::vector<Field> const piv(m * m);
     std::vector<Field> rbet(b.begin(), b.begin() + m * m);
     std::vector<unsigned> indx(m);
     double d;
