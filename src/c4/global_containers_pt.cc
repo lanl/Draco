@@ -11,7 +11,7 @@
 
 #ifdef C4_MPI
 
-#include "global_containers.t.hh"
+#include "global_containers.t.hh" // NOLINT(misc-include-cleaner)
 
 namespace rtt_c4 {
 

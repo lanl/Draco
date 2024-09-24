@@ -7,11 +7,15 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+// NOLINTBEGIN(misc-include-cleaner)
+
 #include "C4_Functions.hh"
 #include "dsxx/SystemCall.hh"
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
+
+// NOLINTEND(misc-include-cleaner)
 
 #ifdef C4_SCALAR
 

@@ -30,8 +30,6 @@ namespace rtt_c4 {
 
 class Processor_Group {
 public:
-  // NESTED CLASSES AND TYPEDEFS
-
   // CREATORS
 
   //! Create a Process_Group based on a stride through the ranks.
@@ -58,26 +56,20 @@ public:
   //! Sum a set of values over the group, returning the sum to all processors.
   template <typename RandomAccessContainer> void sum(RandomAccessContainer &values);
 
-  /*!
-   * \brief Assemble a set of local vectors into global vectors (container-based version).
-   */
+  //! Assemble a set of local vectors into global vectors (container-based version).
   template <typename T>
   void assemble_vector(std::vector<T> const &local_vector, std::vector<T> &global_vector) const;
 
-  /*!
-   * \brief Assemble a set of local vectors into global vectors (pointer-based version).
-   */
+  //! Assemble a set of local vectors into global vectors (pointer-based version).
   template <typename T>
   void assemble_vector(T const *local_vector, T *global_vector, unsigned const N) const;
 
 private:
-  // DATA
-
-  unsigned size_;
+  unsigned size_{0};
 
 #ifdef C4_MPI
-  MPI_Group group_;
-  MPI_Comm comm_;
+  MPI_Group group_{};
+  MPI_Comm comm_{};
 #endif // C4_MPI
 };
 

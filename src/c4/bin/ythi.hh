@@ -31,10 +31,10 @@ void run_thread(std::atomic<bool> &signal, std::string const &hostname, int cons
   while (!signal) {
   }
   unsigned const num_cpu = std::thread::hardware_concurrency();
-  std::string cpuset = rtt_c4::cpuset_to_string(num_cpu);
+  std::string const cpuset = rtt_c4::cpuset_to_string(num_cpu);
   std::cout << hostname << " :: Rank " << std::setfill('0') << std::setw(5) << rank << ", Thread "
             << std::setfill('0') << std::setw(3) << simple_thread_id
-            << ", core affinity = " << cpuset << std::endl;
+            << ", core affinity = " << cpuset << '\n';
   return;
 }
 
@@ -51,11 +51,11 @@ void report_bindings(uint32_t const num_workers) {
     threads[i] =
         std::thread(run_thread, std::ref(signals[i]), std::ref(hostname), rtt_c4::rank(), i + 1);
   }
-  std::string cpuset = rtt_c4::cpuset_to_string(num_cpus);
+  std::string const cpuset = rtt_c4::cpuset_to_string(num_cpus);
   int const host_thread(0);
   std::cout << hostname << " :: Rank " << std::setfill('0') << std::setw(5) << rtt_c4::rank()
             << ", Thread " << std::setfill('0') << std::setw(3) << host_thread
-            << ", core affinity = " << cpuset << std::endl;
+            << ", core affinity = " << cpuset << '\n';
   for (size_t i = 0; i < num_workers; ++i) {
     signals[i].store(true);
     threads[i].join();

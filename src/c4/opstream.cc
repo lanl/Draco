@@ -7,8 +7,11 @@
  * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "opstream.hh"
-#include "C4_Functions.hh"
+#include "c4/opstream.hh"
+#include "dsxx/Assert.hh"
+#include "c4/C4_Functions.hh"
+#include <climits> // UINT_MAX
+#include <ostream>
 
 namespace rtt_c4 {
 

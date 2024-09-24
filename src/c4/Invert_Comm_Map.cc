@@ -7,9 +7,12 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Invert_Comm_Map.hh"
-#include "MPI_Traits.hh"
+#include "c4/Invert_Comm_Map.hh"
 #include "dsxx/Assert.hh"
+#include "c4/C4_Functions.hh"
+#include "c4/C4_Status.hh"
+#include "c4/MPI_Traits.hh"
+#include <cstddef> // size_t
 #include <vector>
 
 namespace rtt_c4 {
@@ -22,6 +25,8 @@ int get_num_recv(Invert_Comm_Map_t::const_iterator first, Invert_Comm_Map_t::con
   Remember(const int num_procs = rtt_c4::nodes());
   const int one = 1;
   int num_recv(0); // return value
+
+  //NOLINTBEGIN(misc-include-cleaner)
 
   // Create the RMA memory windows for each value
   MPI_Win win;
@@ -43,6 +48,8 @@ int get_num_recv(Invert_Comm_Map_t::const_iterator first, Invert_Comm_Map_t::con
   }
   MPI_Win_fence(fence_assert, win);
   MPI_Win_free(&win);
+
+  //NOLINTEND(misc-include-cleaner)
 
   Ensure(num_recv >= 0 && num_recv < num_procs);
   return num_recv;

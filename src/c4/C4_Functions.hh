@@ -176,21 +176,17 @@ template <typename T>
 C4_Req send_async(T const *buffer, int size, int destination, int tag = C4_Traits<T *>::tag);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do a point-to-point, non-blocking send.
- */
+//! Do a point-to-point, non-blocking send.
 template <typename T>
 void send_async(C4_Req &request, T const *buffer, int size, int destination,
                 int tag = C4_Traits<T *>::tag);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do a point-to-point, non-blocking synchronous send.
- */
+//! Do a point-to-point, non-blocking synchronous send.
 template <typename T>
 void send_is(C4_Req &request, T const *buffer, int size, int destination, int tag);
 template <typename T> void send_is(C4_Req &request, T const *buffer, int size, int destination) {
-  int tag = C4_Traits<T *>::tag;
+  int const tag = C4_Traits<T *>::tag;
   send_is(request, buffer, size, destination, tag);
   return;
 }
@@ -308,9 +304,8 @@ int scatterv(T *send_buffer, int *send_sizes, int *send_displs, T *receive_buffe
 //------------------------------------------------------------------------------------------------//
 // GLOBAL REDUCTIONS
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do a global sum of a scalar variable.
- */
+
+//! Do a global sum of a scalar variable.
 template <typename T> void global_sum(T &x);
 
 //------------------------------------------------------------------------------------------------//
@@ -324,27 +319,19 @@ template <typename T> void global_sum(T &x);
 template <typename T> void global_isum(T &send_buffer, T &recv_buffer, C4_Req &request);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do a global product of a scalar variable.
- */
+//! Do a global product of a scalar variable.
 template <typename T> void global_prod(T &x);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do a global minimum of a scalar variable.
- */
+//! Do a global minimum of a scalar variable.
 template <typename T> void global_min(T &x);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do a global maximum of a scalar variable.
- */
+//! Do a global maximum of a scalar variable.
 template <typename T> void global_max(T &x);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do a global logical and (MPI_LAND) of a scalar variable
- */
+//! Do a global logical and (MPI_LAND) of a scalar variable
 template <typename T> void global_and(T &x);
 
 //------------------------------------------------------------------------------------------------//
@@ -354,26 +341,24 @@ template <typename T> void global_and(T &x);
  * Only instantiate this function for types L that are integral. Details of this pattern are at
  * https://en.cppreference.com/w/cpp/types/enable_if.
  */
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
+template <typename T, typename L, typename std::enable_if_t<std::is_integral_v<L>, bool> = true>
+#else
 template <typename T, typename L,
-          typename std::enable_if<std::is_integral<L>::value, bool>::type = true>
+          typename std::enable_if_t<std::is_integral<L>::value, bool> = true>
+#endif
 void global_sum(T *x, L n);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do an element-wise, global product of an array.
- */
+//! Do an element-wise, global product of an array.
 template <typename T> void global_prod(T *x, int n);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do an element-wise, global minimum of an array.
- */
+//! Do an element-wise, global minimum of an array.
 template <typename T> void global_min(T *x, int n);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do an element-wise, global maximum of an array.
- */
+//! Do an element-wise, global maximum of an array.
 template <typename T> void global_max(T *x, int n);
 
 //------------------------------------------------------------------------------------------------//

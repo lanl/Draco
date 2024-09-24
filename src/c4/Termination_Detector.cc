@@ -6,25 +6,24 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Termination_Detector.hh"
-#include "C4_Functions.hh"
+#include "c4/Termination_Detector.hh"
+#include "c4/C4_Functions.hh"
 #include <array>
+#include <cstddef> // size_t
 
 #undef PRINTF_DEBUG
 
 namespace rtt_c4 {
 
 //------------------------------------------------------------------------------------------------//
-/*
+/*!
  * \brief Constructor
  * \param[in] tag Tag to use for termination algorithm messages. This must be distinct from any
  *                other message tags that may simultaneously be in use.
  */
 Termination_Detector::Termination_Detector(int const tag)
     : tag_(tag), number_of_processors_(nodes()), pid_(node()), parent_pid_((pid_ - 1) / 2),
-      son_pid_(2 * pid_ + 1), daughter_pid_(son_pid_ + 1), ptype_(), state_(UP), send_count_(0),
-      receive_count_(0), work_count_(0), subtree_send_count_(0), subtree_receive_count_(0),
-      subtree_work_count_(0), old_global_work_count_(0) {
+      son_pid_(2 * pid_ + 1), daughter_pid_(son_pid_ + 1) {
   if (pid_ == 0) {
     ptype_ = ROOT;
   } else {
@@ -102,19 +101,19 @@ bool Termination_Detector::is_terminated() {
       subtree_work_count_ += buffer[2];
     }
 
-    unsigned global_send_count = subtree_send_count_ + send_count_;
+    unsigned const global_send_count = subtree_send_count_ + send_count_;
 
 #ifdef PRINTF_DEBUG
     cout << "0/" << tag_ << ": global send count: " << global_send_count << endl;
 #endif
 
-    unsigned global_receive_count = subtree_receive_count_ + receive_count_;
+    unsigned const global_receive_count = subtree_receive_count_ + receive_count_;
 
 #ifdef PRINTF_DEBUG
     cout << "0/" << tag_ << ": global receive count: " << global_receive_count << endl;
 #endif
 
-    unsigned global_work_count = subtree_work_count_ + work_count_;
+    unsigned const global_work_count = subtree_work_count_ + work_count_;
 
 #ifdef PRINTF_DEBUG
     cout << "0/" << tag_ << ": global work count: " << global_work_count << endl;
@@ -216,8 +215,8 @@ bool Termination_Detector::is_terminated() {
              << buffer[1] << ' ' << buffer[2] << endl;
 #endif
 
-        // If the daughter exists, the son also exists, and the subtree counts
-        // are already initialized.
+        // If the daughter exists, the son also exists, and the subtree counts are already
+        // initialized.
         subtree_send_count_ += buffer[0];
         subtree_receive_count_ += buffer[1];
         subtree_work_count_ += buffer[2];

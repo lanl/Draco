@@ -7,15 +7,18 @@
  * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "QuoWrapper.hh"
-#include "C4_Functions.hh"
+#include "c4/QuoWrapper.hh"
 #include "dsxx/Assert.hh"
+#include "c4/C4_Functions.hh"
+#include <cstdint> // uint32_t
+#include <string>
 
 namespace rtt_c4 {
 
+// NOLINTBEGIN(misc-include-cleaner)
+
 //------------------------------------------------------------------------------------------------//
-/*! \brief Initialize pointer to zero so that it can be initialized in first call to getInstance
- */
+//! Initialize pointer to zero so that it can be initialized in first call to getInstance
 QuoWrapper *QuoWrapper::instance = nullptr;
 #ifdef HAVE_LIBQUO
 QUO_context QuoWrapper::quo = nullptr;
@@ -59,7 +62,7 @@ bool QuoWrapper::is_initialized() {
 //! Number of cores per node
 uint32_t QuoWrapper::num_cores() {
   // Construct on first use.
-  Remember(bool isinit =) QuoWrapper::is_initialized();
+  Remember(bool const isinit =) QuoWrapper::is_initialized();
   Check(isinit);
   int n(-1);
 #ifdef HAVE_LIBQUO
@@ -75,7 +78,7 @@ uint32_t QuoWrapper::num_cores() {
 //! Number of hardware threads
 uint32_t QuoWrapper::num_hw_threads() {
   // Construct on first use.
-  Remember(bool isinit =) QuoWrapper::is_initialized();
+  Remember(bool const isinit =) QuoWrapper::is_initialized();
   Check(isinit);
   int n(-1);
 #ifdef HAVE_LIBQUO
@@ -99,7 +102,7 @@ uint32_t QuoWrapper::num_hw_threads() {
  */
 uint32_t QuoWrapper::num_nodes() {
   // Construct on first use.
-  Remember(bool isinit =) QuoWrapper::is_initialized();
+  Remember(bool const isinit =) QuoWrapper::is_initialized();
   Check(isinit);
   int n(-1);
 #ifdef HAVE_LIBQUO
@@ -116,7 +119,7 @@ uint32_t QuoWrapper::num_nodes() {
 //! Number of cores per node used by the current process.
 uint32_t QuoWrapper::num_mpi_ranks_per_node() {
   // Construct on first use.
-  Remember(bool isinit =) QuoWrapper::is_initialized();
+  Remember(bool const isinit =) QuoWrapper::is_initialized();
   Check(isinit);
   int n(-1);
 #ifdef HAVE_LIBQUO
@@ -133,7 +136,7 @@ uint32_t QuoWrapper::num_mpi_ranks_per_node() {
 //! Number of sockets per node
 uint32_t QuoWrapper::num_sockets_per_node() {
   // Construct on first use.
-  Remember(bool isinit =) QuoWrapper::is_initialized();
+  Remember(bool const isinit =) QuoWrapper::is_initialized();
   Check(isinit);
   int n(-1);
 #ifdef HAVE_LIBQUO
@@ -148,7 +151,7 @@ uint32_t QuoWrapper::num_sockets_per_node() {
 //! Number of numa domains per node
 uint32_t QuoWrapper::num_numanodes_per_node() {
   // Construct on first use.
-  Remember(bool isinit =) QuoWrapper::is_initialized();
+  Remember(bool const isinit =) QuoWrapper::is_initialized();
   Check(isinit);
   int n(-1);
 #ifdef HAVE_LIBQUO
@@ -169,7 +172,7 @@ uint32_t QuoWrapper::num_numanodes_per_node() {
 //! Is this process bound to a resource?
 bool QuoWrapper::is_bound() {
   // Construct on first use.
-  Remember(bool isinit =) QuoWrapper::is_initialized();
+  Remember(bool const isinit =) QuoWrapper::is_initialized();
   Check(isinit);
   int n(-1);
 #ifdef HAVE_LIBQUO
@@ -185,7 +188,7 @@ bool QuoWrapper::is_bound() {
 //hexadecimal format.
 std::string QuoWrapper::bindings() {
   // Construct on first use.
-  Remember(bool isinit =) QuoWrapper::is_initialized();
+  Remember(bool const isinit =) QuoWrapper::is_initialized();
   Check(isinit);
 #ifdef HAVE_LIBQUO
   char *cbindstr = nullptr;
@@ -198,6 +201,8 @@ std::string QuoWrapper::bindings() {
 #endif
   return cppbindstr;
 }
+
+// NOLINTEND(misc-include-cleaner)
 
 } // end namespace rtt_c4
 

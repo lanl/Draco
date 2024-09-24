@@ -6,12 +6,17 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Timer.hh"
-#include "dsxx/XGetopt.hh"
+#include "c4/Timer.hh"
+#include "dsxx/Assert.hh"
+#include "c4/C4_Functions.hh"
+#include "c4/C4_sys_times.h"
 #include <array>
 #include <cmath>
-#include <cstdlib>
+#include <cstdint> // INT32_MAX
 #include <iomanip>
+#include <iostream>
+#include <limits>
+#include <ostream>
 
 namespace rtt_c4 {
 
@@ -72,7 +77,7 @@ void Timer::printline(std::ostream &out, unsigned const p, unsigned const w) con
 
   // Width of first column (intervals) should be set by client before calling this function.
   out << num_intervals << setw(w) << sum_user_cpu() << setw(w) << sum_system_cpu() << setw(w)
-      << sum_wall_clock() << std::endl;
+      << sum_wall_clock() << '\n';
   out.flush();
 }
 
@@ -104,7 +109,7 @@ void Timer::pause(double const pauseSeconds) {
   //! POSIX tms structure for ending time.
   DRACO_TIME_TYPE tms_end{};
 
-  double begin = wall_clock_time(tms_begin);
+  double const begin = wall_clock_time(tms_begin);
   double elapsed(0);
 
   while (elapsed < pauseSeconds) {
@@ -154,9 +159,9 @@ void Timer::printline_mean(std::ostream &out, unsigned const p, unsigned const w
   Check(ni >= 0.0);
   Check(ni < ranks * std::numeric_limits<unsigned>::max());
   auto mni = static_cast<unsigned>(ni / ranks);
-  double mu = u / ranks;
-  double ms = s / ranks;
-  double mww = ww / ranks;
+  double const mu = u / ranks;
+  double const ms = s / ranks;
+  double const mww = ww / ranks;
 
   if (rtt_c4::node() == 0) {
     out.setf(ios::fixed, ios::floatfield);
@@ -167,8 +172,8 @@ void Timer::printline_mean(std::ostream &out, unsigned const p, unsigned const w
         << sqrt(fabs(ni2 - 2 * mni * ni + ranks * mni * mni) / ranks) << setw(w) << mu << " +/- "
         << setw(v) << sqrt(fabs(u2 - 2 * mu * u + ranks * mu * mu) / ranks) << setw(w) << ms
         << " +/- " << setw(v) << sqrt(fabs(s2 - 2 * ms * s + ranks * ms * ms) / ranks) << setw(w)
-        << mww << " +/- " << setw(v) << sqrt(fabs(ww2 - 2 * mww * ww + ranks * mww * mww) / ranks);
-    out << std::endl;
+        << mww << " +/- " << setw(v) << sqrt(fabs(ww2 - 2 * mww * ww + ranks * mww * mww) / ranks)
+        << '\n';
   }
 }
 

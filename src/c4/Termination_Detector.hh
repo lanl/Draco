@@ -45,8 +45,6 @@ namespace rtt_c4 {
 
 class Termination_Detector {
 public:
-  // NESTED CLASSES AND TYPEDEFS
-
   // CREATORS
 
   //! Constructor
@@ -98,11 +96,11 @@ private:
   unsigned number_of_processors_;
   unsigned pid_;
   unsigned parent_pid_, son_pid_, daughter_pid_;
-  Processor_Type ptype_;
-  State state_;
-  unsigned send_count_, receive_count_, work_count_;
-  unsigned subtree_send_count_, subtree_receive_count_, subtree_work_count_;
-  unsigned old_global_work_count_;
+  Processor_Type ptype_{};
+  State state_{UP};
+  unsigned send_count_{0}, receive_count_{0}, work_count_{0};
+  unsigned subtree_send_count_{0}, subtree_receive_count_{0}, subtree_work_count_{0};
+  unsigned old_global_work_count_{0};
 };
 
 } // end namespace rtt_c4

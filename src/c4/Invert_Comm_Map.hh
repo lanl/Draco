@@ -10,7 +10,7 @@
 #ifndef c4_Invert_Comm_Map_hh
 #define c4_Invert_Comm_Map_hh
 
-#include "C4_Functions.hh"
+#include "c4/C4_Functions.hh"
 #include <map>
 
 namespace rtt_c4 {

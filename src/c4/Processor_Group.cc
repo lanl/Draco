@@ -6,11 +6,12 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/config.h"
-#include <iostream>
 
-#include "C4_Functions.hh"
-#include "Processor_Group.hh"
 #include "dsxx/Assert.hh"
+#include "c4/C4_Functions.hh"
+#include "c4/Processor_Group.hh"
+#include <climits> // UINT_MAX
+#include <vector>
 
 namespace rtt_c4 {
 
@@ -28,7 +29,9 @@ using namespace std;
 
 #ifdef C4_MPI
 
-Processor_Group::Processor_Group(unsigned const stride) : size_(0), group_(), comm_() {
+// NOLINTBEGIN(misc-include-cleaner)
+
+Processor_Group::Processor_Group(unsigned const stride) {
   int flag;
   MPI_Initialized(&flag);
   Insist(flag, "Processor_Group created before MPI is initialized");
@@ -63,6 +66,8 @@ Processor_Group::~Processor_Group() {
   }
   Ensure(check_class_invariants());
 }
+
+// NOLINTEND(misc-include-cleaner)
 
 //------------------------------------------------------------------------------------------------//
 

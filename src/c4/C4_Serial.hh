@@ -42,7 +42,11 @@ int create_vector_type(unsigned /*count*/, unsigned /*blocklength*/, unsigned /*
 // Global_<Op> functions
 //------------------------------------------------------------------------------------------------//
 
-template <typename T, typename L, typename std::enable_if<std::is_integral<L>::value, bool>::type>
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
+template <typename T, typename L, typename std::enable_if_t<std::is_integral_v<L>, bool>>
+#else
+template <typename T, typename L, typename std::enable_if_t<std::is_integral<L>::value, bool>>
+#endif
 void global_sum(T * /*x*/, L /*n*/) {
   return;
 }

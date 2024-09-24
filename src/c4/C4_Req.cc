@@ -27,14 +27,14 @@ C4_Req::C4_Req() : p(new C4_ReqRefRep) { ++p->n; }
  * Attach to an existing message request.
  */
 //------------------------------------------------------------------------------------------------//
-C4_Req::C4_Req(const C4_Req &req) : p(nullptr) {
+C4_Req::C4_Req(const C4_Req &req) {
   if (req.inuse())
     p = req.p;
   else
     p = new C4_ReqRefRep;
   ++p->n;
 }
-C4_Req::C4_Req(C4_Req &&req) noexcept : p(nullptr) {
+C4_Req::C4_Req(C4_Req &&req) noexcept {
   if (req.inuse())
     p = req.p;
   else
@@ -97,8 +97,8 @@ void C4_Req::free_() {
 void C4_ReqRefRep::free() {
 #ifdef C4_MPI
   if (assigned) {
-    MPI_Cancel(&r);
-    MPI_Request_free(&r);
+    MPI_Cancel(&r);       // NOLINT(misc-include-cleaner)
+    MPI_Request_free(&r); // NOLINT(misc-include-cleaner)
   }
 #endif
   clear();
@@ -113,7 +113,7 @@ void C4_ReqRefRep::free() {
 //------------------------------------------------------------------------------------------------//
 C4_ReqRefRep::C4_ReqRefRep()
 #ifdef C4_MPI
-    : r(MPI_Request())
+    : r(MPI_Request()) // NOLINT(misc-include-cleaner)
 #endif
 {
   // empty
@@ -165,6 +165,8 @@ void C4_ReqRefRep::wait(C4_Status * /*status*/) { clear(); }
 //------------------------------------------------------------------------------------------------//
 #ifdef C4_MPI
 
+// NOLINTBEGIN(misc-include-cleaner)
+
 bool C4_ReqRefRep::complete(C4_Status *status) {
   int flag = 0;
   bool indicator = false;
@@ -184,6 +186,8 @@ bool C4_ReqRefRep::complete(C4_Status *status) {
   return indicator;
   // throw "C4_Req::complete() has not been implemented for this communicator";
 }
+
+// NOLINTEND(misc-include-cleaner)
 
 #elif defined(C4_SCALAR)
 

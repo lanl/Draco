@@ -97,7 +97,7 @@ private:
 
 class C4_Req {
   //! Request handle.
-  C4_ReqRefRep *p;
+  C4_ReqRefRep *p{nullptr};
 
 public:
   C4_Req();

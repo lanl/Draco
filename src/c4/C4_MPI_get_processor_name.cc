@@ -8,12 +8,14 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/config.h"
-#include <array>
-#include <string>
 
 #ifdef C4_MPI
 
-#include "C4_Functions.hh"
+#include "dsxx/Assert.hh"
+#include "c4/C4_Functions.hh"
+#include <array>
+#include <cstddef> // size_t
+#include <string>
 
 namespace rtt_c4 {
 //------------------------------------------------------------------------------------------------//
@@ -22,8 +24,8 @@ namespace rtt_c4 {
 std::string get_processor_name() {
   int namelen(0);
   // char processor_name[DRACO_MAX_PROCESSOR_NAME];
-  std::array<char, DRACO_MAX_PROCESSOR_NAME> processor_name{};
-  MPI_Get_processor_name(processor_name.data(), &namelen);
+  std::array<char, DRACO_MAX_PROCESSOR_NAME> processor_name{}; // NOLINT(misc-include-cleaner)
+  MPI_Get_processor_name(processor_name.data(), &namelen);     // NOLINT(misc-include-cleaner)
   std::string pname(processor_name.begin(), processor_name.begin() + namelen);
   Ensure(pname.size() == static_cast<size_t>(namelen));
   return pname;
