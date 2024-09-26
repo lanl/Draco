@@ -8,7 +8,12 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
+#include "linear/fnorm.hh"
 #include "roots/lnsrch.hh"
+#include <exception>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -27,10 +32,12 @@ void func(const vector<double> &x, vector<double> &fvec) {
 
 //------------------------------------------------------------------------------------------------//
 void tstlnsrch(UnitTest &ut) {
-  vector<double> x = {0.0, 0.0};
-  vector<double> xold = x;
+  /*! \todo Can't mark this next line as 'const' because the functor signature won't match. Probably
+   *        should update 'func' to be a lambda. */
+  vector<double> x = {0.0, 0.0}; // NOLINT(misc-const-correctness)
+  vector<double> xold = x;       // NOLINT(misc-const-correctness)
   vector<double> fvec;
-  double fold = fnorm(x, fvec, &func);
+  double const fold = fnorm(x, fvec, &func);
 
   vector<double> g(2);
   g[0] = 7.2 * fvec[0] - 2.2 * fvec[1];
@@ -65,11 +72,10 @@ int main(int argc, char *argv[]) {
     ScalarUnitTest ut(argc, argv, release);
     tstlnsrch(ut);
   } catch (exception &err) {
-    cout << "ERROR: While testing tstlnsrch, " << err.what() << endl;
+    cout << "ERROR: While testing tstlnsrch, " << err.what() << '\n';
     return 1;
   } catch (...) {
-    cout << "ERROR: While testing tstlnsrch, "
-         << "An unknown exception was thrown." << endl;
+    cout << "ERROR: While testing tstlnsrch, An unknown exception was thrown.\n";
     return 1;
   }
   return 0;

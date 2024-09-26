@@ -9,7 +9,10 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "roots/broydn.hh"
+#include <cmath>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -21,11 +24,13 @@ using namespace rtt_roots;
 
 //------------------------------------------------------------------------------------------------//
 //! Functional form
-static void broydn_test_function(const vector<double> &x, vector<double> &fvec) {
+namespace {
+void broydn_test_function(const vector<double> &x, vector<double> &fvec) {
   fvec.resize(2);
   fvec[0] = cos(x[0] + x[1]);
   fvec[1] = sin(x[0] - x[1]);
 }
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 //! Test class for Broydn root finder

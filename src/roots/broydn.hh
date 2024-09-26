@@ -154,7 +154,7 @@ void broydn_impl(bool use_dvecfunc, std::vector<Field> &x, Function_N_to_N vecfu
         }
       }
     }
-    double fold = f;
+    double const fold = f;
     if (!singular) {
       for (unsigned i = 0; i < n; i++) {
         double sum = qt[i + n * 0] * fvec[0];
@@ -210,7 +210,7 @@ void broydn_impl(bool use_dvecfunc, std::vector<Field> &x, Function_N_to_N vecfu
         return; // limit of accuracy reached
       } else {
         double test = 0.0;
-        double den = std::max(f, 0.5 * n);
+        double const den = std::max(f, 0.5 * n);
         for (unsigned i = 0; i < n; i++) {
           double const temp = std::abs(g[i]) * std::max(std::abs(x[i]), 1.0) / den;
           if (temp > test)

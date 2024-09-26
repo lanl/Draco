@@ -7,26 +7,26 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef utils_zbrent_hh
-#define utils_zbrent_hh
+#ifndef roots_zbrent_hh
+#define roots_zbrent_hh
 
-namespace rtt_utils {
+namespace rtt_roots {
 
 //------------------------------------------------------------------------------------------------//
 // Use explicit instantiation for these functions.
 //------------------------------------------------------------------------------------------------//
 
 //! Pinpoint a bracketed root of a function.
-template <class Function, class Real>
+template <typename Function, typename Real>
 Real zbrent(Function func, Real x1, Real x2, unsigned itmax, Real &tol, Real &ftol);
 
-} // end namespace rtt_utils
+} // end namespace rtt_roots
 
 // Use implicit template instantiation.
 #include "zbrent.i.hh"
 
-#endif // utils_zbrent_hh
+#endif // roots_zbrent_hh
 
 //------------------------------------------------------------------------------------------------//
-// end of utils/zbrent.hh
+// end of roots/zbrent.hh
 //------------------------------------------------------------------------------------------------//

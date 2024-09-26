@@ -9,8 +9,10 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "dsxx/fpe_trap.hh"
 #include "roots/zbrac.hh"
+#include <cmath> // log
 
 using namespace std;
 using namespace rtt_roots;
@@ -24,7 +26,9 @@ double foo(double x) { return log(x); }
 
 //------------------------------------------------------------------------------------------------//
 //! Functor class representation of log function for testing zbrent and zbrac.
-static class Zbrac_Test_Function {
+
+namespace {
+class Zbrac_Test_Function {
 public:
   double operator()(double x) const { return log(x); }
 } zbrac_test_function;
@@ -36,6 +40,7 @@ double cubic(double const x) {
          (x + 1) * x * (x - 2) / ((1 + 1) * 1 * (1 - 2)) +
          (x + 1) * x * (x - 1) / ((2 + 1) * 2 * (2 - 1));
 }
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

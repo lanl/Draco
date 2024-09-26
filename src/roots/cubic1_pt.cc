@@ -7,7 +7,7 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "cubic1.t.hh"
+#include "cubic1.t.hh" // NOLINT(misc-include-cleaner)
 
 namespace rtt_roots {
 
