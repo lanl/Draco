@@ -9,6 +9,7 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "parser/Token.hh"
 
 #ifdef _MSC_VER
@@ -24,9 +25,9 @@ using namespace rtt_dsxx;
 //------------------------------------------------------------------------------------------------//
 
 void token_test(UnitTest &ut) {
-  Token end_token(END, "parser_test 1");
-  Token other_token('$', "parser_test 2");
-  Token real_token(REAL, "+1.56e-3", "parser_test 3");
+  Token const end_token(END, "parser_test 1");
+  Token const other_token('$', "parser_test 2");
+  Token const real_token(REAL, "+1.56e-3", "parser_test 3");
 
   if (end_token.type() != END)
     ut.failure(__LINE__);

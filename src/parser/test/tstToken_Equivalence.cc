@@ -9,8 +9,11 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
+#include "parser/String_Token_Stream.hh"
 #include "parser/Token_Equivalence.hh"
 #include <sstream>
+#include <string>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -32,8 +35,7 @@ void tstOne(UnitTest &ut) {
        << "error(1): 0.00272636     spr: 0.00272636\n"
        << "error(2): 8.14886e-06     spr: 0.00298892\n"
        << "pid[0] done error(2): 8.14886e-06  spr: 0.00298892\n"
-       << "User Cpu time this time step: 5.17 \n"
-       << endl;
+       << "User Cpu time this time step: 5.17 \n\n";
 
   // create a string token stream from the data
 

@@ -4,15 +4,23 @@
  * \author Kent Budge
  * \date   Fri Apr  4 09:34:28 2003
  * \brief  Unit tests for class Parallel_File_Token_Stream
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
 #include "c4/ParallelUnitTest.hh"
+#include "parser/Expression.hh"
+#include "parser/File_Token_Stream.hh"
 #include "parser/Parallel_File_Token_Stream.hh"
-#include <cmath>
+#include "parser/String_Token_Stream.hh"
+#include "parser/Text_Token_Stream.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
+#include <iostream>
 #include <sstream>
+#include <stdexcept>
+#include <string>
 
 using namespace std;
 
@@ -34,7 +42,7 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
     else
       PASSMSG("Whitespace set correctly.");
 
-    Token token = tokens.lookahead(4);
+    Token const token = tokens.lookahead(4);
     if (token.type() != KEYWORD || token.text() != "BLACK")
       FAILMSG("Keyword not read correctly");
     else
@@ -103,7 +111,7 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
       {
         ostringstream msg;
         msg << "Parallel_File_Token_Stream threw an expected exception when\n"
-            << "\ta syntax error was reported by Token_Stream." << endl;
+            << "\ta syntax error was reported by Token_Stream.\n";
         PASSMSG(msg.str());
       }
     }
@@ -212,12 +220,12 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
 
   {
     try {
-      Parallel_File_Token_Stream tokens("no such file");
+      Parallel_File_Token_Stream const tokens("no such file");
       // The preceeding file does not exist.
       ostringstream errmsg;
       errmsg << "Parallel_File_Token_Stream did not throw an expected exception.\n"
              << "\tThe constructor should throw an exception if the requested\n"
-             << "\tfile can not be opened." << endl;
+             << "\tfile can not be opened.\n";
       FAILMSG(errmsg.str());
       // Token token = tokens.shift();
       // if (token.type()!=ERROR) ITFAILS;
@@ -225,13 +233,10 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
       std::ostringstream errmsg;
       errmsg << "Parallel_File_Token_Stream threw an expected exception.\n"
              << "\tThe constructor should throw an exception if the requested\n"
-             << "\tfile can not be opened." << endl;
+             << "\tfile can not be opened.\n";
       PASSMSG(errmsg.str());
     } catch (...) {
-      ostringstream errmsg;
-      errmsg << "Parallel_File_Token_Stream threw an unknown exception "
-             << "during contruction." << endl;
-      FAILMSG(errmsg.str());
+      FAILMSG("Parallel_File_Token_Stream threw an unknown exception during contruction.\n");
     }
   }
 
@@ -244,7 +249,7 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
     try {
       tokens.shift();
     } catch (const Syntax_Error &msg) {
-      cout << msg.what() << endl;
+      cout << msg.what() << '\n';
       exception = true;
     }
     if (!exception)
@@ -254,7 +259,7 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
     try {
       tokens.shift();
     } catch (const Syntax_Error &msg) {
-      cout << msg.what() << endl;
+      cout << msg.what() << '\n';
       exception = true;
     }
     if (!exception)
@@ -265,7 +270,7 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
 
     tokens.open(inputFile3);
 
-    Token token = tokens.lookahead(4);
+    Token const token = tokens.lookahead(4);
     if (token.type() != KEYWORD || token.text() != "BLACK") {
       FAILMSG("Keyword not read correctly");
     } else {
@@ -280,7 +285,7 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
     Parallel_File_Token_Stream tokens;
     tokens.open(inputFile3);
 
-    Token token = tokens.lookahead(4);
+    Token const token = tokens.lookahead(4);
     if (token.type() != KEYWORD || token.text() != "BLACK") {
       FAILMSG("Keyword not read correctly");
     } else {

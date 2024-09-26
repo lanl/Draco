@@ -7,13 +7,21 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "utilities.hh"
-#include "units/PhysicalConstants.hh"
+#include "parser/utilities.hh"
+#include "dsxx/Assert.hh"
+#include "mesh_element/Geometry.hh"
+#include "parser/Expression.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
+#include "parser/Unit.hh"
 #include "units/PhysicalConstantsSI.hh"
-#include <cctype>
+#include "units/UnitSystem.hh"
 #include <cerrno>
 #include <cstdlib>
+#include <map>
+#include <memory> // shared_ptr
 #include <sstream>
+#include <string>
 
 namespace // anonymous
 {
@@ -426,6 +434,8 @@ bool at_unit_term(Token_Stream &tokens, unsigned position) {
 
 Unit parse_unit(Token_Stream &tokens);
 
+namespace {
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Parse a unit name.
@@ -435,7 +445,7 @@ Unit parse_unit(Token_Stream &tokens);
  * \param tokens Token_Stream from which to parse.
  * \return The unit.
  */
-static Unit parse_unit_name(Token_Stream &tokens) {
+Unit parse_unit_name(Token_Stream &tokens) {
   // Return value
   Unit retval{};
   Token token = tokens.shift();
@@ -646,7 +656,7 @@ static Unit parse_unit_name(Token_Stream &tokens) {
       tokens.report_syntax_error("expected a unit");
     }
   } else if (token.type() == OTHER && token.text() == "(") {
-    Unit Result = parse_unit(tokens);
+    Unit const Result = parse_unit(tokens);
     token = tokens.shift();
     if (token.type() != OTHER || token.text() != ")")
       tokens.report_syntax_error("missing ')'");
@@ -668,7 +678,7 @@ static Unit parse_unit_name(Token_Stream &tokens) {
  * \param tokens Token_Stream from which to parse.
  * \return The unit term.
  */
-static Unit parse_unit_term(Token_Stream &tokens) {
+Unit parse_unit_term(Token_Stream &tokens) {
   Unit const Result = parse_unit_name(tokens);
   Token const &token = tokens.lookahead();
   if (token.text() == "^") {
@@ -678,6 +688,8 @@ static Unit parse_unit_term(Token_Stream &tokens) {
   }
   return Result;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 /*!

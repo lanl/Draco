@@ -10,9 +10,22 @@
 #include "dsxx/DracoMath.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "parser/Expression.hh"
+#include "parser/File_Token_Stream.hh"
 #include "parser/String_Token_Stream.hh"
+#include "parser/Token.hh"
+#include "parser/Unit.hh"
 #include "parser/utilities.hh"
+#include <cmath> // pow
+#include <iostream>
+#include <map>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -49,7 +62,7 @@ void tstExpression(UnitTest &ut) {
     PASSMSG("expression successfully parsed");
   } else {
     FAILMSG("expression NOT successfully parsed");
-    cerr << tokens.messages() << endl;
+    cerr << tokens.messages() << '\n';
   }
 
   ostringstream expression_text_copy;
@@ -61,8 +74,8 @@ void tstExpression(UnitTest &ut) {
     PASSMSG("expression successfully rendered as text");
   } else {
     FAILMSG("expression NOT successfully rendered as text");
-    cerr << expression_text_raw << endl;
-    cerr << expression_text_copy.str() << endl;
+    cerr << expression_text_raw << '\n';
+    cerr << expression_text_copy.str() << '\n';
   }
 
 #if 0
@@ -83,18 +96,18 @@ void tstExpression(UnitTest &ut) {
     else
     {
         FAILMSG("expression NOT successfully derived");
-        cerr << expression_text_raw << endl;
-        cerr << deriv_text.str() << endl;
+        cerr << expression_text_raw << '\n';
+        cerr << deriv_text.str() << '\n';
     }
 #endif
 
   vector<double> xs;
 
-  double x = 1.2;
-  double r = x;
-  double y = 3.1;
-  double z = 0.0;
-  double t = 2.8;
+  double const x = 1.2;
+  double const r = x;
+  double const y = 3.1;
+  double const z = 0.0;
+  double const t = 2.8;
 
   xs.resize(4);
   xs[0] = r;
@@ -155,8 +168,8 @@ void tstExpression(UnitTest &ut) {
       PASSMSG("expression successfully rendered as text");
     } else {
       FAILMSG("expression NOT successfully rendered as text");
-      cerr << lexpression_text_raw << endl;
-      cerr << lexpression_text_copy.str() << endl;
+      cerr << lexpression_text_raw << '\n';
+      cerr << lexpression_text_copy.str() << '\n';
     }
   }
 
@@ -169,7 +182,7 @@ void tstExpression(UnitTest &ut) {
     PASSMSG("expression successfully parsed");
   } else {
     FAILMSG("expression NOT successfully parsed");
-    cerr << tokens3.messages() << endl;
+    cerr << tokens3.messages() << '\n';
   }
 
   if (soft_equiv((*expression)(xs), pow(r, t) + -3 - z))
@@ -207,8 +220,8 @@ void tstExpression(UnitTest &ut) {
       PASSMSG("expression successfully rendered as text");
     } else {
       FAILMSG("expression NOT successfully rendered as text");
-      cerr << lexpression_text_raw << endl;
-      cerr << lexpression_text_copy.str() << endl;
+      cerr << lexpression_text_raw << '\n';
+      cerr << lexpression_text_copy.str() << '\n';
     }
   }
 
@@ -236,15 +249,15 @@ void tstExpression(UnitTest &ut) {
       PASSMSG("expression successfully rendered as text");
     } else {
       FAILMSG("expression NOT successfully rendered as text");
-      cerr << lexpression_text_raw << endl;
-      cerr << lexpression_text_copy.str() << endl;
+      cerr << lexpression_text_raw << '\n';
+      cerr << lexpression_text_copy.str() << '\n';
     }
   }
 
   {
     String_Token_Stream tokens6 = String_Token_Stream("log(1.0) + cos(2.0) + exp(3.0) + sin(4.0)");
 
-    std::shared_ptr<Expression> lexpression = Expression::parse(4, variable_map, tokens6);
+    std::shared_ptr<Expression> const lexpression = Expression::parse(4, variable_map, tokens6);
 
     if (lexpression->is_constant(0))
       PASSMSG("expression successfully const tested");
@@ -262,7 +275,7 @@ void tstExpression(UnitTest &ut) {
     String_Token_Stream tokens7 =
         String_Token_Stream("(log(1.0) + cos(2.0) + exp(3.0) + sin(4.0))/(m*s)");
 
-    std::shared_ptr<Expression> lexpression = Expression::parse(4, variable_map, tokens7);
+    std::shared_ptr<Expression> const lexpression = Expression::parse(4, variable_map, tokens7);
 
     if (lexpression->is_constant(0))
       PASSMSG("expression successfully const tested");
@@ -272,7 +285,7 @@ void tstExpression(UnitTest &ut) {
     ostringstream lexpression_text_copy;
     lexpression->write(vars, lexpression_text_copy);
 
-    cout << lexpression_text_copy.str() << endl;
+    cout << lexpression_text_copy.str() << '\n';
 
     char const *lexpression_text_raw = "(log(1)+cos(2)+exp(3)+sin(4))/(m*s)";
     // changes slightly due to stripping of extraneous whitespace, parentheses, and positive prefix
@@ -280,8 +293,8 @@ void tstExpression(UnitTest &ut) {
       PASSMSG("expression successfully rendered as text");
     } else {
       FAILMSG("expression NOT successfully rendered as text");
-      cerr << lexpression_text_raw << endl;
-      cerr << lexpression_text_copy.str() << endl;
+      cerr << lexpression_text_raw << '\n';
+      cerr << lexpression_text_copy.str() << '\n';
     }
 
     lexpression->set_units(J);
@@ -295,7 +308,7 @@ void tstExpression(UnitTest &ut) {
     String_Token_Stream tokens8 =
         String_Token_Stream("(log(1.0) + cos(2.0) + exp(3.0) + sin(4.0))/(jerk*sh)");
 
-    std::shared_ptr<Expression> lexpression = Expression::parse(4, variable_map, tokens8);
+    std::shared_ptr<Expression> const lexpression = Expression::parse(4, variable_map, tokens8);
 
     ut.check(soft_equiv((*lexpression)(xs), (cos(2.0) + exp(3.0) + sin(4.0)) / (1e9 * 1e-8)),
              "parse of exotic units");

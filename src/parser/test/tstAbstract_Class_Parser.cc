@@ -9,10 +9,22 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/config.h"
 #include "parser/Abstract_Class_Parser.hh"
 #include "parser/Class_Parse_Table.hh"
+#include "parser/Expression.hh"
 #include "parser/File_Token_Stream.hh"
+#include "parser/Parse_Table.hh"
+#include "parser/String_Token_Stream.hh"
+#include "parser/Token_Stream.hh"
 #include "parser/utilities.hh"
+#include <array>
+#include <iostream>
+#include <limits>
+#include <memory>
+#include <string>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -106,7 +118,9 @@ public:
   explicit Son(double /*snip_and_snails*/) {}
 };
 
-static double parsed_snips_and_snails;
+namespace { // Place this variable in an unnamed namespace instead of using 'static'.
+double parsed_snips_and_snails;
+} // namespace
 
 void parse_snips_and_snails(Token_Stream &tokens, int /*unused*/) {
   if (parsed_snips_and_snails >= 0.0) {
@@ -189,7 +203,9 @@ public:
   explicit Daughter(double /*sugar_and_spice*/) {}
 };
 
-static double parsed_sugar_and_spice;
+namespace { // Place this variabl in an unnamed namespace instead of using 'static'.
+double parsed_sugar_and_spice;
+} // namespace
 
 void parse_sugar_and_spice(Token_Stream &tokens, int /*unused*/) {
   if (parsed_sugar_and_spice >= 0.0) {
@@ -263,13 +279,18 @@ template <> std::shared_ptr<Daughter> parse_class<Daughter>(Token_Stream &tokens
 
 /* the followingn would typically live in some client file for Parent. */
 
-static std::shared_ptr<Parent> parent;
+namespace { // Place this variable in an unnamed namespace instead of using 'static'.
+std::shared_ptr<Parent> parent;
+} // namespace
 
 //static
 void parse_parent(Token_Stream &tokens, int /*unused*/) { parent = parse_class<Parent>(tokens); }
 
 std::array<Keyword, 1> const top_keywords{Keyword{"parent", parse_parent, 0, ""}};
-static Parse_Table top_parse_table(top_keywords.data(), top_keywords.size());
+
+namespace { // Place this variable in an unnamed namespace instead of using 'static'.
+Parse_Table top_parse_table(top_keywords.data(), top_keywords.size());
+} // namespace
 
 std::shared_ptr<Parent> parse_son(Token_Stream &tokens) { return parse_class<Son>(tokens); }
 
@@ -292,7 +313,7 @@ void test(UnitTest &ut) {
 
   top_parse_table.parse(tokens);
 
-  cout << parent->name() << endl;
+  cout << parent->name() << '\n';
 
   if (tokens.error_count() == 0 && parent != std::shared_ptr<Parent>() && parent->name() == "son") {
     PASSMSG("Parsed son correctly");

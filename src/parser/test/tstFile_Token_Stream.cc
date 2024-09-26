@@ -4,14 +4,25 @@
  * \author Kent G. Budge
  * \date   Feb 18 2003
  * \brief  Unit tests for File_Token_Stream class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
+#include "parser/Expression.hh"
 #include "parser/File_Token_Stream.hh"
+#include "parser/String_Token_Stream.hh"
+#include "parser/Text_Token_Stream.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
+#include <exception>
+#include <set>
 #include <sstream>
+#include <stdexcept>
+#include <string>
 
 using namespace std;
 using namespace rtt_parser;
@@ -142,174 +153,138 @@ void tstFile_Token_Stream(rtt_dsxx::UnitTest &ut) {
     }
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "COLOR")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "COLOR");
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "=")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "=");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "BLACK")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "BLACK");
 
     token = tokens.shift();
-    if (token.type() != END)
-      ITFAILS;
+    FAIL_IF(token.type() != END);
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "-")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "-");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.563e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.563e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.563e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.563e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != ".563e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != ".563e+3");
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != ".")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != ".");
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "-")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "-");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.563")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.563");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.e3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.e3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1e3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1e3");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "19090")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "19090");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "01723")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "01723");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "0x1111a")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "0x1111a");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "0")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "0");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "8123")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "8123");
 
     token = tokens.shift();
-    if (token.type() != STRING || token.text() != "\"manifest string\"")
-      ITFAILS;
+    FAIL_IF(token.type() != STRING || token.text() != "\"manifest string\"");
 
     token = tokens.shift();
     FAIL_IF(token.type() != STRING || token.text() != R"("manifest \"string\"")");
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "@")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "@");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "1")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "1");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "e")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "e");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "0")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "0");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "x")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "x");
 
     token = tokens.shift();
-    if (token.type() != EXIT)
-      ITFAILS;
+    FAIL_IF(token.type() != EXIT);
     token = tokens.shift();
-    if (token.type() != EXIT)
-      ITFAILS;
+    FAIL_IF(token.type() != EXIT);
 
     tokens.rewind();
     token = tokens.lookahead();
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "BLUE")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "BLUE");
   }
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
 
   {
     try {
-      File_Token_Stream tokens("no such file");
+      File_Token_Stream const tokens("no such file");
       // The preceeding file does not exist.
       ostringstream errmsg;
-      errmsg << "File_Token_Stream did not throw an expected exception.\n"
-             << "\tThe constructor should throw an exception if the requested\n"
-             << "\tfile can not be opened." << endl;
+      errmsg << "File_Token_Stream did not throw an expected exception.\n\tThe constructor should "
+             << "throw an exception if the requested\n\tfile can not be opened.\n";
       FAILMSG(errmsg.str());
     } catch (invalid_argument const & /*a*/) {
       std::ostringstream errmsg;
-      errmsg << "File_Token_Stream threw an expected exception.\n"
-             << "\tThe constructor should throw an exception if the requested\n"
-             << "\tfile can not be opened." << endl;
+      errmsg << "File_Token_Stream threw an expected exception.\n\tThe constructor should throw "
+             << "an exception if the requested\n\tfile can not be opened.\n";
       PASSMSG(errmsg.str());
     } catch (...) {
       ostringstream errmsg;
-      errmsg << "File_Token_Stream threw an unknown exception "
-             << "during contruction." << endl;
+      errmsg << "File_Token_Stream threw an unknown exception during contruction.\n";
       FAILMSG(errmsg.str());
     }
   }
   {
     try {
-      set<char> ws;
-      File_Token_Stream tokens("no such file", ws);
+      set<char> const ws;
+      File_Token_Stream const tokens("no such file", ws);
       // The preceeding file does not exist.
       ostringstream errmsg;
-      errmsg << "File_Token_Stream did not throw an expected exception.\n"
-             << "\tThe constructor should throw an exception if the requested\n"
-             << "\tfile can not be opened." << endl;
+      errmsg << "File_Token_Stream did not throw an expected exception.\n\tThe constructor "
+             << "should throw an exception if the requested\n\tfile can not be opened.\n";
       FAILMSG(errmsg.str());
     } catch (invalid_argument const & /*a*/) {
       std::ostringstream errmsg;
-      errmsg << "File_Token_Stream threw an expected exception.\n"
-             << "\tThe constructor should throw an exception if the requested\n"
-             << "\tfile can not be opened." << endl;
+      errmsg << "File_Token_Stream threw an expected exception.\n\tThe constructor should throw "
+             << "an exception if the requested\n\tfile can not be opened.\n";
       PASSMSG(errmsg.str());
     } catch (...) {
       ostringstream errmsg;
-      errmsg << "File_Token_Stream threw an unknown exception "
-             << "during contruction." << endl;
+      errmsg << "File_Token_Stream threw an unknown exception during contruction.\n";
       FAILMSG(errmsg.str());
     }
   }
@@ -319,20 +294,17 @@ void tstFile_Token_Stream(rtt_dsxx::UnitTest &ut) {
       tokens.open("no such file");
       // The preceeding file does not exist.
       ostringstream errmsg;
-      errmsg << "File_Token_Stream did not throw an expected exception.\n"
-             << "\tThe constructor should throw an exception if the requested\n"
-             << "\tfile can not be opened." << endl;
+      errmsg << "File_Token_Stream did not throw an expected exception.\n\tThe constructor should "
+             << "throw an exception if the requested\n\tfile can not be opened.\n";
       FAILMSG(errmsg.str());
     } catch (invalid_argument const & /*a*/) {
       std::ostringstream errmsg;
-      errmsg << "File_Token_Stream threw an expected exception.\n"
-             << "\tThe constructor should throw an exception if the requested\n"
-             << "\tfile can not be opened." << endl;
+      errmsg << "File_Token_Stream threw an expected exception.\n\tThe constructor should throw "
+             << "an exception if the requested\n\tfile can not be opened.\n";
       PASSMSG(errmsg.str());
     } catch (...) {
       ostringstream errmsg;
-      errmsg << "File_Token_Stream threw an unknown exception "
-             << "during contruction." << endl;
+      errmsg << "File_Token_Stream threw an unknown exception during contruction.\n";
       FAILMSG(errmsg.str());
     }
   }
@@ -348,18 +320,16 @@ void tstFile_Token_Stream(rtt_dsxx::UnitTest &ut) {
     try {
       tokens.shift();
       ostringstream msg;
-      msg << "Token_Stream did not throw an exception when\n"
-          << "\tunbalanced quotes were read from the input\n"
-          << "\tfile, \"scanner_recover.inp\" (line 1)." << endl;
+      msg << "Token_Stream did not throw an exception when\n\tunbalanced quotes were read from "
+          << "the input\n\tfile, \"scanner_recover.inp\" (line 1).\n";
       FAILMSG(msg.str());
     } catch (const Syntax_Error &msg) {
-      string errmsg = msg.what();
-      string expected("syntax error");
+      string const errmsg = msg.what();
+      string const expected("syntax error");
       if (errmsg == expected) {
         ostringstream message;
-        message << "Caught expected exception from Token_Stream.\n"
-                << "\tunbalanced quotes were read from the input\n"
-                << "\tfile, \"scanner_recover.inp\" (line 1)." << endl;
+        message << "Caught expected exception from Token_Stream.\n\tunbalanced quotes were read "
+                << "from the input\n\tfile, \"scanner_recover.inp\" (line 1).\n";
         PASSMSG(message.str());
       } else
         ITFAILS;
@@ -368,20 +338,18 @@ void tstFile_Token_Stream(rtt_dsxx::UnitTest &ut) {
     try {
       tokens.shift();
       ostringstream msg;
-      msg << "Token_Stream did not throw an exception when\n"
-          << "\tunbalanced quotes were read from the input\n"
-          << "\tfile, \"scanner_recover.inp\" (line 2)." << endl;
+      msg << "Token_Stream did not throw an exception when\n\tunbalanced quotes were read from "
+          << "the input\n\tfile, \"scanner_recover.inp\" (line 2).\n";
       FAILMSG(msg.str());
     } catch (const Syntax_Error &msg) {
-      //cout << msg.what() << endl;
+      //cout << msg.what() << '\n';
       // exception = true;
-      string errmsg = msg.what();
-      string expected("syntax error");
+      string const errmsg = msg.what();
+      string const expected("syntax error");
       if (errmsg == expected) {
         ostringstream message;
-        message << "Caught expected exception from Token_Stream.\n"
-                << "\tunbalanced quotes were read from the input\n"
-                << "\tfile, \"scanner_recover.inp\" (line 2)." << endl;
+        message << "Caught expected exception from Token_Stream.\n\tunbalanced quotes were read "
+                << "from the input\n\tfile, \"scanner_recover.inp\" (line 2).\n";
         PASSMSG(message.str());
       } else
         ITFAILS;

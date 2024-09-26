@@ -9,10 +9,23 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/config.h"
 #include "parser/Abstract_Class_Parser.hh"
 #include "parser/Class_Parse_Table.hh"
+#include "parser/Contextual_Parse_Functor.hh"
+#include "parser/Expression.hh"
 #include "parser/File_Token_Stream.hh"
+#include "parser/Parse_Table.hh"
+#include "parser/String_Token_Stream.hh"
+#include "parser/Token_Stream.hh"
 #include "parser/utilities.hh"
+#include <array>
+#include <iostream>
+#include <limits>
+#include <memory>
+#include <string>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -363,10 +376,10 @@ void test(UnitTest &ut) {
 
   File_Token_Stream tokens(sadInputFile);
 
-  std::shared_ptr<Parent> parent = parse_class<Parent>(tokens, 42);
+  std::shared_ptr<Parent> const parent = parse_class<Parent>(tokens, 42);
   // We choose 42 as the magic value for our context, in honor of hitchikers across the Galaxy.
 
-  cout << parent->name() << endl;
+  cout << parent->name() << '\n';
 
   ut.check(tokens.error_count() == 0, "parsed without error");
   ut.check(parent != nullptr, "created parent", true);
