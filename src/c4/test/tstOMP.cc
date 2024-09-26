@@ -7,15 +7,26 @@
  * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/SystemCall.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/Timer.hh"
-#include "c4/c4_omp.h"
+#include "c4/c4_omp.h" // NOLINT(misc-include-cleaner)
 #include "c4/gatherv.hh"
 #include <array>
+#include <cmath>
 #include <complex>
+#include <cstddef> // size_t
+#include <ios>
+#include <iostream>
 #include <numeric>
+#include <sstream>
+#include <string>
+#include <vector>
 
 using namespace rtt_c4;
 
@@ -30,7 +41,7 @@ bool topology_report() {
 
   // Store proc name on local proc
   std::string my_pname = rtt_c4::get_processor_name();
-  Remember(size_t namelen = my_pname.size(););
+  Remember(size_t const namelen = my_pname.size(););
 
   // Create a container on IO proc to hold names of all nodes.
   std::vector<std::string> procnames(mpi_ranks);
@@ -62,7 +73,7 @@ bool topology_report() {
 
     for (size_t i = 0; i < mpi_ranks; ++i)
       std::cout << "\n  - MPI rank " << i << " is on " << procnames[i];
-    std::cout << "\n" << std::endl;
+    std::cout << "\n\n";
 
     if (mpi_ranks == unique_processor_names.size())
       one_mpi_rank_per_node = 1;
@@ -88,13 +99,15 @@ void topo_report(rtt_dsxx::UnitTest &ut, bool &one_mpi_rank_per_node) {
   // So - if we have more than one MPI rank per machine node, then turn off OMP threads.
   one_mpi_rank_per_node = topology_report();
 
-  std::string procname = rtt_c4::get_processor_name();
+  std::string const procname = rtt_c4::get_processor_name();
 
 #ifdef OPENMP_FOUND
 
+  // NOLINTBEGIN(misc-include-cleaner)
+
   // Turn on the dynamic thread adjustment capability.
   omp_set_dynamic(1);
-  int num_dynamic_threads = omp_get_dynamic();
+  int const num_dynamic_threads = omp_get_dynamic();
 
   int tid(-1);
   int nthreads(-1);
@@ -117,17 +130,18 @@ void topo_report(rtt_dsxx::UnitTest &ut, bool &one_mpi_rank_per_node) {
                 << "\n   OMP thread     : " << tid << "\n   OMP num threads: " << nthreads
                 << "\n   OMP max threads: " << maxthreads << "\n   procname(IO)   : " << procname
                 << "\n   Dynamic theads : "
-                << (num_dynamic_threads == 0 ? std::string("OFF") : std::string("ON")) << "\n"
-                << std::endl;
+                << (num_dynamic_threads == 0 ? std::string("OFF") : std::string("ON")) << "\n\n";
     }
     FAIL_IF(tid < 0 || tid >= nthreads);
   }
+
+  // NOLINTEND(misc-include-cleaner)
+
 #else
   { // not OMP
     std::cout << "OMP thread use is disabled."
               << "\n   MPI node       : " << node() << "\n   MPI max nodes  : " << nodes()
-              << "\n   procname(IO)   : " << procname << "\n"
-              << std::endl;
+              << "\n   procname(IO)   : " << procname << "\n\n";
     PASSMSG("OMP is disabled.  No checks made.");
   }
 #endif
@@ -143,10 +157,10 @@ void topo_report(rtt_dsxx::UnitTest &ut, bool &one_mpi_rank_per_node) {
 //------------------------------------------------------------------------------------------------//
 void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
   if (rtt_c4::node() == 0)
-    std::cout << "\nBegin test sample_sum()...\n" << std::endl;
+    std::cout << "\nBegin test sample_sum()...\n\n";
 
   // Generate data and benchmark values:
-  int N(10000000);
+  int const N(10000000);
   std::vector<double> foo(N, 0.0);
   std::vector<double> result(N, 0.0);
   std::vector<double> bar(N, 99.0);
@@ -164,15 +178,17 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
   Timer t2_serial_accumulate;
   t2_serial_accumulate.start();
 
-  double sum = std::accumulate(foo.begin(), foo.end(), 0.0);
+  double const sum = std::accumulate(foo.begin(), foo.end(), 0.0);
 
   t2_serial_accumulate.stop();
 
   if (node() == 0)
-    std::cout << "benchmark: sum(foo) = " << sum << std::endl;
+    std::cout << "benchmark: sum(foo) = " << sum << '\n';
 
 #ifdef OPENMP_FOUND
   {
+    // NOLINTBEGIN(misc-include-cleaner)
+
     // This is just a unit test. Limit the parallelism.
     int maxthreads(-1);
     maxthreads = omp_get_max_threads();
@@ -184,7 +200,7 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
       omp_set_num_threads(1);
 
     // Generate omp_result
-    std::vector<double> omp_result(N, 0.0);
+    std::vector<double> const omp_result(N, 0.0);
     double omp_sum(0.0);
 
     Timer t1_omp_build;
@@ -195,7 +211,7 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
     {
       if (node() == 0 && omp_get_thread_num() == 0) {
         nthreads = omp_get_num_threads();
-        std::cout << "\nNow computing sum using " << nthreads << " OMP threads." << std::endl;
+        std::cout << "\nNow computing sum using " << nthreads << " OMP threads.\n";
       }
     }
 
@@ -235,8 +251,9 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
                 << "\n\tbuild      = \t" << t1_serial_build.wall_clock() << "\t"
                 << t1_omp_build.wall_clock() << "\n\taccumulate = \t"
                 << t2_serial_accumulate.wall_clock() << "\t" << t2_omp_accumulate.wall_clock()
-                << std::endl;
+                << '\n';
     }
+    // NOLINTEND(misc-include-cleaner)
   }
 #else // SCALAR
   PASSMSG("OMP is disabled.  No checks made.");
@@ -279,6 +296,8 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
   int nthreads(-1);
 #ifdef OPENMP_FOUND
 
+  // NOLINTBEGIN(misc-include-cleaner)
+
   // This is just a unit test. Limit the parallelism.
   int maxthreads(-1);
   maxthreads = omp_get_max_threads();
@@ -289,7 +308,7 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
   {
     if (node() == 0 && omp_get_thread_num() == 0) {
       nthreads = omp_get_num_threads();
-      cout << "\nNow Generating Mandelbrot image (" << nthreads << " OMP threads)...\n" << endl;
+      cout << "\nNow Generating Mandelbrot image (" << nthreads << " OMP threads)...\n\n";
     }
   }
 
@@ -305,7 +324,7 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
     const int x = pix % width;
     const int y = pix / width;
 
-    complex<double> c =
+    complex<double> const c =
         begin + complex<double>(x * span.real() / (width + 1.0), y * span.imag() / (height + 1.0));
 
     int n = MandelbrotCalculate(c, maxiter);
@@ -325,6 +344,9 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
         image1 << "|\n"; //puts("|");
     }
   }
+
+  // NOLINTEND(misc-include-cleaner)
+
 #endif // OPENMP_FOUND
 
   t.stop();
@@ -332,7 +354,7 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
 
   // Repeat for serial case
   if (rtt_c4::node() == 0)
-    cout << "\nGenerating Mandelbrot image (Serial)...\n" << endl;
+    cout << "\nGenerating Mandelbrot image (Serial)...\n\n";
 
   t.reset();
   t.start();
@@ -341,7 +363,7 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
     const int x = pix % width;
     const int y = pix / width;
 
-    complex<double> c =
+    complex<double> const c =
         begin + complex<double>(x * span.real() / (width + 1.0), y * span.imag() / (height + 1.0));
 
     int n = MandelbrotCalculate(c, maxiter);
@@ -366,7 +388,7 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
 
 #ifdef OPENMP_FOUND
   if (image1.str() == image2.str()) {
-    // cout << image1.str() << endl;
+    // cout << image1.str() << '\n';
     PASSMSG("Scalar and OMP generated Mandelbrot images match.");
   } else {
     FAILMSG("Scalar and OMP generated Mandelbrot images do not match.");
@@ -374,10 +396,10 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
 #endif
 
   cout << "\nTime to generate Mandelbrot:"
-       << "\n   Normal: " << gen_time_serial << " sec." << endl;
+       << "\n   Normal: " << gen_time_serial << " sec.\n";
 
   if (nthreads > 4) {
-    cout << "   OMP   : " << gen_time_omp << " sec." << endl;
+    cout << "   OMP   : " << gen_time_omp << " sec.\n";
     if (gen_time_omp < gen_time_serial)
       PASSMSG("OMP generation of Mandelbrot image is faster.");
     else
@@ -390,7 +412,7 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void tstUnsignedOmpLoop(rtt_dsxx::UnitTest &ut) {
   if (rtt_c4::node() == 0)
-    std::cout << "\nTesting an OpenMP loop with unsigned index." << std::endl;
+    std::cout << "\nTesting an OpenMP loop with unsigned index.\n";
   unsigned sum(0), count(5);
   {
 #pragma omp parallel for reduction(+ : sum) default(none) shared(count)
@@ -399,7 +421,7 @@ void tstUnsignedOmpLoop(rtt_dsxx::UnitTest &ut) {
     }
   }
   if (rtt_c4::node() == 0)
-    std::cout << "Found Sum = " << sum << std::endl;
+    std::cout << "Found Sum = " << sum << '\n';
   FAIL_IF_NOT(sum == 10);
   return;
 }

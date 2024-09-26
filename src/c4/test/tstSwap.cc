@@ -7,10 +7,14 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/swap.hh"
-#include <cmath>
+#include <cstddef> // size_t
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -92,17 +96,17 @@ template <typename T> void tstDeterminateSwap(UnitTest &ut) {
   outgoing_data.resize(rtt_c4::nodes());
   incoming_data.resize(0);
   incoming_data.resize(rtt_c4::nodes());
-  for (unsigned int pid : outgoing_pid) {
+  for (unsigned const int pid : outgoing_pid) {
     outgoing_data[pid].resize(2);
     outgoing_data[pid][0] = rtt_c4::node();
     outgoing_data[pid][1] = pid;
   }
-  for (unsigned int pid : incoming_pid) {
+  for (unsigned const int pid : incoming_pid) {
     incoming_data[pid].resize(2);
   }
   rtt_c4::determinate_swap(outgoing_data, incoming_data);
 
-  for (unsigned int pid : incoming_pid) {
+  for (unsigned const int pid : incoming_pid) {
     FAIL_IF(incoming_data[pid].size() != 2);
     FAIL_IF(static_cast<unsigned>(incoming_data[pid][0]) != pid ||
             static_cast<unsigned>(incoming_data[pid][1]) != static_cast<unsigned>(rtt_c4::node()));

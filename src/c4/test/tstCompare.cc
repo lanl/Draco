@@ -3,11 +3,12 @@
  * \file   c4/test/tstCompare.cc
  * \author Mike Buksas
  * \date   Thu May  1 14:47:00 2008
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/Compare.hh"
 #include "c4/ParallelUnitTest.hh"
 #include <sstream>

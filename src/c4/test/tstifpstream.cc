@@ -8,10 +8,14 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/ifpstream.hh"
 #include "c4/ofpstream.hh"
-#include <sstream>
+#include <fstream>
+#include <ios>
+#include <string>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -28,13 +32,13 @@ void write_stream(std::string const &filename, const std::ios_base::openmode mod
   ofpstream out(filename, mode);
 
   if (pid == 0)
-    out << "just rank 0" << endl;
+    out << "just rank 0\n";
 
-  out << "MPI rank " << pid << " reporting ..." << endl;
+  out << "MPI rank " << pid << " reporting ...\n";
   out.send();
   out.shrink_to_fit();
 
-  out << "MPI rank " << pid << " reporting a second time ..." << endl;
+  out << "MPI rank " << pid << " reporting a second time ...\n";
   out.shrink_to_fit();
   out.send();
 }
@@ -42,7 +46,7 @@ void write_stream(std::string const &filename, const std::ios_base::openmode mod
 //------------------------------------------------------------------------------------------------//
 void tstifpstream(UnitTest &ut, const std::ios_base::openmode mode) {
 
-  int pid = rtt_c4::node();
+  int const pid = rtt_c4::node();
 
   std::string filename = "tstifpstream" + std::to_string(rtt_c4::nodes()) + ".txt";
   if (mode == std::ofstream::binary)
@@ -54,8 +58,8 @@ void tstifpstream(UnitTest &ut, const std::ios_base::openmode mode) {
   unsigned zeroth_buffer_size = 12;
   if (pid != 0)
     zeroth_buffer_size = 0;
-  unsigned first_buffer_size = 25;
-  unsigned second_buffer_size = 39;
+  unsigned const first_buffer_size = 25;
+  unsigned const second_buffer_size = 39;
 
   // read first strings only on proc 0
   std::string compare_string;

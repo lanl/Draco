@@ -7,12 +7,21 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/config.h"
+#include "c4/C4_Functions.hh"
+#include "c4/C4_Req.hh"
 #include "c4/ParallelUnitTest.hh"
+#include <algorithm> // std::equal
 #include <array>
+#include <cstddef> // size_t
+#include <iostream>
 #include <numeric>
 #include <sstream>
+#include <vector>
 
 using rtt_dsxx::soft_equiv;
 
@@ -36,6 +45,9 @@ public:
   static void commit_mpi_type() {}
   static int MPI_Type;
 #else
+
+  // NOLINTBEGIN(misc-include-cleaner)
+
   static MPI_Datatype MPI_Type;
   static void commit_mpi_type() {
     MPI_Datatype og_MPI_Custom;
@@ -43,9 +55,9 @@ public:
     constexpr int custom_entry_count = 3;
 
     // set the number of entries for each data type
-    int num_int(4);
-    int num_double(2);
-    int num_long(2);
+    int const num_int(4);
+    int const num_double(2);
+    int const num_long(2);
     std::array<int, 3> custom_array_of_block_length = {num_int, num_double, num_long};
 
     int int_size(0);
@@ -71,6 +83,9 @@ public:
     // this is necessary)
     MPI_Type_dup(og_MPI_Custom, &MPI_Type);
   }
+
+  // NOLINTEND(misc-include-cleaner)
+
 #endif
 
   NODISCARD int get_int1() const { return my_ints[0]; }
@@ -91,7 +106,7 @@ private:
 int Custom::MPI_Type = 0;
 #else
 // the static data member needs to be defined outside the class
-MPI_Datatype Custom::MPI_Type = MPI_Datatype();
+MPI_Datatype Custom::MPI_Type = MPI_Datatype(); // NOLINT(misc-include-cleaner)
 #endif
 
 //------------------------------------------------------------------------------------------------//
@@ -101,7 +116,7 @@ void test_zerocount_and_inactive(rtt_dsxx::UnitTest &ut) {
   int const pid = rtt_c4::node();
 
   if (pid == 0)
-    cout << "Test wait_all() corner cases..." << endl;
+    cout << "Test wait_all() corner cases...\n";
 
   // Zero count case:
   {
@@ -180,10 +195,10 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
   int const pid = rtt_c4::node();
 
   if (pid == 0)
-    cout << "Test send_is() by sending data to processor myid+1..." << endl;
+    cout << "Test send_is() by sending data to processor myid+1...\n";
 
   // for point-to-point communication we need to know neighbor's identifiers: left, right.
-  int right = (pid + 1) % rtt_c4::nodes();
+  int const right = (pid + 1) % rtt_c4::nodes();
   int left = pid - 1;
   if (left < 0)
     left = rtt_c4::nodes() - 1;
@@ -192,7 +207,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
   { // T = int
 
     if (pid == 0)
-      cout << "\nStarting send_is<int> tests..." << endl;
+      cout << "\nStarting send_is<int> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -251,7 +266,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<double> tests..." << endl;
+      cout << "\nStarting send_is<double> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -301,7 +316,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<float> tests..." << endl;
+      cout << "\nStarting send_is<float> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -352,7 +367,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<long double> tests..." << endl;
+      cout << "\nStarting send_is<long double> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -403,7 +418,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<unsigned int> tests..." << endl;
+      cout << "\nStarting send_is<unsigned int> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -453,7 +468,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<unsigned long> tests..." << endl;
+      cout << "\nStarting send_is<unsigned long> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -510,7 +525,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<unsigned short> tests..." << endl;
+      cout << "\nStarting send_is<unsigned short> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -560,7 +575,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<unsigned long long> tests..." << endl;
+      cout << "\nStarting send_is<unsigned long long> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -610,7 +625,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<long> tests..." << endl;
+      cout << "\nStarting send_is<long> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -659,7 +674,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<short> tests..." << endl;
+      cout << "\nStarting send_is<short> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -709,7 +724,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<long long> tests..." << endl;
+      cout << "\nStarting send_is<long long> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -759,7 +774,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<bool> tests..." << endl;
+      cout << "\nStarting send_is<bool> tests...\n";
 
     // C4_Req communication handles.
     vector<rtt_c4::C4_Req> comm(2);
@@ -809,7 +824,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<char> tests..." << endl;
+      cout << "\nStarting send_is<char> tests...\n";
 
     vector<char> alphabet(static_cast<size_t>(bsize) + rtt_c4::nranks());
     iota(alphabet.begin(), alphabet.end(), 'A');
@@ -862,7 +877,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
     rtt_c4::global_barrier();
     if (pid == 0)
-      cout << "\nStarting send_is<unsigned char> tests..." << endl;
+      cout << "\nStarting send_is<unsigned char> tests...\n";
 
     vector<unsigned char> alphabet(static_cast<size_t>(bsize) + rtt_c4::nranks());
     iota(alphabet.begin(), alphabet.end(), 'A');
@@ -930,20 +945,20 @@ void test_send_custom(rtt_dsxx::UnitTest &ut) {
   Custom::commit_mpi_type();
 
 #ifdef C4_SCALAR
-  cout << "\nSERIAL TEST: This should just end in a try block catching an insist failure" << endl;
+  cout << "\nSERIAL TEST: This should just end in a try block catching an insist failure\n";
 #else
   if (rtt_c4::node() == 0) {
-    cout << "\nTest send_is_custom() by sending data to processor myid+1..." << endl;
+    cout << "\nTest send_is_custom() by sending data to processor myid+1...\n";
     int custom_mpi_type_size(0);
-    MPI_Type_size(Custom::MPI_Type, &custom_mpi_type_size);
+    MPI_Type_size(Custom::MPI_Type, &custom_mpi_type_size); // NOLINT(misc-include-cleaner)
     cout << " Size of custom type: " << sizeof(Custom)
-         << "\nSize of custom MPI type: " << custom_mpi_type_size << endl;
+         << "\nSize of custom MPI type: " << custom_mpi_type_size << '\n';
     FAIL_IF_NOT(custom_mpi_type_size == sizeof(Custom));
   }
 #endif
 
   // C4_Req communication handles.
-  vector<rtt_c4::C4_Req> comm_int(2);
+  vector<rtt_c4::C4_Req> comm_int(2); // NOLINT(misc-const-correctness)
 
 #ifndef __clang_analyzer__
 
@@ -983,16 +998,16 @@ void test_send_custom(rtt_dsxx::UnitTest &ut) {
     Custom expected_custom(left);
 
     cout << "Expected integers: " << expected_custom.get_int1() << " " << expected_custom.get_int2()
-         << " " << expected_custom.get_int3() << endl;
+         << " " << expected_custom.get_int3() << '\n';
     cout << "Received integers: " << recv_custom_object.get_int1() << " "
-         << recv_custom_object.get_int2() << " " << recv_custom_object.get_int3() << endl;
+         << recv_custom_object.get_int2() << " " << recv_custom_object.get_int3() << '\n';
 
     FAIL_IF_NOT(expected_custom.get_int1() == recv_custom_object.get_int1());
     FAIL_IF_NOT(expected_custom.get_int2() == recv_custom_object.get_int2());
     FAIL_IF_NOT(expected_custom.get_int3() == recv_custom_object.get_int3());
 
     cout << "Expected double 1: " << expected_custom.get_double1() << " ";
-    cout << "Received double 1: " << recv_custom_object.get_double1() << endl;
+    cout << "Received double 1: " << recv_custom_object.get_double1() << '\n';
 
     FAIL_IF_NOT(soft_equiv(expected_custom.get_double1(), recv_custom_object.get_double1()));
     FAIL_IF_NOT(soft_equiv(expected_custom.get_double2(), recv_custom_object.get_double2()));
@@ -1045,17 +1060,17 @@ void test_send_custom(rtt_dsxx::UnitTest &ut) {
     Custom expected_custom(left);
 
     cout << "Expected integers: " << expected_custom.get_int1() << " " << expected_custom.get_int2()
-         << " " << expected_custom.get_int3() << endl;
+         << " " << expected_custom.get_int3() << '\n';
     cout << "Received integers: " << recv_custom_object_block.get_int1() << " "
          << recv_custom_object_block.get_int2() << " " << recv_custom_object_block.get_int3()
-         << endl;
+         << '\n';
 
     FAIL_IF_NOT(expected_custom.get_int1() == recv_custom_object_block.get_int1());
     FAIL_IF_NOT(expected_custom.get_int2() == recv_custom_object_block.get_int2());
     FAIL_IF_NOT(expected_custom.get_int3() == recv_custom_object_block.get_int3());
 
     cout << "Expected double 1: " << expected_custom.get_double1() << " "
-         << "Received double 1: " << recv_custom_object_block.get_double1() << endl;
+         << "Received double 1: " << recv_custom_object_block.get_double1() << '\n';
 
     FAIL_IF_NOT(soft_equiv(expected_custom.get_double1(), recv_custom_object_block.get_double1()));
     FAIL_IF_NOT(soft_equiv(expected_custom.get_double2(), recv_custom_object_block.get_double2()));

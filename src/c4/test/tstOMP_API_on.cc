@@ -9,10 +9,11 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "dsxx/config.h" // OPENMP_FOUND will be set here
 #include "c4/c4_omp.h"
 #include <functional> // std::function
+#include <string>
 
 #ifdef OPENMP_FOUND
 
@@ -23,6 +24,9 @@ using rtt_dsxx::UnitTest;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 void check_set_get(UnitTest &ut) {
+
+  // NOLINTBEGIN(misc-include-cleaner)
+
   int const init_n = get_omp_num_threads();
   set_omp_num_threads(39);
   // use the direct OMP interface to check number of threads was set correctly
@@ -47,6 +51,9 @@ void check_set_get(UnitTest &ut) {
   get_omp_schedule(kind_check, chunk_check);
   FAIL_IF_NOT(kind == kind_check);
   FAIL_IF_NOT(chunk_size == chunk_check);
+
+  // NOLINTEND(misc-include-cleaner)
+
   return;
 } // check_set_get
 

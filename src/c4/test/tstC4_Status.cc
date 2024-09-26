@@ -4,12 +4,15 @@
  * \author Robert B. Lowrie
  * \date   Friday May 26 19:58:19 2017
  * \brief  Unit test for C4_Status class.
- * \note   Copyright (C) 2017-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2017-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
+#include "c4/C4_Status.hh"
 #include "c4/ParallelUnitTest.hh"
+#include <cstdint>
 #include <vector>
 
 using namespace std;

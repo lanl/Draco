@@ -8,9 +8,12 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/global_containers.hh"
-#include <cmath>
+#include <cstddef>
+#include <map>
 #include <set>
 
 using namespace std;

@@ -9,9 +9,17 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/Global_Timer.hh"
 #include "c4/ParallelUnitTest.hh"
+#include "c4/Timer.hh"
+#include <cmath>   // fabs
+#include <cstddef> // size_t
+#include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -19,7 +27,6 @@
 
 void wall_clock_test(rtt_dsxx::UnitTest &ut) {
   using std::cout;
-  using std::endl;
   using std::ostringstream;
   using std::set;
   using std::string;
@@ -31,7 +38,7 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
 
   Global_Timer do_timer("do_timer");
-  Global_Timer do_not_timer("do_not_timer");
+  Global_Timer const do_not_timer("do_not_timer");
 
   if (do_timer.is_active()) {
     ut.failure("do_timer should NOT be active");
@@ -51,12 +58,12 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
   double const wcr(rtt_c4::wall_clock_resolution());
   if (wcr > 0.0 && wcr <= 1000.0) {
     ostringstream msg;
-    msg << "The timer has a wall clock resoution of " << wcr << " ticks." << endl;
+    msg << "The timer has a wall clock resoution of " << wcr << " ticks.\n";
     PASSMSG(msg.str());
   } else {
     ostringstream msg;
     msg << "The timer does not appear to have a reasonable resolution."
-        << " rtt_c4::wall_clock_resolution() = " << wcr << " ticks." << endl;
+        << " rtt_c4::wall_clock_resolution() = " << wcr << " ticks.\n";
     FAILMSG(msg.str());
   }
 
@@ -85,7 +92,7 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
 #else
   double const prec(4.0 * t.posix_err());
 #endif
-  double begin(rtt_c4::wall_clock_time());
+  double const begin(rtt_c4::wall_clock_time());
 
   t.start();
 
@@ -93,15 +100,15 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
 
   // do some work
   if (rtt_c4::node() == 0)
-    std::cout << "\nDoing some work..." << std::endl;
-  size_t len(10000000);
+    std::cout << "\nDoing some work...\n";
+  size_t const len(10000000);
   std::vector<double> foo(len);
   for (size_t i = 0; i < len; ++i) {
     auto const d(static_cast<double>(i + 1));
     foo[i] = std::sqrt(std::log(d * 3.14) * std::fabs(std::cos(d / 3.14)));
   }
 
-  double end = rtt_c4::wall_clock_time();
+  double const end = rtt_c4::wall_clock_time();
   t.stop();
 
   FAIL_IF(t.on());
@@ -114,7 +121,7 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
     msg << "t.wall_clock() value does not match the expected value."
         << "\n\tend            = " << end << "\n\tbegin          = " << begin
         << "\n\tend-begin      = " << end - begin << "\n\tt.wall_clock() = " << t.wall_clock()
-        << "\n\terror          = " << error << "\n\tprec           = " << prec << endl;
+        << "\n\terror          = " << error << "\n\tprec           = " << prec << '\n';
     FAILMSG(msg.str());
   }
 
@@ -134,18 +141,17 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
   if (deltaWallTime > 0.0 || std::fabs(deltaWallTime) <= time_resolution) {
     ostringstream msg;
     msg << "The sum of cpu and user time is less than or equal to the\n\t"
-        << "reported wall clock time (within error bars = " << time_resolution << " secs.)."
-        << endl;
+        << "reported wall clock time (within error bars = " << time_resolution << " secs.).\n";
     PASSMSG(msg.str());
   } else {
     ostringstream msg;
-    msg << "The sum of cpu and user time exceeds the reported wall "
-        << "clock time.  Here are the details:"
+    msg << "The sum of cpu and user time exceeds the reported wall clock time.  Here are the "
+        << "details:"
         << "\n\tposix_error() = " << prec << " sec."
         << "\n\tdeltaWallTime = " << deltaWallTime << " sec."
         << "\n\tSystem time   = " << t.system_cpu() << " sec."
         << "\n\tUser time     = " << t.user_cpu() << " sec."
-        << "\n\tWall time     = " << t.wall_clock() << " sec." << endl;
+        << "\n\tWall time     = " << t.wall_clock() << " sec.\n";
     FAILMSG(msg.str());
   }
 
@@ -155,16 +161,15 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
 
   if (rtt_c4::node() == 0)
     cout << "Demonstration of the print() member function via the\n"
-         << "\toperator<<(ostream&,Timer&) overloaded operator.\n"
-         << endl;
+         << "\toperator<<(ostream&,Timer&) overloaded operator.\n\n";
 
-  cout << "Timer = " << t << endl;
+  cout << "Timer = " << t << '\n';
 
   //------------------------------------------------------//
   // Do a second timing:
   //------------------------------------------------------//
 
-  cout << "\nCreate a Timer Report after two timing cycles:\n" << endl;
+  cout << "\nCreate a Timer Report after two timing cycles:\n\n";
 
   t.start();
   for (size_t i = 0; i < len; ++i)
@@ -211,8 +216,8 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
   else
     FAILMSG("merge NOT okay");
 
-  // Exercise the global report and reset. Unfortunately, there's no easy way to
-  // check the validity of the output except to eyeball.
+  // Exercise the global report and reset. Unfortunately, there's no easy way to check the validity
+  // of the output except to eyeball.
 
   do_timer.stop();
   Global_Timer::report_all(cout);
@@ -226,19 +231,19 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
 void test_pause(rtt_dsxx::UnitTest &ut) {
   using rtt_c4::Timer;
 
-  std::cout << "Starting tstTime::test_pause tests..." << std::endl;
+  std::cout << "Starting tstTime::test_pause tests...\n";
 
-  double begin(rtt_c4::wall_clock_time());
+  double const begin(rtt_c4::wall_clock_time());
 
   double const pauseTime(1.0); // seconds
 
   Timer::pause(pauseTime);
 
-  double end(rtt_c4::wall_clock_time());
+  double const end(rtt_c4::wall_clock_time());
 
   FAIL_IF(end - begin < pauseTime);
 
-  std::cout << "Starting tstTime::test_pause tests...done\n" << std::endl;
+  std::cout << "Starting tstTime::test_pause tests...done\n\n";
 
   return;
 }

@@ -8,6 +8,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
 #include "c4/ParallelUnitTest.hh"
 
 using namespace rtt_dsxx;

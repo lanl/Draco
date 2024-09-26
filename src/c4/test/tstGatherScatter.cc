@@ -4,16 +4,22 @@
  * \author Kent Budge
  * \date   Wed Apr 28 09:31:51 2010
  * \brief  Test c4::gather and c4::scatter functions
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/gatherv.hh"
 #include "c4/scatterv.hh"
+#include <algorithm> // std::equal
+#include <cstddef>   // size_t
+#include <iostream>
 #include <numeric>
+#include <string>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -400,11 +406,11 @@ void topology_report(UnitTest &ut) {
   size_t const my_mpi_rank = rtt_c4::node();
 
   if (my_mpi_rank == 0)
-    std::cout << "\nStarting topology_report()..." << std::endl;
+    std::cout << "\nStarting topology_report()...\n";
 
   // Store proc name on local proc
   std::string my_pname = rtt_c4::get_processor_name();
-  size_t namelen = my_pname.size();
+  size_t const namelen = my_pname.size();
 
   // Create a container on IO proc to hold names of all nodes.
   vector<std::string> procnames(mpi_ranks);
@@ -436,10 +442,10 @@ void topology_report(UnitTest &ut) {
       std::cout << "\n  - MPI rank " << i << " is on " << procnames[i];
       FAIL_IF(procnames[i].size() < 1);
     }
-    std::cout << std::endl;
+    std::cout << '\n';
 
-    // Generate a map with the node name as the key and a list of MPI ranks as a
-    // vector<int> of data.
+    // Generate a map with the node name as the key and a list of MPI ranks as a vector<int> of
+    // data.
 
     vector<vector<size_t>> map_proc_to_ranks(unique_processor_names.size());
     for (size_t i = 0; i < mpi_ranks; ++i) {
@@ -458,7 +464,7 @@ void topology_report(UnitTest &ut) {
       for (auto const i : map_proc_to_ranks[j])
         std::cout << map_proc_to_ranks[j][i] << ",";
     }
-    std::cout << std::endl;
+    std::cout << '\n';
   }
   return;
 }

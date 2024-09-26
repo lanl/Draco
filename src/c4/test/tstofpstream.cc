@@ -4,14 +4,17 @@
  * \author Kent Budge
  * \date   Wed Apr 28 09:31:51 2010
  * \brief  Test c4::determinate_swap and c4::indeterminate_swap functions
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/ofpstream.hh"
+#include <fstream>
 #include <sstream>
+#include <string>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -24,16 +27,16 @@ using namespace rtt_c4;
 void tstofpstream(UnitTest &ut) {
 
   unsigned const pid = rtt_c4::node();
-  string filename = "tstofpstream_" + std::to_string(rtt_c4::nodes()) + ".txt";
+  string const filename = "tstofpstream_" + std::to_string(rtt_c4::nodes()) + ".txt";
 
   {
     ofpstream out(filename);
 
-    out << "MPI rank " << pid << " reporting ..." << endl;
+    out << "MPI rank " << pid << " reporting ...\n";
     out.send();
     out.shrink_to_fit();
 
-    out << "MPI rank " << pid << " reporting a second time ..." << endl;
+    out << "MPI rank " << pid << " reporting a second time ...\n";
     out.shrink_to_fit();
     out.send();
   }
@@ -42,7 +45,7 @@ void tstofpstream(UnitTest &ut) {
   {
     ofpstream out(filename);
     if (pid != 2)
-      out << pid << endl;
+      out << pid << '\n';
     out.send();
 
     // Read file on head rank, check for correct lines
@@ -76,7 +79,7 @@ void tstofpstream_bin(UnitTest &ut) {
 
   int pid = rtt_c4::node();
 
-  std::string filename("tstofpstream_" + std::to_string(rtt_c4::nodes()) + ".bin");
+  std::string const filename("tstofpstream_" + std::to_string(rtt_c4::nodes()) + ".bin");
 
   // Binary write rank ids to file using ofpstream:
   {
