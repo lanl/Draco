@@ -9,9 +9,10 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "dsxx/config.h" // OPENMP_FOUND will be set here
 #include <functional>    // std::function
+#include <string>
 
 #ifdef OPENMP_FOUND
 #define ORIG_OPENMP_FOUND OPENMP_FOUND

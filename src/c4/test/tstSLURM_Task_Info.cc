@@ -6,15 +6,20 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Query_Env.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/SystemCall.hh"
+#include "dsxx/UnitTest.hh"
 #include "c4/SLURM_Task_Info.hh"
 #include <array>
-#include <cstdlib>
+#include <cerrno>     // errno
 #include <functional> // std::function
 #include <map>
-#include <thread>
+#include <sstream>
+#include <string>
+#include <tuple>
+#include <utility> // std::pair
 
 using rtt_dsxx::UnitTest;
 
@@ -26,8 +31,8 @@ using env_store_t = std::map<std::string, env_store_value>;
  * recorded values so they can be restored later. */
 env_store_t clean_env() {
   // for each key, is it defined? If so, record the value, then unset it. If not, note that.
-  std::array<std::string, 3> slurm_keys = {"SLURM_CPUS_PER_TASK", "SLURM_NTASKS",
-                                           "SLURM_JOB_NUM_NODES"};
+  std::array<std::string, 3> const slurm_keys = {"SLURM_CPUS_PER_TASK", "SLURM_NTASKS",
+                                                 "SLURM_JOB_NUM_NODES"};
   env_store_t store{};
   for (auto &k : slurm_keys) {
     // We're assuming none of those flags were set to something like 2 billion
@@ -39,11 +44,11 @@ env_store_t clean_env() {
       std::stringstream storestr;
       storestr << ival;
       store.insert({k, {true, storestr.str()}});
-      int unset_ok = draco_unsetenv(k.c_str());
+      int const unset_ok = draco_unsetenv(k.c_str());
       if (0 != unset_ok) {
         std::cout << __FUNCTION__ // NOLINT
                   << ":" << __LINE__ << "Failed to unset environment variable " << k
-                  << "! errno = " << errno << std::endl;
+                  << "! errno = " << errno << '\n';
       }
     } else {
       store.insert({k, {false, ""}});
@@ -63,18 +68,18 @@ void restore_env(env_store_t const &store) {
     bool const &was_defined{val.first};
     if (was_defined) {
       std::string const &val_str{val.second};
-      int set_ok = draco_setenv(key.c_str(), val_str.c_str());
+      int const set_ok = draco_setenv(key.c_str(), val_str.c_str());
       if (0 != set_ok) {
         std::cout << __FUNCTION__ // NOLINT
                   << ":" << __LINE__ << "Failed to set environment variable! errno = " << errno
-                  << std::endl;
+                  << '\n';
       }
     } else {
-      int unset_ok = draco_unsetenv(key.c_str());
+      int const unset_ok = draco_unsetenv(key.c_str());
       if (0 != unset_ok) {
         std::cout << __FUNCTION__ // NOLINT
                   << ":" << __LINE__ << "Failed to unset environment variable! errno = " << errno
-                  << std::endl;
+                  << '\n';
       }
     }
   } // for things in store
@@ -86,7 +91,7 @@ void restore_env(env_store_t const &store) {
 void test_instantiate_SLURM_Info(UnitTest &ut) {
   /* Test instantiating SLURM_Task_Info in a 'clean' environment */
   auto env_tmp = clean_env();
-  rtt_c4::SLURM_Task_Info ti;
+  rtt_c4::SLURM_Task_Info const ti;
   FAIL_IF(ti.is_cpus_per_task_set());
   FAIL_IF(ti.is_ntasks_set());
   FAIL_IF(ti.is_job_num_nodes_set());
@@ -104,11 +109,11 @@ void test_SLURM_Info(UnitTest &ut) {
   auto orig_env = clean_env();
   int const iset_cpus_per_task{21}, iset_ntasks{341}, iset_job_num_nodes{1001};
   const char *set_cpus_per_task{"21"}, *set_ntasks{"341"}, *set_job_num_nodes{"1001"};
-  env_store_t test_env = {{"SLURM_CPUS_PER_TASK", {true, set_cpus_per_task}},
-                          {"SLURM_NTASKS", {true, set_ntasks}},
-                          {"SLURM_JOB_NUM_NODES", {true, set_job_num_nodes}}};
+  env_store_t const test_env = {{"SLURM_CPUS_PER_TASK", {true, set_cpus_per_task}},
+                                {"SLURM_NTASKS", {true, set_ntasks}},
+                                {"SLURM_JOB_NUM_NODES", {true, set_job_num_nodes}}};
   restore_env(test_env);
-  rtt_c4::SLURM_Task_Info ti;
+  rtt_c4::SLURM_Task_Info const ti;
   FAIL_IF_NOT(ti.is_cpus_per_task_set());
   FAIL_IF_NOT(ti.is_ntasks_set());
   FAIL_IF_NOT(ti.is_job_num_nodes_set());
@@ -126,10 +131,10 @@ void test_SLURM_Info_partial(UnitTest &ut) {
   auto orig_env = clean_env();
   int const iset_cpus_per_task{21}, iset_job_num_nodes{1001};
   const char *set_cpus_per_task{"21"}, *set_job_num_nodes{"1001"};
-  env_store_t test_env = {{"SLURM_CPUS_PER_TASK", {true, set_cpus_per_task}},
-                          {"SLURM_JOB_NUM_NODES", {true, set_job_num_nodes}}};
+  env_store_t const test_env = {{"SLURM_CPUS_PER_TASK", {true, set_cpus_per_task}},
+                                {"SLURM_JOB_NUM_NODES", {true, set_job_num_nodes}}};
   restore_env(test_env);
-  rtt_c4::SLURM_Task_Info ti;
+  rtt_c4::SLURM_Task_Info const ti;
   FAIL_IF_NOT(ti.is_cpus_per_task_set());
   FAIL_IF(ti.is_ntasks_set());
   FAIL_IF_NOT(ti.is_job_num_nodes_set());

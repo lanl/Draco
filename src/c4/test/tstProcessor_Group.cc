@@ -4,14 +4,20 @@
  * \author Kent Budge
  * \date   Tue Sep 21 11:45:44 2004
  * \brief  Unit tests for the Processor_Group class and member functions.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/Processor_Group.hh"
+#include <cstddef> // size_t
+#include <cstdint> // UINT32_MAX
+#include <string>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -33,7 +39,7 @@ void tstProcessor_Group(rtt_dsxx::UnitTest &ut) {
   Processor_Group comm(1);
 #endif // C4_MPI
 
-  std::string pm = "Processor_Group constructed on pid " + to_string(pid) + ".";
+  std::string const pm = "Processor_Group constructed on pid " + to_string(pid) + ".";
   PASSMSG(pm);
 
   // Test sum

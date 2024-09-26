@@ -4,11 +4,12 @@
  * \author Kelly Thompson
  * \date   Tue Nov  1 13:24:19 2005
  * \brief  Test functions provided by C4_Serial.cc/.hh
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 
 using namespace std;
@@ -16,8 +17,7 @@ using namespace std;
 //------------------------------------------------------------------------------------------------//
 // TESTS:
 //
-// These tests are designed to test functionality provided in
-// C4_Serial.cc/.hh.
+// These tests are designed to test functionality provided in C4_Serial.cc/.hh.
 //------------------------------------------------------------------------------------------------//
 
 void tstScalar(rtt_dsxx::UnitTest &ut) {
@@ -91,8 +91,7 @@ void tstScalar(rtt_dsxx::UnitTest &ut) {
     PASSMSG("For --with-c4=scalar, receive() did not return C4_SUCCCESS.");
   }
 
-  // Test send_async<T>(const T*,int,int,int) and
-  // receive_async<T>(T*,int,int,int) functions:
+  // Test send_async<T>(const T*,int,int,int) and receive_async<T>(T*,int,int,int) functions:
   rtt_c4::C4_Req request(rtt_c4::send_async(&int3, 1, 0, 0));
   rtt_c4::receive_async(request, &int3, 1, 0, 0);
 

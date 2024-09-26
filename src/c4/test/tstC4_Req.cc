@@ -7,9 +7,13 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include <array>
+#include <iostream>
 
 using namespace std;
 
@@ -21,7 +25,7 @@ void tstCopyConstructor(rtt_dsxx::UnitTest &ut) {
   using rtt_c4::C4_Req;
 
   C4_Req requestA;
-  C4_Req requestB(requestA);
+  C4_Req const requestB(requestA);
 
   // The behavior of the copy constructor is not obvious.  If requestA has not
   // been used (inuse() returns false) then requestA != requestB.
@@ -64,6 +68,7 @@ void tstTraits(rtt_dsxx::UnitTest &ut) {
   }
 #ifdef C4_MPI
   {
+    // NOLINTBEGIN(misc-include-cleaner)
     using rtt_c4::MPI_Traits;
     FAIL_IF_NOT(MPI_Traits<unsigned char>::element_type() == MPI_UNSIGNED_CHAR);
     FAIL_IF_NOT(MPI_Traits<short>::element_type() == MPI_SHORT);
@@ -71,6 +76,7 @@ void tstTraits(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(MPI_Traits<unsigned int>::element_type() == MPI_UNSIGNED);
     FAIL_IF_NOT(MPI_Traits<unsigned long>::element_type() == MPI_UNSIGNED_LONG);
     FAIL_IF_NOT(MPI_Traits<long double>::element_type() == MPI_LONG_DOUBLE);
+    // NOLINTEND(misc-include-cleaner)
   }
 #endif
 
@@ -82,14 +88,14 @@ void tstWait(rtt_dsxx::UnitTest &ut) {
   using namespace rtt_c4;
 
   if (rtt_c4::node() > 0) {
-    cout << "sending from processor " << get_processor_name() << ':' << endl;
+    cout << "sending from processor " << get_processor_name() << ":\n";
     array<int, 1> buffer{0};
     buffer[0] = node();
     C4_Req outgoing = send_async(buffer.data(), 1U, 0);
-    unsigned result = wait_any(1U, &outgoing);
+    unsigned const result = wait_any(1U, &outgoing);
     FAIL_IF_NOT(result == 0);
   } else {
-    cout << "receiving to processor " << get_processor_name() << ':' << endl;
+    cout << "receiving to processor " << get_processor_name() << ":\n";
     Check(rtt_c4::nodes() < 5);
     array<C4_Req, 4> requests;
     array<bool, 4> done = {false, false, false, false};
@@ -99,7 +105,7 @@ void tstWait(rtt_dsxx::UnitTest &ut) {
       done[p] = false;
     }
     for (int c = 1; c < nodes(); ++c) {
-      unsigned result = wait_any(nodes(), requests.data());
+      unsigned const result = wait_any(nodes(), requests.data());
       FAIL_IF(done[result]);
       done[result] = true;
     }

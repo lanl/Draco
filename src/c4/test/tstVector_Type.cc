@@ -9,9 +9,13 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Datatype.hh"
 #include "c4/C4_Functions.hh"
+#include "c4/C4_Tags.hh"
 #include "c4/ParallelUnitTest.hh"
 #include <array>
+#include <cstddef> // size_t
 
 using namespace std;
 using namespace rtt_c4;
@@ -22,7 +26,7 @@ using namespace rtt_c4;
 void test_simple(rtt_dsxx::UnitTest &ut) {
   // Create vector type for (1:2, 2:4) subset of a 4x6 double matrix.
   C4_Datatype data_type;
-  int ierr = create_vector_type<double>(3, 2, 4, data_type);
+  int const ierr = create_vector_type<double>(3, 2, 4, data_type);
 
   if (ierr == C4_SUCCESS)
     PASSMSG("created vector type successfully");
@@ -33,7 +37,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
   array<double, 4 * 6> myarray{};
 
-  unsigned proc = node();
+  unsigned const proc = node();
 
   for (size_t j = 0; j < 6; ++j) {
     for (size_t i = 0; i < 4; ++i) {
@@ -44,7 +48,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
     }
   }
 
-  unsigned nproc = nodes();
+  unsigned const nproc = nodes();
   if (proc == 0) {
     for (unsigned p = 1; p < nproc; ++p)
       send_udt(&myarray[1 + 4 * 2], 1, p, data_type);

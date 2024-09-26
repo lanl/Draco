@@ -4,13 +4,13 @@
  * \author Kelly Thompson
  * \date   Thursday, Nov 12, 2015, 10:35 am
  * \brief  Test C++ main linking a Fortran library that uses MPI
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include <iostream>
+#include "dsxx/UnitTest.hh"
+#include <cstddef> // size_t
 
 //------------------------------------------------------------------------------------------------//
 // forward declaration of f90 functions

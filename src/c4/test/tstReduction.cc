@@ -9,7 +9,15 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
+#include <algorithm> // std::equal
+#include <cstddef>   // size_t
+#include <cstdint>   // uint32_t
+#include <iostream>
+#include <limits>
+#include <vector>
 
 using namespace std;
 
@@ -53,7 +61,7 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(xint == int_answer);
   FAIL_IF_NOT(xint_recv == int_answer);
   if (!rtt_c4::node())
-    cout << "int: Global non-blocking sum: " << xint_recv << " answer: " << int_answer << endl;
+    cout << "int: Global non-blocking sum: " << xint_recv << " answer: " << int_answer << '\n';
 
   // Test with deprecated form of global_sum
   xint = rtt_c4::node() + 1;
@@ -1148,8 +1156,8 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   // sum on a node includes all previous node's value and the value of the current node
 
   // test ints
-  int xint = rtt_c4::node();
-  int xint_prefix_sum = prefix_sum(xint);
+  int const xint = rtt_c4::node();
+  int const xint_prefix_sum = prefix_sum(xint);
 
   int int_answer = 0;
   for (int i = 0; i < rtt_c4::nodes(); i++) {
@@ -1158,7 +1166,7 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   std::cout << "int: Prefix sum on this node: " << xint_prefix_sum;
-  std::cout << " Answer: " << int_answer << std::endl;
+  std::cout << " Answer: " << int_answer << '\n';
 
   FAIL_IF_NOT(xint_prefix_sum == int_answer);
 
@@ -1166,7 +1174,7 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   uint32_t xuint = rtt_c4::node();
   if (rtt_c4::node() == 0)
     xuint = std::numeric_limits<int>::max();
-  uint32_t xuint_prefix_sum = prefix_sum(xuint);
+  uint32_t const xuint_prefix_sum = prefix_sum(xuint);
 
   uint32_t uint_answer = std::numeric_limits<int>::max();
   for (int i = 0; i < rtt_c4::nodes(); i++) {
@@ -1175,13 +1183,13 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   std::cout << "uint32_t: Prefix sum on this node: " << xuint_prefix_sum
-            << " Answer: " << uint_answer << std::endl;
+            << " Answer: " << uint_answer << '\n';
 
   FAIL_IF_NOT(xuint_prefix_sum == uint_answer);
 
   // test longs
-  long xlong = rtt_c4::node() + 1000;
-  long xlong_prefix_sum = prefix_sum(xlong);
+  long const xlong = rtt_c4::node() + 1000;
+  long const xlong_prefix_sum = prefix_sum(xlong);
 
   long long_answer = 0;
   for (int i = 0; i < rtt_c4::nodes(); i++) {
@@ -1190,13 +1198,13 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   std::cout << "long: Prefix sum on this node: " << xlong_prefix_sum << " Answer: " << long_answer
-            << std::endl;
+            << '\n';
 
   FAIL_IF_NOT(xlong_prefix_sum == long_answer);
 
   // test long long
-  long long xllong = rtt_c4::node() + 1000L;
-  long long xllong_prefix_sum = prefix_sum(xllong);
+  long long const xllong = rtt_c4::node() + 1000L;
+  long long const xllong_prefix_sum = prefix_sum(xllong);
 
   long long llong_answer = 0;
   for (auto i = 0; i < rtt_c4::nodes(); i++) {
@@ -1205,7 +1213,7 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   std::cout << "long long: Prefix sum on this node: " << xllong_prefix_sum
-            << " Answer: " << llong_answer << std::endl;
+            << " Answer: " << llong_answer << '\n';
 
   FAIL_IF_NOT(xllong_prefix_sum == llong_answer);
 
@@ -1213,7 +1221,7 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   uint64_t xulong = rtt_c4::node();
   if (rtt_c4::node() == 0)
     xulong = std::numeric_limits<uint32_t>::max();
-  uint64_t xulong_prefix_sum = prefix_sum(xulong);
+  uint64_t const xulong_prefix_sum = prefix_sum(xulong);
 
   uint64_t ulong_answer = std::numeric_limits<uint32_t>::max();
   for (int i = 0; i < rtt_c4::nodes(); i++) {
@@ -1222,13 +1230,13 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   std::cout << "uint64_t: Prefix sum on this node: " << xulong_prefix_sum
-            << " Answer: " << ulong_answer << std::endl;
+            << " Answer: " << ulong_answer << '\n';
 
   FAIL_IF_NOT(xulong_prefix_sum == ulong_answer);
 
   // test floats
   auto xfloat = static_cast<float>(rtt_c4::node() + 0.01);
-  float xfloat_prefix_sum = prefix_sum(xfloat);
+  float const xfloat_prefix_sum = prefix_sum(xfloat);
 
   float float_answer = 0.0;
   for (int i = 0; i < rtt_c4::nodes(); i++) {
@@ -1237,13 +1245,13 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   std::cout << "float: Prefix sum on this node: " << xfloat_prefix_sum
-            << " Answer: " << float_answer << std::endl;
+            << " Answer: " << float_answer << '\n';
 
   FAIL_IF_NOT(soft_equiv(xfloat_prefix_sum, float_answer));
 
   // test doubles
-  double xdbl = static_cast<double>(rtt_c4::node()) + 1.0e-9;
-  double xdbl_prefix_sum = prefix_sum(xdbl);
+  double const xdbl = static_cast<double>(rtt_c4::node()) + 1.0e-9;
+  double const xdbl_prefix_sum = prefix_sum(xdbl);
 
   double dbl_answer = 0.0;
   for (int i = 0; i < rtt_c4::nodes(); i++) {
@@ -1253,7 +1261,7 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
 
   std::cout.precision(16);
   std::cout << "double: Prefix sum on this node: " << xdbl_prefix_sum << " Answer: " << dbl_answer
-            << std::endl;
+            << '\n';
 
   FAIL_IF_NOT(soft_equiv(xdbl_prefix_sum, dbl_answer));
 
@@ -1287,7 +1295,7 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
 
   for (uint32_t i = 0; i < xint.size(); ++i) {
     std::cout << "int: Prefix sum on this node: " << xint[i] << " Answer: " << int_answer[i]
-              << std::endl;
+              << '\n';
     FAIL_IF_NOT(xint[i] == int_answer[i]);
   }
 
@@ -1309,7 +1317,7 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
 
   for (uint32_t i = 0; i < xuint.size(); ++i) {
     std::cout << "uint32_t: Prefix sum on this node: " << xuint[i] << " Answer: " << uint_answer[i]
-              << std::endl;
+              << '\n';
     FAIL_IF_NOT(xuint[i] == uint_answer[i]);
   }
 
@@ -1331,7 +1339,7 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
 
   for (uint32_t i = 0; i < xlong.size(); ++i) {
     std::cout << "int64_t: Prefix sum on this node: " << xlong[i] << " Answer: " << long_answer[i]
-              << std::endl;
+              << '\n';
     FAIL_IF_NOT(xlong[i] == long_answer[i]);
   }
 
@@ -1354,7 +1362,7 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
 
   for (uint32_t i = 0; i < xulong.size(); ++i) {
     std::cout << "uint64_t: Prefix sum on this node: " << xulong[i]
-              << " Answer: " << ulong_answer[i] << std::endl;
+              << " Answer: " << ulong_answer[i] << '\n';
     FAIL_IF_NOT(xulong[i] == ulong_answer[i]);
   }
 
@@ -1376,7 +1384,7 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
   // comparison between floats after operations needs soft_equiv with a loose tolerance
   for (uint32_t i = 0; i < xfloat.size(); ++i) {
     std::cout << "float: Prefix sum on this node: " << xfloat[i];
-    std::cout << " Answer: " << float_answer[i] << std::endl;
+    std::cout << " Answer: " << float_answer[i] << '\n';
     FAIL_IF_NOT(soft_equiv(xfloat[i], float_answer[i], float(1.0e-6)));
   }
 
@@ -1397,7 +1405,7 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
 
   for (uint32_t i = 0; i < xdouble.size(); ++i) {
     std::cout << "double: Prefix sum on this node: " << xdouble[i]
-              << " Answer: " << double_answer[i] << std::endl;
+              << " Answer: " << double_answer[i] << '\n';
     FAIL_IF_NOT(soft_equiv(xdouble[i], double_answer[i]));
   }
 

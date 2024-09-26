@@ -9,11 +9,16 @@
 
 #include "dsxx/DracoMath.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/QuoWrapper.hh"
 #include "c4/SLURM_Task_Info.hh"
 #include "c4/bin/ythi.hh"
 #include <chrono>
+#include <cstdint> // uint32_t
+#include <iostream>
+#include <thread>
 
 //------------------------------------------------------------------------------------------------//
 // Helper functions
@@ -25,7 +30,7 @@ void sync_output() {
   std::cout.flush();
 #ifdef C4_MPI
 #ifdef HAVE_LIBQUO
-  QUO_barrier(rtt_c4::QuoWrapper::fetch_quo());
+  QUO_barrier(rtt_c4::QuoWrapper::fetch_quo()); // NOLINT(misc-include-cleaner)
   rtt_c4::global_barrier();
 #endif
 #endif
@@ -41,7 +46,7 @@ void quo_hw_report(rtt_dsxx::UnitTest &ut) {
   using namespace std;
 
   if (rtt_c4::rank() == 0)
-    cout << "\n>>> Starting the quo_hw_report test..." << endl;
+    cout << "\n>>> Starting the quo_hw_report test...\n";
 
     // Only run these checks if MPI is available.
 #ifdef C4_MPI
@@ -64,7 +69,7 @@ void quo_hw_report(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(rtt_c4::QuoWrapper::num_mpi_ranks_per_node() <= rtt_c4::nranks());
   FAIL_IF_NOT(rtt_c4::QuoWrapper::bindings().length() > 0);
 
-  bool using_hyperthreads =
+  bool const using_hyperthreads =
       (rtt_c4::QuoWrapper::num_cores() != rtt_c4::QuoWrapper::num_hw_threads()) ? true : false;
   if (rtt_c4::rank() == 0) {
     cout << "\nThe current application has access to the following resources:"
@@ -77,20 +82,19 @@ void quo_hw_report(rtt_dsxx::UnitTest &ut) {
     cout << "\n - Sockets per node           : " << rtt_c4::QuoWrapper::num_sockets_per_node()
          << "\n - NumaNodes per node         : " << rtt_c4::QuoWrapper::num_numanodes_per_node()
          << "\n - MPI ranks on this node     : " << rtt_c4::QuoWrapper::num_mpi_ranks_per_node()
-         << endl
-         << endl;
+         << "\n\n";
   }
   cout << "MPI Rank " << rtt_c4::rank() << " - Bindings: " << rtt_c4::QuoWrapper::bindings()
-       << endl;
+       << '\n';
   sync_output();
 
   if (rtt_c4::rank() == 0)
-    cout << endl;
+    cout << '\n';
 
-  // If we have access to slurm, add checks to compare Libquo values to slurm values.  \c
+  // If we have access to slurm, add checks to compare Libquo values to slurm values. \c
   // is_job_num_nodes_set will only be true if SLURM is available.
   {
-    rtt_c4::SLURM_Task_Info sti;
+    rtt_c4::SLURM_Task_Info const sti;
     if (sti.is_job_num_nodes_set()) {
 
       // get_job_num_nodes == max nodes available to this process.
@@ -112,14 +116,14 @@ void quo_hw_report(rtt_dsxx::UnitTest &ut) {
         cout << "\n - ntasks (-n)        = " << sti.get_ntasks()
              << "\n - nnodes (-N)        = " << sti.get_job_num_nodes()
              << "\n - cpus per node      = " << sti.get_cpus_on_node()
-             << "\n - nodelist           = " << sti.get_nodelist() << endl;
+             << "\n - nodelist           = " << sti.get_nodelist() << '\n';
       }
     }
   }
   rtt_c4::global_barrier();
 
   if (rtt_c4::rank() == 0)
-    cout << endl;
+    cout << '\n';
 
 #else
   PASSMSG("Quo not found. Tests skipped.");
@@ -154,10 +158,12 @@ void quo_new_bindings(rtt_dsxx::UnitTest &ut) {
   using namespace std;
 
   if (rtt_c4::rank() == 0)
-    cout << "\n>>> Starting the quo_new_bindings test...\n" << endl;
+    cout << "\n>>> Starting the quo_new_bindings test...\n\n";
 
 #ifdef C4_MPI
 #ifdef HAVE_LIBQUO
+
+  // NOLINTBEGIN(misc-include-cleaner)
 
   // handle to the quo context.
   QUO_t *quo = rtt_c4::QuoWrapper::fetch_quo();
@@ -188,20 +194,18 @@ void quo_new_bindings(rtt_dsxx::UnitTest &ut) {
          << "\nmpi ranks       = " << rtt_c4::nranks()
          << "\nnproc_per_res (mpi ranks / numa) = " << nproc_per_res
          << "\nnum_workers (threads / mpi rank) = " << num_workers
-         << " (target value, +1 for threads/mpi-rank)"
-         << "\n"
-         << endl;
+         << " (target value, +1 for threads/mpi-rank)\n\n";
   }
 
   if (rtt_c4::rank() == 0)
-    cout << "\n>> Initial bindings and thread affinity...\n" << endl;
+    cout << "\n>> Initial bindings and thread affinity...\n\n";
 
   // print a report of mpi-rank and thread bindings
   rtt_c4::report_bindings(num_workers);
   sync_output();
 
   if (rtt_c4::rank() == 0)
-    cout << "\n>> Call Quo_auto_distrib and push new Quo context...\n" << endl;
+    cout << "\n>> Call Quo_auto_distrib and push new Quo context...\n\n";
   sync_output();
 
   // let quo distribute workers over the sockets, if res_assigned is 1 after this call then I have
@@ -223,11 +227,13 @@ void quo_new_bindings(rtt_dsxx::UnitTest &ut) {
   //}
 
   if (rtt_c4::rank() == 0)
-    cout << "\n>> Return to original bindings...\n" << endl;
+    cout << "\n>> Return to original bindings...\n\n";
   sync_output();
 
   rtt_c4::report_bindings(num_workers);
   sync_output();
+
+  // NOLINTEND(misc-include-cleaner)
 
 #endif
 #endif // C4_MPI
@@ -247,7 +253,7 @@ int main(int argc, char *argv[]) {
   try {
     quo_hw_report(ut);
     quo_new_bindings(ut);
-    std::cout << "==> done with tests. cleaning up..." << std::endl;
+    std::cout << "==> done with tests. cleaning up...\n";
   }
   UT_EPILOG(ut);
 }

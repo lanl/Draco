@@ -4,34 +4,34 @@
  * \author Kelly G. Thompson <kgt@lanl.gov>
  * \date   Thursday, Sep 13, 2018, 10:34 am
  * \brief  Test global timing functions in C4.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
 #include "c4/Global_Timer.hh"
 #include "c4/ParallelUnitTest.hh"
-#include <chrono>
-#include <sstream>
+#include <chrono> // NOLINT(misc-include-cleaner)
+#include <iostream>
 #include <thread>
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //
-// Note that rtt_c4::Global_Timer::set_global_activity(bool) seems to conflict
-// with rtt_c4::Timer, so this check was moved to an independent test.
+// Note that rtt_c4::Global_Timer::set_global_activity(bool) seems to conflict with rtt_c4::Timer,
+// so this check was moved to an independent test.
 //------------------------------------------------------------------------------------------------//
 
 // This test fails to run.  Probably incorrect Use of Global_Timer.
 void test_Global_Timer(rtt_dsxx::UnitTest &ut) {
   using namespace std::chrono_literals;
 
-  std::cout << "Starting tstTime::test_Global_Timer tests..." << std::endl;
+  std::cout << "Starting tstTime::test_Global_Timer tests...\n";
 
   rtt_c4::Global_Timer::set_global_activity(true);
 
   // sleep so the timer has something to report.
-  std::this_thread::sleep_for(500ms);
+  std::this_thread::sleep_for(500ms); // NOLINT(misc-include-cleaner)
 
   // This seems to report nothing, but it runs w/o error.
   rtt_c4::Global_Timer::report_all(std::cout);

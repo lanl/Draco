@@ -8,8 +8,11 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/Invert_Comm_Map.hh"
 #include "c4/ParallelUnitTest.hh"
+#include <cstddef> // size_ts
 
 using namespace std;
 using namespace rtt_c4;
@@ -150,7 +153,7 @@ void test_cyclic(rtt_c4::ParallelUnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void test_empty(rtt_c4::ParallelUnitTest &ut) {
 
-  Invert_Comm_Map_t to_map;
+  Invert_Comm_Map_t const to_map;
   Invert_Comm_Map_t from_map;
 
   invert_comm_map(to_map, from_map);

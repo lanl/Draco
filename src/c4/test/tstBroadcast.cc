@@ -7,10 +7,16 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
+#include <exception>
 #include <sstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -39,7 +45,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
   vector<double> v(10, 0.0);
   vector<float> vempty_ref;
   vector<float> vempty;
-  string msgref("hello, world!");
+  string const msgref("hello, world!");
   string msg;
 
   // assign on node 0

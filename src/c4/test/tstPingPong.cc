@@ -7,9 +7,15 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
+#include "c4/C4_Status.hh"
 #include "c4/ParallelUnitTest.hh"
+#include <cmath>
+#include <iostream>
 #include <sstream>
 
 using namespace std;
@@ -362,7 +368,7 @@ void probe_ping_pong(rtt_dsxx::UnitTest &ut) {
   C4_Req irr;
 
   // Only 2 procs so, dest is either 0 or 1.
-  int dest(std::abs(rtt_c4::node() - 1));
+  int const dest(std::abs(rtt_c4::node() - 1));
 
   // assign on node 1
   if (rtt_c4::node() == 1) {
@@ -491,7 +497,7 @@ void send_receive_ping_pong(rtt_dsxx::UnitTest &ut) {
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
-    std::cout << "This is " << rtt_c4::get_processor_name() << std::endl;
+    std::cout << "This is " << rtt_c4::get_processor_name() << '\n';
 
     Insist(rtt_c4::nodes() == 2, "This designed is designed for exactly 2 Processors.");
 

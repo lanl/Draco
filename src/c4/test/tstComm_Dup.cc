@@ -4,11 +4,13 @@
  * \author Thomas M. Evans
  * \date   Thu Jul 18 11:10:10 2002
  * \brief  test Communicator Duplication
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include <sstream>
 
@@ -25,8 +27,10 @@ void test_mpi_comm_dup(rtt_dsxx::UnitTest &ut) {
 
   Require(rtt_c4::nodes() == 4);
 
-  int node = rtt_c4::node();
+  int const node = rtt_c4::node();
   int snode = 0;
+
+  // NOLINTBEGIN(misc-include-cleaner)
 
   // split up nodes (two communicators) 0 -> 0, 2 -> 1 and 1 -> 0, 3 -> 1
 #if defined(OMPI_MAJOR_VERSION)
@@ -46,6 +50,8 @@ void test_mpi_comm_dup(rtt_dsxx::UnitTest &ut) {
     MPI_Comm_split(MPI_COMM_WORLD, 1, 0, &new_comm);
     MPI_Comm_rank(new_comm, &snode);
   }
+
+  // NOLINTEND(misc-include-cleaner)
 
   // we haven't set the communicator yet so we should still have 4 nodes
   FAIL_IF_NOT(rtt_c4::nodes() == 4);
@@ -103,7 +109,7 @@ void test_mpi_comm_dup(rtt_dsxx::UnitTest &ut) {
   }
 
   rtt_c4::global_barrier();
-  MPI_Comm_free(&new_comm);
+  MPI_Comm_free(&new_comm); // NOLINT(misc-include-cleaner)
 
 #else
   /* DRACO_C4 = SCALAR */
@@ -119,7 +125,7 @@ void test_comm_dup(rtt_dsxx::UnitTest &ut) {
 // we only run this test scalar
 #ifdef C4_SCALAR
 
-  int node = rtt_c4::node();
+  int const node = rtt_c4::node();
 
   // now duplicate the communicator on each processor
   rtt_c4::inherit(node);
@@ -140,9 +146,9 @@ void test_comm_dup(rtt_dsxx::UnitTest &ut) {
 // check duping/freeing MPI_COMM_WORLD
 #ifdef C4_MPI
 
-  int nodes = rtt_c4::nodes();
+  int const nodes = rtt_c4::nodes();
 
-  MPI_Comm comm_world = MPI_COMM_WORLD;
+  MPI_Comm comm_world = MPI_COMM_WORLD; // NOLINT(misc-include-cleaner)
   rtt_c4::inherit(comm_world);
 
   FAIL_IF_NOT(rtt_c4::nodes() == nodes);
