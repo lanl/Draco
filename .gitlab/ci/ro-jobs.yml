@@ -65,14 +65,14 @@ ro_rel_oneapi_deploy:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.4.0-oneapi"
+    DRACO_ENV: "lapse/2.5.2-oneapi"
     EXTRA_CMAKE_ARGS: -G Ninja -DUSE_IPO=OFF
 
 ro_deb_oneapi_deploy:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.4.0-oneapi"
+    DRACO_ENV: "lapse/2.5.2-oneapi"
 
 ro_deb_fulldiag_deploy:
   extends: .ro_deploy
@@ -150,20 +150,20 @@ ro_rel_oneapi_deploy_release:
   extends: .ro_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.4.0-oneapi"
+    DRACO_ENV: "lapse/2.5.2-oneapi"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST -DUSE_IPO=OFF
 
 ro_deb_oneapi_deploy_release:
   extends: .ro_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.4.0-oneapi"
+    DRACO_ENV: "lapse/2.5.2-oneapi"
 
 ro_rwdi_oneapi_deploy_release:
   extends: .ro_deploy_release
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/2.4.0-oneapi"
+    DRACO_ENV: "lapse/2.5.2-oneapi"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
 ro_rel_gnu_deploy_release:
@@ -238,14 +238,14 @@ ro_deb_oneapi_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.4.0-oneapi"
+    DRACO_ENV: "lapse/2.5.2-oneapi"
 
 ro_rel_oneapi_mr:
   stage: slowtest
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.4.0-oneapi"
+    DRACO_ENV: "lapse/2.5.2-oneapi"
     EXTRA_CMAKE_ARGS: -G Ninja -DUSE_IPO=OFF
 
 ro_deb_fulldiag_mr:
@@ -291,14 +291,14 @@ ro_rel_oneapi_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.4.0-oneapi"
+    DRACO_ENV: "lapse/2.5.2-oneapi"
     EXTRA_CMAKE_ARGS: -G Ninja -DUSE_IPO=OFF
 
 ro_deb_oneapi_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.4.0-oneapi"
+    DRACO_ENV: "lapse/2.5.2-oneapi"
 
 ro_deb_fulldiag_regress:
   extends: .ro_nightly
