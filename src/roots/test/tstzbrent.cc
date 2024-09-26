@@ -10,9 +10,13 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "roots/zbrac.hh"
 #include "roots/zbrent.hh"
+#include <cmath> // log, exp
+#include <exception>
 #include <iostream>
+#include <limits>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -22,18 +26,20 @@ using namespace rtt_roots;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 double foo(double x) { return log(x); }
-
 double foo_expm1(double x) { return exp(x) - 1.0; }
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 //! Functor class representation of log function for testing zbrent and zbrac.
-static class Zbrac_Test_Function {
+class Zbrac_Test_Function {
 public:
   double operator()(double x) const { return log(x); }
 } zbrac_test_function;
 
-//------------------------------------------------------------------------------------------------//
+} // namespace
 
+//------------------------------------------------------------------------------------------------//
 void tstzbrent(UnitTest &ut) {
   double x1 = 0.1, x2 = 10.0;
 
@@ -84,11 +90,10 @@ int main(int argc, char *argv[]) {
     ScalarUnitTest ut(argc, argv, release);
     tstzbrent(ut);
   } catch (std::exception &err) {
-    std::cout << "ERROR: While testing tstzbrent, " << err.what() << std::endl;
+    std::cout << "ERROR: While testing tstzbrent, " << err.what() << '\n';
     return 1;
   } catch (...) {
-    std::cout << "ERROR: While testing tstzbrent, "
-              << "An unknown exception was thrown." << std::endl;
+    std::cout << "ERROR: While testing tstzbrent, An unknown exception was thrown.\n";
     return 1;
   }
   return 0;

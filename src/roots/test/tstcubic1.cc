@@ -9,6 +9,7 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "roots/cubic1.hh"
 
 using namespace std;
@@ -22,7 +23,7 @@ using namespace rtt_roots;
 void tstcubic1(UnitTest &ut) {
   // Solve (x*x+1)*(x-1) = x*x*x-x*x+x-1 = 0
 
-  double root = cubic1(-1., 1., -1.);
+  double const root = cubic1(-1., 1., -1.);
 
   if (soft_equiv(root, 1.0)) {
     ut.passes("Correctly solved cubic equation");

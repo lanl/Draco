@@ -108,12 +108,13 @@ void lnsrch(RandomContainer const &xold, double const fold, RandomContainer cons
           lambda_1 = lambda;
           f2 = f1;
           f1 = f;
-          double x1 = f1 - slope * lambda_1 - fold;
-          double x2 = f2 - slope * lambda_2 - fold;
-          double rden = 1 / (lambda_1 - lambda_2);
-          double a = rden * (x1 / square(lambda_1) - x2 / square(lambda_2));
-          double b = rden * (-lambda_2 * x1 / square(lambda_1) + lambda_1 * x2 / square(lambda_2));
-          double det = b * b - 3 * a * slope;
+          double const x1 = f1 - slope * lambda_1 - fold;
+          double const x2 = f2 - slope * lambda_2 - fold;
+          double const rden = 1 / (lambda_1 - lambda_2);
+          double const a = rden * (x1 / square(lambda_1) - x2 / square(lambda_2));
+          double const b =
+              rden * (-lambda_2 * x1 / square(lambda_1) + lambda_1 * x2 / square(lambda_2));
+          double const det = b * b - 3 * a * slope;
           if (det < 0)
             lambda = 0.5 * lambda;
           else
