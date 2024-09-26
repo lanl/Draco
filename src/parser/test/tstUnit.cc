@@ -3,13 +3,16 @@
  * \file   parser/test/tstUnit.cc
  * \author Kent G. Budge
  * \date   Feb 18 2003
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "parser/Unit.hh"
+#include <iostream>
+#include <ostream>
 #include <sstream>
 
 using namespace std;
@@ -21,25 +24,25 @@ using namespace rtt_dsxx;
 //------------------------------------------------------------------------------------------------//
 
 void unit_test(UnitTest &ut) {
-  Unit tstC = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+  Unit const tstC = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
   if (C != tstC)
     FAILMSG("unit C does NOT have expected dimensions");
   else
     PASSMSG("unit C has expected dimensions");
 
-  Unit tstHz = {0, 0, -1, 0, 0, 0, 0, 0, 0, 1};
+  Unit const tstHz = {0, 0, -1, 0, 0, 0, 0, 0, 0, 1};
   if (Hz != tstHz)
     FAILMSG("unit Hz does NOT have expected dimensions");
   else
     PASSMSG("unit Hz has expected dimensions");
 
-  Unit tstN = {1, 1, -2, 0, 0, 0, 0, 0, 0, 1};
+  Unit const tstN = {1, 1, -2, 0, 0, 0, 0, 0, 0, 1};
   if (N != tstN)
     FAILMSG("unit N does NOT have expected dimensions");
   else
     PASSMSG("unit N has expected dimensions");
 
-  Unit tstJ = {2, 1, -2, 0, 0, 0, 0, 0, 0, 1};
+  Unit const tstJ = {2, 1, -2, 0, 0, 0, 0, 0, 0, 1};
   if (J != tstJ)
     FAILMSG("unit J does NOT have expected dimensions");
   else
@@ -52,12 +55,11 @@ void unit_test(UnitTest &ut) {
       PASSMSG("correct text representation of J");
     else {
       FAILMSG("NOT correct text representation of J");
-      std::cout << "\tfound buffer.str() = " << buffer.str() << "\n\texpected '1 m^2-kg-s^-2'"
-                << std::endl;
+      std::cout << "\tfound buffer.str() = " << buffer.str() << "\n\texpected '1 m^2-kg-s^-2'\n";
     }
   }
 
-  Unit tstinch = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0.0254};
+  Unit const tstinch = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0.0254};
   if (inch == tstinch)
     PASSMSG("unit inch has expected dimensions");
   else
@@ -65,8 +67,8 @@ void unit_test(UnitTest &ut) {
 
   // Test divisor
   {
-    Unit five_cm = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0.05};
-    Unit one_cm = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0.01};
+    Unit const five_cm = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0.05};
+    Unit const one_cm = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0.01};
     if (five_cm / 5.0 == one_cm) {
       PASSMSG("Units: Division by a constant works.");
     } else {
@@ -74,86 +76,86 @@ void unit_test(UnitTest &ut) {
       buffer << "Units: Division by a constant fails.\n\t"
              << "five_cm/5.0 = " << five_cm / 5.0 << "\n\t"
              << "one_cm = " << one_cm << "\n\t"
-             << "test five_cm/5.0 == one_cm ?" << std::endl;
+             << "test five_cm/5.0 == one_cm ?\n";
       FAILMSG(buffer.str());
     }
   }
 
   {
-    Unit t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
-    Unit t2 = {0.1, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t2 = {0.1, 0, 1, 1, 0, 0, 0, 0, 0, 1};
     if (t1 == t2)
       FAILMSG("failed to detect length difference");
     if (is_compatible(t1, t2))
       FAILMSG("failed to detect length difference");
   }
   {
-    Unit t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
-    Unit t2 = {0, 0.1, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t2 = {0, 0.1, 1, 1, 0, 0, 0, 0, 0, 1};
     if (t1 == t2)
       FAILMSG("failed to detect mass difference");
     if (is_compatible(t1, t2))
       FAILMSG("failed to detect mass difference");
   }
   {
-    Unit t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
-    Unit t2 = {0, 0, 1.1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t2 = {0, 0, 1.1, 1, 0, 0, 0, 0, 0, 1};
     if (t1 == t2)
       FAILMSG("failed to detect time difference");
     if (is_compatible(t1, t2))
       FAILMSG("failed to detect time difference");
   }
   {
-    Unit t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
-    Unit t2 = {0, 0, 1, 1.1, 0, 0, 0, 0, 0, 1};
+    Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t2 = {0, 0, 1, 1.1, 0, 0, 0, 0, 0, 1};
     if (t1 == t2)
       FAILMSG("failed to detect current difference");
     if (is_compatible(t1, t2))
       FAILMSG("failed to detect current difference");
   }
   {
-    Unit t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
-    Unit t2 = {0, 0, 1, 1, 0.1, 0, 0, 0, 0, 1};
+    Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t2 = {0, 0, 1, 1, 0.1, 0, 0, 0, 0, 1};
     if (t1 == t2)
       FAILMSG("failed to detect temperature difference");
     if (is_compatible(t1, t2))
       FAILMSG("failed to detect temperature difference");
   }
   {
-    Unit t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
-    Unit t2 = {0, 0, 1, 1, 0, 0.1, 0, 0, 0, 1};
+    Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t2 = {0, 0, 1, 1, 0, 0.1, 0, 0, 0, 1};
     if (t1 == t2)
       FAILMSG("failed to detect mole difference");
     if (is_compatible(t1, t2))
       FAILMSG("failed to detect mole difference");
   }
   {
-    Unit t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
-    Unit t2 = {0, 0, 1, 1, 0, 0, 0.1, 0, 0, 1};
+    Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t2 = {0, 0, 1, 1, 0, 0, 0.1, 0, 0, 1};
     if (t1 == t2)
       FAILMSG("failed to detect luminence difference");
     if (is_compatible(t1, t2))
       FAILMSG("failed to detect luminence difference");
   }
   {
-    Unit t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
-    Unit t2 = {0, 0, 1, 1, 0, 0, 0, 0.1, 0, 1};
+    Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t2 = {0, 0, 1, 1, 0, 0, 0, 0.1, 0, 1};
     if (t1 == t2)
       FAILMSG("failed to detect rad difference");
     if (is_compatible(t1, t2))
       FAILMSG("failed to detect rad difference");
   }
   {
-    Unit t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
-    Unit t2 = {0, 0, 1, 1, 0, 0, 0, 0, 0.1, 1};
+    Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t2 = {0, 0, 1, 1, 0, 0, 0, 0, 0.1, 1};
     if (t1 == t2)
       FAILMSG("failed to detect solid angle difference");
     if (is_compatible(t1, t2))
       FAILMSG("failed to detect solid angle difference");
   }
   {
-    Unit t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
-    Unit t2 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1.1};
+    Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
+    Unit const t2 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1.1};
     if (t1 == t2)
       FAILMSG("failed to detect conversion factor difference");
     if (!is_compatible(t1, t2))

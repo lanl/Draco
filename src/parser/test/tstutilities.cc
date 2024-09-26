@@ -8,11 +8,28 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "mesh_element/Geometry.hh"
+#include "parser/Expression.hh"
 #include "parser/File_Token_Stream.hh"
 #include "parser/String_Token_Stream.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
+#include "parser/Unit.hh"
 #include "parser/utilities.hh"
-#include "units/PhysicalConstants.hh"
+#include "units/PhysicalConstantsSI.hh"
+#include "units/UnitSystem.hh"
+#include "units/UnitSystemType.hh"
+#include <array>
+#include <cmath>
+#include <iostream>
 #include <limits>
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace std;
 using namespace rtt_parser;
@@ -23,7 +40,7 @@ using namespace rtt_dsxx;
 //------------------------------------------------------------------------------------------------//
 
 void tstutilities(UnitTest &ut) {
-  std::cout << "Running test tstutilities()..." << std::endl;
+  std::cout << "Running test tstutilities()...\n";
 
   double const eps = std::numeric_limits<double>::epsilon();
 
@@ -117,7 +134,7 @@ void tstutilities(UnitTest &ut) {
 
   // Try to read some unit expressions
 
-  Unit one = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+  Unit const one = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
 
   Unit left = parse_unit(tokens);
   FAIL_IF(left != J);
@@ -127,7 +144,7 @@ void tstutilities(UnitTest &ut) {
   FAIL_IF(left != right || left != C);
 
   left = parse_unit(tokens);
-  cout << left << endl;
+  cout << left << '\n';
   FAIL_IF(left != 1 / s);
 
   left = parse_unit(tokens);
@@ -225,13 +242,13 @@ void tstutilities(UnitTest &ut) {
   }
 
   // Try to read some dimensioned quantities.
-  double length = parse_quantity(tokens, rtt_parser::m, "length");
+  double const length = parse_quantity(tokens, rtt_parser::m, "length");
   if (fabs(length - 3.0) <= std::numeric_limits<double>::epsilon())
     PASSMSG("length successfully parsed");
   else
     FAILMSG("length NOT successfully parsed");
 
-  double energy = parse_quantity(tokens, rtt_parser::J, "energy");
+  double const energy = parse_quantity(tokens, rtt_parser::J, "energy");
   if (fabs(energy - 2.3e-7) <= std::numeric_limits<double>::epsilon())
     PASSMSG("cgs energy successfully parsed");
   else
@@ -284,7 +301,7 @@ void tstutilities(UnitTest &ut) {
     PASSMSG("second negative quantity successfully parsed");
 
   // Try reading a manifest string.
-  string parsed_string = parse_manifest_string(tokens);
+  string const parsed_string = parse_manifest_string(tokens);
   if (parsed_string != "manifest string")
     FAILMSG("manifest string NOT successfully parsed");
   else
@@ -456,7 +473,7 @@ void tstutilities(UnitTest &ut) {
   }
   {
     String_Token_Stream string("1 2 3");
-    std::array<unsigned, 4> x{0};
+    std::array<unsigned, 4> x{0}; // NOLINT(misc-const-correctness)
     parse_unsigned_vector(string, x.data(), 4);
     if (string.error_count() == 0)
       FAILMSG("did NOT detect too short vector correctly");
@@ -506,10 +523,10 @@ void tstutilities(UnitTest &ut) {
   {
     String_Token_Stream string("278*K");
     map<std::string, pair<unsigned, Unit>> variable_map;
-    Unit unity = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+    Unit const unity = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
     variable_map[std::string("x")] = std::make_pair(0, unity);
-    std::shared_ptr<Expression> lTemp = parse_temperature(string, 1, variable_map);
-    vector<double> x(1, 0.0);
+    std::shared_ptr<Expression> const lTemp = parse_temperature(string, 1, variable_map);
+    vector<double> const x(1, 0.0);
     if (soft_equiv((*lTemp)(x), 278.))
       PASSMSG("parsed temperature correctly");
     else
@@ -518,10 +535,10 @@ void tstutilities(UnitTest &ut) {
   {
     String_Token_Stream string("J");
     map<std::string, pair<unsigned, Unit>> variable_map;
-    Unit unity = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+    Unit const unity = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
     variable_map[std::string("x")] = std::make_pair(0, unity);
-    std::shared_ptr<Expression> lTemp = parse_temperature(string, 1, variable_map);
-    vector<double> x(1, 0.0);
+    std::shared_ptr<Expression> const lTemp = parse_temperature(string, 1, variable_map);
+    vector<double> const x(1, 0.0);
     if (soft_equiv((*lTemp)(x), 1.0 / rtt_units::boltzmannSI))
       PASSMSG("parsed temperature correctly");
     else
@@ -530,18 +547,18 @@ void tstutilities(UnitTest &ut) {
   {
     String_Token_Stream string("278*K");
     map<std::string, pair<unsigned, Unit>> variable_map;
-    Unit unity = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+    Unit const unity = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
     variable_map[std::string("x")] = std::make_pair(0, unity);
-    std::shared_ptr<Expression> lTemp = parse_quantity(string, K, "temperature", 1, variable_map);
-    vector<double> x(1, 0.0);
+    std::shared_ptr<Expression> const lTemp =
+        parse_quantity(string, K, "temperature", 1, variable_map);
+    vector<double> const x(1, 0.0);
     if (soft_equiv((*lTemp)(x), 278.))
       PASSMSG("parsed temperature correctly");
     else
       FAILMSG("did NOT parse temperature correctly");
   }
 
-  // Screw around with the internal unit system and with optional unit
-  // expressions.
+  // Screw around with the internal unit system and with optional unit expressions.
   {
     using namespace rtt_units;
 
@@ -615,8 +632,7 @@ void tstutilities(UnitTest &ut) {
       FAILMSG("did NOT parse bare quantity to SI correctly");
     bare_quantity.rewind();
   }
-  // Screw around with unit expression settings, as before, but for temperature
-  // expressions in K.
+  // Screw around with unit expression settings, as before, but for temperature expressions in K.
   {
     using namespace rtt_units;
 
@@ -778,7 +794,7 @@ void tstutilities(UnitTest &ut) {
     vmap["t"] = pair<unsigned, Unit>(0, s);
     vmap["x"] = pair<unsigned, Unit>(1, m);
 
-    vector<double> var(2, 1U);
+    vector<double> const var(2, 1U);
 
     String_Token_Stream expression_with_units("0.5*(t+2*x*s/cm)*erg");
     String_Token_Stream expression_appending_units("3.7 erg-s");

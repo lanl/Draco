@@ -8,9 +8,18 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/config.h"
 #include "parser/Class_Parse_Table.hh"
+#include "parser/Parse_Table.hh"
 #include "parser/String_Token_Stream.hh"
+#include "parser/Token_Stream.hh"
 #include "parser/utilities.hh"
+#include <array>
+#include <limits>
+#include <memory>
+#include <string>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -130,7 +139,7 @@ void tstClass_Parser(UnitTest &ut) {
 
   bool good = false;
   try {
-    std::shared_ptr<DummyClass> dum = parse_class<DummyClass>(etokens);
+    std::shared_ptr<DummyClass> const dum = parse_class<DummyClass>(etokens);
   } catch (Syntax_Error &) {
     good = true;
   }
@@ -139,7 +148,7 @@ void tstClass_Parser(UnitTest &ut) {
   tokens.rewind();
   good = false;
   try {
-    std::shared_ptr<DummyClass> dum = parse_class<DummyClass>(etokens, true);
+    std::shared_ptr<DummyClass> const dum = parse_class<DummyClass>(etokens, true);
   } catch (Syntax_Error &) {
     good = true;
   }

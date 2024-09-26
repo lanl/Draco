@@ -7,13 +7,21 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
+#include "parser/Expression.hh"
 #include "parser/File_Token_Stream.hh"
 #include "parser/Parse_Table.hh"
 #include "parser/String_Token_Stream.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
 #include <array>
 #include <cstring>
+#include <iostream>
+#include <stdexcept>
+#include <string>
 
 #ifdef _MSC_VER
 #undef ERROR
@@ -28,24 +36,29 @@ using namespace rtt_dsxx;
 //------------------------------------------------------------------------------------------------//
 
 static std::array<const char *, 3> const color{"BLACK", "BLUE", "BLUE GREEN"};
+
+namespace { // Use unnamed namespace instead of marking these items `static`.
+
 static std::array<bool, 3> color_set;
 
 static void Parse_Color(Token_Stream & /*unused*/, int i) {
-  cout << "You have requested " << color[i] << endl;
+  cout << "You have requested " << color[i] << '\n';
   color_set[i] = true;
 }
 
 static void Parse_Any_Color(Token_Stream &tokens, int /*unused*/) {
-  Token token = tokens.shift();
+  Token const token = tokens.shift();
   for (unsigned i = 0; i < sizeof(color) / sizeof(const char *); i++)
     if (!strcmp(token.text().c_str(), color[i])) {
-      cout << "You have requested " << color[i] << endl;
+      cout << "You have requested " << color[i] << '\n';
       color_set[i] = true;
       return;
     }
 
   tokens.report_syntax_error(token, "expected a color");
 }
+
+} // namespace
 
 std::array<Keyword, 6> const raw_table{
     Keyword{"BLUE", Parse_Color, 1, "main"},
@@ -63,17 +76,15 @@ public:
   void rewind() override {}
 
   void comment(string const & /*err*/) override {
-    cout << "comment reported to Error_Token_Stream" << endl;
+    cout << "comment reported to Error_Token_Stream\n";
   }
 
 protected:
   void report(Token const & /*token*/, string const & /*err*/) override {
-    cout << "error reported to Error_Token_Stream" << endl;
+    cout << "error reported to Error_Token_Stream\n";
   }
 
-  void report(string const & /*err*/) override {
-    cout << "error reported to Error_Token_Stream" << endl;
-  }
+  void report(string const & /*err*/) override { cout << "error reported to Error_Token_Stream\n"; }
 
   Token fill_() override { return {rtt_parser::ERROR, "error"}; }
 };
@@ -85,17 +96,15 @@ public:
   void rewind() override {}
 
   void comment(string const & /*err*/) override {
-    cout << "comment reported to Colon_Token_Stream" << endl;
+    cout << "comment reported to Colon_Token_Stream\n";
   }
 
 protected:
   void report(Token const & /*token*/, string const & /*err*/) override {
-    cout << "error reported to Colon_Token_Stream" << endl;
+    cout << "error reported to Colon_Token_Stream\n";
   }
 
-  void report(string const & /*err*/) override {
-    cout << "error reported to Colon_Token_Stream" << endl;
-  }
+  void report(string const & /*err*/) override { cout << "error reported to Colon_Token_Stream\n"; }
 
   Token fill_() override {
     switch (count_++) {
@@ -117,7 +126,7 @@ private:
 
 //------------------------------------------------------------------------------------------------//
 void tstKeyword(UnitTest &ut) {
-  Keyword black = {"BLACK", Parse_Color, 0, "main"};
+  Keyword const black = {"BLACK", Parse_Color, 0, "main"};
 
   if (black == raw_table_2[1])
     PASSMSG("keyword equality operator okay");
@@ -125,52 +134,52 @@ void tstKeyword(UnitTest &ut) {
     FAILMSG("keyword equality operator NOT okay");
 
   {
-    Keyword key1 = {"BLUE", Parse_Color, 1, "main"};
-    Keyword key2 = {"RED", Parse_Color, 1, "main"};
+    Keyword const key1 = {"BLUE", Parse_Color, 1, "main"};
+    Keyword const key2 = {"RED", Parse_Color, 1, "main"};
     if (key1 == key2)
       FAILMSG("comparison of dislike keywords FAILED");
   }
   {
-    Keyword key1 = {"BLUE", Parse_Color, 1, "main"};
-    Keyword key2 = {"BLUE", Parse_Any_Color, 1, "main"};
+    Keyword const key1 = {"BLUE", Parse_Color, 1, "main"};
+    Keyword const key2 = {"BLUE", Parse_Any_Color, 1, "main"};
     if (key1 == key2)
       FAILMSG("comparison of dislike functions FAILED");
   }
   {
-    Keyword key1 = {"BLUE", Parse_Color, 1, "main"};
-    Keyword key2 = {"BLUE", Parse_Color, 12, "main"};
+    Keyword const key1 = {"BLUE", Parse_Color, 1, "main"};
+    Keyword const key2 = {"BLUE", Parse_Color, 12, "main"};
     if (key1 == key2)
       FAILMSG("comparison of dislike index FAILED");
   }
   {
-    Keyword key1 = {"BLUE", Parse_Color, 1, "main"};
-    Keyword key2 = {"BLUE", Parse_Color, 1, "second"};
+    Keyword const key1 = {"BLUE", Parse_Color, 1, "main"};
+    Keyword const key2 = {"BLUE", Parse_Color, 1, "second"};
     if (key1 == key2)
       FAILMSG("comparison of dislike module FAILED");
   }
 
   {
-    Keyword key = {nullptr, Parse_Color, 1, "main"};
+    Keyword const key = {nullptr, Parse_Color, 1, "main"};
     if (Is_Well_Formed_Keyword(key))
       FAILMSG("null keyword detect FAILED");
   }
   {
-    Keyword key = {"BLUE", nullptr, 1, "main"};
+    Keyword const key = {"BLUE", nullptr, 1, "main"};
     if (Is_Well_Formed_Keyword(key))
       FAILMSG("null func detect FAILED");
   }
   {
-    Keyword key = {".BLUE", Parse_Color, 1, "main"};
+    Keyword const key = {".BLUE", Parse_Color, 1, "main"};
     if (Is_Well_Formed_Keyword(key))
       FAILMSG("bad moniker detect FAILED");
   }
   {
-    Keyword key = {"_BLUE", Parse_Color, 1, "main"};
+    Keyword const key = {"_BLUE", Parse_Color, 1, "main"};
     if (!Is_Well_Formed_Keyword(key))
       FAILMSG("moniker with leading underscore FAILED");
   }
   {
-    Keyword key = {"BLUE.", Parse_Color, 1, "main"};
+    Keyword const key = {"BLUE.", Parse_Color, 1, "main"};
     if (Is_Well_Formed_Keyword(key))
       FAILMSG("bad moniker detect FAILED");
   }
@@ -350,7 +359,7 @@ void tstParse_Table(UnitTest &ut) {
   if (token_stream.error_count() != 5)
     FAILMSG("error count FAILS");
 
-  Keyword test_key = {"THIS SHOULD WORK", Parse_Color, 0, nullptr};
+  Keyword const test_key = {"THIS SHOULD WORK", Parse_Color, 0, nullptr};
   if (!Is_Well_Formed_Keyword(test_key))
     FAILMSG("test FAILS");
 
@@ -367,7 +376,7 @@ void tstParse_Table(UnitTest &ut) {
     table_2.parse(token_stream);
     FAILMSG("did NOT catch ambiguous keyword");
   } catch (invalid_argument const &msg) {
-    cout << msg.what() << endl;
+    cout << msg.what() << '\n';
     PASSMSG("successfully detected ambiguous keyword");
   }
 
@@ -390,7 +399,7 @@ void tstParse_Table(UnitTest &ut) {
     table_3.parse(token_stream);
     FAILMSG("did NOT catch case-dependent ambiguous keyword");
   } catch (invalid_argument const &msg) {
-    cout << msg.what() << endl;
+    cout << msg.what() << '\n';
     PASSMSG("successfully detected case-dependent ambiguous keyword");
   }
 
@@ -405,7 +414,7 @@ void tstParse_Table(UnitTest &ut) {
     table_3a.parse(token_stream);
     FAILMSG("did NOT catch case-dependent ambiguous keyword");
   } catch (invalid_argument const &msg) {
-    cout << msg.what() << endl;
+    cout << msg.what() << '\n';
     PASSMSG("successfully detected case-dependent ambiguous keyword");
   }
 

@@ -9,9 +9,19 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "parser/File_Token_Stream.hh"
 #include "parser/String_Token_Stream.hh"
+#include "parser/Text_Token_Stream.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
 #include "parser/utilities.hh"
+#include <fstream>
+#include <iostream>
+#include <set>
 #include <sstream>
+#include <string>
 
 using namespace std;
 using namespace rtt_parser;
@@ -42,7 +52,7 @@ void tstString_Token_Stream(UnitTest &ut) {
     else
       PASSMSG("whitespace characters are correct defaults");
 
-    Token token = tokens.lookahead(4);
+    Token const token = tokens.lookahead(4);
     if (token.type() != KEYWORD || token.text() != "BLACK")
       FAILMSG("lookahead(4) does NOT have correct value");
     else
@@ -59,7 +69,7 @@ void tstString_Token_Stream(UnitTest &ut) {
   }
 
   {
-    set<char> ws({':'});
+    set<char> const ws({':'});
     String_Token_Stream tokens(contents, ws);
     if (tokens.whitespace() != ws)
       FAILMSG("whitespace characters are NOT correctly specified");
@@ -237,17 +247,17 @@ void tstString_Token_Stream(UnitTest &ut) {
       tokens.shift();
       ostringstream msg;
       msg << "Token_Stream did not throw an exception when unbalanced quotes were read from the \n"
-          << "\tinput file, \"scanner_recover.inp\" (line 1)." << endl;
+          << "\tinput file, \"scanner_recover.inp\" (line 1).\n";
       FAILMSG(msg.str());
     } catch (const Syntax_Error &msg) {
-      // cout << msg.what() << endl;
+      // cout << msg.what() << '\n';
       // exception = true;
-      string errmsg = msg.what();
-      string expected("syntax error");
+      string const errmsg = msg.what();
+      string const expected("syntax error");
       if (errmsg == expected) {
         ostringstream message;
         message << "Caught expected exception from Token_Stream. unbalanced quotes were read \n"
-                << "\tfrom the input file, \"scanner_recover.inp\" (line 1)." << endl;
+                << "\tfrom the input file, \"scanner_recover.inp\" (line 1).\n";
         PASSMSG(message.str());
       } else
         ITFAILS;
@@ -257,17 +267,17 @@ void tstString_Token_Stream(UnitTest &ut) {
       tokens.shift();
       ostringstream msg;
       msg << "Token_Stream did not throw an exception when unbalanced quotes were read from the \n"
-          << "\tinput file, \"scanner_recover.inp\" (line 2)." << endl;
+          << "\tinput file, \"scanner_recover.inp\" (line 2).\n";
       FAILMSG(msg.str());
     } catch (const Syntax_Error &msg) {
-      //cout << msg.what() << endl;
+      //cout << msg.what() << '\n';
       // exception = true;
-      string errmsg = msg.what();
-      string expected("syntax error");
+      string const errmsg = msg.what();
+      string const expected("syntax error");
       if (errmsg == expected) {
         ostringstream message;
         message << "Caught expected exception from Token_Stream. unbalanced quotes were read \n"
-                << "\tfrom the input file, \"scanner_recover.inp\" (line 2)." << endl;
+                << "\tfrom the input file, \"scanner_recover.inp\" (line 2).\n";
         PASSMSG(message.str());
       } else
         ITFAILS;
@@ -300,7 +310,7 @@ void tstString_Token_Stream(UnitTest &ut) {
     } else {
       FAILMSG("tab NOT correctly identified as nonbreaking whitespace");
     }
-    Token token = tokens.shift();
+    Token const token = tokens.shift();
     if (token.type() != INTEGER || token.text() != "0") {
       FAILMSG("did NOT scan 09 correctly");
     } else {
@@ -338,7 +348,7 @@ void tstString_Token_Stream(UnitTest &ut) {
       tokens.shift();
       FAILMSG("Did NOT correctly report #include as error");
     } catch (const Syntax_Error & /*msg*/) {
-      cout << "expected: " << tokens.messages() << endl;
+      cout << "expected: " << tokens.messages() << '\n';
       PASSMSG("#include not supported error correctly thrown and caught");
     }
   }
