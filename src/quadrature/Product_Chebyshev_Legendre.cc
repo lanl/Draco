@@ -4,14 +4,20 @@
  * \author James S. Warsa
  * \date   Wed Sep  1 10:19:52 2004
  * \brief  A class for Product Chebyshev-Gauss-Legendre quadrature sets.
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Product_Chebyshev_Legendre.hh"
-#include "Gauss_Legendre.hh"
+#include "quadrature/Product_Chebyshev_Legendre.hh"
 #include "dsxx/DracoStrings.hh"
+#include "quadrature/Gauss_Legendre.hh"
+#include "quadrature/Octant_Quadrature.hh"
+#include "quadrature/Quadrature_Class.hh"
 #include "units/MathConstants.hh"
+#include <cmath>   // sin
+#include <cstddef> // size_t
+#include <memory>  // shared_ptr
+#include <string>
+#include <vector>
 
 namespace rtt_quadrature {
 using namespace rtt_dsxx;
@@ -44,31 +50,30 @@ void Product_Chebyshev_Legendre::create_octant_ordinates_(std::vector<double> &m
   using std::sqrt;
 
   // The number of quadrature levels is equal to the requested SN order.
-  size_t levels = sn_order();
+  size_t const levels = sn_order();
 
   // We build the 3-D first, then edit as appropriate.
 
-  size_t numOrdinates = levels * azimuthal_order_ / 4;
+  size_t const numOrdinates = levels * azimuthal_order_ / 4;
 
   // Force the direction vectors to be the correct length.
   mu.resize(numOrdinates);
   eta.resize(numOrdinates);
   wt.resize(numOrdinates);
 
-  std::shared_ptr<Gauss_Legendre> GL(new Gauss_Legendre(sn_order_));
+  std::shared_ptr<Gauss_Legendre> const GL(new Gauss_Legendre(sn_order_));
 
-  // NOTE: this aligns the gauss points with the x-axis (r-axis in cylindrical
-  // coords)
+  // NOTE: this aligns the gauss points with the x-axis (r-axis in cylindrical coords)
 
   unsigned icount = 0;
 
   for (unsigned i = 0; i < levels / 2; ++i) {
-    double xmu = GL->mu(i);
-    double xwt = GL->wt(i);
-    double xsr = sqrt(1.0 - xmu * xmu);
+    double const xmu = GL->mu(i);
+    double const xwt = GL->wt(i);
+    double const xsr = sqrt(1.0 - xmu * xmu);
 
     for (unsigned j = 0; j < azimuthal_order_ / 2; ++j) {
-      unsigned ordinate = icount;
+      unsigned const ordinate = icount;
 
       mu[ordinate] = xsr * cos(rtt_units::PI * (2.0 * j + 1.0) / azimuthal_order_ / 2.0);
       eta[ordinate] = xsr * sin(rtt_units::PI * (2.0 * j + 1.0) / azimuthal_order_ / 2.0);

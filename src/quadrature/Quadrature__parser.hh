@@ -7,8 +7,8 @@
  * \note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Quadrature.hh"
 #include "parser/Class_Parse_Table.hh"
+#include "quadrature/Quadrature.hh"
 
 namespace rtt_parser {
 using rtt_quadrature::Quadrature;

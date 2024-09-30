@@ -4,28 +4,22 @@
  * \author Kelly Thompson
  * \date   Wed Sep  1 10:19:52 2004
  * \brief
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Octant_Quadrature.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
 #include "parser/utilities.hh"
-#include <algorithm>
-#include <cmath>
-#include <iomanip>
-#include <iostream>
+#include "quadrature/Octant_Quadrature.hh"
 
 namespace rtt_quadrature {
 using namespace rtt_parser;
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * Used in conjunction with child parse routines for common features
- */
-
+//! Used in conjunction with child parse routines for common features
 /*static*/
-void Octant_Quadrature::parse(Token_Stream &tokens, bool &has_axis_assignments, unsigned &mu_axis,
-                              unsigned &eta_axis) {
+void Octant_Quadrature::parse(rtt_parser::Token_Stream &tokens, bool &has_axis_assignments,
+                              unsigned &mu_axis, unsigned &eta_axis) {
   Token token = tokens.shift();
 
   has_axis_assignments = false;

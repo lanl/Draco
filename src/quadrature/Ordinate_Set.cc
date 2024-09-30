@@ -7,10 +7,16 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Ordinate_Set.hh"
+#include "quadrature/Ordinate_Set.hh"
+#include "dsxx/Assert.hh"
+#include "mesh_element/Geometry.hh"
+#include "quadrature/Ordinate.hh"
 #include <algorithm>
+#include <cmath>
+#include <cstddef>
 #include <iomanip>
 #include <iostream>
+#include <vector>
 
 namespace {
 using namespace std;
@@ -118,7 +124,7 @@ Ordinate_Set::Ordinate_Set(unsigned const dimension, rtt_mesh_element::Geometry 
                            bool const has_extra_starting_directions, Ordering const ordering)
     : geometry_(geometry), dimension_(dimension), has_starting_directions_(has_starting_directions),
       has_extra_starting_directions_(has_extra_starting_directions), ordering_(ordering),
-      norm_(0.0), ordinates_(ordinates) {
+      ordinates_(ordinates) {
   Require(dimension >= 1 && dimension <= 3);
   Require(geometry != rtt_mesh_element::Geometry::AXISYMMETRIC || dimension < 3);
   Require(geometry != rtt_mesh_element::Geometry::SPHERICAL || dimension < 2);
@@ -169,38 +175,31 @@ bool Ordinate_Set::check_class_invariants() const {
 //------------------------------------------------------------------------------------------------//
 void Ordinate_Set::display() const {
   using std::cout;
-  using std::endl;
   using std::setprecision;
 
   if (dimension() == 1 && geometry() != rtt_mesh_element::Geometry::AXISYMMETRIC) {
-    cout << endl << "The Quadrature directions and weights are:" << endl << endl;
-    cout << "   m  \t    mu        \t     wt      " << endl;
-    cout << "  --- \t------------- \t-------------" << endl;
+    cout << "\nThe Quadrature directions and weights are:\n\n"
+         << "   m  \t    mu        \t     wt      \n"
+         << "  --- \t------------- \t-------------\n";
     double sum_wt = 0.0;
     for (size_t ix = 0; ix < ordinates_.size(); ++ix) {
       cout << "   " << setprecision(5) << ix << "\t" << setprecision(10) << ordinates_[ix].mu()
-           << "\t" << setprecision(10) << ordinates_[ix].wt() << endl;
+           << "\t" << setprecision(10) << ordinates_[ix].wt() << '\n';
       sum_wt += ordinates_[ix].wt();
     }
-    cout << endl << "  The sum of the weights is " << sum_wt << endl;
-    cout << endl;
+    cout << "\n  The sum of the weights is " << sum_wt << "\n\n";
   } else {
-    cout << endl << "The Quadrature directions and weights are:" << endl << endl;
-    cout << "   m  \t    mu        \t    eta       \t    xi        \t     wt   "
-            "   "
-         << endl;
-    cout << "  --- \t------------- \t------------- \t------------- "
-            "\t-------------"
-         << endl;
+    cout << "\nThe Quadrature directions and weights are:\n\n"
+         << "   m  \t    mu        \t    eta       \t    xi        \t     wt      \n"
+         << "  --- \t------------- \t------------- \t------------- \t-------------\n";
     double sum_wt = 0.0;
     for (size_t ix = 0; ix < ordinates_.size(); ++ix) {
       cout << "   " << ix << "\t" << setprecision(10) << ordinates_[ix].mu() << "\t"
            << setprecision(10) << ordinates_[ix].eta() << "\t" << setprecision(10)
-           << ordinates_[ix].xi() << "\t" << setprecision(10) << ordinates_[ix].wt() << endl;
+           << ordinates_[ix].xi() << "\t" << setprecision(10) << ordinates_[ix].wt() << '\n';
       sum_wt += ordinates_[ix].wt();
     }
-    cout << endl << "  The sum of the weights is " << sum_wt << endl;
-    cout << endl;
+    cout << "\n  The sum of the weights is " << sum_wt << "\n\n";
   }
 }
 

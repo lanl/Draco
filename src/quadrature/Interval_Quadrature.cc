@@ -4,11 +4,14 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  A class representing an interval Gauss-Legendre quadrature set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
- *         reserved. */
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Interval_Quadrature.hh"
+#include "quadrature/Interval_Quadrature.hh"
+#include "quadrature/Ordinate.hh"
+#include "quadrature/Quadrature.hh"
+#include "quadrature/Quadrature_Class.hh"
+#include <vector>
 
 namespace rtt_quadrature {
 using namespace std;

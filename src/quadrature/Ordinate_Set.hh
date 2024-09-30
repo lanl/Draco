@@ -30,10 +30,10 @@ public:
 
   //! Ordering of ordinates.
   enum Ordering {
-    LEVEL_ORDERED, // Ordered xi, then mu, then eta
+    LEVEL_ORDERED, //!< Ordered xi, then mu, then eta
 
-    OCTANT_ORDERED // Ordered by xi halfsphere, then eta halfsphere, then mu halfsphere, then
-                   // absolute value of xi, then absolute value of eta, then absolute value of mu
+    OCTANT_ORDERED //!< Ordered by xi halfsphere, then eta halfsphere, then mu halfsphere, then
+                   //!< absolute value of xi, then absolute value of eta, then absolute value of mu
   };
 
   // CREATORS
@@ -100,7 +100,7 @@ private:
   bool has_starting_directions_;
   bool has_extra_starting_directions_;
   Ordering ordering_;
-  double norm_;
+  double norm_{0.0};
   std::vector<Ordinate> ordinates_;
 };
 

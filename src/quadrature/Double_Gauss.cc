@@ -3,16 +3,20 @@
  * \file   quadrature/Double_Gauss.cc
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
- * \brief  A class representing an interval double Gauss-Legendre quadrature
- *         set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
- *         reserved. */
+ * \brief  A class representing an interval double Gauss-Legendre quadrature set.
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Double_Gauss.hh"
-#include "Gauss_Legendre.hh"
+#include "quadrature/Double_Gauss.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh"
-#include <numeric>
+#include "quadrature/Gauss_Legendre.hh"
+#include "quadrature/Interval_Quadrature.hh"
+#include "quadrature/Ordinate.hh"
+#include <cstddef> // size_t
+#include <memory>  // shared_ptr
+#include <string>
+#include <vector>
 
 namespace rtt_quadrature {
 using namespace std;
@@ -33,7 +37,7 @@ Double_Gauss::Double_Gauss(unsigned sn_order) : Interval_Quadrature(sn_order) {
   {
     Check(sn_order == 2);
 
-    std::shared_ptr<Gauss_Legendre> GL(new Gauss_Legendre(sn_order));
+    std::shared_ptr<Gauss_Legendre> const GL(new Gauss_Legendre(sn_order));
     for (unsigned m = 0; m < sn_order; ++m) {
       mu_[m] = GL->mu(m);
       wt_[m] = GL->wt(m);
@@ -44,13 +48,12 @@ Double_Gauss::Double_Gauss(unsigned sn_order) : Interval_Quadrature(sn_order) {
     Check(n2 % 2 == 0);
     Check(n2 > 2);
 
-    std::shared_ptr<Gauss_Legendre> GL(new Gauss_Legendre(n2));
+    std::shared_ptr<Gauss_Legendre> const GL(new Gauss_Legendre(n2));
 
     // map the quadrature onto the two half-ranges
 
     for (unsigned m = 0; m < n2; ++m) {
-      // Map onto [-1,0] then skew-symmetrize (ensuring ascending order on [-1,
-      // 1])
+      // Map onto [-1,0] then skew-symmetrize (ensuring ascending order on [-1, 1])
 
       mu_[m] = 0.5 * (GL->mu(m) - 1.0);
       wt_[m] = 0.5 * GL->wt(m);
@@ -98,7 +101,7 @@ vector<Ordinate> Double_Gauss::create_level_ordinates_(double const norm) const 
   for (size_t i = 0; i < numPoints; ++i)
     sumwt += wt_[i];
 
-  double c = norm / sumwt;
+  double const c = norm / sumwt;
 
   // build the set of ordinates
   vector<Ordinate> Result(numPoints);

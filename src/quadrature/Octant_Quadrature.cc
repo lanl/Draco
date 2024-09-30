@@ -7,14 +7,18 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Octant_Quadrature.hh"
+#include "quadrature/Octant_Quadrature.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh"
 #include "dsxx/Soft_Equivalence.hh"
-#include "units/PhysicalConstants.hh"
+#include "mesh_element/Geometry.hh"
+#include "quadrature/Ordinate.hh"
+#include "quadrature/Ordinate_Set.hh"
 #include <algorithm>
 #include <cmath>
-#include <iomanip>
-#include <iostream>
+#include <cstddef> // size_t
+#include <string>
+#include <vector>
 
 namespace rtt_quadrature {
 using namespace rtt_dsxx;
@@ -149,7 +153,7 @@ std::vector<Ordinate> Octant_Quadrature::create_ordinates_(
     double eta0 = Result[0].eta();
     double sum = Result[0].wt();
     for (unsigned i = 1; i < numOrdinates; ++i) {
-      double old_eta = eta0;
+      double const old_eta = eta0;
       eta0 = Result[i].eta();
       if (!soft_equiv(eta0, old_eta)) {
         // New level

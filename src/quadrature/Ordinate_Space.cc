@@ -7,13 +7,21 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Ordinate_Space.hh"
-#include "special_functions/Ylm.hh"
-#include "units/PhysicalConstants.hh"
-#include <gsl/gsl_blas.h>
-#include <gsl/gsl_linalg.h>
-#include <gsl/gsl_sf_legendre.h>
-#include <iostream>
+#include "quadrature/Ordinate_Space.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/config.h" // DBC
+#include "mesh_element/Geometry.hh"
+#include "quadrature/Moment.hh"
+#include "quadrature/Ordinate.hh"
+#include "quadrature/Ordinate_Set.hh"
+#include "quadrature/Quadrature_Class.hh"
+#include "units/MathConstants.hh"
+#include <array>
+#include <climits> // UINT_MAX
+#include <cmath>
+#include <cstddef> // size_t
+#include <vector>
 
 using namespace rtt_units;
 using rtt_dsxx::soft_equiv;
@@ -21,18 +29,14 @@ using std::vector;
 
 namespace rtt_quadrature {
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Compute the Azimuthal angle for the current quadrature direction.
- */
+//! Compute the Azimuthal angle for the current quadrature direction.
 double Ordinate_Space::compute_azimuthalAngle(double const mu, double const eta) {
-  using rtt_dsxx::soft_equiv;
-  using rtt_units::PI;
 
   Require(std::abs(mu) <= 1.0);
   Require(std::abs(eta) <= 1.0);
 
-  if (soft_equiv(eta, 0.0))
-    return PI;
+  if (rtt_dsxx::soft_equiv(eta, 0.0))
+    return rtt_units::PI;
 
   double azimuthalAngle(std::atan2(eta, mu));
 
@@ -46,7 +50,7 @@ double Ordinate_Space::compute_azimuthalAngle(double const mu, double const eta)
   // the eta and mu ordinates to define phi.
 
   if (this->geometry() == rtt_mesh_element::Geometry::AXISYMMETRIC && azimuthalAngle < 0.0)
-    azimuthalAngle += 2 * PI;
+    azimuthalAngle += 2 * rtt_units::PI;
 
   return azimuthalAngle;
 }
@@ -324,20 +328,21 @@ void Ordinate_Space::compute_moments_(Quadrature_Class const quadrature_class, i
 //------------------------------------------------------------------------------------------------//
 /*!
  *
- * \param dimension Dimension of the physical problem space (1, 2, or 3)
+ * \param[in] dimension Dimension of the physical problem space (1, 2, or 3)
  *
- * \param geometry Geometry of the physical problem space (spherical, axisymmetric, Cartesian)
+ * \param[in] geometry Geometry of the physical problem space (spherical, axisymmetric, Cartesian)
  *
- * \param ordinates Set of ordinate directions
+ * \param[in] ordinates Set of ordinate directions
  *
- * \param expansion_order Expansion order of the desired scattering moment space. If negative, the
- *        moment space is not needed.
+ * \param[in] expansion_order Expansion order of the desired scattering moment space. If negative,
+ *        the moment space is not needed.
  *
- * \param extra_starting_directions Add extra directions to each level set. In most geometries, an
- *        additional ordinate is added that is opposite in direction to the starting direction. This
- *        is used to implement reflection exactly in curvilinear coordinates. In 1D spherical, that
- *        means an additional angle is added at mu=1. In axisymmetric, that means additional angles
- *        are added that are oriented opposite to the incoming starting direction on each level.
+ * \param[in] extra_starting_directions Add extra directions to each level set. In most geometries,
+ *        an additional ordinate is added that is opposite in direction to the starting direction.
+ *        This is used to implement reflection exactly in curvilinear coordinates. In 1D spherical,
+ *        that means an additional angle is added at mu=1. In axisymmetric, that means additional
+ *        angles are added that are oriented opposite to the incoming starting direction on each
+ *        level.
  *
  * \param ordering Ordering into which to sort the ordinates.
  */
@@ -349,9 +354,8 @@ Ordinate_Space::Ordinate_Space(unsigned const dimension, rtt_mesh_element::Geome
                    // include starting directions if curvilinear
                    extra_starting_directions, ordering),
       expansion_order_(expansion_order), has_extra_starting_directions_(extra_starting_directions),
-      number_of_levels_(0), levels_(), first_angles_(), is_dependent_(false), reflect_mu_(),
-      reflect_eta_(), reflect_xi_(), alpha_(), tau_(), number_of_moments_(0), moments_(),
-      moments_per_order_() {
+      levels_(), first_angles_(), is_dependent_(false), reflect_mu_(), reflect_eta_(),
+      reflect_xi_(), alpha_(), tau_(), moments_(), moments_per_order_() {
   Require(dimension > 0 && dimension < 4);
   Require(geometry != rtt_mesh_element::Geometry::END_GEOMETRY);
 

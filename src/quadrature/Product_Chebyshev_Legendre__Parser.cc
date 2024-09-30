@@ -4,31 +4,33 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  A class representing an product Gauss-Legendre quadrature set.
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved.
- *         reserved.  */
+ * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Product_Chebyshev_Legendre.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh" // NOLINT(misc-include-cleaner)
 #include "parser/utilities.hh"
-#include <iostream>
+#include "quadrature/Octant_Quadrature.hh"
+#include "quadrature/Product_Chebyshev_Legendre.hh"
+#include "quadrature/Quadrature.hh"
+#include <memory> // shared_ptr
 
 namespace rtt_quadrature {
 using namespace rtt_parser;
 
 //------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> Product_Chebyshev_Legendre::parse(Token_Stream &tokens) {
-  // Takes two numbers, first the number of Gauss-Legendre points, which is the
-  // SN order
-  Token token = tokens.shift();
+std::shared_ptr<Quadrature> Product_Chebyshev_Legendre::parse(rtt_parser::Token_Stream &tokens) {
+  // Takes two numbers, first the number of Gauss-Legendre points, which is the SN order
+  Token const token = tokens.shift();
   tokens.check_syntax(token.text() == "order", "expected an order");
 
-  unsigned sn_order = parse_positive_integer(tokens);
+  unsigned const sn_order = parse_positive_integer(tokens);
   tokens.check_semantics(sn_order % 2 == 0, "order must be even");
 
   // The second number is the number of azimuthal points on each level
   // corresponding to the Gauss-Legendre points
 
-  unsigned azimuthal_order = parse_positive_integer(tokens);
+  unsigned const azimuthal_order = parse_positive_integer(tokens);
   tokens.check_semantics(azimuthal_order > 0, "order must be greater than zero");
   tokens.check_semantics(azimuthal_order % 2 == 0, "order must be even");
 

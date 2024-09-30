@@ -229,7 +229,7 @@ private:
 
   int expansion_order_;
   bool has_extra_starting_directions_;
-  unsigned number_of_levels_;
+  unsigned number_of_levels_{0};
   std::vector<unsigned> levels_;
   std::vector<unsigned> first_angles_;
   std::vector<bool> is_dependent_; //!< Is an ordinate dependent on the preceding ordinate?
@@ -244,7 +244,7 @@ private:
 
   //! Number of moments up to the expansion order. Does not include Galerkin augments. This is the
   //! moment rank of the M and D matrices.
-  unsigned number_of_moments_;
+  unsigned number_of_moments_{0};
   //! Moments of moment expansion. Includes Galerkin augments, if any.
   std::vector<Moment> moments_;
   //! Moments per order. Does not include Galerkin augments.

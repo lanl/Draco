@@ -64,8 +64,6 @@ private:
   //! Virtual hook for create_ordinate_set
   void create_octant_ordinates_(std::vector<double> &mu, std::vector<double> &eta,
                                 std::vector<double> &wt) const override;
-
-  // DATA
 };
 
 } // end namespace rtt_quadrature

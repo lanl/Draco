@@ -4,22 +4,25 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  A class representing an interval Gauss-Legendre quadrature set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
- *         reserved. */
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Lobatto.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
 #include "parser/utilities.hh"
+#include "quadrature/Lobatto.hh"
+#include "quadrature/Quadrature.hh"
+#include <memory> // shared_ptr
 
 namespace rtt_quadrature {
 using namespace rtt_parser;
 
 //------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> Lobatto::parse(Token_Stream &tokens) {
-  Token token = tokens.shift();
+std::shared_ptr<Quadrature> Lobatto::parse(rtt_parser::Token_Stream &tokens) {
+  Token const token = tokens.shift();
   tokens.check_syntax(token.text() == "order", "expected an order");
 
-  unsigned sn_order = parse_positive_integer(tokens);
+  unsigned const sn_order = parse_positive_integer(tokens);
 
   tokens.check_semantics(sn_order % 2 == 0, "order must be even");
   tokens.check_syntax(tokens.shift().type() == END, "missing end?");
