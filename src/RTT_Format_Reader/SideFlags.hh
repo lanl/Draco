@@ -10,8 +10,8 @@
 #ifndef rtt_RTT_Format_Reader_SideFlags_hh
 #define rtt_RTT_Format_Reader_SideFlags_hh
 
-#include "Dims.hh"
-#include "Flags.hh"
+#include "RTT_Format_Reader/Dims.hh"
+#include "RTT_Format_Reader/Flags.hh"
 #include <memory>
 
 namespace rtt_RTT_Format_Reader {

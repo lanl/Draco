@@ -10,7 +10,7 @@
 #ifndef rtt_RTT_Format_Reader_RTT_Mesh_Reader_hh
 #define rtt_RTT_Format_Reader_RTT_Mesh_Reader_hh
 
-#include "RTT_Format_Reader.hh"
+#include "RTT_Format_Reader/RTT_Format_Reader.hh"
 #include "meshReaders/Mesh_Reader.hh"
 
 namespace rtt_RTT_Format_Reader {

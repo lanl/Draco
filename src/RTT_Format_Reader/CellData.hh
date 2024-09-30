@@ -10,7 +10,10 @@
 #ifndef rtt_RTT_Format_Reader_CellData_hh
 #define rtt_RTT_Format_Reader_CellData_hh
 
-#include "Cells.hh"
+#include "dsxx/Assert.hh"
+#include "RTT_Format_Reader/Cells.hh"
+#include <cstddef> // size_t
+#include <string>  // getline
 
 namespace rtt_RTT_Format_Reader {
 

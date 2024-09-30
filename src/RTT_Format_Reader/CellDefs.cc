@@ -7,7 +7,15 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "CellDefs.hh"
+#include "RTT_Format_Reader/CellDefs.hh"
+#include "dsxx/Assert.hh"
+#include <algorithm> // fill
+#include <climits>   // INT_MAX
+#include <cstddef>   // size_t
+#include <cstdint>   // uint64_t
+#include <memory>
+#include <string> // getline
+#include <vector>
 
 namespace rtt_RTT_Format_Reader {
 
@@ -125,7 +133,7 @@ void CellDef::readDef(ifstream &meshfile) {
   int side;
   for (unsigned i = 0; i < nsides; ++i) {
     Check(i < side_types.size());
-    size_t numb_nodes = cellDefs.get_cell_def(side_types[i]).get_nnodes();
+    size_t const numb_nodes = cellDefs.get_cell_def(side_types[i]).get_nnodes();
     Check(i < ordered_sides.size());
     ordered_sides[i].resize(numb_nodes);
     Check(i < sides.size());
@@ -241,9 +249,9 @@ void CellDef::redefineCellDef(vector_uint const &new_side_types,
       Check(new_node < INT_MAX);
       node_map[old_node] = static_cast<int>(new_node);
       Check(new_ordered_sides[new_side][2] < INT_MAX);
-      int new_mid_node = static_cast<int>(new_ordered_sides[new_side][2]);
+      int const new_mid_node = static_cast<int>(new_ordered_sides[new_side][2]);
       Check(new_ordered_sides[old_side][2] < INT_MAX);
-      int old_mid_node = static_cast<int>(ordered_sides[old_side][2]);
+      int const old_mid_node = static_cast<int>(ordered_sides[old_side][2]);
       node_map[old_mid_node] = new_mid_node;
     }
   } else if (name == "tetrahedron") {
@@ -379,7 +387,7 @@ void CellDef::redefineCellDef(vector_uint const &new_side_types,
     // definitions to be the same. This assumption is necessary because the cell definitions do not
     // assume a specific orientation relative to any coordinate system. The transformed cell may be
     // rotated about it's coordinate system relative to the input cell definition.
-    int quad = 0;
+    int const quad = 0;
     vector_int new_node_count(nnodes, 0);
     vector_int old_node_count(nnodes, 0);
     for (size_t n = 0; n < ordered_sides[quad].size(); n++) {
@@ -388,11 +396,11 @@ void CellDef::redefineCellDef(vector_uint const &new_side_types,
       node_map[old_node] = new_node;
       for (size_t s = 0; s < nsides; s++) {
         if (std::count(new_ordered_sides[s].begin(), new_ordered_sides[s].end(), new_node) > 0)
-          for (uint64_t side : new_ordered_sides[s])
+          for (uint64_t const side : new_ordered_sides[s])
             ++new_node_count[side];
 
         if (std::count(ordered_sides[s].begin(), ordered_sides[s].end(), old_node) > 0)
-          for (uint64_t side : ordered_sides[s])
+          for (uint64_t const side : ordered_sides[s])
             ++old_node_count[side];
       }
       // The node located diagonally across the hexahedron relative to the first node will have a

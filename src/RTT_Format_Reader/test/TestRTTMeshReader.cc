@@ -7,12 +7,21 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/path.hh"
+#include "dsxx/UnitTest.hh"
 #include "RTT_Format_Reader/RTT_Mesh_Reader.hh"
+#include "mesh_element/Element_Definition.hh"
 #include <array>
+#include <exception>
+#include <iostream>
+#include <map>
+#include <set>
 #include <sstream>
+#include <string>
+#include <utility> // make_pair
+#include <vector>
 
 //------------------------------------------------------------------------------------------------//
 // Enum definitions and forward declarations
@@ -43,11 +52,10 @@ void runTest(rtt_dsxx::UnitTest &ut) {
 
   for (int mesh_number = 0; mesh_number < MAX_MESHES; mesh_number++) {
     // Construct an RTT_Mesh_Reader class object from the data in the specified mesh file.
-    RTT_Mesh_Reader mesh(filename[mesh_number]);
+    RTT_Mesh_Reader const mesh(filename[mesh_number]);
     {
       ostringstream m;
-      m << "Read " << filename[mesh_number] << " without coreing in or firing an assertion."
-        << endl;
+      m << "Read " << filename[mesh_number] << " without coreing in or firing an assertion.\n";
       PASSMSG(m.str());
     }
     bool all_passed = true;
@@ -63,7 +71,7 @@ void runTest(rtt_dsxx::UnitTest &ut) {
     }
     if (!all_passed) {
       ostringstream m;
-      m << "Errors occured testing mesh number " << mesh_type << endl;
+      m << "Errors occured testing mesh number " << mesh_type << '\n';
       FAILMSG(m.str());
     }
   }
@@ -79,8 +87,6 @@ void runTest(rtt_dsxx::UnitTest &ut) {
 
 //------------------------------------------------------------------------------------------------//
 bool check_virtual(rtt_dsxx::UnitTest &ut, RTT_Mesh_Reader const &mesh, Meshes const &meshtype) {
-  // Save and reset at end of function
-  bool passed(true);
 
   // Exercise the virtual accessor functions for this mesh.
   vector<vector<double>> node_coords;
@@ -253,7 +259,7 @@ bool check_virtual(rtt_dsxx::UnitTest &ut, RTT_Mesh_Reader const &mesh, Meshes c
     FAILMSG("Invariant not satisfied.");
   }
 
-  if (passed) {
+  if (ut.numFails == 0) {
     PASSMSG("Got all virtual accessors.");
     return true;
   }
@@ -270,17 +276,17 @@ int main(int argc, char *argv[]) {
     ScalarUnitTest ut(argc, argv, release);
     runTest(ut);
   } catch (rtt_dsxx::assertion &err) {
-    std::string msg = err.what();
+    std::string const msg = err.what();
     if (msg != std::string("Success")) {
-      cout << "ERROR: While testing " << argv[0] << ", " << err.what() << endl;
+      cout << "ERROR: While testing " << argv[0] << ", " << err.what() << '\n';
       return 1;
     }
     return 0;
   } catch (exception &err) {
-    cout << "ERROR: While testing " << argv[0] << ", " << err.what() << endl;
+    cout << "ERROR: While testing " << argv[0] << ", " << err.what() << '\n';
     return 1;
   } catch (...) {
-    cout << "ERROR: While testing " << argv[0] << ", An unknown exception was thrown" << endl;
+    cout << "ERROR: While testing " << argv[0] << ", An unknown exception was thrown\n";
     return 1;
   }
   return 0;

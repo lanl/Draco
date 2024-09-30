@@ -7,8 +7,9 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Header.hh"
+#include "RTT_Format_Reader/Header.hh"
 #include "dsxx/Assert.hh"
+#include <string> // getline
 
 namespace rtt_RTT_Format_Reader {
 

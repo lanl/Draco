@@ -10,8 +10,8 @@
 #ifndef rtt_RTT_Format_Reader_SideDataIDs_hh
 #define rtt_RTT_Format_Reader_SideDataIDs_hh
 
-#include "Dims.hh"
 #include "dsxx/Assert.hh"
+#include "RTT_Format_Reader/Dims.hh"
 #include <fstream>
 #include <iostream>
 #include <string>

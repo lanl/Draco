@@ -10,7 +10,7 @@
 #ifndef rtt_RTT_Format_Reader_CellDefs_hh
 #define rtt_RTT_Format_Reader_CellDefs_hh
 
-#include "Dims.hh"
+#include "RTT_Format_Reader/Dims.hh"
 #include <memory>
 #include <set>
 
@@ -40,8 +40,8 @@ class CellDef {
 
   const CellDefs &cellDefs;
   const string name;
-  unsigned nnodes;
-  unsigned nsides;
+  unsigned nnodes{0};
+  unsigned nsides{0};
   vector_uint side_types;
   vector_vector_uint sides;
   // Add the capability to maintain the sense of the outward normals.
@@ -51,8 +51,8 @@ class CellDef {
 
 public:
   CellDef(const CellDefs &cellDefs_, string name_)
-      : cellDefs(cellDefs_), name(std::move(name_)), nnodes(0), nsides(0),
-        side_types(vector_uint()), sides(vector_vector_uint()), ordered_sides(0), node_map() {}
+      : cellDefs(cellDefs_), name(std::move(name_)), side_types(vector_uint()),
+        sides(vector_vector_uint()), ordered_sides(0), node_map() {}
 
   ~CellDef() = default;
 
@@ -141,11 +141,10 @@ class CellDefs {
 
   const Dims &dims;
   std::vector<std::shared_ptr<CellDef>> defs;
-  bool redefined;
+  bool redefined{false};
 
 public:
-  explicit CellDefs(const Dims &dims_)
-      : dims(dims_), defs(dims.get_ncell_defs()), redefined(false) { /*empty*/
+  explicit CellDefs(const Dims &dims_) : dims(dims_), defs(dims.get_ncell_defs()) { /*empty*/
   }
   ~CellDefs() = default;
 

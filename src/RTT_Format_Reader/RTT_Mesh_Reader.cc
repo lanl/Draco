@@ -7,8 +7,20 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "RTT_Mesh_Reader.hh"
+#include "RTT_Format_Reader/RTT_Mesh_Reader.hh"
+#include "dsxx/Assert.hh"
+#include "RTT_Format_Reader/CellDefs.hh"
+#include "mesh_element/Element_Definition.hh"
 #include <algorithm>
+#include <climits>  // UINT_MAX
+#include <cstddef>  // size_t
+#include <iterator> // distance
+#include <map>
+#include <memory>
+#include <set>
+#include <string>  // getline
+#include <utility> // make_pair
+#include <vector>
 
 namespace rtt_RTT_Format_Reader {
 
@@ -27,7 +39,7 @@ void RTT_Mesh_Reader::transform2CGNS() {
       rttMesh->get_dims_ncell_defs());
 
   for (unsigned cd = 0; cd < rttMesh->get_dims_ncell_defs(); cd++) {
-    string cell_name = rttMesh->get_cell_defs_name(cd);
+    string const cell_name = rttMesh->get_cell_defs_name(cd);
 
     if (cell_name == "point")
       cell_def = Element_Definition::NODE;
@@ -73,19 +85,19 @@ void RTT_Mesh_Reader::transform2CGNS() {
 
     if (cell_def == Element_Definition::POLYGON) {
       Insist(rttMesh->get_dims_ndim() == 2, "Polygon cell definition only supported in 2D");
-      std::shared_ptr<CellDef> cell_definition(rttMesh->get_cell_defs_def(cd));
+      std::shared_ptr<CellDef> const cell_definition(rttMesh->get_cell_defs_def(cd));
 
       std::vector<Element_Definition> elem_defs;
       elem_defs.emplace_back(Element_Definition::BAR_2);
 
-      std::vector<unsigned> side_types(cell_definition->get_nsides(), 0);
+      std::vector<unsigned> const side_types(cell_definition->get_nsides(), 0);
 
       cell = std::make_shared<rtt_mesh_element::Element_Definition>(
           cell_definition->get_name(), rttMesh->get_dims_ndim(), cell_definition->get_nnodes(),
           cell_definition->get_nsides(), elem_defs, side_types, cell_definition->get_all_sides());
     } else if (cell_def == Element_Definition::POLYHEDRON) {
       Insist(rttMesh->get_dims_ndim() == 3, "Polyhedron cell definition only supported in 3D");
-      std::shared_ptr<CellDef> cell_definition(rttMesh->get_cell_defs_def(cd));
+      std::shared_ptr<CellDef> const cell_definition(rttMesh->get_cell_defs_def(cd));
 
       // check to see if the QUAD_9 element is present in the cell_definitions and check for QUAD_4
       // in the event that a QUAD_9 is in fact present
@@ -93,11 +105,11 @@ void RTT_Mesh_Reader::transform2CGNS() {
       bool have_quad4(false);
       std::vector<int> check_types;
       for (unsigned s = 0; s < cell_definition->get_nsides(); ++s) {
-        int side_type(cell_definition->get_side_types(s));
+        int const side_type(cell_definition->get_side_types(s));
 
         auto sit(std::find(check_types.begin(), check_types.end(), side_type));
         if (sit == check_types.end()) {
-          Element_Definition elem_def(*cell_definitions[side_type]);
+          Element_Definition const elem_def(*cell_definitions[side_type]);
           if (elem_def.get_type() == Element_Definition::QUAD_4)
             have_quad4 = true;
           else if (elem_def.get_type() == Element_Definition::QUAD_4)
@@ -106,8 +118,8 @@ void RTT_Mesh_Reader::transform2CGNS() {
       }
 
       if (have_quad9) {
-        Insist(have_quad4, "quad or quad4 must appear in the cell_defs block "
-                           "when a quad9 is in a polyhedron");
+        Insist(have_quad4, "quad or quad4 must appear in the cell_defs block when a quad9 is in a"
+                           " polyhedron");
       }
 
       // Create the unique side element definitions
@@ -115,14 +127,14 @@ void RTT_Mesh_Reader::transform2CGNS() {
       std::vector<Element_Definition> elem_defs;
 
       for (unsigned s = 0; s < cell_definition->get_nsides(); ++s) {
-        int side_type(cell_definition->get_side_types(s));
+        int const side_type(cell_definition->get_side_types(s));
 
         // check to see if this side type has already been added to the elem_defs list of sides
         auto sit(std::find(unique_side_types.begin(), unique_side_types.end(), side_type));
         if (sit == unique_side_types.end()) {
           // not yet added for this polyhedron, so create a new element of this type push it onto
           // the list
-          Element_Definition elem_def(*cell_definitions[side_type]);
+          Element_Definition const elem_def(*cell_definitions[side_type]);
           elem_defs.push_back(elem_def);
           unique_side_types.push_back(side_type);
         }
@@ -131,7 +143,7 @@ void RTT_Mesh_Reader::transform2CGNS() {
       // Now create the index into the unique element definitions for each side_type
       std::vector<unsigned> side_types;
       for (unsigned s = 0; s < cell_definition->get_nsides(); ++s) {
-        int side_type(cell_definition->get_side_types(s));
+        int const side_type(cell_definition->get_side_types(s));
         auto sit(std::find(unique_side_types.begin(), unique_side_types.end(), side_type));
         Check(std::distance(unique_side_types.begin(), sit) < UINT_MAX);
         side_types.push_back(static_cast<unsigned>(std::distance(unique_side_types.begin(), sit)));
@@ -208,7 +220,7 @@ std::map<std::string, std::set<unsigned>> RTT_Mesh_Reader::get_node_sets() const
       flag_types_and_names = rttMesh->get_node_flags_flag_type(type);
       flag_types_and_names.append("/");
       flag_types_and_names += rttMesh->get_node_flags_flag_name(type, flag);
-      int flag_number = rttMesh->get_node_flags_flag_number(type, flag);
+      int const flag_number = rttMesh->get_node_flags_flag_number(type, flag);
       // loop over the nodes.
       for (unsigned node = 0; node < rttMesh->get_dims_nnodes(); node++) {
         if (flag_number == rttMesh->get_nodes_flags(node, type))
@@ -238,7 +250,7 @@ std::map<std::string, std::set<unsigned>> RTT_Mesh_Reader::get_element_sets() co
       flag_types_and_names = rttMesh->get_side_flags_flag_type(type);
       flag_types_and_names.append("/");
       flag_types_and_names += rttMesh->get_side_flags_flag_name(type, flag);
-      unsigned flag_number = rttMesh->get_side_flags_flag_number(type, flag);
+      unsigned const flag_number = rttMesh->get_side_flags_flag_number(type, flag);
       // loop over the sides.
       for (unsigned side = 0; side < rttMesh->get_dims_nsides(); side++) {
         if (flag_number == rttMesh->get_sides_flags(side, type))
@@ -257,7 +269,7 @@ std::map<std::string, std::set<unsigned>> RTT_Mesh_Reader::get_element_sets() co
       flag_types_and_names = rttMesh->get_cell_flags_flag_type(type);
       flag_types_and_names.append("/");
       flag_types_and_names += rttMesh->get_cell_flags_flag_name(type, flag);
-      int flag_number = rttMesh->get_cell_flags_flag_number(type, flag);
+      int const flag_number = rttMesh->get_cell_flags_flag_number(type, flag);
       // loop over the cells.
       for (size_t cell = 0; cell < rttMesh->get_dims_ncells(); cell++) {
         if (flag_number == rttMesh->get_cells_flags(cell, type)) {
@@ -267,7 +279,7 @@ std::map<std::string, std::set<unsigned>> RTT_Mesh_Reader::get_element_sets() co
       }
       // Allow the possibility that the cells could have identical flags as the sides.
       if (element_sets.count(flag_types_and_names) != 0) {
-        set_uint side_set = element_sets.find(flag_types_and_names)->second;
+        set_uint const side_set = element_sets.find(flag_types_and_names)->second;
         for (auto side : side_set)
           cell_flags.insert(side);
         element_sets.erase(flag_types_and_names);
@@ -285,12 +297,12 @@ std::map<std::string, std::set<unsigned>> RTT_Mesh_Reader::get_element_sets() co
  * \return Acceptablity of the mesh file data.
  */
 bool RTT_Mesh_Reader::invariant() const {
-  bool test = (rttMesh->get_dims_ndim() > 0) && (rttMesh->get_dims_nnodes() > 0) &&
-              (rttMesh->get_dims_nsides() > 0) && (rttMesh->get_dims_ncells() > 0) &&
-              (rttMesh->get_dims_ncell_defs() > 0) && (rttMesh->get_dims_nside_types() > 0) &&
-              (rttMesh->get_dims_ncell_types() > 0) &&
-              (rttMesh->get_dims_ncell_defs() >= rttMesh->get_dims_nside_types()) &&
-              (rttMesh->get_dims_ncell_defs() >= rttMesh->get_dims_ncell_types());
+  bool const test = (rttMesh->get_dims_ndim() > 0) && (rttMesh->get_dims_nnodes() > 0) &&
+                    (rttMesh->get_dims_nsides() > 0) && (rttMesh->get_dims_ncells() > 0) &&
+                    (rttMesh->get_dims_ncell_defs() > 0) && (rttMesh->get_dims_nside_types() > 0) &&
+                    (rttMesh->get_dims_ncell_types() > 0) &&
+                    (rttMesh->get_dims_ncell_defs() >= rttMesh->get_dims_nside_types()) &&
+                    (rttMesh->get_dims_ncell_defs() >= rttMesh->get_dims_ncell_types());
   return test;
 }
 

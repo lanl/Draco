@@ -7,10 +7,23 @@
  * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "RTT_Format_Reader/RTT_Mesh_Reader.hh"
+#include "mesh_element/Element_Definition.hh"
+#include <algorithm> // count_if
+#include <climits>   // INT_MAX
+#include <cstddef>   // size_t
+#include <iostream>
+#include <map>
+#include <memory>
+#include <set>
 #include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 using rtt_mesh_element::Element_Definition;
 using rtt_RTT_Format_Reader::RTT_Mesh_Reader;
@@ -42,14 +55,14 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
 
   // Find the mesh file
   string const inpPath = ut.getTestSourcePath();
-  vector<string> filenames = {"rttquad5.mesh", "rttquad9.mesh", "rttquad.mesh"};
+  vector<string> const filenames = {"rttquad5.mesh", "rttquad9.mesh", "rttquad.mesh"};
 
   for (auto const &filename : filenames) {
     string const fq_filename(inpPath + filename);
-    shared_ptr<RTT_Mesh_Reader> mesh(new RTT_Mesh_Reader(fq_filename));
+    shared_ptr<RTT_Mesh_Reader> const mesh(new RTT_Mesh_Reader(fq_filename));
 
     ostringstream m;
-    m << "Read mesh file " << fq_filename << std::endl;
+    m << "Read mesh file " << fq_filename << '\n';
     ut.passes(m.str());
 
     size_t const ndim = mesh->get_dims_ndim();
@@ -58,7 +71,7 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
 
     vector<shared_ptr<Element_Definition>> const element_defs(mesh->get_element_defs());
     for (size_t j = 0; j < element_defs.size(); ++j) {
-      cout << "Element definition for element " << j << endl;
+      cout << "Element definition for element " << j << '\n';
       element_defs[j]->print(cout);
     }
   }
@@ -71,11 +84,11 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
                                      "rttpolyhedron.4.mesh"};
 
     for (unsigned i = 0; i < more_filenames.size(); ++i) {
-      string filename(inpPath + more_filenames[i]);
-      shared_ptr<RTT_Mesh_Reader> mesh(new RTT_Mesh_Reader(filename));
+      string const filename(inpPath + more_filenames[i]);
+      shared_ptr<RTT_Mesh_Reader> const mesh(new RTT_Mesh_Reader(filename));
 
       ostringstream m;
-      m << "Read mesh file " << filename << std::endl;
+      m << "Read mesh file " << filename << '\n';
       ut.passes(m.str());
 
       // Investigate and report on the mesh
@@ -87,7 +100,7 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
       size_t const ndim = mesh->get_dims_ndim();
       vector<Element_Definition::Element_Type> const element_types(mesh->get_element_types());
       vector<vector<unsigned>> const element_nodes(mesh->get_element_nodes());
-      map<string, set<unsigned>> element_sets(mesh->get_element_sets());
+      map<string, set<unsigned>> const element_sets(mesh->get_element_sets());
       vector<shared_ptr<Element_Definition>> const element_defs(mesh->get_element_defs());
 
       if (ndim != 3) {
@@ -97,7 +110,7 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
       }
 
       for (size_t j = 0; j < element_defs.size(); ++j) {
-        cout << "Element definition for element " << j << endl;
+        cout << "Element definition for element " << j << '\n';
         element_defs[j]->print(cout);
       }
 
@@ -111,7 +124,7 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
         FAILMSG("Unexpected number of cells.");
       } else {
         PASSMSG("Correct number of cells.");
-        std::cout << " There are " << ncells << " cells in the mesh" << std::endl;
+        std::cout << " There are " << ncells << " cells in the mesh\n";
       }
 
       Check(element_types.size() - ncells < UINT_MAX);
@@ -121,7 +134,7 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
         FAILMSG("Unexpected number of sides.");
       } else {
         PASSMSG("Correct number of sides.");
-        std::cout << " There are " << nsides << " sides in the mesh" << std::endl;
+        std::cout << " There are " << nsides << " sides in the mesh\n";
       }
 
       for (auto const &it : element_sets) {
@@ -132,17 +145,17 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
         auto const type_index =
             static_cast<Element_Definition::Element_Type>(element_types[representative_element]);
 
-        shared_ptr<Element_Definition const> type(new Element_Definition(type_index));
+        shared_ptr<Element_Definition const> const type(new Element_Definition(type_index));
 
         if (type->get_dimension() == ndim) {
-          std::cout << " Elements with flags " + it.first << " are cell elements " << std::endl;
+          std::cout << " Elements with flags " + it.first << " are cell elements \n";
         } else {
           // It has to be a side flag.
           if (type->get_dimension() + 1 != ndim) {
             throw invalid_argument(" Elements with flags " + it.first + " have the wrong " +
                                    "dimension for a side element");
           } else {
-            std::cout << " Elements with flags " + it.first << " are side elements" << std::endl;
+            std::cout << " Elements with flags " + it.first << " are side elements\n";
           }
         }
       }
@@ -150,7 +163,7 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
       unsigned ncorner = 0;
       for (unsigned et = nsides; et < element_types.size(); et++) {
         unsigned const c = et - nsides;
-        shared_ptr<Element_Definition> cell_def = element_defs[c];
+        shared_ptr<Element_Definition> const &cell_def = element_defs[c];
         unsigned const number_of_nodes = cell_def->get_number_of_nodes();
         ncorner += number_of_nodes;
       }

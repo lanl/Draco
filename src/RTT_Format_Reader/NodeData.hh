@@ -10,7 +10,7 @@
 #ifndef rtt_RTT_Format_Reader_NodeData_hh
 #define rtt_RTT_Format_Reader_NodeData_hh
 
-#include "Nodes.hh"
+#include "RTT_Format_Reader/Nodes.hh"
 
 namespace rtt_RTT_Format_Reader {
 
