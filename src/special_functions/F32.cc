@@ -7,9 +7,7 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "F32.t.hh"
-#include "dsxx/config.h"
-#include <cmath>
+#include "F32.t.hh" // NOLINT(misc-include-cleaner)
 
 namespace rtt_sf {
 

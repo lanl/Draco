@@ -54,7 +54,7 @@ double F2inv(double f) {
     }
     return log(f * rn / den);
   } else {
-    double ff = 1.0 / std::pow(f, (1.0 / (1.0 + an)));
+    double const ff = 1.0 / std::pow(f, (1.0 / (1.0 + an)));
     double rn = ff + a2[m2 - 1];
     for (int i = m2 - 2; i >= 0; i--) {
       rn = rn * ff + a2[i];
@@ -112,8 +112,8 @@ void F2inv(double const f, double &eta, double &deta) {
     eta = log(f * rn / den);
     deta = (rn + f * drndf - f * rn * ddendf / den) / (f * rn);
   } else {
-    double ff = 1.0 / std::pow(f, (1.0 / (1.0 + an)));
-    double dffdf = -(1.0 / (1.0 + an)) * ff / f;
+    double const ff = 1.0 / std::pow(f, (1.0 / (1.0 + an)));
+    double const dffdf = -(1.0 / (1.0 + an)) * ff / f;
     double rn = ff + a2[m2 - 1];
     double drndf = dffdf;
     for (int i = m2 - 2; i >= 0; i--) {

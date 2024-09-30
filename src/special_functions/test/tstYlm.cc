@@ -6,11 +6,15 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "special_functions/Ylm.hh"
-#include "units/PhysicalConstants.hh"
+#include "units/MathConstants.hh"
+#include <cmath> // cos, sin, sqrt
+#include <iostream>
 #include <sstream>
 
 using namespace std;
@@ -42,9 +46,8 @@ void tstcPlk(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::PI;
 
-  cout << "\nTesting cPlk function.\n" << endl;
+  cout << "\nTesting cPlk function.\n\n";
 
-  std::ostringstream msg;
   double x(0.3568);
 
   // cPlk(0,0)
@@ -182,7 +185,7 @@ void tstNormalizedYlk(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::PI;
 
-  cout << "\nTesting normalizedYlk function.\n" << endl;
+  cout << "\nTesting normalizedYlk function.\n\n";
 
   double const theta = 0.4, phi = 0.21;
 
@@ -237,7 +240,7 @@ void tstRealYlk(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::PI;
 
-  cout << "\nTesting realYlk function.\n" << endl;
+  cout << "\nTesting realYlk function.\n\n";
 
   double const theta = 0.9, phi = 0.06;
 
@@ -249,10 +252,10 @@ void tstRealYlk(rtt_dsxx::UnitTest &ut) {
   expVal = sqrt(3.0 / (4.0 * PI)) * cos(theta);
   compareRealYlk(1, 0, theta, phi, expVal, ut);
   // y(1,-1)
-  double expVal_1_m1 = sqrt(3.0 / (8.0 * PI)) * sin(theta) * cos(phi);
+  double const expVal_1_m1 = sqrt(3.0 / (8.0 * PI)) * sin(theta) * cos(phi);
   compareRealYlk(1, -1, theta, phi, expVal_1_m1, ut);
   // y(1,1)
-  double expVal_1_1 = -1.0 * sqrt(3.0 / (8.0 * PI)) * sin(theta) * cos(phi);
+  double const expVal_1_1 = -1.0 * sqrt(3.0 / (8.0 * PI)) * sin(theta) * cos(phi);
   compareRealYlk(1, 1, theta, phi, expVal_1_1, ut);
 
   return;
@@ -263,7 +266,7 @@ void tstComplexYlk(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::PI;
 
-  cout << "\nTesting complexYlk function.\n" << endl;
+  cout << "\nTesting complexYlk function.\n\n";
 
   double const theta = 2.96;
   double const phi = 4.27;
@@ -276,10 +279,10 @@ void tstComplexYlk(rtt_dsxx::UnitTest &ut) {
   expVal = 0.0;
   compareComplexYlk(1, 0, theta, phi, expVal, ut);
   // y(1,-1)
-  double expVal_1_m1 = sqrt(3.0 / (8.0 * PI)) * sin(theta) * sin(phi);
+  double const expVal_1_m1 = sqrt(3.0 / (8.0 * PI)) * sin(theta) * sin(phi);
   compareComplexYlk(1, -1, theta, phi, expVal_1_m1, ut);
   // y(1,1)
-  double expVal_1_1 = -1.0 * sqrt(3.0 / (8.0 * PI)) * sin(theta) * sin(phi);
+  double const expVal_1_1 = -1.0 * sqrt(3.0 / (8.0 * PI)) * sin(theta) * sin(phi);
   compareComplexYlk(1, 1, theta, phi, expVal_1_1, ut);
 
   return;
@@ -290,22 +293,22 @@ void tstgalerkinYlk(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::PI;
 
-  cout << "\nTesting realYlk function.\n" << endl;
+  cout << "\nTesting realYlk function.\n\n";
 
   double const theta = 0.9, phi = 0.06;
 
   // Y(0,0)
-  double expVal = (1.0 / (4.0 * PI));
+  double const expVal = (1.0 / (4.0 * PI));
   compareGalerkinYlk(0, 0, theta, phi, expVal, ut);
 
-  //     // y(1,0)
+  // y(1,0)
   //     expVal = sqrt(3.0/(4.0*PI))*cos(theta);
   //     compareGalerkinYlk(1,0,theta,phi,expVal,ut);
   // y(1,-1)
-  double expVal_1_m1 = -(3.0 / (4.0 * PI)) * sin(theta) * sin(phi);
+  double const expVal_1_m1 = -(3.0 / (4.0 * PI)) * sin(theta) * sin(phi);
   compareGalerkinYlk(1, -1, theta, phi, expVal_1_m1, ut);
-  //     // y(1,1)
-  double expVal_1_1 = -(3.0 / (4.0 * PI)) * sin(theta) * cos(phi);
+  // y(1,1)
+  double const expVal_1_1 = -(3.0 / (4.0 * PI)) * sin(theta) * cos(phi);
   compareGalerkinYlk(1, 1, theta, phi, expVal_1_1, ut);
 
   return;

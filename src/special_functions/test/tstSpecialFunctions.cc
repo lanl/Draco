@@ -10,8 +10,10 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "special_functions/Factorial.hh"
 #include "special_functions/KroneckerDelta.hh"
+#include <stdexcept>
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -44,10 +46,10 @@ void tstKdelta(rtt_dsxx::UnitTest &ut) {
   else
     FAILMSG("Found kronecker_delta(-1,-1) != 1, kronecker_delta is not working.");
 
-  unsigned uZero(0);
-  unsigned uOne(1);
-  long lZero(0);
-  long lOne(1);
+  unsigned const uZero(0);
+  unsigned const uOne(1);
+  long const lZero(0);
+  long const lOne(1);
 
   if (kronecker_delta(uOne, uZero) == uZero)
     PASSMSG("Found kronecker_delta<unsigned>(uOne,uZero) == uZero, "
@@ -63,10 +65,10 @@ void tstKdelta(rtt_dsxx::UnitTest &ut) {
     FAILMSG("Found kronecker_delta<long>(uOne,uZero) != uZero, "
             "kronecker_delta is not working.");
 
-  float fZero(0.0);
-  float fOne(1.0);
-  double dZero(0.0);
-  double dOne(1.0);
+  float const fZero(0.0);
+  float const fOne(1.0);
+  double const dZero(0.0);
+  double const dOne(1.0);
 
   if (kronecker_delta(fOne, fZero) == uZero)
     PASSMSG("Found kronecker_delta<float>(fOne,fZero) == uZero, "
@@ -120,8 +122,8 @@ void tstFactorial(rtt_dsxx::UnitTest &ut) {
   else
     FAILMSG("Found factorial(-3) != 1, factorial is not working.");
 
-  unsigned uOne(1);
-  long lOne(1);
+  unsigned const uOne(1);
+  long const lOne(1);
 
   if (factorial(uOne) == uOne)
     PASSMSG("Found factorial<unsigned>(1) == unsigned(1), factorial is working.");
@@ -162,7 +164,7 @@ void tstFF(rtt_dsxx::UnitTest &ut) {
   else
     FAILMSG("factorial_fraction(100,99) != 100");
 
-  long lOne(1);
+  long const lOne(1);
   FAIL_IF_NOT(rtt_dsxx::soft_equiv(factorial_fraction(lOne, lOne), 1.0));
 
   return;
