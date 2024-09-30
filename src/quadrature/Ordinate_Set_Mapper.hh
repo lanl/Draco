@@ -101,7 +101,7 @@ private:
       const double &mu2(o2.mu());
       const double eta1(sqrt(1.0 - mu1 * mu1));
       const double eta2(sqrt(1.0 - mu2 * mu2));
-      double mu_btwn = mu1 * mu2 + eta1 * eta2;
+      double const mu_btwn = mu1 * mu2 + eta1 * eta2;
 
       Ensure(-1.0 <= mu_btwn && mu_btwn <= 1.0);
 

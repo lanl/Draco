@@ -3,17 +3,19 @@
  * \file   quadrature/Ordinate_Set_Mapper.cc
  * \author Allan Wollaber
  * \date   Mon Mar  7 10:42:56 EST 2016
- * \brief  Implementation file for the class
- *         rtt_quadrature::Ordinate_Set_Mapper.
- * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \brief  Implementation file for the class rtt_quadrature::Ordinate_Set_Mapper.
+ * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Ordinate_Set_Mapper.hh"
+#include "quadrature/Ordinate_Set_Mapper.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/config.h" // DBC
+#include "quadrature/Ordinate.hh"
 #include <algorithm>
-#include <iomanip>
-#include <iostream>
-#include <numeric>
+#include <cstddef> // size_t
+#include <utility> // pair
+#include <vector>
 
 namespace {
 
@@ -26,8 +28,7 @@ using namespace rtt_quadrature;
 
 //------------------------------------------------------------------------------------------------//
 bool check_4(Ordinate const &ordinate) {
-  // In 1-D spherical geometry, the ordinates must be confined to the first
-  // two octants.
+  // In 1-D spherical geometry, the ordinates must be confined to the first two octants.
   if (ordinate.eta() < 0 || ordinate.xi() < 0)
     return false;
   return true;
@@ -35,8 +36,7 @@ bool check_4(Ordinate const &ordinate) {
 
 //------------------------------------------------------------------------------------------------//
 bool check_2(Ordinate const &ordinate) {
-  // In 2-D geometry, the ordinates must be confined to the first
-  // four octants
+  // In 2-D geometry, the ordinates must be confined to the first four octants
   if (ordinate.xi() < 0)
     return false;
   return true;
@@ -63,8 +63,8 @@ bool Ordinate_Set_Mapper::check_class_invariants() const { return os_.check_clas
  * \param[in] interp_in Selected interpolation scheme to use for remapping
  * \param[out] weights vector of output weights produced by remapping
  *
- *  The output weights preserve the incoming weight assuming that the incoming
- *  ordinate's weight is associated via a delta function in angle.
+ *  The output weights preserve the incoming weight assuming that the incoming ordinate's weight is
+ *  associated via a delta function in angle.
  */
 void Ordinate_Set_Mapper::map_angle_into_ordinates(const Ordinate &ord_in,
                                                    const Interpolation_Type &interp_in,
@@ -84,24 +84,22 @@ void Ordinate_Set_Mapper::map_angle_into_ordinates(const Ordinate &ord_in,
 
   // Vector of dot products
   vector<double> dps(weights.size(), 0.0);
-  // Perform all of the dot products between the incoming ordinate and the
-  // ordinates in the Ordinate_Set
+  // Perform all of the dot products between the incoming ordinate and the ordinates in the
+  // Ordinate_Set
   if (os_.dimension() != 1) {
-    dot_product_functor_3D dpf(ord_in);
+    dot_product_functor_3D const dpf(ord_in);
     std::transform(ords.begin(), ords.end(), dps.begin(), dpf);
   } else {
-    dot_product_functor_1D dpf(ord_in);
+    dot_product_functor_1D const dpf(ord_in);
     std::transform(ords.begin(), ords.end(), dps.begin(), dpf);
   }
 
-  // Remove the "starting directions" as valid ordinates in the quadrature, if
-  // they exist
+  // Remove the "starting directions" as valid ordinates in the quadrature, if they exist
   if (os_.has_starting_directions()) {
     size_t i = 0;
     for (auto ord = ords.begin(); ord != ords.end(); ++ord, ++i) {
-      // If the ordinate weight is zero, we found a "starting direction". We
-      // remove it by saying its dot product is completely opposed to the
-      // ordinate we passed in (set to -1).
+      // If the ordinate weight is zero, we found a "starting direction". We remove it by saying its
+      // dot product is completely opposed to the ordinate we passed in (set to -1).
       if (ord->wt() <= 0.0)
         dps[i] = -1.0;
     }
@@ -110,7 +108,7 @@ void Ordinate_Set_Mapper::map_angle_into_ordinates(const Ordinate &ord_in,
   switch (interp_in) {
   case NEAREST_NEIGHBOR: {
     // Find the index with the largest dot product
-    size_t max_e = std::max_element(dps.begin(), dps.end()) - dps.begin();
+    size_t const max_e = std::max_element(dps.begin(), dps.end()) - dps.begin();
 
     // Put all of the associated weight into that element
     weights[max_e] = ord_in.wt() / ords[max_e].wt();
@@ -134,7 +132,7 @@ void Ordinate_Set_Mapper::map_angle_into_ordinates(const Ordinate &ord_in,
 
     // Assign weights based on normalization of nearest 3
     double w1(dpsi[0].first), w2(dpsi[1].first), w3(dpsi[2].first);
-    size_t i1(dpsi[0].second), i2(dpsi[1].second), i3(dpsi[2].second);
+    size_t const i1(dpsi[0].second), i2(dpsi[1].second), i3(dpsi[2].second);
 
     // Prevent adding energy into negative dot-product ordinates
     w1 = std::max(w1, 0.0);
@@ -150,8 +148,8 @@ void Ordinate_Set_Mapper::map_angle_into_ordinates(const Ordinate &ord_in,
     w2 = 1.0 - w2;
     w3 = 1.0 - w3;
 
-    // This block selects a single ordinate in the ordinate set if one of the
-    // dot products is very near to 1.0 (to within ord_tol)
+    // This block selects a single ordinate in the ordinate set if one of the dot products is very
+    // near to 1.0 (to within ord_tol)
     if (w1 > ord_tol && w2 > ord_tol && w3 > ord_tol) {
       w1 = 1.0 / w1;
       w2 = 1.0 / w2;
@@ -170,7 +168,7 @@ void Ordinate_Set_Mapper::map_angle_into_ordinates(const Ordinate &ord_in,
       w3 = 1.0;
     }
 
-    double wsum(w1 + w2 + w3);
+    double const wsum(w1 + w2 + w3);
     Check(wsum > 0.0);
 
     // Normalize the 3 weights
@@ -188,8 +186,8 @@ void Ordinate_Set_Mapper::map_angle_into_ordinates(const Ordinate &ord_in,
     break;
   }
 
-  // Test for energy conservation by integrating over all angles i.e., summing
-  // the quadrature weights
+  // Test for energy conservation by integrating over all angles i.e., summing the quadrature
+  // weights
   Ensure(rtt_dsxx::soft_equiv(zeroth_moment(weights), ord_in.wt()));
 }
 

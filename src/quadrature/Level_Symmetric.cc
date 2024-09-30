@@ -6,15 +6,15 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Level_Symmetric.hh"
+#include "quadrature/Level_Symmetric.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh"
-#include "dsxx/Soft_Equivalence.hh"
-#include "units/PhysicalConstants.hh"
-#include <algorithm>
+#include "quadrature/Quadrature_Class.hh"
 #include <array>
-#include <cmath>
-#include <iomanip>
-#include <iostream>
+#include <cstddef> // size_t
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 namespace rtt_quadrature {
 
@@ -47,9 +47,9 @@ void Level_Symmetric::create_octant_ordinates_(std::vector<double> &mu, std::vec
   }
 
   // The number of quadrature levels is equal to the requested SN order.
-  size_t levels = sn_order_;
+  size_t const levels = sn_order_;
 
-  size_t octantOrdinates = levels * (levels + 2) / 8;
+  size_t const octantOrdinates = levels * (levels + 2) / 8;
 
   // Set up some temporaries.
   std::vector<double> att;

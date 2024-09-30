@@ -6,14 +6,16 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "General_Octant_Quadrature.hh"
+#include "quadrature/General_Octant_Quadrature.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh"
 #include "dsxx/Soft_Equivalence.hh"
-#include "units/PhysicalConstants.hh"
+#include "quadrature/Octant_Quadrature.hh"
+#include "quadrature/Quadrature_Class.hh"
 #include <algorithm>
-#include <cmath>
-#include <iomanip>
-#include <iostream>
+#include <cstddef> // size_t
+#include <string>
+#include <vector>
 
 namespace rtt_quadrature {
 using namespace rtt_dsxx;
@@ -37,8 +39,7 @@ General_Octant_Quadrature::General_Octant_Quadrature(
   Require(quadrature_class != SQUARE_QUADRATURE ||
           2 * number_of_levels * number_of_levels == 8 * mu.size());
 
-  // is_open_interval_ =
-  //     soft_equiv(*std::min_element(xi.begin(), xi.end()), -1.0);
+  // is_open_interval_ = soft_equiv(*std::min_element(xi.begin(), xi.end()), -1.0);
 
   Ensure(check_class_invariants());
   Ensure(this->mu() == mu);

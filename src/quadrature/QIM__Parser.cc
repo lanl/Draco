@@ -2,12 +2,14 @@
 /*!
  * \file   quadrature/QIM__Parser.cc
  * \author Kent Budge
- * \brief  Define a parse routine for quadrature interpolation model
- *         specifications.
+ * \brief  Define a parse routine for quadrature interpolation model specifications.
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "QIM.hh"
+#include "dsxx/Assert.hh"
+#include "parser/Token.hh"
+#include "quadrature/QIM.hh"
+#include <string>
 
 namespace rtt_quadrature {
 using namespace rtt_parser;
@@ -25,7 +27,7 @@ using namespace rtt_parser;
 void parse_quadrature_interpolation_model(Token_Stream &tokens, QIM &qim) {
   tokens.check_semantics(qim == END_QIM, "quadrature interpolation model already specified");
 
-  Token token = tokens.shift();
+  Token const token = tokens.shift();
 
   if (token.text() == "SN") {
     qim = SN;

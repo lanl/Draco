@@ -6,10 +6,20 @@
  * \brief  Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Quadrature.hh"
-#include "Galerkin_Ordinate_Space.hh"
-#include "Sn_Ordinate_Space.hh"
+#include "quadrature/Quadrature.hh"
+#include "dsxx/Assert.hh"
+#include "mesh_element/Geometry.hh"
+#include "quadrature/Galerkin_Ordinate_Space.hh"
+#include "quadrature/Ordinate.hh"
+#include "quadrature/Ordinate_Set.hh"
+#include "quadrature/Ordinate_Space.hh"
+#include "quadrature/QIM.hh"
+#include "quadrature/Quadrature_Class.hh"
+#include "quadrature/Sn_Ordinate_Space.hh"
 #include <algorithm>
+#include <cmath> // sqrt
+#include <memory>
+#include <vector>
 
 namespace rtt_quadrature {
 
@@ -21,15 +31,15 @@ using rtt_dsxx::soft_equiv;
 /*!
  * Create a set of ordinates from the Quadrature.
  *
- * \param dimension Dimension of the problem.
- * \param geometry Geometry of the problem.
- * \param norm Norm for the ordinate weights.
- * \param mu_axis Which spatial axis maps to the mu direction cosine?
- * \param eta_axis Which spatial axis maps to the eta direction cosine?
- * \param include_starting_directions Should starting directions be included in the ordinate set for
- *          each level? This argument is ignored for Cartesian geometries.
- * \param include_extra_directions Should extra starting directions be included in the ordinate set
- *          for each level?
+ * \param[in] dimension Dimension of the problem.
+ * \param[in] geometry Geometry of the problem.
+ * \param[in] norm Norm for the ordinate weights.
+ * \param[in] mu_axis Which spatial axis maps to the mu direction cosine?
+ * \param[in] eta_axis Which spatial axis maps to the eta direction cosine?
+ * \param[in] include_starting_directions Should starting directions be included in the ordinate set
+ *          for each level? This argument is ignored for Cartesian geometries.
+ * \param[in] include_extra_directions Should extra starting directions be included in the ordinate
+ *          set for each level?
  */
 std::vector<Ordinate> Quadrature::create_ordinates(unsigned const dimension,
                                                    Geometry const geometry, double const norm,
@@ -98,7 +108,7 @@ Quadrature::create_ordinate_set(unsigned const dimension, Geometry const geometr
   Require(norm > 0.0);
   Require(dimension == 1 || quadrature_class() != INTERVAL_QUADRATURE);
 
-  std::vector<Ordinate> ordinates = create_ordinates_(
+  std::vector<Ordinate> const ordinates = create_ordinates_(
       dimension, geometry, norm, include_starting_directions, include_extra_directions);
 
   std::shared_ptr<Ordinate_Set> Result(new Ordinate_Set(dimension, geometry, ordinates,
@@ -124,7 +134,7 @@ void Quadrature::add_1D_starting_directions_(Geometry const geometry,
 
       // insert mu=1 starting direction
       if (add_extra_starting_directions)
-        ordinates.emplace_back(Ordinate(1.0, 0.0, 0.0, 0.0));
+        ordinates.emplace_back(1.0, 0.0, 0.0, 0.0);
     } else if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
       Insist(false, "should not be reached");
     }
@@ -173,7 +183,7 @@ void Quadrature::add_2D_starting_directions_(Geometry const geometry,
 
       // insert mu > 0 on the final level
       if (add_extra_starting_directions)
-        ordinates.emplace_back(Ordinate(sqrt(1.0 - eta * eta), eta, 0.0, 0.0));
+        ordinates.emplace_back(sqrt(1.0 - eta * eta), eta, 0.0, 0.0);
     }
   }
 }
@@ -229,11 +239,11 @@ Quadrature::create_ordinate_space(unsigned const dimension, Geometry const geome
   Require(dimension == 1 || mu_axis != eta_axis);
   Require(dimension == 1 || quadrature_class() != INTERVAL_QUADRATURE);
 
-  std::vector<Ordinate> ordinates = create_ordinates(dimension, geometry,
-                                                     1.0, // hardwired norm
-                                                     mu_axis, eta_axis,
-                                                     true, // include starting directions
-                                                     include_extra_directions);
+  std::vector<Ordinate> const ordinates = create_ordinates(dimension, geometry,
+                                                           1.0, // hardwired norm
+                                                           mu_axis, eta_axis,
+                                                           true, // include starting directions
+                                                           include_extra_directions);
 
   std::shared_ptr<Ordinate_Space> Result;
   switch (qim) {
@@ -282,7 +292,7 @@ std::shared_ptr<Ordinate_Space> Quadrature::create_ordinate_space(
   Require(qim == SN || qim == GQ1 || qim == GQ2 || qim == GQF);
   Require(qim == SN || moment_expansion_order >= 0);
 
-  std::vector<Ordinate> ordinates =
+  std::vector<Ordinate> const ordinates =
       create_ordinates(dimension, geometry,
                        1.0, // hardwired norm
                        geometry != rtt_mesh_element::Geometry::CARTESIAN,

@@ -4,14 +4,18 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  A class representing an interval Gauss-Legendre quadrature set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
- *         reserved.  */
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Gauss_Legendre.hh"
+#include "quadrature/Gauss_Legendre.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh"
-#include "gauleg.hh"
-#include <numeric>
+#include "quadrature/Interval_Quadrature.hh"
+#include "quadrature/Ordinate.hh"
+#include "quadrature/gauleg.hh"
+#include <cstddef> // size_t
+#include <string>
+#include <vector>
 
 namespace rtt_quadrature {
 using namespace std;
@@ -68,7 +72,7 @@ vector<Ordinate> Gauss_Legendre::create_level_ordinates_(double const norm) cons
   for (size_t i = 0; i < numPoints; ++i)
     sumwt += wt_[i];
 
-  double c = norm / sumwt;
+  double const c = norm / sumwt;
 
   // build the set of ordinates
   vector<Ordinate> Result(numPoints);

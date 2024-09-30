@@ -4,14 +4,21 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  A class representing an interval Gauss-Legendre quadrature set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Lobatto.hh"
+#include "quadrature/Lobatto.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh"
-#include "gauleg.hh"
-#include <numeric>
+#include "quadrature/Interval_Quadrature.hh"
+#include "quadrature/Ordinate.hh"
+#include "units/MathConstants.hh"
+#include <cmath>   // cos
+#include <cstddef> // size_t
+#include <gsl/gsl_sf_legendre.h>
+#include <limits>
+#include <string>
+#include <vector>
 
 namespace rtt_quadrature {
 using namespace std;
@@ -42,8 +49,7 @@ Lobatto::Lobatto(unsigned sn_order) : Interval_Quadrature(sn_order) {
   double const mu2(1.0);  // maximum value for mu
 
   // Number of Gauss points in the half range.
-  // The roots are symmetric in the interval.  We only need to search for
-  // half of them.
+  // * The roots are symmetric in the interval.  We only need to search for half of them.
   unsigned const numHrGaussPoints(numGaussPoints / 2);
 
   mu_[0] = mu1;
@@ -144,7 +150,7 @@ vector<Ordinate> Lobatto::create_level_ordinates_(double const norm) const {
   for (size_t i = 0; i < numPoints; ++i)
     sumwt += wt_[i];
 
-  double c = norm / sumwt;
+  double const c = norm / sumwt;
 
   // build the set of ordinates
   vector<Ordinate> Result(numPoints);

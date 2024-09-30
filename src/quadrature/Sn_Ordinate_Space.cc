@@ -7,13 +7,20 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Sn_Ordinate_Space.hh"
+#include "quadrature/Sn_Ordinate_Space.hh"
+#include "dsxx/Assert.hh"
+#include "mesh_element/Geometry.hh"
+#include "quadrature/Moment.hh"
+#include "quadrature/Ordinate.hh"
+#include "quadrature/Ordinate_Space.hh"
+#include "quadrature/QIM.hh"
+#include "quadrature/Quadrature_Class.hh"
 #include "special_functions/Ylm.hh"
-#include "units/PhysicalConstants.hh"
+#include <cstddef>
 #include <gsl/gsl_blas.h>
-#include <gsl/gsl_linalg.h>
-#include <iomanip>
-#include <iostream>
+#include <gsl/gsl_cblas.h>
+#include <gsl/gsl_matrix_double.h>
+#include <vector>
 
 namespace rtt_quadrature {
 
@@ -26,10 +33,10 @@ vector<Moment> Sn_Ordinate_Space::compute_n2lk_1D_(Quadrature_Class /*unused*/, 
   unsigned const L = expansion_order();
 
   // Choose: l= 0, ..., L-1, k = 0
-  int k(0); // k is always zero for 1D.
+  int const k(0); // k is always zero for 1D.
 
   for (unsigned ell = 0; ell <= L; ++ell)
-    result.emplace_back(Moment(ell, k));
+    result.emplace_back(ell, k);
 
   return result;
 }
@@ -44,7 +51,7 @@ vector<Moment> Sn_Ordinate_Space::compute_n2lk_1Da_(Quadrature_Class /*unused*/,
   for (int ell = 0; ell <= static_cast<int>(L); ++ell)
     for (int k = 0; k <= ell; ++k)
       if ((ell + k) % 2 == 0)
-        result.emplace_back(Moment(ell, k));
+        result.emplace_back(ell, k);
 
   return result;
 }
@@ -58,7 +65,7 @@ vector<Moment> Sn_Ordinate_Space::compute_n2lk_2D_(Quadrature_Class /*unused*/, 
   // Choose: l= 0, ..., N, k = 0, ..., l
   for (int ell = 0; ell <= static_cast<int>(L); ++ell)
     for (int k = 0; k <= ell; ++k)
-      result.emplace_back(Moment(ell, k));
+      result.emplace_back(ell, k);
 
   return result;
 }
@@ -79,7 +86,7 @@ vector<Moment> Sn_Ordinate_Space::compute_n2lk_3D_(Quadrature_Class /*unused*/, 
   // Choose: l= 0, ..., L, k = -l, ..., l
   for (int ell = 0; ell <= static_cast<int>(L); ++ell)
     for (int k(-ell); k <= ell; ++k)
-      result.emplace_back(Moment(ell, k));
+      result.emplace_back(ell, k);
 
   return result;
 }
@@ -109,12 +116,12 @@ void Sn_Ordinate_Space::compute_M() {
       if (dim == 1 &&
           geometry != rtt_mesh_element::Geometry::AXISYMMETRIC) // 1D mesh, 1D quadrature
       {
-        double mu(ordinates[m].mu());
+        double const mu(ordinates[m].mu());
         M_[n + m * numMoments] = Ylm(ell, k, mu, 0.0, sumwt);
       } else {
-        double mu(ordinates[m].mu());
-        double eta(ordinates[m].eta());
-        double xi(ordinates[m].xi());
+        double const mu(ordinates[m].mu());
+        double const eta(ordinates[m].eta());
+        double const xi(ordinates[m].xi());
 
         // R-Z coordinate system
         //
@@ -142,7 +149,7 @@ void Sn_Ordinate_Space::compute_M() {
         // must be those that are even in the polar angle. That may be determined by considering the
         // even-ness of the associated Legendre polynomials.
 
-        double phi(compute_azimuthalAngle(mu, xi));
+        double const phi(compute_azimuthalAngle(mu, xi));
         M_[n + m * numMoments] = Ylm(ell, k, eta, phi, sumwt);
       }
     } // ordinate loop
@@ -176,12 +183,12 @@ void Sn_Ordinate_Space::compute_D() {
 
   std::vector<double> M(M_);
   Check(M.size() == numOrdinates * numMoments);
-  gsl_matrix_view gsl_M = gsl_matrix_view_array(&M[0], numOrdinates, numMoments);
+  gsl_matrix_view const gsl_M = gsl_matrix_view_array(&M[0], numOrdinates, numMoments);
 
   std::vector<double> D(numMoments * numOrdinates); // rows x cols
   gsl_matrix_view gsl_D = gsl_matrix_view_array(&D[0], numMoments, numOrdinates);
 
-  unsigned ierr =
+  unsigned const ierr =
       gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &gsl_M.matrix, gsl_W, 0.0, &gsl_D.matrix);
   Insist(!ierr, "GSL BLAS interface error");
 

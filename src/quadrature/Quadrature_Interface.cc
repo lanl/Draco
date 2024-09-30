@@ -4,18 +4,22 @@
  * \author Jae Chang
  * \date   Tue Jan 27 08:51:19 2004
  * \brief  Quadrature interface definitions
- * \note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Quadrature_Interface.hh"
-#include "dsxx/Assert.hh"
+#include "quadrature/Quadrature_Interface.hh"
+#include "quadrature/Ordinate.hh"
+#include "quadrature/Ordinate_Set.hh"
 #include "quadrature/config.h"
-#include <iostream>
-#include <vector>
+
 #ifdef GSL_FOUND
-#include "Ordinate_Set_Factory.hh"
+#include "quadrature/Ordinate_Set_Factory.hh"
 #endif
+
+#include "dsxx/Assert.hh"
+#include <cstddef> // size_t
+#include <memory>
+#include <vector>
 
 //! An extern "C" interface to default constructor
 void init_quadrature(quadrature_data &quad) { quad = quadrature_data(); }
@@ -57,8 +61,8 @@ void get_quadrature(quadrature_data &quad) {
 
   check_quadrature_validity(quad);
 
-  Ordinate_Set_Factory osf(quad);
-  std::shared_ptr<Ordinate_Set> ordinate_set = osf.get_Ordinate_Set();
+  Ordinate_Set_Factory const osf(quad);
+  std::shared_ptr<Ordinate_Set> const ordinate_set = osf.get_Ordinate_Set();
 
   std::vector<Ordinate> const ordinates(ordinate_set->ordinates());
   size_t i(0);

@@ -7,15 +7,25 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Galerkin_Ordinate_Space.hh"
+#include "quadrature/Galerkin_Ordinate_Space.hh"
+#include "dsxx/Assert.hh"
+#include "mesh_element/Geometry.hh"
+#include "quadrature/Moment.hh"
+#include "quadrature/Ordinate.hh"
+#include "quadrature/Ordinate_Space.hh"
+#include "quadrature/QIM.hh"
+#include "quadrature/Quadrature_Class.hh"
 #include "special_functions/Ylm.hh"
-#include "units/PhysicalConstants.hh"
-#include <gsl/gsl_blas.h>
+#include <climits> // UINT_MAX
+#include <cmath>   // abs
+#include <cstddef> // size_t
 #include <gsl/gsl_linalg.h>
-#include <iomanip>
+#include <gsl/gsl_matrix_double.h>
+#include <gsl/gsl_permutation.h>
 #include <iostream>
+#include <limits>
+#include <vector>
 
-using namespace rtt_units;
 using std::vector;
 
 namespace rtt_quadrature {
@@ -29,7 +39,7 @@ vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_1D_(Quadrature_Class /*unus
   int constexpr k(0); // k is always zero for 1D.
 
   for (unsigned ell = 0; ell < N; ++ell)
-    result.emplace_back(Moment(ell, k));
+    result.emplace_back(ell, k);
 
   return result;
 }
@@ -44,15 +54,13 @@ vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_1Da_(Quadrature_Class /*unu
   for (int ell = 0; ell < static_cast<int>(N); ++ell)
     for (int k = 0; k <= ell; ++k)
       if ((ell + k) % 2 == 0)
-        result.emplace_back(Moment(ell, k)); // Eliminate moments even in eta
+        result.emplace_back(ell, k); // Eliminate moments even in eta
 
   return result;
 }
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Creates a mapping between moment index n and the index pair (k,l).
- */
+//! Creates a mapping between moment index n and the index pair (k,l).
 vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_2D_(Quadrature_Class /*unused*/,
                                                          unsigned const N) {
   std::vector<Moment> result;
@@ -62,15 +70,13 @@ vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_2D_(Quadrature_Class /*unus
   for (int ell = 0; ell <= static_cast<int>(N); ++ell)
     for (int k = -ell; k <= ell; ++k)
       if (((ell + abs(k)) % 2 == 0) && ((ell < static_cast<int>(N)) || (k < 0)))
-        result.emplace_back(Moment(ell, k));
+        result.emplace_back(ell, k);
 
   return result;
 }
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Creates a mapping between moment index n and the index pair (k,l).
- */
+//! Creates a mapping between moment index n and the index pair (k,l).
 vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_2Da_(Quadrature_Class /*unused*/,
                                                           unsigned const N) {
   std::vector<Moment> result;
@@ -80,20 +86,18 @@ vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_2Da_(Quadrature_Class /*unu
 
   for (int ell = 0; ell < static_cast<int>(N); ++ell)
     for (int k = 0; k <= ell; ++k)
-      result.emplace_back(Moment(ell, k));
+      result.emplace_back(ell, k);
 
   // Add N and k>0, k odd
-  int ell(N);
+  int const ell(N);
   for (int k = 1; k <= ell; k += 2)
-    result.emplace_back(Moment(ell, k));
+    result.emplace_back(ell, k);
 
   return result;
 }
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Creates a mapping between moment index n and the index pair (k,l).
- */
+//! Creates a mapping between moment index n and the index pair (k,l).
 vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_3D_(Quadrature_Class /*unused*/,
                                                          unsigned const N) {
   vector<Moment> result;
@@ -101,27 +105,27 @@ vector<Moment> Galerkin_Ordinate_Space::compute_n2lk_3D_(Quadrature_Class /*unus
   // Choose: l= 0, ..., N-1, k = -l, ..., l
   for (unsigned ell = 0; ell < N; ++ell)
     for (int k = -1 * static_cast<int>(ell); k <= static_cast<int>(ell); ++k)
-      result.emplace_back(Moment(ell, k));
+      result.emplace_back(ell, k);
 
   // Add ell=N and k<0
   {
-    unsigned ell(N);
+    unsigned const ell(N);
     for (int k(-1 * static_cast<int>(ell)); k < 0; ++k)
-      result.emplace_back(Moment(ell, k));
+      result.emplace_back(ell, k);
   }
 
   // Add ell=N, k>0, k odd
   {
-    int ell(N);
+    int const ell(N);
     for (int k = 1; k <= ell; k += 2)
-      result.emplace_back(Moment(ell, k));
+      result.emplace_back(ell, k);
   }
 
   // Add ell=N+1 and k<0, k even
   {
-    unsigned ell(N + 1);
+    unsigned const ell(N + 1);
     for (int k(-1 * static_cast<int>(ell) + 1); k < 0; k += 2)
-      result.emplace_back(Moment(ell, k));
+      result.emplace_back(ell, k);
   }
 
   return result;
@@ -304,7 +308,7 @@ void Galerkin_Ordinate_Space::compute_operators() {
     unsigned const ell(moments()[n].L());
     int const k(moments()[n].M());
 
-    std::cout << " moment " << n << "     l = " << ell << " k = " << k << std::endl;
+    std::cout << " moment " << n << "     l = " << ell << " k = " << k << '\n';
   }
 }
 
@@ -358,11 +362,11 @@ vector<double> Galerkin_Ordinate_Space::augment_M(vector<unsigned> const &indexe
       if (std::abs(ordinates[m].wt()) > std::numeric_limits<decltype(ordinates[m].wt())>::min()) {
         M_new[n + m * numMoments] = M[n + indexes[m] * numMoments];
       } else {
-        double mu(ordinates[m].mu());
-        double eta(ordinates[m].eta());
-        double xi(ordinates[m].xi());
+        double const mu(ordinates[m].mu());
+        double const eta(ordinates[m].eta());
+        double const xi(ordinates[m].xi());
 
-        double phi(compute_azimuthalAngle(mu, xi));
+        double const phi(compute_azimuthalAngle(mu, xi));
         M_new[n + m * numMoments] = Ylm(ell, k, eta, phi, sumwt);
       }
     }
@@ -394,12 +398,12 @@ vector<double> Galerkin_Ordinate_Space::compute_M_SN(vector<Ordinate> const &ord
       if (dim == 1 &&
           geometry != rtt_mesh_element::Geometry::AXISYMMETRIC) // 1D mesh, 1D quadrature
       {
-        double mu(ordinates[m].mu());
+        double const mu(ordinates[m].mu());
         M[n + m * numMoments] = Ylm(ell, k, mu, 0.0, sumwt);
       } else {
-        double mu(ordinates[m].mu());
-        double eta(ordinates[m].eta());
-        double xi(ordinates[m].xi());
+        double const mu(ordinates[m].mu());
+        double const eta(ordinates[m].eta());
+        double const xi(ordinates[m].xi());
 
         if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
           // R-Z coordinate system
@@ -412,7 +416,7 @@ vector<double> Galerkin_Ordinate_Space::compute_M_SN(vector<Ordinate> const &ord
           // xi-axis, making the computation of the azimuthal angle here consistent with the
           // discretization by using the eta and mu ordinates to define phi.
 
-          double phi(compute_azimuthalAngle(mu, xi));
+          double const phi(compute_azimuthalAngle(mu, xi));
           M[n + m * numMoments] = Ylm(ell, k, eta, phi, sumwt);
         } else if (geometry == rtt_mesh_element::Geometry::CARTESIAN) {
           // X-Y coordinate system
@@ -420,7 +424,7 @@ vector<double> Galerkin_Ordinate_Space::compute_M_SN(vector<Ordinate> const &ord
           // In order to make the harmonic trial space is correctly oriented with respect to the
           // moments chosen, the value of xi and eta are swapped.
 
-          double phi(compute_azimuthalAngle(mu, eta));
+          double const phi(compute_azimuthalAngle(mu, eta));
           M[n + m * numMoments] = Ylm(ell, k, xi, phi, sumwt);
         }
       }

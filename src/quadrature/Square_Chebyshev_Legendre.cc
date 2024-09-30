@@ -3,14 +3,20 @@
  * \file   quadrature/Square_Chebyshev_Legendre.cc
  * \author Kelly Thompson
  * \date   Wed Sep  1 10:19:52 2004
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Square_Chebyshev_Legendre.hh"
-#include "Gauss_Legendre.hh"
+#include "quadrature/Square_Chebyshev_Legendre.hh"
 #include "dsxx/DracoStrings.hh"
+#include "quadrature/Gauss_Legendre.hh"
+#include "quadrature/Octant_Quadrature.hh"
+#include "quadrature/Quadrature_Class.hh"
 #include "units/MathConstants.hh"
+#include <cmath>   // sin, cos, sqrt, fabs
+#include <cstddef> // size_t
+#include <memory>  // shared_ptr
+#include <string>
+#include <vector>
 
 namespace rtt_quadrature {
 using namespace rtt_dsxx;
@@ -43,28 +49,28 @@ void Square_Chebyshev_Legendre::create_octant_ordinates_(std::vector<double> &mu
   using std::sqrt;
 
   // The number of quadrature levels is equal to the requested SN order.
-  size_t levels = sn_order();
+  size_t const levels = sn_order();
 
   // We build the 3-D first, then edit as appropriate.
 
-  size_t numOrdinates = levels * levels / 4;
+  size_t const numOrdinates = levels * levels / 4;
 
   // Force the direction vectors to be the correct length.
   mu.resize(numOrdinates);
   eta.resize(numOrdinates);
   wt.resize(numOrdinates);
 
-  std::shared_ptr<Gauss_Legendre> GL(new Gauss_Legendre(sn_order_));
+  std::shared_ptr<Gauss_Legendre> const GL(new Gauss_Legendre(sn_order_));
 
   // NOTE: this aligns the gauss points with the x-axis (r-axis in cylindrical coords)
 
   for (unsigned i = 0; i < levels / 2; ++i) {
-    double xmu = GL->mu(i);
-    double xwt = GL->wt(i);
-    double xsr = sqrt(1.0 - xmu * xmu);
+    double const xmu = GL->mu(i);
+    double const xwt = GL->wt(i);
+    double const xsr = sqrt(1.0 - xmu * xmu);
 
     for (unsigned j = 0; j < levels / 2; ++j) {
-      size_t ordinate = j + i * levels / 2;
+      size_t const ordinate = j + i * levels / 2;
 
       mu[ordinate] = xsr * cos(rtt_units::PI * static_cast<double>(2 * j + 1) /
                                static_cast<double>(levels) / 2.0);
