@@ -8,11 +8,11 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "ExpInt.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
-#include <iomanip>
-#include <iostream>
 #include <limits>
 
 namespace rtt_sf {
@@ -47,7 +47,7 @@ double En(unsigned const n, double const x) {
     return exp(-x) / x; //special case
   }
 
-  int nm1 = n - 1; // n will always be >= 1
+  int const nm1 = n - 1; // n will always be >= 1
 
   if (rtt_dsxx::soft_equiv(x, 0.0)) {
     return 1.0 / nm1; //also special case

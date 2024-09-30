@@ -9,11 +9,11 @@
 
 #include "Ylm.hh"
 #include "Factorial.hh"
-#include "units/PhysicalConstants.hh"
+#include "dsxx/Assert.hh"
+#include <cmath>
 #include <cstdlib>
 #include <gsl/gsl_sf_gamma.h>
 #include <gsl/gsl_sf_legendre.h>
-#include <iostream>
 
 namespace rtt_sf {
 
@@ -133,7 +133,7 @@ double normalizedYlk(unsigned const l, int const k, double const theta, double c
   double const cP(cPlk(l, absk, mu));
 
   // for k>0 and odd, the sign will be negative.
-  double sign(std::pow(-1.0, absk));
+  double const sign(std::pow(-1.0, absk));
 
   // As noted on the \ref special_functions_overview for this package, we are interested in the real
   // portion of the spherical harmonics function.

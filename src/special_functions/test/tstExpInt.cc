@@ -10,7 +10,9 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "special_functions/ExpInt.hh"
+#include <cmath>
 #include <sstream>
 
 using rtt_dsxx::soft_equiv;
@@ -26,9 +28,9 @@ using namespace rtt_sf;
 
 //test Ei(x) with x < -log(eps) (small x routine)
 void tstEi_low(rtt_dsxx::UnitTest &ut) {
-  double x = 0.1;
-  double val = Ei(x);
-  double expVal = -1.6228128298555;
+  double const x = 0.1;
+  double const val = Ei(x);
+  double const expVal = -1.6228128298555;
 
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
@@ -44,10 +46,10 @@ void tstEi_low(rtt_dsxx::UnitTest &ut) {
 
 //test Ei(x) with x > -log(eps) (small x routine)
 void tstEi_high(rtt_dsxx::UnitTest &ut) {
-  double x = 40;
-  double val = Ei(x);
+  double const x = 40;
+  double const val = Ei(x);
   double const ten(10.0);
-  double expVal = 6.0397182636112 * std::pow(ten, 15);
+  double const expVal = 6.0397182636112 * std::pow(ten, 15);
 
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
@@ -63,9 +65,9 @@ void tstEi_high(rtt_dsxx::UnitTest &ut) {
 
 //test Ei(x) with x < 0 (negative x routine, -E_1(x)
 void tstEi_neg(rtt_dsxx::UnitTest &ut) {
-  double x = -5.2;
-  double val = Ei(x);
-  double expVal = -0.00090862161244866;
+  double const x = -5.2;
+  double const val = Ei(x);
+  double const expVal = -0.00090862161244866;
 
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
@@ -81,10 +83,10 @@ void tstEi_neg(rtt_dsxx::UnitTest &ut) {
 
 //test E_0(x) (special case)
 void tstE0(rtt_dsxx::UnitTest &ut) {
-  unsigned n = 0;
-  double x = 3.14;
-  double val = En(n, x);
-  double expVal = 0.013784330542027;
+  unsigned const n = 0;
+  double const x = 3.14;
+  double const val = En(n, x);
+  double const expVal = 0.013784330542027;
 
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
@@ -100,10 +102,10 @@ void tstE0(rtt_dsxx::UnitTest &ut) {
 
 //test E_3(0) (special case)
 void tstE3_0(rtt_dsxx::UnitTest &ut) {
-  unsigned n = 3;
-  double x = 0;
-  double val = En(n, x);
-  double expVal = 0.5;
+  unsigned const n = 3;
+  double const x = 0;
+  double const val = En(n, x);
+  double const expVal = 0.5;
 
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
@@ -119,10 +121,10 @@ void tstE3_0(rtt_dsxx::UnitTest &ut) {
 
 //test E_4(x), x < 1
 void tstE4_low(rtt_dsxx::UnitTest &ut) {
-  unsigned n = 4;
-  double x = 0.3;
-  double val = En(n, x);
-  double expVal = 0.2169352242375;
+  unsigned const n = 4;
+  double const x = 0.3;
+  double const val = En(n, x);
+  double const expVal = 0.2169352242375;
 
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
@@ -138,10 +140,10 @@ void tstE4_low(rtt_dsxx::UnitTest &ut) {
 
 //test E_1(x), x > 1
 void tstE1_high(rtt_dsxx::UnitTest &ut) {
-  unsigned n = 1;
-  double x = 5;
-  double val = En(n, x);
-  double expVal = 0.0011482955912753;
+  unsigned const n = 1;
+  double const x = 5;
+  double const val = En(n, x);
+  double const expVal = 0.0011482955912753;
 
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {

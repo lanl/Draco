@@ -60,7 +60,7 @@ double F12(double x) {
       1.16434871200131e0,   1.34981244060549e0,   2.01311836975930e-1, -2.14562434782759e-2};
 
   if (x < 2.0) {
-    double xx = std::exp(x);
+    double const xx = std::exp(x);
     double rn = xx + a1[m1 - 1];
     for (int i = m1 - 2; i >= 0; i--) {
       rn = rn * xx + a1[i];
@@ -71,7 +71,7 @@ double F12(double x) {
     }
     return xx * rn / den;
   } else {
-    double xx = 1.0 / (x * x);
+    double const xx = 1.0 / (x * x);
     double rn = xx + a2[m2 - 1];
     for (int i = m2 - 2; i >= 0; i--) {
       rn = rn * xx + a2[i];
