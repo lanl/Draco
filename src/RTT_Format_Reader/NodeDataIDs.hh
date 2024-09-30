@@ -10,7 +10,7 @@
 #ifndef rtt_RTT_Format_Reader_NodeDataIDs_hh
 #define rtt_RTT_Format_Reader_NodeDataIDs_hh
 
-#include "Dims.hh"
+#include "RTT_Format_Reader/Dims.hh"
 
 namespace rtt_RTT_Format_Reader {
 

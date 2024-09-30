@@ -10,9 +10,9 @@
 #ifndef rtt_RTT_Format_Reader_Sides_hh
 #define rtt_RTT_Format_Reader_Sides_hh
 
-#include "CellDefs.hh"
-#include "Nodes.hh"
-#include "SideFlags.hh"
+#include "RTT_Format_Reader/CellDefs.hh"
+#include "RTT_Format_Reader/Nodes.hh"
+#include "RTT_Format_Reader/SideFlags.hh"
 
 namespace rtt_RTT_Format_Reader {
 

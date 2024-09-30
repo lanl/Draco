@@ -7,7 +7,13 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "SideFlags.hh"
+#include "RTT_Format_Reader/SideFlags.hh"
+#include "dsxx/Assert.hh"
+#include "RTT_Format_Reader/Flags.hh"
+#include <climits> // INT_MAX
+#include <cstddef> // size_t
+#include <memory>  // make_shared
+#include <string>  // getline
 
 namespace rtt_RTT_Format_Reader {
 
@@ -77,7 +83,7 @@ void SideFlags::readEndKeyword(ifstream &meshfile) {
 int SideFlags::get_flag_type_index(string &desired_flag_type) const {
   int flag_type_index = -1;
   for (size_t f = 0; f < dims.get_nside_flag_types(); f++) {
-    string flag_type = flagTypes[f]->getFlagType();
+    string const flag_type = flagTypes[f]->getFlagType();
     if (flag_type == desired_flag_type) {
       Check(f < INT_MAX);
       flag_type_index = static_cast<int>(f);

@@ -10,11 +10,12 @@
 #ifndef rtt_RTT_Format_Reader_CellDataIDs_hh
 #define rtt_RTT_Format_Reader_CellDataIDs_hh
 
-#include "Dims.hh"
 #include "dsxx/Assert.hh"
+#include "RTT_Format_Reader/Dims.hh"
+#include <cstddef> // size_t
 #include <fstream>
 #include <iostream>
-#include <string>
+#include <string> // getline
 #include <vector>
 
 namespace rtt_RTT_Format_Reader {

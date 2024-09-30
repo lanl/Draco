@@ -7,7 +7,9 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "SideDataIDs.hh"
+#include "RTT_Format_Reader/SideDataIDs.hh"
+#include "dsxx/Assert.hh"
+#include <string> // getline
 
 namespace rtt_RTT_Format_Reader {
 /*!

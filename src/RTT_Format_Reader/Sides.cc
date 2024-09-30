@@ -7,14 +7,18 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Sides.hh"
+#include "RTT_Format_Reader/Sides.hh"
+#include "dsxx/Assert.hh"
+#include "RTT_Format_Reader/Nodes.hh"
+#include <cstddef> // size_t
+#include <string>  // getline
 
 namespace rtt_RTT_Format_Reader {
 
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Parses the sides block data from the mesh file via calls to private member functions.
- * \param meshfile Mesh file name.
+ * \param[in] meshfile Mesh file name.
  */
 void Sides::readSides(ifstream &meshfile) {
   readKeyword(meshfile);
@@ -90,7 +94,7 @@ void Sides::readEndKeyword(ifstream &meshfile) {
 void Sides::redefineSides() {
   vector_uint temp_nodes;
   for (size_t st = 0; st < dims.get_nside_types(); st++) {
-    int this_side_type = dims.get_side_types(st);
+    int const this_side_type = dims.get_side_types(st);
     vector_uint node_map(cellDefs.get_node_map(this_side_type));
     Insist(node_map.size() == cellDefs.get_nnodes(this_side_type), "Error in Sides redefinition.");
     // Check to see if the nodes need to be rearranged for this side type.

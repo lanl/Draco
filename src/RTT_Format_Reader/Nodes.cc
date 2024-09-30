@@ -7,7 +7,12 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Nodes.hh"
+#include "RTT_Format_Reader/Nodes.hh"
+#include "dsxx/Assert.hh"
+#include <climits> // INT_MAX
+#include <cstddef> // size_t
+#include <cstdlib> // atoi
+#include <string>  // getline
 
 namespace rtt_RTT_Format_Reader {
 

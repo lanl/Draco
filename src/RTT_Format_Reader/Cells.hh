@@ -10,9 +10,9 @@
 #ifndef rtt_RTT_Format_Reader_Cells_hh
 #define rtt_RTT_Format_Reader_Cells_hh
 
-#include "CellDefs.hh"
-#include "CellFlags.hh"
-#include "Nodes.hh"
+#include "RTT_Format_Reader/CellDefs.hh"
+#include "RTT_Format_Reader/CellFlags.hh"
+#include "RTT_Format_Reader/Nodes.hh"
 
 namespace rtt_RTT_Format_Reader {
 

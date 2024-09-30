@@ -7,14 +7,19 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Cells.hh"
+#include "RTT_Format_Reader/Cells.hh"
+#include "dsxx/Assert.hh"
+#include "RTT_Format_Reader/Nodes.hh"
+#include <climits> // INT_MAX
+#include <cstddef> // size_t
+#include <string>
 
 namespace rtt_RTT_Format_Reader {
 
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Parses the cells block data from the mesh file via calls to private member functions.
-  * \param meshfile Mesh file name.
+ * \param meshfile Mesh file name.
  */
 void Cells::readCells(ifstream &meshfile) {
   readKeyword(meshfile);
@@ -92,7 +97,7 @@ void Cells::readEndKeyword(ifstream &meshfile) {
 void Cells::redefineCells() {
   vector_uint temp_nodes;
   for (size_t ct = 0; ct < dims.get_ncell_types(); ct++) {
-    int this_cell_type = dims.get_cell_types(ct);
+    int const this_cell_type = dims.get_cell_types(ct);
     vector_uint node_map(cellDefs.get_node_map(this_cell_type));
     Insist(node_map.size() == cellDefs.get_nnodes(this_cell_type), "Error in Cells redefinition.");
 

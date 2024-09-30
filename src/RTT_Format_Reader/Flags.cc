@@ -7,7 +7,9 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Flags.hh"
+#include "RTT_Format_Reader/Flags.hh"
+#include <cstddef> // size_t
+#include <string>  // getline
 
 namespace rtt_RTT_Format_Reader {
 
@@ -15,7 +17,7 @@ namespace rtt_RTT_Format_Reader {
 /*!
  * \brief Used by the NodeFlags, SideFlags, and CellFlags class objects to parse the flag numbers
  *        and names.
- * \param meshfile Mesh file name.
+ * \param[in] meshfile Mesh file name.
  */
 void Flags::readFlags(ifstream &meshfile) {
   string dummyString;

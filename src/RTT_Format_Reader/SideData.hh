@@ -10,7 +10,10 @@
 #ifndef rtt_RTT_Format_Reader_SideData_hh
 #define rtt_RTT_Format_Reader_SideData_hh
 
-#include "Sides.hh"
+#include "dsxx/Assert.hh"
+#include "RTT_Format_Reader/Sides.hh"
+#include <cstddef> // size_t
+#include <string>  // getline
 
 namespace rtt_RTT_Format_Reader {
 

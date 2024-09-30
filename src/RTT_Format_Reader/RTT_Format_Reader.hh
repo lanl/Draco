@@ -10,13 +10,13 @@
 #ifndef rtt_RTT_Format_Reader_RTT_Format_Reader_hh
 #define rtt_RTT_Format_Reader_RTT_Format_Reader_hh
 
-#include "CellData.hh"
-#include "CellDataIDs.hh"
-#include "Header.hh"
-#include "NodeData.hh"
-#include "NodeDataIDs.hh"
-#include "SideData.hh"
-#include "SideDataIDs.hh"
+#include "RTT_Format_Reader/CellData.hh"
+#include "RTT_Format_Reader/CellDataIDs.hh"
+#include "RTT_Format_Reader/Header.hh"
+#include "RTT_Format_Reader/NodeData.hh"
+#include "RTT_Format_Reader/NodeDataIDs.hh"
+#include "RTT_Format_Reader/SideData.hh"
+#include "RTT_Format_Reader/SideDataIDs.hh"
 
 namespace rtt_RTT_Format_Reader {
 

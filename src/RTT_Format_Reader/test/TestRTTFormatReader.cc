@@ -8,12 +8,20 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "TestRTTFormatReader.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
-#include "RTT_Format_Reader/RTT_Mesh_Reader.hh"
+#include "dsxx/UnitTest.hh"
 #include <array>
+#include <climits> // INT_MAX
+#include <cstddef> // size_t
+#include <iostream>
+#include <map>
 #include <sstream>
+#include <string>
+#include <utility> // make_pair
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -37,11 +45,10 @@ void runTest(UnitTest &ut) {
 
   for (int mesh_number = 0; mesh_number < MAX_MESHES; mesh_number++) {
     // Construct an RTT_Format_Reader class object from the data in the specified mesh file.
-    RTT_Format_Reader mesh(filename[mesh_number]);
+    RTT_Format_Reader const mesh(filename[mesh_number]);
     {
       ostringstream m;
-      m << "Read " << filename[mesh_number] << " without coreing in or firing an assertion."
-        << std::endl;
+      m << "Read " << filename[mesh_number] << " without coreing in or firing an assertion.\n";
       PASSMSG(m.str());
     }
     bool all_passed = true;
@@ -69,13 +76,13 @@ void runTest(UnitTest &ut) {
 
     if (!all_passed) {
       ostringstream m;
-      m << "Errors occured testing mesh number " << mesh_type << std::endl;
+      m << "Errors occured testing mesh number " << mesh_type << '\n';
       FAILMSG(m.str());
     }
   }
 
   try {
-    RTT_Format_Reader reader("no such");
+    RTT_Format_Reader const reader("no such");
     FAILMSG("did NOT detect nonexistent file");
   } catch (...) {
     PASSMSG("detected nonexistent file correctly");
@@ -409,21 +416,21 @@ bool check_node_flags(RTT_Format_Reader const &mesh, Meshes const &meshtype, Uni
   switch (meshtype) {
   case DEFINED:
     flagTypes.emplace_back("node_type");
-    num_name.emplace_back(std::make_pair(11, std::string("interior")));
-    num_name.emplace_back(std::make_pair(21, std::string("dudded")));
-    num_name.emplace_back(std::make_pair(6, std::string("parent")));
+    num_name.emplace_back(11, std::string("interior"));
+    num_name.emplace_back(21, std::string("dudded"));
+    num_name.emplace_back(6, std::string("parent"));
     flag_num_name.emplace_back(num_name);
     num_name.resize(0);
     ntype = 0;
     flagTypes.emplace_back("boundary");
-    num_name.emplace_back(std::make_pair(1, std::string("reflective")));
-    num_name.emplace_back(std::make_pair(4, std::string("vacuum")));
+    num_name.emplace_back(1, std::string("reflective"));
+    num_name.emplace_back(4, std::string("vacuum"));
     flag_num_name.emplace_back(num_name);
     num_name.resize(0);
     bndry = 1;
     flagTypes.emplace_back("source");
-    num_name.emplace_back(std::make_pair(101, std::string("no_source")));
-    num_name.emplace_back(std::make_pair(22, std::string("rad_source")));
+    num_name.emplace_back(101, std::string("no_source"));
+    num_name.emplace_back(22, std::string("rad_source"));
     flag_num_name.emplace_back(num_name);
     num_name.resize(0);
     src = 2;
@@ -519,8 +526,8 @@ bool check_side_flags(RTT_Format_Reader const &mesh, Meshes const &meshtype, Uni
   switch (meshtype) {
   case DEFINED:
     flagTypes.emplace_back("boundary");
-    num_name.emplace_back(std::make_pair(1, std::string("reflective")));
-    num_name.emplace_back(std::make_pair(2, std::string("vacuum")));
+    num_name.emplace_back(1, std::string("reflective"));
+    num_name.emplace_back(2, std::string("vacuum"));
     flag_num_name.emplace_back(num_name);
     num_name.resize(0);
     bndry = 0;
@@ -606,14 +613,14 @@ bool check_cell_flags(RTT_Format_Reader const &mesh, Meshes const &meshtype, Uni
   switch (meshtype) {
   case DEFINED:
     flagTypes.emplace_back("material");
-    num_name.emplace_back(std::make_pair(1, std::string("control_rod")));
-    num_name.emplace_back(std::make_pair(2, std::string("shield")));
+    num_name.emplace_back(1, std::string("control_rod"));
+    num_name.emplace_back(2, std::string("shield"));
     flag_num_name.emplace_back(num_name);
     num_name.resize(0);
     matl = 0;
     flagTypes.emplace_back("rad_source");
-    num_name.emplace_back(std::make_pair(1, std::string("src_name1")));
-    num_name.emplace_back(std::make_pair(2, std::string("src_name2")));
+    num_name.emplace_back(1, std::string("src_name1"));
+    num_name.emplace_back(2, std::string("src_name2"));
     flag_num_name.emplace_back(num_name);
     num_name.resize(0);
     rsrc = 1;
@@ -1072,8 +1079,8 @@ bool check_cell_defs(RTT_Format_Reader const &mesh, Meshes const &meshtype, Unit
   // Check get_cell_defs_node_map(int)
   {
     std::vector<unsigned> const myNodes = mesh.get_cell_defs_node_map(0); // NOLINT
-    size_t mySize = myNodes.size();
-    // std::cout << "mySize = " << mySize << std::endl;
+    size_t const mySize = myNodes.size();
+    // std::cout << "mySize = " << mySize << '\n';
     if (mySize == 0) {
       PASSMSG("get_cell_defs_node_map(int) returned an empty vector.");
     } else {
@@ -1084,19 +1091,17 @@ bool check_cell_defs(RTT_Format_Reader const &mesh, Meshes const &meshtype, Unit
           std::cout << myNodes[i] << ", ";
         std::cout << myNodes[myNodes.size() - 1];
       }
-      std::cout << " }." << std::endl;
+      std::cout << " }.\n";
     }
   }
 
   // Check get_cell_defs_redefined()
   {
-    bool myBool = mesh.get_cell_defs_redefined();
+    bool const myBool = mesh.get_cell_defs_redefined();
     if (myBool)
-      FAILMSG("Unexpected value for get_cell_defs_redefined(): Cells are "
-              "redefined.");
+      FAILMSG("Unexpected value for get_cell_defs_redefined(): Cells are redefined.");
     else
-      PASSMSG("Expected value for get_cell_defs_redefined(): Cells are not "
-              "redefined.");
+      PASSMSG("Expected value for get_cell_defs_redefined(): Cells are not redefined.");
   }
 
   // Check cell definition number of nodes.
@@ -1587,7 +1592,7 @@ bool check_cell_data(RTT_Format_Reader const &mesh, Meshes const &meshtype, Unit
   // Exercise the cell_data functions for this mesh.
   bool all_passed = true;
   std::vector<std::vector<double>> data;
-  std::vector<double> cell_data(mesh.get_dims_ncell_data(), 0.0);
+  std::vector<double> const cell_data(mesh.get_dims_ncell_data(), 0.0);
 
   switch (meshtype) {
   case DEFINED:
