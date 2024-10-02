@@ -81,7 +81,7 @@ void Abstract_Class_Parser<Class, get_parse_table, get_parsed_object,
 
   map_.push_back(parsefunction);
 
-  Keyword key = {cptr, parse_child_, Num, ""};
+  Keyword const key = {cptr, parse_child_, Num, ""};
 
   get_parse_table().add(&key, 1);
 
@@ -114,7 +114,7 @@ void Abstract_Class_Parser<Class, get_parse_table, get_parsed_object,
 
   map_.push_back(Parse_Function(parsefunction));
 
-  Keyword key = {cptr, parse_child_, Num, ""};
+  Keyword const key = {cptr, parse_child_, Num, ""};
 
   get_parse_table().add(&key, 1);
 

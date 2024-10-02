@@ -4,13 +4,16 @@
  * \author Kelly G. Thompson
  * \date Thu Jul 20 9:27:29 MST 2006
  * \brief Provide services for ApplicationUnitTest framework.
- * \note Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Token_Equivalence.hh"
+#include "parser/Token_Equivalence.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "parser/String_Token_Stream.hh"
+#include "parser/Token.hh"
 #include <cstdlib>
+#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -33,7 +36,7 @@ void check_token_keyword(String_Token_Stream &tokens, std::string const &keyword
 
   while (!done && token.type() != END && token.type() != EXIT) {
     if (token.type() == KEYWORD && token.text() == keyword && ++count == occurance) {
-      msg << "Found the keyword \"" << keyword << "\"." << std::endl;
+      msg << "Found the keyword \"" << keyword << "\".\n";
       ut.passes(msg.str());
       done = true;
     }
@@ -43,7 +46,7 @@ void check_token_keyword(String_Token_Stream &tokens, std::string const &keyword
   }
 
   if (!done) {
-    msg << "Did not find the keyword \"" << keyword << "\" in the token stream." << std::endl;
+    msg << "Did not find the keyword \"" << keyword << "\" in the token stream.\n";
     ut.failure(msg.str());
   }
   return;
@@ -71,19 +74,19 @@ void check_token_keyword_value(String_Token_Stream &tokens, std::string const &k
 
       // Check it's type.
       if (token.type() != INTEGER) {
-        msg << "Did not find the token " << keyword << " in the String_Token_Stream." << std::endl;
+        msg << "Did not find the token " << keyword << " in the String_Token_Stream.\n";
         ut.failure(msg.str());
       }
 
       // Get the actual value.
-      int value(atoi(token.text().c_str()));
+      int const value(atoi(token.text().c_str()));
       if (value == expected_value) {
-        msg << "Keyword \"" << keyword << "\" has the expected value of " << expected_value << "."
-            << std::endl;
+        msg << "Keyword \"" << keyword << "\" has the expected value of " << expected_value
+            << ".\n";
         ut.passes(msg.str());
       } else {
         msg << "Keyword \"" << keyword << "\" did not have the expected value of " << expected_value
-            << ".\n\t  Instead we found " << value << "." << std::endl;
+            << ".\n\t  Instead we found " << value << ".\n";
         ut.failure(msg.str());
       }
       done = true;
@@ -94,7 +97,7 @@ void check_token_keyword_value(String_Token_Stream &tokens, std::string const &k
   }
 
   if (!done) {
-    msg << "Did not find the keyword \"" << keyword << "\" in the token stream." << std::endl;
+    msg << "Did not find the keyword \"" << keyword << "\" in the token stream.\n";
     ut.failure(msg.str());
   }
   return;
@@ -123,19 +126,19 @@ void check_token_keyword_value(String_Token_Stream &tokens, std::string const &k
 
       // Check it's type.
       if (token.type() != REAL) {
-        msg << "Did not find the token " << keyword << " in the String_Token_Stream." << std::endl;
+        msg << "Did not find the token " << keyword << " in the String_Token_Stream.\n";
         ut.failure(msg.str());
       }
 
       // Get the actual value.
-      double value(atof(token.text().c_str()));
+      double const value(atof(token.text().c_str()));
       if (rtt_dsxx::soft_equiv(value, expected_value, 1.0e-7)) {
-        msg << "Keyword \"" << keyword << "\" has the expected value of " << expected_value << "."
-            << std::endl;
+        msg << "Keyword \"" << keyword << "\" has the expected value of " << expected_value
+            << ".\n";
         ut.passes(msg.str());
       } else {
         msg << "Keyword \"" << keyword << "\" did not have the expected value of " << expected_value
-            << ".\n\t  Instead we found " << value << "." << std::endl;
+            << ".\n\t  Instead we found " << value << ".\n";
         ut.failure(msg.str());
       }
       done = true;

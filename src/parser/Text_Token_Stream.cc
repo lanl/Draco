@@ -6,10 +6,14 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Text_Token_Stream.hh"
+#include "parser/Text_Token_Stream.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/path.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
 #include <cctype>
-#include <cstring>
+#include <cstdlib> // getenv
+#include <set>
 #include <string>
 
 #if defined(MSVC)
@@ -19,13 +23,17 @@
 namespace rtt_parser {
 using namespace std;
 
+namespace {
+
 //------------------------------------------------------------------------------------------------//
 // Helper function to allow a string && argument to take over storage of a string.
-static string give(string &source) {
+string give(string &source) {
   string Result;
   Result.swap(source);
   return Result;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 set<char> const Text_Token_Stream::default_whitespace = {'=', ':', ';', ','};
@@ -37,7 +45,7 @@ set<char> const Text_Token_Stream::default_whitespace = {'=', ':', ';', ','};
  * \param ws String containing the user-defined whitespace characters for this Text_Token_Stream.
  *
  * \param no_nonbreaking_ws If true, treat spaces and tabs as breaking whitespace. This has the
- * effect of forcing all keywords to consist of a single identifier.
+ *        effect of forcing all keywords to consist of a single identifier.
  *
  * Whitespace characters are classified as breaking or nonbreaking whitespace.  Nonbreaking
  * whitespace separates non-keyword tokens and identifiers within a keyword but has no other
@@ -132,7 +140,7 @@ Token Text_Token_Stream::fill_() {
       } else if (int_length > 0) {
         text.reserve(int_length);
         for (unsigned i = 0; i < int_length; i++) {
-          char cc = pop_char_();
+          char const cc = pop_char_();
           text += cc;
         }
         Ensure(check_class_invariants());
@@ -158,11 +166,11 @@ Token Text_Token_Stream::fill_() {
       if (!isalpha(c) && c != '_') {
         report_syntax_error("ill-formed #directive");
       } else {
-        Token directive = scan_keyword();
+        Token const directive = scan_keyword();
         if (directive.text() == "include") {
           eat_whitespace_();
           if (peek_() == '"') {
-            Token file = scan_manifest_string();
+            Token const file = scan_manifest_string();
             string name = file.text();
             // strip end quotes. May allow internal quotes someday ...
             name = name.substr(1, name.size() - 2);
@@ -403,7 +411,7 @@ unsigned Text_Token_Stream::scan_decimal_literal_(unsigned &pos) {
  * \return length of scanned text; 0 if no text could be scanned.
  */
 unsigned Text_Token_Stream::scan_hexadecimal_literal_(unsigned &pos) {
-  unsigned old_pos = pos;
+  unsigned const old_pos = pos;
   if (peek_(pos) == '0') {
     pos++;
     char c = peek_(pos);
@@ -432,7 +440,7 @@ unsigned Text_Token_Stream::scan_hexadecimal_literal_(unsigned &pos) {
  * \return length of scanned text; 0 if no text could be scanned.
  */
 unsigned Text_Token_Stream::scan_octal_literal_(unsigned &pos) {
-  unsigned old_pos = pos;
+  unsigned const old_pos = pos;
   char c = peek_(pos);
   if (c == '0') {
     while (isdigit(c) && c != '8' && c != '9') {

@@ -4,14 +4,15 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Definitions of Unit methods.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Unit.hh"
+#include "parser/Unit.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "units/UnitSystem.hh"
+#include <cmath> // pow, abs
 #include <iostream>
 #include <limits>
-#include <sstream>
 
 namespace {
 using namespace std;
@@ -20,13 +21,12 @@ using namespace std;
 /*!
  * \brief Write text for a component of a unit.
  *
- * This is a helper function for operator<<(ostream, const Unit &).  It has
- * the logic for ensuring that dashes are inserted where necessary, e.g., the
- * dash in kg-m^2/s^2.
+ * This is a helper function for operator<<(ostream, const Unit &).  It has the logic for ensuring
+ * that dashes are inserted where necessary, e.g., the dash in kg-m^2/s^2.
  *
  * \param str  Stream to which to write the unit component.
- * \param dash A dash is required after the last component written to the
- *             stream.  May be modified on return.
+ * \param dash A dash is required after the last component written to the stream.  May be modified
+ *             on return.
  * \param value Unit dimension value
  * \param name Unit name
  */

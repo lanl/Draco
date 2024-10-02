@@ -4,13 +4,16 @@
  * \author Kent Budge
  * \date   Wed Jul 26 07:53:32 2006
  * \brief  Definition of methods of class Constant_Expression
- * \note   Copyright (C) 2006-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2006-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Constant_Expression.hh"
+#include "parser/Constant_Expression.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "parser/Unit.hh"
 #include <cmath>
 #include <limits>
+#include <ostream>
 
 namespace {
 using namespace std;
@@ -53,7 +56,7 @@ void lower(ostream &out, char const *const label, double const power, bool &firs
 namespace rtt_parser {
 
 //------------------------------------------------------------------------------------------------//
-void write_c(Unit const &u, ostream &out) {
+void write_c(Unit const &u, std::ostream &out) {
   double const eps = std::numeric_limits<double>::epsilon();
   double const mrv = std::numeric_limits<double>::min();
 

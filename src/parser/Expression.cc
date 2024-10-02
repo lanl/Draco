@@ -7,8 +7,19 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Constant_Expression.hh"
+#include "parser/Expression.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/config.h" // NODISCARD
+#include "parser/Constant_Expression.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
+#include "parser/Unit.hh"
+#include "parser/utilities.hh"
+#include <cmath> // abs, log, cos, exp
 #include <limits>
+#include <memory> // make_shared
+#include <ostream>
+#include <string>
 
 namespace rtt_parser {
 using namespace rtt_dsxx;
@@ -802,9 +813,11 @@ private:
   unsigned index_;
 };
 
+namespace {
+
 //------------------------------------------------------------------------------------------------//
-static pE parse_primary(unsigned const number_of_variables, Variable_Map const &variable_map,
-                        Token_Stream &tokens) {
+pE parse_primary(unsigned const number_of_variables, Variable_Map const &variable_map,
+                 Token_Stream &tokens) {
   pE retvalue;
   if (at_real(tokens)) {
     retvalue = pE(new Constant_Expression(number_of_variables, parse_real(tokens)));
@@ -935,12 +948,12 @@ static pE parse_primary(unsigned const number_of_variables, Variable_Map const &
 }
 
 //------------------------------------------------------------------------------------------------//
-static pE parse_power(unsigned const number_of_variables, Variable_Map const &variable_map,
-                      Token_Stream &tokens) {
+pE parse_power(unsigned const number_of_variables, Variable_Map const &variable_map,
+               Token_Stream &tokens) {
   pE Result = parse_primary(number_of_variables, variable_map, tokens);
   while (tokens.lookahead().text() == "^") {
     tokens.shift();
-    pE exponent = parse_primary(number_of_variables, variable_map, tokens);
+    pE const exponent = parse_primary(number_of_variables, variable_map, tokens);
     if (!is_compatible(dimensionless, exponent->units())) {
       tokens.report_semantic_error("exponent must be dimensionless");
     } else if (!exponent->is_constant() && !is_compatible(dimensionless, Result->units())) {
@@ -954,8 +967,8 @@ static pE parse_power(unsigned const number_of_variables, Variable_Map const &va
 }
 
 //------------------------------------------------------------------------------------------------//
-static pE parse_unary(unsigned const number_of_variables, Variable_Map const &variable_map,
-                      Token_Stream &tokens) {
+pE parse_unary(unsigned const number_of_variables, Variable_Map const &variable_map,
+               Token_Stream &tokens) {
   if (tokens.lookahead().text() == "+") {
     tokens.shift();
     // a no-op
@@ -972,8 +985,8 @@ static pE parse_unary(unsigned const number_of_variables, Variable_Map const &va
 }
 
 //------------------------------------------------------------------------------------------------//
-static pE parse_multiplicative(unsigned const number_of_variables, Variable_Map const &variable_map,
-                               Token_Stream &tokens) {
+pE parse_multiplicative(unsigned const number_of_variables, Variable_Map const &variable_map,
+                        Token_Stream &tokens) {
   pE Result = parse_unary(number_of_variables, variable_map, tokens);
   while (tokens.lookahead().text() == "*" || tokens.lookahead().text() == "/") {
     if (tokens.lookahead().text() == "*") {
@@ -991,8 +1004,8 @@ static pE parse_multiplicative(unsigned const number_of_variables, Variable_Map 
 }
 
 //------------------------------------------------------------------------------------------------//
-static pE parse_additive(unsigned const number_of_variables, Variable_Map const &variable_map,
-                         Token_Stream &tokens) {
+pE parse_additive(unsigned const number_of_variables, Variable_Map const &variable_map,
+                  Token_Stream &tokens) {
   pE Result = parse_multiplicative(number_of_variables, variable_map, tokens);
   while (tokens.lookahead().text() == "+" || tokens.lookahead().text() == "-") {
     if (tokens.lookahead().text() == "+") {
@@ -1018,8 +1031,8 @@ static pE parse_additive(unsigned const number_of_variables, Variable_Map const 
 }
 
 //------------------------------------------------------------------------------------------------//
-static pE parse_relational(unsigned const number_of_variables, Variable_Map const &variable_map,
-                           Token_Stream &tokens) {
+pE parse_relational(unsigned const number_of_variables, Variable_Map const &variable_map,
+                    Token_Stream &tokens) {
   pE Result = parse_additive(number_of_variables, variable_map, tokens);
 
   Token token = tokens.lookahead();
@@ -1065,8 +1078,8 @@ static pE parse_relational(unsigned const number_of_variables, Variable_Map cons
 }
 
 //------------------------------------------------------------------------------------------------//
-static pE parse_and(unsigned const number_of_variables, Variable_Map const &variable_map,
-                    Token_Stream &tokens) {
+pE parse_and(unsigned const number_of_variables, Variable_Map const &variable_map,
+             Token_Stream &tokens) {
   pE Result = parse_relational(number_of_variables, variable_map, tokens);
   while (tokens.lookahead().text() == "&&") {
     tokens.shift();
@@ -1077,8 +1090,8 @@ static pE parse_and(unsigned const number_of_variables, Variable_Map const &vari
 }
 
 //------------------------------------------------------------------------------------------------//
-static pE parse_or(unsigned const number_of_variables, Variable_Map const &variable_map,
-                   Token_Stream &tokens) {
+pE parse_or(unsigned const number_of_variables, Variable_Map const &variable_map,
+            Token_Stream &tokens) {
   pE Result = parse_and(number_of_variables, variable_map, tokens);
   while (tokens.lookahead().text() == "||") {
     tokens.shift();
@@ -1087,6 +1100,8 @@ static pE parse_or(unsigned const number_of_variables, Variable_Map const &varia
   }
   return Result;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 /*!

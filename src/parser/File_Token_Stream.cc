@@ -4,25 +4,30 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Definitions of File_Token_Stream methods.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "File_Token_Stream.hh"
+#include "parser/File_Token_Stream.hh"
+#include "dsxx/Assert.hh"
+#include "parser/Text_Token_Stream.hh"
+#include "parser/Token.hh"
 #include <iostream>
+#include <memory> // make_shared
 #include <sstream>
+#include <stdexcept> // invalid_argument
+#include <string>
 
 namespace rtt_parser {
 using namespace std;
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * Construct a File_Token_Stream that is not yet associated with a file. Use the
- * default Text_Token_Stream user-defined whitespace characters.
+ * Construct a File_Token_Stream that is not yet associated with a file. Use the default
+ * Text_Token_Stream user-defined whitespace characters.
  *
- * This function exists primarily to support construction of arrays of
- * File_Token_Streams.  An example of where this might be useful is in serial
- * code that combines output files produced by each processor in a parallel run.
+ * This function exists primarily to support construction of arrays of File_Token_Streams.  An
+ * example of where this might be useful is in serial code that combines output files produced by
+ * each processor in a parallel run.
  */
 File_Token_Stream::File_Token_Stream() : letters_(), letter_(nullptr) {
   Ensure(check_class_invariants());
@@ -31,9 +36,9 @@ File_Token_Stream::File_Token_Stream() : letters_(), letter_(nullptr) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * Construct a File_Token_Stream that derives its text from the specified
- * file. If the file cannot be opened, then \c error() will test true. Use the
- * default Text_Token_Stream user-defined whitespace characters.
+ * Construct a File_Token_Stream that derives its text from the specified file. If the file cannot
+ * be opened, then \c error() will test true. Use the default Text_Token_Stream user-defined
+ * whitespace characters.
  *
  * \param file_name Name of the file from which to extract tokens.
  *
@@ -49,9 +54,9 @@ File_Token_Stream::File_Token_Stream(string const &file_name)
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * Construct a File_Token_Stream::letter that derives its text from the
- * specified file. If the file cannot be opened, then \c error() will test
- * true. Use the default Text_Token_Stream user-defined whitespace characters.
+ * Construct a File_Token_Stream::letter that derives its text from the specified file. If the file
+ * cannot be opened, then \c error() will test true. Use the default Text_Token_Stream user-defined
+ * whitespace characters.
  *
  * \param file_name Name of the file from which to extract tokens.
  *
@@ -65,7 +70,7 @@ File_Token_Stream::letter::letter(string const &file_name)
     ostringstream errmsg;
     errmsg << "Cannot construct File_Token_Stream.\n"
            << "The file specified could not be found.\n"
-           << "The file requested was: \"" << file_name << "\"" << endl;
+           << "The file requested was: \"" << file_name << "\"\n";
     throw invalid_argument(errmsg.str().c_str());
   }
 
@@ -74,16 +79,15 @@ File_Token_Stream::letter::letter(string const &file_name)
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Construct a File_Token_Stream that derives its text from the specified
- *        file. If the file cannot be opened, then \c error() will test true.
+ * \brief Construct a File_Token_Stream that derives its text from the specified file. If the file
+ *        cannot be opened, then \c error() will test true.
  *
  * \param file_name Name of the file from which to extract tokens.
  *
  * \param ws User-defined whitespace characters.
  *
- * \param no_nonbreaking_ws If true, treat spaces and tabs as breaking
- *           whitespace. This has the effect of forcing all keywords to consist
- *           of a single identifier.
+ * \param no_nonbreaking_ws If true, treat spaces and tabs as breaking whitespace. This has the
+ *           effect of forcing all keywords to consist of a single identifier.
  *
  * \throw invalid_argument If the input stream cannot be opened.
  */
@@ -112,7 +116,7 @@ void File_Token_Stream::letter::open_() {
     ostringstream errmsg;
     errmsg << "Cannot open File_Token_Stream.\n"
            << "The file specified could not be found.\n"
-           << "The file requested was: \"" << filename_ << "\"" << endl;
+           << "The file requested was: \"" << filename_ << "\"\n";
     throw invalid_argument(errmsg.str().c_str());
   }
 
@@ -125,8 +129,7 @@ void File_Token_Stream::letter::open_() {
 /*!
  * \brief Attach the File_Token_Stream to a different file.
  *
- * \param file_name
- * Name of the file to which to attach the token stream.
+ * \param file_name Name of the file to which to attach the token stream.
  *
  * \throw invalid_argument If the input stream cannot be opened.
  */
@@ -143,9 +146,9 @@ void File_Token_Stream::open(string const &file_name) {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief This function constructs and returns a string of the form "filename,
- *        line #" indicating the location at which the last token was parsed.
- *        This is useful for error reporting in parsers.
+ * \brief This function constructs and returns a string of the form "filename, line #" indicating
+ *        the location at which the last token was parsed. This is useful for error reporting in
+ *        parsers.
  *
  * \return A string of the form "filename, line #"
  */
@@ -161,8 +164,7 @@ string File_Token_Stream::location_() const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief This function moves the next character in the file stream into the
- *         character buffer.
+ * \brief This function moves the next character in the file stream into the character buffer.
  */
 void File_Token_Stream::fill_character_buffer_() {
   if (letter_ != nullptr) {
@@ -181,8 +183,8 @@ void File_Token_Stream::fill_character_buffer_() {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief This function may be used to check whether an I/O error has occured,
- *        such as failure to open the text file.
+ * \brief This function may be used to check whether an I/O error has occured, such as failure to
+ *        open the text file.
  *
  * \return \c true if an error has occured; \c false otherwise.
  */
@@ -192,8 +194,7 @@ bool File_Token_Stream::error_() const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function may be used to check whether the end of the text file has
- * been reached.
+ * This function may be used to check whether the end of the text file has been reached.
  *
  * \return \c true if the end of the text file has been reached; \c false
  * otherwise.
@@ -203,39 +204,39 @@ bool File_Token_Stream::end_() const { return letter_ != nullptr ? letter_->infi
 //------------------------------------------------------------------------------------------------//
 //! This function sends a message by writing it to the error console stream.
 void File_Token_Stream::report(Token const &token, string const &message) {
-  cerr << token.location() << ": " << message << endl;
+  cerr << token.location() << ": " << message << '\n';
 
   Ensure(check_class_invariants());
 }
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function sends a message by writing it to the error console stream.
- * This version assumes that the cursor gives the correct error location.
+ * This function sends a message by writing it to the error console stream. This version assumes
+ * that the cursor gives the correct error location.
  */
 void File_Token_Stream::report(string const &message) {
   Token const token = lookahead();
-  cerr << token.location() << ": " << message << endl;
+  cerr << token.location() << ": " << message << '\n';
 
   Ensure(check_class_invariants());
 }
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function sends a message by writing it to the error console stream.
- * This version prints no location information.
+ * This function sends a message by writing it to the error console stream. This version prints no
+ * location information.
  */
 void File_Token_Stream::comment(string const &message) {
-  cerr << message << endl;
+  cerr << message << '\n';
 
   Ensure(check_class_invariants());
 }
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function rewinds the file stream associated with the file token stream
- * and flushes its internal buffers, so that scanning resumes at the beginning
- * of the file stream. The error count is also reset.
+ * This function rewinds the file stream associated with the file token stream and flushes its
+ * internal buffers, so that scanning resumes at the beginning of the file stream. The error count
+ * is also reset.
  */
 void File_Token_Stream::rewind() {
   while (!letters_.empty()) {
@@ -252,9 +253,9 @@ void File_Token_Stream::rewind() {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function rewinds the file stream associated with the file token stream
- * and flushes its internal buffers, so that scanning resumes at the beginning
- * of the file stream. The error count is also reset.
+ * This function rewinds the file stream associated with the file token stream and flushes its
+ * internal buffers, so that scanning resumes at the beginning of the file stream. The error count
+ * is also reset.
  */
 void File_Token_Stream::letter::rewind() {
   infile_.clear(); // Must clear the error/end flag bits.

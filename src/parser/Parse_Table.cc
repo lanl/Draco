@@ -7,11 +7,17 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Parse_Table.hh"
+#include "parser/Parse_Table.hh"
 #include "dsxx/Assert.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
 #include <algorithm>
 #include <cctype>
+#include <cstddef> // size_t
+#include <cstring> // strcmp
 #include <sstream>
+#include <stdexcept> // invalid_argument
+#include <string>
 
 namespace rtt_parser {
 using namespace std;
@@ -138,12 +144,10 @@ void Parse_Table::sort_table_() noexcept(false) // apparently std::sort can thro
       } else {
         // The keywords are genuinely ambiguous. Throw an exception identifying the duplicate
         // keyword.
-        using std::endl;
         using std::ostringstream;
         ostringstream err;
         err << "An ambiguous keyword was detected in a "
-            << "Parse_Table:  " << i->moniker << endl
-            << "Modules: ";
+            << "Parse_Table:  " << i->moniker << "\nModules: ";
         if (i->parse_table_module)
           err << i->parse_table_module;
         else
@@ -153,7 +157,7 @@ void Parse_Table::sort_table_() noexcept(false) // apparently std::sort can thro
           err << (i + 1)->parse_table_module;
         else
           err << "<null>";
-        err << endl;
+        err << '\n';
         throw invalid_argument(err.str().c_str());
       }
     } else
@@ -474,8 +478,8 @@ int Parse_Table::Keyword_Compare_::kk_comparison(char const *m1, char const *m2)
       if (c1 > c2)
         return 1;
     }
-    char c1 = *m1;
-    char c2 = *m2;
+    char const c1 = *m1;
+    char const c2 = *m2;
     if (c1 < c2)
       return -1;
     if (c1 > c2)

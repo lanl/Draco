@@ -102,8 +102,8 @@ private:
 
     bool is_io_processor_; //!< Is this the designated I/O processor?
 
-    bool at_eof_;   //!< Did processor 0 see the end of file?
-    bool at_error_; //!< Did processor 0 see an I/O error?
+    bool at_eof_{false};   //!< Did processor 0 see the end of file?
+    bool at_error_{false}; //!< Did processor 0 see an I/O error?
   };
 
   // IMPLEMENTATION
