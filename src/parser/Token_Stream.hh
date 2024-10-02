@@ -84,7 +84,7 @@ public:
 
   //! Copy constructor
   Token_Stream(Token_Stream const &rhs) = default;
-  Token_Stream(Token_Stream &&rhs) = default;
+  Token_Stream(Token_Stream &&rhs) noexcept = default;
 
   //! Copy assignment
   Token_Stream &operator=(Token_Stream const &rhs) = default;

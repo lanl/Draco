@@ -116,7 +116,7 @@ parse_class_from_table_impl(Token_Stream &tokens, Class_Parse_Table &parse_table
 
   // Parse the class keyword block and check for completeness
   rtt_parser::Token const terminator = parse_table.parse_table().parse(tokens);
-  bool allow_exit = parse_table.allow_exit(); // improve code coverage
+  bool const allow_exit = parse_table.allow_exit(); // improve code coverage
   std::shared_ptr<typename Class_Parse_Table::Return_Class> Result;
   if (terminator.type() == rtt_parser::END || (allow_exit && terminator.type() == rtt_parser::EXIT))
   // A class keyword block is expected to end with an END or (if allow_exit is true) an EXIT.

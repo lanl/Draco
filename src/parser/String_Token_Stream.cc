@@ -7,9 +7,12 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "String_Token_Stream.hh"
-#include "c4/C4_Functions.hh"
-#include <sstream>
+#include "parser/String_Token_Stream.hh"
+#include "dsxx/Assert.hh"
+#include "parser/Text_Token_Stream.hh"
+#include "parser/Token.hh"
+#include <climits> // UINT_MAX
+#include <string>
 
 namespace rtt_parser {
 using namespace std;
@@ -132,7 +135,7 @@ void String_Token_Stream::report(Token const &token, string const &message) {
  * This version assumes that the cursor is the error location.
  */
 void String_Token_Stream::report(string const &message) {
-  Token token = lookahead();
+  Token const token = lookahead();
   messages_ += token.location() + "\n" + message + '\n';
 
   Ensure(check_class_invariants());

@@ -3,12 +3,16 @@
  * \file   Token_Stream.cc
  * \author Kent G. Budge
  * \brief  Definitions of Token_Stream member functions.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Token_Stream.hh"
+#include "parser/Token_Stream.hh"
+#include "dsxx/Assert.hh"
+#include "parser/Token.hh"
 #include <cstring>
+#include <exception>
+#include <stdexcept> // bad_exception
+#include <string>
 
 namespace rtt_parser {
 using namespace std;
@@ -20,8 +24,8 @@ Syntax_Error::Syntax_Error() : runtime_error("syntax error") {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function returns the token at the cursor position and advance the
- * cursor. It will, if necessary, fill() the token buffer first.
+ * This function returns the token at the cursor position and advance the cursor. It will, if
+ * necessary, fill() the token buffer first.
  *
  * \return <code>old lookahead()</code>
  */
@@ -35,20 +39,17 @@ Token Token_Stream::shift() {
   deq.pop_front();
 
   Ensure(check_class_invariants());
-  // Ensure the cursor advances one place to the right, discarding the leftmost
-  // token.
+  // Ensure the cursor advances one place to the right, discarding the leftmost token.
   return Result;
 }
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * This function looks ahead in the token stream without changing the cursor
- * position.  It will, if necessary, fill_() the token buffer first.  If the
- * requested position is at or past the end of the file, an EXIT token will be
- * returned.
+ * This function looks ahead in the token stream without changing the cursor position.  It will, if
+ * necessary, fill_() the token buffer first.  If the requested position is at or past the end of
+ * the file, an EXIT token will be returned.
  *
- * \param pos Number of tokens to look ahead, with 0 being the token at the
- * cursor position.
+ * \param pos Number of tokens to look ahead, with 0 being the token at the cursor position.
  *
  * \return The token at the specified position relative to the cursor.
  */

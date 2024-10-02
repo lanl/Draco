@@ -73,7 +73,7 @@ public:
 
   // MANIPULATORS
 
-  void swap(Token &src) {
+  void swap(Token &src) noexcept {
     std::swap(type_, src.type_);
     text_.swap(src.text_);
     location_.swap(src.location_);

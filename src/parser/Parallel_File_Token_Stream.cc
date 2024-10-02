@@ -7,28 +7,33 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Parallel_File_Token_Stream.hh"
+#include "parser/Parallel_File_Token_Stream.hh"
+#include "dsxx/Assert.hh"
 #include "c4/C4_Functions.hh"
+#include "parser/Text_Token_Stream.hh"
+#include "parser/Token.hh"
 #include <iostream>
 #include <limits>
+#include <memory> // make_shared
 #include <sstream>
+#include <stdexcept> // runtime_error
+#include <string>
+#include <utility> // std::move
 #include <vector>
 
 namespace rtt_parser {
 using namespace std;
 using namespace rtt_dsxx;
 
-//-------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
+// The current implementation always designates processor 0 as the I/O processor.
 Parallel_File_Token_Stream::letter::letter(string file_name)
-    : filename_(std::move(file_name)), infile_(), is_io_processor_(rtt_c4::node() == 0),
-      // The current implementation always designates processor 0 as the I/O processor.
-      at_eof_(false), at_error_(false) {
+    : filename_(std::move(file_name)), infile_(), is_io_processor_(rtt_c4::node() == 0) {
   open_();
-
   Ensure(check_class_invariants());
 } // namespace rtt_parser
 
-//-------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 //! Construct an empty Parallel_File_Token_Stream..
 Parallel_File_Token_Stream::Parallel_File_Token_Stream()
     : Text_Token_Stream(), letters_(), letter_(nullptr) {
@@ -124,7 +129,7 @@ void Parallel_File_Token_Stream::letter::open_() {
            << "Ensure that the filename includes the full path or a relative path from\n"
            << "the binary to the input file (e.g. ../test/deck.inp).\n\n"
            << "This error can also occur if you forgot to execute the code under\n"
-           << "mpirun or prun." << endl;
+           << "mpirun or prun.\n";
     throw std::invalid_argument(errmsg.str().c_str());
   }
 }
@@ -175,7 +180,7 @@ void Parallel_File_Token_Stream::fill_character_buffer_() {
     character_push_back_('\0');
   } else {
     // Set i to point to the end of the valid sequence of characters in the communications buffer.
-    unsigned i = 1 + comm_buffer[0];
+    unsigned const i = 1 + comm_buffer[0];
 
     // Make sure this is not past the end of the buffer. This should not be possible unless the data
     // has somewhow become corrupted during transmission.
@@ -285,7 +290,7 @@ bool Parallel_File_Token_Stream::end_() const {
  */
 void Parallel_File_Token_Stream::report(Token const &token, string const &message) {
   if (rtt_c4::node() == 0) {
-    cerr << token.location() << ": " << message << endl;
+    cerr << token.location() << ": " << message << '\n';
   }
   Ensure(check_class_invariants());
 }
@@ -300,10 +305,10 @@ void Parallel_File_Token_Stream::report(Token const &token, string const &messag
 void Parallel_File_Token_Stream::report(string const &message) {
   Require(check_class_invariants());
 
-  Token token = lookahead();
+  Token const token = lookahead();
   // The lookahead must be done on all processors to avoid a potential lockup condition.
   if (rtt_c4::node() == 0) {
-    cerr << token.location() << ": " << message << endl;
+    cerr << token.location() << ": " << message << '\n';
   }
 
   Ensure(check_class_invariants());
@@ -320,7 +325,7 @@ void Parallel_File_Token_Stream::comment(string const &message) {
   Require(check_class_invariants());
 
   if (rtt_c4::node() == 0) {
-    cerr << message << endl;
+    cerr << message << '\n';
   }
 
   Ensure(check_class_invariants());

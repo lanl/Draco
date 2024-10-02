@@ -6,7 +6,7 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Abstract_Class_Parser.hh"
+#include "parser/Abstract_Class_Parser.hh" // NOLINT(misc-include-cleaner)
 
 //! \bug doxygen doesn't like this file!
 //! \cond doxygen_skip
@@ -14,7 +14,7 @@
 namespace rtt_parser {
 
 // Create global static variable on the stack.
-c_string_vector abstract_class_parser_keys;
+c_string_vector abstract_class_parser_keys; // NOLINT(misc-include-cleaner)
 
 } // end namespace rtt_parser
 

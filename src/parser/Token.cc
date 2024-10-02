@@ -6,7 +6,8 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Token.hh"
+#include "parser/Token.hh"
+#include "dsxx/Assert.hh"
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
@@ -50,7 +51,7 @@ bool Is_Other_Text(char const *text) {
  * Is the argument a valid keyword?
  *
  * \return \c true if the argument points to a string consisting of a sequence of C++ identifiers
- * separated by single spaces.
+ *         separated by single spaces.
  */
 bool Is_Keyword_Text(char const *text) {
   Require(text != nullptr);

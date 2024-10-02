@@ -6,9 +6,12 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Console_Token_Stream.hh"
+#include "parser/Console_Token_Stream.hh"
+#include "dsxx/Assert.hh"
+#include "parser/Text_Token_Stream.hh"
+#include "parser/Token.hh"
 #include <iostream>
-#include <sstream>
+#include <string>
 
 namespace rtt_parser {
 using namespace std;
@@ -79,7 +82,7 @@ bool Console_Token_Stream::end_() const { return cin.eof(); }
  */
 
 void Console_Token_Stream::report(Token const &token, string const &message) {
-  std::cerr << token.location() << ": " << message << std::endl;
+  std::cerr << token.location() << ": " << message << '\n';
 
   Ensure(check_class_invariants());
 }
@@ -91,8 +94,8 @@ void Console_Token_Stream::report(Token const &token, string const &message) {
  */
 
 void Console_Token_Stream::report(string const &message) {
-  Token token = lookahead();
-  std::cerr << token.location() << ": " << message << std::endl;
+  Token const token = lookahead();
+  std::cerr << token.location() << ": " << message << '\n';
 
   Ensure(check_class_invariants());
 }
@@ -104,7 +107,7 @@ void Console_Token_Stream::report(string const &message) {
  */
 
 void Console_Token_Stream::comment(string const &message) {
-  std::cerr << message << std::endl;
+  std::cerr << message << '\n';
 
   Ensure(check_class_invariants());
 }

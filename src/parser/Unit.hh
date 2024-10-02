@@ -329,17 +329,11 @@ Unit const CGMU = {0.01, 0.001, 1e-6, 1., 1., 1., 1., 1., 1., 0.};
 Unit const CGSH = {0.01, 0.001, 1e-8, 1., 1e3 * rtt_units::EV2K, 1., 1., 1., 1., 0.};
 
 //------------------------------------------------------------------------------------------------//
-/*! Calculate conversion factor to a system of units. Assumes the units are
-* initially MKS.
-*/
-
+//! Calculate conversion factor to a system of units. Assumes the units are initially MKS.
 double conversion_factor(Unit const &units, Unit const &unit_system);
 
 //------------------------------------------------------------------------------------------------//
-/*! Calculate conversion factor to a system of units. Assumes the units are
- * initially MKS.
- */
-
+//! Calculate conversion factor to a system of units. Assumes the units are initially MKS.
 double conversion_factor(Unit const &units, rtt_units::UnitSystem const &unit_system);
 
 } // end namespace rtt_parser
