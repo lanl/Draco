@@ -8,12 +8,18 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Compton_Edep.hh"
-#include "dsxx/dbc.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Interpolate.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/config.h"
 #include "units/PhysicalConstexprs.hh"
+#include <algorithm>
+#include <cstddef>
 #include <fstream>
 #include <limits>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 // Empty namespace contains local helper functions
@@ -83,8 +89,8 @@ Edep_Container read_edep_file(const std::string &infile) {
   std::ifstream ascii_lib1;
   std::ifstream ascii_lib2;
 
-  std::string sigc_file(infile + "_sigc");
-  std::string erec_file(infile + "_erec");
+  std::string const sigc_file(infile + "_sigc");
+  std::string const erec_file(infile + "_erec");
 
   // try to open the base file with no additional qualifiers
   ascii_lib1.open(sigc_file);
@@ -176,7 +182,7 @@ Edep_Container read_edep_file(const std::string &infile) {
 std::pair<double, double> interpolate_sigc_erec(const size_t cell, const double freq,
                                                 const Preinterp_Container &data) {
   Ensure(cell > 0 && cell <= data.erec_coeffs.size());
-  rtt_units::PhysicalConstexprs<rtt_units::CGSH> consts;
+  rtt_units::PhysicalConstexprs<rtt_units::CGSH> const consts;
 
   // Calculate electron rest-mass in keV:
   // units: me (g) * c^2 (cm^2 / shk^2) * (shk^2 / s^2) * (m^2 / cm^2) * (kg / g) * (keV / J)
@@ -190,7 +196,7 @@ std::pair<double, double> interpolate_sigc_erec(const size_t cell, const double 
   if (mygamma < data.freq_break_pts[0] || mygamma > data.freq_break_pts.back()) {
 #if DRACO_DIAGNOSTICS & 3
     std::cout << "WARNING: Frequency " << mygamma << " is outside the bounds of the library ["
-              << data.freq_break_pts[0] << ", " << data.freq_break_pts.back() << "]" << std::endl;
+              << data.freq_break_pts[0] << ", " << data.freq_break_pts.back() << "]\n";
 #endif
     if (mygamma < data.freq_break_pts[0]) {
       mygamma = data.freq_break_pts[0] * (1.0 + fuzz);
@@ -242,7 +248,7 @@ void Preinterp_Container::preinterp_sigc_erec(const std::vector<double> &Tms,
                                               const std::vector<double> &density,
                                               const Edep_Container &data) {
 
-  rtt_units::PhysicalConstexprs<rtt_units::CGSH> consts;
+  rtt_units::PhysicalConstexprs<rtt_units::CGSH> const consts;
 
   // Calculate electron rest-mass in keV:
   // units: me (g) * c^2 (cm^2 / shk^2) * (shk^2 / s^2) * (m^2 / cm^2) * (kg / g) * (keV / J)
@@ -260,8 +266,7 @@ void Preinterp_Container::preinterp_sigc_erec(const std::vector<double> &Tms,
     if (myetemp < data.T_break_pts[0] || myetemp > data.T_break_pts.back()) {
 #if DRACO_DIAGNOSTICS & 3
       std::cout << "WARNING: Material temp " << myetemp << " is outside the bounds of the library ["
-                << data.T_break_pts[0] << ", " << data.T_break_pts.back() << "]" << std::endl;
-      ;
+                << data.T_break_pts[0] << ", " << data.T_break_pts.back() << "]\n";
 #endif
       if (myetemp < data.T_break_pts[0]) {
         myetemp = data.T_break_pts[0] * (1.0 + fuzz);

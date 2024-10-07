@@ -14,7 +14,6 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-//#include "compton_tools/Sparse_Compton_Matrix.hh"
 
 namespace rtt_compton_tools {
 
@@ -144,16 +143,16 @@ public:
   //----------------------------------------------------------------------------------------------//
   // Size checks for valid state
   NODISCARD bool check_class_invariants() const {
-    bool all_good = (num_temperatures_ > 0U) && (num_groups_ > 0U) && (num_leg_moments_ > 0U) &&
-                    (num_evals_ >= 2U) && (num_evals_ <= 3U) &&
-                    (num_points_ == num_evals_ + num_leg_moments_ - 1U) &&
-                    (Ts_.size() == num_temperatures_) && (Egs_.size() == num_groups_ + 1U) &&
-                    (first_groups_.size() == (num_temperatures_ * num_groups_)) &&
-                    (indexes_.size() == (num_temperatures_ * num_groups_ + 1U)) &&
-                    (data_.size() == derivs_.size()) &&
-                    (data_.size() >= num_temperatures_ * num_groups_ * num_points_) &&
-                    (data_.size() <= num_temperatures_ * num_groups_ * num_groups_ * num_points_) &&
-                    true;
+    bool const all_good =
+        (num_temperatures_ > 0U) && (num_groups_ > 0U) && (num_leg_moments_ > 0U) &&
+        (num_evals_ >= 2U) && (num_evals_ <= 3U) &&
+        (num_points_ == num_evals_ + num_leg_moments_ - 1U) && (Ts_.size() == num_temperatures_) &&
+        (Egs_.size() == num_groups_ + 1U) &&
+        (first_groups_.size() == (num_temperatures_ * num_groups_)) &&
+        (indexes_.size() == (num_temperatures_ * num_groups_ + 1U)) &&
+        (data_.size() == derivs_.size()) &&
+        (data_.size() >= num_temperatures_ * num_groups_ * num_points_) &&
+        (data_.size() <= num_temperatures_ * num_groups_ * num_groups_ * num_points_) && true;
     return all_good;
   }
 

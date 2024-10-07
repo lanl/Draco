@@ -4,18 +4,20 @@
  * \author Kendra P. Long
  * \date   2022 Oct 7
  * \brief  Implementation file for tCompton_Edep
- * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "compton_tools/Compton_Edep.hh"
-#include <fstream>
-#include <iomanip>
-#include <sstream>
-#include <stdexcept>
+#include <array>
+#include <cstddef>
+#include <iostream>
+#include <memory>
+#include <string>
 #include <vector>
 
 namespace rtt_compton_edep_test {
@@ -36,7 +38,7 @@ void compton_edep_data_test(rtt_dsxx::UnitTest &ut) {
 
   // open a small Edep library:
   const std::string filename = ut.getTestSourcePath() + "dummy_ascii";
-  std::cout << "Attempting to construct an Edep_Container object...\n" << std::endl;
+  std::cout << "Attempting to construct an Edep_Container object...\n\n";
   std::shared_ptr<compton_edep::Edep_Container> edep_sp;
 
   try {
@@ -47,7 +49,7 @@ void compton_edep_data_test(rtt_dsxx::UnitTest &ut) {
     // if construction fails, there is no reason to continue testing...
     return;
   }
-  std::cout << "\n(...Success!)" << std::endl;
+  std::cout << "\n(...Success!)\n";
 
   // Use temperatures/frequencies that are close to the library eval points:
   const std::vector<double> cell_temps = {1.50001, 2.49999};
@@ -92,7 +94,7 @@ void compton_edep_data_test(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(soft_equiv(twopoint_vals.second, -3.26781061e-01, 1.0e-4));
 
   if (ut.numFails == 0)
-    std::cout << "\nCorrectly interpolated all data points!!" << std::endl;
+    std::cout << "\nCorrectly interpolated all data points!!\n";
 
   if (ut.numFails == 0) {
     PASSMSG("Successfully read and interpolated CSK Edep data.");
@@ -109,13 +111,13 @@ void compton_fail_test(rtt_dsxx::UnitTest &ut) {
             << "---------------------------------------------------------\n";
   // open a small mg opacity file:
   std::string filename = ut.getTestSourcePath() + "non_existent.compton";
-  std::cout << "Testing with a non-existent file...\n" << std::endl;
+  std::cout << "Testing with a non-existent file...\n\n";
 
   bool caught = false;
   try {
     compton_edep::Edep_Container mycontainer = compton_edep::read_edep_file(filename);
   } catch (rtt_dsxx::assertion &asrt) {
-    std::cout << "Draco exception thrown: " << asrt.what() << std::endl;
+    std::cout << "Draco exception thrown: " << asrt.what() << '\n';
     // We successfully caught the bad file!
     caught = true;
   }
