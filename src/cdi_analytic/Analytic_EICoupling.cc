@@ -7,8 +7,15 @@
  * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Analytic_EICoupling.hh"
+#include "cdi_analytic/Analytic_EICoupling.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Packing_Utils.hh"
+#include "cdi_analytic/Analytic_Models.hh"
+#include <climits> // INT_MAX
+#include <cstddef> // size_t
+#include <memory>  // make_shared
+#include <utility> // move
+#include <vector>
 
 namespace rtt_cdi_analytic {
 
@@ -101,7 +108,7 @@ double Analytic_EICoupling::getElectronIonCoupling(const double eTemperature,
   Require(w_e >= 0.0);
   Require(w_i >= 0.0);
 
-  double ei_coupling =
+  double const ei_coupling =
       analytic_model->calculate_ei_coupling(eTemperature, iTemperature, density, w_e, w_i);
 
   Ensure(ei_coupling >= 0.0);
@@ -166,11 +173,11 @@ Analytic_EICoupling::sf_char Analytic_EICoupling::pack() const {
   rtt_dsxx::Packer packer;
 
   // first pack up the analytic model
-  sf_char anal_model = analytic_model->pack();
+  sf_char const anal_model = analytic_model->pack();
 
   // now add up the total size (in bytes): size of analytic model + 1 int for size of analytic model
   Check(anal_model.size() + 1 * sizeof(int) < INT_MAX);
-  int size = static_cast<int>(anal_model.size() + 1 * sizeof(int));
+  int const size = static_cast<int>(anal_model.size() + 1 * sizeof(int));
 
   // make a char array
   sf_char packed(size);

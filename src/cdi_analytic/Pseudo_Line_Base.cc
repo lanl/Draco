@@ -6,20 +6,23 @@
  * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Pseudo_Line_Base.hh"
+#include "cdi_analytic/Pseudo_Line_Base.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoMath.hh"
-#include "dsxx/Packing_Utils.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "c4/C4_Functions.hh"
-#include "cdi/CDI.hh"
-#include "ode/quad.hh"
-#include "ode/rkqs.hh"
-#include <fstream>
+#include <algorithm> // sort
+#include <cmath>     // pow, abs
+#include <cstddef>   //size_t
+#include <cstdlib>   // rand
+#include <limits>
+#include <memory>    // shared_ptr
+#include <stdexcept> // range_error
+#include <vector>
 
 namespace rtt_cdi_analytic {
 using namespace std;
-using namespace rtt_ode;
 using namespace rtt_dsxx;
-using namespace rtt_cdi;
 
 //------------------------------------------------------------------------------------------------//
 #ifdef _MSC_VER
@@ -50,7 +53,7 @@ void Pseudo_Line_Base::setup_(double emin, double emax) {
   // else fuzz model: Instead of lines, we add a random opacity to each opacity bin to simulate very
   // fine, unresolvable line structure.
 
-  unsigned ne = abs(number_of_edges);
+  unsigned const ne = abs(number_of_edges);
   for (unsigned i = 0; i < ne; ++i) {
     if (number_of_edges > 0) {
       // normal behavior is to place edges randomly
@@ -63,7 +66,7 @@ void Pseudo_Line_Base::setup_(double emin, double emax) {
     }
     double C;
     if (nu0_ < 0) {
-      size_t N = continuum_table_.size();
+      size_t const N = continuum_table_.size();
       if (N > 0) {
         C = continuum_table_[static_cast<unsigned int>(edge_[i] * static_cast<double>(N) / emax)];
       } else {
@@ -209,7 +212,7 @@ double Pseudo_Line_Base::monoOpacity(double const x, double const T) const {
 
   double Result;
   if (nu0_ < 0) {
-    size_t N = continuum_table_.size();
+    size_t const N = continuum_table_.size();
     if (N > 0) {
       Result = continuum_table_[static_cast<unsigned int>(x * static_cast<double>(N) / emax_)];
     } else {

@@ -7,10 +7,14 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Analytic_Models.hh"
+#include "cdi_analytic/Analytic_Models.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Packing_Utils.hh"
 #include "roots/zbrac.hh"
 #include "roots/zbrent.hh"
+#include <algorithm> // min, max
+#include <cstddef>
+#include <limits>
 
 namespace rtt_cdi_analytic {
 
@@ -37,21 +41,26 @@ double Polynomial_Specific_Heat_Analytic_EoS_Model::calculate_elec_temperature(
   // Return T=0 given Ue <= 0 every time
   if (Ue > 0.0) {
     // Set up the functor
-    find_elec_temperature_functor minimizeFunctor(Ue, a, b, c);
+    find_elec_temperature_functor const minimizeFunctor(Ue, a, b, c);
 
     double const epsilon(std::numeric_limits<double>::epsilon());
     // New temperature should be nearby
+
+    // NOLINTBEGIN(misc-const-correctness)
+    // The functor doesn't support const values in the signature.
     double T_max(std::max(1e-18, 100.0 * Te0)); // no zero max
     double T_min(1e-20);
     double xtol(std::min(epsilon, Te0 * epsilon));
     double ytol(Ue * std::numeric_limits<double>::epsilon());
     unsigned iterations(1000);
+    // NOLINTEND(misc-const-correctness)
+
     // bracket the root
     rtt_roots::zbrac<find_elec_temperature_functor>(minimizeFunctor, T_min, T_max);
 
     // Search for the root
-    double T_new = rtt_roots::zbrent<find_elec_temperature_functor>(minimizeFunctor, T_min, T_max,
-                                                                    iterations, xtol, ytol);
+    double const T_new = rtt_roots::zbrent<find_elec_temperature_functor>(
+        minimizeFunctor, T_min, T_max, iterations, xtol, ytol);
 
     return T_new;
   } else {
@@ -79,21 +88,25 @@ double Polynomial_Specific_Heat_Analytic_EoS_Model::calculate_ion_temperature(
   // Return T=0 given Uic <= 0 every time
   if (Uic > 0.0) {
     // Set up the functor
-    find_elec_temperature_functor minimizeFunctor(Uic, d, e, f);
+    find_elec_temperature_functor const minimizeFunctor(Uic, d, e, f);
 
     double const epsilon(std::numeric_limits<double>::epsilon());
     // New temperature should be nearby
+
+    // NOLINTBEGIN(misc-const-correctness)
+    // The functor doesn't support const values in the signature.
     double T_max(std::max(1e-18, 100.0 * Ti0)); // no zero max
     double T_min(1e-20);
     double xtol(std::min(epsilon, Ti0 * epsilon));
     double ytol(Uic * std::numeric_limits<double>::epsilon());
     unsigned iterations(1000);
+    // NOLINTEND(misc-const-correctness)
     // bracket the root
     rtt_roots::zbrac<find_elec_temperature_functor>(minimizeFunctor, T_min, T_max);
 
     // Search for the root
-    double T_new = rtt_roots::zbrent<find_elec_temperature_functor>(minimizeFunctor, T_min, T_max,
-                                                                    iterations, xtol, ytol);
+    double const T_new = rtt_roots::zbrent<find_elec_temperature_functor>(
+        minimizeFunctor, T_min, T_max, iterations, xtol, ytol);
 
     return T_new;
   } else {
@@ -108,7 +121,7 @@ double Polynomial_Specific_Heat_Analytic_EoS_Model::calculate_ion_temperature(
 //! Unpacking constructor.
 Constant_Analytic_Opacity_Model::Constant_Analytic_Opacity_Model(const sf_char &packed) : sigma(0) {
   // size of stream
-  int size(sizeof(int) + sizeof(double));
+  int const size(sizeof(int) + sizeof(double));
 
   Require(packed.size() == static_cast<size_t>(size));
 
@@ -135,10 +148,10 @@ Constant_Analytic_Opacity_Model::Constant_Analytic_Opacity_Model(const sf_char &
 //! Packing function
 Analytic_Opacity_Model::sf_char Constant_Analytic_Opacity_Model::pack() const {
   // get the registered indicator
-  int indicator = CONSTANT_ANALYTIC_OPACITY_MODEL;
+  int const indicator = CONSTANT_ANALYTIC_OPACITY_MODEL;
 
   // caculate the size in bytes: indicator + 1 double
-  int size = sizeof(int) + sizeof(double);
+  int const size = sizeof(int) + sizeof(double);
 
   // make a vector of the appropriate size
   sf_char pdata(size);
@@ -175,7 +188,7 @@ Analytic_Opacity_Model::sf_double Constant_Analytic_Opacity_Model::get_parameter
 Polynomial_Analytic_Opacity_Model::Polynomial_Analytic_Opacity_Model(const sf_char &packed)
     : a(0.0), b(0.0), c(0.0), d(0.0), e(0.0), f(1.0), g(1.0), h(1.0), i(0.0), j(0.0), k(0.0) {
   // size of stream
-  size_t size = sizeof(int) + 11 * sizeof(double);
+  size_t const size = sizeof(int) + 11 * sizeof(double);
 
   Require(packed.size() == size);
 
@@ -201,10 +214,10 @@ Polynomial_Analytic_Opacity_Model::Polynomial_Analytic_Opacity_Model(const sf_ch
 //! Packing function
 Analytic_Opacity_Model::sf_char Polynomial_Analytic_Opacity_Model::pack() const {
   // get the registered indicator
-  int indicator = POLYNOMIAL_ANALYTIC_OPACITY_MODEL;
+  int const indicator = POLYNOMIAL_ANALYTIC_OPACITY_MODEL;
 
   // caculate the size in bytes: indicator + 11 * double
-  int size = sizeof(int) + 11 * sizeof(double);
+  int const size = sizeof(int) + 11 * sizeof(double);
 
   // make a vector of the appropriate size
   sf_char pdata(size);
@@ -265,7 +278,7 @@ Polynomial_Specific_Heat_Analytic_EoS_Model::Polynomial_Specific_Heat_Analytic_E
     const sf_char &packed)
     : a(0.0), b(0.0), c(0.0), d(0.0), e(0.0), f(0.0) {
   // size of stream
-  size_t size = sizeof(int) + 6 * sizeof(double);
+  size_t const size = sizeof(int) + 6 * sizeof(double);
 
   Require(packed.size() == size);
 
@@ -279,8 +292,7 @@ Polynomial_Specific_Heat_Analytic_EoS_Model::Polynomial_Specific_Heat_Analytic_E
   int indicator;
   unpacker >> indicator;
   Insist(indicator == POLYNOMIAL_SPECIFIC_HEAT_ANALYTIC_EOS_MODEL,
-         "Tried to unpack the wrong type in "
-         "Polynomial_Specific_Heat_Analytic_EoS_Model");
+         "Tried to unpack the wrong type in Polynomial_Specific_Heat_Analytic_EoS_Model");
 
   // unpack the data
   unpacker >> a >> b >> c >> d >> e >> f;
@@ -292,10 +304,10 @@ Polynomial_Specific_Heat_Analytic_EoS_Model::Polynomial_Specific_Heat_Analytic_E
 //! Packing function
 Analytic_Opacity_Model::sf_char Polynomial_Specific_Heat_Analytic_EoS_Model::pack() const {
   // get the registered indicator
-  int indicator = POLYNOMIAL_SPECIFIC_HEAT_ANALYTIC_EOS_MODEL;
+  int const indicator = POLYNOMIAL_SPECIFIC_HEAT_ANALYTIC_EOS_MODEL;
 
   // caculate the size in bytes: indicator + 6 * double
-  int size = sizeof(int) + 6 * sizeof(double);
+  int const size = sizeof(int) + 6 * sizeof(double);
 
   // make a vector of the appropriate size
   sf_char pdata(size);
@@ -345,7 +357,7 @@ Analytic_EoS_Model::sf_double Polynomial_Specific_Heat_Analytic_EoS_Model::get_p
 Constant_Analytic_EICoupling_Model::Constant_Analytic_EICoupling_Model(const sf_char &packed)
     : ei_coupling(0) {
   // size of stream
-  int size(sizeof(int) + sizeof(double));
+  int const size(sizeof(int) + sizeof(double));
 
   Require(packed.size() == static_cast<size_t>(size));
 
@@ -372,10 +384,10 @@ Constant_Analytic_EICoupling_Model::Constant_Analytic_EICoupling_Model(const sf_
 //! Packing function
 Analytic_EICoupling_Model::sf_char Constant_Analytic_EICoupling_Model::pack() const {
   // get the registered indicator
-  int indicator = CONSTANT_ANALYTIC_EICOUPLING_MODEL;
+  int const indicator = CONSTANT_ANALYTIC_EICOUPLING_MODEL;
 
   // caculate the size in bytes: indicator + 1 double
-  int size = sizeof(int) + sizeof(double);
+  int const size = sizeof(int) + sizeof(double);
 
   // make a vector of the appropriate size
   sf_char pdata(size);

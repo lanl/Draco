@@ -3,15 +3,23 @@
  * \file   cdi_analytic/test/tstPseudo_Line_Analytic_MultigroupOpacity.cc
  * \author Kent G. Budge
  * \date   Tue Apr  5 09:01:03 2011
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
 #include "c4/ParallelUnitTest.hh"
+#include "cdi/OpacityCommon.hh"
 #include "cdi_analytic/Pseudo_Line_Analytic_MultigroupOpacity.hh"
-#include "parser/Constant_Expression.hh"
 #include "parser/String_Token_Stream.hh"
+#include "parser/Unit.hh"
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -35,7 +43,9 @@ void tstPseudo_Line_Analytic_MultigroupOpacity(UnitTest &ut) {
   unsigned const NG = 12288; // 10;
   int const number_of_lines = 20;
   int const number_of_edges = 10;
-  unsigned seed = 1;
+  unsigned constexpr seed = 1;
+  double constexpr Tref = 1.0;
+  double constexpr Tpow = 0.0;
 
   std::shared_ptr<Expression const> continuum;
   {
@@ -58,88 +68,88 @@ void tstPseudo_Line_Analytic_MultigroupOpacity(UnitTest &ut) {
   }
 
   {
-    Pseudo_Line_Analytic_MultigroupOpacity model(group_bounds, rtt_cdi::ABSORPTION, continuum,
-                                                 number_of_lines, peak, width, number_of_edges,
-                                                 edge_ratio, 1.0, 0.0, emin, emax, NONE, 0, seed);
+    Pseudo_Line_Analytic_MultigroupOpacity const model(
+        group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width, number_of_edges,
+        edge_ratio, Tref, Tpow, emin, emax, NONE, 0, seed);
 
-    ut.passes("Created Pseudo_Line_Analytic_MultigroupOpacity");
+    PASSMSG("Created Pseudo_Line_Analytic_MultigroupOpacity");
 
     vector<double> sigma = model.getOpacity(1.0, 1.0);
 
     ofstream out("pseudo_none.dat");
     for (unsigned gg = 0; gg < NG; ++gg) {
-      out << ((gg + 0.5) * (emax - emin) / NG + emin) << ' ' << sigma[gg] << endl;
+      out << ((gg + 0.5) * (emax - emin) / NG + emin) << ' ' << sigma[gg] << '\n';
     }
 
-    ut.passes("Calculated Pseudo_Line_Analytic_MultigroupOpacity opacity");
+    PASSMSG("Calculated Pseudo_Line_Analytic_MultigroupOpacity opacity");
   }
 
   {
-    Pseudo_Line_Analytic_MultigroupOpacity model(
+    Pseudo_Line_Analytic_MultigroupOpacity const model(
         group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width, number_of_edges,
-        edge_ratio, 1.0, 0.0, emin, emax, ROSSELAND, 0, seed);
+        edge_ratio, Tref, Tpow, emin, emax, ROSSELAND, 0, seed);
 
-    ut.passes("Created Pseudo_Line_Analytic_MultigroupOpacity");
+    PASSMSG("Created Pseudo_Line_Analytic_MultigroupOpacity");
 
     vector<double> sigma = model.getOpacity(1.0, 1.0);
 
     ofstream out("pseudo_rosseland.dat");
     for (unsigned gg = 0; gg < NG; ++gg) {
-      out << ((gg + 0.5) * (emax - emin) / NG + emin) << ' ' << sigma[gg] << endl;
+      out << ((gg + 0.5) * (emax - emin) / NG + emin) << ' ' << sigma[gg] << '\n';
     }
 
-    ut.passes("Calculated Pseudo_Line_Analytic_MultigroupOpacity opacity");
+    PASSMSG("Calculated Pseudo_Line_Analytic_MultigroupOpacity opacity");
   }
 
   {
-    Pseudo_Line_Analytic_MultigroupOpacity model(group_bounds, rtt_cdi::ABSORPTION, continuum,
-                                                 number_of_lines, peak, width, number_of_edges,
-                                                 edge_ratio, 1.0, 0.0, emin, emax, PLANCK, 0, seed);
+    Pseudo_Line_Analytic_MultigroupOpacity const model(
+        group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width, number_of_edges,
+        edge_ratio, Tref, Tpow, emin, emax, PLANCK, 0, seed);
 
-    ut.passes("Created Pseudo_Line_Analytic_MultigroupOpacity");
+    PASSMSG("Created Pseudo_Line_Analytic_MultigroupOpacity");
 
     vector<double> sigma = model.getOpacity(1.0, 1.0);
 
     ofstream out("pseudo_planck.dat");
     for (unsigned gg = 0; gg < NG; ++gg) {
-      out << ((gg + 0.5) * (emax - emin) / NG + emin) << ' ' << sigma[gg] << endl;
+      out << ((gg + 0.5) * (emax - emin) / NG + emin) << ' ' << sigma[gg] << '\n';
     }
 
-    ut.passes("Calculated Pseudo_Line_Analytic_MultigroupOpacity opacity");
+    PASSMSG("Calculated Pseudo_Line_Analytic_MultigroupOpacity opacity");
   }
 
   {
-    Pseudo_Line_Analytic_MultigroupOpacity model(
+    Pseudo_Line_Analytic_MultigroupOpacity const model(
         group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width, number_of_edges,
-        edge_ratio, 1.0, 0.0, emin, emax, ROSSELAND, 1, seed);
+        edge_ratio, Tref, Tpow, emin, emax, ROSSELAND, 1, seed);
 
-    ut.passes("Created Pseudo_Line_Analytic_MultigroupOpacity");
+    PASSMSG("Created Pseudo_Line_Analytic_MultigroupOpacity");
 
     vector<double> sigma = model.getOpacity(1.0, 1.0);
 
     ofstream out("pseudo_rosseland_d.dat");
     for (unsigned fg = 0; fg < NG; ++fg) {
-      out << ((fg + 0.5) * (emax - emin) / NG + emin) << ' ' << sigma[fg] << endl;
+      out << ((fg + 0.5) * (emax - emin) / NG + emin) << ' ' << sigma[fg] << '\n';
     }
 
-    ut.passes("Calculated Pseudo_Line_Analytic_MultigroupOpacity opacity");
+    PASSMSG("Calculated Pseudo_Line_Analytic_MultigroupOpacity opacity");
   }
 
   {
-    Pseudo_Line_Analytic_MultigroupOpacity model(group_bounds, rtt_cdi::ABSORPTION, continuum,
-                                                 number_of_lines, peak, width, number_of_edges,
-                                                 edge_ratio, 1.0, 0.0, emin, emax, PLANCK, 1, seed);
+    Pseudo_Line_Analytic_MultigroupOpacity const model(
+        group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width, number_of_edges,
+        edge_ratio, Tref, Tpow, emin, emax, PLANCK, 1, seed);
 
-    ut.passes("Created Pseudo_Line_Analytic_MultigroupOpacity");
+    PASSMSG("Created Pseudo_Line_Analytic_MultigroupOpacity");
 
     vector<double> sigma = model.getOpacity(1.0, 1.0);
 
     ofstream out("pseudo_planck_d.dat");
     for (unsigned gg = 0; gg < NG; ++gg) {
-      out << ((gg + 0.5) * (emax - emin) / NG + emin) << ' ' << sigma[gg] << endl;
+      out << ((gg + 0.5) * (emax - emin) / NG + emin) << ' ' << sigma[gg] << '\n';
     }
 
-    ut.passes("Calculated Pseudo_Line_Analytic_MultigroupOpacity opacity");
+    PASSMSG("Calculated Pseudo_Line_Analytic_MultigroupOpacity opacity");
   }
 }
 

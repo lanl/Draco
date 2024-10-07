@@ -7,8 +7,15 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Analytic_EoS.hh"
+#include "cdi_analytic/Analytic_EoS.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Packing_Utils.hh"
+#include "cdi_analytic/Analytic_Models.hh"
+#include <climits> // INT_MAX
+#include <cstddef> // size_t
+#include <memory>  // make_shared
+#include <utility> // move
+#include <vector>
 
 namespace rtt_cdi_analytic {
 
@@ -92,7 +99,7 @@ double Analytic_EoS::getSpecificElectronInternalEnergy(double T, double rho) con
   Require(T >= 0.0);
   Require(rho >= 0.0);
 
-  double internal_energy = analytic_model->calculate_electron_internal_energy(T, rho);
+  double const internal_energy = analytic_model->calculate_electron_internal_energy(T, rho);
 
   Ensure(internal_energy >= 0.0);
   return internal_energy;
@@ -145,7 +152,7 @@ double Analytic_EoS::getSpecificIonInternalEnergy(double T, double rho) const {
   Require(T >= 0.0);
   Require(rho >= 0.0);
 
-  double internal_energy = analytic_model->calculate_ion_internal_energy(T, rho);
+  double const internal_energy = analytic_model->calculate_ion_internal_energy(T, rho);
 
   Ensure(internal_energy >= 0.0);
   return internal_energy;
@@ -198,7 +205,7 @@ double Analytic_EoS::getElectronHeatCapacity(double T, double rho) const {
   Require(T >= 0.0);
   Require(rho >= 0.0);
 
-  double heat_capacity = analytic_model->calculate_electron_heat_capacity(T, rho);
+  double const heat_capacity = analytic_model->calculate_electron_heat_capacity(T, rho);
 
   Ensure(heat_capacity >= 0.0);
   return heat_capacity;
@@ -251,7 +258,7 @@ double Analytic_EoS::getIonHeatCapacity(double T, double rho) const {
   Require(T >= 0.0);
   Require(rho >= 0.0);
 
-  double heat_capacity = analytic_model->calculate_ion_heat_capacity(T, rho);
+  double const heat_capacity = analytic_model->calculate_ion_heat_capacity(T, rho);
 
   Ensure(heat_capacity >= 0.0);
   return heat_capacity;
@@ -305,7 +312,7 @@ double Analytic_EoS::getNumFreeElectronsPerIon(double T, double rho) const {
   Require(T >= 0.0);
   Require(rho >= 0.0);
 
-  double number = analytic_model->calculate_num_free_elec_per_ion(T, rho);
+  double const number = analytic_model->calculate_num_free_elec_per_ion(T, rho);
 
   Ensure(number >= 0.0);
   return number;
@@ -364,7 +371,7 @@ double Analytic_EoS::getElectronThermalConductivity(double T, double rho) const 
   Require(T >= 0.0);
   Require(rho >= 0.0);
 
-  double thermal_conductivity = analytic_model->calculate_elec_thermal_conductivity(T, rho);
+  double const thermal_conductivity = analytic_model->calculate_elec_thermal_conductivity(T, rho);
 
   Ensure(thermal_conductivity >= 0.0);
   return thermal_conductivity;
@@ -420,7 +427,7 @@ double Analytic_EoS::getElectronTemperature(double rho, double Ue, double Tguess
   Require(Ue >= 0.0);
   Require(rho > 0.0);
 
-  double T_new = analytic_model->calculate_elec_temperature(rho, Ue, Tguess);
+  double const T_new = analytic_model->calculate_elec_temperature(rho, Ue, Tguess);
 
   Ensure(T_new >= 0.0);
   return T_new;
@@ -443,7 +450,7 @@ double Analytic_EoS::getIonTemperature(double rho, double Uic, double Tguess) co
   Require(Uic >= 0.0);
   Require(rho > 0.0);
 
-  double T_new = analytic_model->calculate_ion_temperature(rho, Uic, Tguess);
+  double const T_new = analytic_model->calculate_ion_temperature(rho, Uic, Tguess);
 
   Ensure(T_new >= 0.0);
   return T_new;
@@ -464,11 +471,11 @@ Analytic_EoS::sf_char Analytic_EoS::pack() const {
   rtt_dsxx::Packer packer;
 
   // first pack up the analytic model
-  sf_char anal_model = analytic_model->pack();
+  sf_char const anal_model = analytic_model->pack();
 
   // now add up the total size (in bytes): size of analytic model + 1 int for size of analytic model
   Check(anal_model.size() + 1 * sizeof(int) < INT_MAX);
-  int size = static_cast<int>(anal_model.size() + 1 * sizeof(int));
+  int const size = static_cast<int>(anal_model.size() + 1 * sizeof(int));
 
   // make a char array
   sf_char packed(size);

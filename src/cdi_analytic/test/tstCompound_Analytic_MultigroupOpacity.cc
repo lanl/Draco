@@ -4,17 +4,23 @@
  * \author Thomas M. Evans
  * \date   Tue Nov 13 17:24:12 2001
  * \brief  Compound_Analytic_MultigroupOpacity test.
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_analytic_test.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "cdi/CDI.hh"
+#include "cdi/MultigroupOpacity.hh"
+#include "cdi/OpacityCommon.hh"
+#include "cdi_analytic/Analytic_Models.hh"
 #include "cdi_analytic/Compound_Analytic_MultigroupOpacity.hh"
 #include <memory>
 #include <sstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -46,49 +52,33 @@ void multigroup_test(rtt_dsxx::UnitTest &ut) {
   models[2] = std::make_shared<rtt_cdi_analytic::Constant_Analytic_Opacity_Model>(3.0);
 
   // make an analytic multigroup opacity object for absorption
-  Compound_Analytic_MultigroupOpacity opacity(groups, models, rtt_cdi::ABSORPTION);
+  Compound_Analytic_MultigroupOpacity const opacity(groups, models, rtt_cdi::ABSORPTION);
 
   // check the interface to multigroup opacity
   {
-    string desc = "Compound Multigroup Absorption";
+    string const desc = "Compound Multigroup Absorption";
 
-    if (opacity.data_in_tabular_form())
-      ITFAILS;
-    if (opacity.getReactionType() != rtt_cdi::ABSORPTION)
-      ITFAILS;
-    if (opacity.getModelType() != rtt_cdi::ANALYTIC)
-      ITFAILS;
-    if (opacity.getNumTemperatures() != 0)
-      ITFAILS;
-    if (opacity.getNumDensities() != 0)
-      ITFAILS;
-    if (opacity.getTemperatureGrid() != vector<double>())
-      ITFAILS;
-    if (opacity.getDensityGrid() != vector<double>())
-      ITFAILS;
-    if (opacity.getNumGroups() != 3)
-      ITFAILS;
-    if (opacity.getNumGroupBoundaries() != 4)
-      ITFAILS;
-    if (opacity.getEnergyPolicyDescriptor() != "mg")
-      ITFAILS;
-    if (opacity.getDataDescriptor() != desc)
-      ITFAILS;
-    if (opacity.getDataFilename() != string())
-      ITFAILS;
-
-    if (opacity.getOpacityModelType() != rtt_cdi::ANALYTIC_TYPE)
-      ITFAILS;
+    FAIL_IF(opacity.data_in_tabular_form());
+    FAIL_IF(opacity.getReactionType() != rtt_cdi::ABSORPTION);
+    FAIL_IF(opacity.getModelType() != rtt_cdi::ANALYTIC);
+    FAIL_IF(opacity.getNumTemperatures() != 0);
+    FAIL_IF(opacity.getNumDensities() != 0);
+    FAIL_IF(opacity.getTemperatureGrid() != vector<double>());
+    FAIL_IF(opacity.getDensityGrid() != vector<double>());
+    FAIL_IF(opacity.getNumGroups() != 3);
+    FAIL_IF(opacity.getNumGroupBoundaries() != 4);
+    FAIL_IF(opacity.getEnergyPolicyDescriptor() != "mg");
+    FAIL_IF(opacity.getDataDescriptor() != desc);
+    FAIL_IF(opacity.getDataFilename() != string());
+    FAIL_IF(opacity.getOpacityModelType() != rtt_cdi::ANALYTIC_TYPE);
   }
   {
-    Compound_Analytic_MultigroupOpacity anal_opacity(groups, models, rtt_cdi::SCATTERING);
-    if (anal_opacity.getDataDescriptor() != "Compound Multigroup Scattering")
-      ITFAILS;
+    Compound_Analytic_MultigroupOpacity const anal_opacity(groups, models, rtt_cdi::SCATTERING);
+    FAIL_IF(anal_opacity.getDataDescriptor() != "Compound Multigroup Scattering");
   }
   {
-    Compound_Analytic_MultigroupOpacity anal_opacity(groups, models, rtt_cdi::TOTAL);
-    if (anal_opacity.getDataDescriptor() != "Compound Multigroup Total")
-      ITFAILS;
+    Compound_Analytic_MultigroupOpacity const anal_opacity(groups, models, rtt_cdi::TOTAL);
+    FAIL_IF(anal_opacity.getDataDescriptor() != "Compound Multigroup Total");
   }
 
   // check the group structure
@@ -112,18 +102,18 @@ void multigroup_test(rtt_dsxx::UnitTest &ut) {
   }
   if (soft_equiv(sigma.begin(), sigma.end(), ref.begin(), ref.end())) {
     ostringstream message;
-    message << "Analytic multigroup opacities are correct for "
-            << "scalar temperature and scalar density.";
+    message << "Analytic multigroup opacities are correct for scalar temperature and scalar "
+            << "density.";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Analytic multigroup opacities are NOT correct for "
-            << "scalar temperature and scalar density.";
+    message << "Analytic multigroup opacities are NOT correct for scalar temperature and scalar "
+            << "density.";
     FAILMSG(message.str());
   }
 
   // scalar density/temperature + vector density/temperature
-  vector<double> data_field(3, 2.0);
+  vector<double> const data_field(3, 2.0);
   vector<vector<double>> sigma_total = opacity.getOpacity(data_field, 3.0);
   vector<vector<double>> sig_rho = opacity.getOpacity(2.0, data_field);
 
@@ -132,13 +122,13 @@ void multigroup_test(rtt_dsxx::UnitTest &ut) {
 
     if (soft_equiv(test.begin(), test.end(), ref.begin(), ref.end())) {
       ostringstream message;
-      message << "Analytic multigroup opacities are correct for "
-              << "temperature field and scalar density.";
+      message << "Analytic multigroup opacities are correct for temperature field and scalar "
+              << "density.";
       PASSMSG(message.str());
     } else {
       ostringstream message;
-      message << "Analytic multigroup opacities are NOT correct for "
-              << "temperature field and scalar density.";
+      message << "Analytic multigroup opacities are NOT correct for temperature field and scalar "
+              << "density.";
       FAILMSG(message.str());
     }
 
@@ -146,21 +136,22 @@ void multigroup_test(rtt_dsxx::UnitTest &ut) {
 
     if (soft_equiv(test.begin(), test.end(), ref.begin(), ref.end())) {
       ostringstream message;
-      message << "Analytic multigroup opacities are correct for "
-              << "density field and scalar temperature.";
+      message << "Analytic multigroup opacities are correct for density field and scalar "
+              << "temperature.";
       PASSMSG(message.str());
     } else {
       ostringstream message;
-      message << "Analytic multigroup opacities are NOT correct for "
-              << "density field and scalar temperature.";
+      message << "Analytic multigroup opacities are NOT correct for density field and scalar "
+              << "temperature.";
       FAILMSG(message.str());
     }
   }
 
   // Test the get_Analytic_Model() member function.
   {
-    shared_ptr<Analytic_Opacity_Model const> my_mg_opacity_model = opacity.get_Analytic_Model(1);
-    shared_ptr<Analytic_Opacity_Model const> expected_model(models[0]);
+    shared_ptr<Analytic_Opacity_Model const> const my_mg_opacity_model =
+        opacity.get_Analytic_Model(1);
+    shared_ptr<Analytic_Opacity_Model const> const expected_model(models[0]);
 
     if (expected_model == my_mg_opacity_model)
       PASSMSG("get_Analytic_Model() returned the expected MG Opacity model.");
@@ -189,7 +180,7 @@ void test_CDI(rtt_dsxx::UnitTest &ut) {
   models[2] = std::make_shared<rtt_cdi_analytic::Constant_Analytic_Opacity_Model>(3.0);
 
   // make an analytic multigroup opacity object for absorption
-  shared_ptr<const MultigroupOpacity> mg(
+  shared_ptr<const MultigroupOpacity> const mg(
       new Compound_Analytic_MultigroupOpacity(groups, models, rtt_cdi::ABSORPTION));
 
   // make a CDI object
@@ -218,15 +209,9 @@ void test_CDI(rtt_dsxx::UnitTest &ut) {
     ref[2] = 3.0;
   }
   if (soft_equiv(sigma.begin(), sigma.end(), ref.begin(), ref.end())) {
-    ostringstream message;
-    message << "CDI multigroup opacities are correct for "
-            << "scalar temperature and scalar density.";
-    PASSMSG(message.str());
+    PASSMSG("CDI multigroup opacities are correct for scalar temperature and scalar density.");
   } else {
-    ostringstream message;
-    message << "CDI multigroup opacities are NOT correct for "
-            << "scalar temperature and scalar density.";
-    FAILMSG(message.str());
+    FAILMSG("CDI multigroup opacities are NOT correct for scalar temperature and scalar density.");
   }
 }
 
@@ -250,45 +235,33 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
   models[2] = std::make_shared<rtt_cdi_analytic::Constant_Analytic_Opacity_Model>(3.0);
 
   // make an analytic multigroup opacity object for absorption
-  shared_ptr<const MultigroupOpacity> mg(
+  shared_ptr<const MultigroupOpacity> const mg(
       new Compound_Analytic_MultigroupOpacity(groups, models, rtt_cdi::ABSORPTION));
 
   // pack it
-  vector<char> packed = mg->pack();
+  vector<char> const packed = mg->pack();
 
   // now unpack it
-  Compound_Analytic_MultigroupOpacity opacity(packed);
+  Compound_Analytic_MultigroupOpacity const opacity(packed);
 
   // now check it
 
   // check the interface to multigroup opacity
   {
-    string desc = "Compound Multigroup Absorption";
+    string const desc = "Compound Multigroup Absorption";
 
-    if (opacity.data_in_tabular_form())
-      ITFAILS;
-    if (opacity.getReactionType() != rtt_cdi::ABSORPTION)
-      ITFAILS;
-    if (opacity.getModelType() != rtt_cdi::ANALYTIC)
-      ITFAILS;
-    if (opacity.getNumTemperatures() != 0)
-      ITFAILS;
-    if (opacity.getNumDensities() != 0)
-      ITFAILS;
-    if (opacity.getTemperatureGrid() != vector<double>())
-      ITFAILS;
-    if (opacity.getDensityGrid() != vector<double>())
-      ITFAILS;
-    if (opacity.getNumGroups() != 3)
-      ITFAILS;
-    if (opacity.getNumGroupBoundaries() != 4)
-      ITFAILS;
-    if (opacity.getEnergyPolicyDescriptor() != "mg")
-      ITFAILS;
-    if (opacity.getDataDescriptor() != desc)
-      ITFAILS;
-    if (opacity.getDataFilename() != string())
-      ITFAILS;
+    FAIL_IF(opacity.data_in_tabular_form());
+    FAIL_IF(opacity.getReactionType() != rtt_cdi::ABSORPTION);
+    FAIL_IF(opacity.getModelType() != rtt_cdi::ANALYTIC);
+    FAIL_IF(opacity.getNumTemperatures() != 0);
+    FAIL_IF(opacity.getNumDensities() != 0);
+    FAIL_IF(opacity.getTemperatureGrid() != vector<double>());
+    FAIL_IF(opacity.getDensityGrid() != vector<double>());
+    FAIL_IF(opacity.getNumGroups() != 3);
+    FAIL_IF(opacity.getNumGroupBoundaries() != 4);
+    FAIL_IF(opacity.getEnergyPolicyDescriptor() != "mg");
+    FAIL_IF(opacity.getDataDescriptor() != desc);
+    FAIL_IF(opacity.getDataFilename() != string());
   }
 
   // check the group structure
@@ -312,15 +285,13 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
   }
   if (soft_equiv(sigma.begin(), sigma.end(), ref.begin(), ref.end())) {
     ostringstream message;
-    message << "Analytic multigroup opacities for unpacked MG opacity "
-            << "are correct for "
-            << "scalar temperature and scalar density.";
+    message << "Analytic multigroup opacities for unpacked MG opacity are correct for scalar "
+            << "temperature and scalar density.";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Analytic multigroup opacities for unpacked MG opacity "
-            << "are NOT correct for "
-            << "scalar temperature and scalar density.";
+    message << "Analytic multigroup opacities for unpacked MG opacity are NOT correct for scalar "
+            << "temperature and scalar density.";
     FAILMSG(message.str());
   }
 
@@ -338,16 +309,16 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
   models[2] = std::make_shared<rtt_cdi_analytic::Constant_Analytic_Opacity_Model>(3.0);
 
   // make an analytic multigroup opacity object for absorption
-  shared_ptr<const MultigroupOpacity> mg2(
+  shared_ptr<const MultigroupOpacity> const mg2(
       new Compound_Analytic_MultigroupOpacity(groups, models, rtt_cdi::ABSORPTION));
 
-  vector<char> packed2 = mg2->pack();
+  vector<char> const packed2 = mg2->pack();
 
-  // we should catch an assertion when unpacking this because the
-  // Marshak_Model is not registered in rtt_cdi::Opacity_Models
+  // we should catch an assertion when unpacking this because the Marshak_Model is not registered in
+  // rtt_cdi::Opacity_Models
   bool caught = false;
   try {
-    Compound_Analytic_MultigroupOpacity nmg(packed2);
+    Compound_Analytic_MultigroupOpacity const nmg(packed2);
   } catch (const rtt_dsxx::assertion &ass) {
     caught = true;
     ostringstream message;

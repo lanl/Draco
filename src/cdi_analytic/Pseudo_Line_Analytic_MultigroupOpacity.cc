@@ -6,12 +6,17 @@
  * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Pseudo_Line_Analytic_MultigroupOpacity.hh"
-#include "dsxx/DracoMath.hh"
-#include "dsxx/Packing_Utils.hh"
+#include "cdi_analytic/Pseudo_Line_Analytic_MultigroupOpacity.hh"
+#include "dsxx/Assert.hh"
 #include "cdi/CDI.hh"
+#include "cdi/OpacityCommon.hh"
+#include "cdi_analytic/Analytic_MultigroupOpacity.hh"
+#include "cdi_analytic/Pseudo_Line_Base.hh"
 #include "ode/quad.hh"
 #include "ode/rkqs.hh"
+#include <cstddef> // size_t
+#include <memory>  // shared_ptr
+#include <string>
 
 namespace rtt_cdi_analytic {
 using namespace std;
@@ -107,7 +112,7 @@ sf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double T, double /*
   size_t const number_of_groups = group_bounds.size() - 1;
   sf_double Result(number_of_groups, 0.0);
 
-  double line_width = this->line_width();
+  double const line_width = this->line_width();
 
   switch (averaging_) {
   case NONE: {
@@ -121,8 +126,8 @@ sf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double T, double /*
   } break;
 
   case ROSSELAND: {
-    PLR_Functor rfunctor(this, T);
-    PLRW_Functor wfunctor(T);
+    PLR_Functor const rfunctor(this, T);
+    PLRW_Functor const wfunctor(T);
 
     double g1 = group_bounds[0];
     for (size_t g = 0; g < number_of_groups; ++g) {
@@ -133,7 +138,7 @@ sf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double T, double /*
       if (qpoints_ == 0) {
         double x1 = g0;
         while (x1 < g1) {
-          double x0 = x1;
+          double const x0 = x1;
           x1 += 2 * line_width;
           if (x1 > g1)
             x1 = g1;
@@ -145,7 +150,7 @@ sf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double T, double /*
         for (unsigned ig = 0; ig < qpoints_; ++ig) {
           double const x = (ig + 0.5) * (g1 - g0) / qpoints_ + g0;
 
-          double w = rtt_cdi::integrateRosselandSpectrum(g0, g1, T);
+          double const w = rtt_cdi::integrateRosselandSpectrum(g0, g1, T);
 
           t += w / monoOpacity(x, T);
           b += w;
@@ -159,8 +164,8 @@ sf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double T, double /*
   case PLANCK: {
     double g1 = group_bounds[0];
     for (size_t g = 0; g < number_of_groups; ++g) {
-      PLP_Functor pfunctor(this, T);
-      PLPW_Functor wfunctor(T);
+      PLP_Functor const pfunctor(this, T);
+      PLPW_Functor const wfunctor(T);
 
       double const g0 = g1;
       g1 = group_bounds[g + 1];
@@ -169,7 +174,7 @@ sf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double T, double /*
       if (qpoints_ == 0) {
         double x1 = g0;
         while (x1 < g1) {
-          double x0 = x1;
+          double const x0 = x1;
           x1 += 2 * line_width;
           if (x1 > g1)
             x1 = g1;
@@ -181,7 +186,7 @@ sf_double Pseudo_Line_Analytic_MultigroupOpacity::getOpacity(double T, double /*
         for (unsigned ig = 0; ig < qpoints_; ++ig) {
           double const x = (ig + 0.5) * (g1 - g0) / qpoints_ + g0;
 
-          double w = rtt_cdi::integratePlanckSpectrum(g0, g1, T);
+          double const w = rtt_cdi::integratePlanckSpectrum(g0, g1, T);
 
           t += w * monoOpacity(x, T);
           b += w;
