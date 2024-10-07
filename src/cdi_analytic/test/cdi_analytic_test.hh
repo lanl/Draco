@@ -46,7 +46,7 @@ public:
     rtt_dsxx::Packer packer;
     std::vector<char> p(sizeof(double) + sizeof(int));
     packer.set_buffer(p.size(), &p[0]);
-    int indicator = 10;
+    int const indicator = 10;
     packer << indicator << a;
     return p;
   }

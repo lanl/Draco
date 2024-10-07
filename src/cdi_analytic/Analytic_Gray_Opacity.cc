@@ -7,8 +7,16 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Analytic_Gray_Opacity.hh"
+#include "cdi_analytic/Analytic_Gray_Opacity.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Packing_Utils.hh"
+#include "cdi/OpacityCommon.hh"
+#include "cdi_analytic/Analytic_Models.hh"
+#include <climits> // INT_MAX
+#include <cstddef> // size_t
+#include <memory>  // make_shared
+#include <utility> // move
+#include <vector>
 
 namespace rtt_cdi_analytic {
 
@@ -118,7 +126,7 @@ double Analytic_Gray_Opacity::getOpacity(double temperature, double density) con
   Require(density >= 0.0);
 
   // define return opacity
-  double opacity = analytic_model->calculate_opacity(temperature, density);
+  double const opacity = analytic_model->calculate_opacity(temperature, density);
 
   Ensure(opacity >= 0.0);
   return opacity;
@@ -215,12 +223,12 @@ Analytic_Gray_Opacity::sf_char Analytic_Gray_Opacity::pack() const {
   rtt_dsxx::Packer packer;
 
   // first pack up the analytic model
-  sf_char anal_model = analytic_model->pack();
+  sf_char const anal_model = analytic_model->pack();
 
   // now add up the total size (in bytes): size of analytic model + 3 int--one for reaction type,
   // one for model type, and one for size of analytic model
   Check(anal_model.size() + 3 * sizeof(int) < INT_MAX);
-  int size = static_cast<int>(anal_model.size() + 3 * sizeof(int));
+  int const size = static_cast<int>(anal_model.size() + 3 * sizeof(int));
 
   // make a char array
   sf_char packed(size);

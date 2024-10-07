@@ -7,8 +7,12 @@
  * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Analytic_MultigroupOpacity.hh"
+#include "cdi_analytic/Analytic_MultigroupOpacity.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Packing_Utils.hh"
+#include "cdi/OpacityCommon.hh"
+#include <climits> // INT_MAX
+#include <utility> // move
 
 namespace rtt_cdi_analytic {
 
@@ -97,7 +101,7 @@ Analytic_MultigroupOpacity::sf_char Analytic_MultigroupOpacity::pack() const {
   // now add up the total size; number of groups + 1 int for number of groups, number of models +
   // size in each model + models, 1 int for reaction type, 1 int for model type
   Check(3 * sizeof(int) + group_boundaries.size() * sizeof(double) < INT_MAX);
-  int size = static_cast<int>(3 * sizeof(int) + group_boundaries.size() * sizeof(double));
+  int const size = static_cast<int>(3 * sizeof(int) + group_boundaries.size() * sizeof(double));
 
   // make a char array
   sf_char packed(size);

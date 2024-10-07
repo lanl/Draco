@@ -7,10 +7,17 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "cdi/CDI.hh"
+#include "cdi/EoS.hh"
 #include "cdi_analytic/Analytic_EoS.hh"
+#include "cdi_analytic/Analytic_Models.hh"
+#include <algorithm>
+#include <memory>
+#include <vector>
 
 using namespace std;
 
@@ -33,57 +40,49 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
   //
   // * elec specific heat = a + bT^c
   // * ion specific heat  = d + eT^f
-  shared_ptr<Polynomial_Model> model(new Polynomial_Model(0.0, 1.0, 3.0, 0.2, 0.0, 0.0));
+  shared_ptr<Polynomial_Model> const model(new Polynomial_Model(0.0, 1.0, 3.0, 0.2, 0.0, 0.0));
 
   if (!model)
     FAILMSG("Failed to build an Analytic EoS Model!");
 
   // make an analtyic eos
-  Analytic_EoS analytic(model);
+  Analytic_EoS const analytic(model);
 
   // checks
   {
-    double T = 5.0;
-    double rho = 3.0;
+    double const T = 5.0;
+    double const rho = 3.0;
 
-    double Cve = T * T * T;
-    double Cvi = 0.2;
+    double const Cve = T * T * T;
+    double const Cvi = 0.2;
 
-    double Ue = T * T * T * T / 4.0;
-    double Ui = 0.2 * T;
+    double const Ue = T * T * T * T / 4.0;
+    double const Ui = 0.2 * T;
 
     // specific heats
-    if (!soft_equiv(analytic.getElectronHeatCapacity(T, rho), Cve))
-      ITFAILS;
-    if (!soft_equiv(analytic.getIonHeatCapacity(T, rho), Cvi))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(analytic.getElectronHeatCapacity(T, rho), Cve));
+    FAIL_IF_NOT(soft_equiv(analytic.getIonHeatCapacity(T, rho), Cvi));
 
     // specific internal energies
-    if (!soft_equiv(analytic.getSpecificElectronInternalEnergy(T, rho), Ue))
-      ITFAILS;
-    if (!soft_equiv(analytic.getSpecificIonInternalEnergy(T, rho), Ui))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(analytic.getSpecificElectronInternalEnergy(T, rho), Ue));
+    FAIL_IF_NOT(soft_equiv(analytic.getSpecificIonInternalEnergy(T, rho), Ui));
 
     // everything else is zero
-    if (!soft_equiv(analytic.getNumFreeElectronsPerIon(T, rho), 0.0))
-      ITFAILS;
-    if (!soft_equiv(analytic.getElectronThermalConductivity(T, rho), 0.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(analytic.getNumFreeElectronsPerIon(T, rho), 0.0));
+    FAIL_IF_NOT(soft_equiv(analytic.getElectronThermalConductivity(T, rho), 0.0));
   }
 
   // Check the root finder for new Te, given delta Ue.
   {
-    double rho = 3.0; // not currently used by getElectronTemperature().
-    double Ue = 4.0;
-    double Tguess = 2.0;
+    double const rho = 3.0; // not currently used by getElectronTemperature().
+    double const Ue = 4.0;
+    double const Tguess = 2.0;
 
     double T_new = analytic.getElectronTemperature(rho, Ue, Tguess);
-    if (!soft_equiv(T_new, 2.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(T_new, 2.0));
 
     T_new = analytic.getIonTemperature(rho, Ue, Tguess);
-    if (!soft_equiv(T_new, 20.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(T_new, 20.0));
   }
 
   // field check
@@ -108,13 +107,10 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(etc.size() == 6);
 
     for (int i = 0; i < 6; i++) {
-      double cve_ref = T[i] * T[i] * T[i];
-
-      double cvi_ref = 0.2;
-
-      double Ue_ref = T[i] * T[i] * T[i] * T[i] / 4.0;
-
-      double Ui_ref = 0.2 * T[i];
+      double const cve_ref = T[i] * T[i] * T[i];
+      double const cvi_ref = 0.2;
+      double const Ue_ref = T[i] * T[i] * T[i] * T[i] / 4.0;
+      double const Ui_ref = 0.2 * T[i];
 
       FAIL_IF_NOT(soft_equiv(Cve[i], cve_ref));
       FAIL_IF_NOT(soft_equiv(Cvi[i], cvi_ref));
@@ -129,9 +125,9 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
 
   // Test the get_Analytic_Model() member function.
   {
-    shared_ptr<Polynomial_Model const> myEoS_model =
+    shared_ptr<Polynomial_Model const> const myEoS_model =
         dynamic_pointer_cast<Polynomial_Model const>(analytic.get_Analytic_Model());
-    shared_ptr<Polynomial_Model const> expected_model(model);
+    shared_ptr<Polynomial_Model const> const expected_model(model);
 
     if (expected_model == myEoS_model)
       PASSMSG("get_Analytic_Model() returned the expected EoS model.");
@@ -163,64 +159,59 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
   //
   // * elec specific heat = a + bT^c
   // * ion specific heat  = d + eT^f
-  shared_ptr<Polynomial_Model> so_model(new Polynomial_Model(0.0, 54880.0, 3.0, 0.2, 0.0, 0.0));
+  shared_ptr<Polynomial_Model> const so_model(
+      new Polynomial_Model(0.0, 54880.0, 3.0, 0.2, 0.0, 0.0));
   // make an analtyic eos
-  Analytic_EoS so_analytic(so_model);
+  Analytic_EoS const so_analytic(so_model);
 
   // do a sanity check on the table lookups.
   {
-    double rho = 1.0; // not currently used by getElectronTemperature().
-    double Ue = 1.371999999e-20;
-    double Te = 1.0e-6;
+    double const rho = 1.0; // not currently used by getElectronTemperature().
+    double const Ue = 1.371999999e-20;
+    double const Te = 1.0e-6;
 
     // First request the internal energy given the temperature
-    double Ue0 = so_analytic.getSpecificElectronInternalEnergy(Te, rho);
-    if (!soft_equiv(Ue, Ue0))
-      ITFAILS;
+    double const Ue0 = so_analytic.getSpecificElectronInternalEnergy(Te, rho);
+    FAIL_IF_NOT(soft_equiv(Ue, Ue0));
     // Next request the temperature given the internal energy (should match).
-    double T_new = so_analytic.getElectronTemperature(rho, Ue0, Te);
-    if (!soft_equiv(T_new, Te))
-      ITFAILS;
+    double const T_new = so_analytic.getElectronTemperature(rho, Ue0, Te);
+    FAIL_IF_NOT(soft_equiv(T_new, Te));
 
     // A request for Ue=0 should give T==0
-    double T0 = so_analytic.getElectronTemperature(rho, 0.0, 0.0);
-    if (!soft_equiv(T0, 0.0, 1e-40))
-      ITFAILS;
+    double const T0 = so_analytic.getElectronTemperature(rho, 0.0, 0.0);
+    FAIL_IF_NOT(soft_equiv(T0, 0.0, 1e-40));
   }
 
   // need to handle really small temperatures
   {
-    double rho = 1.0;      // not currently used by getElectronTemperature().
-    double Ue = 1.372e-60; // for T=1e-16
-    double Te = 1.0e-6;
+    double const rho = 1.0;      // not currently used by getElectronTemperature().
+    double const Ue = 1.372e-60; // for T=1e-16
+    double const Te = 1.0e-6;
 
-    double T_new = so_analytic.getElectronTemperature(rho, Ue, Te);
-    if (T_new <= 0.0)
-      ITFAILS;
-    if (!soft_equiv(T_new, 1.0e-16, 1e-14))
-      ITFAILS;
+    double const T_new = so_analytic.getElectronTemperature(rho, Ue, Te);
+    FAIL_IF(T_new <= 0.0);
+    FAIL_IF(!soft_equiv(T_new, 1.0e-16, 1e-14));
   }
 
   // need to handle 0.0 initial guess
   {
-    double rho = 1.0;      // not currently used by getElectronTemperature().
-    double Ue = 1.372e-60; // for T=1e-16
-    double Te = 0.0;
+    double const rho = 1.0;      // not currently used by getElectronTemperature().
+    double const Ue = 1.372e-60; // for T=1e-16
+    double const Te = 0.0;
 
-    double T_new = so_analytic.getElectronTemperature(rho, Ue, Te);
+    double const T_new = so_analytic.getElectronTemperature(rho, Ue, Te);
     if (T_new <= 0.0)
       ITFAILS;
-    if (!soft_equiv(T_new, 1.0e-16, 1e-14))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(T_new, 1.0e-16, 1e-14));
   }
 
   // need to handle insanely high initial guesses/temperatures
   {
-    double rho = 1.0;       // not currently used by getElectronTemperature().
-    double Ue0 = 1407.8669; // for T = 0.566 or so
-    double Te = 4.0088e43;
+    double const rho = 1.0;       // not currently used by getElectronTemperature().
+    double const Ue0 = 1407.8669; // for T = 0.566 or so
+    double const Te = 4.0088e43;
 
-    double T_new = so_analytic.getElectronTemperature(rho, Ue0, Te);
+    double const T_new = so_analytic.getElectronTemperature(rho, Ue0, Te);
     FAIL_IF_NOT(soft_equiv(T_new, 0.56598102556928676));
   }
 
@@ -235,13 +226,13 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
   CDI eosdata;
 
   // analytic model
-  shared_ptr<Analytic_EoS_Model> model(new Polynomial_Model(0.0, 1.0, 3.0, 0.0, 0.0, 0.0));
+  shared_ptr<Analytic_EoS_Model> const model(new Polynomial_Model(0.0, 1.0, 3.0, 0.0, 0.0, 0.0));
 
   // assign the eos object
-  shared_ptr<Analytic_EoS> analytic_eos(new Analytic_EoS(model));
+  shared_ptr<Analytic_EoS> const analytic_eos(new Analytic_EoS(model));
 
   // EoS object
-  shared_ptr<const EoS> eos = analytic_eos;
+  shared_ptr<const EoS> const eos = analytic_eos;
   if (eos.get()) {
     auto &r = *eos.get();
     FAIL_IF_NOT(typeid(r) == typeid(Analytic_EoS));
@@ -286,13 +277,11 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(etc.size() == 6);
 
     for (int i = 0; i < 6; i++) {
-      double cve_ref = T[i] * T[i] * T[i];
-      double ue_ref = T[i] * T[i] * T[i] * T[i] / 4.0;
+      double const cve_ref = T[i] * T[i] * T[i];
+      double const ue_ref = T[i] * T[i] * T[i] * T[i] / 4.0;
 
-      if (!soft_equiv(Cve[i], cve_ref))
-        ITFAILS;
-      if (!soft_equiv(eie[i], ue_ref))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(Cve[i], cve_ref));
+      FAIL_IF_NOT(soft_equiv(eie[i], ue_ref));
 
       // all else are zero
       FAIL_IF_NOT(soft_equiv(Cvi[i], 0.0));
@@ -341,37 +330,25 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
     nfe = eosdata.eos()->getNumFreeElectronsPerIon(T, rho);
     etc = eosdata.eos()->getElectronThermalConductivity(T, rho);
 
-    if (Cve.size() != 6)
-      ITFAILS;
-    if (Cvi.size() != 6)
-      ITFAILS;
-    if (eie.size() != 6)
-      ITFAILS;
-    if (iie.size() != 6)
-      ITFAILS;
-    if (nfe.size() != 6)
-      ITFAILS;
-    if (etc.size() != 6)
-      ITFAILS;
+    FAIL_IF_NOT(Cve.size() == 6);
+    FAIL_IF_NOT(Cvi.size() == 6);
+    FAIL_IF_NOT(eie.size() == 6);
+    FAIL_IF_NOT(iie.size() == 6);
+    FAIL_IF_NOT(nfe.size() == 6);
+    FAIL_IF_NOT(etc.size() == 6);
 
     for (int i = 0; i < 6; i++) {
-      double cve_ref = T[i] * T[i] * T[i];
-      double eie_ref = 0.25 * T[i] * T[i] * T[i] * T[i];
+      double const cve_ref = T[i] * T[i] * T[i];
+      double const eie_ref = 0.25 * T[i] * T[i] * T[i] * T[i];
 
-      if (!soft_equiv(Cve[i], cve_ref))
-        ITFAILS;
-      if (!soft_equiv(eie[i], eie_ref))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(Cve[i], cve_ref));
+      FAIL_IF_NOT(soft_equiv(eie[i], eie_ref));
 
       // all else are zero
-      if (!soft_equiv(Cvi[i], 0.0))
-        ITFAILS;
-      if (!soft_equiv(iie[i], 0.0))
-        ITFAILS;
-      if (!soft_equiv(nfe[i], 0.0))
-        ITFAILS;
-      if (!soft_equiv(etc[i], 0.0))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(Cvi[i], 0.0));
+      FAIL_IF_NOT(soft_equiv(iie[i], 0.0));
+      FAIL_IF_NOT(soft_equiv(nfe[i], 0.0));
+      FAIL_IF_NOT(soft_equiv(etc[i], 0.0));
     }
   }
 
@@ -383,44 +360,37 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
   using Polynomial_Model = Polynomial_Specific_Heat_Analytic_EoS_Model;
 
   // make an analytic model (polynomial specific heats)
-  shared_ptr<Polynomial_Model> model(new Polynomial_Model(0.0, 1.0, 3.0, 0.2, 0.0, 0.0));
+  shared_ptr<Polynomial_Model> const model(new Polynomial_Model(0.0, 1.0, 3.0, 0.2, 0.0, 0.0));
 
   // make an analtyic eos
-  shared_ptr<EoS> eos(new Analytic_EoS(model));
+  shared_ptr<EoS> const eos(new Analytic_EoS(model));
 
-  vector<char> packed = eos->pack();
+  vector<char> const packed = eos->pack();
 
-  Analytic_EoS neos(packed);
+  Analytic_EoS const neos(packed);
 
   // checks
   {
-    double T = 5.0;
-    double rho = 3.0;
+    double const T = 5.0;
+    double const rho = 3.0;
 
-    double Cve = T * T * T;
-    double Cvi = 0.2;
+    double const Cve = T * T * T;
+    double const Cvi = 0.2;
 
-    double Ue = 0.25 * T * T * T * T;
-    double Ui = 0.2 * T;
+    double const Ue = 0.25 * T * T * T * T;
+    double const Ui = 0.2 * T;
 
     // specific heats
-    if (!soft_equiv(neos.getElectronHeatCapacity(T, rho), Cve))
-      ITFAILS;
-    if (!soft_equiv(neos.getIonHeatCapacity(T, rho), Cvi))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(neos.getElectronHeatCapacity(T, rho), Cve));
+    FAIL_IF_NOT(soft_equiv(neos.getIonHeatCapacity(T, rho), Cvi));
 
     // specific internal energies
-    if (!soft_equiv(neos.getSpecificElectronInternalEnergy(T, rho), Ue))
-      ITFAILS;
-
-    if (!soft_equiv(neos.getSpecificIonInternalEnergy(T, rho), Ui))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(neos.getSpecificElectronInternalEnergy(T, rho), Ue));
+    FAIL_IF_NOT(soft_equiv(neos.getSpecificIonInternalEnergy(T, rho), Ui));
 
     // everything else is zero
-    if (!soft_equiv(neos.getNumFreeElectronsPerIon(T, rho), 0.0))
-      ITFAILS;
-    if (!soft_equiv(neos.getElectronThermalConductivity(T, rho), 0.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(neos.getNumFreeElectronsPerIon(T, rho), 0.0));
+    FAIL_IF_NOT(soft_equiv(neos.getElectronThermalConductivity(T, rho), 0.0));
   }
 
   if (ut.numFails == 0)

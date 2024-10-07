@@ -34,10 +34,7 @@ enum Opacity_Models {
 };
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Enumeration describing the charged particle eloss models available.
- *
- */
+//! Enumeration describing the charged particle eloss models available.
 enum CP_Models { ANALYTIC_KP_ALPHA_ELOSS_MODEL };
 
 //------------------------------------------------------------------------------------------------//
@@ -250,7 +247,7 @@ public:
     Require(nu1 > nu0);
 
     //double nu = 0.5*(nu0+nu1);
-    double nu = sqrt(nu0 * nu1);
+    double const nu = sqrt(nu0 * nu1);
     return calculate_opacity(T, rho, nu);
   }
 
@@ -415,8 +412,8 @@ public:
     Require(T >= 0.0);
     Require(rho >= 0.0);
 
-    double T_power = std::pow(T, c);
-    double Cv = (a + b * T_power);
+    double const T_power = std::pow(T, c);
+    double const Cv = (a + b * T_power);
 
     Ensure(Cv >= 0.0);
     return Cv;
@@ -427,8 +424,8 @@ public:
     Require(T >= 0.0);
     Require(rho >= 0.0);
 
-    double T_power = std::pow(T, f);
-    double Cv = (d + e * T_power);
+    double const T_power = std::pow(T, f);
+    double const Cv = (d + e * T_power);
 
     Ensure(Cv >= 0.0);
     return Cv;
@@ -451,8 +448,8 @@ public:
     Require(T >= 0.0);
 
     Check(c >= 0.0);
-    double T_power = std::pow(T, c + 1.0);
-    double U = a * T + b * T_power / (c + 1.0);
+    double const T_power = std::pow(T, c + 1.0);
+    double const U = a * T + b * T_power / (c + 1.0);
 
     Ensure(U >= 0.0);
     return U;
@@ -475,8 +472,8 @@ public:
     Require(T >= 0.0);
 
     Check(f >= 0.0);
-    double T_power = std::pow(T, f + 1.0);
-    double U = d * T + e * T_power / (f + 1.0);
+    double const T_power = std::pow(T, f + 1.0);
+    double const U = d * T + e * T_power / (f + 1.0);
 
     Ensure(U >= 0.0);
     return U;
