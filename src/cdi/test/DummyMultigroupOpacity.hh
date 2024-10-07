@@ -12,6 +12,7 @@
 
 #include "dsxx/Assert.hh"
 #include "cdi/MultigroupOpacity.hh"
+#include <cstddef>
 
 namespace rtt_cdi_test {
 
@@ -303,7 +304,7 @@ OpacityIterator
 DummyMultigroupOpacity::getOpacity(TemperatureIterator tempIter, TemperatureIterator tempLast,
                                    DensityIterator densIter, DensityIterator densLast,
                                    OpacityIterator opacityIter) const {
-  size_t ng = numGroupBoundaries - 1;
+  size_t const ng = numGroupBoundaries - 1;
   Require(std::distance(tempIter, tempLast) == std::distance(densIter, densLast));
   // loop over all temperatures and densities in the range (tempIter,tempLast) &
   // (densIter,densLast).
@@ -324,7 +325,7 @@ template <typename TemperatureIterator, typename OpacityIterator>
 OpacityIterator
 DummyMultigroupOpacity::getOpacity(TemperatureIterator tempIter, TemperatureIterator templast,
                                    double targetDensity, OpacityIterator opacityIter) const {
-  size_t ng = numGroupBoundaries - 1;
+  size_t const ng = numGroupBoundaries - 1;
   // loop over all temperatures in the range (tempFirst,templast).
   for (; tempIter != templast; ++tempIter)
     for (size_t ig = 0; ig < ng; ++ig, ++opacityIter)
@@ -343,7 +344,7 @@ template <typename DensityIterator, typename OpacityIterator>
 OpacityIterator
 DummyMultigroupOpacity::getOpacity(double targetTemperature, DensityIterator densIter,
                                    DensityIterator densLast, OpacityIterator opacityIter) const {
-  size_t ng = numGroupBoundaries - 1;
+  size_t const ng = numGroupBoundaries - 1;
   // loop over all densities in the range (densIter,densLast).
   for (; densIter != densLast; ++densIter)
     for (size_t ig = 0; ig < ng; ++ig, ++opacityIter)

@@ -8,7 +8,10 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "DummyMultigroupOpacity.hh"
+#include "cdi/OpacityCommon.hh"
 #include <cmath> // pow(x,n)
+#include <cstddef>
+#include <vector>
 
 namespace rtt_cdi_test {
 

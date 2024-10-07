@@ -10,14 +10,25 @@
 #include "DummyEoS.hh"
 #include "DummyGrayOpacity.hh"
 #include "DummyMultigroupOpacity.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "cdi/CDI.hh"
+#include "cdi/EoS.hh"
+#include "cdi/GrayOpacity.hh"
+#include "cdi/MultigroupOpacity.hh"
+#include "cdi/OpacityCommon.hh"
+#include <cstddef>
 #include <iomanip>
+#include <iostream>
 #include <limits>
+#include <memory>
 #include <numeric>
 #include <sstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -40,8 +51,6 @@ void check_CDI(rtt_dsxx::UnitTest &ut, CDI const &cdi) {
   // same stuff.  These have all been tested in tDummyOpacity and tDummyEoS.  Here we just check the
   // types
 
-  // Work around an MSVC ICE in MSC_VER 1925 (VS 2019, 16.5.0 preview 2)
-#if !defined(_MSC_VER) || _MSC_VER < 1900 || _MSC_VER > 1925
   // check for gray
   {
     auto sp = cdi.gray(rtt_cdi::PLANCK, rtt_cdi::ABSORPTION);
@@ -107,16 +116,15 @@ void check_CDI(rtt_dsxx::UnitTest &ut, CDI const &cdi) {
       FAILMSG("Unable to retrieve cdi.eos().");
     }
   }
-#endif
 
   // gray test case: Find the value of opacity at T=0.35 keV and rho = 27.2 g/cm^3.  For
   // DummyGrayOpacity the value should be .35272 cm^2/g.
 
-  double temp = 0.35;                       // keV
-  double dens = 27.2;                       // g/cm^3
-  double refOpacity = temp + dens / 1000.0; // cm^2/g
+  double const temp = 0.35;                       // keV
+  double const dens = 27.2;                       // g/cm^3
+  double const refOpacity = temp + dens / 1000.0; // cm^2/g
 
-  double opacity = cdi.gray(rtt_cdi::PLANCK, rtt_cdi::ABSORPTION)->getOpacity(temp, dens);
+  double const opacity = cdi.gray(rtt_cdi::PLANCK, rtt_cdi::ABSORPTION)->getOpacity(temp, dens);
 
   if (soft_equiv(opacity, refOpacity))
     PASSMSG("CDI.gray()->getOpacity is ok.");
@@ -125,14 +133,10 @@ void check_CDI(rtt_dsxx::UnitTest &ut, CDI const &cdi) {
 
   // mg test case: Find the mg opacities at T=0.35 keV and rho = 27.2 g/cm^3.  For
   // DummyMultigroupOpacity the values should be { }.  Three groups
-  size_t ng = 3;
+  size_t const ng = 3;
 
   // The energy groups in DummyMultigroupOpacity are hardwired to be { 0.05, 0.5, 5.0, 50.0 } keV.
-  std::vector<double> energyBoundary(ng + 1);
-  energyBoundary[0] = 0.05;
-  energyBoundary[1] = 0.5;
-  energyBoundary[2] = 5.0;
-  energyBoundary[3] = 50.0;
+  std::vector<double> energyBoundary = {0.05, 0.5, 5.0, 50.0};
 
   if (cdi.mg(rtt_cdi::ISOTROPIC, rtt_cdi::SCATTERING)->getNumGroups() == ng)
     PASSMSG("CDI.mg()->getNumGroups() is ok.");
@@ -154,46 +158,43 @@ void check_CDI(rtt_dsxx::UnitTest &ut, CDI const &cdi) {
 
   // Test the EoS plug-in component of this CDI.
 
-  double refCve = temp + dens / 1000.0;
+  double const refCve = temp + dens / 1000.0;
 
-  double Cve = cdi.eos()->getElectronHeatCapacity(temp, dens);
+  double const Cve = cdi.eos()->getElectronHeatCapacity(temp, dens);
 
   if (soft_equiv(Cve, refCve)) {
     ostringstream message;
-    message << "CDI.eos()->getElectronHeatCapacity( dbl, dbl )\n\t"
-            << "returned a value that matched the reference value.";
+    message << "CDI.eos()->getElectronHeatCapacity( dbl, dbl )\n\treturned a value that matched "
+            << "the reference value.";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "CDI.eos()->getElectronHeatCapacity( dbl, dbl )\n\t"
-            << "returned a value that was out of spec.";
+    message << "CDI.eos()->getElectronHeatCapacity( dbl, dbl )\n\treturned a value that was out "
+            << "of spec.";
     FAILMSG(message.str());
   }
 
-  double U = 3.1415;
-  double Ti = cdi.eos()->getIonTemperature(dens, U, 1.0);
-  double Te = cdi.eos()->getElectronTemperature(dens, U, 1.0);
+  double const U = 3.1415;
+  double const Ti = cdi.eos()->getIonTemperature(dens, U, 1.0);
+  double const Te = cdi.eos()->getElectronTemperature(dens, U, 1.0);
 
   if (soft_equiv(Ti, 1.772427713617681)) {
     ostringstream message;
-    message << "CDI.eos()->getIonTemperature( dbl, dbl )\n\t"
-            << "returned a value that matched the reference value.";
+    message << "CDI.eos()->getIonTemperature( dbl, dbl )\n\treturned a value that matched the "
+            << "reference value.";
     PASSMSG(message.str());
   } else {
-    ostringstream message;
-    message << "CDI.eos()->getIonTemperature( dbl, dbl )\n\t"
-            << "returned a value that was out of spec.";
-    FAILMSG(message.str());
+    FAILMSG("CDI.eos()->getIonTemperature( dbl, dbl )\n\treturned a value that was out of spec.");
   }
   if (soft_equiv(Te, 31.415)) {
     ostringstream message;
-    message << "CDI.eos()->getElectronTemperature( dbl, dbl )\n\t"
-            << "returned a value that matched the reference value.";
+    message << "CDI.eos()->getElectronTemperature( dbl, dbl )\n\treturned a value that matched "
+            << "the reference value.";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "CDI.eos()->getElectronTemperature( dbl, dbl )\n\t"
-            << "returned a value that was out of spec.";
+    message << "CDI.eos()->getElectronTemperature( dbl, dbl )\n\treturned a value that was out "
+            << "of spec.";
     FAILMSG(message.str());
   }
 
@@ -202,9 +203,9 @@ void check_CDI(rtt_dsxx::UnitTest &ut, CDI const &cdi) {
   // Test Rosseland integration with MG opacities.
   {
     // integrate on the interval [0.5, 5.0] keV for T=1.0 keV.
-    double int_total1 = rtt_cdi::integrateRosselandSpectrum(0.5, 5.0, 1.0);
+    double const int_total1 = rtt_cdi::integrateRosselandSpectrum(0.5, 5.0, 1.0);
     // group 1 has the same energy range.
-    double int_total2 = cdi.integrateRosselandSpectrum(2, 1.0);
+    double const int_total2 = cdi.integrateRosselandSpectrum(2, 1.0);
     if (soft_equiv(int_total1, int_total2, 1.0e-7)) {
       ostringstream message;
       message.precision(10);
@@ -216,7 +217,7 @@ void check_CDI(rtt_dsxx::UnitTest &ut, CDI const &cdi) {
       message.precision(10);
       message << "Calculated a total normalized Rosseland integral of " << setw(12)
               << setiosflags(ios::fixed) << int_total2 << " instead of " << setw(12)
-              << setiosflags(ios::fixed) << int_total1 << "." << endl;
+              << setiosflags(ios::fixed) << int_total1 << ".\n";
       FAILMSG(message.str());
     }
   }
@@ -312,10 +313,7 @@ void test_CDI(rtt_dsxx::UnitTest &ut) {
     caught = true;
   }
   if (!caught) {
-    ostringstream message;
-    message << "Failed to catch an exception for setting a different "
-            << "frequency group structure.";
-    FAILMSG(message.str());
+    FAILMSG("Failed to catch an exception for setting a different frequency group structure.");
   }
 
   // make sure these are assigned
@@ -423,7 +421,7 @@ void test_CDI(rtt_dsxx::UnitTest &ut) {
 
   if (ut.numFails == 0) {
     PASSMSG("Fundamental CDI Operations are ok.");
-    cout << endl;
+    cout << '\n';
   }
 }
 
@@ -446,7 +444,7 @@ void test_planck_integration(rtt_dsxx::UnitTest &ut) {
   }
 
   // check some planck integrals
-  double int_total = rtt_cdi::integratePlanckSpectrum(0.0, 100.0, 1.0);
+  double const int_total = rtt_cdi::integratePlanckSpectrum(0.0, 100.0, 1.0);
   if (soft_equiv(int_total, 1.0, 3.5e-10)) {
     ostringstream message;
     message.precision(10);
@@ -461,7 +459,7 @@ void test_planck_integration(rtt_dsxx::UnitTest &ut) {
     FAILMSG(message.str());
   }
 
-  double int_1 = rtt_cdi::integratePlanckSpectrum(0.0, 5.0, 10.0);
+  double const int_1 = rtt_cdi::integratePlanckSpectrum(0.0, 5.0, 10.0);
   if (soft_equiv(int_1, .00529316, 1.0e-6)) {
     ostringstream message;
     message.precision(10);
@@ -476,7 +474,7 @@ void test_planck_integration(rtt_dsxx::UnitTest &ut) {
     FAILMSG(message.str());
   }
 
-  double int_2 = rtt_cdi::integratePlanckSpectrum(0.0, .50, 10.0);
+  double const int_2 = rtt_cdi::integratePlanckSpectrum(0.0, .50, 10.0);
   if (soft_equiv(int_2, 6.29674e-6, 1.0e-6)) {
     ostringstream message;
     message.precision(10);
@@ -491,13 +489,11 @@ void test_planck_integration(rtt_dsxx::UnitTest &ut) {
     FAILMSG(message.str());
   }
 
-  double int_0 = rtt_cdi::integratePlanckSpectrum(0.0, 0.0, 10.0);
-  if (!soft_equiv(int_0, 0.0, 1.e-6))
-    ITFAILS;
+  double const int_0 = rtt_cdi::integratePlanckSpectrum(0.0, 0.0, 10.0);
+  FAIL_IF(!soft_equiv(int_0, 0.0, 1.e-6));
 
-  double int_range = rtt_cdi::integratePlanckSpectrum(0.1, 1.0, 1.0);
-  if (!soft_equiv(int_range, 0.0345683, 3.e-5))
-    ITFAILS;
+  double const int_range = rtt_cdi::integratePlanckSpectrum(0.1, 1.0, 1.0);
+  FAIL_IF(!soft_equiv(int_range, 0.0345683, 3.e-5));
 
   //
   // Extreme cases: test early return logic for integration routines.
@@ -507,14 +503,12 @@ void test_planck_integration(rtt_dsxx::UnitTest &ut) {
   // Extreme case 1. This should do the normal computation, but the result is zero.
   {
     double const integrate_range_cold = rtt_cdi::integratePlanckSpectrum(0.001, 1.0, 1.0e-30);
-    if (!soft_equiv(integrate_range_cold, 0.0))
-      ITFAILS;
+    FAIL_IF(!soft_equiv(integrate_range_cold, 0.0));
   }
   // Extreme case 2. T < numeric_limits<double>::min() --> follow special logic and return zero.
   {
     double const integrate_range_cold = rtt_cdi::integratePlanckSpectrum(0.1, 1.0, 1.0e-308);
-    if (!soft_equiv(integrate_range_cold, 0.0, tol))
-      ITFAILS;
+    FAIL_IF(!soft_equiv(integrate_range_cold, 0.0, tol));
   }
   // Extreme case 3. This should do the normal computation, but the result is zero.
   {
@@ -527,11 +521,14 @@ void test_planck_integration(rtt_dsxx::UnitTest &ut) {
     // make sure the alternate calling method returns the same values
     auto planck_alt = CDI::integrate_Planckian_Spectrum(bounds, T_eval);
 
-    if (planck_alt != planck)
-      ITFAILS;
-    if (!soft_equiv(planck[0], 0.0, tol))
-      ITFAILS;
+    FAIL_IF(planck_alt != planck);
+    FAIL_IF(!soft_equiv(planck[0], 0.0, tol));
   }
+
+  // [2024-10-01 KT] I don't think this test is valid any longer.  The integrate_Planckian_Spectrum
+  // function detects when the function is invalid and returns zero.  I don't think it will throw an
+  // exception any longer.
+#if 0
   // Extreme case 4a. T < numeric_limits<double>::min() --> catch the thrown exception
   caught = true;
   Remember(caught = false;);
@@ -547,9 +544,9 @@ void test_planck_integration(rtt_dsxx::UnitTest &ut) {
     caught = true;
   }
   if (!caught) {
-    ostringstream message;
-    message << "Failed to catch an exception when passing a denorm temperature.";
+    FAILMSG("Failed to catch an exception when passing a denorm temperature (1).");
   }
+#endif
 
   // Extreme case 4b. bounds < numeric_limits<double>::min() --> return 1.0, 0.0
   {
@@ -559,28 +556,24 @@ void test_planck_integration(rtt_dsxx::UnitTest &ut) {
     CDI::integrate_Planckian_Spectrum(bounds, T_eval, planck);
     // make sure the alternate calling method returns the same values
     auto planck_alt = CDI::integrate_Planckian_Spectrum(bounds, T_eval);
-    if (planck_alt != planck)
-      ITFAILS;
-    if (!soft_equiv(planck[0], 1.0, tol))
-      ITFAILS;
-    if (!soft_equiv(planck[1], 0.0, tol))
-      ITFAILS;
+    FAIL_IF(planck_alt != planck);
+    FAIL_IF(!soft_equiv(planck[0], 1.0, tol));
+    FAIL_IF(!soft_equiv(planck[1], 0.0, tol));
   }
 
   // Catch an illegal group assertion.
   CDI cdi;
-  std::shared_ptr<const MultigroupOpacity> mg(
+  std::shared_ptr<const MultigroupOpacity> const mg(
       new DummyMultigroupOpacity(rtt_cdi::SCATTERING, rtt_cdi::THOMSON));
   cdi.setMultigroupOpacity(mg);
 
   // Check the normalized planck integrals.
-  if (CDI::getNumberFrequencyGroups() != 3)
-    ITFAILS;
+  FAIL_IF_NOT(CDI::getNumberFrequencyGroups() == 3);
 
-  double g1_integral = rtt_cdi::CDI::integratePlanckSpectrum(1, 1.0);
-  double g2_integral = rtt_cdi::CDI::integratePlanckSpectrum(2, 1.0);
-  double g3_integral = rtt_cdi::CDI::integratePlanckSpectrum(3, 1.0);
-  double g_total = rtt_cdi::CDI::integratePlanckSpectrum(1.0);
+  double const g1_integral = rtt_cdi::CDI::integratePlanckSpectrum(1, 1.0);
+  double const g2_integral = rtt_cdi::CDI::integratePlanckSpectrum(2, 1.0);
+  double const g3_integral = rtt_cdi::CDI::integratePlanckSpectrum(3, 1.0);
+  double const g_total = rtt_cdi::CDI::integratePlanckSpectrum(1.0);
 
   if (soft_equiv(g1_integral, 0.00528686, 1.e-6))
     PASSMSG("Group 1 integral within tolerance.");
@@ -630,14 +623,13 @@ void test_planck_integration(rtt_dsxx::UnitTest &ut) {
 
   if (ut.numFails == 0) {
     PASSMSG("All Planckian integral tests ok.");
-    cout << endl;
+    cout << '\n';
   }
 
   // Compare the integration over all groups to the individual groups:
 
-  std::vector<double> group_bounds(CDI::getFrequencyGroupBoundaries());
-  if (group_bounds.size() != 4)
-    ITFAILS;
+  std::vector<double> const group_bounds(CDI::getFrequencyGroupBoundaries());
+  FAIL_IF(group_bounds.size() != 4);
 
   std::vector<double> planck;
 
@@ -647,20 +639,16 @@ void test_planck_integration(rtt_dsxx::UnitTest &ut) {
 
   for (int group_index = 1; group_index <= 3; ++group_index) {
 
-    double planck_g = rtt_cdi::CDI::integratePlanckSpectrum(group_index, 1.0);
+    double const planck_g = rtt_cdi::CDI::integratePlanckSpectrum(group_index, 1.0);
 
-    if (!soft_equiv(planck[group_index - 1], planck_g))
-      ITFAILS;
+    FAIL_IF(!soft_equiv(planck[group_index - 1], planck_g));
   }
-  if (planck_alt != planck)
-    ITFAILS;
+  FAIL_IF(planck_alt != planck);
 
   if (ut.numFails == 0)
-    PASSMSG("Group-wise and Full spectrum Planckian and Rosseland integrals "
-            "match.");
+    PASSMSG("Group-wise and Full spectrum Planckian and Rosseland integrals match.");
   else
-    FAILMSG("Group-wise and Full spectrum Planckian and Rosseland integrals do "
-            "not match.");
+    FAILMSG("Group-wise and Full spectrum Planckian and Rosseland integrals do not match.");
   return;
 }
 
@@ -689,12 +677,11 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
       caught = true;
     }
     if (!caught)
-      FAILMSG(string("Did not catch an exception for calculating ") +
-              "Rosseland and Planckian integral.");
+      FAILMSG("Did not catch an exception for calculating Rosseland and Planckian integral.");
   }
 
   // check some planck integrals
-  double int_total = rtt_cdi::integrateRosselandSpectrum(0, 100.0, 1.0);
+  double const int_total = rtt_cdi::integrateRosselandSpectrum(0, 100.0, 1.0);
   if (soft_equiv(int_total, 1.0, 1.0e-7)) {
     ostringstream message;
     message.precision(10);
@@ -709,7 +696,7 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
     FAILMSG(message.str());
   }
 
-  double int_1 = rtt_cdi::integratePlanckSpectrum(0.1, 1.0, 1.0);
+  double const int_1 = rtt_cdi::integratePlanckSpectrum(0.1, 1.0, 1.0);
   if (soft_equiv(int_1, .0345683, 1.0e-5)) {
     ostringstream message;
     message.precision(10);
@@ -724,7 +711,7 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
     FAILMSG(message.str());
   }
 
-  double int_2 = rtt_cdi::integrateRosselandSpectrum(0.1, 1.0, 1.0);
+  double const int_2 = rtt_cdi::integrateRosselandSpectrum(0.1, 1.0, 1.0);
   if (soft_equiv(int_2, 0.01220025, 1.0e-5)) {
     ostringstream message;
     message.precision(10);
@@ -773,31 +760,27 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
   if (soft_equiv(PL, .0345683, 1.e-5)) {
     ostringstream message;
     message.precision(10);
-    message << "Calculated a normalized Planck integral for "
-               "RosselandPlanckianSpectrum "
-            << setw(12) << setiosflags(ios::fixed) << int_2;
+    message << "Calculated a normalized Planck integral for RosselandPlanckianSpectrum " << setw(12)
+            << setiosflags(ios::fixed) << int_2;
     PASSMSG(message.str());
   } else {
     ostringstream message;
     message.precision(10);
-    message << "Calculated a normalized Planck integral for "
-               "RosselandPlanckianSpectrum "
-            << setw(12) << setiosflags(ios::fixed) << int_2 << " instead of .0345683.";
+    message << "Calculated a normalized Planck integral for RosselandPlanckianSpectrum " << setw(12)
+            << setiosflags(ios::fixed) << int_2 << " instead of .0345683.";
     FAILMSG(message.str());
   }
 
   if (soft_equiv(ROS, 0.01220025, 1.e-5)) {
     ostringstream message;
     message.precision(10);
-    message << "Calculated a  normalized Rosseland integral for "
-               "RosselandPlanckianSpectrum"
+    message << "Calculated a  normalized Rosseland integral for RosselandPlanckianSpectrum"
             << setw(12) << setiosflags(ios::fixed) << int_2;
     PASSMSG(message.str());
   } else {
     ostringstream message;
     message.precision(10);
-    message << "Calculated a normalized Rosseland integral for "
-               "RosselandPlanckianSpectrum"
+    message << "Calculated a normalized Rosseland integral for RosselandPlanckianSpectrum"
             << setw(12) << setiosflags(ios::fixed) << int_2 << " instead of 0.01220025.";
     FAILMSG(message.str());
   }
@@ -818,17 +801,14 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
     FAILMSG("Rosseland integral  at T=0 is not zero: BAD!");
 
   // check the normalized planck integrals
-  if (CDI::getNumberFrequencyGroups() != 3)
-    ITFAILS;
+  FAIL_IF(CDI::getNumberFrequencyGroups() != 3);
 
   // ----- Rosseland+Planckian ----- //
 
   // First group
   CDI::integrate_Rosseland_Planckian_Spectrum(1, 1.0, PL, ROS);
-  if (!soft_equiv(PL, 0.005286862763740451, 1.e-6))
-    ITFAILS;
-  if (!soft_equiv(ROS, 0.00158258277444842, 1.e-5))
-    ITFAILS;
+  FAIL_IF(!soft_equiv(PL, 0.005286862763740451, 1.e-6));
+  FAIL_IF(!soft_equiv(ROS, 0.00158258277444842, 1.e-5));
 
   if (ut.numFails == 0)
     PASSMSG("Group 1 Rosseland and Planck integrals ok.");
@@ -837,10 +817,8 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
 
   // Second group
   CDI::integrate_Rosseland_Planckian_Spectrum(2, 1.0, PL, ROS);
-  if (!soft_equiv(PL, 0.7492399297, 1.e-6))
-    ITFAILS;
-  if (!soft_equiv(ROS, 0.5897280880, 1.e-6))
-    ITFAILS;
+  FAIL_IF(!soft_equiv(PL, 0.7492399297, 1.e-6));
+  FAIL_IF(!soft_equiv(ROS, 0.5897280880, 1.e-6));
 
   if (ut.numFails == 0)
     PASSMSG("Group 2 Rosseland and Planck integrals ok.");
@@ -849,10 +827,8 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
 
   // Third group
   CDI::integrate_Rosseland_Planckian_Spectrum(3, 1.0, PL, ROS);
-  if (!soft_equiv(PL, 0.2454669108, 1.e-6))
-    ITFAILS;
-  if (!soft_equiv(ROS, 0.4086877254, 1.e-6))
-    ITFAILS;
+  FAIL_IF(!soft_equiv(PL, 0.2454669108, 1.e-6));
+  FAIL_IF(!soft_equiv(ROS, 0.4086877254, 1.e-6));
 
   if (ut.numFails == 0)
     PASSMSG("Group 3 Rosseland and Planck integrals ok.");
@@ -860,9 +836,8 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
     FAILMSG("Group 3 Rosseland and Planck integrals failed.");
 
   // All groups:
-  std::vector<double> group_bounds(CDI::getFrequencyGroupBoundaries());
-  if (group_bounds.size() != 4)
-    ITFAILS;
+  std::vector<double> const group_bounds(CDI::getFrequencyGroupBoundaries());
+  FAIL_IF(group_bounds.size() != 4);
 
   // Vectors for testing the combined planck/rosseland integration
   std::vector<double> planck;
@@ -877,12 +852,9 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
   for (int group_index = 1; group_index <= 3; ++group_index) {
     CDI::integrate_Rosseland_Planckian_Spectrum(group_index, 1.0, PL, ROS);
 
-    if (!soft_equiv(planck[group_index - 1], PL))
-      ITFAILS;
-    if (!soft_equiv(rosseland[group_index - 1], ROS))
-      ITFAILS;
-    if (!soft_equiv(rosseland_only[group_index - 1], ROS))
-      ITFAILS;
+    FAIL_IF(!soft_equiv(planck[group_index - 1], PL));
+    FAIL_IF(!soft_equiv(rosseland[group_index - 1], ROS));
+    FAIL_IF(!soft_equiv(rosseland_only[group_index - 1], ROS));
   }
 
   // Special case of zero temperature
@@ -914,6 +886,12 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
     if (!soft_equiv(lrosseland, std::vector<double>(lrosseland.size(), 0.0)))
       ITFAILS;
   }
+
+  // [2024-10-01 KT] I don't think this test is valid any longer.  The integrate_Planckian_Spectrum
+  // function detects when the function is invalid and returns zero.  I don't think it will throw an
+  // exception any longer.
+
+#if 0
   // Extreme case 2. T < numeric_limits<double>::min() --> follow special logic and return zero.
   bool caught = true;
   Remember(caught = false;);
@@ -929,12 +907,11 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
     caught = true;
   }
   if (!caught) {
-    ostringstream message;
-    message << "Failed to catch an exception when passing a denorm temperature.";
+    FAILMSG("Failed to catch an exception when passing a denorm temperature (2).");
   }
+#endif
 
-  // Extreme case 3. This should do the normal computation, but the result is
-  // zero.
+  // Extreme case 3. This should do the normal computation, but the result is zero.
   {
     std::vector<double> const bounds = {0.1, 0.3, 1.0, 3.0, 30.0};
     double const T_eval = 1.0e-30;
@@ -946,6 +923,12 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
     if (!soft_equiv(lplanck, std::vector<double>(lplanck.size(), 0.0)))
       ITFAILS;
   }
+
+  // [2024-10-01 KT] I don't think this test is valid any longer.  The integrate_Planckian_Spectrum
+  // function detects when the function is invalid and returns zero.  I don't think it will throw an
+  // exception any longer.
+
+#if 0
   // Extreme case 4. T < numeric_limits<double>::min() --> follow special logic and return zero.
   caught = true;
   Remember(caught = false;);
@@ -962,26 +945,26 @@ void test_rosseland_integration(rtt_dsxx::UnitTest &ut) {
     caught = true;
   }
   if (!caught) {
-    ostringstream message;
-    message << "Failed to catch an exception when passing a denorm temperature.";
+    FAILMSG("Failed to catch an exception when passing a denorm temperature. (3)");
   }
+#endif
 
   if (ut.numFails == 0) {
     PASSMSG("All Rosseland and Rosseland/Planckian integral tests ok.");
-    cout << endl;
+    cout << '\n';
   }
   return;
 }
 
 //------------------------------------------------------------------------------------------------//
 void test_mgopacity_collapse(rtt_dsxx::UnitTest &ut) {
-  std::cout << "Running test test_mgopacity_collapse(ut)..." << std::endl;
+  std::cout << "Running test test_mgopacity_collapse(ut)...\n";
   size_t const numFailCheckpoint(ut.numFails);
 
   // Test functions that collapse MG opacity data into one-group data using either Planckian or
   // Rosseland weight functions:
 
-  std::shared_ptr<const MultigroupOpacity> mg_planck_abs(
+  std::shared_ptr<const MultigroupOpacity> const mg_planck_abs(
       new DummyMultigroupOpacity(rtt_cdi::ABSORPTION, rtt_cdi::PLANCK));
 
   // bounds = { 0.05, 0.5, 5, 50 }
@@ -1031,17 +1014,12 @@ void test_mgopacity_collapse(rtt_dsxx::UnitTest &ut) {
     double const opacity_ross =
         CDI::collapseMultigroupOpacitiesRosseland(bounds, mgOpacities, rosseland_spectrum);
 
-    if (!soft_equiv(opacity_pl, opacity_pl_alt, 1.0e-12))
-      ITFAILS;
-    if (!soft_equiv(opacity_pl, opacity_pl_ref))
-      ITFAILS;
-    if (!soft_equiv(opacity_pl_recip, opacity_pl_recip_ref))
-      ITFAILS;
-    if (!soft_equiv(opacity_ross, opacity_ross_ref))
-      ITFAILS;
-    if (!soft_equiv(emission_group_cdf.begin(), emission_group_cdf.end(),
-                    emission_group_cdf_ref.begin(), emission_group_cdf_ref.end()))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(opacity_pl, opacity_pl_alt, 1.0e-12));
+    FAIL_IF_NOT(soft_equiv(opacity_pl, opacity_pl_ref));
+    FAIL_IF_NOT(soft_equiv(opacity_pl_recip, opacity_pl_recip_ref));
+    FAIL_IF_NOT(soft_equiv(opacity_ross, opacity_ross_ref));
+    FAIL_IF_NOT(soft_equiv(emission_group_cdf.begin(), emission_group_cdf.end(),
+                           emission_group_cdf_ref.begin(), emission_group_cdf_ref.end()));
   }
 
   // Standard use:
@@ -1079,24 +1057,18 @@ void test_mgopacity_collapse(rtt_dsxx::UnitTest &ut) {
     double const opacity_pl_recip_ref(8.80345577340399);
     double const opacity_ross_ref(0.0778314764921229);
 
-    if (!soft_equiv(opacity_pl, opacity_pl_alt, 1.0e-12))
-      ITFAILS;
-    if (!soft_equiv(opacity_pl, opacity_pl_ref))
-      ITFAILS;
-    if (!soft_equiv(opacity_pl_recip, opacity_pl_recip_ref))
-      ITFAILS;
-    if (!soft_equiv(opacity_ross, opacity_ross_ref))
-      ITFAILS;
-    if (!soft_equiv(opacity_ross_only, opacity_ross_ref))
-      ITFAILS;
-    if (!soft_equiv(emission_group_cdf.begin(), emission_group_cdf.end(),
-                    emission_group_cdf_ref.begin(), emission_group_cdf_ref.end()))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(opacity_pl, opacity_pl_alt, 1.0e-12));
+    FAIL_IF_NOT(soft_equiv(opacity_pl, opacity_pl_ref));
+    FAIL_IF_NOT(soft_equiv(opacity_pl_recip, opacity_pl_recip_ref));
+    FAIL_IF_NOT(soft_equiv(opacity_ross, opacity_ross_ref));
+    FAIL_IF_NOT(soft_equiv(opacity_ross_only, opacity_ross_ref));
+    FAIL_IF_NOT(soft_equiv(emission_group_cdf.begin(), emission_group_cdf.end(),
+                           emission_group_cdf_ref.begin(), emission_group_cdf_ref.end()));
   }
 
   // Special case 1 (opacity==0)
   {
-    std::vector<double> mgOpac(3, 0.0);
+    std::vector<double> const mgOpac(3, 0.0);
 
     // Force the spectrum to be flat.
     planck_spectrum[0] = 1.0 / 3.0;
@@ -1108,9 +1080,9 @@ void test_mgopacity_collapse(rtt_dsxx::UnitTest &ut) {
 
     // Generate reference solutions
     std::vector<double> emission_group_cdf_ref(bounds.size() - 1);
-    double opacity_pl_ref(0.0);
+    double const opacity_pl_ref(0.0);
     auto opacity_pl_recip_ref(static_cast<double>(std::numeric_limits<float>::max()));
-    double opacity_ross_ref(0.0);
+    double const opacity_ross_ref(0.0);
     for (size_t ig = 0; ig < bounds.size() - 1; ++ig) {
       emission_group_cdf_ref[ig] = opacity_pl_ref;
     }
@@ -1127,17 +1099,12 @@ void test_mgopacity_collapse(rtt_dsxx::UnitTest &ut) {
     double const opacity_ross =
         CDI::collapseMultigroupOpacitiesRosseland(bounds, mgOpac, rosseland_spectrum);
 
-    if (!soft_equiv(opacity_pl, opacity_pl_alt, 1.0e-12))
-      ITFAILS;
-    if (!soft_equiv(opacity_pl, opacity_pl_ref))
-      ITFAILS;
-    if (!soft_equiv(opacity_pl_recip, opacity_pl_recip_ref))
-      ITFAILS;
-    if (!soft_equiv(opacity_ross, opacity_ross_ref))
-      ITFAILS;
-    if (!soft_equiv(emission_group_cdf.begin(), emission_group_cdf.end(),
-                    emission_group_cdf_ref.begin(), emission_group_cdf_ref.end()))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(opacity_pl, opacity_pl_alt, 1.0e-12));
+    FAIL_IF_NOT(soft_equiv(opacity_pl, opacity_pl_ref));
+    FAIL_IF_NOT(soft_equiv(opacity_pl_recip, opacity_pl_recip_ref));
+    FAIL_IF_NOT(soft_equiv(opacity_ross, opacity_ross_ref));
+    FAIL_IF_NOT(soft_equiv(emission_group_cdf.begin(), emission_group_cdf.end(),
+                           emission_group_cdf_ref.begin(), emission_group_cdf_ref.end()));
   }
 
   // Special case 2 (rosseland_spectrum == 0)
@@ -1153,7 +1120,7 @@ void test_mgopacity_collapse(rtt_dsxx::UnitTest &ut) {
     // Generate reference solutions
     std::vector<double> emission_group_cdf_ref(bounds.size() - 1);
     double opacity_pl_ref(0.0);
-    double opacity_ross_ref(mgOpacities[0]);
+    double const opacity_ross_ref(mgOpacities[0]);
     for (size_t ig = 0; ig < bounds.size() - 1; ++ig) {
       opacity_pl_ref += planck_spectrum[ig] * mgOpacities[ig];
       emission_group_cdf_ref[ig] = opacity_pl_ref;
@@ -1169,15 +1136,11 @@ void test_mgopacity_collapse(rtt_dsxx::UnitTest &ut) {
     double const opacity_ross =
         CDI::collapseMultigroupOpacitiesRosseland(bounds, mgOpacities, rosseland_spectrum);
 
-    if (!soft_equiv(opacity_pl, opacity_pl_alt, 1.0e-12))
-      ITFAILS;
-    if (!soft_equiv(opacity_pl, opacity_pl_ref))
-      ITFAILS;
-    if (!soft_equiv(opacity_ross, opacity_ross_ref))
-      ITFAILS;
-    if (!soft_equiv(emission_group_cdf.begin(), emission_group_cdf.end(),
-                    emission_group_cdf_ref.begin(), emission_group_cdf_ref.end()))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(opacity_pl, opacity_pl_alt, 1.0e-12));
+    FAIL_IF_NOT(soft_equiv(opacity_pl, opacity_pl_ref));
+    FAIL_IF_NOT(soft_equiv(opacity_ross, opacity_ross_ref));
+    FAIL_IF_NOT(soft_equiv(emission_group_cdf.begin(), emission_group_cdf.end(),
+                           emission_group_cdf_ref.begin(), emission_group_cdf_ref.end()));
   }
 
   // Report
@@ -1194,15 +1157,9 @@ void test_cold(rtt_dsxx::UnitTest &ut) {
   // Test common corner case of cold cell
 
   std::vector<double> planck, rosseland;
+  std::vector<double> energyBoundary = {0.05, 0.5, 5.0, 50.0};
 
-  unsigned const ng = 3;
-  std::vector<double> energyBoundary(ng + 1);
-  energyBoundary[0] = 0.05;
-  energyBoundary[1] = 0.5;
-  energyBoundary[2] = 5.0;
-  energyBoundary[3] = 50.0;
-
-  cout << "cold case tests:" << endl;
+  cout << "cold case tests:\n";
 
   CDI::integrate_Planckian_Spectrum(energyBoundary, 0.0, planck);
   double norm = std::accumulate(planck.begin(), planck.end(), 0.0);
@@ -1248,13 +1205,7 @@ void test_hot(rtt_dsxx::UnitTest &ut) {
   // Test common corner case of hot cell
 
   std::vector<double> planck, rosseland;
-
-  unsigned const ng = 3;
-  std::vector<double> energyBoundary(ng + 1);
-  energyBoundary[0] = 0.05;
-  energyBoundary[1] = 0.5;
-  energyBoundary[2] = 5.0;
-  energyBoundary[3] = 50.0;
+  std::vector<double> energyBoundary = {0.05, 0.5, 5.0, 50.0};
 
   CDI::integrate_Planckian_Spectrum(energyBoundary, 1e100, planck);
   double norm = std::accumulate(planck.begin(), planck.end(), 0.0);
@@ -1335,13 +1286,7 @@ void test_extend_cold(rtt_dsxx::UnitTest &ut) {
   // Test extended integration option
 
   std::vector<double> planck, rosseland;
-
-  unsigned const ng = 3;
-  std::vector<double> energyBoundary(ng + 1);
-  energyBoundary[0] = 0.05;
-  energyBoundary[1] = 0.5;
-  energyBoundary[2] = 5.0;
-  energyBoundary[3] = 50.0;
+  std::vector<double> energyBoundary = {0.05, 0.5, 5.0, 50.0};
 
   CDI::integrate_Planckian_Spectrum(energyBoundary, 0.0, planck);
   double norm = std::accumulate(planck.begin(), planck.end(), 0.0);
@@ -1386,13 +1331,7 @@ void test_extend_hot(rtt_dsxx::UnitTest &ut) {
   // Test extended integration option
 
   std::vector<double> planck, rosseland;
-
-  unsigned const ng = 3;
-  std::vector<double> energyBoundary(ng + 1);
-  energyBoundary[0] = 0.05;
-  energyBoundary[1] = 0.5;
-  energyBoundary[2] = 5.0;
-  energyBoundary[3] = 50.0;
+  std::vector<double> energyBoundary = {0.05, 0.5, 5.0, 50.0};
 
   CDI::integrate_Planckian_Spectrum(energyBoundary, 1e100, planck);
   double norm = std::accumulate(planck.begin(), planck.end(), 0.0);

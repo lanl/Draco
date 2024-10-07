@@ -12,7 +12,14 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "cdi/GrayOpacity.hh"
+#include "cdi/MultigroupOpacity.hh"
+#include "cdi/OpacityCommon.hh"
+#include <cstddef>
+#include <memory>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 
@@ -39,22 +46,13 @@ void simple_tests(rtt_dsxx::UnitTest &ut) {
   {
     gray = gray_total;
 
-    if (!gray->data_in_tabular_form())
-      ITFAILS;
-    if (gray->getReactionType() != rtt_cdi::TOTAL)
-      ITFAILS;
-    if (gray->getModelType() != rtt_cdi::ANALYTIC)
-      ITFAILS;
-    if (gray->getOpacityModelType() != rtt_cdi::DUMMY_TYPE)
-      ITFAILS;
+    FAIL_IF_NOT(gray->data_in_tabular_form());
+    FAIL_IF_NOT(gray->getReactionType() == rtt_cdi::TOTAL);
+    FAIL_IF_NOT(gray->getModelType() == rtt_cdi::ANALYTIC);
+    FAIL_IF_NOT(gray->getOpacityModelType() == rtt_cdi::DUMMY_TYPE);
 
-    vector<double> Tgrid(3);
-    vector<double> rhogrid(2);
-    Tgrid[0] = 1.0;
-    Tgrid[1] = 2.0;
-    Tgrid[2] = 3.0;
-    rhogrid[0] = 0.1;
-    rhogrid[1] = 0.2;
+    vector<double> Tgrid = {1.0, 2.0, 3.0};
+    vector<double> rhogrid = {0.1, 0.2};
 
     std::vector<double> const T(gray->getTemperatureGrid());
     if (soft_equiv(T.begin(), T.end(), Tgrid.begin(), Tgrid.end()))
@@ -72,8 +70,7 @@ void simple_tests(rtt_dsxx::UnitTest &ut) {
   // now reassign and check gray opacity for absorption opacities
   {
     gray = gray_abs;
-    if (gray->getReactionType() != rtt_cdi::ABSORPTION)
-      ITFAILS;
+    FAIL_IF(gray->getReactionType() != rtt_cdi::ABSORPTION);
   }
 
   // Assign and check multigroup opacity
@@ -86,27 +83,14 @@ void simple_tests(rtt_dsxx::UnitTest &ut) {
   {
     mg = mg_total;
 
-    if (!mg->data_in_tabular_form())
-      ITFAILS;
-    if (mg->getReactionType() != rtt_cdi::TOTAL)
-      ITFAILS;
-    if (mg->getModelType() != rtt_cdi::ANALYTIC)
-      ITFAILS;
-    if (mg->getOpacityModelType() != rtt_cdi::DUMMY_TYPE)
-      ITFAILS;
+    FAIL_IF(!mg->data_in_tabular_form());
+    FAIL_IF(mg->getReactionType() != rtt_cdi::TOTAL);
+    FAIL_IF(mg->getModelType() != rtt_cdi::ANALYTIC);
+    FAIL_IF(mg->getOpacityModelType() != rtt_cdi::DUMMY_TYPE);
 
-    vector<double> Tgrid(3);
-    vector<double> rhogrid(2);
-    vector<double> egroups(4);
-    Tgrid[0] = 1.0;
-    Tgrid[1] = 2.0;
-    Tgrid[2] = 3.0;
-    rhogrid[0] = 0.1;
-    rhogrid[1] = 0.2;
-    egroups[0] = 0.05;
-    egroups[1] = 0.5;
-    egroups[2] = 5.0;
-    egroups[3] = 50.0;
+    vector<double> Tgrid = {1.0, 2.0, 3.0};
+    vector<double> rhogrid = {0.1, 0.2};
+    vector<double> egroups = {0.05, 0.5, 5.0, 50.0};
 
     std::vector<double> const T(mg->getTemperatureGrid());
     if (soft_equiv(T.begin(), T.end(), Tgrid.begin(), Tgrid.end()))
@@ -126,20 +110,15 @@ void simple_tests(rtt_dsxx::UnitTest &ut) {
     else
       FAILMSG("Multigroup energy boundaries incorrect.");
 
-    if (mg->getNumTemperatures() != 3)
-      ITFAILS;
-    if (mg->getNumDensities() != 2)
-      ITFAILS;
-    if (mg->getNumGroupBoundaries() != 4)
-      ITFAILS;
+    FAIL_IF_NOT(mg->getNumTemperatures() == 3);
+    FAIL_IF_NOT(mg->getNumDensities() == 2);
+    FAIL_IF_NOT(mg->getNumGroupBoundaries() == 4);
   }
 
   // noew reassign and check multigroup opacities for absorption
   {
     mg = mg_abs;
-
-    if (mg->getReactionType() != rtt_cdi::ABSORPTION)
-      ITFAILS;
+    FAIL_IF_NOT(mg->getReactionType() == rtt_cdi::ABSORPTION);
   }
   return;
 }
@@ -162,11 +141,11 @@ void gray_opacity_test(rtt_dsxx::UnitTest &ut) {
   // Dummy Gray Opacity Tests //
   // ------------------------ //
 
-  double temperature = 0.1;                                     // keV
+  double const temperature = 0.1;                               // keV
   double density = 27.0;                                        // g/cm^3
-  double tabulatedGrayOpacity = temperature + density / 1000.0; // cm^2/g
+  double const tabulatedGrayOpacity = temperature + density / 1000.0; // cm^2/g
 
-  double opacity = spDGO->getOpacity(temperature, density);
+  double const opacity = spDGO->getOpacity(temperature, density);
 
   if (soft_equiv(opacity, tabulatedGrayOpacity)) {
     ostringstream message;
@@ -204,12 +183,7 @@ void gray_opacity_test(rtt_dsxx::UnitTest &ut) {
 
   // try using a vector of densities.
 
-  std::vector<double> vdensity(5);
-  vdensity[0] = 0.5;
-  vdensity[1] = 1.0;
-  vdensity[2] = 3.3;
-  vdensity[3] = 5.0;
-  vdensity[4] = 27.0;
+  std::vector<double> vdensity = {0.5, 1.0, 3.3, 5.0, 27.0};
 
   vRefOpacity.resize(vdensity.size());
   for (size_t i = 0; i < vdensity.size(); ++i)
@@ -219,13 +193,13 @@ void gray_opacity_test(rtt_dsxx::UnitTest &ut) {
 
   if (soft_equiv(vOpacity.begin(), vOpacity.end(), vRefOpacity.begin(), vRefOpacity.end())) {
     ostringstream message;
-    message << spDGO->getDataDescriptor() << " getOpacity computation was good"
-            << " for a vector of densities.";
+    message << spDGO->getDataDescriptor() << " getOpacity computation was good for a vector of "
+            << "densities.";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << spDGO->getDataDescriptor() << " getOpacity value is out of spec."
-            << " for a vector of densities.";
+    message << spDGO->getDataDescriptor() << " getOpacity value is out of spec. for a vector of "
+            << "densities.";
     FAILMSG(message.str());
   }
 }
@@ -240,9 +214,7 @@ void multigroup_opacity_test(rtt_dsxx::UnitTest &ut) {
   std::shared_ptr<MultigroupOpacity> spDmgO;
 
   if ((spDmgO = std::make_shared<rtt_cdi_test::DummyMultigroupOpacity>()), spDmgO) {
-    ostringstream message;
-    message << "shared_ptr to new MultigroupOpacity object created.";
-    PASSMSG(message.str());
+    PASSMSG("shared_ptr to new MultigroupOpacity object created.");
   }
 
   // --------------- //
@@ -250,30 +222,19 @@ void multigroup_opacity_test(rtt_dsxx::UnitTest &ut) {
   // --------------- //
 
   // Setup the test point.
-  double temperature = 0.01; // keV
-  double density = 2.0;      // g/cm^3
+  double const temperature = 0.01; // keV
+  double const density = 2.0;      // g/cm^3
 
   // declare vector temps and densities
-  vector<double> vtemperature(2);
-  vector<double> vdensity(2);
-
-  vtemperature[0] = 0.5; // keV
-  vtemperature[1] = 0.7; // keV
-  vdensity[0] = 1.5;     // g/cc
-  vdensity[1] = 2.0;     // g/cc
+  vector<double> vtemperature = {0.5, 0.7}; // keV
+  vector<double> vdensity = {1.5, 2.0};     // g/cc
 
   // The dummy opacity object should have 3 groups.  Check it.
-  size_t ng = spDmgO->getNumGroupBoundaries() - 1;
+  size_t const ng = spDmgO->getNumGroupBoundaries() - 1;
   if (ng == 3) {
-    ostringstream message;
-    message << "Correct number of groups found for "
-            << "MultigroupOpacity object.";
-    PASSMSG(message.str());
+    PASSMSG("Correct number of groups found for MultigroupOpacity object.");
   } else {
-    ostringstream message;
-    message << "Wrong number of groups found for "
-            << "MultigroupOpacity object.";
-    FAILMSG(message.str());
+    FAILMSG("Wrong number of groups found for MultigroupOpacity object.");
   }
 
   const std::vector<double> energyBoundaries = spDmgO->getGroupBoundaries();
@@ -291,13 +252,9 @@ void multigroup_opacity_test(rtt_dsxx::UnitTest &ut) {
   // Make sure the accessor values match the expected values.
   if (soft_equiv(mgOpacity.begin(), mgOpacity.end(), tabulatedMGOpacity.begin(),
                  tabulatedMGOpacity.end())) {
-    ostringstream message;
-    message << spDmgO->getDataDescriptor() << " getOpacity computation was good.";
-    PASSMSG(message.str());
+    PASSMSG(spDmgO->getDataDescriptor() + " getOpacity computation was good.");
   } else {
-    ostringstream message;
-    message << spDmgO->getDataDescriptor() << " getOpacity value is out of spec.";
-    FAILMSG(message.str());
+    FAILMSG(spDmgO->getDataDescriptor() + " getOpacity value is out of spec.");
   }
 
   // Repeat with a vector of temps.
@@ -321,7 +278,7 @@ void multigroup_opacity_test(rtt_dsxx::UnitTest &ut) {
   }
 
   // Retrieve the same set of opacity values via the getOpacity() accessor.
-  std::vector<std::vector<double>> vMgOpacity = spDmgO->getOpacity(vtemperature, density);
+  std::vector<std::vector<double>> const vMgOpacity = spDmgO->getOpacity(vtemperature, density);
 
   // Compare the results.
   if (soft_equiv(vMgOpacity, vRefMgOpacity)) {

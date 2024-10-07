@@ -8,6 +8,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "DummyGrayOpacity.hh"
+#include "cdi/OpacityCommon.hh"
+#include <cstddef>
+#include <vector>
 
 namespace rtt_cdi_test {
 

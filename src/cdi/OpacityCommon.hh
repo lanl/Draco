@@ -18,10 +18,10 @@ namespace rtt_cdi {
 
 namespace constants {
 //! Number of models contained in rtt_cdi::Model.
-unsigned int const num_Models(7);
+unsigned int constexpr num_Models(7);
 
 //! Number of reaction types contained in rtt_cdi::Reaction.
-unsigned int const num_Reactions(3);
+unsigned int constexpr num_Reactions(3);
 } // namespace constants
 
 //================================================================================================//

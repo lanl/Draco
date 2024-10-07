@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "DummyEICoupling.hh"
-#include <cmath>
+#include <vector>
 
 namespace rtt_cdi_test {
 
