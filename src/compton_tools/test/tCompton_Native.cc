@@ -4,20 +4,23 @@
  * \author Andrew Till
  * \date   14 Oct 2020
  * \brief  Implementation file for tCompton_Native
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "compton_tools/Compton_Native.hh"
-#include "units/PhysicalConstants.hh"
+#include <cmath>
+#include <cstddef>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <sstream>
-#include <stdexcept>
+#include <iterator>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace rtt_compton_tools_test {
 
@@ -36,7 +39,7 @@ void test(rtt_dsxx::UnitTest &ut) {
     std::cout << std::setprecision(14);
     std::cout << "\n" << variable_name << "\n";
     std::for_each(variable.begin(), variable.end(), print);
-    std::cout << std::endl;
+    std::cout << '\n';
   };
   auto print_diff_lambda = [](const std::vector<double> &val, const std::vector<double> &ref,
                               const std::string &val_name, const std::string &ref_name,
@@ -45,7 +48,7 @@ void test(rtt_dsxx::UnitTest &ut) {
     std::cout << "\n" << val_name << "/" << ref_name << " - 1\n";
     for (size_t i = 0; i < val.size(); ++i)
       std::cout << (val[i] - ref[i]) / (std::fabs(ref[i]) + tol) << ", ";
-    std::cout << std::endl;
+    std::cout << '\n';
   };
 
   // Tolerance used for checks
@@ -59,7 +62,7 @@ void test(rtt_dsxx::UnitTest &ut) {
 
   // open a small mg opacity file:
   const std::string filename = ut.getTestSourcePath() + "dummy_data_gold_b";
-  std::cout << "Attempting to construct a Compton_Native object...\n" << std::endl;
+  std::cout << "Attempting to construct a Compton_Native object...\n\n";
   std::unique_ptr<rtt_compton_tools::Compton_Native> compton_test;
 
   try {
@@ -69,7 +72,7 @@ void test(rtt_dsxx::UnitTest &ut) {
     // if construction fails, there is no reason to continue testing...
     return;
   }
-  std::cout << "(...Success!)\n" << std::endl;
+  std::cout << "(...Success!)\n\n";
 
   // Check some of the data in the CSK_generator-opened file:
   const std::vector<double> grp_bds = compton_test->get_Egs();
@@ -117,7 +120,7 @@ void test(rtt_dsxx::UnitTest &ut) {
            "checked highest Legendre moment");
 
   if (ut.numFails == 0) {
-    std::cout << "Correctly read sizes, group bounds, and electron temps!\n" << std::endl;
+    std::cout << "Correctly read sizes, group bounds, and electron temps!\n\n";
   }
 
   // Test data retrieval: interpolate to a grid point in temperature
@@ -294,21 +297,21 @@ void bad_file_test(rtt_dsxx::UnitTest &ut) {
             << "---------------------------------------------------------\n";
   // open a small mg opacity file:
   std::string filename = ut.getTestSourcePath() + "non_existent_b";
-  std::cout << "Testing with a non-existent file...\n" << std::endl;
+  std::cout << "Testing with a non-existent file...\n\n";
   std::unique_ptr<rtt_compton_tools::Compton_Native> compton_test;
 
   bool caught = false;
   try {
     compton_test = std::make_unique<rtt_compton_tools::Compton_Native>(filename);
   } catch (rtt_dsxx::assertion &asrt) {
-    std::cout << "Draco exception thrown: " << asrt.what() << std::endl;
+    std::cout << "Draco exception thrown: " << asrt.what() << '\n';
     // We successfully caught the bad file!
     caught = true;
   } catch (const std::ifstream::failure & /* error */) {
-    std::cout << "ifstream failure caught!" << std::endl;
+    std::cout << "ifstream failure caught!\n";
     caught = true;
   } catch (...) {
-    std::cout << "Unidentified exception caught!" << std::endl;
+    std::cout << "Unidentified exception caught!\n";
     caught = true;
   }
 

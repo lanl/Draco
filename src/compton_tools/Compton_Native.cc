@@ -9,9 +9,16 @@
 
 #include "compton_tools/Compton_Native.hh"
 #include "dsxx/Assert.hh"
-#include "c4/global.hh"
+#include "c4/C4_Functions.hh"
+#include <algorithm>
 #include <array>
+#include <cstddef>
+#include <cstdint>
 #include <fstream>
+#include <ios>
+#include <iostream>
+#include <string>
+#include <vector>
 
 using UINT64 = uint64_t;
 using FP = double;
@@ -98,7 +105,7 @@ template <typename T_FP> std::array<T_FP, 4> hermite(T_FP x, T_FP xL, T_FP xR) {
  */
 Compton_Native::Compton_Native(const std::string &filename) {
   Require(filename.length() > 0U);
-  int rank = rtt_c4::node();
+  int const rank = rtt_c4::node();
   constexpr int bcast_rank = 0;
   int errcode = 0;
 
@@ -132,7 +139,7 @@ void Compton_Native::broadcast_MPI(int errcode) {
   }
   Insist(errcode == 0, "Non-zero errorcode. Exiting.");
 
-  int rank = rtt_c4::node();
+  int const rank = rtt_c4::node();
   constexpr size_t bcast_rank = 0;
 
   // Broadcast sizes
@@ -209,12 +216,12 @@ int Compton_Native::read_binary(const std::string &filename) {
     fin.read(&c, sizeof(char));
   if (!std::equal(expected.begin(), expected.end(), actual.begin())) {
     std::cerr << "Expecting binary file " << filename << " to start with '";
-    for (char c : expected)
+    for (char const c : expected)
       std::cerr << c;
     std::cerr << "' but got '";
-    for (char c : actual)
+    for (char const c : actual)
       std::cerr << c;
-    std::cerr << "'" << std::endl;
+    std::cerr << "'\n";
     return 2;
   }
 
@@ -226,7 +233,7 @@ int Compton_Native::read_binary(const std::string &filename) {
   fin.read(reinterpret_cast<char *>(&binary_ordering), sizeof(UINT64));
   if (version_major != 1U || binary_ordering > 1U) {
     std::cerr << "Expecting a CSK binary file (version 1) with ordering 0 or 1 but got "
-              << version_major << " with ordering " << binary_ordering << std::endl;
+              << version_major << " with ordering " << binary_ordering << '\n';
     return 3;
   }
 
@@ -235,13 +242,13 @@ int Compton_Native::read_binary(const std::string &filename) {
   for (size_t i = 0; i < n; ++i)
     fin.read(reinterpret_cast<char *>(&szs[i]), sizeof(szs[i]));
   size_t j = 0;
-  size_t tsz = szs[j++];
-  size_t gsz = szs[j++];
-  size_t lsz = szs[j++];
-  size_t esz = szs[j++];
-  size_t fgsz = szs[j++];
-  size_t isz = szs[j++];
-  size_t dsz = szs[j++];
+  size_t const tsz = szs[j++];
+  size_t const gsz = szs[j++];
+  size_t const lsz = szs[j++];
+  size_t const esz = szs[j++];
+  size_t const fgsz = szs[j++];
+  size_t const isz = szs[j++];
+  size_t const dsz = szs[j++];
 
   num_temperatures_ = tsz;
   num_groups_ = gsz;
@@ -250,7 +257,7 @@ int Compton_Native::read_binary(const std::string &filename) {
   // point is (leg moment, eval) pair
   // first eval has all leg moments; others have only the 0th moment
   num_points_ = num_evals_ + num_leg_moments_ - 1U;
-  size_t egsz = gsz + 1;
+  size_t const egsz = gsz + 1;
 
 #if 0
     std::cout << "DBG num_temperatures_ " << num_temperatures_ << '\n';
@@ -377,7 +384,7 @@ void Compton_Native::interp_dense_inscat(vec_d &inscat, double Te_keV,
   // Finds index and nudges Teff such that
   // Ts_[index] <= Teff <= Ts_[index+1] and 0 <= index <= Ts_.size()-2;
   double Teff = Te_keV;
-  size_t iT = rtt_compton_tools::find_index(Ts_, Teff);
+  size_t const iT = rtt_compton_tools::find_index(Ts_, Teff);
 
   // Fill Hermite function
   std::array<double, 4> hermite = rtt_compton_tools::hermite<double>(Teff, Ts_[iT], Ts_[iT + 1U]);
@@ -422,10 +429,10 @@ void Compton_Native::interp_dense_inscat(vec_d &inscat, double Te_keV,
  * \param[in] Te_keV The electron temperature in keV at which the interpolation is desired
  */
 void Compton_Native::interp_linear_outscat(vec_d &outscat, double Te_keV) const {
-  // Finds index and nudges Teff st Ts_[index] <= Teff <= Ts_[index+1]
-  // and 0 <= index <= Ts_.size()-2;
-  double Teff = Te_keV;
-  size_t iT = rtt_compton_tools::find_index(Ts_, Teff);
+  // Finds index and nudges Teff st
+  // * Ts_[index] <= Teff <= Ts_[index+1] and 0 <= index <= Ts_.size()-2;
+  double Teff = Te_keV; // NOLINT(misc-const-correctness)
+  size_t const iT = rtt_compton_tools::find_index(Ts_, Teff);
 
   // Fill Hermite function
   std::array<double, 4> hermite = rtt_compton_tools::hermite<double>(Teff, Ts_[iT], Ts_[iT + 1U]);
@@ -477,7 +484,7 @@ void Compton_Native::interp_nonlin_diff_and_add(vec_d &outscat, double Te_keV, c
   // Finds index and nudges Teff st Ts_[index] <= Teff <= Ts_[index+1]
   // and 0 <= index <= Ts_.size()-2;
   double Teff = Te_keV;
-  size_t iT = rtt_compton_tools::find_index(Ts_, Teff);
+  size_t const iT = rtt_compton_tools::find_index(Ts_, Teff);
 
   // Fill Hermite function
   std::array<double, 4> hermite = rtt_compton_tools::hermite<double>(Teff, Ts_[iT], Ts_[iT + 1U]);
