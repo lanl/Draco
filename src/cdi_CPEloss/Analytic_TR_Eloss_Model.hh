@@ -4,8 +4,7 @@
  * \author Ben R. Ryan
  * \date   Feb 21 2020
  * \brief  Analytic_TR_Eloss_Model class definition.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPEloss_Analytic_TR_Eloss_Model_hh
@@ -21,8 +20,7 @@ namespace rtt_cdi_cpeloss {
  * \class Analytic_TR_Eloss_Model
  * \brief Analytic_TR_Eloss_Model derived class.
  *
- * CP energy loss class using Harold Rogers/Thurman Talley electron/ion stopping
- * power expression.
+ * CP energy loss class using Harold Rogers/Thurman Talley electron/ion stopping power expression.
  */
 //================================================================================================//
 
@@ -32,8 +30,7 @@ public:
   Analytic_TR_Eloss_Model(const rtt_cdi::CParticle &target, const rtt_cdi::CParticle &projectile)
       : Analytic_Eloss_Model(target, projectile) {}
 
-  //! Calculate the eloss rate in units of shk^-1; T given in keV, rho in g/cc,
-  //! v0 in cm/shk
+  //! Calculate the eloss rate in units of shk^-1; T given in keV, rho in g/cc, v0 in cm/shk
   NODISCARD double calculate_eloss(const double T, const double rho,
                                    const double v0) const override;
 };

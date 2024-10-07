@@ -9,19 +9,22 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/dbc.hh"
-#include "cdi/CDI.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "cdi/CPCommon.hh"
 #include "cdi_CPEloss/Analytic_CP_Eloss.hh"
 #include "cdi_CPEloss/Analytic_Constant_Eloss_Model.hh"
+#include "cdi_CPEloss/Analytic_Eloss_Model.hh"
 #include "cdi_CPEloss/Analytic_KP_Alpha_Eloss_Model.hh"
 #include "cdi_CPEloss/Analytic_Spitzer_Eloss_Model.hh"
 #include "cdi_CPEloss/Analytic_TR_Eloss_Model.hh"
-#include <sstream>
+#include <cstdint>
+#include <memory>
 
 using namespace std;
-
 using rtt_cdi_cpeloss::Analytic_CP_Eloss;
 using rtt_cdi_cpeloss::Analytic_Eloss_Model;
+
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
@@ -29,19 +32,19 @@ using rtt_cdi_cpeloss::Analytic_Eloss_Model;
 void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
 
   // Deuterium:
-  int32_t deuterium_zaid = 1002;
-  double deuterium_mass = 3.34358e-24;
-  rtt_cdi::CParticle target_in(deuterium_zaid, deuterium_mass);
+  int32_t const deuterium_zaid = 1002;
+  double const deuterium_mass = 3.34358e-24;
+  rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
   // Alpha particle:
-  int32_t alpha_zaid = 2004;
-  double alpha_mass = 6.64424e-24;
-  rtt_cdi::CParticle projectile_in(alpha_zaid, alpha_mass);
+  int32_t const alpha_zaid = 2004;
+  double const alpha_mass = 6.64424e-24;
+  rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
 
-  std::shared_ptr<Analytic_Eloss_Model> model_in(
+  std::shared_ptr<Analytic_Eloss_Model> const model_in(
       new rtt_cdi_cpeloss::Analytic_KP_Alpha_Eloss_Model(target_in, projectile_in));
 
-  Analytic_CP_Eloss eloss_mod(model_in, target_in, projectile_in,
-                              rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_mod(model_in, target_in, projectile_in,
+                                    rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Check that basic accessors return correct result:
   // Analytic model should match that passed to constructor
@@ -69,22 +72,22 @@ void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
 
   // Get eloss values for some sample data:
   {
-    double T = 1.0;    // keV
-    double rho = 10.0; // g / cc
-    double vel0 = 1.0; // cm / shk
+    double const T = 1.0;    // keV
+    double const rho = 10.0; // g / cc
+    double const vel0 = 1.0; // cm / shk
 
-    double eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 212.287, 1.0e-3));
   }
 
   // Point near the maximum on rho in [0, 20] g/cc, T in [0, 100] keV:
   {
-    double T = 15.0;   // keV
-    double rho = 20.0; // g / cc
-    double vel0 = 1.0; // cm / shk
+    double const T = 15.0;   // keV
+    double const rho = 20.0; // g / cc
+    double const vel0 = 1.0; // cm / shk
 
-    double eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 78.5845, 1.0e-4));
   }
@@ -92,11 +95,11 @@ void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
   // Point where the range fit goes negative -- eloss should return 1.0e25:
   // (equivalent to the particle range limiting to a very small number)
   {
-    double T = 90.0;   // keV
-    double rho = 17.5; // g / cc
-    double vel0 = 1.0; // cm / shk
+    double const T = 90.0;   // keV
+    double const rho = 17.5; // g / cc
+    double const vel0 = 1.0; // cm / shk
 
-    double eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 1.0e25));
   }
@@ -109,22 +112,23 @@ void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
   return;
 }
 
+//------------------------------------------------------------------------------------------------//
 void Spitzer_test(rtt_dsxx::UnitTest &ut) {
 
   // Deuterium:
-  int32_t deuterium_zaid = 1002;
-  double deuterium_mass = 3.34358e-24;
-  rtt_cdi::CParticle target_in(deuterium_zaid, deuterium_mass);
+  int32_t const deuterium_zaid = 1002;
+  double const deuterium_mass = 3.34358e-24;
+  rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
   // Alpha particle:
-  int32_t alpha_zaid = 2004;
-  double alpha_mass = 6.64424e-24;
-  rtt_cdi::CParticle projectile_in(alpha_zaid, alpha_mass);
+  int32_t const alpha_zaid = 2004;
+  double const alpha_mass = 6.64424e-24;
+  rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
 
-  std::shared_ptr<Analytic_Eloss_Model> model_in(
+  std::shared_ptr<Analytic_Eloss_Model> const model_in(
       new rtt_cdi_cpeloss::Analytic_Spitzer_Eloss_Model(target_in, projectile_in));
 
-  Analytic_CP_Eloss eloss_mod(model_in, target_in, projectile_in,
-                              rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_mod(model_in, target_in, projectile_in,
+                                    rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Check that basic accessors return correct result:
   // Analytic model should match that passed to constructor
@@ -152,22 +156,22 @@ void Spitzer_test(rtt_dsxx::UnitTest &ut) {
 
   // Get eloss values for some sample data:
   {
-    double T = 1.0;    // keV
-    double rho = 10.0; // g / cc
-    double vel0 = 1.0; // cm / shk
+    double const T = 1.0;    // keV
+    double const rho = 10.0; // g / cc
+    double const vel0 = 1.0; // cm / shk
 
-    double eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 9.823342835413329303e+05, 1.0e-8));
   }
 
   // Check for large value when 2kT > E
   {
-    double T = 1.e2;   // keV
-    double rho = 10.0; // g / cc
-    double vel0 = 1.0; // cm / shk
+    double const T = 1.e2;   // keV
+    double const rho = 10.0; // g / cc
+    double const vel0 = 1.0; // cm / shk
 
-    double eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 1.e15, 1.0e-8));
   }
@@ -180,30 +184,31 @@ void Spitzer_test(rtt_dsxx::UnitTest &ut) {
   return;
 }
 
+//------------------------------------------------------------------------------------------------//
 void TR_test(rtt_dsxx::UnitTest &ut) {
 
   // Deuterium:
-  int32_t deuterium_zaid = 1002;
-  double deuterium_mass = 3.34358e-24;
-  rtt_cdi::CParticle target_ion(deuterium_zaid, deuterium_mass);
+  int32_t const deuterium_zaid = 1002;
+  double const deuterium_mass = 3.34358e-24;
+  rtt_cdi::CParticle const target_ion(deuterium_zaid, deuterium_mass);
   // Electron:
-  int32_t electron_zaid = -1;
-  double electron_mass = 9.10938291e-28;
-  rtt_cdi::CParticle target_electron(electron_zaid, electron_mass);
+  int32_t const electron_zaid = -1;
+  double const electron_mass = 9.10938291e-28;
+  rtt_cdi::CParticle const target_electron(electron_zaid, electron_mass);
   // Alpha particle:
-  int32_t alpha_zaid = 2004;
-  double alpha_mass = 6.64424e-24;
-  rtt_cdi::CParticle projectile_in(alpha_zaid, alpha_mass);
+  int32_t const alpha_zaid = 2004;
+  double const alpha_mass = 6.64424e-24;
+  rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
 
-  std::shared_ptr<Analytic_Eloss_Model> ion_model_in(
+  std::shared_ptr<Analytic_Eloss_Model> const ion_model_in(
       new rtt_cdi_cpeloss::Analytic_TR_Eloss_Model(target_ion, projectile_in));
-  std::shared_ptr<Analytic_Eloss_Model> electron_model_in(
+  std::shared_ptr<Analytic_Eloss_Model> const electron_model_in(
       new rtt_cdi_cpeloss::Analytic_TR_Eloss_Model(target_electron, projectile_in));
 
-  Analytic_CP_Eloss eloss_ion_mod(ion_model_in, target_ion, projectile_in,
-                                  rtt_cdi::CPModelAngleCutoff::NONE);
-  Analytic_CP_Eloss eloss_ele_mod(electron_model_in, target_electron, projectile_in,
-                                  rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_ion_mod(ion_model_in, target_ion, projectile_in,
+                                        rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_ele_mod(electron_model_in, target_electron, projectile_in,
+                                        rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Check that basic accessors return correct result:
   // Analytic model should match that passed to constructor
@@ -232,33 +237,33 @@ void TR_test(rtt_dsxx::UnitTest &ut) {
 
   // Get eloss values for some sample ion data:
   {
-    double T = 1.0;    // keV
-    double rho = 10.0; // g / cc
-    double vel0 = 1.0; // cm / shk
+    double const T = 1.0;    // keV
+    double const rho = 10.0; // g / cc
+    double const vel0 = 1.0; // cm / shk
 
-    double eloss_coeff = eloss_ion_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_ion_mod.getEloss(T, rho, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 9.927570982586801983e+05, 1.0e-8));
   }
 
   // Get eloss values for some sample electron data:
   {
-    double T = 1.0;     // keV
-    double rho = 1.e-2; // g / cc
-    double vel0 = 1.0;  // cm / shk
+    double const T = 1.0;     // keV
+    double const rho = 1.e-2; // g / cc
+    double const vel0 = 1.0;  // cm / shk
 
-    double eloss_coeff = eloss_ele_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_ele_mod.getEloss(T, rho, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 4.993807286690149340e+05, 1.0e-8));
   }
 
   // Check for large value when 2kT > E
   {
-    double T = 1.e2;   // keV
-    double rho = 10.0; // g / cc
-    double vel0 = 1.0; // cm / shk
+    double const T = 1.e2;   // keV
+    double const rho = 10.0; // g / cc
+    double const vel0 = 1.0; // cm / shk
 
-    double eloss_coeff = eloss_ion_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_ion_mod.getEloss(T, rho, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 1.e15, 1.0e-8));
   }
@@ -271,26 +276,27 @@ void TR_test(rtt_dsxx::UnitTest &ut) {
   return;
 }
 
+//------------------------------------------------------------------------------------------------//
 void Constant_test(rtt_dsxx::UnitTest &ut) {
 
   // Deuterium:
-  int32_t deuterium_zaid = 1002;
-  double deuterium_mass = 3.34358e-24;
-  rtt_cdi::CParticle target_in(deuterium_zaid, deuterium_mass);
+  int32_t const deuterium_zaid = 1002;
+  double const deuterium_mass = 3.34358e-24;
+  rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
   // Alpha particle:
-  int32_t alpha_zaid = 2004;
-  double alpha_mass = 6.64424e-24;
-  rtt_cdi::CParticle projectile_in(alpha_zaid, alpha_mass);
+  int32_t const alpha_zaid = 2004;
+  double const alpha_mass = 6.64424e-24;
+  rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
 
-  std::shared_ptr<Analytic_Eloss_Model> zero_model_in(
+  std::shared_ptr<Analytic_Eloss_Model> const zero_model_in(
       new rtt_cdi_cpeloss::Analytic_Constant_Eloss_Model(target_in, projectile_in, 0.));
-  std::shared_ptr<Analytic_Eloss_Model> one_model_in(
+  std::shared_ptr<Analytic_Eloss_Model> const one_model_in(
       new rtt_cdi_cpeloss::Analytic_Constant_Eloss_Model(target_in, projectile_in, 1.));
 
-  Analytic_CP_Eloss eloss_zero_mod(zero_model_in, target_in, projectile_in,
-                                   rtt_cdi::CPModelAngleCutoff::NONE);
-  Analytic_CP_Eloss eloss_one_mod(one_model_in, target_in, projectile_in,
-                                  rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_zero_mod(zero_model_in, target_in, projectile_in,
+                                         rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_one_mod(one_model_in, target_in, projectile_in,
+                                        rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Check that basic accessors return correct result:
   // Analytic model should match that passed to constructor
@@ -307,7 +313,6 @@ void Constant_test(rtt_dsxx::UnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
-
 int main(int argc, char *argv[]) {
   rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
   try {

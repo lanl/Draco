@@ -4,21 +4,20 @@
  * \author Ben R. Ryan
  * \date   Feb 21 2020
  * \brief  Analytic_TR_Eloss_Model implementation file.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Analytic_TR_Eloss_Model.hh"
 #include "dsxx/Assert.hh"
+#include "cdi/CPCommon.hh"
+#include <algorithm> // min, max
 #include <cmath>
 
 namespace rtt_cdi_cpeloss {
 
-/*! \brief Calculate the eloss in units of keV shk^-1; T given in keV,
- *         rho in g/cc, v0 in cm/shk
+/*! \brief Calculate the eloss in units of keV shk^-1; T given in keV, rho in g/cc, v0 in cm/shk
  *
- * CP energy loss class using Harold Rogers/Thurman Talley electron/ion stopping
- * power expression.
+ * CP energy loss class using Harold Rogers/Thurman Talley electron/ion stopping power expression.
  *
  * \param T material temperature in keV
  * \param rho material density in g/cm^3
@@ -58,11 +57,11 @@ double Analytic_TR_Eloss_Model::calculate_eloss(const double T, const double rho
     // Fermi temperature
     const double TF = pow(pc.pi(), 4. / 3.) * hbar * hbar * pow(nt, 2. / 3.) /
                       (pow(3., 1. / 3.) * pc.k() * pc.me());
-    double lambsq = (12. * mt * pc.k() * pc.k()) * Tt * Tt *
-                    (exp(-1.) + 4. / 9. * pow(TF / Tt, 2)) /
-                    (hbar * hbar * 4. * pc.pi() * pc.e() * pc.e() * nt);
+    double const lambsq = (12. * mt * pc.k() * pc.k()) * Tt * Tt *
+                          (exp(-1.) + 4. / 9. * pow(TF / Tt, 2)) /
+                          (hbar * hbar * 4. * pc.pi() * pc.e() * pc.e() * nt);
     Require(lambsq > -1.);
-    double lamb_e = log(1. + lambsq);
+    double const lamb_e = log(1. + lambsq);
     double lambcnst = 0.;
     if (lamb_e >= 2.) {
       lambcnst = 1.;
@@ -88,14 +87,14 @@ double Analytic_TR_Eloss_Model::calculate_eloss(const double T, const double rho
     // Assumed non-degenerate ion target
     Psi = std::erf(zeta) - 2. * zeta / sqrt(pc.pi()) * (1. + mt / mp) * exp(-pow(zeta, 2));
 
-    double debye =
+    double const debye =
         sqrt(pc.k() * Tt / (4. * pc.pi() * nt * pc.e() * pc.e())); // Electron debye length
-    double mu = mt * mp / (mt + mp);                               // Mean particle mass
-    double vmin = std::min<double>(vp, vt);
-    double vmax = std::max<double>(vp, vt);
+    double const mu = mt * mp / (mt + mp);                         // Mean particle mass
+    double const vmin = std::min<double>(vp, vt);
+    double const vmax = std::max<double>(vp, vt);
     constexpr double vfac = 0.27323954;
-    double vrel = vmax * (1. + vfac * (vmin / vmax)); // Mean relative speed
-    double bmin = qtabs * qpabs / (mu * vrel * vrel); // Minimum impace parameter
+    double const vrel = vmax * (1. + vfac * (vmin / vmax)); // Mean relative speed
+    double const bmin = qtabs * qpabs / (mu * vrel * vrel); // Minimum impace parameter
     logL = log(debye / bmin);
   }
 

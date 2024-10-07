@@ -4,8 +4,7 @@
  * \author Kendra P. Long, Ben R. Ryan
  * \date   Feb 21 2020
  * \brief  Analytic_KP_Alpha_Eloss_Model class definition.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPEloss_Analytic_KP_Alpha_Eloss_Model_hh
@@ -20,12 +19,10 @@ namespace rtt_cdi_cpeloss {
  * \class Analytic_KP_Alpha_Eloss_Model
  * \brief Analytic_KP_Alpha_Eloss_Model derived class.
  *
- * CP energy loss class using analytic Kirkpatrick model for alpha particles in
- * DT. Energy loss rates based on the range fit calculated in:
- *
- * Kirkpatrick, R. C. and Wheeler, J. A. (1981).
- * ``The Physics of DT Ignition In Small Fusion Targets.''
- * Nuclear Fusion, 21(3):389–401.
+ * CP energy loss class using analytic Kirkpatrick model for alpha particles in DT. Energy loss
+ * rates based on the range fit calculated in:
+ * * Kirkpatrick, R. C. and Wheeler, J. A. (1981). ``The Physics of DT Ignition In Small Fusion
+ *   Targets.'' Nuclear Fusion, 21(3):389–401.
  *
  * Equation (2) gives the range formula. We convert this to an energy loss rate
  * per unit time for ease of use in transport.
@@ -41,8 +38,7 @@ public:
     Require(projectile.get_zaid() == 2004);
   }
 
-  //! Calculate the eloss rate in units of shk^-1;
-  //! T given in keV, rho in g/cc, v0 in cm/shk
+  //! Calculate the eloss rate in units of shk^-1; T given in keV, rho in g/cc, v0 in cm/shk
   NODISCARD double calculate_eloss(const double T, const double rho,
                                    const double v0) const override;
 };

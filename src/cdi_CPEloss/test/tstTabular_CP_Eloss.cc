@@ -9,10 +9,11 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/dbc.hh"
-#include "cdi/CDI.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "cdi/CPCommon.hh"
 #include "cdi_CPEloss/Tabular_CP_Eloss.hh"
-#include <sstream>
+#include <string>
 
 using rtt_cdi_cpeloss::Tabular_CP_Eloss;
 
@@ -23,18 +24,18 @@ using rtt_cdi_cpeloss::Tabular_CP_Eloss;
 void dedx_table_test(rtt_dsxx::UnitTest &ut) {
 
   // Datatable filename
-  std::string filename_in = ut.getTestSourcePath() + "001-H-001";
+  std::string const filename_in = ut.getTestSourcePath() + "001-H-001";
   // Deuterium target
-  int deuterium_zaid = 1002;
-  double deuterium_mass = 3.34447643e-24;
-  rtt_cdi::CParticle target_in(deuterium_zaid, deuterium_mass);
+  int const deuterium_zaid = 1002;
+  double const deuterium_mass = 3.34447643e-24;
+  rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
   // Proton projectile
-  int proton_zaid = 1001;
-  double proton_mass = 1.6726219e-24;
-  rtt_cdi::CParticle projectile_in(proton_zaid, proton_mass);
+  int const proton_zaid = 1001;
+  double const proton_mass = 1.6726219e-24;
+  rtt_cdi::CParticle const projectile_in(proton_zaid, proton_mass);
 
-  Tabular_CP_Eloss eloss_mod(filename_in, target_in, projectile_in,
-                             rtt_cdi::CPModelAngleCutoff::NONE);
+  Tabular_CP_Eloss const eloss_mod(filename_in, target_in, projectile_in,
+                                   rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Model type better be tabular:
   FAIL_IF_NOT(eloss_mod.getModelType() == rtt_cdi::CPModelType::TABULAR_ETYPE);
@@ -57,27 +58,27 @@ void dedx_table_test(rtt_dsxx::UnitTest &ut) {
 
   // Get eloss value for almost first (1,1,1) grid point
   {
-    double energy = 1.384272;
-    double density = 3.344490e-01;
-    double temperature = 3.981051e-04;
+    double const energy = 1.384272;
+    double const density = 3.344490e-01;
+    double const temperature = 3.981051e-04;
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_mod.getEloss(temperature, density, energy),
                                      0.1958064213742134, 1.e-8));
   }
 
   // Get eloss value for almost last (2,3,4) grid point
   {
-    double energy = 1.384273e+01;
-    double density = 3.344495e+03;
-    double temperature = 2.511868e+01;
+    double const energy = 1.384273e+01;
+    double const density = 3.344495e+03;
+    double const temperature = 2.511868e+01;
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_mod.getEloss(temperature, density, energy),
                                      8.502486928162006370e+04, 1.e-8));
   }
 
   // Get eloss value for a point between grid points (1.5,2.5,3.5, i.e. requiring linear interpolation)
   {
-    double energy = 4.377453e+00;
-    double density = 3.344494e+02;
-    double temperature = 3.981044e+00;
+    double const energy = 4.377453e+00;
+    double const density = 3.344494e+02;
+    double const temperature = 3.981044e+00;
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_mod.getEloss(temperature, density, energy),
                                      139104.1982932578, 1.e-8));
   }
