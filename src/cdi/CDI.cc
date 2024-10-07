@@ -7,13 +7,21 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "CDI.hh"
+#include "cdi/CDI.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/FMA.hh"
 #include "dsxx/Safe_Divide.hh"
 #include "dsxx/Soft_Equivalence.hh"
-#include <iostream>
+#include "cdi/CPCommon.hh"
+#include "cdi/OpacityCommon.hh"
+#include <algorithm>
+#include <cmath>
+#include <cstddef> // size_t
+#include <cstdint> // int32_t
 #include <limits>
 #include <numeric>
 #include <utility>
+#include <vector>
 
 namespace rtt_cdi {
 
@@ -48,7 +56,7 @@ CDI::CDI(std_string id)
 //------------------------------------------------------------------------------------------------//
 
 std::vector<double> CDI::frequencyGroupBoundaries = std::vector<double>();
-DLL_PUBLIC_cdi bool CDI::extend = false;
+DLL_PUBLIC_cdi bool CDI::extend = false; // NOLINT
 
 //------------------------------------------------------------------------------------------------//
 // STATIC FUNCTIONS
@@ -109,7 +117,7 @@ double CDI::integratePlanckSpectrum(size_t const groupIndex, double const T) {
   const double upper_bound = frequencyGroupBoundaries[groupIndex];
   Check(upper_bound > lower_bound);
 
-  double integral = rtt_cdi::integratePlanckSpectrum(lower_bound, upper_bound, T);
+  double const integral = rtt_cdi::integratePlanckSpectrum(lower_bound, upper_bound, T);
 
   Ensure(integral >= 0.0);
   Ensure(integral <= 1.0);
@@ -133,7 +141,7 @@ double CDI::integratePlanckSpectrum(const double T) {
   Check(upper_bound > lower_bound);
 
   // calculate the integral
-  double integral = rtt_cdi::integratePlanckSpectrum(lower_bound, upper_bound, T);
+  double const integral = rtt_cdi::integratePlanckSpectrum(lower_bound, upper_bound, T);
 
   Ensure(integral >= 0.0 && integral <= 1.0);
 
@@ -162,7 +170,7 @@ double CDI::integrateRosselandSpectrum(size_t const groupIndex, double const T) 
   const double highFreq = frequencyGroupBoundaries[groupIndex];
   Check(highFreq > lowFreq);
 
-  double rosseland = rtt_cdi::integrateRosselandSpectrum(lowFreq, highFreq, T);
+  double const rosseland = rtt_cdi::integrateRosselandSpectrum(lowFreq, highFreq, T);
 
   return rosseland;
 }
@@ -216,12 +224,12 @@ void CDI::integrate_Planckian_Spectrum(std::vector<double> const &bounds, double
   size_t const groups(bounds.size() - 1);
   planck.resize(groups, 0.0);
 
-  // The branches here ensure the function is robust in corner cases of a very hot or very
-  // cold T. For the special case T==0 there is a special branch. For finite T, we test the
-  // frequency against T * 50 to guarantee that the operation frequency / T cannot
-  // overflow. We take advantage of the fact that for frequency greater that about 48 * T,
-  // the integral is 1 to roundoff. We choose 50 to give just a little extra slack in case
-  // some optimizing compiler does something weird and wonderful.
+  // The branches here ensure the function is robust in corner cases of a very hot or very cold T.
+  // For the special case T==0 there is a special branch. For finite T, we test the frequency
+  // against T * 50 to guarantee that the operation frequency / T cannot overflow. We take advantage
+  // of the fact that for frequency greater that about 48 * T, the integral is 1 to roundoff. We
+  // choose 50 to give just a little extra slack in case some optimizing compiler does something
+  // weird and wonderful.
   if (T > 0.0) {
     // Initialize the loop:
     double frequency = bounds[0];
@@ -247,10 +255,10 @@ void CDI::integrate_Planckian_Spectrum(std::vector<double> const &bounds, double
       planck[groups - 1] += 1 - planck_value;
     }
   } else {
-    // For the somewhat ill-posed case of T == 0 and bounds[0] == 0, we have chosen
-    // to pretend bounds[0] == 0 as T -> 0. This is likely the least surprising behavior
-    // for clients. In practice, it matters little, since the spectrum will almost
-    // always be multiplied by a scaling factor that goes to zero as T -> 0.
+    // For the somewhat ill-posed case of T == 0 and bounds[0] == 0, we have chosen to pretend
+    // bounds[0] == 0 as T -> 0. This is likely the least surprising behavior for clients. In
+    // practice, it matters little, since the spectrum will almost always be multiplied by a scaling
+    // factor that goes to zero as T -> 0.
     fill(planck.begin(), planck.end(), 0.0);
     if (extend || bounds[0] <= 0.0) {
       planck[0] = 1.0;
@@ -278,12 +286,12 @@ std::vector<double> CDI::integrate_Planckian_Spectrum(std::vector<double> const 
   size_t const groups(bounds.size() - 1);
   std::vector<double> planck(groups, 0.0);
 
-  // The branches here ensure the function is robust in corner cases of a very hot or very
-  // cold T. For the special case T==0 there is a special branch. For finite T, we test the
-  // frequency against T * 50 to guarantee that the operation frequency / T cannot
-  // overflow. We take advantage of the fact that for frequency greater that about 48 * T,
-  // the integral is 1 to roundoff. We choose 50 to give just a little extra slack in case
-  // some optimizing compiler does something weird and wonderful.
+  // The branches here ensure the function is robust in corner cases of a very hot or very cold T.
+  // For the special case T==0 there is a special branch. For finite T, we test the frequency
+  // against T * 50 to guarantee that the operation frequency / T cannot overflow. We take advantage
+  // of the fact that for frequency greater that about 48 * T, the integral is 1 to roundoff. We
+  // choose 50 to give just a little extra slack in case some optimizing compiler does something
+  // weird and wonderful.
   if (T > 0.0) {
     // Initialize the loop:
     double frequency = bounds[0];
@@ -309,11 +317,11 @@ std::vector<double> CDI::integrate_Planckian_Spectrum(std::vector<double> const 
       planck[groups - 1] += 1 - planck_value;
     }
   } else {
-    // T==0
-    // For the somewhat ill-posed case of T == 0 and bounds[0] == 0, we have chosen
-    // to pretend bounds[0] == 0 as T -> 0. This is likely the least surprising behavior
-    // for clients. In practice, it matters little, since the spectrum will almost
-    // always be multiplied by a scaling factor that goes to zero as T -> 0.
+    // * T==0
+    // * For the somewhat ill-posed case of T == 0 and bounds[0] == 0, we have chosen to pretend
+    //   bounds[0] == 0 as T -> 0. This is likely the least surprising behavior for clients. In
+    //   practice, it matters little, since the spectrum will almost always be multiplied by a
+    //   scaling factor that goes to zero as T -> 0.
     if (extend || bounds[0] <= 0.0)
       planck[0] = 1.0;
   }
@@ -354,7 +362,7 @@ void CDI::integrate_Rosseland_Spectrum(std::vector<double> const &bounds, double
       rosseland_value = 0.0;
     } else {
       if (frequency < 50 * T) {
-        double scaled_frequency = frequency / T;
+        double const scaled_frequency = frequency / T;
         integrate_planck_rosseland(scaled_frequency, std::exp(-scaled_frequency), planck_value,
                                    rosseland_value);
       } else {
@@ -372,7 +380,7 @@ void CDI::integrate_Rosseland_Spectrum(std::vector<double> const &bounds, double
       frequency = bounds[group + 1];
       Require(frequency > last_frequency);
       if (frequency < 50 * T) {
-        double scaled_frequency = frequency / T;
+        double const scaled_frequency = frequency / T;
         integrate_planck_rosseland(scaled_frequency, std::exp(-scaled_frequency), planck_value,
                                    rosseland_value);
       } else {
@@ -425,12 +433,12 @@ void CDI::integrate_Rosseland_Planckian_Spectrum(std::vector<double> const &boun
   planck.resize(groups, 0.0);
   rosseland.resize(groups, 0.0);
 
-  // The branches here ensure the function is robust in corner cases of a very hot or very
-  // cold T. For the special case T==0 there is a special branch. For finite T, we test the
-  // frequency against T * 50 to guarantee that the operation frequency / T cannot
-  // overflow. We take advantage of the fact that for frequency greater that about 48 * T,
-  // the integral is 1 to roundoff. We choose 50 to give just a little extra slack in case
-  // some optimizing compiler does something weird and wonderful.
+  // The branches here ensure the function is robust in corner cases of a very hot or very cold T.
+  // For the special case T==0 there is a special branch. For finite T, we test the frequency
+  // against T * 50 to guarantee that the operation frequency / T cannot overflow. We take advantage
+  // of the fact that for frequency greater that about 48 * T, the integral is 1 to roundoff. We
+  // choose 50 to give just a little extra slack in case some optimizing compiler does something
+  // weird and wonderful.
   if (T > 0.0) {
     // Initialize the loop:
     double frequency = bounds[0];
@@ -441,7 +449,7 @@ void CDI::integrate_Rosseland_Planckian_Spectrum(std::vector<double> const &boun
       planck_value = rosseland_value = 0.0;
     } else {
       if (frequency < 50 * T) {
-        double scaled_frequency = frequency / T;
+        double const scaled_frequency = frequency / T;
         integrate_planck_rosseland(scaled_frequency, std::exp(-scaled_frequency), planck_value,
                                    rosseland_value);
       } else {
@@ -460,7 +468,7 @@ void CDI::integrate_Rosseland_Planckian_Spectrum(std::vector<double> const &boun
       frequency = bounds[group + 1];
       Require(frequency > last_frequency);
       if (frequency < 50 * T) {
-        double scaled_frequency = frequency / T;
+        double const scaled_frequency = frequency / T;
         integrate_planck_rosseland(scaled_frequency, std::exp(-scaled_frequency), planck_value,
                                    rosseland_value);
       } else {
@@ -791,8 +799,8 @@ void CDI::setGrayOpacity(const SP_GrayOpacity &spGOp) {
   // determine the model and reaction type (these MUST be in the correct range because the Model and
   // Reaction are constrained by the rtt_cdi::Model and rtt_cdi::Reaction enumerations, assuming
   // nobody hosed these)
-  rtt_cdi::Model model = spGOp->getModelType();
-  rtt_cdi::Reaction reaction = spGOp->getReactionType();
+  rtt_cdi::Model const model = spGOp->getModelType();
+  rtt_cdi::Reaction const reaction = spGOp->getReactionType();
 
   Insist(!grayOpacities[model][reaction], "Tried to overwrite a set GrayOpacity object!");
 
@@ -820,8 +828,8 @@ void CDI::setMultigroupOpacity(const SP_MultigroupOpacity &spMGOp) {
   Require(spMGOp);
 
   // determine the model and reaction types
-  rtt_cdi::Model model = spMGOp->getModelType();
-  rtt_cdi::Reaction reaction = spMGOp->getReactionType();
+  rtt_cdi::Model const model = spMGOp->getModelType();
+  rtt_cdi::Reaction const reaction = spMGOp->getReactionType();
 
   Insist(!multigroupOpacities[model][reaction],
          "Tried to overwrite a set MultigroupOpacity object!");

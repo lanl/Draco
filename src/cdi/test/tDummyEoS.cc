@@ -11,9 +11,12 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "cdi/EoS.hh"
+#include <cstddef>
 #include <memory>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 
@@ -44,21 +47,21 @@ void test_EoS(rtt_dsxx::UnitTest &ut) {
   // EoS Tests //
   // --------- //
 
-  double temperature = 5800.0;                                                     // Kelvin
-  double density = 27.0;                                                           // g/cm^3
-  double tabulatedSpecificElectronInternalEnergy = temperature + 1000.0 * density; // kJ/g
+  double const temperature = 5800.0;                                                     // Kelvin
+  double const density = 27.0;                                                           // g/cm^3
+  double const tabulatedSpecificElectronInternalEnergy = temperature + 1000.0 * density; // kJ/g
 
-  double seie = spEoS->getSpecificElectronInternalEnergy(temperature, density);
+  double const seie = spEoS->getSpecificElectronInternalEnergy(temperature, density);
 
   if (soft_equiv(seie, tabulatedSpecificElectronInternalEnergy)) {
     ostringstream message;
-    message << "The getSpecificElectronInternalEnergy( dbl, dbl) "
-            << "request returned the expected value.";
+    message << "The getSpecificElectronInternalEnergy( dbl, dbl) request returned the expected "
+            << "value.";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "The getSpecificElectronInternalEnergy( dbl, dbl) "
-            << "request returned a value that is out of spec.";
+    message << "The getSpecificElectronInternalEnergy( dbl, dbl) request returned a value that is "
+            << "out of spec.";
     FAILMSG(message.str());
   }
 
@@ -82,15 +85,10 @@ void test_EoS(rtt_dsxx::UnitTest &ut) {
   std::vector<double> vCve = spEoS->getElectronHeatCapacity(vtemperature, vdensity);
 
   if (soft_equiv(vCve.begin(), vCve.end(), vRefCve.begin(), vRefCve.end())) {
-    ostringstream message;
-    message << "The getElectronHeatCapacity( vect, vect ) request"
-            << " returned the expected values.";
-    PASSMSG(message.str());
+    PASSMSG("The getElectronHeatCapacity( vect, vect ) request returned the expected values.");
   } else {
-    ostringstream message;
-    message << "The getElectronHeatCapacity( vect, vect ) request"
-            << " returned values that are out of spec.";
-    FAILMSG(message.str());
+    FAILMSG("The getElectronHeatCapacity( vect, vect ) request returned values that are out of "
+            "spec.");
   }
   return;
 }

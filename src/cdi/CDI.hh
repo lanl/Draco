@@ -319,7 +319,7 @@ GPU_HOST_DEVICE inline double integratePlanckSpectrum(double low, double high, c
   low /= T;
   high /= T;
 
-  double integral = integrate_planck(high) - integrate_planck(low);
+  double const integral = integrate_planck(high) - integrate_planck(low);
 
   Ensure(integral >= 0.0);
   Ensure(integral <= 1.0);

@@ -11,9 +11,12 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "cdi/EICoupling.hh"
+#include <cstddef>
 #include <memory>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 
@@ -44,26 +47,23 @@ void test_EICoupling(rtt_dsxx::UnitTest &ut) {
   // EoS Tests //
   // --------- //
 
-  double etemperature = 1.0; // keV
-  double itemperature = 2.0; // keV
-  double density = 3.0;      // g/cm^3
-  double w_e = 4.0;
-  double w_i = 5.0;
-  double ei_coupling_ref =
+  double const etemperature = 1.0; // keV
+  double const itemperature = 2.0; // keV
+  double const density = 3.0;      // g/cm^3
+  double const w_e = 4.0;
+  double const w_i = 5.0;
+  double const ei_coupling_ref =
       etemperature + 10.0 * itemperature + 100.0 * density + 1000.0 * w_e + 10000.0 * w_i;
 
-  double ei_coupling =
+  double const ei_coupling =
       spEICoupling->getElectronIonCoupling(etemperature, itemperature, density, w_e, w_i);
 
   if (soft_equiv(ei_coupling, ei_coupling_ref)) {
-    ostringstream message;
-    message << "The getElectronIonCoupling scalar request"
-            << "request returned the expected value.";
-    PASSMSG(message.str());
+    PASSMSG("The getElectronIonCoupling scalar request request returned the expected value.");
   } else {
     ostringstream message;
-    message << "The getElectonIonCoupling scalar request"
-            << "request returned a value that is out of spec.";
+    message << "The getElectonIonCoupling scalar request request returned a value that is out of "
+            << "spec.";
     FAILMSG(message.str());
   }
 
@@ -71,9 +71,7 @@ void test_EICoupling(rtt_dsxx::UnitTest &ut) {
   std::vector<double> vitemperature{2.0, 4.0, 6.0}; // Kelvin
 
   std::vector<double> vdensity{1.0, 2.0, 3.8}; // g/cm^3
-
   std::vector<double> vw_e{1.0, 2.0, 3.8};
-
   std::vector<double> vw_i{1.0, 2.0, 3.8};
 
   // Retrieve electron based heat capacities.
@@ -87,15 +85,9 @@ void test_EICoupling(rtt_dsxx::UnitTest &ut) {
 
   if (soft_equiv(vEICoupling.begin(), vEICoupling.end(), vRefEICoupling.begin(),
                  vRefEICoupling.end())) {
-    ostringstream message;
-    message << "The getElectronIonCoupling vector request"
-            << " returned the expected values.";
-    PASSMSG(message.str());
+    PASSMSG("The getElectronIonCoupling vector request returned the expected values.");
   } else {
-    ostringstream message;
-    message << "The getElectronIonCoupling vector request"
-            << " returned values that are out of spec.";
-    FAILMSG(message.str());
+    FAILMSG("The getElectronIonCoupling vector request returned values that are out of spec.");
   }
   return;
 }
