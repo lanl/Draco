@@ -4,8 +4,7 @@
  * \author Ben R. Ryan
  * \date   2019 Nov 4
  * \brief  Tabular_CP_Eloss class definition.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef cdi_CPEloss_Tabular_CP_Eloss_hh
@@ -29,9 +28,9 @@ namespace stdex = std::experimental;
 /*!
  * \class Tabular_CP_Eloss
  *
- * \brief Derived rtt_cdi::CPEloss class for tabular eloss.  This class
- *        implements the interface found in cdi/CPEloss.hh for the case where CP
- *        energy loss data is in tabular form, stored in a file.
+ * \brief Derived rtt_cdi::CPEloss class for tabular eloss.  This class implements the interface
+ *        found in cdi/CPEloss.hh for the case where CP energy loss data is in tabular form, stored
+ *        in a file.
  */
 //================================================================================================//
 

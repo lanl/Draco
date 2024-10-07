@@ -4,20 +4,21 @@
  * \author Ben R. Ryan
  * \date   Feb 21 2020
  * \brief  Analytic_Spitzer_Eloss_Model implementation file.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Analytic_Spitzer_Eloss_Model.hh"
+#include "cdi_CPEloss/Analytic_Spitzer_Eloss_Model.hh"
 #include "dsxx/Assert.hh"
+#include "cdi/CPCommon.hh"
+#include <algorithm> // max
+#include <cmath>     // exp, log, sqrt
 
 namespace rtt_cdi_cpeloss {
 
-/*! \brief Calculate the eloss in units of keV shk^-1; T given in keV,
- *         rho in g/cc, v0 in cm/shk
+/*! \brief Calculate the eloss in units of keV shk^-1; T given in keV, rho in g/cc, v0 in cm/shk
  *
- * CP energy loss class using standard free particle approach to stopping power
- * with Spitzer prescription for Coulomb logarithm.
+ * CP energy loss class using standard free particle approach to stopping power with Spitzer
+ * prescription for Coulomb logarithm.
  *
  * \param T material temperature in keV
  * \param rho material density in g/cm^3
@@ -41,15 +42,15 @@ double Analytic_Spitzer_Eloss_Model::calculate_eloss(const double T, const doubl
 
   const double prefac = 4. * pc.pi() * nt * qtabs * qtabs * qpabs * qpabs / (mt * vp * vp);
 
-  // Spitzer approach: Argument of the Coulomb logarithm is the ratio of Debye
-  // length to distance of closest approach
+  // Spitzer approach: Argument of the Coulomb logarithm is the ratio of Debye length to distance of
+  // closest approach
   const double debye_length = sqrt(pc.k() * Tt / (4. * pc.pi() * nt * qtabs * qtabs));
   const double vrel = sqrt(vp * vp + vt * vt);
   const double mreduced = (mt * mp) / (mt + mp);
   const double bmin = qtabs * qpabs / (mreduced * vrel * vrel);
   const double coulomb_log = log(std::max<double>(exp(1.), debye_length / bmin));
 
-  double eloss = prefac * coulomb_log;
+  double const eloss = prefac * coulomb_log;
 
   if (Ep < 2. * pc.k() * Tt) {
     return rtt_cdi::constants::max_eloss;

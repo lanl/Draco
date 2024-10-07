@@ -7,17 +7,27 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Tabular_CP_Eloss.hh"
+#include "cdi_CPEloss/Tabular_CP_Eloss.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh"
 #include "dsxx/Interpolate.hh"
+#include "cdi/CPCommon.hh"
+#include "cdi/CPEloss.hh"
+#include "experimental/mdspan" // NOLINT(misc-include-cleaner)
+#include <cmath>               // exp, log, floor, sqrt
+#include <cstdint>             // uint32_t
+#include <string>              // getline, to_string
 #include <utility>
+#include <vector>
 
 namespace rtt_cdi_cpeloss {
 
+// NOLINTBEGIN(misc-include-cleaner)
 using std::experimental::basic_mdspan;
 using std::experimental::dynamic_extent;
 using std::experimental::extents;
 using std::experimental::layout_left;
+// NOLINTEND(misc-include-cleaner)
 
 //------------------------------------------------------------------------------------------------//
 // CONSTRUCTORS
@@ -53,7 +63,7 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
       6; // This is a statement about the file format, maximum of six entries per row
 
   std::vector<std::string> line_entries = read_line(); // ZAID
-  int32_t projectile_zaid_file = stoi(line_entries[0]);
+  int32_t const projectile_zaid_file = stoi(line_entries[0]);
   Insist(projectile.get_zaid() == projectile_zaid_file,
          "File projectile ZAID does not match constructor argument!");
 
@@ -129,7 +139,7 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
     // Find ion target, if it exists
     const uint32_t n_target_ions = stoi(read_line()[0]); // Number of target ions in file
     for (uint32_t n_target_ion = 0; n_target_ion < n_target_ions; n_target_ion++) {
-      int zaid_target_ion = stoi(read_line()[0]); // ZAID
+      int const zaid_target_ion = stoi(read_line()[0]); // ZAID
       read_line();                                // Z, A, mass
       if (zaid_target_ion == target.get_zaid()) {
         // This is the requested target ion
@@ -154,14 +164,16 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
   Insist(target_found, "Error finding target ZAID \"" + std::to_string(target.get_zaid()) +
                            "\" in DEDX file \"" + filename + "\"");
 
+  // NOLINTBEGIN(misc-include-cleaner)
   stopping_data =
       basic_mdspan<double, extents<dynamic_extent, dynamic_extent, dynamic_extent>, layout_left>(
           stopping_data_1d.data(), n_energy, n_density, n_temperature);
+  // NOLINTEND(misc-include-cleaner)
 
   // Convert units on table to match those of getEloss:
   //
   // energy:      MeV -> cm/shk (using target particle mass)
-  double energy_cgs = exp(min_log_energy) * (1.e6 * pc.electronVolt());
+  double const energy_cgs = exp(min_log_energy) * (1.e6 * pc.electronVolt());
   min_log_energy = log(sqrt(2. * energy_cgs / target.get_mass()) * 1.e-8);
   d_log_energy = d_log_energy / 2.;
   // density:     cm^-3 -> g cm^-3

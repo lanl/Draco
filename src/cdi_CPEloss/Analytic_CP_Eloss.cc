@@ -7,8 +7,11 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Analytic_CP_Eloss.hh"
+#include "cdi_CPEloss/Analytic_CP_Eloss.hh"
 #include "dsxx/Assert.hh"
+#include "cdi/CPCommon.hh"
+#include "cdi/CPEloss.hh"
+#include <utility> // move
 
 namespace rtt_cdi_cpeloss {
 
@@ -59,7 +62,7 @@ double Analytic_CP_Eloss::getEloss(double temperature, double density, double v0
   Require(v0 >= 0.0);
 
   // define return eloss
-  double eloss = analytic_model->calculate_eloss(temperature, density, v0);
+  double const eloss = analytic_model->calculate_eloss(temperature, density, v0);
 
   Ensure(eloss >= 0.0);
   return eloss;
