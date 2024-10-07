@@ -92,6 +92,9 @@ Draco_Mesh::Draco_Mesh(
   if (dimension_ == 2) {
     compute_node_to_cell_linkage(ghost_cell_type_, ghost_cell_to_node_linkage_);
   }
+
+  // set face index of the adjacent face of off-rank cell across rank boundary
+  set_ghost_next_faces();
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -205,10 +208,26 @@ int32_t Draco_Mesh::next_face(const int32_t cell, const int32_t face) const {
 
     // face is on a true mesh boundary, so return the local face index
     return face;
+
+  } else {
+
+    // face must be a ghost face
+    Check(cell_to_ghost_cell_linkage.count(l_cell));
+    Remember(const auto num_cg_faces =
+                 static_cast<int32_t>(cell_to_ghost_cell_linkage.at(l_cell).size()));
+    Check(num_cg_faces > 0);
+    Check(face <= num_cc_faces + num_cs_faces + num_cg_faces);
+
+    // ghost layout face sub-index (starting at 0 for vector access)
+    const int32_t cg_face = face - (num_cc_faces + num_cs_faces) - 1;
+
+    // get ghost vector sub-index from linkage
+    const int gidx = cell_to_ghost_cell_linkage.at(l_cell)[cg_face].first;
+
+    // return next face from ghost_next_face vector
+    return ghost_next_face[gidx];
   }
 
-  // face must be on a MPI rank boundary
-  // \todo: what specialization is needed here?
   return -1;
 }
 
@@ -776,6 +795,228 @@ void Draco_Mesh::compute_node_to_cell_linkage(
   // since this mesh was constructed with ghost data, the resulting map must have non-zero size
   Ensure(node_to_ghost_cell_linkage.size() > 0);
   Ensure(node_to_ghost_coord_linkage.size() > 0);
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief build map of cell index to total face index of adjacent cell across rank
+ */
+void Draco_Mesh::set_ghost_next_faces() {
+
+  // nothing to do
+  if (rtt_c4::nodes() == 1)
+    return;
+
+  // get number of ranks and my rank
+  const unsigned num_ranks = rtt_c4::nodes();
+  const unsigned my_rank = rtt_c4::node();
+
+  //----------------------------------------------------------------------------------------------//
+  // count number of faces shared with each rank
+
+  std::vector<int> num_common_faces(num_ranks, 0);
+  for (auto &rank : ghost_cell_rank)
+    num_common_faces[rank]++;
+
+  Check(num_common_faces[my_rank] == 0);
+
+  //----------------------------------------------------------------------------------------------//
+  // build send buffers to each rank
+
+  // guess each rank does not need more faces than the number of cells on my_rank
+  std::vector<std::vector<int32_t>> snd_next_face(num_ranks);
+  for (unsigned rank = 0; rank < num_ranks; ++rank) {
+    if (rank != my_rank)
+      snd_next_face[rank].reserve(8 * num_common_faces[rank]);
+  }
+
+  for (auto &cgcl : cell_to_ghost_cell_linkage) {
+
+    // get cell index (local to this rank)
+    const auto cell = cgcl.first;
+
+    // short-cut to cell-cell, cell-side faces
+    const auto num_cc_faces = static_cast<int32_t>(num_cellcell_faces_per_cell[cell]);
+    const auto num_cs_faces = static_cast<int32_t>(num_cellside_faces_per_cell[cell]);
+    const auto num_cg_faces = static_cast<int32_t>(cgcl.second.size());
+    Check(num_cg_faces > 0);
+
+    // for each ghost face, add total face index to send buffer for next faces, at the rank
+    const int32_t face_offset = num_cc_faces + num_cs_faces + 1;
+    for (int32_t cg_face = 0; cg_face < num_cg_faces; ++cg_face) {
+
+      // get index (gidx) into original ghost data vectors
+      const int gidx = cgcl.second[cg_face].first;
+
+      // get rank index from gidx
+      const int rank = ghost_cell_rank[gidx];
+
+      // append the full face index of the ghost face to the send buffer for rank
+      snd_next_face[rank].emplace_back(cg_face + face_offset);
+
+      // append the number of nodes on the face
+      snd_next_face[rank].emplace_back(static_cast<int32_t>(cgcl.second[cg_face].second.size()));
+
+      // finally, append the global node indices
+      for (auto node : cgcl.second[cg_face].second)
+        snd_next_face[rank].emplace_back(static_cast<int32_t>(global_node_number[node]));
+    }
+  }
+
+  Check(snd_next_face[my_rank].size() == 0);
+
+  //----------------------------------------------------------------------------------------------//
+  // size receive buffers from each rank
+
+  // guess each rank does not need more faces than the number of cells on my_rank
+  std::vector<std::vector<int32_t>> rcv_next_face(num_ranks);
+  for (unsigned rank = 0; rank < num_ranks; ++rank) {
+    if (rank != my_rank)
+      rcv_next_face[rank].reserve(8 * num_common_faces[rank]);
+  }
+
+  // size receive buffers based on ghost cell layout (no need to send size data from other ranks)
+  for (auto &cgcl : cell_to_ghost_cell_linkage) {
+
+    const auto num_cg_faces = static_cast<int32_t>(cgcl.second.size());
+    Check(num_cg_faces > 0);
+
+    for (int32_t cg_face = 0; cg_face < num_cg_faces; ++cg_face) {
+
+      // get index (gidx) into original ghost data vectors
+      const int gidx = cgcl.second[cg_face].first;
+
+      // get rank index from gidx
+      const int rank = ghost_cell_rank[gidx];
+
+      // pad the buffer for this rank
+      std::vector<int32_t> rbuf(2 + cgcl.second[cg_face].second.size(), -1);
+      rcv_next_face[rank].insert(rcv_next_face[rank].end(), rbuf.begin(), rbuf.end());
+    }
+  }
+
+  //----------------------------------------------------------------------------------------------//
+  // do non-blocking receives/sends
+
+  // receive/send requests
+  std::vector<rtt_c4::C4_Req> rcv_reqs(num_ranks);
+  std::vector<rtt_c4::C4_Req> snd_reqs(num_ranks);
+
+  // post non-blocking receives
+  for (unsigned rank = 0; rank < num_ranks; ++rank) {
+    if (rank != my_rank && snd_next_face[rank].size() > 0) {
+      Check(rcv_next_face[rank].size() == snd_next_face[rank].size());
+      const int rcv_size = static_cast<int>(rcv_next_face[rank].size());
+      rcv_reqs[rank] = rtt_c4::receive_async(&rcv_next_face[rank][0], rcv_size, rank);
+    }
+  }
+
+  // send
+  for (unsigned rank = 0; rank < num_ranks; ++rank) {
+    if (rank != my_rank && snd_next_face[rank].size() > 0) {
+      const int snd_size = static_cast<int>(snd_next_face[rank].size());
+      snd_reqs[rank] = rtt_c4::send_async(&snd_next_face[rank][0], snd_size, rank);
+    }
+  }
+
+  // wait for all non-blocking sends to finish
+  for (unsigned rank = 0; rank < num_ranks; ++rank) {
+    if (rank != my_rank && snd_next_face[rank].size() > 0)
+      snd_reqs[rank].wait();
+  }
+
+  // wait for all non-blocking receives to finish
+  for (unsigned rank = 0; rank < num_ranks; ++rank) {
+    if (rank != my_rank && snd_next_face[rank].size() > 0)
+      rcv_reqs[rank].wait();
+  }
+
+  rtt_c4::global_barrier();
+
+  // free C4 requests
+  for (unsigned rank = 0; rank < num_ranks; ++rank) {
+    rcv_reqs[rank].free();
+    snd_reqs[rank].free();
+  }
+
+  // do not proceed if an MPI error occurred
+  for (unsigned rank = 0; rank < num_ranks; ++rank) {
+    if (rank != my_rank && snd_next_face[rank].size() > 0) {
+      for (auto &rcv_val : rcv_next_face[rank])
+        Insist(rcv_val > -1, "Received next_face data incomplete from adjacent rank.");
+    }
+  }
+
+  //----------------------------------------------------------------------------------------------//
+  // pack received data into map from (cell, ghost face)->(next face index)
+
+  // ghost_next_face is a member of Draco_Mesh and set here
+  ghost_next_face.resize(ghost_cell_rank.size(), -1);
+
+  // use this vector to keep track of which received next_face data has been used
+  std::vector<std::vector<bool>> rcv_face_found(num_ranks);
+  for (unsigned rank = 0; rank < num_ranks; ++rank) {
+    if (rank != my_rank && snd_next_face[rank].size() > 0)
+      rcv_face_found[rank].resize(num_common_faces[rank], false);
+  }
+
+  for (auto &cgcl : cell_to_ghost_cell_linkage) {
+
+    const auto num_cg_faces = static_cast<int32_t>(cgcl.second.size());
+    Check(num_cg_faces > 0);
+
+    for (int32_t cg_face = 0; cg_face < num_cg_faces; ++cg_face) {
+
+      // get index (gidx) into original ghost data vectors
+      const int gidx = cgcl.second[cg_face].first;
+
+      // get rank index from gidx
+      const int rank = ghost_cell_rank[gidx];
+
+      // create set of global node indices for this face to compare
+      std::set<int32_t> cg_face_node_set;
+      for (auto &node : cgcl.second[cg_face].second)
+        cg_face_node_set.insert(static_cast<int32_t>(global_node_number[node]));
+
+      // find common nodes for face in the receive buffer of this rank
+      int32_t rcv_count = 0;
+      for (int rcv_face = 0; rcv_face < num_common_faces[rank]; ++rcv_face) {
+
+        // increment data counter and continue if this rank face data was already used
+        if (rcv_face_found[rank][rcv_face]) {
+          rcv_count += 2 + rcv_next_face[rank][rcv_count + 1];
+          continue;
+        }
+
+        // face index
+        const int32_t next_face = rcv_next_face[rank][rcv_count];
+
+        // number of nodes (shared vertex coordinates)
+        const int32_t num_verts = rcv_next_face[rank][rcv_count + 1];
+
+        // create set of global node indices
+        std::set<int32_t> rcv_node_set;
+        for (int32_t vert = 0; vert < num_verts; ++vert)
+          rcv_node_set.insert(rcv_next_face[rank][rcv_count + 2 + vert]);
+
+        // if node set matches, append next face at this gid and exit this loop
+        if (rcv_node_set == cg_face_node_set) {
+          ghost_next_face[gidx] = next_face;
+          rcv_face_found[rank][rcv_face] = true;
+          break;
+        }
+
+        // increment rcv_count and rcv_face
+        rcv_count += 2 + num_verts;
+      }
+      // a face should have been found from this rank prior to reading the end of the loop
+      Check(rcv_count < static_cast<int32_t>(rcv_next_face[rank].size()));
+    }
+  }
+
+  // ensure received data from each rank is consistent with on-rank ghost faces
+  for (auto next_face : ghost_next_face)
+    Insist(next_face > 0, "Invalid next_face encountered in ghost_next_face vector.");
 }
 
 } // end namespace rtt_mesh

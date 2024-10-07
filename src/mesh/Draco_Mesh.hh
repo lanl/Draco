@@ -133,6 +133,9 @@ protected:
   // number of cell-side linkage faces per cell
   std::vector<unsigned> num_cellside_faces_per_cell;
 
+  // next local face on cell across rank boundary per local ghost index (same as ghost_cell_rank)
+  std::vector<int32_t> ghost_next_face;
+
 public:
   //! Constructor.
   Draco_Mesh(unsigned dimension_, Geometry geometry_,
@@ -217,6 +220,9 @@ private:
   //! Calculate cell-corner-cell layouts (adjacent cells not sharing a face)
   void compute_node_to_cell_linkage(const std::vector<unsigned> &ghost_cell_type,
                                     const std::vector<unsigned> &ghost_cell_to_node_linkage);
+
+  //! Get cell-local face index on other MPI ranks, at faces adjacent to this rank
+  void set_ghost_next_faces();
 };
 
 } // end namespace rtt_mesh

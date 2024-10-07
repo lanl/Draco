@@ -245,6 +245,9 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
     }
   }
 
+  // next face across ghost face (should be highest face index on each rank)
+  FAIL_IF_NOT(mesh->next_face(1, 4) == 4);
+
   // successful test output
   if (ut.numFails == 0)
     PASSMSG("2D domain-decomposed Draco_Mesh tests ok.");
@@ -488,6 +491,10 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[0], 0.0));
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[1], 2.0));
 
+      // next face across ghost face (should be highest face index on each rank)
+      FAIL_IF_NOT(mesh->next_face(1, 3) == 4);
+      FAIL_IF_NOT(mesh->next_face(1, 4) == 3);
+
     } else if (rtt_c4::node() == 1) {
 
       // check sizes at local node indices
@@ -554,6 +561,10 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].first[1], 2.0));
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[0], 1.0));
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[1], 1.0));
+
+      // next face across ghost face (should be highest face index on each rank)
+      FAIL_IF_NOT(mesh->next_face(1, 3) == 3);
+      FAIL_IF_NOT(mesh->next_face(1, 4) == 3);
 
     } else if (rtt_c4::node() == 2) {
 
@@ -622,6 +633,10 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[0], 2.0));
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(3)[0].second[1], 2.0));
 
+      // next face across ghost face (should be highest face index on each rank)
+      FAIL_IF_NOT(mesh->next_face(1, 3) == 4);
+      FAIL_IF_NOT(mesh->next_face(1, 4) == 4);
+
     } else if (rtt_c4::node() == 3) {
 
       // check sizes at local node indices
@@ -681,6 +696,10 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].first[1], 2.0));
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[0], 1.0));
       FAIL_IF_NOT(rtt_dsxx::soft_equiv(ngcoord_layout.at(2)[0].second[1], 1.0));
+
+      // next face across ghost face (should be highest face index on each rank)
+      FAIL_IF_NOT(mesh->next_face(1, 3) == 3);
+      FAIL_IF_NOT(mesh->next_face(1, 4) == 4);
     }
   }
 
