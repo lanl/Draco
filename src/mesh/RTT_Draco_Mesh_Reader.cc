@@ -7,7 +7,15 @@
  * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "RTT_Draco_Mesh_Reader.hh"
+#include "mesh/RTT_Draco_Mesh_Reader.hh"
+#include "dsxx/Assert.hh"
+#include "RTT_Format_Reader/RTT_Format_Reader.hh"
+#include <climits> // UINT_MAX
+#include <cstddef> // size_t
+#include <fstream>
+#include <memory> // make_shared
+#include <string>
+#include <vector>
 
 namespace rtt_mesh {
 
@@ -49,7 +57,7 @@ void RTT_Draco_Mesh_Reader::read_mesh() {
 unsigned RTT_Draco_Mesh_Reader::get_celltype(size_t cell) const {
 
   // first obtain a cell definition index
-  size_t cell_def = rtt_reader->get_cells_type(cell);
+  size_t const cell_def = rtt_reader->get_cells_type(cell);
 
   // for Draco_Mesh, cell_type is number of nodes (in 1-2D, this is # of faces)
   Check(rtt_reader->get_cell_defs_nnodes(cell_def) < UINT_MAX);
@@ -69,10 +77,10 @@ unsigned RTT_Draco_Mesh_Reader::get_celltype(size_t cell) const {
 size_t RTT_Draco_Mesh_Reader::get_sidetype(size_t side) const {
 
   // first obtain a side definition index
-  size_t side_def = rtt_reader->get_sides_type(side);
+  size_t const side_def = rtt_reader->get_sides_type(side);
 
   // acquire the number of nodes associated with this side def
-  size_t side_type = rtt_reader->get_cell_defs_nnodes(side_def);
+  size_t const side_type = rtt_reader->get_cell_defs_nnodes(side_def);
 
   return side_type;
 }
@@ -88,13 +96,13 @@ size_t RTT_Draco_Mesh_Reader::get_sidetype(size_t side) const {
 std::vector<unsigned> RTT_Draco_Mesh_Reader::get_cellnodes(size_t cell) const {
 
   // get the number of dimensions
-  unsigned num_dim = rtt_reader->get_dims_ndim();
+  unsigned const num_dim = rtt_reader->get_dims_ndim();
 
   // get the node list for this cell
   const std::vector<unsigned> &cell_node = rtt_reader->get_cells_nodes(cell);
 
   // get the number of nodes
-  size_t cell_type = cell_node.size();
+  size_t const cell_type = cell_node.size();
 
   // internal nodes are not supported in 1D
   Check(num_dim == 1 ? cell_type == 2 : cell_type > 2);
@@ -103,11 +111,11 @@ std::vector<unsigned> RTT_Draco_Mesh_Reader::get_cellnodes(size_t cell) const {
   std::vector<unsigned> cellface_node(num_dim * cell_type);
 
   // set node upper limit based on dimension
-  size_t node_limit = num_dim == 1 ? cell_type - 1 : cell_type;
+  size_t const node_limit = num_dim == 1 ? cell_type - 1 : cell_type;
   for (size_t i = 0; i < node_limit; ++i) {
 
     // get next face index
-    size_t j = (i + 1) % cell_type;
+    size_t const j = (i + 1) % cell_type;
 
     // populate node indices per face
     cellface_node[num_dim * i] = cell_node[i];

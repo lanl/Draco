@@ -4,11 +4,11 @@
  * \author H. Park
  * \date   May 16 2023
  * \brief  Explicit template instantiations for class CAMR_Mesh.
- * \note   Copyright (C) 2023 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "CAMR_Mesh.t.hh"
+#include "mesh/CAMR_Mesh.hh"
+#include "mesh/CAMR_Mesh.t.hh" // NOLINT(misc-include-cleaner)
 
 namespace rtt_mesh {
 

@@ -539,7 +539,7 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
               }
             }
           } else {
-            std::cout << "should not be here.. " << neighbor_level << " " << my_level << std::endl;
+            std::cout << "should not be here.. " << neighbor_level << " " << my_level << '\n';
             throw;
           }
         }
@@ -679,54 +679,70 @@ template <int D> bool CAMR_Mesh<D>::is_refined(int const cell, uint32_t const co
 }
 
 //------------------------------------------------------------------------------------------------//
-// if face neighbor is not coarse level, then return 0.
-// if it is coarse, return 1 (for lower) and 2 (for upper) connection.
+/*!
+  * \brief Determines if the specified cell is coarse relative to its neighbor across a given face.
+  *
+  * This function checks whether the neighboring cell across the specified face is refined or
+  * coarse. It handles cases for boundary conditions, off-processor neighbors, and different
+  * dimensions. The function returns:
+  * - 0 if the cell across the face is refined or if it is a boundary cell.
+  * - 1 if the neighbor cell is coarser and this is a 2D mesh with the same cell.
+  * - 2 if the neighbor cell is coarser and this is a 2D mesh with a different cell.
+  * - A positive integer indicating the index of the cell in the next cell list if the neighbor is
+  *   coarser.
+  *
+  * \tparam D The dimension of the mesh (e.g., 2 for 2D meshes, 3 for 3D meshes).
+  *
+  * \param[in] cell The identifier of the current cell being examined.
+  * \param[in] face The identifier of the face across which the neighbor cell is being examined.
+
+  * \return An integer indicating the relationship between the current cell and its neighbor:
+  *         - 0 if refined or boundary,
+  *         - 1 or 2 if coarser in 2D,
+  *         - or a positive index if coarser in higher dimensions.
+  */
 template <int D> int CAMR_Mesh<D>::is_coarse(int const cell, uint32_t const face) const {
 
   std::vector<int> opposite_face{2, 1, 4, 3, 6, 5};
+  auto neighbor_cells = next_cells(cell, face);
 
-  int result = 0;
-  if (next_cells(cell, face).size() > 1) {
-    // cell across face is refined, so not coarser.
-    return result;
-  } else {
-    auto neighbor_cell = next_cells(cell, face);
+  // Determine if the neighbor cell is valid and refined
+  if (neighbor_cells.size() > 1) {
+    return 0;
+  }
 
-    if (neighbor_cell[0] == 0) {
-      // boundary.
-      return 0;
-    } else if (neighbor_cell[0] == cell) {
-      // reflection bc
-      return 0;
-    }
+  int cid = neighbor_cells[0];
+  // Handle boundary or reflection case
+  if (cid == 0 || cid == cell) {
+    return 0;
+  }
 
-    int cid = neighbor_cell[0];
-    if (cid < 0) {
-      // neighbor is off-proc.
-      // boundary.(1base), neighbor cell id.
-      cid = static_cast<int>(active_size) - neighbor_cell[0];
-    }
-    // list of cells across face (from cid, neighbor cell).
-    auto next_cell = next_cells(cid, opposite_face[face - 1]);
-    //check size of next_cell to find out if cell is coarser than cid.
-    if (next_cell.size() == 1)
-      return result;
-    else {
-      // neighbor is coarser!
-      if (D == 2)
-        return next_cell[0] == cell ? 1 : 2;
+  // Handle off-proc neighbor case
+  if (cid < 0) {
+    cid = static_cast<int>(active_size) - cid;
+  }
 
-      for (size_t j = 0; j < next_cell.size(); ++j)
-        if (next_cell[j] == cell)
-          return static_cast<int>(j + 1);
+  // List of cells across face (from cid, neighbor cell)
+  auto next_cell = next_cells(cid, opposite_face[face - 1]);
 
-      //return next_cell[0] == cell? 1:2;
+  // Return early if next_cell size is 1
+  if (next_cell.size() == 1) {
+    return 0;
+  }
+
+  // Determine if neighbor is coarser
+  if (D == 2) {
+    return next_cell[0] == cell ? 1 : 2;
+  }
+
+  // Search for the cell in next_cell
+  for (size_t j = 0; j < next_cell.size(); ++j) {
+    if (next_cell[j] == cell) {
+      return static_cast<int>(j + 1);
     }
   }
-  // should not be here..
-  Insist(0, "Invalid coarse Face!"); // LCOV_EXCL_LINE
 
-  return result;
+  return 0; // Default case
 }
 
 #if defined(MSVC)

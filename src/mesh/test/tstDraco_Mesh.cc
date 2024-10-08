@@ -8,8 +8,17 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Mesh_Interface.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
+#include "mesh_element/Geometry.hh"
+#include <cstddef>
+#include <iterator>
+#include <map>
+#include <memory>
+#include <vector>
 
 using rtt_mesh::Draco_Mesh;
 

@@ -8,10 +8,17 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "X3D_Draco_Mesh_Reader.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh"
+#include <algorithm> // set_intersection
+#include <climits>   // INT_MAX
+#include <cstddef>   // size_t
 #include <fstream>
-#include <iostream>
-#include <set>
+#include <iterator>  // back_inserter
+#include <stdexcept> // invalid_argument
+#include <string>
+#include <utility> // pair
+#include <vector>
 
 namespace rtt_mesh {
 
@@ -69,10 +76,10 @@ void X3D_Draco_Mesh_Reader::read_mesh() {
       continue;
 
     // find last char index of key
-    size_t key_offset = data_line.find(' ');
+    size_t const key_offset = data_line.find(' ');
 
     // first string without whitespace will be key
-    std::string key = data_line.substr(0, key_offset);
+    std::string const key = data_line.substr(0, key_offset);
 
     // check if anything is after key, to set as value
     std::string value = "";
@@ -80,7 +87,7 @@ void X3D_Draco_Mesh_Reader::read_mesh() {
       value = data_line.substr(key_offset);
 
     // add pairing even if value string is size 0 (gets headers and footers)
-    raw_pairs.emplace_back(std::pair<std::string, std::string>(key, value));
+    raw_pairs.emplace_back(key, value);
   }
 
   // STEP 3: close the file stream
@@ -92,10 +99,10 @@ void X3D_Draco_Mesh_Reader::read_mesh() {
   for (auto const &rpair : raw_pairs) {
 
     // split the string value into a vector
-    std::vector<std::string> tmp_vec = rtt_dsxx::tokenize(rpair.second);
+    std::vector<std::string> const tmp_vec = rtt_dsxx::tokenize(rpair.second);
 
     // add string-vector pair to intermediate map
-    parsed_pairs.push_back(Parsed_Element(rpair.first, tmp_vec));
+    parsed_pairs.emplace_back(rpair.first, tmp_vec);
   }
 
   // STEP 5: derive mesh data maps from parsed_pairs
@@ -207,14 +214,13 @@ std::vector<unsigned> X3D_Draco_Mesh_Reader::get_cellnodes(size_t cell) const {
   std::vector<unsigned> node_indexes;
 
   // track unique node entries with a set
-  std::set<int> node_index_set;
   for (size_t i = 1; i <= num_faces; ++i) {
 
     // get the face index, which will by key for face-to-node map
-    int face = cell_data[i];
+    int const face = cell_data[i];
 
     // get a vector of nodes for this face
-    std::vector<unsigned> tmp_vec = get_facenodes(face);
+    std::vector<unsigned> const tmp_vec = get_facenodes(face);
 
     // insert into the cell vector
     for (auto j : tmp_vec)
@@ -249,7 +255,7 @@ std::vector<unsigned> X3D_Draco_Mesh_Reader::get_cellfacenodes(size_t cell, size
   Check(face < num_faces);
 
   // get the face index, which will by key for face-to-node map
-  int map_face = cell_data[face + 1];
+  int const map_face = cell_data[face + 1];
 
   // get a vector of nodes for this face
   std::vector<unsigned> node_indexes = get_facenodes(map_face);

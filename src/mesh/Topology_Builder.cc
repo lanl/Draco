@@ -7,10 +7,17 @@
  * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Topology_Builder.hh"
+#include "mesh/Topology_Builder.hh"
+#include "dsxx/Assert.hh"
+#include "c4/C4_Functions.hh"
+#include "mesh/DD_Topology.hh"
 #include "mesh/Rep_Topology.hh"
+#include "mesh/Topology.hh"
 #include <algorithm>
+#include <cstddef> // size_t
+#include <cstdint> // uint32_t
 #include <map>
+#include <memory> // make_shared
 #include <numeric>
 #include <vector>
 
@@ -76,8 +83,8 @@ void Topology_Builder::build_cell_numbers(Vec_Int &cells_per_pe) {
   Require(accumulate(cells_per_pe.begin(), cells_per_pe.end(), 0LL) == 0);
 
   // node info
-  int nodes = rtt_c4::nodes();
-  int node = rtt_c4::node();
+  int const nodes = rtt_c4::nodes();
+  int const node = rtt_c4::node();
 
   // assign the local number of cells on this processor to the cells_per_pe array
   cells_per_pe[node] = static_cast<int>(num_active_cells_);

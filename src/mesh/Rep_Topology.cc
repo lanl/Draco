@@ -7,8 +7,12 @@
  * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Rep_Topology.hh"
+#include "mesh/Rep_Topology.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Packing_Utils.hh"
+#include "mesh/Topology.hh"
+#include <cstdint> // int64_t
+#include <ostream>
 
 namespace rtt_mesh {
 
@@ -52,7 +56,7 @@ Rep_Topology::packed_type Rep_Topology::pack() const {
   rtt_dsxx::Packer p;
 
   // calculate the size of packed data
-  int size = sizeof(int64_t);
+  int const size = sizeof(int64_t);
 
   // make a packed data buffer
   packed_type packed(size);
@@ -72,16 +76,8 @@ Rep_Topology::packed_type Rep_Topology::pack() const {
 //------------------------------------------------------------------------------------------------//
 //! Print out data in the Rep_Topology class for diagnostic purposes.
 void Rep_Topology::print(std::ostream &out) const {
-  using std::endl;
-
-  out << endl;
-  out << "*** REP_TOPOLOGY DATA ***" << endl;
-  out << "-------------------------" << endl;
-
-  out << endl;
-
-  out << "Parallel Topology: " << Base::get_parallel_scheme() << endl;
-  out << "-------------------------" << endl;
+  out << "\n*** REP_TOPOLOGY DATA ***\n-------------------------\n\n"
+      << "Parallel Topology: " << Base::get_parallel_scheme() << "\n-------------------------\n";
 }
 
 } // namespace rtt_mesh

@@ -54,12 +54,12 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
   // >>> GENERATE MESH CONSTRUCTOR ARGUMENTS
 
   // get the number of dimensions
-  unsigned dimension = reader->get_numdim();
+  unsigned const dimension = reader->get_numdim();
   Check(dimension >= 1);
   Check(dimension <= 3);
 
   // get the number of cells
-  size_t num_cells = reader->get_numcells();
+  size_t const num_cells = reader->get_numcells();
 
   // generate the cell type vector
   std::vector<unsigned> num_faces_per_cell(num_cells);
@@ -78,7 +78,7 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
   }
 
   // get the number of sides
-  size_t num_sides = reader->get_numsides();
+  size_t const num_sides = reader->get_numsides();
 
   // generate the side node count vector
   size_t sn_linkage_size = 0;
@@ -114,7 +114,7 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
   }
 
   // get the number of nodes
-  size_t num_nodes = reader->get_numnodes();
+  size_t const num_nodes = reader->get_numnodes();
 
   Check(num_nodes >= num_cells);
 
@@ -141,16 +141,12 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
       std::accumulate(num_faces_per_cell.begin(), num_faces_per_cell.end(), 0U));
 
   // generate num_nodes_per_face_per_cell vector
-  unsigned cf_counter = 0;
   for (size_t cell = 0; cell < num_cells; ++cell) {
     for (unsigned face = 0; face < num_faces_per_cell[cell]; ++face) {
 
       // store number of nodes for this face
       num_nodes_per_face_per_cell.push_back(
           static_cast<unsigned>(reader->get_cellfacenodes(cell, face).size()));
-
-      // increment counter
-      cf_counter++;
     }
   }
 

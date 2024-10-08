@@ -9,7 +9,10 @@
 
 #ifndef rtt_mesh_CAMR_Layout_hh
 #define rtt_mesh_CAMR_Layout_hh
+
 #include "dsxx/Assert.hh"
+#include <climits> // UINT32_MAX
+#include <cstdint> // uint32_t
 #include <iosfwd>
 #include <map>
 #include <memory>
@@ -101,7 +104,7 @@ public:
     Require(face >= 1 && face <= n_coarse_faces);
     sf_int boundary_cells;
     for (uint32_t cell = 1; cell <= get_num_owned_cells(); ++cell) {
-      int neighbor =
+      int const neighbor =
           cell_face[(static_cast<size_t>(cell) - 1) * n_faces_per_cell + n_fine_faces * (face - 1)];
       if (neighbor == 0 || neighbor == static_cast<int>(cell)) {
         boundary_cells.push_back(cell);
@@ -160,7 +163,7 @@ uint32_t CAMR_Layout::num_cells_across(uint32_t const cell, uint32_t const coars
   Require(coarse_face > 0 && coarse_face <= n_coarse_faces);
   Check((cell - 1) * n_faces_per_cell < INT32_MAX && (coarse_face - 1) * n_fine_faces < INT32_MAX);
 
-  uint32_t start = (cell - 1) * n_coarse_faces + (coarse_face - 1);
+  uint32_t const start = (cell - 1) * n_coarse_faces + (coarse_face - 1);
 
   Check(start < num_cells_across_face.size());
 
@@ -226,8 +229,8 @@ CAMR_Layout::sf_int CAMR_Layout::operator()(uint32_t cell, const uint32_t coarse
   Require(cell <= get_num_total_cells());
   Require(coarse_face <= n_coarse_faces);
 
-  int start = (cell - 1) * n_faces_per_cell + (coarse_face - 1) * n_fine_faces;
-  int end = start + num_cells_across(cell, coarse_face);
+  int const start = (cell - 1) * n_faces_per_cell + (coarse_face - 1) * n_fine_faces;
+  int const end = start + num_cells_across(cell, coarse_face);
 
   return {cell_face.begin() + start, cell_face.begin() + end};
 }

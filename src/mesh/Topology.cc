@@ -9,7 +9,10 @@
 
 #include "Topology.hh"
 #include "dsxx/Assert.hh"
+#include <cstdint> // int64_t
 #include <iostream>
+#include <string>
+#include <utility> // move
 
 namespace rtt_mesh {
 

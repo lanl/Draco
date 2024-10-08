@@ -7,9 +7,17 @@
  * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "DD_Topology.hh"
+#include "mesh/DD_Topology.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Packing_Utils.hh"
-#include <iomanip>
+#include "c4/C4_Functions.hh"
+#include "mesh/Topology.hh"
+#include <cstddef> // size_t
+#include <cstdint> // int64_t
+#include <ostream>
+#include <string>
+#include <utility> // move
+#include <vector>
 
 namespace rtt_mesh {
 
@@ -110,8 +118,8 @@ DD_Topology::packed_type DD_Topology::pack() const {
   Require(ghost_cells_d.size() == ghost_procs_d.size());
 
   // calculate the size
-  size_t size = sizeof(int64_t) * global_offset_d.size() +
-                sizeof(int) * (1 + ghost_cells_d.size() + ghost_procs_d.size());
+  size_t const size = sizeof(int64_t) * global_offset_d.size() +
+                      sizeof(int) * (1 + ghost_cells_d.size() + ghost_procs_d.size());
   Check(size >= 3 * sizeof(int) + sizeof(int64_t));
 
   // make packed data
@@ -141,10 +149,8 @@ DD_Topology::packed_type DD_Topology::pack() const {
 //------------------------------------------------------------------------------------------------//
 //! Print out data in the topology class for diagnostic purposes.
 void DD_Topology::print(std::ostream &out) const {
-  out << "\n*** DD_TOPOLOGY DATA ***"
-      << "\n------------------------\n"
-      << "\nParallel Topology: " << get_parallel_scheme() << "\n------------------------\n"
-      << std::endl;
+  out << "\n*** DD_TOPOLOGY DATA ***\n------------------------\n"
+      << "\nParallel Topology: " << get_parallel_scheme() << "\n------------------------\n\n";
 }
 
 } // end namespace rtt_mesh
