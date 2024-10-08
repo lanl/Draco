@@ -94,7 +94,8 @@ Draco_Mesh::Draco_Mesh(
   }
 
   // set face index of the adjacent face of off-rank cell across rank boundary
-  set_ghost_next_faces();
+  if (ghost_cell_type_.size() > 0)
+    set_ghost_next_faces();
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -477,6 +478,9 @@ void Draco_Mesh::compute_cell_to_cell_linkage(
         // augment cell-side linkage
         cell_to_side_linkage[cell].push_back(
             std::make_pair(static_cast<unsigned>(m_side_node_count.size() - 1), node_vec));
+
+        // increment number of cell-side faces for this cell
+        num_cellside_faces_per_cell[cell]++;
       }
 
       // increment iterator and counter
