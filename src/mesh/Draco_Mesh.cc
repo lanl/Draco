@@ -12,7 +12,16 @@
 #include "c4/C4_Functions.hh"
 #include "c4/gatherv.hh"
 #include <algorithm>
+#include <array>
+#include <climits>  // UINT_Max
+#include <cstddef>  // size_t
+#include <cstdint>  // uint32_t
+#include <iterator> // back_inserter
+#include <map>
 #include <numeric>
+#include <set>
+#include <utility> // make_pair
+#include <vector>
 
 namespace rtt_mesh {
 
@@ -255,7 +264,7 @@ Draco_Mesh::compute_node_coord_vec(const std::vector<double> &coordinates) const
   for (unsigned node = 0; node < num_nodes; ++node) {
 
     // create a vector of node indices for this cell
-    std::vector<double> coord_vec(ncv_first, ncv_first + dimension);
+    std::vector<double> const coord_vec(ncv_first, ncv_first + dimension);
 
     // resize each entry to the number of dimensions
     ret_node_coord_vec[node] = coord_vec;
@@ -297,7 +306,8 @@ Draco_Mesh::compute_cell_to_node_tensor(const std::vector<unsigned> &num_faces_p
     for (unsigned face = 0; face < num_faces_per_cell[cell]; ++face) {
 
       // get the vector of nodes
-      std::vector<unsigned> node_vec(cfn_first, cfn_first + num_nodes_per_face_per_cell[cf_indx]);
+      std::vector<unsigned> const node_vec(cfn_first,
+                                           cfn_first + num_nodes_per_face_per_cell[cf_indx]);
 
       // resize and set the vector of nodes for this face
       ret_cn_tensor[cell][face] = node_vec;
@@ -425,7 +435,7 @@ void Draco_Mesh::compute_cell_to_cell_linkage(
         Check(oth_cell != cell);
 
         // add to cell-cell linkage
-        cell_to_cell_linkage[cell].push_back(std::make_pair(oth_cell, node_vec));
+        cell_to_cell_linkage[cell].emplace_back(std::make_pair(oth_cell, node_vec));
 
         // increment number of cell-cell faces for this cell
         num_cellcell_faces_per_cell[cell]++;
@@ -438,7 +448,7 @@ void Draco_Mesh::compute_cell_to_cell_linkage(
       if (nodes_to_side.find(node_set) != nodes_to_side.end()) {
 
         // populate cell-boundary face layout
-        cell_to_side_linkage[cell].push_back(std::make_pair(nodes_to_side[node_set], node_vec));
+        cell_to_side_linkage[cell].emplace_back(std::make_pair(nodes_to_side[node_set], node_vec));
 
         // increment number of cell-side faces for this cell
         num_cellside_faces_per_cell[cell]++;
@@ -451,7 +461,7 @@ void Draco_Mesh::compute_cell_to_cell_linkage(
       if (nodes_to_ghost.find(node_set) != nodes_to_ghost.end()) {
 
         // populate cell-parallel face layout
-        cell_to_ghost_cell_linkage[cell].push_back(
+        cell_to_ghost_cell_linkage[cell].emplace_back(
             std::make_pair(nodes_to_ghost[node_set], node_vec));
 
         // increment number of face conditions: a off-rank face was found
@@ -476,7 +486,7 @@ void Draco_Mesh::compute_cell_to_cell_linkage(
                                       node_vec.end());
 
         // augment cell-side linkage
-        cell_to_side_linkage[cell].push_back(
+        cell_to_side_linkage[cell].emplace_back(
             std::make_pair(static_cast<unsigned>(m_side_node_count.size() - 1), node_vec));
 
         // increment number of cell-side faces for this cell
@@ -564,7 +574,7 @@ void Draco_Mesh::compute_node_to_cell_linkage(
       const std::array<unsigned, 2> node_nbrs = {cell_nodes[cnode_nbr1], cell_nodes[cnode_nbr2]};
 
       // add the pair of neighbor cells and node indices to the set for this node
-      node_to_cellnode_linkage[node].push_back(std::make_pair(cell, node_nbrs));
+      node_to_cellnode_linkage[node].emplace_back(std::make_pair(cell, node_nbrs));
     }
   }
 

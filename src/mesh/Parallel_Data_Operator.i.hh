@@ -363,7 +363,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
   for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
     // Determine the processor to receive from and the size of the data.
     int processor = itor->first;
-    size_t data_size = itor->second.size();
+    size_t const data_size = itor->second.size();
 
     data_request->allocate(data_size * vector_size);
     data_request->post(processor, comm_tag);
@@ -389,7 +389,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
     for (size_t i = 0; i < data_size; i++) {
       for (size_t j = 0; j < vector_size; j++) {
         // Get the local cell index and assign the data
-        int local_cell = itor->second[i];
+        int const local_cell = itor->second[i];
         Check(local_cell > 0);
         Check(local_data[local_cell - 1].size() == vector_size);
         data[k] = local_data[local_cell - 1][j];
@@ -410,7 +410,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
 
     data_request = incoming_data.begin();
     for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
-      size_t data_size = itor->second.size();
+      size_t const data_size = itor->second.size();
 
       // If the message is complete...
       if (data_request->complete()) {
@@ -423,7 +423,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
         size_t k = 0;
         for (size_t c = 0; c < data_size; ++c) {
           // Determine the boundary cell and write the data
-          int ghost_cell = itor->second[c];
+          int const ghost_cell = itor->second[c];
           for (size_t j = 0; j < vector_size; j++) {
             ghost_data[ghost_cell - 1][j] = data[k];
             k++;
@@ -510,7 +510,7 @@ void Parallel_Data_Operator::gather_fv_ghost_cell_data(SP_Comm_Patterns const &p
   for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
     // Determine the processor to receive from and the size of the data.
     int processor = itor->first;
-    size_t data_size = itor->second.size();
+    size_t const data_size = itor->second.size();
 
     data_request->allocate(data_size * vector_size);
     data_request->post(processor, comm_tag);
@@ -536,7 +536,7 @@ void Parallel_Data_Operator::gather_fv_ghost_cell_data(SP_Comm_Patterns const &p
     for (size_t i = 0; i < data_size; i++) {
       for (size_t j = 0; j < vector_size; j++) {
         // Get the local cell index and assign the data
-        int local_cell = itor->second[i];
+        int const local_cell = itor->second[i];
         Check(local_cell > 0);
         data[k] = local_data[(local_cell - 1) * vector_size + j];
         k++;
@@ -556,7 +556,7 @@ void Parallel_Data_Operator::gather_fv_ghost_cell_data(SP_Comm_Patterns const &p
 
     data_request = incoming_data.begin();
     for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
-      size_t data_size = itor->second.size();
+      size_t const data_size = itor->second.size();
 
       // If the message is complete...
       if (data_request->complete()) {
@@ -569,7 +569,7 @@ void Parallel_Data_Operator::gather_fv_ghost_cell_data(SP_Comm_Patterns const &p
         size_t k = 0;
         for (size_t c = 0; c < data_size; ++c) {
           // Determine the boundary cell and write the data
-          int ghost_cell = itor->second[c];
+          int const ghost_cell = itor->second[c];
           for (size_t j = 0; j < vector_size; j++) {
             ghost_data[(ghost_cell - 1) * vector_size + j] = data[k];
             k++;
@@ -670,7 +670,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
     Recv_T *data = sender.get_data();
     for (size_t i = 0; i < data_size; i++) {
       // Get the local cell index and assign the data
-      int local_cell = itor->second[i];
+      int const local_cell = itor->second[i];
       Check(local_cell > 0);
       data[i] = local_data[local_cell - 1];
     }
@@ -688,7 +688,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
 
     data_request = incoming_data.begin();
     for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
-      size_t data_size = itor->second.size();
+      size_t const data_size = itor->second.size();
 
       // If the message is complete...
       if (data_request->complete()) {
@@ -700,7 +700,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
         Recv_T *data = data_request->get_data();
         for (size_t c = 0; c < data_size; ++c) {
           // Determine the boundary cell and write the data
-          int boundary_cell = itor->second[c];
+          int const boundary_cell = itor->second[c];
           bc_data[boundary_cell - 1] = data[c];
         }
 
@@ -850,7 +850,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(
   }
 
   // Extract the type of the data being received. Data being sent will be converted to this type.
-  using Recv_T = typename std::decay<decltype(*(*ghost_data.begin()).begin())>::type;
+  using Recv_T = typename std::decay_t<decltype(*(*ghost_data.begin()).begin())>;
   using Data = Data_Request<Recv_T>;
 
   Check(*pattern);
@@ -907,7 +907,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(
     size_t k = 0;
     for (size_t cell = 0; cell < itor->second.size(); cell++) {
       for (size_t j = 0; j < local_vector_size[cell]; j++) {
-        int local_cell = itor->second[cell];
+        int const local_cell = itor->second[cell];
         Check(local_cell > 0);
         Check(local_data[local_cell - 1].size() == local_vector_size[cell]);
         data[k] = local_data[local_cell - 1][j];
@@ -927,10 +927,6 @@ void Parallel_Data_Operator::gather_ghost_cell_data(
 
     data_request = incoming_data.begin();
     for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
-      size_t data_size = 0;
-      for (auto ghost_cell : itor->second) {
-        data_size += ghost_vector_size[ghost_cell - 1];
-      }
 
       // If the message is complete...
       if (data_request->complete()) {
@@ -1020,7 +1016,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(
   }
 
   // Extract the type of the data being received. Data being sent will be converted to this type.
-  using Recv_T = typename std::decay<decltype(*(*(*ghost_data.begin()).begin()).begin())>::type;
+  using Recv_T = typename std::decay_t<decltype(*(*(*ghost_data.begin()).begin()).begin())>;
   using Data = Data_Request<Recv_T>;
 
   Check(*pattern);
@@ -1081,7 +1077,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(
     for (size_t cell = 0; cell < itor->second.size(); cell++) {
       for (size_t j = 0; j < local_vector_size[cell]; j++) {
         for (auto n = 0; n < Nv; n++) {
-          int local_cell = itor->second[cell];
+          int const local_cell = itor->second[cell];
           Check(local_cell > 0);
           Check(local_data[local_cell - 1].size() == local_vector_size[cell]);
           data[k] = local_data[local_cell - 1][j][n];
@@ -1102,11 +1098,6 @@ void Parallel_Data_Operator::gather_ghost_cell_data(
 
     data_request = incoming_data.begin();
     for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
-      size_t data_size = 0;
-      for (auto ghost_cell : itor->second) {
-        data_size += ghost_vector_size[ghost_cell - 1];
-      }
-      data_size *= Nv;
 
       // If the message is complete...
       if (data_request->complete()) {
@@ -1147,7 +1138,7 @@ template <typename T>
 void Parallel_Data_Operator::fill_ghost_cell_data(SP_Comm_Patterns pattern,
                                                   std::vector<T> &local_data,
                                                   const size_t vector_size) {
-  size_t nowned = topology->num_local_cells();
+  size_t const nowned = topology->num_local_cells();
   size_t nghosts = topology->num_ghost_cells();
   if (nghosts == 0)
     return;

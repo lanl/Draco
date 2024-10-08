@@ -126,7 +126,7 @@ template <int D> double CAMR_Mesh<D>::min(size_t d, size_t cell) const {
   Check(cell < INT32_MAX);
   sf_double const cell_vertex = get_vertex(static_cast<int>(cell));
 
-  double minimum(cell_vertex[d - 1]);
+  double const minimum(cell_vertex[d - 1]);
   // return minimum dimension
   return minimum;
 }
@@ -145,7 +145,7 @@ template <int D> double CAMR_Mesh<D>::max(size_t d, size_t cell) const {
   sf_double const cell_vertex = get_vertex(static_cast<int>(cell));
   double const delta = get_cell_width(static_cast<int>(cell));
 
-  double maximum(cell_vertex[d - 1] + delta);
+  double const maximum(cell_vertex[d - 1] + delta);
   // return maximum dimension
   return maximum;
 }
@@ -199,7 +199,7 @@ template <int D> bool CAMR_Mesh<D>::hard_in_cell(size_t const cell, const U3 &po
   double const delta = get_cell_width(cell);
 
   for (uint32_t dimension = 1; dimension <= D; ++dimension) {
-    uint32_t dimension_index = dimension - 1;
+    uint32_t const dimension_index = dimension - 1;
     if (position[dimension_index] < cell_vertex[dimension_index] ||
         position[dimension_index] > cell_vertex[dimension_index] + delta)
       return false;
@@ -272,7 +272,7 @@ int CAMR_Mesh<D>::next_cell(const int cell, const uint32_t face, const U3 &posit
   int const &dimension = face_data.first;
 
   sf_double const cell_coord(get_vertex(cell));
-  double delta = get_cell_width(cell);
+  double const delta = get_cell_width(cell);
 
   std::array<int, 2> neighbor_coords = {0, 0};
   auto insert_coord = neighbor_coords.begin();
@@ -317,7 +317,7 @@ template <int D> int CAMR_Mesh<D>::get_cell(U3 const &position) const {
 
     bool passed = true;
     for (uint32_t dimension = 1; (dimension <= D && passed); ++dimension) {
-      uint32_t dimension_index = dimension - 1;
+      uint32_t const dimension_index = dimension - 1;
       if ((position[dimension_index] < cell_coords[dimension_index]) ||
           (position[dimension_index] >= cell_coords[dimension_index] + delta))
         passed = false;
@@ -411,7 +411,7 @@ double CAMR_Mesh<D>::get_db(U3 const &position, U3 const &direction, int const c
 
   // initialize invalid face (1-based numbering)
   face = 0;
-  double delta = get_cell_width(cell);
+  double const delta = get_cell_width(cell);
   auto winner = static_cast<double>(std::numeric_limits<float>::max());
 
   int positive_face;
@@ -419,7 +419,7 @@ double CAMR_Mesh<D>::get_db(U3 const &position, U3 const &direction, int const c
   // Loop over the dimensions of the space
   for (uint32_t dimension = 1; dimension <= D; ++dimension) {
 
-    uint32_t dimension_index = dimension - 1;
+    uint32_t const dimension_index = dimension - 1;
     const double dir = direction[dimension_index];
 
     // XXX would a tolerance value > 0 be better here?
@@ -463,12 +463,12 @@ double CAMR_Mesh<D>::get_orthogonal_dist_to_bnd(const U3 &position, const int ce
   // and the sides of the cell.
 
   sf_double cell_coords(get_vertex(cell));
-  double delta = get_cell_width(cell);
+  double const delta = get_cell_width(cell);
 
   auto min_distance = static_cast<double>(std::numeric_limits<float>::max());
   for (uint32_t dimension = 1; dimension <= D; ++dimension) {
 
-    uint32_t dimension_index = dimension - 1;
+    uint32_t const dimension_index = dimension - 1;
     const double low_distance = position[dimension_index] - cell_coords[dimension_index];
     const double high_distance = delta - low_distance;
 
@@ -657,7 +657,7 @@ template <int D> typename CAMR_Mesh<D>::vf_double CAMR_Mesh<D>::get_vertices(con
     // Loop over the dimensions.
     for (int dimension = 1; dimension <= D; ++dimension) {
 
-      size_t dimension_index = dimension - 1;
+      size_t const dimension_index = dimension - 1;
       bool positive = vertex_bits[dimension_index];
       if (dimension_index == 0 && ((vertex > 1 && vertex < 4) || vertex > 5))
         positive = !positive;
@@ -718,8 +718,8 @@ typename CAMR_Mesh<D>::vf_double CAMR_Mesh<D>::get_vertices(const int cell,
 
     // Loop over the dimensions.
     for (size_t dimension = 1; dimension <= D; ++dimension) {
-      size_t dimension_index = dimension - 1;
-      bool positive = vertex_bits[dimension_index];
+      size_t const dimension_index = dimension - 1;
+      bool const positive = vertex_bits[dimension_index];
       double const value = cell_vertex[dimension_index] + (positive ? delta : 0.0);
       myvertices[dimension_index].push_back(value);
     }
@@ -803,7 +803,7 @@ bool CAMR_Mesh<D>::check_defined_surcells(std::string const &name, sf_int const 
     Require(cell > 0 && static_cast<uint32_t>(cell) < UINT32_MAX &&
             static_cast<uint32_t>(cell) <= layout->get_num_owned_cells());
 
-    sf_int neighbor_data = (*layout)(static_cast<uint32_t>(cell), face);
+    sf_int const neighbor_data = (*layout)(static_cast<uint32_t>(cell), face);
 
     for (auto n : neighbor_data)
       if (n != 0)
@@ -822,9 +822,9 @@ template <int D>
 typename CAMR_Mesh<D>::sf_int CAMR_Mesh<D>::get_neighbors(uint32_t const cell) const {
   Require(cell > 0 && static_cast<uint32_t>(cell) <= layout->get_num_owned_cells());
 
-  size_t faces = layout->num_coarse_faces();
-  size_t refined_neighbors_per_face = layout->num_amr_faces();
-  size_t max_neighbors = faces * refined_neighbors_per_face;
+  size_t const faces = layout->num_coarse_faces();
+  size_t const refined_neighbors_per_face = layout->num_amr_faces();
+  size_t const max_neighbors = faces * refined_neighbors_per_face;
 
   sf_int neighbor_list;
   neighbor_list.reserve(max_neighbors);
@@ -871,7 +871,7 @@ template <int D> typename CAMR_Mesh<D>::vf_double CAMR_Mesh<D>::get_point_coord(
     for (size_t vertex = 0; vertex < vertex_count; ++vertex) {
       size_t const result_vertex = (cell - 1) * vertex_count + vertex;
       for (size_t dim = 1; dim <= D; ++dim) {
-        size_t dim_index = dim - 1;
+        size_t const dim_index = dim - 1;
         results[result_vertex][dim_index] = myvertices[dim_index][vertex];
       }
     }

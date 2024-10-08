@@ -7,8 +7,11 @@
  * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Comm_Patterns.hh"
-#include "c4/global.hh"
+#include "mesh/Comm_Patterns.hh"
+#include "dsxx/Assert.hh"
+#include "c4/C4_Functions.hh"
+#include <cstddef> // size_t
+#include <cstdint> // INT32_MAX
 
 namespace rtt_mesh {
 
@@ -79,7 +82,7 @@ void Comm_Patterns::calc_recv_map_DD(SP_Topology const &topology) {
   Require(recv_query_map.empty());
 
   // get number of boundary cells
-  size_t num_ghost_cells = topology->num_ghost_cells();
+  size_t const num_ghost_cells = topology->num_ghost_cells();
 
   // insertion notification for recv_query_map
   pair<iterator, bool> insert_indicator;
@@ -138,7 +141,7 @@ void Comm_Patterns::calc_send_map_DD(SP_Topology const &topology) {
 
   // number of boundary processors we interact with, it is the number of processors we receive
   // messages from because full DD is one-to-one communication
-  size_t num_bproc = recv_query_map.size();
+  size_t const num_bproc = recv_query_map.size();
 
   // C4 Requests for the number of cells that other processors will query us about
   vector<rtt_c4::C4_Req> size_recv(num_bproc);
@@ -163,7 +166,7 @@ void Comm_Patterns::calc_send_map_DD(SP_Topology const &topology) {
     // determine the processor that we are communicating with and the number of our boundary cells
     // that reside on that processor
     processor = i->first;
-    int query_size = static_cast<int>(i->second.size());
+    int const query_size = static_cast<int>(i->second.size());
 
     // post receive to that processor
     rtt_c4::receive_async(size_recv[index], &number_of_cells[index], 1, processor, 600);
@@ -201,7 +204,7 @@ void Comm_Patterns::calc_send_map_DD(SP_Topology const &topology) {
     // determine the processor that we are communicating with and the number of cells that reside on
     // that processor
     processor = i->first;
-    int query_size = static_cast<int>(i->second.size());
+    int const query_size = static_cast<int>(i->second.size());
 
     // allocate list of cell data arrays
     list_of_cells[index] = new int[number_of_cells[index]];

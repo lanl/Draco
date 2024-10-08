@@ -9,8 +9,11 @@
 
 #include "Test_Topology.hh"
 #include "dsxx/Assert.hh"
-#include "c4/global.hh"
+#include "c4/C4_Functions.hh"
 #include "mesh/DD_Topology.hh"
+#include <cstddef>
+#include <cstdint>
+#include <memory>
 #include <vector>
 
 namespace rtt_mesh_test {

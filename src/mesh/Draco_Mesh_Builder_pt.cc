@@ -7,9 +7,10 @@
  * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Draco_Mesh_Builder.t.hh"
-#include "RTT_Draco_Mesh_Reader.hh"
-#include "X3D_Draco_Mesh_Reader.hh"
+#include "mesh/Draco_Mesh_Builder.hh"
+#include "mesh/Draco_Mesh_Builder.t.hh" // NOLINT(misc-include-cleaner)
+#include "mesh/RTT_Draco_Mesh_Reader.hh"
+#include "mesh/X3D_Draco_Mesh_Reader.hh"
 
 namespace rtt_mesh {
 

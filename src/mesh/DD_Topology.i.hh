@@ -28,7 +28,7 @@ int64_t DD_Topology::global_cell(size_t local_cell) const {
   size_t const node = rtt_c4::node();
   Require(local_cell <= num_local_d);
 
-  int64_t g = local_cell + global_offset_d[node];
+  int64_t const g = local_cell + global_offset_d[node];
 
   Ensure(g > global_offset_d[node]);
   Ensure(g <= global_offset_d[node + 1]);

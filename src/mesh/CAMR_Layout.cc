@@ -7,12 +7,13 @@
  * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "CAMR_Layout.hh"
-#include "dsxx/Endian.hh"
-#include "c4/C4_Functions.hh"
+#include "mesh/CAMR_Layout.hh"
+#include "dsxx/Assert.hh"
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstddef> // size_t
+#include <cstdint> // uint32_t
 #include <iomanip>
 #include <iostream>
 
@@ -68,7 +69,7 @@ CAMR_Layout::CAMR_Layout(size_t num_active_cells, size_t nghosts, uint32_t ndim,
       n_faces_per_cell(n_coarse_faces * n_fine_faces), num_owned_cells(num_active_cells),
       num_ghost_cells(nghosts), cell_face(sf_int((num_active_cells + nghosts) * n_faces_per_cell)) {
 
-  size_t tot_ncaf = n_coarse_faces * (num_owned_cells + nghosts);
+  size_t const tot_ncaf = n_coarse_faces * (num_owned_cells + nghosts);
 
   num_cells_across_face.assign(neighbor_counts, neighbor_counts + tot_ncaf);
 
@@ -89,7 +90,6 @@ CAMR_Layout::CAMR_Layout(size_t num_active_cells, size_t nghosts, uint32_t ndim,
  * Return a updated \c std::ostream, appended with the AMR_Layout report.
  */
 void CAMR_Layout::print(std::ostream &out, uint32_t cell) const {
-  using std::endl;
   using std::setw;
 
   Require(cell > 0 && cell <= get_num_total_cells());
@@ -97,20 +97,20 @@ void CAMR_Layout::print(std::ostream &out, uint32_t cell) const {
   // Preserve the "classic" non-AMR printing
   {
     // print out the cell info
-    out << "====================" << endl;
-    out << "Cell         : " << cell << endl;
-    out << "Coarse Faces : " << n_coarse_faces << endl;
-    out << "--------------------" << endl;
+    out << "====================\n";
+    out << "Cell         : " << cell << '\n';
+    out << "Coarse Faces : " << n_coarse_faces << '\n';
+    out << "--------------------\n";
     for (uint32_t i = 0; i < n_coarse_faces; ++i) {
-      out << setw(4) << i + 1 << endl;
-      sf_int coarse_nbrs = operator()(cell, i + 1);
+      out << setw(4) << i + 1 << '\n';
+      sf_int const coarse_nbrs = operator()(cell, i + 1);
       int j = 0;
       for (auto nbr : coarse_nbrs) {
-        out << setw(8) << j + 1 << setw(5) << nbr << endl;
+        out << setw(8) << j + 1 << setw(5) << nbr << '\n';
         j++;
       }
     }
-    out << "====================" << endl;
+    out << "====================\n";
   }
 }
 
@@ -142,7 +142,7 @@ uint32_t CAMR_Layout::validate() const {
   for (uint32_t cell = 1; cell <= get_num_owned_cells(); ++cell) {
     for (uint32_t face = 1; face <= n_coarse_faces; ++face) {
       uint32_t const opposite_face = opposites[face];
-      sf_int neighbors = (*this)(cell, face); // negative value indicates off-processor index.
+      sf_int const neighbors = (*this)(cell, face); // negative value indicates off-processor index.
       for (auto n : neighbors) {
         // don't check for edge cells or boundary cells
         if (n != static_cast<int>(cell) && n >= 1) {
