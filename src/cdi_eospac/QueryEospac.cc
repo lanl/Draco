@@ -13,23 +13,20 @@
 #include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/XGetopt.hh"
-#include <cmath>
 #include <cstdlib> // defines atoi
 #include <iostream>
+#include <map>
 #include <memory>
-#include <sstream>
-#include <vector>
+#include <string>
 
 //------------------------------------------------------------------------------------------------//
 void query_eospac() {
   using std::cout;
-  using std::endl;
 
   cout << "Starting QueryEospac...\n\nMaterial tables are published at "
-       << "http://xweb.lanl.gov/projects/data.\n"
-       << endl;
+       << "http://xweb.lanl.gov/projects/data.\n\n";
 
-  bool keepGoing(true);
+  bool const keepGoing(true);
   while (keepGoing) {
 
     // Table ID
@@ -37,11 +34,11 @@ void query_eospac() {
     cout << "What material/table id (0 or q to quit)? ";
     std::cin >> entry;
     if (entry == "q" || entry == "0") {
-      std::cout << std::endl;
+      std::cout << '\n';
       break;
     }
     // Convert 'string entry' to 'int tableID'
-    int tableID = atoi(entry.c_str());
+    int const tableID = atoi(entry.c_str());
 
     // Create a SesameTable
     rtt_cdi_eospac::SesameTables SesameTab;
@@ -63,14 +60,15 @@ void query_eospac() {
     else if (eosprop == std::string("Ktc_DT") || eosprop == std::string("EOS_Ktc_DT"))
       SesameTab.Ktc_DT(tableID);
     else {
-      cout << "Requested EOS property unknown or currently unsupported.  "
-           << "Please select one of (you can ommit the prefix EOS_):" << endl;
+      cout << "Requested EOS property unknown or currently unsupported. Please select one of (you "
+           << "can omit the prefix EOS_):\n";
       SesameTab.printEosTableList();
       continue;
     }
 
     // Generate EOS Table
-    std::shared_ptr<rtt_cdi_eospac::Eospac const> spEospac(new rtt_cdi_eospac::Eospac(SesameTab));
+    std::shared_ptr<rtt_cdi_eospac::Eospac const> const spEospac(
+        new rtt_cdi_eospac::Eospac(SesameTab));
 
     // Parameters
     double temp(0.0);
@@ -84,15 +82,15 @@ void query_eospac() {
     cout << "For table "
          << tableID
          // << " (" << SesameTab.tableName[ SesameTab.returnTypes(tableID) ] << ")"
-         << endl;
+         << '\n';
     if (eosprop == std::string("Uic_DT")) {
       cout << "  Specific Ion Internal Energy = "
            << spEospac->getSpecificIonInternalEnergy(temp, dens) << " kJ/g\n"
            << "  Ion Heat Capacity            = " << spEospac->getIonHeatCapacity(temp, dens)
-           << "kJ/g/keV" << endl;
+           << "kJ/g/keV\n";
     } else if (eosprop == std::string("Ktc_DT")) {
       cout << "  Electron thermal conductivity = "
-           << spEospac->getElectronThermalConductivity(temp, dens) << " /s/cm." << endl;
+           << spEospac->getElectronThermalConductivity(temp, dens) << " /s/cm.\n";
     }
   }
 
@@ -114,12 +112,12 @@ int main(int argc, char *argv[]) {
   while ((c = program_options()) != -1) {
     switch (c) {
     case 'v': // --version
-      std::cout << argv[0] << ": version " << rtt_dsxx::release() << std::endl;
+      std::cout << argv[0] << ": version " << rtt_dsxx::release() << '\n';
       return 0;
 
     case 'h': // --help
       std::cout << argv[0] << ": version " << rtt_dsxx::release() << "\nUsage: QueryEospac\n"
-                << "Follow the prompts to print equation-of-state data to the screen." << std::endl;
+                << "Follow the prompts to print equation-of-state data to the screen.\n";
       return 0;
 
     default:
@@ -131,15 +129,13 @@ int main(int argc, char *argv[]) {
     // >>> Run the application
     query_eospac();
   } catch (rtt_cdi_eospac::EospacException &err) {
-    std::cout << "EospacException ERROR: While running " << argv[0] << ", " << err.what()
-              << std::endl;
+    std::cout << "EospacException ERROR: While running " << argv[0] << ", " << err.what() << '\n';
     return 1;
   } catch (rtt_dsxx::assertion &err) {
-    std::cout << "ERROR: While running " << argv[0] << ", " << err.what() << std::endl;
+    std::cout << "ERROR: While running " << argv[0] << ", " << err.what() << '\n';
     return 1;
   } catch (...) {
-    std::cout << "ERROR: While running " << argv[0] << ", "
-              << "An unknown exception was thrown on processor " << std::endl;
+    std::cout << "ERROR: While running " << argv[0] << ", An unknown exception was thrown.\n";
     return 1;
   }
   return 0;

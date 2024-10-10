@@ -12,6 +12,8 @@
 
 #include "dsxx/config.h" // defines NODISCARD
 #include "eos_Interface.h"
+#include <algorithm> // transform
+#include <iterator>
 #include <map>
 #include <string>
 #include <vector>
@@ -175,8 +177,9 @@ public:
   //! Return a list of table/material identifiers associated with this SesameTables object.
   NODISCARD std::vector<unsigned> matList() const {
     std::vector<unsigned> mlist;
-    for (auto const &it : rtMap)
-      mlist.push_back(it.first);
+    mlist.reserve(rtMap.size()); // preallocate the vector storage for
+    std::transform(rtMap.begin(), rtMap.end(), std::back_inserter(mlist),
+                   [](auto const &pair) { return pair.first; });
     return mlist;
   }
 

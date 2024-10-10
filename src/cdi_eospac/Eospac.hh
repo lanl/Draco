@@ -9,8 +9,8 @@
 #ifndef rtt_cdi_eospac_Eospac_hh
 #define rtt_cdi_eospac_Eospac_hh
 
-#include "SesameTables.hh"
 #include "cdi/EoS.hh"
+#include "cdi_eospac/SesameTables.hh"
 #include <iostream>
 
 namespace rtt_cdi_eospac {
