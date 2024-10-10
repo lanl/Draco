@@ -44,15 +44,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma warning(disable : 4521 4244 4127 4100)
 #endif
 
-#ifdef __GNUC__
-#if (DBS_GNUC_VERSION >= 40204) && !defined(__ICC) && !defined(NVCC)
-// Suppress GCC's "unused variable" warning.
-#if (DBS_GNUC_VERSION >= 40600)
+#if defined(__GNUC__)  && !defined(__ICC) && !defined(NVCC)
 #pragma GCC diagnostic push
-#endif
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wold-style-cast"
-#endif
 #endif
 
 #ifdef __clang__
@@ -275,11 +270,9 @@ int main(int, char **) {
 #pragma clang diagnostic pop
 #endif
 
-#ifdef __GNUC__
-#if (DBS_GNUC_VERSION >= 40600)
+#if defined(__GNUC__) && !defined(__ICC) && !defined(NVCC)
 // Restore GCC diagnostics to previous state.
 #pragma GCC diagnostic pop
-#endif
 #endif
 
 #ifdef _MSC_FULL_VER

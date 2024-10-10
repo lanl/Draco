@@ -31,6 +31,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 // Check our AES implementation against the example in FIPS-197
 
+// NOLINTBEGIN(misc-include-cleaner,performance-avoid-endl)
+
 #include "rng/config.h"
 
 #ifdef _MSC_FULL_VER
@@ -140,3 +142,5 @@ int main(int /*unused*/, char ** /*unused*/) {
 #ifdef _MSC_FULL_VER
 #pragma warning(pop)
 #endif
+
+// NOLINTEND(misc-include-cleaner,performance-avoid-endl)

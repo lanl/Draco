@@ -4,16 +4,14 @@
  * \author Kent Budge
  * \date   Thu Dec 22 14:16:45 2006
  * \brief  Test the Subrandom_Sequence class
- * \note   Copyright (C) 2006-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2006-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "rng/LC_Subrandom_Generator.hh"
-#include <fstream>
-#include <iostream>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -28,7 +26,7 @@ void tstSubrandom_Sequence(UnitTest &ut) {
     // Test LC_Subrandom_Generator
 
     LC_Subrandom_Generator lcsg;
-    double value = lcsg.shift();
+    double const value = lcsg.shift();
     FAIL_IF_NOT(soft_equiv(value, 0.999741748906672));
     lcsg.shift_vector();
   }
