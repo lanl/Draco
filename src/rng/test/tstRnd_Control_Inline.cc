@@ -6,14 +6,22 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/config.h"
+#include "rng/Counter_RNG.hh"
 #include "rng/Rnd_Control_Inline.hh"
+#include <cstdint>
+#include <iostream>
+#include <limits>
 
 using namespace std;
 using namespace rtt_dsxx;
 using namespace rtt_rng;
+
+// cSpell:ignore rngs
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -21,8 +29,8 @@ using namespace rtt_rng;
 
 void test_control(UnitTest &ut) {
   // Create two controllers with different seeds.
-  uint32_t seed1 = 2452423;
-  uint32_t seed2 = 9182736;
+  uint32_t const seed1 = 2452423;
+  uint32_t const seed2 = 9182736;
   Rnd_Control control1(seed1);
   Rnd_Control control2(seed2);
 
@@ -35,12 +43,12 @@ void test_control(UnitTest &ut) {
 
   // Create a third controller with the same seed as controller1, but starting with a different
   // stream number.
-  uint64_t streamnum = 2000;
+  uint64_t constexpr streamnum = 2000;
   Rnd_Control control3(seed1, streamnum);
 
   // Initialize some generators.
   Counter_RNG rng1, rng2, rng3;
-  uint64_t numiter = 1000;
+  uint64_t constexpr numiter = 1000;
   for (uint64_t i = 0; i < numiter; ++i) {
     control1.initialize(rng1);
     control2.initialize(rng2);
@@ -102,9 +110,9 @@ void test_exceptions(UnitTest &ut) {
   // Try to create a controller that allows 0 streams.
   bool caught = false;
   try {
-    Rnd_Control control(0, 0, 0);
+    Rnd_Control const control(0, 0, 0);
   } catch (rtt_dsxx::assertion &err) {
-    cout << "Good, caught assertion: " << err.what() << endl;
+    cout << "Good, caught assertion: " << err.what() << '\n';
     caught = true;
   }
   FAIL_IF(!caught);
@@ -113,9 +121,9 @@ void test_exceptions(UnitTest &ut) {
   // streams.
   caught = false;
   try {
-    Rnd_Control control(0, 1001, 1000);
+    Rnd_Control const control(0, 1001, 1000);
   } catch (rtt_dsxx::assertion &err) {
-    cout << "Good, caught assertion: " << err.what() << endl;
+    cout << "Good, caught assertion: " << err.what() << '\n';
     caught = true;
   }
   FAIL_IF(!caught);
@@ -128,7 +136,7 @@ void test_exceptions(UnitTest &ut) {
   try {
     control.set_num(std::numeric_limits<uint64_t>::max());
   } catch (rtt_dsxx::assertion &err) {
-    cout << "Good, caught assertion: " << err.what() << endl;
+    cout << "Good, caught assertion: " << err.what() << '\n';
     caught = true;
   }
   FAIL_IF(!caught);
@@ -146,7 +154,7 @@ void test_exceptions(UnitTest &ut) {
       FAIL_IF_NOT(rng.get_num() == std::numeric_limits<uint64_t>::max() - 1);
     }
   } catch (rtt_dsxx::assertion &err) {
-    cout << "Good, caught assertion: " << err.what() << endl;
+    cout << "Good, caught assertion: " << err.what() << '\n';
     caught = true;
   }
   FAIL_IF(!caught);
@@ -162,7 +170,7 @@ void test_exceptions(UnitTest &ut) {
     Counter_RNG rng;
     control2.initialize(10, rng);
   } catch (rtt_dsxx::assertion &err) {
-    cout << "Good, caught assertion: " << err.what() << endl;
+    cout << "Good, caught assertion: " << err.what() << '\n';
     caught = true;
   }
   FAIL_IF_NOT(caught);
@@ -177,7 +185,7 @@ void test_exceptions(UnitTest &ut) {
       FAIL_IF_NOT(rng.get_num() == num_rngs);
     }
   } catch (rtt_dsxx::assertion &err) {
-    cout << "Good, caught assertion: " << err.what() << endl;
+    cout << "Good, caught assertion: " << err.what() << '\n';
     caught = true;
   }
   FAIL_IF(!caught);

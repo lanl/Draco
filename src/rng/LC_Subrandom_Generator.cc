@@ -7,7 +7,9 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "LC_Subrandom_Generator.hh"
+#include "Subrandom_Generator.hh"
 #include "dsxx/Assert.hh"
+#include "gsl/gsl_rng.h"
 
 namespace rtt_rng {
 

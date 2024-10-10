@@ -29,6 +29,9 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+// NOLINTBEGIN(misc-include-cleaner,performance-avoid-endl)
+
 #include "rng/config.h"
 
 /* Not our code: disable clang-tidy checks */
@@ -47,6 +50,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wreserved-id-macro"
+#if __clang_major__ > 12
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
+#endif
 #endif
 
 #if defined(__GNUC__) && !defined(__clang__)
@@ -224,3 +230,5 @@ int main(int, char **) {
 #endif
 
 #endif /* !defined(__clang_analyzer__) */
+
+// NOLINTEND(misc-include-cleaner,performance-avoid-endl)

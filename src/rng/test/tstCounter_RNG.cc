@@ -7,15 +7,24 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/config.h"
 #include "rng/Counter_RNG.hh"
+#include <algorithm>
+#include <cstdint>
+#include <iostream>
 #include <set>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
 using namespace rtt_rng;
+
+// cSpell:ignore CBRNG
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -25,7 +34,7 @@ void test_equality(UnitTest &ut) {
   // Create a Counter_RNG by specifying a seed and stream number.
   uint32_t seed = 1;
   uint64_t streamnum = 2;
-  Counter_RNG rng(seed, streamnum);
+  Counter_RNG const rng(seed, streamnum);
 
   FAIL_IF_NOT(rng.get_num() == streamnum);
   FAIL_IF_NOT(rng.size() == CBRNG_DATA_SIZE);
@@ -33,7 +42,7 @@ void test_equality(UnitTest &ut) {
 
   // Create another Counter_RNG with a different seed.
   seed = 2;
-  Counter_RNG rng2(seed, streamnum);
+  Counter_RNG const rng2(seed, streamnum);
 
   // rng2's stream number should match rng's, but the two generators should not be identical.
   FAIL_IF_NOT(rng2.get_num() == streamnum);
@@ -44,7 +53,7 @@ void test_equality(UnitTest &ut) {
   // Create another Counter_RNG with a different stream number.
   seed = 1;
   streamnum = 3;
-  Counter_RNG rng3(seed, streamnum);
+  Counter_RNG const rng3(seed, streamnum);
 
   // rng3 should be different from the previous two generators.
   FAIL_IF_NOT(rng3.get_num() == streamnum);
@@ -55,7 +64,7 @@ void test_equality(UnitTest &ut) {
 
   // Create another Counter_RNG with the original seed and stream number.
   streamnum = 2;
-  Counter_RNG rng4(seed, streamnum);
+  Counter_RNG const rng4(seed, streamnum);
 
   // rng4 should be equal to rng but different from rng2 and rng3.
   FAIL_IF_NOT(rng4.get_num() == streamnum);
@@ -72,7 +81,7 @@ void test_equality(UnitTest &ut) {
   data[1] = 5678;
   data[2] = 9012;
   data[3] = 3456;
-  Counter_RNG rng5(&data[0], &data[0] + CBRNG_DATA_SIZE);
+  Counter_RNG const rng5(&data[0], &data[0] + CBRNG_DATA_SIZE);
 
   streamnum = data[2];
   FAIL_IF_NOT(rng5.get_num() == streamnum);
@@ -90,7 +99,7 @@ void test_equality(UnitTest &ut) {
   data[1] = static_cast<uint64_t>(1) << 32U;
   data[2] = 2;
   data[3] = 0;
-  Counter_RNG rng6(&data[0], &data[0] + CBRNG_DATA_SIZE);
+  Counter_RNG const rng6(&data[0], &data[0] + CBRNG_DATA_SIZE);
 
   streamnum = data[2];
   FAIL_IF_NOT(rng6.get_num() == streamnum);
@@ -112,9 +121,9 @@ void test_equality(UnitTest &ut) {
 #if !(DBC & 8)
   bool caught = false;
   try {
-    Counter_RNG rng7(&data[0], &data[0] + CBRNG_DATA_SIZE - 1);
+    Counter_RNG const rng7(&data[0], &data[0] + CBRNG_DATA_SIZE - 1);
   } catch (rtt_dsxx::assertion &err) {
-    cout << "Good, caught assertion: " << err.what() << endl;
+    cout << "Good, caught assertion: " << err.what() << '\n';
     caught = true;
   }
   FAIL_IF_NOT(caught);
@@ -135,15 +144,15 @@ void test_equality(UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void test_stream(UnitTest &ut) {
   // Create two identical Counter_RNGs.
-  uint32_t seed = 0x12121212;
-  uint64_t streamnum = 1234;
-  Counter_RNG rng(seed, streamnum);
-  Counter_RNG rng2(seed, streamnum);
+  uint32_t const seed = 0x12121212;
+  uint64_t const streamnum = 1234;
+  Counter_RNG const rng(seed, streamnum);
+  Counter_RNG const rng2(seed, streamnum);
 
   FAIL_IF_NOT(rng == rng2);
 
   // Generate a random double (and advance the stream) from rng.
-  double x = rng.ran();
+  double const x = rng.ran();
 
   // rng and rng2 should no longer match, but their stream numbers and unique identifiers should be
   // the same.
@@ -153,14 +162,14 @@ void test_stream(UnitTest &ut) {
   FAIL_IF_NOT(rng.get_unique_num() == rng2.get_unique_num());
 
   // Generate a random double (and advance the stream) from rng2.
-  double y = rng2.ran();
+  double const y = rng2.ran();
 
   // Now rng and rng2 should match again, and the two generated doubles should be identical.
   FAIL_IF_NOT(rng == rng2);
   FAIL_IF_NOT(soft_equiv(x, y));
 
   // Generate another random double from rng.
-  double z = rng.ran();
+  double const z = rng.ran();
 
   // Now they should differ again.
   FAIL_IF(rng == rng2);
@@ -175,7 +184,7 @@ void test_stream(UnitTest &ut) {
   data[1] = static_cast<uint64_t>(seed) << 32U;
   data[2] = streamnum;
   data[3] = 0;
-  Counter_RNG rng3(&data[0], &data[0] + CBRNG_DATA_SIZE);
+  Counter_RNG const rng3(&data[0], &data[0] + CBRNG_DATA_SIZE);
 
   // Initially, rng3 should exactly match neither rng nor rng2, but all three should have the same
   // stream number and "unique" identifier.
@@ -187,7 +196,7 @@ void test_stream(UnitTest &ut) {
   FAIL_IF_NOT(rng3.get_unique_num() == rng2.get_unique_num());
 
   // Generate a random double from rng3; it should match rng2 but not data afterward.
-  double w = rng3.ran();
+  double const w = rng3.ran();
   FAIL_IF(rng3 == rng);
   FAIL_IF_NOT(rng3 == rng2);
   FAIL_IF(std::equal(rng3.begin(), rng3.end(), data.begin()));
@@ -205,11 +214,11 @@ void test_alias(UnitTest &ut) {
   // Create four Counter_RNGs; rng and rng2 are identical, and rng, rng2, and rng3 have the same
   // stream number.
   uint64_t streamnum = 0x20202020;
-  Counter_RNG rng(0x1111, streamnum);
-  Counter_RNG rng2(0x1111, streamnum);
-  Counter_RNG rng3(0x2222, streamnum);
+  Counter_RNG const rng(0x1111, streamnum);
+  Counter_RNG const rng2(0x1111, streamnum);
+  Counter_RNG const rng3(0x2222, streamnum);
   ++streamnum;
-  Counter_RNG rng4(0x3333, streamnum);
+  Counter_RNG const rng4(0x3333, streamnum);
 
   FAIL_IF_NOT(rng.get_num() == rng2.get_num());
   FAIL_IF_NOT(rng.get_num() == rng3.get_num());
@@ -231,7 +240,7 @@ void test_alias(UnitTest &ut) {
   FAIL_IF(rng3 == rng4);
 
   // Create a Counter_RNG_Ref from rng.
-  Counter_RNG_Ref ref(rng.ref());
+  Counter_RNG_Ref const ref(rng.ref());
 
   FAIL_IF_NOT(ref.get_num() == rng.get_num());
   FAIL_IF_NOT(ref.get_num() == rng2.get_num());
@@ -247,7 +256,7 @@ void test_alias(UnitTest &ut) {
   FAIL_IF(ref.is_alias_for(rng4));
 
   // Generate a random double (and advance the stream) from rng via ref.
-  double x = ref.ran();
+  double const x = ref.ran();
 
   FAIL_IF_NOT(ref.get_num() == rng.get_num());
   FAIL_IF_NOT(ref.get_num() == rng2.get_num());
@@ -288,7 +297,7 @@ void test_alias(UnitTest &ut) {
   data[1] = static_cast<uint64_t>(0x2222) << 32U;
   data[2] = 0x20202020;
   data[3] = 0;
-  Counter_RNG_Ref ref2(&data[0], &data[0] + CBRNG_DATA_SIZE);
+  Counter_RNG_Ref const ref2(&data[0], &data[0] + CBRNG_DATA_SIZE);
 
   // ref2 should have the same stream number as rng, rng2, and rng3 but shouldn't be an alias for
   // any of them.
@@ -306,7 +315,7 @@ void test_alias(UnitTest &ut) {
   FAIL_IF(ref2.is_alias_for(rng4));
 
   // Generate a random double from ref.
-  double y = ref2.ran();
+  double const y = ref2.ran();
 
   // The underlying data array should have changed.
   FAIL_IF_NOT(data[0] == 1);
@@ -316,7 +325,7 @@ void test_alias(UnitTest &ut) {
   FAIL_IF(soft_equiv(y, x));
 
   // Generate a random double from rng3; it should match the one from ref2.
-  double z = rng3.ran();
+  double const z = rng3.ran();
 
   FAIL_IF_NOT(soft_equiv(z, y));
   FAIL_IF(soft_equiv(z, x));
@@ -328,9 +337,9 @@ void test_alias(UnitTest &ut) {
 #if !(DBC & 8)
   bool caught = false;
   try {
-    Counter_RNG_Ref ref3(&data[0], &data[0] + CBRNG_DATA_SIZE - 1);
+    Counter_RNG_Ref const ref3(&data[0], &data[0] + CBRNG_DATA_SIZE - 1);
   } catch (rtt_dsxx::assertion &err) {
-    cout << "Good, caught assertion: " << err.what() << endl;
+    cout << "Good, caught assertion: " << err.what() << '\n';
     caught = true;
   }
   FAIL_IF_NOT(caught);
@@ -349,23 +358,23 @@ void test_rollover(UnitTest &ut) {
   data[1] = 1;
   data[2] = 0xabcd;
   data[3] = 0xef00;
-  Counter_RNG rng(&data[0], &data[0] + CBRNG_DATA_SIZE);
+  Counter_RNG const rng(&data[0], &data[0] + CBRNG_DATA_SIZE);
 
   // Increment data[0], generate a random double, and compare.
   ++data[0];
-  double x = rng.ran();
+  double const x = rng.ran();
   FAIL_IF_NOT(std::equal(rng.begin(), rng.end(), data.begin()));
 
   // ... and again.
   ++data[0];
-  double y = rng.ran();
+  double const y = rng.ran();
   FAIL_IF(soft_equiv(y, x));
   FAIL_IF_NOT(std::equal(rng.begin(), rng.end(), data.begin()));
 
   // Generate another random double and verify that the counter has incremented correctly.
   data[0] = 0;
   data[1] = 2;
-  double z = rng.ran();
+  double const z = rng.ran();
   FAIL_IF(soft_equiv(z, x));
   FAIL_IF(soft_equiv(z, y));
   FAIL_IF_NOT(std::equal(rng.begin(), rng.end(), data.begin()));
@@ -373,16 +382,16 @@ void test_rollover(UnitTest &ut) {
   // Repeat the test with a Counter_RNG_Ref.
   data[0] = 0xfffffffffffffffe;
   data[1] = 1;
-  Counter_RNG_Ref ref(&data[0], &data[0] + CBRNG_DATA_SIZE);
+  Counter_RNG_Ref const ref(&data[0], &data[0] + CBRNG_DATA_SIZE);
 
-  double y2 = ref.ran();
+  double const y2 = ref.ran();
   FAIL_IF_NOT(soft_equiv(y2, y));
   FAIL_IF_NOT(data[0] == 0xffffffffffffffff);
   FAIL_IF_NOT(data[1] == 1);
   FAIL_IF_NOT(data[2] == 0xabcd);
   FAIL_IF_NOT(data[3] == 0xef00);
 
-  double z2 = ref.ran();
+  double const z2 = ref.ran();
   FAIL_IF_NOT(soft_equiv(z2, z));
   FAIL_IF_NOT(data[0] == 0);
   FAIL_IF_NOT(data[1] == 2);
@@ -396,9 +405,9 @@ void test_rollover(UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void test_spawn(UnitTest &ut) {
   // Create a generator.
-  uint32_t seed = 0xabcdef;
-  uint64_t streamnum = 0;
-  Counter_RNG rng(seed, streamnum);
+  uint32_t const seed = 0xabcdef;
+  uint64_t const streamnum = 0;
+  Counter_RNG const rng(seed, streamnum);
 
   // Spawn a new generator.
   Counter_RNG rng_child1;
@@ -410,7 +419,7 @@ void test_spawn(UnitTest &ut) {
   FAIL_IF(rng_child1 == rng);
 
   // Create a reference to rng, and spawn from the reference.
-  Counter_RNG_Ref rng_ref(rng.ref());
+  Counter_RNG_Ref const rng_ref(rng.ref());
   FAIL_IF_NOT(rng_ref.is_alias_for(rng));
 
   Counter_RNG rng_child2;
@@ -461,8 +470,8 @@ void test_spawn(UnitTest &ut) {
   FAIL_IF(rng_child1 == rng);
 
   // Create two identical generators.
-  Counter_RNG original(seed, streamnum);
-  Counter_RNG parent(seed, streamnum);
+  Counter_RNG const original(seed, streamnum);
+  Counter_RNG const parent(seed, streamnum);
 
   // Repeatedly spawn from parent.  See how long it takes to create a duplicate of a previous
   // generator.
@@ -473,7 +482,7 @@ void test_spawn(UnitTest &ut) {
   for (unsigned int i = 0; i < 8 * sizeof(uint64_t); ++i)
     expected_period += i;
 
-  unsigned int timeout = 16384;
+  unsigned const int timeout = 16384;
   unsigned int gen = 0;
   for (gen = 0; gen < timeout; ++gen) {
     Counter_RNG child;
@@ -488,18 +497,16 @@ void test_spawn(UnitTest &ut) {
     FAIL_IF(parent == original);
 
     // Look for both parent and child identifiers in the spawn_id set.
-    uint64_t parent_id = parent.begin()[3];
-    uint64_t child_id = child.begin()[3];
+    uint64_t const parent_id = parent.begin()[3];
+    uint64_t const child_id = child.begin()[3];
 
     if (spawn_id.find(parent_id) != spawn_id.end()) {
-      std::cout << "Found parent among previous generators after " << gen << " generations."
-                << std::endl;
+      std::cout << "Found parent among previous generators after " << gen << " generations.\n";
       break;
     }
 
     if (spawn_id.find(child_id) != spawn_id.end()) {
-      std::cout << "Found child among previous generators after " << gen << " generations."
-                << std::endl;
+      std::cout << "Found child among previous generators after " << gen << " generations.\n";
       break;
     }
 
@@ -510,7 +517,7 @@ void test_spawn(UnitTest &ut) {
   FAIL_IF_NOT(gen == expected_period);
 
   // Go again from that parent, this time through a reference.  How long until it repeats this time?
-  Counter_RNG_Ref parent_ref(parent.ref());
+  Counter_RNG_Ref const parent_ref(parent.ref());
   FAIL_IF_NOT(parent_ref.is_alias_for(parent));
 
   spawn_id.clear();
@@ -533,18 +540,16 @@ void test_spawn(UnitTest &ut) {
     FAIL_IF(parent == original);
 
     // Look for both parent and child identifiers in the spawn_id set.
-    uint64_t parent_id = parent.begin()[3];
-    uint64_t child_id = child.begin()[3];
+    uint64_t const parent_id = parent.begin()[3];
+    uint64_t const child_id = child.begin()[3];
 
     if (spawn_id.find(parent_id) != spawn_id.end()) {
-      std::cout << "Found parent among previous generators after " << gen << " generations."
-                << std::endl;
+      std::cout << "Found parent among previous generators after " << gen << " generations.\n";
       break;
     }
 
     if (spawn_id.find(child_id) != spawn_id.end()) {
-      std::cout << "Found child among previous generators after " << gen << " generations."
-                << std::endl;
+      std::cout << "Found child among previous generators after " << gen << " generations.\n";
       break;
     }
 
@@ -587,18 +592,16 @@ void test_spawn(UnitTest &ut) {
     FAIL_IF(grandchild == original);
 
     // Look for both child and grandchild identifiers in the spawn_id set.
-    uint64_t child_id = child.begin()[3];
-    uint64_t grandchild_id = grandchild.begin()[3];
+    uint64_t const child_id = child.begin()[3];
+    uint64_t const grandchild_id = grandchild.begin()[3];
 
     if (spawn_id.find(child_id) != spawn_id.end()) {
-      std::cout << "Found child among previous generators after " << gen << " generations."
-                << std::endl;
+      std::cout << "Found child among previous generators after " << gen << " generations.\n";
       break;
     }
 
     if (spawn_id.find(grandchild_id) != spawn_id.end()) {
-      std::cout << "Found grandchild among previous generators after " << gen << " generations."
-                << std::endl;
+      std::cout << "Found grandchild among previous generators after " << gen << " generations.\n";
       break;
     }
 
@@ -615,15 +618,15 @@ void test_spawn(UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void test_unique(UnitTest &ut) {
   // Create three identical generators.
-  uint32_t seed = 332211;
-  uint64_t streamnum = 2468;
-  Counter_RNG rng(seed, streamnum);
-  Counter_RNG rng2(seed, streamnum);
-  Counter_RNG rng3(seed, streamnum);
+  uint32_t const seed = 332211;
+  uint64_t const streamnum = 2468;
+  Counter_RNG const rng(seed, streamnum);
+  Counter_RNG const rng2(seed, streamnum);
+  Counter_RNG const rng3(seed, streamnum);
 
-  Counter_RNG_Ref rng_ref(rng.ref());
-  Counter_RNG_Ref rng2_ref(rng2.ref());
-  Counter_RNG_Ref rng3_ref(rng3.ref());
+  Counter_RNG_Ref const rng_ref(rng.ref());
+  Counter_RNG_Ref const rng2_ref(rng2.ref());
+  Counter_RNG_Ref const rng3_ref(rng3.ref());
 
   FAIL_IF_NOT(rng == rng2);
   FAIL_IF_NOT(rng == rng3);

@@ -55,7 +55,7 @@ protected:
    * \brief Constructor for Subrandom_Generator.
    * \param[in] count Dimension of the vector calculated by this generator.
    */
-  explicit Subrandom_Generator(unsigned count) : count_(count), element_(0) { /* empty */
+  explicit Subrandom_Generator(unsigned count) : count_(count) { /* empty */
   }
 
   // MANIPULATORS
@@ -63,7 +63,7 @@ protected:
   // DATA
 
   unsigned count_;   // Current vector of the sequence
-  unsigned element_; // Current element of the current vector
+  unsigned element_{0}; // Current element of the current vector
 };
 
 } // end namespace rtt_rng

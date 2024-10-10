@@ -47,14 +47,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     more details.
  */
 
+// NOLINTBEGIN(misc-include-cleaner,performance-avoid-endl)
+
 #include "rng/config.h"
 
 /* suppress clang-tidy warnings from this file imported from R123 */
 #if !defined(__clang_analyzer__)
 
 #ifdef _MSC_FULL_VER
-// - 4521: Engines have multiple copy constructors, quite legal C++, disable
-//         MSVC complaint.
+// - 4521: Engines have multiple copy constructors, quite legal C++, disable MSVC complaint.
 // - 4244: possible loss of data when converting between int types.
 // - 4204: nonstandard extension used - non-constant aggregate initializer
 // - 4127: conditional expression is constant
@@ -62,10 +63,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma warning(disable : 4521 4244 4204 4127)
 #endif
 
-#if (DBS_GNUC_VERSION >= 40204) && !defined(__ICC) && !defined(NVCC)
-// Suppress GCC's "unused parameter" warning, about lhs and rhs in sse.h, and an
-// "unused local typedef" warning, from a pre-C++11 implementation of a static
-// assertion in compilerfeatures.h.
+#if defined(__GNUC__)  && !defined(__ICC) && !defined(NVCC) && !defined(__clang__)
+// Suppress GCC's "unused parameter" warning, about lhs and rhs in sse.h, and an "unused local
+// typedef" warning, from a pre-C++11 implementation of a static assertion in compilerfeatures.h.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
@@ -219,7 +219,7 @@ int main(int argc, char **argv) {
 #pragma clang diagnostic pop
 #endif
 
-#if (DBS_GNUC_VERSION >= 40600)
+#if defined(__GNUC__)  && !defined(__ICC) && !defined(NVCC) && !defined(__clang__)
 // Restore GCC diagnostics to previous state.
 #pragma GCC diagnostic pop
 #endif
@@ -229,6 +229,8 @@ int main(int argc, char **argv) {
 #endif
 
 #endif /* !defined(__clang_analyzer__) */
+
+// NOLINTEND(misc-include-cleaner,performance-avoid-endl)
 
 //------------------------------------------------------------------------------------------------//
 // end ut_uniform.cpp

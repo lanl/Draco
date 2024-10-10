@@ -30,6 +30,11 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+// Don't warn about this file
+// NOLINTBEGIN(misc-include-cleaner,misc-use-anonymous-namespace,misc-const-correctness)
+
+// cSpell:disable
+
 #ifdef _MSC_FULL_VER
 // - 4521: Engines have multiple copy constructors, quite legal C++, disable MSVC complaint.
 // - 4244: possible loss of data when converting between int types.
@@ -259,6 +264,10 @@ void host_execute_tests(kat_instance *tests, unsigned ntests) {
 #ifdef _MSC_FULL_VER
 #pragma warning(pop)
 #endif
+
+// cSpell:enable
+
+// NOLINTEND(misc-include-cleaner,misc-use-anonymous-namespace,misc-const-correctness)
 
 //------------------------------------------------------------------------------------------------//
 // end kat_cpp.cpp

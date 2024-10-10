@@ -29,6 +29,9 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+// NOLINTBEGIN(misc-include-cleaner,performance-avoid-endl)
+
 #include "rng/config.h"
 
 /* Not our code: disable clang-tidy checks */
@@ -373,3 +376,5 @@ int main(int, char **) {
 #endif
 
 #endif /* !defined(__clang_analyzer__) */
+
+// NOLINTEND(misc-include-cleaner,performance-avoid-endl)
