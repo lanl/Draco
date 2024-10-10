@@ -7,11 +7,23 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "NDI_TNReaction.hh"
+#include "cdi_ndi/NDI_TNReaction.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Query_Env.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/dbc.hh"
+#include "cdi_ndi/NDI_Base.hh"
+#include <algorithm> // upper_bound, count
 #include <array>
-#include <cmath>
+#include <cstddef> // size_t
+#include <cstdint> // uint32_t
+#include <limits>
+#include <sstream>
+#include <string>
+#include <utility> // move
+#include <vector>
+
+// cSpell:ignore einbar, sigvbars, rprods, reac, edist
 
 namespace rtt_cdi_ndi {
 
@@ -82,6 +94,9 @@ NDI_TNReaction::NDI_TNReaction(const std::string &library_in, std::string &react
  * This function opens an NDI file, navigates to the appropriate data, reads the data into internal
  * buffers, and closes the file. For more details on NDI, see
  * https://xweb.lanl.gov/projects/data/nuclear/ndi/ndi.html
+ *
+ * Don't warn about ndi specific variables used in this function.
+ * NOLINTBEGIN(misc-include-cleaner)
  */
 void NDI_TNReaction::load_ndi() {
   int gendir_handle = -1;
@@ -134,7 +149,7 @@ void NDI_TNReaction::load_ndi() {
   }
 
   //! Get number of incident energy support points for reaction
-  int num_einbar = NDI2_get_size(dataset_handle, NDI_EINBAR, &ndi_error);
+  int const num_einbar = NDI2_get_size(dataset_handle, NDI_EINBAR, &ndi_error);
   Require(ndi_error == 0);
   einbar.resize(num_einbar);
 
@@ -148,12 +163,13 @@ void NDI_TNReaction::load_ndi() {
   }
 
   //! Get the number of interp regions... for now just throw an exception if this is not equal to 1
-  int num_einbar_interp_regions = NDI2_get_size(dataset_handle, NDI_EINBAR_INTERP_REG, &ndi_error);
+  int const num_einbar_interp_regions =
+      NDI2_get_size(dataset_handle, NDI_EINBAR_INTERP_REG, &ndi_error);
   Require(ndi_error == 0);
   Insist(num_einbar_interp_regions == 1, "Only 1 einbar interp region supported!");
 
   //! Get number of cross section support points for reaction
-  int num_sigvbar = NDI2_get_size(dataset_handle, NDI_SIGVBARS, &ndi_error);
+  int const num_sigvbar = NDI2_get_size(dataset_handle, NDI_SIGVBARS, &ndi_error);
   Require(ndi_error == 0);
   sigvbar.resize(num_sigvbar);
 
@@ -167,7 +183,7 @@ void NDI_TNReaction::load_ndi() {
   }
 
   //! Get the number of interp regions... for now just throw an exception if this is not equal to 1
-  int num_sigvbar_interp_regions =
+  int const num_sigvbar_interp_regions =
       NDI2_get_size(dataset_handle, NDI_SIGVBAR_INTERP_REG, &ndi_error);
   Require(ndi_error == 0);
   Insist(num_sigvbar_interp_regions == 1, "Only 1 sigvbar interp region supported!");
@@ -261,7 +277,8 @@ void NDI_TNReaction::load_ndi() {
 
     //! Get the number of interp regions... for now just throw an exception if this is not equal to
     //! 1
-    int num_edist_interp_regions = NDI2_get_size(dataset_handle, NDI_EDIST_INTERP_REG, &ndi_error);
+    int const num_edist_interp_regions =
+        NDI2_get_size(dataset_handle, NDI_EDIST_INTERP_REG, &ndi_error);
     Require(ndi_error == 0);
     Insist(num_edist_interp_regions == 1, "Only 1 edist interp region supported!");
 
@@ -285,6 +302,8 @@ void NDI_TNReaction::load_ndi() {
   Require(ndi_error == 0);
 }
 
+// NOLINTEND(misc-include-cleaner)
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Return normalized probability distribution function for energy of a reaction product at a
@@ -306,17 +325,18 @@ std::vector<double> NDI_TNReaction::get_PDF(const int product_zaid,
 
   auto temp_1 = std::upper_bound(product_temperatures[product_index].begin(),
                                  product_temperatures[product_index].end(), temperature);
-  uint32_t index_1 = static_cast<uint32_t>(temp_1 - product_temperatures[product_index].begin());
-  uint32_t index_0 = index_1 - 1;
-  double temp_0 = product_temperatures[product_index][index_0];
+  uint32_t const index_1 =
+      static_cast<uint32_t>(temp_1 - product_temperatures[product_index].begin());
+  uint32_t const index_0 = index_1 - 1;
+  double const temp_0 = product_temperatures[product_index][index_0];
   Check(*temp_1 - temp_0 > std::numeric_limits<double>::min());
-  double fac = 1. - (temperature - temp_0) / (*temp_1 - temp_0);
+  double const fac = 1. - (temperature - temp_0) / (*temp_1 - temp_0);
   Check(fac >= 0 && fac <= 1);
 
   Remember(double dist_sum = 0.);
   for (uint32_t n = 0; n < num_groups; n++) {
-    double pdf_0 = product_distributions[product_index][index_0][n];
-    double pdf_1 = product_distributions[product_index][index_1][n];
+    double const pdf_0 = product_distributions[product_index][index_0][n];
+    double const pdf_1 = product_distributions[product_index][index_1][n];
     pdf[n] = pdf_0 * fac + pdf_1 * (1. - fac);
     Remember(dist_sum += pdf[n]);
   }

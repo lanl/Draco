@@ -7,20 +7,26 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "NDI_CP_Eloss.hh"
-#include "dsxx/DracoStrings.hh"
+#include "cdi_ndi/NDI_CP_Eloss.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Interpolate.hh"
 #include "dsxx/Soft_Equivalence.hh"
-
+#include "cdi/CPCommon.hh"
+#include "cdi/CPEloss.hh"
+#include "cdi_ndi/NDI_Base.hh"
 #include <cmath>
+#include <string>
+
+// cSpell:ignore Eloss, dedx, zaids
 
 namespace rtt_cdi_ndi {
 
 // Protect actual NDI calls with NDI_FOUND macro:
 #ifdef NDI_FOUND
-//----------------------------------------------------------------------------//
+
+//------------------------------------------------------------------------------------------------//
 // CONSTRUCTORS
-//----------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 /*!
  * \brief Constructor for NDI reader specific to TN DEDX data with provided path to gendir file.
  *
@@ -54,6 +60,10 @@ NDI_CP_Eloss::NDI_CP_Eloss(const std::string &library_in, rtt_cdi::CParticle tar
 
   load_ndi();
 }
+
+// Don't warn about directly including NDI header files.
+
+// NOLINTBEGIN(misc-include-cleaner)
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -191,6 +201,8 @@ void NDI_CP_Eloss::load_ndi() {
 #endif // NDI_DEDX_SUPPORT
 }
 
+// NOLINTEND(misc-include-cleaner)
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Interpolate the tabulated stopping power for a given material and projectile state.
@@ -240,9 +252,9 @@ double NDI_CP_Eloss::getEloss(const double temperature, const double density,
 
 #else
 
-//----------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // CONSTRUCTORS
-//----------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
 /*!
  * \brief Constructor for NDI reader specific to TN DEDX data with provided path to gendir file.
@@ -270,7 +282,7 @@ NDI_CP_Eloss::NDI_CP_Eloss(const std::string &library_in, rtt_cdi::CParticle tar
                        rtt_cdi::CPModelAngleCutoff::NONE),
       NDI_Base("dedx", library_in) {}
 
-//----------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 /*!
  * \brief Interpolate the tabulated stopping power for a given material and projectile state.
  *
@@ -286,6 +298,6 @@ double NDI_CP_Eloss::getEloss(const double /*temperature*/, const double /*densi
 #endif // NDI_FOUND
 } // namespace rtt_cdi_ndi
 
-//----------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // End cdi_ndi/NDI_CP_Eloss.cc
-//----------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//

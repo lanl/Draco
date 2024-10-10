@@ -7,18 +7,18 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Query_Env.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/SystemCall.hh"
-#include "dsxx/dbc.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "dsxx/path.hh"
-#include "cdi/CDI.hh"
 #include "cdi_ndi/NDI_AtomicMass.hh"
-#include "cdi_ndi/config.h"
 #include <fstream>
-#include <iostream>
-#include <sstream>
-#include <vector>
+#include <string>
+#include <tuple>
+
+// cSpell:ignore mendf
 
 using rtt_cdi_ndi::NDI_AtomicMass;
 using rtt_dsxx::soft_equiv;
@@ -30,9 +30,9 @@ using rtt_dsxx::soft_equiv;
 void amw_test(rtt_dsxx::UnitTest &ut) {
 
   // Write a custom gendir file to deal with NDI-required absolute path to data
-  std::string gendir_in = "gendir_tmp.all";
-  std::string gendir_tmp_path = ut.getTestInputPath() + gendir_in;
-  std::string data_path = ut.getTestSourcePath() + "ndi_data";
+  std::string const gendir_in = "gendir_tmp.all";
+  std::string const gendir_tmp_path = ut.getTestInputPath() + gendir_in;
+  std::string const data_path = ut.getTestSourcePath() + "ndi_data";
   std::ofstream gendir_tmp_file;
   gendir_tmp_file.open(gendir_tmp_path);
   gendir_tmp_file << "multigroup_neutron\n";
@@ -43,15 +43,15 @@ void amw_test(rtt_dsxx::UnitTest &ut) {
   gendir_tmp_file << "    aw=1.0078249887344399  awr=0.99916729999999998  end\n";
   gendir_tmp_file.close();
 
-  NDI_AtomicMass ndi_amw(gendir_tmp_path);
+  NDI_AtomicMass const ndi_amw(gendir_tmp_path);
 
-  int proton_zaid = 1001;
-  double proton_amw = ndi_amw.get_amw(proton_zaid);
+  int const proton_zaid = 1001;
+  double const proton_amw = ndi_amw.get_amw(proton_zaid);
 
   FAIL_IF_NOT(soft_equiv(proton_amw, 1.673532619349924133e-24, 1.e-8));
 
-  int electron_zaid = -1;
-  double electron_amw = ndi_amw.get_amw(electron_zaid);
+  int const electron_zaid = -1;
+  double const electron_amw = ndi_amw.get_amw(electron_zaid);
 
   FAIL_IF_NOT(soft_equiv(electron_amw, 9.109382909999999302e-28, 1.e-8));
 
@@ -65,16 +65,16 @@ void amw_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void amw_default_test(rtt_dsxx::UnitTest &ut) {
 
-  NDI_AtomicMass ndi_amw;
+  NDI_AtomicMass const ndi_amw;
 
-  int proton_zaid = 1001;
-  double proton_amw = ndi_amw.get_amw(proton_zaid);
+  int const proton_zaid = 1001;
+  double const proton_amw = ndi_amw.get_amw(proton_zaid);
 
   // This might change between NDI releases hence the low tolerance
   FAIL_IF_NOT(soft_equiv(proton_amw, 1.673532619349924133e-24, 1.e-4));
 
-  int electron_zaid = -1;
-  double electron_amw = ndi_amw.get_amw(electron_zaid);
+  int const electron_zaid = -1;
+  double const electron_amw = ndi_amw.get_amw(electron_zaid);
 
   FAIL_IF_NOT(soft_equiv(electron_amw, 9.109382909999999302e-28, 1.e-8));
 

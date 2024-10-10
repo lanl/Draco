@@ -7,12 +7,17 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "NDI_Base.hh"
-#include "dsxx/DracoStrings.hh"
+#include "cdi_ndi/NDI_Base.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/DracoStrings.cc"
+#include "dsxx/DracoTerminal.hh"
 #include "dsxx/Query_Env.hh"
-#include "dsxx/SystemCall.hh"
-#include "dsxx/dbc.hh"
-#include <algorithm>
+#include "dsxx/path.hh"
+#include <iostream>
+#include <string>
+#include <utility>
+
+// cSpell:ignore NOLINTNEXTLINE, ccolor
 
 namespace rtt_cdi_ndi {
 
@@ -31,6 +36,7 @@ namespace rtt_cdi_ndi {
 void NDI_Base::warn_ndi_version_mismatch(std::string const &gendir) {
 
   std::string gendir_ver = rtt_dsxx::extract_version(gendir, 2);
+  // NOLINTNEXTLINE(misc-include-cleaner) // Ignore NDI vendor defined CPP macros
   std::string ndi_ver = rtt_dsxx::extract_version(NDI_ROOT_DIR, 2);
   if (gendir_ver.size() == 0)
     gendir_ver = "version unknown";
@@ -38,11 +44,10 @@ void NDI_Base::warn_ndi_version_mismatch(std::string const &gendir) {
     ndi_ver = "version unknown";
   if (gendir_ver != ndi_ver) {
     using DT = Term::DracoTerminal;
-    std::cout << "\n"
-              << Term::ccolor(DT::error) << "WARNING: In the cdi_ndi/NDI_Base constructor, the NDI "
-              << "library version (" << ndi_ver << ") is different than the NDI GENDIR version ("
-              << gendir_ver << "). \n"
-              << Term::ccolor(DT::reset) << std::endl;
+    std::cout << Term::ccolor(DT::error)
+              << "\nWARNING: In the cdi_ndi/NDI_Base constructor, the NDI library version ("
+              << ndi_ver << ") is different than the NDI GENDIR version (" << gendir_ver << "). \n"
+              << Term::ccolor(DT::reset) << '\n';
   }
 }
 #else

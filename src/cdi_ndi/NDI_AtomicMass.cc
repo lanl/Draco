@@ -7,11 +7,15 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "NDI_AtomicMass.hh"
-#include "NDI_Base.hh"
-#include "dsxx/DracoStrings.hh"
-#include "dsxx/SystemCall.hh"
+#include "cdi_ndi/NDI_AtomicMass.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/path.hh"
+#include "cdi_ndi/NDI_Base.hh"
 #include <array>
+#include <string>
+#include <utility>
+
+// cSpell:ignore Saller, mendf
 
 namespace rtt_cdi_ndi {
 
@@ -35,7 +39,7 @@ NDI_AtomicMass::NDI_AtomicMass(std::string gendir_path_in)
  *        invokes multigroup_neutron dataset which includes atomic weights.
  *
  * \pre This function requires gendir_path to be valid.  If it isn't valid this NDI_atomicMass
- *      object will fail to contruct at run time.
+ *      object will fail to construct at run time.
  *
  * \param[in] zaid ZAID of isotope for which to return the atomic mass.
  * \return mass of isotope in grams
@@ -47,6 +51,11 @@ double NDI_AtomicMass::get_amw(const int zaid) const {
   }
 
 #ifdef NDI_FOUND
+
+  // Don't warn about direct inclusion of NDI functions w/o header.
+
+  // NOLINTBEGIN(misc-include-cleaner)
+
   int gendir_handle = -1;
   int ndi_error = -9999;
   ndi_error = NDI2_open_gendir(&gendir_handle, gendir_path.c_str());
@@ -59,9 +68,9 @@ double NDI_AtomicMass::get_amw(const int zaid) const {
   ndi_error = NDI2_set_option_gendir(gendir_handle, NDI_LIBRARY_DEFAULT, "mendf71x");
   Require(ndi_error == 0);
 
-  std::string zaid_formatted = std::to_string(zaid) + ".";
+  std::string const zaid_formatted = std::to_string(zaid) + ".";
 
-  int size = NDI2_get_size_x(gendir_handle, NDI_AT_WGT, zaid_formatted.c_str(), &ndi_error);
+  int const size = NDI2_get_size_x(gendir_handle, NDI_AT_WGT, zaid_formatted.c_str(), &ndi_error);
   Require(ndi_error == 0);
   Insist(size == 1, "NDI returned more or fewer than one atomic weight?");
 
@@ -74,6 +83,9 @@ double NDI_AtomicMass::get_amw(const int zaid) const {
   Require(ndi_error == 0);
 
   return arr[0] * pc.amu();
+
+  // NOLINTEND(misc-include-cleaner)
+
 #else
   // NDI gendir not available.
   Insist(rtt_dsxx::fileExists(gendir_path),
