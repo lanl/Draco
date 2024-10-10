@@ -10,13 +10,12 @@
 #include "dsxx/Query_Env.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/SystemCall.hh"
-#include "dsxx/dbc.hh"
-#include "cdi/CDI.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/path.hh"
 #include "cdi_ndi/NDI_TNReaction.hh"
 #include <fstream>
-#include <iostream>
-#include <sstream>
+#include <string>
+#include <tuple>
 #include <vector>
 
 using rtt_cdi_ndi::NDI_TNReaction;
@@ -26,12 +25,14 @@ using rtt_dsxx::soft_equiv;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
+// cSpell:ignore tndata, einbar
+
 void gendir_test(rtt_dsxx::UnitTest &ut) {
 
   // Write a custom gendir file to deal with NDI-required absolute path to data
-  std::string gendir_in = "gendir_tmp.all";
-  std::string gendir_path = ut.getTestInputPath() + gendir_in;
-  std::string data_path = ut.getTestSourcePath() + "ndi_data";
+  std::string const gendir_in = "gendir_tmp.all";
+  std::string const gendir_path = ut.getTestInputPath() + gendir_in;
+  std::string const data_path = ut.getTestSourcePath() + "ndi_data";
   std::ofstream gendir_tmp_file;
   gendir_tmp_file.open(gendir_path);
   gendir_tmp_file << "tndata\n";
@@ -40,11 +41,11 @@ void gendir_test(rtt_dsxx::UnitTest &ut) {
   gendir_tmp_file << "    ft=asc  ln=73  o=3372  end\n";
   gendir_tmp_file.close();
 
-  std::string library_in = "lanl04";
-  std::string reaction_in = "n+be7->p+li7";
+  std::string const library_in = "lanl04";
+  std::string const reaction_in = "n+be7->p+li7";
 
-  std::vector<double> mg_e_bounds = {17.e3, 7.79e3, 2.232e3, 0.184e3, 1.67e-1};
-  NDI_TNReaction tn(gendir_path, library_in, reaction_in, mg_e_bounds);
+  std::vector<double> const mg_e_bounds = {17.e3, 7.79e3, 2.232e3, 0.184e3, 1.67e-1};
+  NDI_TNReaction const tn(gendir_path, library_in, reaction_in, mg_e_bounds);
 
   // Check return values of getters
   FAIL_IF(tn.get_gendir().find(gendir_in) == std::string::npos);
@@ -80,9 +81,9 @@ void gendir_test(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(soft_equiv(group_energies.front(), 1.239500000000000000e+04, 1.e-8));
   FAIL_IF_NOT(soft_equiv(group_energies.back(), 9.208350000000000080e+01, 1.e-8));
 
-  int product_zaid_1 = 1001;            // proton
-  int product_zaid_2 = 3007;            // Lithium-7
-  double material_temperature = 1.1e-1; // keV
+  int const product_zaid_1 = 1001;            // proton
+  int const product_zaid_2 = 3007;            // Lithium-7
+  double const material_temperature = 1.1e-1; // keV
 
   auto pdf_1 = tn.get_PDF(product_zaid_1, material_temperature);
   for (int n = 0; n < tn.get_num_groups(); n++) {
@@ -104,8 +105,8 @@ void gendir_test(rtt_dsxx::UnitTest &ut) {
 
   // Check that non-monotonically-decreasing multigroup bounds fail
   try {
-    std::vector<double> increasing_mg_e_bounds = {1.e0, 1.e1, 1.e2};
-    NDI_TNReaction bad_tn(gendir_path, library_in, reaction_in, increasing_mg_e_bounds);
+    std::vector<double> const increasing_mg_e_bounds = {1.e0, 1.e1, 1.e2};
+    NDI_TNReaction const bad_tn(gendir_path, library_in, reaction_in, increasing_mg_e_bounds);
     FAILMSG("Did not catch expected assertion for non-monotonically-decreasing "
             "multigroup bounds");
   } catch (...) {
@@ -122,11 +123,11 @@ void gendir_test(rtt_dsxx::UnitTest &ut) {
 
 //------------------------------------------------------------------------------------------------//
 void gendir_default_test(rtt_dsxx::UnitTest &ut) {
-  std::string library_in = "lanl04";
+  std::string const library_in = "lanl04";
   std::string reaction_in = "d+t->n+a";
 
-  std::vector<double> mg_e_bounds = {17.e3, 7.79e3, 2.232e3, 0.184e3, 1.67e-1};
-  NDI_TNReaction tn(library_in, reaction_in, mg_e_bounds);
+  std::vector<double> const mg_e_bounds = {17.e3, 7.79e3, 2.232e3, 0.184e3, 1.67e-1};
+  NDI_TNReaction const tn(library_in, reaction_in, mg_e_bounds);
 
   if (ut.numFails == 0) {
     PASSMSG("NDI_TNReaction (default gendir path) test passes.");
