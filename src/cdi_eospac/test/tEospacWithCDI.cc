@@ -10,13 +10,15 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "cdi/CDI.hh"
+#include "cdi/EoS.hh"
 #include "cdi_eospac/Eospac.hh"
-#include "cdi_eospac/EospacException.hh"
 #include "cdi_eospac/SesameTables.hh"
 #include <iostream>
-#include <sstream>
+#include <memory>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -33,7 +35,7 @@ using rtt_dsxx::soft_equiv;
  */
 void eospac_with_cdi_test(rtt_dsxx::UnitTest &ut) {
 
-  cout << "\nTest of C++ code calling EOSPAC routines via the CDI interface.\n" << endl;
+  cout << "\nTest of C++ code calling EOSPAC routines via the CDI interface.\n\n";
 
   // ---------------------------- //
   // Create a SesameTables object //
@@ -70,6 +72,9 @@ void eospac_with_cdi_test(rtt_dsxx::UnitTest &ut) {
   // Also assign matID Al23714 for temperature-based electron thermal conductivity (tconde).
   AlSt.Uic_DT(Al3717).Ktc_DT(Al23714);
 
+  // Don't warn about CPP macros defined by EOSPAC.
+  // NOLINTBEGIN(misc-include-cleaner)
+
   // Verify that the assignments were made correctly.
 
   // Cvi (returnType=EOS_Uic_DT (=ES4enion)) should point to matID 3717.  The user should never need
@@ -84,6 +89,8 @@ void eospac_with_cdi_test(rtt_dsxx::UnitTest &ut) {
 
   if (AlSt.matID(EOS_Ktc_DT) != 23714)
     FAILMSG("AlSt.matID(27) points to the wrong matID.");
+
+  // NOLINTEND(misc-include-cleaner)
 
   // ----------------------- //
   // Create an Eospac object //
@@ -138,13 +145,13 @@ void eospac_with_cdi_test(rtt_dsxx::UnitTest &ut) {
 
   // Retrieve an Electron internal energy value;
 
-  double density = 1.0;      // g/cm^3
+  double const density = 1.0; // g/cm^3
   double temperature = 5800; // K
   temperature *= K2keV;      // convert temps to keV.
 
   double refValue = 1.0507392783; // kJ/g
 
-  double specificElectronInternalEnergy =
+  double const specificElectronInternalEnergy =
       spCdiEos->eos()->getSpecificElectronInternalEnergy(temperature, density);
   double const tol(1.0e-10);
 
@@ -168,7 +175,7 @@ void eospac_with_cdi_test(rtt_dsxx::UnitTest &ut) {
 
   refValue = 5.23391652028; // kJ/g
 
-  double specificIonInternalEnergy =
+  double const specificIonInternalEnergy =
       spCdiEos->eos()->getSpecificIonInternalEnergy(temperature, density);
 
   if (soft_equiv(specificIonInternalEnergy, refValue, tol))
@@ -191,7 +198,7 @@ void eospac_with_cdi_test(rtt_dsxx::UnitTest &ut) {
 
   refValue = 12.8992087458; // electrons per ion
 
-  double nfree = spCdiEos->eos()->getNumFreeElectronsPerIon(temperature, density);
+  double const nfree = spCdiEos->eos()->getNumFreeElectronsPerIon(temperature, density);
 
   if (soft_equiv(nfree, refValue, tol))
     PASSMSG("getNumFreeElectronsPerIon() test passed.");
@@ -202,7 +209,7 @@ void eospac_with_cdi_test(rtt_dsxx::UnitTest &ut) {
 
   refValue = 1.38901721467e+29; // 1/s/cm
 
-  double chie = spCdiEos->eos()->getElectronThermalConductivity(temperature, density);
+  double const chie = spCdiEos->eos()->getElectronThermalConductivity(temperature, density);
 
   if (soft_equiv(chie, refValue, tol))
     PASSMSG("getElectronThermalConductivity() test passed.");

@@ -11,10 +11,17 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "cdi_eospac/Eospac.hh"
 #include "cdi_eospac/EospacException.hh"
+#include "cdi_eospac/SesameTables.hh"
 #include <iomanip>
+#include <iostream>
+#include <map>
+#include <memory>
 #include <sstream>
+#include <string>
+#include <vector>
 
 namespace rtt_cdi_eospac_test {
 
@@ -28,7 +35,7 @@ using rtt_dsxx::soft_equiv;
 void cdi_eospac_test(rtt_dsxx::UnitTest &ut) {
   // Start the test.
 
-  std::cout << "\nTest of C++ code calling EOSPAC routines\n" << std::endl;
+  std::cout << "\nTest of C++ code calling EOSPAC routines\n\n";
 
   // ---------------------------- //
   // Create a SesameTables object //
@@ -71,6 +78,9 @@ void cdi_eospac_test(rtt_dsxx::UnitTest &ut) {
   AlSt.T_DUe(Al3717);  // getElectronTemperature(rho,Ue)
   AlSt.T_DUic(Al3717); // getIonTemperature(rho,Ue)
 
+  // Ignore warnings about missing CPP defs defined by EOSPAC.
+  // NOLINTBEGIN(misc-include-cleaner)
+
   // Verify that the assignments were made correctly.
 
   // Cvi (returnType=EOS_Uic_DT (=ES4enion)) should point to matID 3717. The user should never need
@@ -85,6 +95,8 @@ void cdi_eospac_test(rtt_dsxx::UnitTest &ut) {
 
   if (AlSt.matID(EOS_Ktc_DT) != 23714)
     FAILMSG("AlSt.matID(27) points to the wrong matID.");
+
+  // NOLINTEND(misc-include-cleaner)
 
   // ----------------------- //
   // Create an Eospac object //
@@ -120,13 +132,13 @@ void cdi_eospac_test(rtt_dsxx::UnitTest &ut) {
 
   // Retrieve an Electron internal energy value;
 
-  double density = 1.0;      // g/cm^3
+  double const density = 1.0; // g/cm^3
   double temperature = 5800; // K
   temperature *= K2keV;      // convert temps to keV
 
   double refValue = 1.0507392783; // kJ/g
 
-  double specificElectronInternalEnergy =
+  double const specificElectronInternalEnergy =
       spEospac->getSpecificElectronInternalEnergy(temperature, density);
   double const tol(1.0e-10);
 
@@ -135,7 +147,7 @@ void cdi_eospac_test(rtt_dsxx::UnitTest &ut) {
   else {
     std::cout.precision(12);
     std::cout << "refValue = " << refValue << "\ntabValue = " << specificElectronInternalEnergy
-              << std::endl;
+              << '\n';
     FAILMSG("getSpecificElectronInternalEnergy() test failed.");
   }
 
@@ -155,7 +167,8 @@ void cdi_eospac_test(rtt_dsxx::UnitTest &ut) {
 
   refValue = 5.23391652028; // kJ/g
 
-  double specificIonInternalEnergy = spEospac->getSpecificIonInternalEnergy(temperature, density);
+  double const specificIonInternalEnergy =
+      spEospac->getSpecificIonInternalEnergy(temperature, density);
 
   if (soft_equiv(specificIonInternalEnergy, refValue, tol))
     PASSMSG("getSpecificIonInternalEnergy() test passed.");
@@ -177,7 +190,7 @@ void cdi_eospac_test(rtt_dsxx::UnitTest &ut) {
 
   refValue = 12.8992087458; // electrons per ion
 
-  double nfree = spEospac->getNumFreeElectronsPerIon(temperature, density);
+  double const nfree = spEospac->getNumFreeElectronsPerIon(temperature, density);
 
   if (soft_equiv(nfree, refValue, tol))
     PASSMSG("getNumFreeElectronsPerIon() test passed.");
@@ -188,7 +201,7 @@ void cdi_eospac_test(rtt_dsxx::UnitTest &ut) {
 
   refValue = 1.38901721467e+29; // 1/s/cm
 
-  double chie = spEospac->getElectronThermalConductivity(temperature, density);
+  double const chie = spEospac->getElectronThermalConductivity(temperature, density);
 
   if (soft_equiv(chie, refValue, tol))
     PASSMSG("getElectronThermalConductivity() test passed.");
@@ -197,7 +210,7 @@ void cdi_eospac_test(rtt_dsxx::UnitTest &ut) {
 
   // Test the getElectronTemperature function
 
-  double SpecificElectronInternalEnergy(1.0);                                              // kJ/g
+  double const SpecificElectronInternalEnergy(1.0);                                        // kJ/g
   double Tout = spEospac->getElectronTemperature(density, SpecificElectronInternalEnergy); // keV
 
   double const Tegold(0.000487303450297301); // keV
@@ -212,7 +225,7 @@ void cdi_eospac_test(rtt_dsxx::UnitTest &ut) {
 
   // Test the getElectronTemperature function
 
-  double SpecificIonInternalEnergy(10.0);                                 // kJ/g
+  double const SpecificIonInternalEnergy(10.0);                           // kJ/g
   Tout = spEospac->getIonTemperature(density, SpecificIonInternalEnergy); // keV
 
   double const Tigold(0.001205608722470064); // keV
@@ -253,7 +266,7 @@ void cdi_eospac_test(rtt_dsxx::UnitTest &ut) {
     PASSMSG("getElectronHeatCapacity() test passed for vector state values.");
   else {
     std::cout.precision(12);
-    std::cout << "refValue = " << refValue << "\ntabValue = " << vCve[0] << std::endl;
+    std::cout << "refValue = " << refValue << "\ntabValue = " << vCve[0] << '\n';
     FAILMSG("getElectronHeatCapacity() test failed for vector state values.");
   }
 
@@ -341,15 +354,18 @@ void cdi_eospac_except_test(rtt_dsxx::UnitTest &ut) {
   // EOS_Comment
   // EOS_Info
 
+  // Ignore warnings about missing CPP defs defined by EOSPAC.
+  // NOLINTBEGIN(misc-include-cleaner)
+
   // Generate an Eospac object
 
-  std::shared_ptr<rtt_cdi_eospac::Eospac const> spEospac(new rtt_cdi_eospac::Eospac(FeSt));
+  std::shared_ptr<rtt_cdi_eospac::Eospac const> const spEospac(new rtt_cdi_eospac::Eospac(FeSt));
 
   // Print table information for Pt_DT:
   {
     std::ostringstream msg;
     spEospac->printTableInformation(EOS_Pt_DT, msg);
-    std::cout << "\nTable information for Fe2140:\n" << msg.str() << std::endl;
+    std::cout << "\nTable information for Fe2140:\n" << msg.str() << '\n';
 
     // Examine the output
     std::map<std::string, unsigned> wordcount = rtt_dsxx::get_word_count(msg, false);
@@ -363,16 +379,16 @@ void cdi_eospac_except_test(rtt_dsxx::UnitTest &ut) {
   // Try to print data for a table that is not loaded. Print table information for Pt_DT:
   {
 
-    std::cout << "\nAttempting to access a table that should not be available ..." << std::endl;
+    std::cout << "\nAttempting to access a table that should not be available ...\n";
     bool exceptionThrown(false);
     try {
       std::ostringstream msg;
       spEospac->printTableInformation(EOS_Ktc_DT, msg);
-      std::cout << "Table information for Fe2140:\n" << msg.str() << std::endl;
+      std::cout << "Table information for Fe2140:\n" << msg.str() << '\n';
     } catch (rtt_cdi_eospac::EospacException &err) {
       exceptionThrown = true;
       std::ostringstream msg;
-      msg << "Correctly caught an exception.  The message is " << err.what() << std::endl;
+      msg << "Correctly caught an exception.  The message is " << err.what() << '\n';
     }
 
     if (exceptionThrown)
@@ -381,6 +397,8 @@ void cdi_eospac_except_test(rtt_dsxx::UnitTest &ut) {
       FAILMSG("Failed to throw exception for invalid table access.");
   }
 
+  // NOLINTEND(misc-include-cleaner)
+
   return;
 }
 
@@ -388,45 +406,48 @@ void cdi_eospac_except_test(rtt_dsxx::UnitTest &ut) {
 //!  Tests the Eospac constructor and access routines.
 void cdi_eospac_tpack(rtt_dsxx::UnitTest &ut) {
   // Start the test.
-  std::cout << "\nTest the pack() function for cdi_eospac().\n" << std::endl;
+  std::cout << "\nTest the pack() function for cdi_eospac().\n\n";
 
   int const Al3717 = 3717;
   int const Al23714 = 23714;
   rtt_cdi_eospac::SesameTables AlSt;
   AlSt.Uic_DT(Al3717).Ktc_DT(Al23714).Ue_DT(Al3717).Zfc_DT(Al23714);
-  std::shared_ptr<rtt_cdi_eospac::Eospac const> spEospac(new rtt_cdi_eospac::Eospac(AlSt));
+  std::shared_ptr<rtt_cdi_eospac::Eospac const> const spEospac(new rtt_cdi_eospac::Eospac(AlSt));
 
   {
     // Test the SesameTables packer
-    std::cout << "Packing a SesameTables object." << std::endl;
-    std::vector<char> packed(AlSt.pack());
+    std::cout << "Packing a SesameTables object.\n";
+    std::vector<char> const packed(AlSt.pack());
 
     // Create a new SesameTables by unpacking the packed data
-    std::cout << "Unpacking a SesameTables object." << std::endl;
-    rtt_cdi_eospac::SesameTables unpacked_AlSt(packed);
+    std::cout << "Unpacking a SesameTables object.\n";
+    rtt_cdi_eospac::SesameTables const unpacked_AlSt(packed);
 
+    // Ignore warnings about missing CPP defs defined by EOSPAC.
+    // NOLINTBEGIN(misc-include-cleaner)
     if (AlSt.matID(EOS_Uic_DT) == unpacked_AlSt.matID(EOS_Uic_DT))
       PASSMSG("unpacked AlSt looks okay.");
     else
       FAILMSG("unpacked AlSt is wrong!");
+    // NOLINTEND(misc-include-cleaner)
   }
 
   {
     // Test the Eospac packer.
-    std::cout << "Packing an Eospac object." << std::endl;
-    std::vector<char> packed(spEospac->pack());
+    std::cout << "Packing an Eospac object.\n";
+    std::vector<char> const packed(spEospac->pack());
 
     // Create a new Eospac by unpacking the packed data.
-    std::cout << "Unpacking an Eospac object." << std::endl;
-    std::shared_ptr<rtt_cdi_eospac::Eospac const> spUnpacked_Eospac(
+    std::cout << "Unpacking an Eospac object.\n";
+    std::shared_ptr<rtt_cdi_eospac::Eospac const> const spUnpacked_Eospac(
         new rtt_cdi_eospac::Eospac(packed));
 
     // Sanity Check
-    double density = 5.0;     // g/cm^3
-    double temperature = 0.1; // keV
+    double const density = 5.0;     // g/cm^3
+    double const temperature = 0.1; // keV
 
-    double cvi1(spEospac->getSpecificIonInternalEnergy(temperature, density));
-    double cvi2(spUnpacked_Eospac->getSpecificIonInternalEnergy(temperature, density));
+    double const cvi1(spEospac->getSpecificIonInternalEnergy(temperature, density));
+    double const cvi2(spUnpacked_Eospac->getSpecificIonInternalEnergy(temperature, density));
     if (soft_equiv(cvi1, cvi2, 1.0e-10))
       PASSMSG("unpacked spEospac looks okay.");
     else

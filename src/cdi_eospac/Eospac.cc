@@ -7,14 +7,23 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Eospac.hh"
-#include "EospacException.hh"
+#include "cdi_eospac/Eospac.hh"
 #include "dsxx/Assert.hh"
-#include "dsxx/Packing_Utils.hh"
+#include "eos_Interface.h"
+#include "eos_Interface.proto.h"
+#include "eos_universal_types.h"
+#include "cdi_eospac/EospacException.hh"
+#include "cdi_eospac/SesameTables.hh"
+#include <algorithm> // find, transform
 #include <array>
+#include <cstddef> // size_t
+#include <cstdint> // INT32_MAX
+#include <iomanip> // setw, setiosflags
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <utility> // move
+#include <vector>
 
 namespace rtt_cdi_eospac {
 
@@ -71,8 +80,8 @@ Eospac::~Eospac() {
       eos_GetErrorCode(&tableHandles[i], &tableHandleErrorCode);
       eos_GetErrorMessage(&tableHandleErrorCode, errorMessage.data());
 
-      outputString << "\n\tAn unsuccessful request was made to destroy the "
-                   << "EOSPAC table area by ~Eospac().\n"
+      outputString << "\n\tAn unsuccessful request was made to destroy the EOSPAC table area by "
+                   << "~Eospac().\n"
                    << "\tThe error code returned by eos_DestroyAll(...) was \""
                    << tableHandleErrorCode << "\".\n"
                    << "\tThe associated error message is:\n\t\"" << std::string(errorMessage.data())
@@ -80,7 +89,7 @@ Eospac::~Eospac() {
     }
     // Never throw an exception from the destructor.  This can cause confusion during stack
     // unwiding.
-    std::cerr << outputString.str() << std::endl;
+    std::cerr << outputString.str() << '\n';
   }
 }
 
@@ -118,18 +127,17 @@ void Eospac::printTableInformation(EOS_INTEGER const tableType, std::ostream &ou
     if (match1 == EOS_TRUE) {
       out << std::setiosflags(std::ios::fixed) << std::setw(70) << std::left
           << infoItemDescriptions[i] << ": " << std::setprecision(6)
-          << std::setiosflags(std::ios::fixed) << std::setw(13) << std::right << infoVal
-          << std::endl;
+          << std::setiosflags(std::ios::fixed) << std::setw(13) << std::right << infoVal << '\n';
     } else if (match2 == EOS_FALSE) {
       std::ostringstream outputString;
       std::array<EOS_CHAR, EOS_MaxErrMsgLen> errorMessage{};
       // Ignore EOS_INVALID_INFO_FLAG since not all infoItems are currently applicable to a specific
       // tableHandle.
       eos_GetErrorMessage(&errorCode, errorMessage.data());
-      outputString << "\n\tAn unsuccessful request for EOSPAC table information "
-                   << "was made by eos_GetTableInfo().\n"
-                   << "\tThe requested infoType was \"" << infoItems[i]
-                   << "\" (see eos_Interface.h for type)\n"
+      outputString << "\n\tAn unsuccessful request for EOSPAC table information was made by "
+                   << "eos_GetTableInfo().\n"
+                   << "\tThe requested infoType was \"" << infoItems[i] << "\" (see "
+                   << "eos_Interface.h for type)\n"
                    << "\tThe error code returned was \"" << errorCode << "\".\n"
                    << "\tThe associated error message is:\n\t\"" << std::string(errorMessage.data())
                    << "\"\n";
@@ -144,7 +152,7 @@ void Eospac::printTableInformation(EOS_INTEGER const tableType, std::ostream &ou
 double Eospac::getSpecificElectronInternalEnergy(double temperature, double density) const {
   EOS_INTEGER const returnType = EOS_Ue_DT; // ES4enelc;
   // Convert temperatures from keV to degrees Kelvin.
-  double vtempsKelvin = keV2K(temperature);
+  double const vtempsKelvin = keV2K(temperature);
   return getF(dbl_v1(density), dbl_v1(vtempsKelvin), returnType, ETDD_VALUE)[0];
 }
 
@@ -166,7 +174,7 @@ double Eospac::getElectronHeatCapacity(double temperature, double density) const
   // temperature.
 
   // Convert temperatures from keV to degrees Kelvin.
-  double vtempsKelvin = keV2K(temperature);
+  double const vtempsKelvin = keV2K(temperature);
   EOS_INTEGER const returnType = EOS_Ue_DT; // ES4enelc
   std::vector<double> Cve = getF(dbl_v1(density), dbl_v1(vtempsKelvin), returnType, ETDD_DFDY);
   // Convert back to Temperature units in keV
@@ -196,7 +204,7 @@ double Eospac::getSpecificIonInternalEnergy(double temperature, double density) 
   EOS_INTEGER const returnType = EOS_Uic_DT; // ES4enion;
 
   // Convert temperatures from keV to degrees Kelvin.
-  double vtempsKelvin = keV2K(temperature);
+  double const vtempsKelvin = keV2K(temperature);
   return getF(dbl_v1(density), dbl_v1(vtempsKelvin), returnType, ETDD_VALUE)[0];
 }
 
@@ -218,7 +226,7 @@ double Eospac::getIonHeatCapacity(double temperature, double density) const {
   // temperature.
 
   // Convert temperatures from keV to degrees Kelvin.
-  double vtempsKelvin = keV2K(temperature);
+  double const vtempsKelvin = keV2K(temperature);
   EOS_INTEGER const returnType = EOS_Uic_DT; //ES4enion;
   std::vector<double> Cvi = getF(dbl_v1(density), dbl_v1(vtempsKelvin), returnType, ETDD_DFDY);
   // Convert back to Temperature units in keV
@@ -246,7 +254,7 @@ std::vector<double> Eospac::getIonHeatCapacity(std::vector<double> const &vtempe
 //------------------------------------------------------------------------------------------------//
 double Eospac::getNumFreeElectronsPerIon(double temperature, double density) const {
   // Convert temperatures from keV to degrees Kelvin.
-  double vtempsKelvin = keV2K(temperature);
+  double const vtempsKelvin = keV2K(temperature);
   EOS_INTEGER const returnType = EOS_Zfc_DT; // ES4zfree3; // (zfree3)
   return getF(dbl_v1(density), dbl_v1(vtempsKelvin), returnType, ETDD_VALUE)[0];
 }
@@ -264,7 +272,7 @@ std::vector<double> Eospac::getNumFreeElectronsPerIon(std::vector<double> const 
 //------------------------------------------------------------------------------------------------//
 double Eospac::getElectronThermalConductivity(double temperature, double density) const {
   // Convert temperatures from keV to degrees Kelvin.
-  double vtempsKelvin = keV2K(temperature);
+  double const vtempsKelvin = keV2K(temperature);
   EOS_INTEGER const returnType = EOS_Ktc_DT; //ES4tconde; // (tconde)
   return getF(dbl_v1(density), dbl_v1(vtempsKelvin), returnType, ETDD_VALUE)[0];
 }
@@ -287,7 +295,7 @@ double Eospac::getElectronTemperature(     // keV
     double /*Tguess*/) const               // keV
 {
   EOS_INTEGER const returnType = EOS_T_DUe;
-  double Te_K =
+  double const Te_K =
       getF(dbl_v1(density), dbl_v1(SpecificElectronInternalEnergy), returnType, ETDD_VALUE)[0];
   return Te_K / keV2K(1.0); // Convert from K back to keV.
 }
@@ -300,7 +308,8 @@ double Eospac::getIonTemperature(     // keV
 {
   EOS_INTEGER const returnType = EOS_T_DUic;
   // EOS_INTEGER const returnType = EOS_T_DUiz; - I think I need the DUic version!
-  double Te_K = getF(dbl_v1(density), dbl_v1(SpecificIonInternalEnergy), returnType, ETDD_VALUE)[0];
+  double const Te_K =
+      getF(dbl_v1(density), dbl_v1(SpecificIonInternalEnergy), returnType, ETDD_VALUE)[0];
   return Te_K / keV2K(1.0); // Convert from K back to keV.
 }
 
@@ -335,7 +344,7 @@ std::vector<double> Eospac::getF(std::vector<double> const &vdensity,
   // The density and vector parameters must be a tuple.
   Require(vtemperature.size() == vdensity.size());
 
-  unsigned returnTypeTableIndex(tableIndex(returnType));
+  unsigned const returnTypeTableIndex(tableIndex(returnType));
 
   // There is one piece of returned information for each (density, temperature) tuple.
   Check(vtemperature.size() < INT32_MAX);
@@ -434,10 +443,10 @@ void Eospac::expandEosTable() const {
   // loop over all possible EOSPAC data types.  If a matid has been assigned to a table then add
   // this information to the vectors returnTypes[] and matIDs[] which are used by EOSPAC.
 
-  std::vector<unsigned> materialTableList(SesTabs.matList());
+  std::vector<unsigned> const materialTableList(SesTabs.matList());
   for (unsigned mattabid : materialTableList) {
-    std::vector<EOS_INTEGER> tableTypes(SesTabs.returnTypes(mattabid));
-    for (EOS_INTEGER tableType : tableTypes) {
+    std::vector<EOS_INTEGER> const tableTypes(SesTabs.returnTypes(mattabid));
+    for (EOS_INTEGER const tableType : tableTypes) {
       matIDs.push_back(mattabid);
       returnTypes.push_back(tableType);
     }

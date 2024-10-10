@@ -7,11 +7,17 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "SesameTables.hh"
+#include "cdi_eospac/SesameTables.hh"
 #include "dsxx/Assert.hh"
 #include "dsxx/Packing_Utils.hh"
+#include "eos_Interface.h"
+#include "eos_universal_types.h"
+#include <algorithm> // find
+#include <cstddef>   // size_t
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 namespace rtt_cdi_eospac {
 
@@ -221,9 +227,8 @@ std::vector<EOS_INTEGER> SesameTables::returnTypes(unsigned const tableIndex) co
     result = rtMap.find(tableIndex)->second;
   else {
     std::ostringstream msg;
-    msg << "Requested tableIndex = " << tableIndex
-        << ", does not not exist in the SesameTables object.  You must"
-        << " assign a table index before attempting to access it." << std::endl;
+    msg << "Requested tableIndex = " << tableIndex << ", does not not exist in the SesameTables "
+        << "object.  You must assign a table index before attempting to access it.\n";
     Insist(found > 0, msg.str());
   }
   return result;
@@ -279,12 +284,12 @@ std::vector<char> SesameTables::pack() const {
 
   // pack the matMap (size+data)
   packer << packed_matmap.size();
-  for (char &c : packed_matmap)
+  for (char const &c : packed_matmap)
     packer << c;
 
   // pack the rtMap(data)
   packer << packed_rtmap.size();
-  for (char &c : packed_rtmap)
+  for (char const &c : packed_rtmap)
     packer << c;
 
   Ensure(packer.get_ptr() == &packed[0] + packed_SesameTable_size);
@@ -293,7 +298,7 @@ std::vector<char> SesameTables::pack() const {
 
 //------------------------------------------------------------------------------------------------//
 void SesameTables::printEosTableList() const {
-  std::cout << "List of EOS Tables:\n" << std::endl;
+  std::cout << "List of EOS Tables:\n\n";
   for (size_t i = 0; i < tableName.size(); ++i)
     if (tableName[i].size() > 0)
       std::cout << tableName[i] << "\t- " << tableDescription[i] << "\n";
