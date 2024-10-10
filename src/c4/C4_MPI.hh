@@ -42,7 +42,7 @@ DLL_PUBLIC_c4 extern bool initialized;
 //------------------------------------------------------------------------------------------------//
 
 template <typename Comm> void inherit(const Comm &comm) {
-  Remember(int result =) MPI_Comm_dup(comm, &communicator);
+  Remember(int const result =) MPI_Comm_dup(comm, &communicator);
   Check(result == MPI_SUCCESS);
 }
 

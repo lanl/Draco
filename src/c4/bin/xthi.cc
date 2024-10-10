@@ -7,10 +7,12 @@
  * \note   Copyright (C) 2017-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/SystemCall.hh"
 #include "c4/C4_Functions.hh"
 #include "c4/xthi_cpuset.hh"
 #include <iomanip>
 #include <iostream>
+#include <string>
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
@@ -18,7 +20,7 @@ int main(int argc, char *argv[]) {
   rtt_c4::initialize(argc, argv);
   int const rank = rtt_c4::node();
   std::string const hostname = rtt_dsxx::draco_gethostname();
-  unsigned const num_cpus = omp_get_num_procs();
+  unsigned const num_cpus = omp_get_num_procs(); // NOLINT(misc-include-cleaner)
 
 // KPL: See https://gcc.gnu.org/gcc-9/porting_to.html#ompdatasharing for info on the following
 // version-specific gcc macro.
@@ -37,14 +39,14 @@ int main(int argc, char *argv[]) {
 #pragma omp parallel default(none) shared(num_cpus, hostname, rank, std::cout)
 #endif
   {
-    int thread = omp_get_thread_num();
-    std::string cpuset = rtt_c4::cpuset_to_string(num_cpus);
+    int const thread = omp_get_thread_num(); // NOLINT(misc-include-cleaner)
+    std::string const cpuset = rtt_c4::cpuset_to_string(num_cpus);
 
 #pragma omp critical
     {
       std::cout << hostname << " :: Rank " << std::setfill('0') << std::setw(5) << rank
                 << ", Thread " << std::setfill('0') << std::setw(3) << thread
-                << ", core affinity = " << cpuset << std::endl;
+                << ", core affinity = " << cpuset << '\n';
     } // end omp critical
   }   // end omp parallel
 
