@@ -7,8 +7,9 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "mrqmin.t.hh"
-#include <vector>
+#include "mrqmin.t.hh" // NOLINT(misc-include-cleaner)
+
+// cSpell:ignore mrqmin, covar, alamda, chisq
 
 namespace rtt_min {
 

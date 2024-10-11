@@ -3,16 +3,15 @@
  * \file   min/test/tstmnbrak.cc
  * \author Kent Budge
  * \date   Tue Aug 26 13:12:30 2008
- * \brief  
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
-//------------------------------------------------------------------------------------------------//
-
+ * \brief
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "min/mnbrak.hh"
+#include <algorithm>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -23,7 +22,6 @@ using namespace rtt_min;
 //------------------------------------------------------------------------------------------------//
 
 double func(double const x) { return x * x; }
-
 double func3(double const x) { return (x + 1) * x * (x - 1); }
 
 //------------------------------------------------------------------------------------------------//

@@ -4,8 +4,7 @@
  * \author Kent Budge
  * \date   Tue Aug 17 15:30:23 2004
  * \brief  Find minimum of a multivariate function on a specified line.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef min_linmin_hh
@@ -23,8 +22,8 @@ namespace rtt_min {
  * \brief Helper template for line minimization
  *
  * \arg \a RandomContainer A random-access container on double.
- * \arg \a Function A function type supporting <code>double
- *         operator()(RandomContainer const &)</code>.
+ * \arg \a Function A function type supporting <code>double operator()(RandomContainer const
+ *         &)</code>.
  */
 template <typename RandomContainer, typename Function> class f1dim {
 public:
@@ -51,16 +50,17 @@ private:
  * Find minimum of a multivariate function on a specified line.
  *
  * \arg \a RandomContainer A random-access container on double.
- * \arg \a Function A function type supporting <code>double
- *         operator()(RandomContainer const &)</code>.
+ * \arg \a Function A function type supporting <code>double operator()(RandomContainer const
+ *         &)</code>.
  *
- * \param[in,out] p  On entry, contains a starting guess of the minimum.  On
- *                   exit, contains an improved estimate of the minimum.
- * \param[in,out] xi On entry, contains the search direction.  On exit,
- *                   contains the actual displacement to the minimum in the
- *                   search direction.
+ * \param[in,out] p  On entry, contains a starting guess of the minimum.  On exit, contains an
+ *                   improved estimate of the minimum.
+ * \param[in,out] xi On entry, contains the search direction.  On exit, contains the actual
+ *                   displacement to the minimum in the search direction.
  * \param[out] fret  Final minimum value of the function.
  * \param[in]  func  Function to be minimized
+ *
+ * cSpell:ignore xmin, mnbrak
  */
 
 template <typename RandomContainer, typename Function>
@@ -77,7 +77,7 @@ void linmin(RandomContainer &p, RandomContainer &xi, double &fret, Function func
   double xx = 1.0;
 
   double bx, fa, fx, fb, xmin;
-  f1dim<RandomContainer, Function> f1(func, p, xi);
+  f1dim<RandomContainer, Function> const f1(func, p, xi);
   mnbrak<f1dim<RandomContainer, Function>>(ax, xx, bx, fa, fx, fb, f1);
 
   fret = brent(ax, xx, bx, f1, TOL, xmin);

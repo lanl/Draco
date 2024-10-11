@@ -17,6 +17,8 @@
 #include "min/mrqmin.hh"
 #include <cmath>
 
+// cSpell:ignore mrqmin, covsrt, covar, mfit, mrqcof, dyda, chisq, ymod, alamda, oneda, ochisq
+
 namespace rtt_min {
 
 using namespace std;
@@ -74,12 +76,12 @@ void mrqcof(RandomContainer const &x, RandomContainer const &y, RandomContainer 
     }
     double ymod;
     funcs(xx, a, ymod, dyda);
-    double sig2i = 1.0 / (sig[i] * sig[i]);
-    double dy = y[i] - ymod;
+    double const sig2i = 1.0 / (sig[i] * sig[i]);
+    double const dy = y[i] - ymod;
     unsigned j, l;
     for (j = 0, l = 0; l < ma; ++l) {
       if (ia[l]) {
-        double wt = dyda[l] * sig2i;
+        double const wt = dyda[l] * sig2i;
         unsigned k;
         unsigned mm;
         for (k = 0, mm = 0; mm < l + 1; ++mm) {
@@ -108,10 +110,10 @@ void mrqcof(RandomContainer const &x, RandomContainer const &y, RandomContainer 
  * \tparam ModelFunction A model function with effective signature:
  *
  * <code>
- *            void funcs(const double,
- *                       vector<double> const &,
- *                       double &,
- *                       vector<double> &)
+ * void funcs(const double,
+ *            vector<double> const &,
+ *            double &,
+ *            vector<double> &)
  * </code>
  *
  * \param x Ordinates of the data points.
@@ -126,9 +128,9 @@ void mrqcof(RandomContainer const &x, RandomContainer const &y, RandomContainer 
  * \param ma Number of parameters
  * \param chisq Final chi square of the fit
  * \param funcs Model function
- * \param alamda Fit parameter. If less than zero, initialize the algorithm. If
- *             zero, finalize the algorith. Any other value is assumed to be the
- *             value that was returned by a previous iteration.
+ * \param alamda Fit parameter. If less than zero, initialize the algorithm. If zero, finalize the
+ *             algorithm. Any other value is assumed to be the value that was returned by a previous
+ *             iteration.
  */
 template <class RandomContainer, class RandomBoolContainer, class ModelFunction>
 void mrqmin(RandomContainer const &x, RandomContainer const &y, RandomContainer const &sig,

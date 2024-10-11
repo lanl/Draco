@@ -4,14 +4,15 @@
  * \author Kent Budge
  * \date   Tue Aug 17 15:30:23 2004
  * \brief  Find minimum of a multivariate function.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef min_powell_hh
 #define min_powell_hh
 
 #include "linmin.hh"
+
+// cSpell:ignore ftol, ITMAX, fptt, ibig
 
 namespace rtt_min {
 
@@ -20,20 +21,19 @@ namespace rtt_min {
  * Find minimum of a multivariate function.
  *
  * \arg \a RandomContainer A random-access container on double.
- * \arg \a Function A function type supporting <code>double
- * operator()(RandomContainer const &)</code>.
+ * \arg \a Function A function type supporting <code>double operator()(RandomContainer const
+ *                  &)</code>.
  *
- * \param[in,out] p On entry, contains a starting guess of the minimum.  On
- * exit, contains an improved estimate of the minimum.
- * \param[in,out] xi On entry, contains the starting set of search directions,
- * which should usually be chosen to be the unit vectors.  On exit, contains
- * the final set of search directions.
- * \param[in] ftol Desired function tolerance.  When a search step fails to
- * decrease the function value by more than ftol, the search is done.
- * \param[in,out] iter Number of iterations to take/taken to complete the
- * search.
- * \param[out] fret Final minimum value of the function.
- * \param[in] func Function to be minimized
+ * \param[in,out] p  On entry, contains a starting guess of the minimum.  On exit, contains an
+ *                   improved estimate of the minimum.
+ * \param[in,out] xi On entry, contains the starting set of search directions, which should usually
+ *                   be chosen to be the unit vectors.  On exit, contains the final set of search
+ *                   directions.
+ * \param[in] ftol   Desired function tolerance.  When a search step fails to decrease the function
+ *                   value by more than ftol, the search is done.
+ * \param[in,out] iter Number of iterations to take/taken to complete the search.
+ * \param[out] fret  Final minimum value of the function.
+ * \param[in] func   Function to be minimized
  */
 
 template <class RandomContainer, class Function>
@@ -43,7 +43,7 @@ void powell(RandomContainer &p, RandomContainer &xi, double const ftol, unsigned
   using std::vector;
 
   unsigned const ITMAX = iter;
-  double const TINY = 1.0e-25;
+  double constexpr TINY = 1.0e-25;
 
   Check(p.size() < UINT_MAX);
   auto const n = static_cast<unsigned>(p.size());
