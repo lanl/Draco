@@ -6,12 +6,18 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "min/mrqmin.hh"
 #include <algorithm>
+#include <climits>
+#include <cmath>
 #include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -61,10 +67,10 @@ void model(vector<double> const &x, vector<double> const &a, double &y, vector<d
 //------------------------------------------------------------------------------------------------//
 
 void tstmrqmin(UnitTest &ut) {
-  std::cout << "\nTesting tstmrqmin()...\n" << std::endl;
+  std::cout << "\nTesting tstmrqmin()...\n\n";
 
   // Parse an input file
-  std::string filename(ut.getTestSourcePath() + std::string("mrqmin_data.inp"));
+  std::string const filename(ut.getTestSourcePath() + std::string("mrqmin_data.inp"));
 
   ifstream data(filename.c_str());
   vector<double> x, y, sig;
@@ -121,7 +127,7 @@ void tstmrqmin(UnitTest &ut) {
     a[i] = 0.0;
   }
   cout << "Optimum 1-var is " << sqrt(copt / static_cast<double>(y.size())) << " for variable "
-       << iopt << endl;
+       << iopt << '\n';
 
   copt = 1e100;
   unsigned i1(0), i2(0);
@@ -152,7 +158,7 @@ void tstmrqmin(UnitTest &ut) {
     a[i] = 0.0;
   }
   cout << "Optimum 2-var is " << sqrt(copt / static_cast<double>(y.size())) << " for variables "
-       << i1 << i2 << endl;
+       << i1 << i2 << '\n';
 
   copt = 1e100;
   unsigned i3(0);
@@ -189,7 +195,7 @@ void tstmrqmin(UnitTest &ut) {
     a[i] = 0.0;
   }
   cout << "Optimum 3-var is " << sqrt(copt / static_cast<double>(y.size())) << " for variables "
-       << i1 << i2 << i3 << endl;
+       << i1 << i2 << i3 << '\n';
 
   copt = 1e100;
   unsigned i4(0);
@@ -232,7 +238,7 @@ void tstmrqmin(UnitTest &ut) {
     a[j1] = 0.0;
   }
   cout << "Optimum 4-var is " << sqrt(copt / static_cast<double>(y.size())) << " for variables "
-       << i1 << i2 << i3 << i4 << endl;
+       << i1 << i2 << i3 << i4 << '\n';
 
   copt = 1e100;
   unsigned i5(0);
@@ -281,7 +287,7 @@ void tstmrqmin(UnitTest &ut) {
     a[j1] = 0.0;
   }
   cout << "Optimum 5-var is " << sqrt(copt / static_cast<double>(y.size())) << " for variables "
-       << i1 << i2 << i3 << i4 << i5 << endl;
+       << i1 << i2 << i3 << i4 << i5 << '\n';
 
   copt = 1e100;
   unsigned i6(0);
@@ -336,7 +342,7 @@ void tstmrqmin(UnitTest &ut) {
     a[j1] = 0.0;
   }
   cout << "Optimum 6-var is " << sqrt(copt / static_cast<double>(y.size())) << " for variables "
-       << i1 << i2 << i3 << i4 << i5 << i6 << endl;
+       << i1 << i2 << i3 << i4 << i5 << i6 << '\n';
 
   copt = 1e100;
   unsigned i7(0);
@@ -397,7 +403,7 @@ void tstmrqmin(UnitTest &ut) {
     a[j1] = 0.0;
   }
   cout << "Optimum 7-var is " << sqrt(copt / static_cast<double>(y.size())) << " for variables "
-       << i1 << i2 << i3 << i4 << i5 << i6 << i7 << endl;
+       << i1 << i2 << i3 << i4 << i5 << i6 << i7 << '\n';
 
   ia.resize(0);
   ia.resize(9, false);
@@ -422,17 +428,17 @@ void tstmrqmin(UnitTest &ut) {
            alamda);
   }
 
-  cout << endl;
-  cout << "A = " << a[0] << " +/- " << sqrt(covar[0 + 9 * 0]) << endl;
-  cout << "B = " << a[1] << endl;
-  cout << "C = " << a[2] << endl;
-  cout << "D = " << a[3] << endl;
-  cout << "E = " << a[4] << " +/- " << sqrt(covar[4 + 9 * 4]) << endl;
-  cout << "F = " << a[5] << " +/- " << sqrt(covar[5 + 9 * 5]) << endl;
-  cout << "G = " << a[6] << " +/- " << sqrt(covar[6 + 9 * 6]) << endl;
-  cout << "H = " << a[7] << " +/- " << sqrt(covar[7 + 9 * 7]) << endl;
-  cout << "J = " << a[8] << " +/- " << sqrt(covar[8 + 9 * 8]) << endl;
-  cout << "rms deviation = " << sqrt(chisq / static_cast<double>(y.size())) << endl;
+  cout << '\n';
+  cout << "A = " << a[0] << " +/- " << sqrt(covar[0 + 9 * 0]) << '\n';
+  cout << "B = " << a[1] << '\n';
+  cout << "C = " << a[2] << '\n';
+  cout << "D = " << a[3] << '\n';
+  cout << "E = " << a[4] << " +/- " << sqrt(covar[4 + 9 * 4]) << '\n';
+  cout << "F = " << a[5] << " +/- " << sqrt(covar[5 + 9 * 5]) << '\n';
+  cout << "G = " << a[6] << " +/- " << sqrt(covar[6 + 9 * 6]) << '\n';
+  cout << "H = " << a[7] << " +/- " << sqrt(covar[7 + 9 * 7]) << '\n';
+  cout << "J = " << a[8] << " +/- " << sqrt(covar[8 + 9 * 8]) << '\n';
+  cout << "rms deviation = " << sqrt(chisq / static_cast<double>(y.size())) << '\n';
 
   Check(y.size() < UINT_MAX);
   auto const N = static_cast<unsigned>(y.size());
@@ -446,18 +452,18 @@ void tstmrqmin(UnitTest &ut) {
     }
     double yfit;
     model(xx, a, yfit, dyda);
-    double yerr = fabs(yfit - y[i]) / y[i];
+    double const yerr = fabs(yfit - y[i]) / y[i];
     if (yerr > maxerr) {
       maxerr = fabs(yerr);
       ierr = i;
     }
   }
-  cout << "Max relative deviation = " << maxerr << " at i = " << ierr << endl;
+  cout << "Max relative deviation = " << maxerr << " at i = " << ierr << '\n';
 
   if (sqrt(chisq / static_cast<double>(y.size())) < 1) {
-    ut.passes("fit is correct");
+    PASSMSG("fit is correct");
   } else {
-    ut.failure("fit is NOT correct");
+    FAILMSG("fit is NOT correct");
   }
 }
 

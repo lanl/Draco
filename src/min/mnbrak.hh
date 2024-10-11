@@ -4,10 +4,7 @@
  * \author Kent Budge
  * \date   Tue Aug 17 15:30:23 2004
  * \brief  Bracket minimum of a function.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
-//------------------------------------------------------------------------------------------------//
-
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef min_mnbrak_hh
@@ -16,19 +13,20 @@
 #include "dsxx/DracoMath.hh"
 #include "dsxx/dbc.hh"
 
+// cSpell:ignore mnbrak, GLIMIT, ulim
+
 namespace rtt_min {
 
 //------------------------------------------------------------------------------------------------//
 /*!
  * Bracket minimum of a function.
  *
- * \arg \a Function A function type supporting <code>double
- * operator()(double)</code>.
+ * \arg \a Function A function type supporting <code>double operator()(double)</code>.
  *
  * \param[in,out] ax Lower bound of bracket interval.
  * \param[in,out] bx Upper bound of bracket interval.
- * \param[in,out] cx Estimate of minimum location within bracket.This will
- * \em not be a polished minimum; that is the job of rtt_min::brent.
+ * \param[in,out] cx Estimate of minimum location within bracket. This will \em not be a polished
+ *                   minimum; that is the job of rtt_min::brent.
  * \param[out] fa Function value at ax.
  * \param[out] fb Function value at bx.
  * \param[out] fc Function value at cx.
@@ -40,9 +38,9 @@ void mnbrak(double &ax, double &bx, double &cx, double &fa, double &fb, double &
   using namespace std;
   using namespace rtt_dsxx;
 
-  double const GOLD = 1.618034;
-  double const GLIMIT = 100.0;
-  double const TINY = 1.0e-20;
+  double constexpr GOLD = 1.618034;
+  double constexpr GLIMIT = 100.0;
+  double constexpr TINY = 1.0e-20;
 
   fa = func(ax);
   fb = func(bx);

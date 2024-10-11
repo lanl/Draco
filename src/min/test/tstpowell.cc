@@ -6,10 +6,17 @@
  * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/DracoMath.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "min/powell.hh"
-#include "units/PhysicalConstants.hh"
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace rtt_min;
@@ -46,14 +53,14 @@ void tstpowell(UnitTest &ut) {
   }
   unsigned iter = 10000;
   double fret(0);
-  double tolerance(1.0e-5);
+  double constexpr tolerance(1.0e-5);
 
   powell(p, xi, tolerance, iter, fret, func);
 
   for (unsigned i = 0; i < NP; ++i)
-    cout << "a[" << i << "] = " << p[i] << endl;
+    cout << "a[" << i << "] = " << p[i] << '\n';
 
-  cout << "Maximum error: " << fret << endl;
+  cout << "Maximum error: " << fret << '\n';
 
   std::array<double, 2> tmp = {1.34601, 4.19265e-09};
   vector<double> expectedSolution(tmp.begin(), tmp.end());
