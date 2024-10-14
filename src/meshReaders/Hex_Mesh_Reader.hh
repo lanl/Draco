@@ -28,21 +28,19 @@ namespace rtt_meshReaders {
 //================================================================================================//
 class Hex_Mesh_Reader : public rtt_meshReaders::Mesh_Reader {
 
-  // NESTED CLASSES AND TYPEDEFS
-
   // DATA
 
   std::string meshfile_name;
   static std::string keyword() { return "cic19_hex_mesh"; }
   std::string version;
-  unsigned npoints;
-  unsigned ncells;
-  unsigned nvrtx;
-  unsigned nvrpf;
-  unsigned ndim;
-  unsigned nvb_faces;
-  unsigned nrb_faces;
-  unsigned nmat;
+  unsigned npoints{0};
+  unsigned ncells{0};
+  unsigned nvrtx{0};
+  unsigned nvrpf{0};
+  unsigned ndim{0};
+  unsigned nvb_faces{0};
+  unsigned nrb_faces{0};
+  unsigned nmat{0};
   std::vector<std::vector<double>> point_coords;
   std::vector<std::vector<unsigned>> ipar;
   std::vector<int> imat_index;
@@ -56,8 +54,6 @@ public:
   // CREATORS
 
   explicit Hex_Mesh_Reader(std::string const &filename);
-
-  // MANIPULATORS
 
   // ACCESSORS
 
@@ -102,8 +98,6 @@ public:
 
 private:
   NODISCARD bool check_dims() const;
-
-  // IMPLEMENTATION
 };
 
 } // end namespace rtt_meshReaders
@@ -114,7 +108,7 @@ private:
  * \page rtt_meshreaders_hexformat The CIC-19 Hex Mesh File Format
  *
  * **Introduction**
-
+ *
  * The CIC-19 Hex Format was developed primarily for small-scale testing and development
  * purposes. It's chief virtue is its simplicity.  A Hex mesh format file is usually only a few
  * hundred lines long, and is in ASCII text format that can easily be directly modified by the
@@ -128,7 +122,7 @@ private:
  * non-reflective boundary elements. Reflective boundary elements are listed separately.
  *
  * Support for reading this file format is provided by the rtt_meshReaders::Hex_Mesh_Reader class.
-
+ *
  * **Format Details**
  *
  * Node and element numbering is one-based on the

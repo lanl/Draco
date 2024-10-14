@@ -4,18 +4,30 @@
  * \author Thomas M. Evans
  * \date   Tue Mar 26 16:37:01 2002
  * \brief  Hex Mesh Reader test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "TestHexMeshReader.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "meshReaders/Hex_Mesh_Reader.hh"
+#include "mesh_element/Element_Definition.hh"
 #include <cmath>
+#include <cstddef>
+#include <iostream>
+#include <map>
+#include <memory>
+#include <set>
 #include <sstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
+
+// cSpell:ignore ndsets, testid, ndim,enodes, invr, HEXA
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -25,19 +37,15 @@ void runTest(UnitTest &ut) {
   using rtt_mesh_element::Element_Definition;
   using rtt_meshReaders::Hex_Mesh_Reader;
 
-  cout << "\n******* CIC-19 Hex Mesh Reader Tests *******" << std::endl;
+  cout << "\n******* CIC-19 Hex Mesh Reader Tests *******\n";
 
   // Read and test a 1D mesh.g
   string const inpPath = ut.getTestSourcePath();
 
   std::string filename = inpPath + "slab.mesh";
-  std::cout << "Creating mesh from file: " << filename << std::endl;
-  Hex_Mesh_Reader mesh_1D(filename);
-  {
-    ostringstream msg;
-    msg << "Read a 1D mesh without coreing in or firing an assertion.\n";
-    PASSMSG(msg.str());
-  }
+  std::cout << "Creating mesh from file: " << filename << '\n';
+  Hex_Mesh_Reader const mesh_1D(filename);
+  PASSMSG("Read a 1D mesh without coreing in or firing an assertion.\n");
 
   rtt_meshReaders_test::check_mesh(ut, mesh_1D, "slab");
   vector<std::shared_ptr<Element_Definition>> element_defs = mesh_1D.get_element_defs();
@@ -46,13 +54,9 @@ void runTest(UnitTest &ut) {
 
   // Read and test a 2D mesh.
   filename = inpPath + "quad.mesh";
-  std::cout << "Creating mesh from file: " << filename << std::endl;
-  Hex_Mesh_Reader mesh_2D(filename);
-  {
-    ostringstream message;
-    message << "Read a 2D mesh without coreing in or firing an assertion." << std::endl;
-    PASSMSG(message.str());
-  }
+  std::cout << "Creating mesh from file: " << filename << '\n';
+  Hex_Mesh_Reader const mesh_2D(filename);
+  PASSMSG("Read a 2D mesh without coreing in or firing an assertion.\n");
   rtt_meshReaders_test::check_mesh(ut, mesh_2D, "quad");
   element_defs = mesh_2D.get_element_defs();
   if (element_defs.size() > 0)
@@ -60,18 +64,14 @@ void runTest(UnitTest &ut) {
 
   // Read and test a 3D mesh.
   filename = inpPath + "cube.mesh";
-  std::cout << "Creating mesh from file: " << filename << std::endl;
-  Hex_Mesh_Reader mesh_3D(filename);
-  {
-    ostringstream message;
-    message << "Read a 3D mesh without coreing in or firing an assertion." << std::endl;
-    PASSMSG(message.str());
-  }
+  std::cout << "Creating mesh from file: " << filename << '\n';
+  Hex_Mesh_Reader const mesh_3D(filename);
+  PASSMSG("Read a 3D mesh without coreing in or firing an assertion.\n");
   rtt_meshReaders_test::check_mesh(ut, mesh_3D, "cube");
   element_defs = mesh_3D.get_element_defs();
   if (element_defs.size() > 0)
     FAILMSG("element defs is NOT empty for cube");
-  cout << endl;
+  cout << '\n';
 
   // Report results of test.
   if (ut.numFails == 0 && ut.numPasses > 0)
@@ -87,22 +87,21 @@ namespace rtt_meshReaders_test {
 bool check_mesh(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &mesh,
                 const std::string &testid) {
 
-  // Exercize the accessor functions for this mesh and spot check
-  // the results.
+  // Exercise the accessor functions for this mesh and spot check the results.
 
-  bool pass_nc = check_nodes(ut, mesh, testid);
-  bool pass_cu = check_node_units(ut, mesh);
-  bool pass_ns = check_node_sets(ut, mesh, testid);
-  bool pass_ti = check_title(ut, mesh);
-  bool pass_gdn = check_get_dims_ndim(ut, mesh, testid);
-  bool pass_en = check_element_nodes(ut, mesh, testid);
-  bool pass_in = check_invariant(ut, mesh);
-  bool pass_es = check_element_sets(ut, mesh, testid);
-  bool pass_et = check_element_types(ut, mesh, testid);
-  bool pass_ut = check_unique_element_types(ut, mesh, testid);
+  bool const pass_nc = check_nodes(ut, mesh, testid);
+  bool const pass_cu = check_node_units(ut, mesh);
+  bool const pass_ns = check_node_sets(ut, mesh, testid);
+  bool const pass_ti = check_title(ut, mesh);
+  bool const pass_gdn = check_get_dims_ndim(ut, mesh, testid);
+  bool const pass_en = check_element_nodes(ut, mesh, testid);
+  bool const pass_in = check_invariant(ut, mesh);
+  bool const pass_es = check_element_sets(ut, mesh, testid);
+  bool const pass_et = check_element_types(ut, mesh, testid);
+  bool const pass_ut = check_unique_element_types(ut, mesh, testid);
 
-  bool all_passed(pass_nc && pass_cu && pass_ns && pass_ti && pass_gdn && pass_en && pass_in &&
-                  pass_es && pass_et && pass_ut);
+  bool const all_passed(pass_nc && pass_cu && pass_ns && pass_ti && pass_gdn && pass_en &&
+                        pass_in && pass_es && pass_et && pass_ut);
 
   if (!all_passed)
     FAILMSG("check_mesh failed");
@@ -123,22 +122,22 @@ bool check_nodes(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &mesh,
               compare_double(point_c[440][0], 25.) && compare_double(point_c[0][1], 0.) &&
               compare_double(point_c[10][1], 0.) && compare_double(point_c[440][1], 25.);
   else if (testid == "cube") {
-    bool pass1 = compare_double(point_c[0][0], 0.) && compare_double(point_c[0][1], 0.) &&
-                 compare_double(point_c[0][2], 0.);
-    bool pass2 = compare_double(point_c[10][0], 0.8) && compare_double(point_c[10][1], 0.2) &&
-                 compare_double(point_c[10][2], 0.);
-    bool pass3 = compare_double(point_c[215][0], 1.) && compare_double(point_c[215][1], 1.) &&
-                 compare_double(point_c[215][2], 1.);
+    bool const pass1 = compare_double(point_c[0][0], 0.) && compare_double(point_c[0][1], 0.) &&
+                       compare_double(point_c[0][2], 0.);
+    bool const pass2 = compare_double(point_c[10][0], 0.8) && compare_double(point_c[10][1], 0.2) &&
+                       compare_double(point_c[10][2], 0.);
+    bool const pass3 = compare_double(point_c[215][0], 1.) && compare_double(point_c[215][1], 1.) &&
+                       compare_double(point_c[215][2], 1.);
     pass_nc = pass1 && pass2 && pass3;
   } else
     Insist(false, "Unrecognized test id string!");
   if (pass_nc) {
     ostringstream message;
-    message << "Got node coordinates." << std::endl;
+    message << "Got node coordinates.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in node coordinates." << std::endl;
+    message << "Error in node coordinates.\n";
     FAILMSG(message.str());
   }
   return pass_nc;
@@ -146,16 +145,12 @@ bool check_nodes(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &mesh,
 
 bool check_node_units(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &mesh) {
   // Check coordinate units.
-  std::string punits = mesh.get_node_coord_units();
-  bool pass_cu = punits == "unknown";
+  std::string const punits = mesh.get_node_coord_units();
+  bool const pass_cu = punits == "unknown";
   if (pass_cu) {
-    ostringstream message;
-    message << "Got coordinate units." << std::endl;
-    PASSMSG(message.str());
+    PASSMSG("Got coordinate units.\n");
   } else {
-    ostringstream message;
-    message << "Error in coordinate units." << std::endl;
-    FAILMSG(message.str());
+    FAILMSG("Error in coordinate units.\n");
   }
   return pass_cu;
 }
@@ -163,7 +158,7 @@ bool check_node_units(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &mesh
 bool check_node_sets(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &mesh,
                      const std::string &testid) {
   // Check node sets.
-  std::map<std::string, std::set<unsigned>> ndsets = mesh.get_node_sets();
+  std::map<std::string, std::set<unsigned>> const ndsets = mesh.get_node_sets();
   bool pass_ns = ndsets.size() == 1;
   if (testid == "slab") {
     pass_ns = pass_ns && check_map(ndsets, "Interior", 0, 101);
@@ -174,29 +169,21 @@ bool check_node_sets(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &mesh,
   } else
     Insist(false, "Unrecognized test id string!");
   if (pass_ns) {
-    ostringstream message;
-    message << "Got node sets." << std::endl;
-    PASSMSG(message.str());
+    PASSMSG("Got node sets.\n");
   } else {
-    ostringstream message;
-    message << "Error in node sets." << std::endl;
-    FAILMSG(message.str());
+    FAILMSG("Error in node sets.\n");
   }
   return pass_ns;
 }
 
 bool check_title(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &mesh) {
   // Check title.
-  std::string title = mesh.get_title();
-  bool pass_ti = title == "Untitled -- CIC-19 Hex Mesh";
+  std::string const title = mesh.get_title();
+  bool const pass_ti = title == "Untitled -- CIC-19 Hex Mesh";
   if (pass_ti) {
-    ostringstream message;
-    message << "Got title." << std::endl;
-    PASSMSG(message.str());
+    PASSMSG("Got title.\n");
   } else {
-    ostringstream message;
-    message << "Error in title." << std::endl;
-    FAILMSG(message.str());
+    FAILMSG("Error in title.\n");
   }
   return pass_ti;
 }
@@ -212,7 +199,7 @@ bool check_get_dims_ndim(UnitTest &ut, rtt_meshReaders::Hex_Mesh_Reader const &m
   if (testid == "cube")
     expectedDim = 3;
 
-  bool pass_gdn(mesh.get_dims_ndim() == static_cast<size_t>(expectedDim));
+  bool const pass_gdn(mesh.get_dims_ndim() == static_cast<size_t>(expectedDim));
   if (pass_gdn) {
     ostringstream message;
     message << "For " << testid << " mesh, mesh.get_dims_ndim() reported " << expectedDim << ".";
@@ -245,49 +232,41 @@ bool check_element_nodes(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &m
               enodes[420][0] == 21 && enodes[420][1] == 0 && enodes[479][0] == 19 &&
               enodes[479][1] == 20;
   else if (testid == "cube") {
-    bool pass1 = enodes[0][0] == 0 && enodes[0][1] == 1 && enodes[0][2] == 7 && enodes[0][3] == 6 &&
-                 enodes[0][4] == 36 && enodes[0][5] == 37 && enodes[0][6] == 43 &&
-                 enodes[0][7] == 42;
-    bool pass2 = enodes[10][0] == 12 && enodes[10][1] == 13 && enodes[10][2] == 19 &&
-                 enodes[10][3] == 18 && enodes[10][4] == 48 && enodes[10][5] == 49 &&
-                 enodes[10][6] == 55 && enodes[10][7] == 54;
-    bool pass3 = enodes[124][0] == 172 && enodes[124][1] == 173 && enodes[124][2] == 179 &&
-                 enodes[124][3] == 178 && enodes[124][4] == 208 && enodes[124][5] == 209 &&
-                 enodes[124][6] == 215 && enodes[124][7] == 214;
-    bool pass4 =
+    bool const pass1 = enodes[0][0] == 0 && enodes[0][1] == 1 && enodes[0][2] == 7 &&
+                       enodes[0][3] == 6 && enodes[0][4] == 36 && enodes[0][5] == 37 &&
+                       enodes[0][6] == 43 && enodes[0][7] == 42;
+    bool const pass2 = enodes[10][0] == 12 && enodes[10][1] == 13 && enodes[10][2] == 19 &&
+                       enodes[10][3] == 18 && enodes[10][4] == 48 && enodes[10][5] == 49 &&
+                       enodes[10][6] == 55 && enodes[10][7] == 54;
+    bool const pass3 = enodes[124][0] == 172 && enodes[124][1] == 173 && enodes[124][2] == 179 &&
+                       enodes[124][3] == 178 && enodes[124][4] == 208 && enodes[124][5] == 209 &&
+                       enodes[124][6] == 215 && enodes[124][7] == 214;
+    bool const pass4 =
         enodes[125][0] == 5 && enodes[125][1] == 11 && enodes[125][2] == 47 && enodes[125][3] == 41;
-    bool pass5 = enodes[249][0] == 208 && enodes[249][1] == 209 && enodes[249][2] == 215 &&
-                 enodes[249][3] == 214;
-    bool pass6 =
+    bool const pass5 = enodes[249][0] == 208 && enodes[249][1] == 209 && enodes[249][2] == 215 &&
+                       enodes[249][3] == 214;
+    bool const pass6 =
         enodes[250][0] == 0 && enodes[250][1] == 36 && enodes[250][2] == 42 && enodes[250][3] == 6;
-    bool pass7 = enodes[274][0] == 168 && enodes[274][1] == 204 && enodes[274][2] == 210 &&
-                 enodes[274][3] == 174;
+    bool const pass7 = enodes[274][0] == 168 && enodes[274][1] == 204 && enodes[274][2] == 210 &&
+                       enodes[274][3] == 174;
     pass_en = pass1 && pass2 && pass3 && pass4 && pass5 && pass6 && pass7;
   } else
     Insist(false, "Unrecognized test id string!");
   if (pass_en) {
-    ostringstream message;
-    message << "Got element nodes." << std::endl;
-    PASSMSG(message.str());
+    PASSMSG("Got element nodes.\n");
   } else {
-    ostringstream message;
-    message << "Error in element nodes." << std::endl;
-    FAILMSG(message.str());
+    FAILMSG("Error in element nodes.\n");
   }
   return pass_en;
 }
 
 bool check_invariant(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &mesh) {
   // Check invariant.
-  bool invr = mesh.invariant();
+  bool const invr = mesh.invariant();
   if (invr) {
-    ostringstream message;
-    message << "Invoked invariant." << std::endl;
-    PASSMSG(message.str());
+    PASSMSG("Invoked invariant.\n");
   } else {
-    ostringstream message;
-    message << "Invariant not satisfied." << std::endl;
-    FAILMSG(message.str());
+    FAILMSG("Invariant not satisfied.\n");
   }
   return invr;
 }
@@ -313,29 +292,25 @@ bool check_element_sets(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &me
     pass_es = pass_es && check_map(elmsets, "Reflective_Boundary", 420, 480);
 
   } else if (testid == "cube") {
-    bool pass0 = elmsets.size() == 10;
-    bool pass1 = check_map(elmsets, "Interior", 0, 125);
-    bool pass2 = check_map(elmsets, "Interior_Region_10", 0, 2);
-    bool pass3 = check_map(elmsets, "Interior_Region_14", 2, 3);
-    bool pass4 = check_map(elmsets, "Interior_Region_1", 3, 122);
-    bool pass5 = check_map(elmsets, "Interior_Region_2", 122, 125);
-    bool pass6 = check_map(elmsets, "Vacuum_Boundary", 125, 250);
-    bool pass7 = check_map(elmsets, "Vacuum_Boundary_Region_3", 125, 130);
-    bool pass8 = check_map(elmsets, "Vacuum_Boundary_Region_4", 130, 131);
-    bool pass9 = check_map(elmsets, "Vacuum_Boundary_Region_1", 131, 250);
-    bool pass10 = check_map(elmsets, "Reflective_Boundary", 250, 275);
+    bool const pass0 = elmsets.size() == 10;
+    bool const pass1 = check_map(elmsets, "Interior", 0, 125);
+    bool const pass2 = check_map(elmsets, "Interior_Region_10", 0, 2);
+    bool const pass3 = check_map(elmsets, "Interior_Region_14", 2, 3);
+    bool const pass4 = check_map(elmsets, "Interior_Region_1", 3, 122);
+    bool const pass5 = check_map(elmsets, "Interior_Region_2", 122, 125);
+    bool const pass6 = check_map(elmsets, "Vacuum_Boundary", 125, 250);
+    bool const pass7 = check_map(elmsets, "Vacuum_Boundary_Region_3", 125, 130);
+    bool const pass8 = check_map(elmsets, "Vacuum_Boundary_Region_4", 130, 131);
+    bool const pass9 = check_map(elmsets, "Vacuum_Boundary_Region_1", 131, 250);
+    bool const pass10 = check_map(elmsets, "Reflective_Boundary", 250, 275);
     pass_es = pass0 && pass1 && pass2 && pass3 && pass4 && pass5 && pass6 && pass7 && pass8 &&
               pass9 && pass10;
   } else
     Insist(false, "Unrecognized test id string!");
   if (pass_es) {
-    ostringstream message;
-    message << "Got element sets." << std::endl;
-    PASSMSG(message.str());
+    PASSMSG("Got element sets.\n");
   } else {
-    ostringstream message;
-    message << "Error in element sets." << std::endl;
-    FAILMSG(message.str());
+    FAILMSG("Error in element sets.\n");
   }
 
   return pass_es;
@@ -365,13 +340,9 @@ bool check_element_types(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &m
   } else
     Insist(false, "Unrecognized test id string!");
   if (pass_et) {
-    ostringstream message;
-    message << "Read Element Types." << std::endl;
-    PASSMSG(message.str());
+    PASSMSG("Read Element Types.\n");
   } else {
-    ostringstream message;
-    message << "Error in Element Types." << std::endl;
-    FAILMSG(message.str());
+    FAILMSG("Error in Element Types.\n");
   }
   return pass_et;
 }
@@ -395,11 +366,11 @@ bool check_unique_element_types(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Re
     Insist(false, "Unrecognized test id string!");
   if (pass_et) {
     ostringstream message;
-    message << "Read Unique Element Types." << std::endl;
+    message << "Read Unique Element Types.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in Unique Element Types." << std::endl;
+    message << "Error in Unique Element Types.\n";
     FAILMSG(message.str());
   }
   return pass_et;
@@ -418,8 +389,8 @@ bool check_map(const std::map<std::string, std::set<unsigned>> &elmsets, const s
     const std::set<unsigned> &elem_subset = (*iter).second;
     if (elem_subset.size() == static_cast<size_t>(end - begin)) {
       for (unsigned i = begin; i < end; ++i) {
-        auto const siter = elem_subset.find(i);
-        pass = pass && (siter != elem_subset.end());
+        auto const subsetiter = elem_subset.find(i);
+        pass = pass && (subsetiter != elem_subset.end());
       }
     } else
       pass = false;

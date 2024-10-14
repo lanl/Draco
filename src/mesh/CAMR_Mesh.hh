@@ -23,6 +23,8 @@
 #include <cmath>
 #include <sstream>
 
+// cSpell:ignore topo, nfine, LCOV
+
 namespace rtt_mesh {
 
 //================================================================================================//
@@ -75,7 +77,7 @@ public:
   using sf_double = std::vector<double>;
   using vf_double = std::vector<std::vector<double>>;
 
-  //replacing rtt_traking::U3.
+  //replacing rtt_tracking::U3.
   using U3 = std::array<double, 3>;
 
   //! Default constructors.
@@ -262,7 +264,7 @@ private:
 //------------------------------------------------------------------------------------------------//
 // INLINE FUNCTIONS
 //------------------------------------------------------------------------------------------------//
-//replacing rtt_traking::U3.
+//replacing rtt_tracking::U3.
 using U3 = std::array<double, 3>;
 
 //------------------------------------------------------------------------------------------------//
@@ -283,7 +285,7 @@ void CAMR_Mesh<D>::constructor_body(I_IT level_data, D_IT vertex_data) {
   Topology_Builder topo_builder(decomposition, num_global_cells, bnd_cells.size(), bnd_cells.data(),
                                 bnd_procs.data(), full_size, active_size, full2active.data());
 
-  SP_Topology topo_ = topo_builder.build_Topology();
+  SP_Topology const topo_ = topo_builder.build_Topology();
   topology_ = topo_;
 
   SP_Comm_Patterns comm_pat_;
@@ -320,7 +322,7 @@ void CAMR_Mesh<D>::constructor_body(I_IT level_data, D_IT vertex_data, I_IT neig
                                 bnd_procs.data(), static_cast<uint32_t>(full_size),
                                 static_cast<uint32_t>(active_size), full2active.data());
 
-  SP_Topology topo_ = topo_builder.build_Topology();
+  SP_Topology const topo_ = topo_builder.build_Topology();
   topology_ = topo_;
 
   SP_Comm_Patterns comm_pat_;
@@ -396,7 +398,7 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
   active2full.assign(active2full_, active2full_ + active_size);
 
   // first find duplicates in ghost cells,
-  std::map<std::pair<int, int>, int> ghost_cell_cntr;
+  std::map<std::pair<int, int>, int> ghost_cell_center;
 
   int ghost_size_new(0);
   std::map<int, int> ghost_map;
@@ -406,16 +408,16 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
   // check and create list without duplicates.
   for (int i = 0; i < static_cast<int>(ghost_size); ++i) {
 
-    if (ghost_cell_cntr.find(std::make_pair(ghost_cells[i], ghost_procs[i])) !=
-        ghost_cell_cntr.end()) {
+    if (ghost_cell_center.find(std::make_pair(ghost_cells[i], ghost_procs[i])) !=
+        ghost_cell_center.end()) {
       // New entry
       // place local cell-id.
 
-      int val = ghost_cell_cntr[std::make_pair(ghost_cells[i], ghost_procs[i])];
+      int const val = ghost_cell_center[std::make_pair(ghost_cells[i], ghost_procs[i])];
       ghost_map[-i - 1] = -val - 1;
     } else {
       //  entry exists
-      ghost_cell_cntr[std::make_pair(ghost_cells[i], ghost_procs[i])] = ghost_size_new;
+      ghost_cell_center[std::make_pair(ghost_cells[i], ghost_procs[i])] = ghost_size_new;
 
       bnd_cells.push_back(ghost_cells[i]);
       bnd_procs.push_back(ghost_procs[i]);
@@ -426,26 +428,26 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
     }
   } //i
 
-  // replace neighbor values.
-  // set the layout given the neighbor count and neighbor values
-  int cntr(0);
+  // * replace neighbor values.
+  // * set the layout given the neighbor count and neighbor values
+  int center(0);
   auto neighbor_begin = neighbor_count_in;
-  uint32_t num_coarse_faces = 2 * D;
+  uint32_t const num_coarse_faces = 2 * D;
   auto num_amr_faces = std::pow(2, (D - 1));
 
   for (int32_t cell = 1; static_cast<uint32_t>(cell) <= active_size; ++cell) {
     // Loop over the faces
     for (uint32_t face = 1; face <= num_coarse_faces; ++face) {
       // Get next value (number of neighbor faces..)
-      uint32_t number_faces = *neighbor_count_in++;
+      uint32_t const number_faces = *neighbor_count_in++;
 
       if (number_faces <= num_amr_faces) { // face is refined.
         for (uint32_t amr_face = 1; amr_face <= number_faces; ++amr_face) {
-          if (neighbor_values[cntr] < 0) {
-            int id = neighbor_values[cntr];
-            neighbor_values[cntr] = ghost_map[id];
+          if (neighbor_values[center] < 0) {
+            int const id = neighbor_values[center];
+            neighbor_values[center] = ghost_map[id];
           }
-          cntr++;
+          center++;
         }
       } else {
         std::ostringstream out;
@@ -456,8 +458,7 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
   }
   neighbor_count_in = neighbor_begin;
 
-  // do some communication,
-  // this fct fill levsls, vertex and neighbor_count for parallel.
+  // do some communication, this fct fill levsls, vertex and neighbor_count for parallel.
   constructor_body(level_data, vertex_data, neighbor_count_in);
 
   layout =
@@ -465,13 +466,14 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
 
   // set the layout given the neighbor count and neighbor values
   for (int32_t cell = 1; static_cast<uint32_t>(cell) <= active_size; ++cell) {
-    size_t my_level = get_level(cell);
+    size_t const my_level = get_level(cell);
     U3 my_centroid = get_cell_centroid(cell);
 
     // Loop over the faces
     for (uint32_t face = 1; face <= layout->num_coarse_faces(); ++face) {
       // Get next value (number of neighbor faces..)
-      uint32_t number_faces = neighbor_count[(cell - 1) * layout->num_coarse_faces() + (face - 1)];
+      uint32_t const number_faces =
+          neighbor_count[(cell - 1) * layout->num_coarse_faces() + (face - 1)];
 
       if (number_faces == 1) { //no amr.
         /////////////////////////
@@ -479,10 +481,10 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
         if (*neighbor_values < 0) {
 
           // neighbor id. 1-base (appended to active cells).
-          int cid = static_cast<int>(active_size) - *neighbor_values;
+          int const cid = static_cast<int>(active_size) - *neighbor_values;
 
           // we need to identify, this is cell is  bottom/top (lower/upper)
-          size_t neighbor_level = get_level(cid);
+          size_t const neighbor_level = get_level(cid);
 
           // check the levels between my cell and neighbor.
           if (neighbor_level == my_level) // the same level.
@@ -543,7 +545,7 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
             throw;
           }
         }
-        // * this is terrible,, but layout has a size of nfine_face*cells.
+        // * this is terrible, but layout has a size of nfine_face*cells.
         // * and if the face is not refined, we need to fill the all of them with the same neighbor
         //   values..
         for (uint32_t f = 1; f <= layout->num_amr_faces(); ++f)
@@ -555,7 +557,7 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
           //        for (uint32_t amr_face = 1; amr_face <= number_faces; ++amr_face){
           if (*neighbor_values < 0) {
             // neighbor is refined, so cell is the only neighbor of cid.
-            int cid = static_cast<int>(active_size) - *neighbor_values;
+            int const cid = static_cast<int>(active_size) - *neighbor_values;
             //            layout(cid,opposite_face[face-1],amr_face) = cell;
             (*layout)(cid, opposite_face[face - 1], 1) = cell;
           }
@@ -615,7 +617,7 @@ CAMR_Mesh<D>::CAMR_Mesh(size_t const size_, double const width_, D_IT vertex_dat
     // Loop over the faces
     for (uint32_t face = 1; face <= layout->num_coarse_faces(); ++face) {
       // Get next value (number of neighbor faces..)
-      uint32_t number_faces = *neighbor_count_in++;
+      uint32_t const number_faces = *neighbor_count_in++;
 
       if (number_faces == 1) { //no amr.
         for (uint32_t amr_face = 1; amr_face <= layout->num_amr_faces(); ++amr_face)
@@ -887,9 +889,9 @@ typename CAMR_Mesh<D>::sf_double CAMR_Mesh<D>::get_short_vertices(size_t cell) c
   // for distance to boundary we only need the low dimension values and the delta
   Require(cell > 0 && static_cast<uint32_t>(cell) <= layout->get_num_total_cells());
 
-  sf_double myvertices = get_vertex(cell);
-  myvertices.push_back(get_cell_width(cell));
-  return myvertices;
+  sf_double myVertices = get_vertex(cell);
+  myVertices.push_back(get_cell_width(cell));
+  return myVertices;
 }
 
 //------------------------------------------------------------------------------------------------//

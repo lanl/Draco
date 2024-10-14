@@ -15,6 +15,8 @@
 #include <memory>
 #include <utility>
 
+// cSpell:ignore topo
+
 namespace rtt_mesh {
 
 //================================================================================================//

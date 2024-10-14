@@ -8,15 +8,26 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Mesh_Interface.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "mesh/Draco_Mesh_Builder.hh"
 #include "mesh/RTT_Draco_Mesh_Reader.hh"
+#include "mesh_element/Geometry.hh"
+#include <algorithm>
+#include <cstddef>
+#include <memory>
+#include <string>
+#include <vector>
 
 using rtt_mesh::Draco_Mesh;
 using rtt_mesh::Draco_Mesh_Builder;
 using rtt_mesh::RTT_Draco_Mesh_Reader;
+
+// cSpell:ignore xdir, ydir
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -35,7 +46,7 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
   const size_t num_ydir = 1;
 
   // generate a container for data needed in mesh construction
-  rtt_mesh_test::Test_Mesh_Interface mesh_iface(num_xdir, num_ydir);
+  rtt_mesh_test::Test_Mesh_Interface const mesh_iface(num_xdir, num_ydir);
 
   // short-cut to some arrays
   const std::vector<unsigned> &cell_type = mesh_iface.cell_type;
@@ -45,47 +56,39 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
   const std::vector<unsigned> &side_to_node_linkage = mesh_iface.side_to_node_linkage;
 
   // instantiate the mesh
-  std::shared_ptr<Draco_Mesh> ref_mesh(
+  std::shared_ptr<Draco_Mesh> const ref_mesh(
       new Draco_Mesh(mesh_iface.dim, geometry, cell_type, cell_to_node_linkage,
                      mesh_iface.side_set_flag, side_node_count, side_to_node_linkage,
                      mesh_iface.coordinates, mesh_iface.global_node_number, face_type));
 
   // >>> PARSE AND BUILD MESH
 
-  const std::string inputpath = ut.getTestSourcePath();
-  const std::string filename = inputpath + "rttquad_2cell.mesh.in";
+  std::string const inputpath = ut.getTestSourcePath();
+  std::string const filename = inputpath + "rttquad_2cell.mesh.in";
 
   // create an rtt mesh reader and read the mesh
-  std::shared_ptr<RTT_Draco_Mesh_Reader> rtt_mesh(new RTT_Draco_Mesh_Reader(filename));
+  std::shared_ptr<RTT_Draco_Mesh_Reader> const rtt_mesh(new RTT_Draco_Mesh_Reader(filename));
   rtt_mesh->read_mesh();
 
   // instantiate a mesh builder and build the mesh
   Draco_Mesh_Builder<RTT_Draco_Mesh_Reader> mesh_builder(rtt_mesh);
-  std::shared_ptr<Draco_Mesh> mesh = mesh_builder.build_mesh(geometry);
+  std::shared_ptr<Draco_Mesh> const mesh = mesh_builder.build_mesh(geometry);
 
   // check that the scalar data is correct
-  if (mesh->get_dimension() != ref_mesh->get_dimension())
-    ITFAILS;
-  if (mesh->get_geometry() != ref_mesh->get_geometry())
-    ITFAILS;
-  if (mesh->get_num_cells() != ref_mesh->get_num_cells())
-    ITFAILS;
-  if (mesh->get_num_nodes() != ref_mesh->get_num_nodes())
-    ITFAILS;
+  FAIL_IF(mesh->get_dimension() != ref_mesh->get_dimension());
+  FAIL_IF(mesh->get_geometry() != ref_mesh->get_geometry());
+  FAIL_IF(mesh->get_num_cells() != ref_mesh->get_num_cells());
+  FAIL_IF(mesh->get_num_nodes() != ref_mesh->get_num_nodes());
 
   // check side flag indices
-  if (mesh->get_side_set_flag() != ref_mesh->get_side_set_flag())
-    ITFAILS;
+  FAIL_IF(mesh->get_side_set_flag() != ref_mesh->get_side_set_flag());
 
   // check ghost cell data (should be empty defaults)
-  if (mesh->get_ghost_cell_numbers() != ref_mesh->get_ghost_cell_numbers())
-    ITFAILS;
-  if (mesh->get_ghost_cell_ranks() != ref_mesh->get_ghost_cell_ranks())
-    ITFAILS;
+  FAIL_IF(mesh->get_ghost_cell_numbers() != ref_mesh->get_ghost_cell_numbers());
+  FAIL_IF(mesh->get_ghost_cell_ranks() != ref_mesh->get_ghost_cell_ranks());
 
   // check that the vector of coordinates match the reference mesh
-  if (!rtt_dsxx::soft_equiv(mesh->get_node_coord_vec(), ref_mesh->get_node_coord_vec()))
-    ITFAILS;
+  FAIL_IF(!rtt_dsxx::soft_equiv(mesh->get_node_coord_vec(), ref_mesh->get_node_coord_vec()));
 
   // check that cell-to-node linkage data is correct
   {
@@ -112,9 +115,8 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
       }
 
       // nodes must only be permuted at the cell level
-      if (!std::is_permutation(cn_first, cn_first + num_nodes_per_cell, ref_cn_first,
-                               ref_cn_first + num_nodes_per_cell))
-        ITFAILS;
+      FAIL_IF_NOT(std::is_permutation(cn_first, cn_first + num_nodes_per_cell, ref_cn_first,
+                                      ref_cn_first + num_nodes_per_cell));
 
       // update the iterators
       ref_cn_first += num_nodes_per_cell;

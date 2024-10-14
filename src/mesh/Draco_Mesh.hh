@@ -18,6 +18,8 @@
 #include <set>
 #include <vector>
 
+// cSpell:ignore NBRS, ngcoord
+
 namespace rtt_mesh {
 
 //================================================================================================//
