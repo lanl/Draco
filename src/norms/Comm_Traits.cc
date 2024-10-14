@@ -4,11 +4,15 @@
  * \author Rob Lowrie
  * \date   Fri Jan 14 12:45:49 2005
  * \brief  Implementations for Comm_Traits.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Comm_Traits.hh"
+#include "norms/Comm_Traits.hh"
+#include "dsxx/Assert.hh"
+#include "c4/C4_Functions.hh"
+#include "norms/Index_Labeled.hh"
+#include "norms/Index_Proc.hh"
+#include <climits> // INT_MAX
 
 namespace rtt_norms {
 

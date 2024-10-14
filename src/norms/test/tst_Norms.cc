@@ -9,15 +9,17 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "norms/Norms.hh"
 #include "norms/Norms_Labeled.hh"
 #include "norms/Norms_Proc.hh"
+#include <cmath>
+#include <cstddef>
 #include <sstream>
 
-#define UNIT_TEST(A)                                                                               \
-  if (!(A))                                                                                        \
-  ITFAILS
+// cSpell:ignore Linf
 
 using namespace std;
 
@@ -34,34 +36,34 @@ using rtt_norms::Norms_Proc;
 void test_Norms(rtt_dsxx::UnitTest &ut) {
   Norms norms;
 
-  // All norms should be the same if we add just a single quantity, in this
-  // case, the processor number + 1.
+  // All norms should be the same if we add just a single quantity, in this case, the processor
+  // number + 1.
 
-  size_t x = rtt_c4::node();
-  double xp1 = static_cast<double>(x) + 1.0;
+  size_t const x = rtt_c4::node();
+  double const xp1 = static_cast<double>(x) + 1.0;
 
   norms.add(xp1, x);
 
-  UNIT_TEST(soft_equiv(norms.L1(), xp1));
-  UNIT_TEST(soft_equiv(norms.L2(), xp1));
-  UNIT_TEST(soft_equiv(norms.Linf(), xp1));
-  UNIT_TEST(norms.index_Linf() == x);
+  FAIL_IF_NOT(soft_equiv(norms.L1(), xp1));
+  FAIL_IF_NOT(soft_equiv(norms.L2(), xp1));
+  FAIL_IF_NOT(soft_equiv(norms.Linf(), xp1));
+  FAIL_IF_NOT(norms.index_Linf() == x);
 
   // Check accumulating the results back to the host proc.
 
   norms.comm(0);
 
   if (x == 0) {
-    size_t num_nodes = rtt_c4::nodes();
+    size_t const num_nodes = rtt_c4::nodes();
 
-    UNIT_TEST(norms.index_Linf() == num_nodes - 1);
-    UNIT_TEST(soft_equiv(norms.Linf(), double(num_nodes)));
+    FAIL_IF_NOT(norms.index_Linf() == num_nodes - 1);
+    FAIL_IF_NOT(soft_equiv(norms.Linf(), double(num_nodes)));
 
     double tL1 = 0.0;
     double tL2 = 0.0;
 
     for (size_t i = 0; i < num_nodes; ++i) {
-      double xt = static_cast<double>(i) + 1.0;
+      double const xt = static_cast<double>(i) + 1.0;
       tL1 += xt;
       tL2 += xt * xt;
     }
@@ -69,21 +71,21 @@ void test_Norms(rtt_dsxx::UnitTest &ut) {
     tL1 /= static_cast<double>(num_nodes);
     tL2 = std::sqrt(tL2 / static_cast<double>(num_nodes));
 
-    UNIT_TEST(soft_equiv(norms.L1(), tL1));
-    UNIT_TEST(soft_equiv(norms.L2(), tL2));
+    FAIL_IF_NOT(soft_equiv(norms.L1(), tL1));
+    FAIL_IF_NOT(soft_equiv(norms.L2(), tL2));
   }
 
   { // test assignment
 
     Norms nc;
     nc = norms;
-    UNIT_TEST(nc == norms);
+    FAIL_IF_NOT(nc == norms);
   }
 
   { // test copy ctor.
 
-    Norms nc(norms); // NOLINT(performance-unnecessary-copy-initialization) testing the ctor
-    UNIT_TEST(nc == norms);
+    Norms const nc(norms); // NOLINT(performance-unnecessary-copy-initialization)
+    FAIL_IF_NOT(nc == norms);
   }
 
   // Done testing
@@ -98,11 +100,11 @@ void test_Norms(rtt_dsxx::UnitTest &ut) {
 void test_Norms_Labeled(rtt_dsxx::UnitTest &ut) {
   Norms_Labeled norms;
 
-  // All norms should be the same if we add just a single quantity, in this
-  // case, the processor number + 1.
+  // All norms should be the same if we add just a single quantity, in this case, the processor
+  // number + 1.
 
-  size_t x = rtt_c4::node();
-  double xp1 = static_cast<double>(x) + 1.0;
+  size_t const x = rtt_c4::node();
+  double const xp1 = static_cast<double>(x) + 1.0;
 
   Norms_Labeled::Index indx(x);
   ostringstream o;
@@ -111,26 +113,26 @@ void test_Norms_Labeled(rtt_dsxx::UnitTest &ut) {
 
   norms.add(xp1, indx);
 
-  UNIT_TEST(soft_equiv(norms.L1(), xp1));
-  UNIT_TEST(soft_equiv(norms.L2(), xp1));
-  UNIT_TEST(soft_equiv(norms.Linf(), xp1));
-  UNIT_TEST(norms.index_Linf() == indx);
+  FAIL_IF_NOT(soft_equiv(norms.L1(), xp1));
+  FAIL_IF_NOT(soft_equiv(norms.L2(), xp1));
+  FAIL_IF_NOT(soft_equiv(norms.Linf(), xp1));
+  FAIL_IF_NOT(norms.index_Linf() == indx);
 
   // Check accumulating the results back to the host proc.
 
   norms.comm(0);
 
   if (x == 0) {
-    size_t num_nodes = rtt_c4::nodes();
+    size_t const num_nodes = rtt_c4::nodes();
 
-    //UNIT_TEST(norms.index_Linf() == num_nodes-1);
-    UNIT_TEST(soft_equiv(norms.Linf(), double(num_nodes)));
+    //FAIL_IF_NOT(norms.index_Linf() == num_nodes-1);
+    FAIL_IF_NOT(soft_equiv(norms.Linf(), double(num_nodes)));
 
     double tL1 = 0.0;
     double tL2 = 0.0;
 
     for (size_t i = 0; i < num_nodes; ++i) {
-      double xt = static_cast<double>(i) + 1.0;
+      double const xt = static_cast<double>(i) + 1.0;
       tL1 += xt;
       tL2 += xt * xt;
     }
@@ -138,21 +140,21 @@ void test_Norms_Labeled(rtt_dsxx::UnitTest &ut) {
     tL1 /= static_cast<double>(num_nodes);
     tL2 = std::sqrt(tL2 / static_cast<double>(num_nodes));
 
-    UNIT_TEST(soft_equiv(norms.L1(), tL1));
-    UNIT_TEST(soft_equiv(norms.L2(), tL2));
+    FAIL_IF_NOT(soft_equiv(norms.L1(), tL1));
+    FAIL_IF_NOT(soft_equiv(norms.L2(), tL2));
   }
 
   { // test assignment
 
     Norms_Labeled nc;
     nc = norms;
-    UNIT_TEST(nc == norms);
+    FAIL_IF_NOT(nc == norms);
   }
 
   { // test copy ctor.
 
-    Norms_Labeled nc(norms); // NOLINT(performance-unnecessary-copy-initialization) testing the ctor
-    UNIT_TEST(nc == norms);
+    Norms_Labeled const nc(norms); // NOLINT(performance-unnecessary-copy-initialization)
+    FAIL_IF_NOT(nc == norms);
   }
 
   // Done testing
@@ -167,36 +169,36 @@ void test_Norms_Labeled(rtt_dsxx::UnitTest &ut) {
 void test_Norms_Proc(rtt_dsxx::UnitTest &ut) {
   Norms_Proc norms;
 
-  // All norms should be the same if we add just a single quantity, in this
-  // case, the processor number + 1.
+  // All norms should be the same if we add just a single quantity, in this case, the processor
+  // number + 1.
 
-  size_t x = rtt_c4::node();
-  double xp1 = static_cast<double>(x) + 1.0;
+  size_t const x = rtt_c4::node();
+  double const xp1 = static_cast<double>(x) + 1.0;
 
-  Norms_Proc::Index indx(x);
+  Norms_Proc::Index const indx(x);
 
   norms.add(xp1, indx);
 
-  UNIT_TEST(soft_equiv(norms.L1(), xp1));
-  UNIT_TEST(soft_equiv(norms.L2(), xp1));
-  UNIT_TEST(soft_equiv(norms.Linf(), xp1));
-  UNIT_TEST(norms.index_Linf() == indx);
+  FAIL_IF_NOT(soft_equiv(norms.L1(), xp1));
+  FAIL_IF_NOT(soft_equiv(norms.L2(), xp1));
+  FAIL_IF_NOT(soft_equiv(norms.Linf(), xp1));
+  FAIL_IF_NOT(norms.index_Linf() == indx);
 
   // Check accumulating the results back to the host proc.
 
   norms.comm(0);
 
   if (x == 0) {
-    size_t num_nodes = rtt_c4::nodes();
+    size_t const num_nodes = rtt_c4::nodes();
 
-    //UNIT_TEST(norms.index_Linf() == num_nodes-1);
-    UNIT_TEST(soft_equiv(norms.Linf(), double(num_nodes)));
+    //FAIL_IF_NOT(norms.index_Linf() == num_nodes-1);
+    FAIL_IF_NOT(soft_equiv(norms.Linf(), double(num_nodes)));
 
     double tL1 = 0.0;
     double tL2 = 0.0;
 
     for (size_t i = 0; i < num_nodes; ++i) {
-      double xt = static_cast<double>(i) + 1.0;
+      double const xt = static_cast<double>(i) + 1.0;
       tL1 += xt;
       tL2 += xt * xt;
     }
@@ -204,21 +206,21 @@ void test_Norms_Proc(rtt_dsxx::UnitTest &ut) {
     tL1 /= static_cast<double>(num_nodes);
     tL2 = std::sqrt(tL2 / static_cast<double>(num_nodes));
 
-    UNIT_TEST(soft_equiv(norms.L1(), tL1));
-    UNIT_TEST(soft_equiv(norms.L2(), tL2));
+    FAIL_IF_NOT(soft_equiv(norms.L1(), tL1));
+    FAIL_IF_NOT(soft_equiv(norms.L2(), tL2));
   }
 
   { // test assignment
 
     Norms_Proc nc;
     nc = norms;
-    UNIT_TEST(nc == norms);
+    FAIL_IF_NOT(nc == norms);
   }
 
   { // test copy ctor.
 
-    Norms_Proc nc(norms); // NOLINT(performance-unnecessary-copy-initialization) testing the ctor
-    UNIT_TEST(nc == norms);
+    Norms_Proc const nc(norms); // NOLINT(performance-unnecessary-copy-initialization)
+    FAIL_IF_NOT(nc == norms);
   }
 
   // Done testing

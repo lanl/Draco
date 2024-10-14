@@ -4,8 +4,7 @@
  * \author Rob Lowrie
  * \date   Fri Jan 14 12:45:49 2005
  * \brief  Header for Comm_Traits.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_norms_Comm_Traits_hh
@@ -14,6 +13,7 @@
 #include "Index_Labeled.hh"
 #include "Index_Proc.hh"
 #include "c4/C4_Functions.hh"
+#include <cstddef>
 
 namespace rtt_norms {
 
@@ -21,9 +21,9 @@ namespace rtt_norms {
 /*!
   \class Comm_Traits
   \brief Communicates the Norms index type.
-  
-  This class contains the necessary functions used to communicate the index
-  type of class Norms.  The following static functions must be provided:
+
+  This class contains the necessary functions used to communicate the index type of class Norms.
+  The following static functions must be provided:
 
   // Sends \a x to processor \a n.
   void send(const Index_t x, const size_t n)
@@ -34,8 +34,8 @@ namespace rtt_norms {
 //================================================================================================//
 
 template <typename Index_t> class Comm_Traits {
-  // The default implementation of Comm_Traits assumes that Index_t is
-  // supported as an argument type to c4's send/receive.
+  // The default implementation of Comm_Traits assumes that Index_t is supported as an argument type
+  // to c4's send/receive.
 
 public:
   static void send(const Index_t x, const size_t n) {
