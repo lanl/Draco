@@ -12,22 +12,29 @@
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/XGetopt.hh"
 #include "cdi/CDI.hh"
-#include "units/PhysicalConstants.hh"
-#include "units/UnitSystem.hh"
+#include "units/MathConstants.hh"
+#include "units/PhysicalConstantsSI.hh"
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
+#include <map>
 #include <string>
+#include <vector>
 
 using rtt_dsxx::soft_equiv;
 using std::cout;
-using std::endl;
 using std::string;
 using UINT64 = uint64_t;
 using FP = double;
+
+// cSpell:ignore cskrw, gfrom, Evals, Bdrs, isnonlin, Tbreakpoints, mtocm, Zbar, opac, cspeed,
+// cSpell:ignore renorm, Ncutoff, Elow, Ehigh, Efrom, bgsum, bgfrom, bgto, hplanck, pchip, iuse
+// cSpell:ignore nlbase, scipy, IPCRESS, csmap, avogadrosnumber
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -82,14 +89,14 @@ private:
 };
 
 //------------------------------------------------------------------------------------------------//
-/*
+/*!
  * \brief resize data and set sizes
  * \param[in] numfiles is number of Compton files
  * \param[in] filename is one such file
  */
 void Dense_Compton_Data::resize(UINT64 numfiles, std::string const &filename) {
   // Reserve space for nl difference
-  UINT64 numderived = (numfiles >= 4) ? 1 : 0;
+  UINT64 const numderived = (numfiles >= 4) ? 1 : 0;
   numEvals = numfiles + numderived;
 
   // Read first line of filename to get sizes
@@ -106,7 +113,7 @@ void Dense_Compton_Data::resize(UINT64 numfiles, std::string const &filename) {
   // Set vector lengths
   groupBdrs.resize(numGroups + 1, 0.0);
   Ts.resize(numTs, 0.0);
-  UINT64 sz = numEvals * numLegMoments * numTs * numGroups * numGroups;
+  UINT64 const sz = numEvals * numLegMoments * numTs * numGroups * numGroups;
   data.resize(sz, 0.0);
   derivatives.resize(sz, 0.0);
 
@@ -126,8 +133,8 @@ void Dense_Compton_Data::read_from_file(UINT64 eval, std::string const &filename
 
   // Normalization constants for raw CSK data:
   // CSK to cross section: 2 * pi * classicalElectronRadius^2 / 4
-  // cross section to opacity: Zbar_over_A * avogadrosNumber
-  // opacity to micro xs: 1/avogadrosNumber
+  // cross section to opacity: Zbar_over_A * avogadrosnumber
+  // opacity to micro xs: 1/avogadrosnumber
   //
   // convert from CSK data to opacity (cm^2/mole)
   const FP csk_opac_norm = 0.25 * 2 * rtt_units::PI * classical_electron_radius *
@@ -217,7 +224,7 @@ void Dense_Compton_Data::read_from_file(UINT64 eval, std::string const &filename
 
       // Look-ahead to next line to see if a blank line, signalling end of temperature data
       f.get(c);
-      if (c == '\n') { // [kt] || c == EOF) { // EOF is not a char. This is alwasy false.
+      if (c == '\n') { // [kt] || c == EOF) { // EOF is not a char. This is always false.
         finished = true;
       } else {
         f.putback(c);
@@ -248,7 +255,7 @@ void Dense_Compton_Data::compute_nonlinear_difference() {
   // Determine the cutoff between low and high energies (Ecutoff = N * T)
   // Based on the wgt fxn CSK uses in its MG avg, N <= 25.0
   // Using 25.0 is better for equilibrium stimulated scat
-  // Using N>=9.0 is better for non-equil stimulated scat
+  // Using N>=9.0 is better for non-equilibrium stimulated scat
   const FP Ncutoff = 9.0;
 
   // Planck MG integral
@@ -298,13 +305,13 @@ void Dense_Compton_Data::compute_nonlinear_difference() {
 
           std::array<FP, 4> vals{0.0};
           // use scattering matrix (no transpose) for outscattering
-          for (UINT64 eval : {e_OL, e_ON}) {
+          for (UINT64 const eval : {e_OL, e_ON}) {
             const UINT64 loc =
                 gto + numGroups * (gfrom + numGroups * (iT + numTs * (iL + numLegMoments * eval)));
             vals[eval] = data[loc];
           }
           // use transpose of scattering matrix for inscattering
-          for (UINT64 eval : {e_IL, e_IN}) {
+          for (UINT64 const eval : {e_IL, e_IN}) {
             const UINT64 loc =
                 gfrom + numGroups * (gto + numGroups * (iT + numTs * (iL + numLegMoments * eval)));
             vals[eval] = data[loc];
@@ -332,6 +339,8 @@ void Dense_Compton_Data::compute_nonlinear_difference() {
       }
     }
 
+    // cSpell:ignore scalenl
+
     // Rescale the nonlin diff to get exact detailed balance at equilibrium
     const FP scalenl = sumlin / sumnonlin;
     // we hope scalenl is within a percent or less of 1
@@ -354,17 +363,16 @@ void Dense_Compton_Data::compute_temperature_derivatives() {
   // Check that temperature grid is valid (part 1/2)
   if (numTs < 2) {
     std::fill(derivatives.begin(), derivatives.end(), 0.0);
-    std::cerr << "WARNING: Cannot construct derivatives with only one "
-                 "temperature. Aborting routine.";
-    std::cerr << std::endl;
+    std::cerr << "WARNING: Cannot construct derivatives with only one temperature. Aborting "
+                 "routine.\n";
     return;
   }
 
   // Check that temperature grid is valid (part 2/2)
   bool validTs = true;
   for (UINT64 it = 0; it < (numTs - 1U); ++it) {
-    FP T1 = Ts[it];
-    FP T2 = Ts[it + 1];
+    FP const T1 = Ts[it];
+    FP const T2 = Ts[it + 1];
     validTs = validTs && (T1 < T2);
   }
   Insist(validTs, "Temperatures are not monotonically increasing and unique.\n");
@@ -401,7 +409,7 @@ void Dense_Compton_Data::compute_temperature_derivatives() {
 
       // Step 2a: First temperature (no limiter; first-order estimate)
       {
-        UINT64 iT = 0;
+        UINT64 const iT = 0;
         const UINT64 offset = numGroups * (iT + numTs * (iL + numLegMoments * eval));
         const UINT64 offset_fd = numGroups * iT;
         for (UINT64 gfrom = 0; gfrom < numGroups; ++gfrom) {
@@ -415,7 +423,7 @@ void Dense_Compton_Data::compute_temperature_derivatives() {
 
       // Step 2b: Last temperature (no limiter; first-order estimate)
       {
-        UINT64 iT = numTs - 1U;
+        UINT64 const iT = numTs - 1U;
         const UINT64 offset = numGroups * (iT + numTs * (iL + numLegMoments * eval));
         const UINT64 offset_fd = numGroups * (iT - 1U);
         for (UINT64 gfrom = 0; gfrom < numGroups; ++gfrom) {
@@ -465,7 +473,7 @@ void Dense_Compton_Data::compute_temperature_derivatives() {
 }
 
 //------------------------------------------------------------------------------------------------//
-// Sparsify data and print to binary
+// Sparse-ify data and print to binary
 void Dense_Compton_Data::write_sparse_binary(std::string const &fileout) {
   Sparse_Compton_Data sd = copy_to_sparse();
   print_sparse(sd);
@@ -473,7 +481,7 @@ void Dense_Compton_Data::write_sparse_binary(std::string const &fileout) {
 }
 
 //------------------------------------------------------------------------------------------------//
-// Sparsify data
+// Sparse-ify data
 Sparse_Compton_Data Dense_Compton_Data::copy_to_sparse() {
 
   // Size of smallest non-zero value
@@ -594,12 +602,12 @@ void Dense_Compton_Data::print_sparse(const Sparse_Compton_Data &sd) {
     std::cout << "PRINT CONTENTS (point 0)\n";
     for (UINT64 iT = 0; iT < numTs; ++iT) {
       for (UINT64 gfrom = 0; gfrom < numGroups; ++gfrom) {
-        UINT64 loc = gfrom + numGroups * iT;
-        UINT64 fg = sd.first_groups[loc];
-        UINT64 strt = sd.indexes[loc];
-        UINT64 endd = sd.indexes[loc + 1];
-        for (UINT64 ii = strt; ii < endd; ++ii) {
-          UINT64 gto = (ii - strt) + fg;
+        UINT64 const loc = gfrom + numGroups * iT;
+        UINT64 const fg = sd.first_groups[loc];
+        UINT64 const start = sd.indexes[loc];
+        UINT64 const enddata = sd.indexes[loc + 1];
+        for (UINT64 ii = start; ii < enddata; ++ii) {
+          UINT64 const gto = (ii - start) + fg;
           std::cout << iT << ' ' << gfrom << ' ' << gto << ' ' << std::setprecision(2)
                     << sd.data[ii] << ' ' << std::setprecision(2) << sd.derivatives[ii] << '\n';
         }
@@ -608,7 +616,7 @@ void Dense_Compton_Data::print_sparse(const Sparse_Compton_Data &sd) {
   }
 
   UINT64 counter = 0;
-  UINT64 line = 8;
+  UINT64 const line = 8;
   if (false) {
     std::cout << '\n';
     std::cout << "first_groups:\n";
@@ -624,9 +632,9 @@ void Dense_Compton_Data::print_sparse(const Sparse_Compton_Data &sd) {
     std::cout << "last_groups (exclusive):\n";
     counter = 0;
     for (UINT64 i = 0; i < sd.first_groups.size(); ++i) {
-      UINT64 fg = sd.first_groups[i];
-      UINT64 sz = sd.indexes[i + 1] - sd.indexes[i];
-      UINT64 lg = fg + sz;
+      UINT64 const fg = sd.first_groups[i];
+      UINT64 const sz = sd.indexes[i + 1] - sd.indexes[i];
+      UINT64 const lg = fg + sz;
       std::cout << lg << ' ';
       if (++counter % line == 0)
         std::cout << '\n';
@@ -678,6 +686,9 @@ void Dense_Compton_Data::print_sparse(const Sparse_Compton_Data &sd) {
 //------------------------------------------------------------------------------------------------//
 // Write to binary
 void Dense_Compton_Data::write_binary(std::string const &fileout, Sparse_Compton_Data &sd) {
+
+  // cSpell:ignore fout, egsz, fgsz
+
   auto fout = std::ofstream(fileout, std::ios::out | std::ios::binary);
 
   // binary type
@@ -696,8 +707,8 @@ void Dense_Compton_Data::write_binary(std::string const &fileout, Sparse_Compton
 
   UINT64 numBinaryEvals = (numEvals > 1U) ? 3U : 1U;
 
-  UINT64 tsz = Ts.size();
-  UINT64 egsz = groupBdrs.size();
+  UINT64 const tsz = Ts.size();
+  UINT64 const egsz = groupBdrs.size();
   UINT64 fgsz = sd.first_groups.size();
   UINT64 isz = sd.indexes.size();
   UINT64 dsz = sd.data.size();
@@ -822,9 +833,7 @@ void Dense_Compton_Data::print_contents(int verbosity, int precision) {
 }
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Basic reader of the csk ASCII file format
- */
+//! Basic reader of the csk ASCII file format
 void read_csk_files(std::string const &basename, int verbosity) {
   // csk data base filename (csk ASCII format required)
 
@@ -842,7 +851,7 @@ void read_csk_files(std::string const &basename, int verbosity) {
 
   // Resize
   {
-    UINT64 numfiles = lins.size() * inouts.size();
+    UINT64 const numfiles = lins.size() * inouts.size();
     std::string const filename = basename + '_' + inouts[0] + '_' + lins[0];
     dat.resize(numfiles, filename);
   }
@@ -853,13 +862,13 @@ void read_csk_files(std::string const &basename, int verbosity) {
     for (std::string const &inout : inouts) {
 
       ++counter;
-      UINT64 eval = counter - 1U;
+      UINT64 const eval = counter - 1U;
 
       std::string filename = basename;
       filename.append(std::string(1, '_')).append(inout).append(std::string(1, '_')).append(lin);
-      cout << "Reading file: " << filename << endl;
+      cout << "Reading file: " << filename << '\n';
 
-      bool isnonlin = lin.compare("nonlin") == 0;
+      bool const isnonlin = lin.compare("nonlin") == 0;
 
       dat.read_from_file(eval, filename, isnonlin);
     }
@@ -873,12 +882,12 @@ void read_csk_files(std::string const &basename, int verbosity) {
   dat.compute_temperature_derivatives();
 
   // Save to binary
-  std::string fileout = basename + "_b";
+  std::string const fileout = basename + "_b";
   std::cout << "Writing file: " << fileout << '\n';
   dat.write_sparse_binary(fileout);
 
   // Print
-  int precision = 3;
+  int constexpr precision = 3;
   //precision = 16;
   dat.print_contents(verbosity, precision);
 
@@ -891,9 +900,14 @@ void read_csk_files(std::string const &basename, int verbosity) {
     // Planck MG integral
     std::vector<FP> bg(dat.numGroups, 0.0);
 
+    // cSpell:ignore nldiff
+
     // indexes for the evaluations
-    // I for inscattering, O for outscattering, f for difference
-    // L for linear, N for nonlinear
+    // * I for inscattering,
+    // * O for outscattering,
+    // * f for difference
+    // * L for linear,
+    // * N for nonlinear
     std::vector<std::string> evalNames = {"in_lin", "out_lin", "in_nonlin", "out_nonlin", "nldiff"};
     const UINT64 e_IL = 0;
     const UINT64 e_OL = 1;
@@ -997,16 +1011,16 @@ int main(int argc, char *argv[]) {
     switch (c) {
     case 'v': // --version
     {
-      cout << argv[0] << ": version " << rtt_dsxx::release() << endl;
+      cout << argv[0] << ": version " << rtt_dsxx::release() << '\n';
       return 0;
     }
     case 'h': // --help
     {
-      cout << argv[0] << ": version " << rtt_dsxx::release() << helpstring << endl;
+      cout << argv[0] << ": version " << rtt_dsxx::release() << helpstring << '\n';
       return 0;
     }
     default: {
-      cout << argv[0] << ": version " << rtt_dsxx::release() << helpstring << endl;
+      cout << argv[0] << ": version " << rtt_dsxx::release() << helpstring << '\n';
       return 0;
     }
     }
@@ -1023,7 +1037,7 @@ int main(int argc, char *argv[]) {
     //verbosity = 4;
     read_csk_files(filename, verbosity);
   } catch (rtt_dsxx::assertion &excpt) {
-    cout << "While attempting to read csk file, " << excpt.what() << endl;
+    cout << "While attempting to read csk file, " << excpt.what() << '\n';
     return 1;
   }
 

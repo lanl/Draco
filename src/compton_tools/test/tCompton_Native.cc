@@ -7,20 +7,23 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "compton_tools/Compton_Native.hh"
+#include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <iterator>
 #include <memory>
 #include <string>
 #include <vector>
+
+// cSpell:ignore evals
 
 namespace rtt_compton_tools_test {
 
@@ -67,7 +70,7 @@ void test(rtt_dsxx::UnitTest &ut) {
 
   try {
     compton_test = std::make_unique<rtt_compton_tools::Compton_Native>(filename);
-  } catch (int /*asrt*/) {
+  } catch (int /*assertion*/) {
     FAILMSG("Failed to construct a Compton_Native object!");
     // if construction fails, there is no reason to continue testing...
     return;
@@ -143,7 +146,7 @@ void test(rtt_dsxx::UnitTest &ut) {
     // Use dummy flux for nonlinear component
     const double phival = 1.732984; // random
     const double phiscale = phival * double(G);
-    std::vector<double> phi(compton_test->get_num_groups(), phival);
+    std::vector<double> const phi(compton_test->get_num_groups(), phival);
     // Returns 1D nonlinear difference array [group_from] (performs matrix multiplication with phi)
     compton_test->interp_nonlin_diff_and_add(nl_diff, interp_T_keV, phi, phiscale);
 
@@ -155,44 +158,44 @@ void test(rtt_dsxx::UnitTest &ut) {
     }
 
     // in_lin last temperature
-    std::vector<double> inscat_gold = {0.077335961983675,
-                                       0.00086813512403298,
-                                       3.7589542861865e-12,
-                                       0,
-                                       0.0126392099825,
-                                       0.064715680156296,
-                                       0.0019126397051273,
-                                       4.2280402573895e-09,
-                                       7.5743500030441e-10,
-                                       0.010297948543218,
-                                       0.055677870598416,
-                                       0.0017508387789385,
-                                       0,
-                                       1.7871075876201e-07,
-                                       0.0078416029229916,
-                                       0.05377131679901,
-                                       0.00025245247880701,
-                                       -1.9130636257311e-05,
-                                       -3.3342618791366e-13,
-                                       0,
-                                       -0.00033789734745753,
-                                       0.00025068616810335,
-                                       -4.2277780938278e-05,
-                                       -3.556692022306e-10,
-                                       -6.7240010226582e-11,
-                                       -0.00026875796575325,
-                                       0.00026147382401739,
-                                       -3.8250062923392e-05,
-                                       0,
-                                       -1.5099779118058e-08,
-                                       -0.00019672159570614,
-                                       0.00018670354202682};
+    std::vector<double> const inscat_gold = {0.077335961983675,
+                                             0.00086813512403298,
+                                             3.7589542861865e-12,
+                                             0,
+                                             0.0126392099825,
+                                             0.064715680156296,
+                                             0.0019126397051273,
+                                             4.2280402573895e-09,
+                                             7.5743500030441e-10,
+                                             0.010297948543218,
+                                             0.055677870598416,
+                                             0.0017508387789385,
+                                             0,
+                                             1.7871075876201e-07,
+                                             0.0078416029229916,
+                                             0.05377131679901,
+                                             0.00025245247880701,
+                                             -1.9130636257311e-05,
+                                             -3.3342618791366e-13,
+                                             0,
+                                             -0.00033789734745753,
+                                             0.00025068616810335,
+                                             -4.2277780938278e-05,
+                                             -3.556692022306e-10,
+                                             -6.7240010226582e-11,
+                                             -0.00026875796575325,
+                                             0.00026147382401739,
+                                             -3.8250062923392e-05,
+                                             0,
+                                             -1.5099779118058e-08,
+                                             -0.00019672159570614,
+                                             0.00018670354202682};
 
-    std::vector<double> outscat_gold = {0.087476270446994, 0.074121503186901, 0.064422154448942,
-                                        0.055814819950424};
+    std::vector<double> const outscat_gold = {0.087476270446994, 0.074121503186901,
+                                              0.064422154448942, 0.055814819950424};
 
-    std::vector<double> nl_diff_gold = {0.017286371393823, 0.0087938222181754, 0.0011691552185996,
-                                        0.00012086891440242};
+    std::vector<double> const nl_diff_gold = {0.017286371393823, 0.0087938222181754,
+                                              0.0011691552185996, 0.00012086891440242};
 
     // Print diff (useful if golds need updating)
     if (do_print) {
@@ -226,7 +229,7 @@ void test(rtt_dsxx::UnitTest &ut) {
     // Use dummy flux for nonlinear component
     const double phival = 2.394559; // random
     const double phiscale = phival * double(G);
-    std::vector<double> phi(compton_test->get_num_groups(), phival);
+    std::vector<double> const phi(compton_test->get_num_groups(), phival);
     // Returns 1D nonlinear difference array [group_from] (performs matrix multiplication with phi)
     compton_test->interp_nonlin_diff_and_add(nl_diff, interp_T_keV, phi, phiscale);
 
@@ -237,44 +240,44 @@ void test(rtt_dsxx::UnitTest &ut) {
       print_lambda(nl_diff, "nl_diff");
     }
 
-    std::vector<double> inscat_gold = {0.11237635504081,
-                                       0.003892290232165,
-                                       0,
-                                       0,
-                                       0.0032474360053123,
-                                       0.085567151564651,
-                                       0.003918277640946,
-                                       0,
-                                       0,
-                                       0.0013177739461996,
-                                       0.071555894009793,
-                                       0.0080465483923832,
-                                       0,
-                                       0,
-                                       0.00035657507884865,
-                                       0.050765688411202,
-                                       9.3287262136785e-05,
-                                       -9.2936704368115e-05,
-                                       0,
-                                       0,
-                                       -8.1502684127148e-05,
-                                       0.00016450195164588,
-                                       -9.3405055656181e-05,
-                                       0,
-                                       0,
-                                       -3.1620447251114e-05,
-                                       0.00018889454989741,
-                                       -0.00017952275276575,
-                                       0,
-                                       0,
-                                       -4.6914663077267e-06,
-                                       0.0004902506924202};
+    std::vector<double> const inscat_gold = {0.11237635504081,
+                                             0.003892290232165,
+                                             0,
+                                             0,
+                                             0.0032474360053123,
+                                             0.085567151564651,
+                                             0.003918277640946,
+                                             0,
+                                             0,
+                                             0.0013177739461996,
+                                             0.071555894009793,
+                                             0.0080465483923832,
+                                             0,
+                                             0,
+                                             0.00035657507884865,
+                                             0.050765688411202,
+                                             9.3287262136785e-05,
+                                             -9.2936704368115e-05,
+                                             0,
+                                             0,
+                                             -8.1502684127148e-05,
+                                             0.00016450195164588,
+                                             -9.3405055656181e-05,
+                                             0,
+                                             0,
+                                             -3.1620447251114e-05,
+                                             0.00018889454989741,
+                                             -0.00017952275276575,
+                                             0,
+                                             0,
+                                             -4.6914663077267e-06,
+                                             0.0004902506924202};
 
-    std::vector<double> outscat_gold = {0.11533649452761, 0.090894893695562, 0.076437945828947,
-                                        0.061604582646344};
+    std::vector<double> const outscat_gold = {0.11533649452761, 0.090894893695562,
+                                              0.076437945828947, 0.061604582646344};
 
-    std::vector<double> nl_diff_gold = {3.7130057760837e-05, 3.0320968944752e-05,
-                                        4.7840481582021e-06, 4.108948064536e-07};
+    std::vector<double> const nl_diff_gold = {3.7130057760837e-05, 3.0320968944752e-05,
+                                              4.7840481582021e-06, 4.108948064536e-07};
 
     // Print diff (useful if golds need updating)
     if (do_print) {
@@ -296,15 +299,15 @@ void bad_file_test(rtt_dsxx::UnitTest &ut) {
             << "    Test Compton_Native bad file handling    \n"
             << "---------------------------------------------------------\n";
   // open a small mg opacity file:
-  std::string filename = ut.getTestSourcePath() + "non_existent_b";
+  std::string const filename = ut.getTestSourcePath() + "non_existent_b";
   std::cout << "Testing with a non-existent file...\n\n";
   std::unique_ptr<rtt_compton_tools::Compton_Native> compton_test;
 
   bool caught = false;
   try {
     compton_test = std::make_unique<rtt_compton_tools::Compton_Native>(filename);
-  } catch (rtt_dsxx::assertion &asrt) {
-    std::cout << "Draco exception thrown: " << asrt.what() << '\n';
+  } catch (rtt_dsxx::assertion &assertion) {
+    std::cout << "Draco exception thrown: " << assertion.what() << '\n';
     // We successfully caught the bad file!
     caught = true;
   } catch (const std::ifstream::failure & /* error */) {
@@ -315,8 +318,7 @@ void bad_file_test(rtt_dsxx::UnitTest &ut) {
     caught = true;
   }
 
-  if (!caught)
-    ITFAILS;
+  FAIL_IF_NOT(caught);
 
   if (ut.numFails == 0) {
     PASSMSG("Successfully caught a bad file exception.");

@@ -18,6 +18,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace rtt_compton_edep_test {
@@ -56,7 +57,7 @@ void compton_edep_data_test(rtt_dsxx::UnitTest &ut) {
   const std::array<double, 3> test_freq = {12.4233, 183.43, 25.55};
 
   // Form the interpolated-in-temperature data from the pointwise data:
-  compton_edep::Preinterp_Container preinterped_data(
+  compton_edep::Preinterp_Container const preinterped_data(
       cell_temps, std::vector<double>(cell_temps.size(), 1.0), *edep_sp);
 
   // reference sol'n for sigma_c and EREC:
@@ -80,14 +81,14 @@ void compton_edep_data_test(rtt_dsxx::UnitTest &ut) {
   }
 
   // Test a corner case where the temp is right on top of a library point:
-  compton_edep::Preinterp_Container preinterped_onepoint_data({2.5}, {1.0}, *edep_sp);
+  compton_edep::Preinterp_Container const preinterped_onepoint_data({2.5}, {1.0}, *edep_sp);
   auto onepoint_vals = compton_edep::interpolate_sigc_erec(1, 400.0, preinterped_onepoint_data);
   // Include additional normalization factor on sigma.
   FAIL_IF_NOT(soft_equiv(onepoint_vals.first, (2.529432e+00 * 3.755728e-02), 1.0e-04));
   FAIL_IF_NOT(soft_equiv(onepoint_vals.second, -3.04825e-01, 1.0e-04));
 
   // Test a corner case where the frequency and temp are right on top of a library point:
-  compton_edep::Preinterp_Container preinterped_twopoint_data({1.5}, {1.0}, *edep_sp);
+  compton_edep::Preinterp_Container const preinterped_twopoint_data({1.5}, {1.0}, *edep_sp);
   auto twopoint_vals = compton_edep::interpolate_sigc_erec(1, 459.68526, preinterped_twopoint_data);
   // Include additional normalization factor on sigma.
   FAIL_IF_NOT(soft_equiv(twopoint_vals.first, (2.39488e+00 * 3.755728e-02), 1.0e-4));
@@ -110,12 +111,12 @@ void compton_fail_test(rtt_dsxx::UnitTest &ut) {
             << "    Test Compton_Edep bad file handling    \n"
             << "---------------------------------------------------------\n";
   // open a small mg opacity file:
-  std::string filename = ut.getTestSourcePath() + "non_existent.compton";
+  std::string const filename = ut.getTestSourcePath() + "non_existent.compton";
   std::cout << "Testing with a non-existent file...\n\n";
 
   bool caught = false;
   try {
-    compton_edep::Edep_Container mycontainer = compton_edep::read_edep_file(filename);
+    compton_edep::Edep_Container const mycontainer = compton_edep::read_edep_file(filename);
   } catch (rtt_dsxx::assertion &asrt) {
     std::cout << "Draco exception thrown: " << asrt.what() << '\n';
     // We successfully caught the bad file!
