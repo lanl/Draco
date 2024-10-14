@@ -119,7 +119,6 @@ public:
   using sf_int = std::vector<int>;
   using sf_double = std::vector<double>;
   using sf_string = std::vector<std::string>;
-  using std_string = std::string;
   using sf2_int = std::vector<sf_int>;
   using sf3_int = std::vector<sf2_int>;
   using set_int = std::set<int>;
@@ -138,10 +137,10 @@ private:
   bool d_binary;
 
   //! Name of the directory where this will write files
-  std_string d_dump_dir;
+  std::string d_dump_dir;
 
   //! Number of Ensight cell types.
-  unsigned d_num_cell_types;
+  unsigned d_num_cell_types{0};
 
   //! Ensight cell names.
   sf_string d_cell_names;
@@ -156,7 +155,7 @@ private:
   sf_double d_dump_times;
 
   //! Ensight file prefixes.
-  std_string d_prefix;
+  std::string d_prefix;
 
   //! Names of vertex data.
   sf_string d_vdata_names;
@@ -165,10 +164,10 @@ private:
   sf_string d_cdata_names;
 
   //! Name of case file.
-  std_string d_case_filename;
+  std::string d_case_filename;
 
   //! Name of geometry directory.
-  std_string d_geo_dir;
+  std::string d_geo_dir;
 
   //! Names of vdata directories.
   sf_string d_vdata_dirs;
@@ -192,14 +191,14 @@ private:
   // >>> PRIVATE IMPLEMENTATION
 
   // Creates some of the file prefixes and names.
-  void create_filenames(const std_string &prefix);
+  void create_filenames(const std::string &prefix);
 
   // Write out case file.
   void write_case();
 
   // Write out geometry file.
   template <typename IVF, typename FVF, typename ISF>
-  void write_geom(const uint32_t part_num, const std_string &part_name,
+  void write_geom(const uint32_t part_num, const std::string &part_name,
                   const rtt_viz::Viz_Traits<IVF> &ipar, const rtt_viz::Viz_Traits<FVF> &vrtx_data,
                   const sf2_int &cells_of_type, const sf_int &vertices, const ISF &g_vrtx_indeces,
                   const ISF &g_cell_indeces);
@@ -220,16 +219,23 @@ private:
 public:
   // Constructor.
   template <typename SSF>
-  Ensight_Translator(const std_string &prefix, std_string gd_wpath, SSF vdata_names,
+  Ensight_Translator(const std::string &prefix, std::string gd_wpath, SSF vdata_names,
                      SSF cdata_names, const bool overwrite = false, const bool static_geom = false,
                      const bool binary = false, const bool decomposed = false,
                      const double reset_time = -1.0);
 
   // Do an Ensight_Dump.
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
   template <typename ISF, typename IVF, typename SSF, typename FVF>
-  enable_if_t<std::is_integral<typename ISF::value_type>::value &&
-                  std::is_unsigned<typename ISF::value_type>::value,
-              void>
+  std::enable_if_t<std::is_integral_v<typename ISF::value_type> &&
+                       std::is_unsigned_v<typename ISF::value_type>,
+                   void>
+#else
+  template <typename ISF, typename IVF, typename SSF, typename FVF>
+  std::enable_if_t<std::is_integral<typename ISF::value_type>::value &&
+                       std::is_unsigned<typename ISF::value_type>::value,
+                   void>
+#endif
   ensight_dump(int icycle, double time, double dt, const IVF &ipar, const ISF &iel_type,
                const ISF &cell_rgn_index, const FVF &pt_coor, const FVF &vrtx_data,
                const FVF &cell_data, const ISF &rgn_numbers, const SSF &rgn_name);
@@ -241,11 +247,18 @@ public:
   void close();
 
   // Write ensight data for a single part.
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
   template <typename ISF, typename IVF, typename FVF>
-  enable_if_t<std::is_integral<typename ISF::value_type>::value &&
-                  std::is_unsigned<typename ISF::value_type>::value,
-              void>
-  write_part(uint32_t part_num, const std_string &part_name, const IVF &ipar_in,
+  std::enable_if_t<std::is_integral_v<typename ISF::value_type> &&
+                       std::is_unsigned_v<typename ISF::value_type>,
+                   void>
+#else
+  template <typename ISF, typename IVF, typename FVF>
+  std::enable_if_t<std::is_integral<typename ISF::value_type>::value &&
+                       std::is_unsigned<typename ISF::value_type>::value,
+                   void>
+#endif
+  write_part(uint32_t part_num, const std::string &part_name, const IVF &ipar_in,
              const ISF &iel_type, const FVF &pt_coor_in, const FVF &vrtx_data_in,
              const FVF &cell_data_in, const ISF &g_vrtx_indices, const ISF &g_cell_indices);
 

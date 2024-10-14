@@ -7,11 +7,22 @@
  * \note   Copyright (C) 2000-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "dsxx/path.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "viz/Ensight_Translator.hh"
+#include <climits>
+#include <cstddef>
+#include <cstdint>
+#include <fstream>
+#include <iostream>
+#include <set>
+#include <string>
+#include <vector>
 
 using namespace std;
 using rtt_viz::Ensight_Translator;
@@ -21,9 +32,9 @@ template <typename IT>
 void ensight_dump_test(rtt_dsxx::UnitTest &ut, string prefix, bool const binary, bool const geom,
                        bool const decomposed) {
   if (binary)
-    cout << "\nGenerating binary files...\n" << endl;
+    cout << "\nGenerating binary files...\n\n";
   else
-    cout << "\nGenerating ascii files...\n" << endl;
+    cout << "\nGenerating ascii files...\n\n";
 
   // dimensions
   constexpr size_t ncells = 27;
@@ -68,9 +79,9 @@ void ensight_dump_test(rtt_dsxx::UnitTest &ut, string prefix, bool const binary,
   if (binary)
     prefix += "_binary";
 
-  int icycle = 1;
-  double time = .01;
-  double dt = .01;
+  int const icycle = 1;
+  double const time = .01;
+  double const dt = .01;
 
   string const gd_wpath =
       rtt_dsxx::getFilenameComponent(ut.getTestInputPath(), rtt_dsxx::FC_NATIVE);
@@ -110,7 +121,7 @@ void ensight_dump_test(rtt_dsxx::UnitTest &ut, string prefix, bool const binary,
   vec2_i g_cell_indices(nrgn);
   vector<set<int>> tmp_vrtx(nrgn);
   for (size_t i = 0; i < ncells; i++) {
-    size_t ipart = rgn_index[i] - 1;
+    size_t const ipart = rgn_index[i] - 1;
     Check(i < INT_MAX);
     g_cell_indices[ipart].push_back(static_cast<int>(i));
     for (size_t j = 0; j < ipar[i].size(); j++)
@@ -132,8 +143,8 @@ void ensight_dump_test(rtt_dsxx::UnitTest &ut, string prefix, bool const binary,
   vec2_i p_iel_type(nrgn);
 
   for (size_t i = 0; i < nrgn; i++) {
-    size_t p_ncells = g_cell_indices[i].size();
-    size_t p_nvert = g_vrtx_indices[i].size();
+    size_t const p_ncells = g_cell_indices[i].size();
+    size_t const p_nvert = g_vrtx_indices[i].size();
     p_ipar[i].resize(p_ncells, vec_i(nhexvert));
     p_vrtx_data[i].resize(p_nvert, vec_d(ndata, 5.0));
     p_cell_data[i].resize(p_ncells, vec_d(ndata, 10.));
@@ -141,14 +152,14 @@ void ensight_dump_test(rtt_dsxx::UnitTest &ut, string prefix, bool const binary,
     p_iel_type[i].resize(p_ncells, rtt_viz::eight_node_hexahedron);
 
     for (size_t j = 0; j < p_nvert; j++) {
-      int g = g_vrtx_indices[i][j];
+      int const g = g_vrtx_indices[i][j];
       // cout << g << endl;
       p_vrtx_data[i][j] = vrtx_data[g];
       p_pt_coor[i][j] = pt_coor[g];
     }
 
     for (size_t j = 0; j < p_ncells; j++) {
-      int g = g_cell_indices[i][j];
+      int const g = g_cell_indices[i][j];
       p_cell_data[i][j] = cell_data[g];
       p_iel_type[i][j] = iel_type[g];
 
@@ -201,7 +212,7 @@ void ensight_dump_test(rtt_dsxx::UnitTest &ut, string prefix, bool const binary,
 
   // build an Ensight_Translator and do the per-part dump.
   if (rtt_c4::node() == 0) {
-    string p_prefix = "part_" + prefix;
+    string const p_prefix = "part_" + prefix;
     Ensight_Translator translator5(p_prefix, gd_wpath, vdata_names, cdata_names, true, geom,
                                    binary);
 
@@ -229,11 +240,11 @@ int main(int argc, char *argv[]) {
   try {
     // ASCII dumps
     bool binary{false};
-    bool geom{false};
+    bool const geom{false};
     if (rtt_c4::node() == 0) {
       // check serial writes
-      bool decomposed{false};
-      string prefix = "testproblem_serial_" + std::to_string(rtt_c4::nodes());
+      bool const decomposed{false};
+      string const prefix = "testproblem_serial_" + std::to_string(rtt_c4::nodes());
       ensight_dump_test<uint32_t>(ut, prefix, binary, geom, decomposed);
 
       // Binary dumps
@@ -247,8 +258,8 @@ int main(int argc, char *argv[]) {
     rtt_c4::global_barrier();
 
     // check decomposed writes
-    bool decomposed{true};
-    string prefix = "testproblem_parallel_" + std::to_string(rtt_c4::nodes());
+    bool const decomposed{true};
+    string const prefix = "testproblem_parallel_" + std::to_string(rtt_c4::nodes());
     ensight_dump_test<uint32_t>(ut, prefix, binary, geom, decomposed);
 
     // Binary dumps

@@ -11,7 +11,14 @@
 #include "dsxx/Assert.hh"
 #include "dsxx/Packing_Utils.hh"
 #include "c4/C4_Functions.hh"
+#include "c4/ofpstream.hh"
+#include <climits>
+#include <cstdint>
+#include <fstream>
 #include <iomanip>
+#include <ios>
+#include <memory>
+#include <string>
 
 namespace rtt_viz {
 

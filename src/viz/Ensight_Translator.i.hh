@@ -24,7 +24,7 @@ namespace rtt_viz {
  * same problem name) will be overwritten.  If overwrite is false then the ensight dumps are
  * appended.  The ensight case files are parsed to get the dump times if overwrite is false.
  *
- * \param prefix std_string giving the name of the problem
+ * \param prefix std::string giving the name of the problem
  * \param gd_wpath directory where dumps are stored
  * \param vdata_names string field containing vertex data names
  * \param cdata_names string field containing cell data names
@@ -43,13 +43,13 @@ namespace rtt_viz {
  * check and is left for a future exercise).
  */
 template <typename SSF>
-Ensight_Translator::Ensight_Translator(const std_string &prefix, std_string gd_wpath,
+Ensight_Translator::Ensight_Translator(const std::string &prefix, std::string gd_wpath,
                                        SSF vdata_names, SSF cdata_names, const bool overwrite,
                                        const bool static_geom, const bool binary,
                                        const bool decomposed, const double reset_time)
-    : d_static_geom(static_geom), d_binary(binary), d_dump_dir(std::move(gd_wpath)),
-      d_num_cell_types(0), d_cell_names(), d_vrtx_cnt(0), d_cell_type_index(), d_dump_times(),
-      d_prefix(), d_vdata_names(std::move(vdata_names)), d_cdata_names(std::move(cdata_names)),
+    : d_static_geom(static_geom), d_binary(binary), d_dump_dir(std::move(gd_wpath)), d_cell_names(),
+      d_vrtx_cnt(0), d_cell_type_index(), d_dump_times(), d_prefix(),
+      d_vdata_names(std::move(vdata_names)), d_cdata_names(std::move(cdata_names)),
       d_case_filename(), d_geo_dir(), d_vdata_dirs(), d_cdata_dirs(), d_geom_out(), d_cell_out(),
       d_vertex_out(), d_decomposed(decomposed) {
   Require(d_dump_times.empty());
@@ -64,8 +64,8 @@ Ensight_Translator::Ensight_Translator(const std_string &prefix, std_string gd_w
 
     if (casefile) {
       // then case file exists, so parse the dump times
-      std_string key("number of steps:");
-      std_string line;
+      std::string const key("number of steps:");
+      std::string line;
       int num_steps = 0;
 
       for (;;) {
@@ -164,11 +164,17 @@ Ensight_Translator::Ensight_Translator(const std_string &prefix, std_string gd_w
  *           field types.
  * \sa Examples page for more details about how to do Ensight dumps.
  */
-
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 template <typename ISF, typename IVF, typename SSF, typename FVF>
-enable_if_t<std::is_integral<typename ISF::value_type>::value &&
-                std::is_unsigned<typename ISF::value_type>::value,
-            void>
+std::enable_if_t<std::is_integral_v<typename ISF::value_type> &&
+                     std::is_unsigned_v<typename ISF::value_type>,
+                 void>
+#else
+template <typename ISF, typename IVF, typename SSF, typename FVF>
+std::enable_if_t<std::is_integral<typename ISF::value_type>::value &&
+                     std::is_unsigned<typename ISF::value_type>::value,
+                 void>
+#endif
 Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &ipar_in,
                                  const ISF &iel_type, const ISF &cell_rgn_index,
                                  const FVF &pt_coor_in, const FVF &vrtx_data_in,
@@ -177,10 +183,10 @@ Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &
   // >>> PREPARE DATA TO SET ENSIGHT OUTPUT
 
   // load traits for vector field types
-  Viz_Traits<FVF> cell_data(cell_data_in);
-  Viz_Traits<IVF> ipar(ipar_in);
-  Viz_Traits<FVF> pt_coor(pt_coor_in);
-  Viz_Traits<FVF> vrtx_data(vrtx_data_in);
+  Viz_Traits<FVF> const cell_data(cell_data_in);
+  Viz_Traits<IVF> const ipar(ipar_in);
+  Viz_Traits<FVF> const pt_coor(pt_coor_in);
+  Viz_Traits<FVF> const vrtx_data(vrtx_data_in);
 
   // define sizes used throughout
   size_t const ncells = ipar.nrows();
@@ -203,7 +209,7 @@ Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &
   }
 
   // store the number of parts
-  size_t nparts = parts_list.size();
+  size_t const nparts = parts_list.size();
 
   // create the parts names
   std::vector<std::string> part_names;
@@ -292,7 +298,7 @@ Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &
 
   for (uint32_t ipart = 0; ipart < part_names.size(); ipart++) {
     // Load vertices_of_part into a vector.
-    set_int &v = vertices_of_part[ipart];
+    set_int const &v = vertices_of_part[ipart];
     sf_int vertices;
 
     for (auto &iv : v)
@@ -342,21 +348,28 @@ Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &
  *
  * \sa Examples page for more details about how to do Ensight dumps.
  */
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 template <typename ISF, typename IVF, typename FVF>
-enable_if_t<std::is_integral<typename ISF::value_type>::value &&
-                std::is_unsigned<typename ISF::value_type>::value,
-            void>
-Ensight_Translator::write_part(uint32_t part_num, const std_string &part_name, const IVF &ipar_in,
+std::enable_if_t<std::is_integral_v<typename ISF::value_type> &&
+                     std::is_unsigned_v<typename ISF::value_type>,
+                 void>
+#else
+template <typename ISF, typename IVF, typename FVF>
+std::enable_if_t<std::is_integral<typename ISF::value_type>::value &&
+                     std::is_unsigned<typename ISF::value_type>::value,
+                 void>
+#endif
+Ensight_Translator::write_part(uint32_t part_num, const std::string &part_name, const IVF &ipar_in,
                                const ISF &iel_type, const FVF &pt_coor_in, const FVF &vrtx_data_in,
                                const FVF &cell_data_in, const ISF &g_vrtx_indices,
                                const ISF &g_cell_indices) {
   Require(part_num > 0);
 
   // load traits for vector field types
-  Viz_Traits<IVF> ipar(ipar_in);
-  Viz_Traits<FVF> pt_coor(pt_coor_in);
-  Viz_Traits<FVF> vrtx_data(vrtx_data_in);
-  Viz_Traits<FVF> cell_data(cell_data_in);
+  Viz_Traits<IVF> const ipar(ipar_in);
+  Viz_Traits<FVF> const pt_coor(pt_coor_in);
+  Viz_Traits<FVF> const vrtx_data(vrtx_data_in);
+  Viz_Traits<FVF> const cell_data(cell_data_in);
 
   // define sizes used throughout
   size_t const ncells = ipar.nrows();
@@ -404,7 +417,7 @@ Ensight_Translator::write_part(uint32_t part_num, const std_string &part_name, c
 
 //! Write out data to ensight geometry file.
 template <typename IVF, typename FVF, typename ISF>
-void Ensight_Translator::write_geom(const uint32_t part_num, const std_string &part_name,
+void Ensight_Translator::write_geom(const uint32_t part_num, const std::string &part_name,
                                     const rtt_viz::Viz_Traits<IVF> &ipar,
                                     const rtt_viz::Viz_Traits<FVF> &pt_coor,
                                     const sf2_int &cells_of_type, const sf_int &vertices,
@@ -416,8 +429,8 @@ void Ensight_Translator::write_geom(const uint32_t part_num, const std_string &p
 
   Insist(d_geom_out.is_open(), "Geometry file not open.  Must call open() before write_part().");
 
-  size_t ndim = pt_coor.ncols(0);
-  size_t nvertices = vertices.size();
+  size_t const ndim = pt_coor.ncols(0);
+  size_t const nvertices = vertices.size();
   size_t g_nvertices = nvertices;
   if (d_decomposed)
     rtt_c4::global_sum(g_nvertices);
@@ -463,7 +476,7 @@ void Ensight_Translator::write_geom(const uint32_t part_num, const std_string &p
   }
 
   // ensight expects coordinates for three dimensions, so fill any remaining dimensions with zeroes
-  double zero = 0.0;
+  double const zero = 0.0;
   for (size_t idim = ndim; idim < 3; idim++) {
     for (size_t i = 0; i < nvertices; ++i)
       d_geom_out << zero << endl;
@@ -555,10 +568,10 @@ void Ensight_Translator::write_vrtx_data(const uint32_t part_num,
   if (vrtx_data.nrows() == 0)
     return;
 
-  size_t nvertices = vertices.size();
-  size_t ndata = vrtx_data.ncols(0);
+  size_t const nvertices = vertices.size();
+  size_t const ndata = vrtx_data.ncols(0);
 
-  std::string err = "Vertex data files not open. Must call open() before write_part().";
+  std::string const err = "Vertex data files not open. Must call open() before write_part().";
   Insist(d_vertex_out.size() == ndata, err.c_str());
 
   // loop over all vertex data fields and write out data for each field
@@ -589,8 +602,7 @@ void Ensight_Translator::write_cell_data(const uint32_t part_num,
 
   size_t const ndata = cell_data.ncols(0);
 
-  std::string err = "Cell data files not open."
-                    "  Must call open() before write_part().";
+  std::string const err = "Cell data files not open. Must call open() before write_part().";
 
   Insist(d_cell_out.size() == static_cast<size_t>(ndata), err.c_str());
 
@@ -608,7 +620,7 @@ void Ensight_Translator::write_cell_data(const uint32_t part_num,
     for (unsigned type = 0; type < d_num_cell_types; type++) {
       const sf_int &c = cells_of_type[type];
 
-      size_t num_elem = c.size();
+      size_t const num_elem = c.size();
       // if one processor has this type all must call the flush statements
       size_t global_num_elem = num_elem;
 

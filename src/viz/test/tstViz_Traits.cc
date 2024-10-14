@@ -10,7 +10,11 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/config.h"
 #include "viz/Viz_Traits.hh"
+#include <cstddef>
+#include <vector>
 
 using namespace std;
 using rtt_viz::Viz_Traits;
@@ -56,7 +60,7 @@ template <typename VVF> void test_vector(rtt_dsxx::UnitTest &ut) {
       field[i][j] = static_cast<VVFet>(2 * i + 4 * j);
   }
 
-  Viz_Traits<VVF> vdf(field);
+  Viz_Traits<VVF> const vdf(field);
 
   FAIL_IF_NOT(vdf.nrows() == field.size());
   for (size_t i = 0; i < vdf.nrows(); i++) {
@@ -82,8 +86,8 @@ template <typename T> void test_FT(rtt_dsxx::UnitTest &ut) {
       field[i][j] = static_cast<T>(2 * i + 4 * j);
   }
 
-  Test_Field<T> test_field(field);
-  Viz_Traits<Test_Field<T>> vt(test_field);
+  Test_Field<T> const test_field(field);
+  Viz_Traits<Test_Field<T>> const vt(test_field);
 
   FAIL_IF_NOT(vt.nrows() == 3);
   for (size_t i = 0; i < vt.nrows(); i++) {
