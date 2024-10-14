@@ -8,13 +8,16 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
+// NOLINTBEGIN(misc-include-cleaner)
 #include "dsxx/StackTrace.hh"
 #include "dsxx/fpe_trap.hh"
 #include <cfenv>
+#include <cstdlib>
+// NOLINTEND(misc-include-cleaner)
 #include <cmath>
 #include <cstring>
-#include <fstream>
-#include <sstream>
+#include <exception>
+#include <iostream>
 #include <vector>
 
 #if defined(MSVC)
@@ -69,7 +72,7 @@ void run_test(int /*argc*/, char **argv) {
   }
 
   // Accept a command line argument with value 0, 1, 2 or 3.
-  int test = atoi(argv[1]);
+  int const test = atoi(argv[1]);
   Insist(test >= 0 && test <= 3, "Bad test value.");
 
   double zero(0.0); // for double division by zero
@@ -86,30 +89,30 @@ void run_test(int /*argc*/, char **argv) {
     zero = neg = 1.0; // trick the optimizer?
   }
 
-  std::ostringstream msg;
   switch (test) {
   case 0: {
     // Should not throw a IEEE floating point exception.
-    cout << "- Case zero: this operation should not throw a SIGFPE. The result should be 2..."
-         << endl;
+    cout << "- Case zero: this operation should not throw a SIGFPE. The result should be 2...\n";
     result = 1.0 + zero + sqrt(-neg);
-    cout << "  result = " << result << endl;
+    cout << "  result = " << result << '\n';
     break;
   }
   case 1: {
-    cout << "- Case one: trying a div_by_zero operation..." << endl;
+    cout << "- Case one: trying a div_by_zero operation...\n";
     result = 1.0 / zero; // should fail here
     cout << "  result = " << 1.0 * result;
     break;
   }
   case 2: {
     // http://en.cppreference.com/w/cpp/numeric/math/sqrt
-    cout << "\n- Case two: trying to evaluate sqrt(-1.0)..." << endl;
+    cout << "\n- Case two: trying to evaluate sqrt(-1.0)...\n";
     result = std::sqrt(neg); // should fail here
     cout << "  result = " << result;
     break;
   }
   case 3: {
+    // The test fails if I switch this `endl` to '\n'.
+    // NOLINTNEXTLINE(performance-avoid-endl)
     cout << "- Case three: trying to cause an overflow condition..." << endl;
     result = 2.0;
     std::vector<double> data;
@@ -118,11 +121,11 @@ void run_test(int /*argc*/, char **argv) {
       result = result * result * result * result * result;
       data.push_back(result); // force optimizer to evaluate the above line.
     }
-    cout << "  result = " << result << endl;
+    cout << "  result = " << result << '\n';
     break;
   }
   default: {
-    std::cout << "We should never get here." << std::endl;
+    std::cout << "We should never get here.\n";
     break;
   }
   }
@@ -138,14 +141,14 @@ int main(int argc, char *argv[]) {
   } catch (exception &err) {
     if (rtt_dsxx::fpe_trap().enable()) {
       cout << "While running " << argv[0]
-           << ", a SIGFPE was successfully caught.\n\twhat = " << err.what() << endl;
+           << ", a SIGFPE was successfully caught.\n\twhat = " << err.what() << '\n';
       return 0;
     } else {
       cout << "ERROR: While running " << argv[0] << ", An exception was caught when it was not "
-           << "expected.\n\twhat = " << err.what() << endl;
+           << "expected.\n\twhat = " << err.what() << '\n';
     }
   } catch (...) {
-    cout << "ERROR: While testing " << argv[0] << ", An unknown exception was thrown." << endl;
+    cout << "ERROR: While testing " << argv[0] << ", An unknown exception was thrown.\n";
     return 1;
   }
   return 0;

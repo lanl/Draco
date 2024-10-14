@@ -14,6 +14,7 @@
 #include "dsxx/UnitTest.hh"
 #include <array>
 #include <cstdint> // int32_t, uint32_t, int64_t, uint64_t
+#include <cstdlib> // atof
 #include <iostream>
 #include <limits>
 #include <stdexcept> // out_of_range, invalid_argument
@@ -195,9 +196,9 @@ void test_tostring(UnitTest &ut) {
   cout << "\nBegin test_tostring checks...\n";
   unsigned const nf = ut.numFails;
 
-  string const pi = rtt_dsxx::to_string(M_PI, 20);
+  string const pi = rtt_dsxx::to_string(M_PI, 20); // NOLINT(misc-include-cleaner)
 
-  if (soft_equiv(M_PI, atof(pi.c_str())))
+  if (soft_equiv(M_PI, atof(pi.c_str()))) // NOLINT(misc-include-cleaner)
     PASSMSG("pi correctly written/read");
   else
     FAILMSG("pi NOT correctly written/read");

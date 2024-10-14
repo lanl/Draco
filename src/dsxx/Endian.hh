@@ -95,9 +95,7 @@ inline void char_byte_swap(char *data, int n) {
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
-#if (DBS_GNUC_VERSION >= 70000)
 #pragma GCC diagnostic ignored "-Wold-style-cast"
-#endif
 #endif
 
 template <typename T> void byte_swap(T &value) {

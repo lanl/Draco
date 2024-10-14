@@ -55,8 +55,8 @@ soft_equiv(const T &value, const T &reference, const T precision = static_cast<T
     passed = false;
 
   // second chance for passing if reference is within machine error of zero
-  auto const ztol = static_cast<T>(1.0e-14);
-  if (!passed && (fabs(reference) < ztol))
+  auto constexpr zerotol = static_cast<T>(1.0e-14);
+  if (!passed && (fabs(reference) < zerotol))
     if (fabs(value) < precision)
       passed = true;
 
@@ -186,20 +186,21 @@ soft_equiv(Value_Iterator value, Value_Iterator value_end, Ref_Iterator ref, Ref
 // T=vector<double>).  I can resolve this by providing the template paramter when the function is
 // called.  E.g.: bool result = soft_equiv<double>( vector_a, vector_b ). However, specializing the
 // the calls to soft_equiv caused compile failures with Intel/1[45] (mitigated if gcc/4.8 is loaded
-// paralle to intel/14.0.4).
+// parallel to intel/14.0.4).
 //
 // intel/14.0.4 spits out this message:
 //
-// /var/lib/perceus/vnfs/compute/rootfs/usr/bin/../include/c++/4.4.7/bits/stl_iterator_base_types.h(127): error: name followed by "::" must be a class or namespace name
+// ~~~
+// /var/lib/.../compute/rootfs/usr/bin/../include/c++/4.4.7/bits/stl_iterator_base_types.h(127): error: name followed by "::" must be a class or namespace name
 //         typedef typename _Iterator::iterator_category iterator_category;
 //                         ^
 //          detected during instantiation of class "std::iterator_traits<_Iterator> [with _Iterator=double]" at line 269 of "/.../source/src/dsxx/test/tstSoft_Equiv.cc"
+// ~~~
 //
-// To get around the problem, I provided fully specified (no template
-// parameters) overloads...
+// To get around the problem, I provided fully specified (no template parameters) overloads...
 
 //------------------------------------------------------------------------------------------------//
-// Specialiations for vector<double>
+// Specialization for vector<double>
 //------------------------------------------------------------------------------------------------//
 inline bool soft_equiv(const std::vector<double> &value, const std::vector<double> &ref,
                        const double precision = 1.0e-12) {
@@ -207,7 +208,7 @@ inline bool soft_equiv(const std::vector<double> &value, const std::vector<doubl
                                             precision);
 }
 //------------------------------------------------------------------------------------------------//
-// Specialiation for vector<vector<T>>
+// Specialization for vector<vector<T>>
 //------------------------------------------------------------------------------------------------//
 inline bool soft_equiv(const std::vector<std::vector<double>> &value,
                        const std::vector<std::vector<double>> &ref,
@@ -216,7 +217,7 @@ inline bool soft_equiv(const std::vector<std::vector<double>> &value,
                                             precision);
 }
 //------------------------------------------------------------------------------------------------//
-// Specialiation for vector<vector<vector<T>>>
+// Specialization for vector<vector<vector<T>>>
 //------------------------------------------------------------------------------------------------//
 inline bool soft_equiv(const std::vector<std::vector<std::vector<double>>> &value,
                        const std::vector<std::vector<std::vector<double>>> &ref,

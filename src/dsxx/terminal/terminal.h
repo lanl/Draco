@@ -19,15 +19,11 @@
 #pragma warning(disable : 4996)
 #endif
 
-#ifdef __GNUC__
-#if (DBS_GNUC_VERSION >= 40204) && !defined(__ICC) && !defined(NVCC)
+#if defined(__GNUC__)  && !defined(__ICC) && !defined(NVCC)
 // Suppress GCC's "unused variable" warning.
-#if (DBS_GNUC_VERSION >= 40600)
 #pragma GCC diagnostic push
-#endif
 #pragma GCC diagnostic ignored "-Wconversion"
 #pragma GCC diagnostic ignored "-Wshadow"
-#endif
 #endif
 
 #if defined(__clang__) && !defined(__ibmxl__)
@@ -778,10 +774,8 @@ public:
 #pragma clang diagnostic pop
 #endif
 
-#ifdef __GNUC__
-#if (DBS_GNUC_VERSION >= 40600)
+#if defined(__GNUC__)  && !defined(__ICC) && !defined(NVCC)
 #pragma GCC diagnostic pop
-#endif
 #endif
 
 #ifdef _MSC_FULL_VER
