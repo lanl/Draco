@@ -10,13 +10,16 @@
 #include "draco_info.hh"
 #include "dsxx/DracoStrings.hh"
 #include "dsxx/Release.hh"
-#include "dsxx/UnitTest.hh"
+#include "dsxx/config.h"
 #include "c4/config.h"
-#include "diagnostics/config.h"
+// #include "diagnostics/config.h"
 #include <algorithm> // tolower
+#include <cstddef>   // size_t
 #include <iostream>
 #include <iterator>
 #include <sstream>
+#include <string>
+#include <vector>
 
 namespace rtt_diagnostics {
 
@@ -121,7 +124,6 @@ void print_text_with_word_wrap(std::string const &longstring, size_t const inden
 //------------------------------------------------------------------------------------------------//
 std::string DracoInfo::fullReport() const {
   using std::cout;
-  using std::endl;
 
   std::ostringstream infoMessage;
 
@@ -195,7 +197,7 @@ std::string DracoInfo::fullReport() const {
     print_text_with_word_wrap(gpu_flags, hanging_indent, max_width, infoMessage);
   }
 
-  infoMessage << "\n" << endl;
+  infoMessage << "\n\n";
 
   return infoMessage.str();
 }
@@ -207,7 +209,7 @@ std::string DracoInfo::briefReport() const {
   // Print version and copyright information to the screen:
   infoMessage << "\n";
   print_text_with_word_wrap(release, 5, 100, infoMessage, " ");
-  infoMessage << "\n\n" << copyright << "\n" << contact << "\n" << std::endl;
+  infoMessage << "\n\n" << copyright << "\n" << contact << "\n\n";
   return infoMessage.str();
 }
 
@@ -216,7 +218,7 @@ std::string DracoInfo::briefReport() const {
 std::string DracoInfo::versionReport() const {
   std::ostringstream infoMessage;
   print_text_with_word_wrap(release, 5, 100, infoMessage, ";");
-  infoMessage << "\n" << std::endl;
+  infoMessage << "\n\n";
   return infoMessage.str();
 }
 

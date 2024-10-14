@@ -4,16 +4,19 @@
  * \author Kelly Thompson
  * \date   Monday, Apr 22, 2013, 13:59 pm
  * \brief  Procmon test.
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoStrings.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "diagnostics/Procmon.hh"
 #include <cstdlib> // atof (XLC)
+#include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 using namespace rtt_diagnostics;
@@ -23,9 +26,9 @@ using namespace rtt_diagnostics;
 //------------------------------------------------------------------------------------------------//
 
 void tst_procmon_basic(rtt_dsxx::UnitTest &ut) {
-  std::cout << "Running tst_procmon_basic(ut)..." << std::endl;
+  std::cout << "Running tst_procmon_basic(ut)...\n";
 
-  int mynode(0);
+  int const mynode(0);
   double vmrss_orig(-1.0);
   double vmrss_bigger(-1.0);
   double vmrss_end(-1.0);
@@ -34,12 +37,12 @@ void tst_procmon_basic(rtt_dsxx::UnitTest &ut) {
   {
     std::ostringstream msg;
     procmon_resource_print("tst_procmon_use_01", mynode, msg);
-    std::string line = msg.str();
+    std::string const line = msg.str();
     std::vector<std::string> tokens = rtt_dsxx::tokenize(line, " \t");
 
-    std::cout << msg.str() << std::endl;
+    std::cout << msg.str() << '\n';
     for (size_t i = 0; i < tokens.size(); ++i)
-      std::cout << i << " : " << tokens[i] << std::endl;
+      std::cout << i << " : " << tokens[i] << '\n';
 
 #ifdef USE_PROCMON
     if (tokens[4] != std::string("VmPeak"))
@@ -63,7 +66,7 @@ void tst_procmon_basic(rtt_dsxx::UnitTest &ut) {
     std::ostringstream msg;
 
     procmon_resource_print("tst_procmon_use_02", mynode, msg);
-    std::string line = msg.str();
+    std::string const line = msg.str();
     std::vector<std::string> tokens = rtt_dsxx::tokenize(line, " \t");
 
     // Save the VmRSS size
@@ -83,7 +86,7 @@ void tst_procmon_basic(rtt_dsxx::UnitTest &ut) {
   {
     std::ostringstream msg;
     procmon_resource_print("tst_procmon_use_03", mynode, msg);
-    std::string line = msg.str();
+    std::string const line = msg.str();
     std::vector<std::string> tokens = rtt_dsxx::tokenize(line, " \t");
 
     // Save the VmRSS size
@@ -100,11 +103,9 @@ void tst_procmon_basic(rtt_dsxx::UnitTest &ut) {
 
 //------------------------------------------------------------------------------------------------//
 void tst_procmon_macro(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\nRunning tst_procmon_macro(ut)..." << std::endl;
-  std::ostringstream msg;
+  std::cout << "\nRunning tst_procmon_macro(ut)...\n";
 
-  // if USE_PROCMON is OFF, this will do nothing.  I'm not sure how to test
-  // this.
+  // if USE_PROCMON is OFF, this will do nothing.  I'm not sure how to test this.
   PROCMON_REPORT("tst_procmon_use_02");
 
   if (ut.numFails == 0)

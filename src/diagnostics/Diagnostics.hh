@@ -16,8 +16,6 @@
 #include <string>
 #include <vector>
 
-namespace rtt_diagnostics {
-
 //================================================================================================//
 /*!
  * \namespace Diagnostics
@@ -45,7 +43,12 @@ namespace rtt_diagnostics {
  */
 //================================================================================================//
 
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
+namespace rtt_diagnostics::Diagnostics {
+#else
+namespace rtt_diagnostics {
 namespace Diagnostics {
+#endif
 
 //! Map of integer data.
 extern DLL_PUBLIC_diagnostics std::map<std::string, int> integers;
@@ -62,18 +65,21 @@ extern DLL_PUBLIC_diagnostics std::map<std::string, std::vector<int>> vec_intege
 //! Map of vector, double data.
 extern DLL_PUBLIC_diagnostics std::map<std::string, std::vector<double>> vec_doubles;
 
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17
+} // end of namespace rtt_diagnostics::Diagnostics
+#else
 } // end of namespace Diagnostics
-
 } // end namespace rtt_diagnostics
+#endif
 
 //------------------------------------------------------------------------------------------------//
 /*!
  * \page diagnostics Diagnostics Levels
  *
  * The diagnostics can be turned on in three different levels based on logical bit comparisons.
- * The following shows the levels: 
+ * The following shows the levels:
  * - Bit 0, (001), activates Level 1 (negligible performance impact)
- * - Bit 1, (010), activates Level 2 (some performance impact and possible intrusive output, 
+ * - Bit 1, (010), activates Level 2 (some performance impact and possible intrusive output,
  *                 rtt_memory tracking is activated.)
  * - Bit 2, (100), activates Level 3 (includes fpe_trap diagnostics)
  * .

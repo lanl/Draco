@@ -9,10 +9,12 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "diagnostics/Diagnostics.hh"
 #include "diagnostics/Timing.hh"
-#include <iomanip>
+#include <iostream>
+#include <string>
+#include <vector>
 
 using namespace std;
 using rtt_dsxx::soft_equiv;
@@ -28,14 +30,14 @@ void do_A() {
 
   // do a mat-vec multiply
 
-  int S = 9000;
+  int const S = 9000;
 
   vector<double> b(S, 0.0);
   vector<double> x(S, 0.0);
 
-  double A = 1.0;
-  double B = 1.1;
-  double C = 1.01;
+  double const A = 1.0;
+  double const B = 1.1;
+  double const C = 1.01;
 
   x[0] = 0.2;
   for (int i = 1; i < S; i++)
@@ -60,14 +62,14 @@ void do_B() {
 
   // do a mat-vec multiply
 
-  int S = 6000;
+  int const S = 6000;
 
   vector<double> b(S, 0.0);
   vector<double> x(S, 0.0);
 
-  double A = 1.0;
-  double B = 1.1;
-  double C = 1.01;
+  double const A = 1.0;
+  double const B = 1.1;
+  double const C = 1.01;
 
   x[0] = 0.2;
   for (int i = 1; i < S; i++)
@@ -92,14 +94,14 @@ void do_C() {
 
   // do a mat-vec multiply
 
-  int S = 3000;
+  int const S = 3000;
 
   vector<double> b(S, 0.0);
   vector<double> x(S, 0.0);
 
-  double A = 1.0;
-  double B = 1.1;
-  double C = 1.01;
+  double const A = 1.0;
+  double const B = 1.1;
+  double const C = 1.01;
 
   x[0] = 0.2;
   for (int i = 1; i < S; i++)
@@ -122,9 +124,9 @@ void do_C() {
 
 void timing_active() {
 #ifdef DRACO_TIMING_ON
-  cout << ">>> Testing timing macros with value " << DRACO_TIMING << endl;
+  cout << ">>> Testing timing macros with value " << DRACO_TIMING << '\n';
 #else
-  cout << ">>> Timing macros inactive" << endl;
+  cout << ">>> Timing macros inactive\n";
 #endif
 }
 
@@ -203,14 +205,14 @@ void test_macros(rtt_dsxx::UnitTest &ut) {
   TIMER_RECORD("Outer", outer_timer);
 
   // if the timers are off we get no timing data
-  vector<string> keys = D::timer_keys();
+  vector<string> const keys = D::timer_keys();
 #if DRACO_TIMING == 0
   FAIL_IF_NOT(keys.size() == 0);
   FAIL_IF_NOT(D::num_timers() == 0);
 #else
 #ifndef DRACO_CALIPER
   FAIL_IF(keys.size() != 4);
-  cout << setw(15) << "Routine" << setw(15) << "Fraction\n" << string(30, '-') << endl;
+  cout << setw(15) << "Routine" << setw(15) << "Fraction\n" << string(30, '-') << '\n';
 
   // get the keys and print a table
   double const total = D::timer_value("Outer");
@@ -221,9 +223,9 @@ void test_macros(rtt_dsxx::UnitTest &ut) {
 
   for (auto const &key : keys) {
     double const fraction = D::timer_value(key) / total;
-    cout << setw(15) << key << setw(15) << fraction << endl;
+    cout << setw(15) << key << setw(15) << fraction << '\n';
   }
-  cout << "The total time was " << total << "\n" << endl;
+  cout << "The total time was " << total << "\n\n";
 #endif // DRACO_CALIPER
 #endif
 

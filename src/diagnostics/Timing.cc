@@ -10,6 +10,8 @@
 #include "Timing.hh"
 #include "dsxx/Assert.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include <map>
+#include <string>
 
 namespace rtt_diagnostics {
 

@@ -4,15 +4,19 @@
  * \author Thomas M. Evans
  * \date   Fri Dec  9 16:16:27 2005
  * \brief  Diagnostics test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "diagnostics/Diagnostics.hh"
 #include <array>
+#include <cstdint>
+#include <iostream>
+#include <limits>
+#include <vector>
 
 using namespace std;
 using namespace rtt_diagnostics;
@@ -25,15 +29,13 @@ using rtt_dsxx::soft_equiv;
 void test_ints(rtt_dsxx::UnitTest &ut) {
   // add an integer quantity
   Diagnostics::integers["A"];
-  if (Diagnostics::integers["A"] != 0)
-    ITFAILS;
+  FAIL_IF(Diagnostics::integers["A"] != 0);
 
   // now update some values
   Diagnostics::integers["A"] = 21;
   Diagnostics::integers["A"]++;
 
-  if (Diagnostics::integers["A"] != 22)
-    ITFAILS;
+  FAIL_IF(Diagnostics::integers["A"] != 22);
 
   // add another
   Diagnostics::integers["B"] = 51;
@@ -74,14 +76,11 @@ void test_floats(rtt_dsxx::UnitTest &ut) {
       Diagnostics::integers["A"] / static_cast<double>(Diagnostics::integers["B"]);
 
   // check it
-  if (!soft_equiv(Diagnostics::doubles["A_of_B"], 22.0 / 51.0))
-    ITFAILS;
+  FAIL_IF(!soft_equiv(Diagnostics::doubles["A_of_B"], 22.0 / 51.0));
 
   // erase and check
-  if (Diagnostics::doubles.erase("A_of_B") != 1)
-    ITFAILS;
-  if (Diagnostics::doubles.count("A_of_B") != 0)
-    ITFAILS;
+  FAIL_IF(Diagnostics::doubles.erase("A_of_B") != 1);
+  FAIL_IF(Diagnostics::doubles.count("A_of_B") != 0);
 
   Diagnostics::integers.erase("A");
 
@@ -95,36 +94,28 @@ void test_vectors(rtt_dsxx::UnitTest &ut) {
   Diagnostics::vec_integers["A"];
   Diagnostics::vec_integers["B"];
 
-  if (!Diagnostics::vec_integers["A"].empty())
-    ITFAILS;
-  if (!Diagnostics::vec_integers["B"].empty())
-    ITFAILS;
+  FAIL_IF(!Diagnostics::vec_integers["A"].empty());
+  FAIL_IF(!Diagnostics::vec_integers["B"].empty());
 
   Diagnostics::vec_integers["A"].resize(10);
-  if (Diagnostics::vec_integers["A"].size() != 10)
-    ITFAILS;
+  FAIL_IF(Diagnostics::vec_integers["A"].size() != 10);
 
   Diagnostics::vec_doubles["B"].resize(2);
   Diagnostics::vec_doubles["B"][0] = 1.1;
   Diagnostics::vec_doubles["B"][1] = 2.4;
 
-  if (Diagnostics::vec_doubles["B"].size() != 2)
-    ITFAILS;
+  FAIL_IF(Diagnostics::vec_doubles["B"].size() != 2);
 
   vector<double> ref(2, 1.1);
   ref[1] = 2.4;
-  if (!soft_equiv(Diagnostics::vec_doubles["B"].begin(), Diagnostics::vec_doubles["B"].end(),
-                  ref.begin(), ref.end()))
-    ITFAILS;
+  FAIL_IF_NOT(soft_equiv(Diagnostics::vec_doubles["B"].begin(), Diagnostics::vec_doubles["B"].end(),
+                         ref.begin(), ref.end()));
 
   Diagnostics::vec_doubles["B"].clear();
-  if (!Diagnostics::vec_integers["B"].empty())
-    ITFAILS;
+  FAIL_IF(!Diagnostics::vec_integers["B"].empty());
 
-  if (Diagnostics::integers["A"] != 0)
-    ITFAILS;
-  if (Diagnostics::integers["B"] != 51)
-    ITFAILS;
+  FAIL_IF(Diagnostics::integers["A"] != 0);
+  FAIL_IF(Diagnostics::integers["B"] != 51);
 
   if (ut.numFails == 0)
     PASSMSG("Diagnostics vectors ok.");
@@ -133,53 +124,47 @@ void test_vectors(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 
 void test_macro(rtt_dsxx::UnitTest &ut) {
-  cout << endl;
+  cout << '\n';
   array<int, 4> level = {1, 0, 0, 0};
 
 #ifdef DRACO_DIAGNOSTICS_LEVEL_1
-  cout << ">>> Testing Level 1 Block diagnostics." << endl;
+  cout << ">>> Testing Level 1 Block diagnostics.\n";
   level[1] = 1;
   level[0] = 0;
 #endif
 
 #ifdef DRACO_DIAGNOSTICS_LEVEL_2
-  cout << ">>> Testing Level 2 Block diagnostics." << endl;
+  cout << ">>> Testing Level 2 Block diagnostics.\n";
   level[2] = 1;
   level[0] = 0;
 #endif
 
 #ifdef DRACO_DIAGNOSTICS_LEVEL_3
-  cout << ">>> Testing Level 3 Block diagnostics." << endl;
+  cout << ">>> Testing Level 3 Block diagnostics.\n";
   level[3] = 1;
   level[0] = 0;
 #endif
 
-  cout << endl;
+  cout << '\n';
 
   DIAGNOSTICS_ONE(integers["L1"] = 1);
   DIAGNOSTICS_TWO(integers["L2"] = 1);
   DIAGNOSTICS_THREE(integers["L3"] = 1);
 
   if (level[0] == 1) {
-    if (Diagnostics::integers.count("L1") != 0)
-      ITFAILS;
-    if (Diagnostics::integers.count("L2") != 0)
-      ITFAILS;
-    if (Diagnostics::integers.count("L3") != 0)
-      ITFAILS;
+    FAIL_IF(Diagnostics::integers.count("L1") != 0);
+    FAIL_IF(Diagnostics::integers.count("L2") != 0);
+    FAIL_IF(Diagnostics::integers.count("L3") != 0);
   }
 
   if (level[1] == 1)
-    if (Diagnostics::integers["L1"] != 1)
-      ITFAILS;
+    FAIL_IF(Diagnostics::integers["L1"] != 1);
 
   if (level[2] == 1)
-    if (Diagnostics::integers["L2"] != 1)
-      ITFAILS;
+    FAIL_IF(Diagnostics::integers["L2"] != 1);
 
   if (level[3] == 1)
-    if (Diagnostics::integers["L3"] != 1)
-      ITFAILS;
+    FAIL_IF(Diagnostics::integers["L3"] != 1);
 
   if (ut.numFails == 0)
     PASSMSG("Diagnostics macro ok.");
