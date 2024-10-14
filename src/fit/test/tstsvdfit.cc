@@ -9,7 +9,9 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "fit/svdfit.hh"
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -42,9 +44,9 @@ void tstsvdfit(UnitTest &ut) {
   svdfit(x, y, sig, a, u, v, w, chisq, funcs, 1.0e-12);
 
   if (chisq < 1.0e-25 && soft_equiv(a[0], 3.2) && soft_equiv(a[1], 1.7) && soft_equiv(a[2], 2.1)) {
-    ut.passes("fit is good");
+    PASSMSG("fit is good");
   } else {
-    ut.failure("fit is NOT good");
+    FAILMSG("fit is NOT good");
   }
 
   for (unsigned i = 0; i < 10; ++i) {
@@ -55,9 +57,9 @@ void tstsvdfit(UnitTest &ut) {
 
   if (chisq < 1.0e-8 && soft_equiv(a[0], 3.2, 1.0e-5) && soft_equiv(a[1], 1.7, 1.0e-5) &&
       soft_equiv(a[2], 2.1, 1.0e-5)) {
-    ut.passes("fit is good");
+    PASSMSG("fit is good");
   } else {
-    ut.failure("fit is NOT good");
+    FAILMSG("fit is NOT good");
   }
 }
 
