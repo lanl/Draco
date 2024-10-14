@@ -8,9 +8,10 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Diagnostics.hh"
-#include "dsxx/Release.hh"
-#include "dsxx/fpe_trap.hh"
-#include <sstream>
+#include <cstdint>
+#include <map>
+#include <string>
+#include <vector>
 
 #if defined(__cplusplus) && __cplusplus > 201402L // C++17
 namespace rtt_diagnostics::Diagnostics {

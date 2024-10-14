@@ -4,15 +4,15 @@
  * \author Kent Budge
  * \date   Wed Apr 28 09:31:51 2010
  * \brief  Test runtime_error function.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "c4/swap.hh"
 #include "diagnostics/runtime_check.hh"
-#include <cmath>
+#include <stdexcept>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -27,23 +27,23 @@ void tstruntime_error(UnitTest &ut) {
   // Test passes
   try {
     rtt_diagnostics::runtime_check(true, "condition successful");
-    ut.passes("check true on all processors");
+    PASSMSG("check true on all processors");
   } catch (...) {
-    ut.failure("check true on all processors");
+    FAILMSG("check true on all processors");
   }
 
   try {
     runtime_check(false, "condition fails on all");
-    ut.failure("check false on all processors");
+    FAILMSG("check false on all processors");
   } catch (std::runtime_error & /*error*/) {
-    ut.passes("check false on all processors throws on all as it should.");
+    PASSMSG("check false on all processors throws on all as it should.");
   }
 
   try {
     runtime_check(rtt_c4::node() != 0, "condition fails on one processor");
-    ut.failure("check false on one processors");
+    FAILMSG("check false on one processors");
   } catch (std::runtime_error & /*error*/) {
-    ut.passes("check false on one processor throws on all as it should.");
+    PASSMSG("check false on one processor throws on all as it should.");
   }
 }
 

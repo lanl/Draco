@@ -7,22 +7,23 @@
  * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/XGetopt.hh"
 #include "diagnostics/draco_info.hh"
+#include <exception>
 #include <iostream>
+#include <map>
+#include <string>
 
 int main(int argc, char *argv[]) {
   using std::cout;
-  using std::endl;
   try {
     bool version(false);
     bool brief(false);
     bool author(false);
     bool known_arg(false);
     bool use_doxygen_formatting(false);
-    rtt_diagnostics::DracoInfo di;
+    rtt_diagnostics::DracoInfo const di;
 
     // Preparing to parse command line arguments.
     rtt_dsxx::XGetopt::csmap long_options;
@@ -63,14 +64,14 @@ int main(int argc, char *argv[]) {
         break;
 
       default: // same as option 'h':
-        cout << program_options.display_help("draco_info") << endl;
+        cout << program_options.display_help("draco_info") << '\n';
         return 0;
       }
     }
 
     // If a bad argument is provided, print the help message and exit.
     if (argc > 1 && !known_arg) {
-      cout << program_options.display_help("draco_info") << endl;
+      cout << program_options.display_help("draco_info") << '\n';
       return 0;
     }
 
@@ -85,11 +86,11 @@ int main(int argc, char *argv[]) {
       cout << di.fullReport();
     // -----------------------------------------------------------------------//
   } catch (std::exception &err) {
-    cout << "ERROR: While running " << argv[0] << ", " << err.what() << endl;
+    cout << "ERROR: While running " << argv[0] << ", " << err.what() << '\n';
     return 1;
   } catch (...) {
     cout << "ERROR: While running " << argv[0] << ", "
-         << "An unknown C++ exception was thrown" << endl;
+         << "An unknown C++ exception was thrown\n";
     return 1;
   }
 

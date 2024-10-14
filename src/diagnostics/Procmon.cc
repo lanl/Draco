@@ -8,12 +8,17 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Procmon.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh" // tokenize()
 #include "dsxx/path.hh"
 #include <cstdlib> // atof (XLC)
 #include <fstream>
 #include <iomanip>
+#include <ios> // std::fixed
+#include <ostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #ifdef USE_PROCMON
 // see 'man getrusage'
@@ -47,21 +52,20 @@ void procmon_resource_print(std::string const &identifier, int const &mynode, st
   // Resources of interest.
   // ----------------------------------------
 
-  std::string proc_name;
-
-  double MemTotal(-1.0);
+  std::string proc_name; // NOLINT(misc-const-correctness)
+  double MemTotal(-1.0); // NOLINT(misc-const-correctness)
 
   // The peak size of the virtual memory allocated to the process
-  int proc_vmpeak(-1);
+  int proc_vmpeak(-1); // NOLINT(misc-const-correctness)
 
   // The amount of memory mapped in RAM ( instead of swapped out )
-  int proc_vmrss(-1);
+  int proc_vmrss(-1); // NOLINT(misc-const-correctness)
 
   // ----------------------------------------
   // Find the PID
   // ----------------------------------------
 
-  long long proc_pid(0);
+  long long proc_pid(0); // NOLINT(misc-const-correctness)
 #ifdef USE_PROCMON
   proc_pid = getpid();
 #endif
@@ -96,7 +100,7 @@ void procmon_resource_print(std::string const &identifier, int const &mynode, st
   MemTotal = 1;
 #else
 
-  std::string file_meminfo("/proc/meminfo");
+  std::string const file_meminfo("/proc/meminfo");
   Insist(rtt_dsxx::fileExists(file_meminfo), "Could not open /proc/meminfo!  Is this Linux?");
 
   std::ifstream fs;
@@ -125,7 +129,8 @@ void procmon_resource_print(std::string const &identifier, int const &mynode, st
   // Examine /proc/<PID>/status for memory used
   // ----------------------------------------
 
-  std::string file_status_pid(std::string("/proc/") + proc_pid_string + std::string("/status"));
+  std::string const file_status_pid(std::string("/proc/") + proc_pid_string +
+                                    std::string("/status"));
 #ifdef USE_PROCMON
   Insist(rtt_dsxx::fileExists(file_status_pid),
          std::string("Could not open") + file_status_pid + std::string("!  Is this Linux?"));
@@ -136,7 +141,7 @@ void procmon_resource_print(std::string const &identifier, int const &mynode, st
   while (!fs.eof()) {
     std::string line;
     std::getline(fs, line);
-    // std::cout << line << std::endl;
+    // std::cout << line << '\n'';
 
     // tokenize the string
     std::vector<std::string> tokens = rtt_dsxx::UnitTest::tokenize(line, " \t");
@@ -168,7 +173,7 @@ void procmon_resource_print(std::string const &identifier, int const &mynode, st
   // Use rusage to obtain rss_max
   // ----------------------------------------
 
-  double proc_vmrssmax(-1.0);
+  double proc_vmrssmax(-1.0); // NOLINT(misc-const-correctness)
 #ifdef USE_PROCMON
   struct rusage ruse_getrusage; /* getrusage */
 
@@ -186,8 +191,7 @@ void procmon_resource_print(std::string const &identifier, int const &mynode, st
   msg << "\tVmRss : " << proc_vmrss << " kB (" << std::fixed << std::setprecision(2)
       << proc_vmrss / MemTotal * 100.0 << "%)";
   msg << "\tVmRss_max : " << proc_vmrssmax << " kB (" << std::fixed << std::setprecision(2)
-      << proc_vmrssmax / MemTotal * 100.0 << "%)";
-  msg << std::endl;
+      << proc_vmrssmax / MemTotal * 100.0 << "%)\n";
   return;
 }
 
