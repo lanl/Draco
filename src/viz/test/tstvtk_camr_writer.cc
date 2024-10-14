@@ -9,9 +9,10 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "dsxx/Soft_Equivalence.hh"
-#include "c4/ParallelUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "viz/vtk_camr_writer.hh"
+#include <string>
+#include <vector>
 
 using namespace std;
 using rtt_viz::vtk_camr_writer_t;

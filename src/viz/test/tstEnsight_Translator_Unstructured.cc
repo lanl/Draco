@@ -7,11 +7,21 @@
  * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "dsxx/path.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "viz/Ensight_Translator.hh"
+#include <climits>
+#include <cstddef>
+#include <cstdint>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
 
 using rtt_viz::Ensight_Translator;
 
@@ -29,18 +39,18 @@ void ensight_dump_test_unstr2d(rtt_dsxx::UnitTest &ut, std::string prefix, bool 
   using vec2_d = std::vector<vec_d>;
 
   if (binary)
-    std::cout << "\nGenerating binary files...\n" << std::endl;
+    std::cout << "\nGenerating binary files...\n\n";
   else
-    std::cout << "\nGenerating ascii files...\n" << std::endl;
+    std::cout << "\nGenerating ascii files...\n\n";
 
   // >>> SET SCALAR ENSIGHT CTOR ARGS
 
   if (binary)
     prefix += "_binary";
 
-  int icycle = 1;
-  double time = .01;
-  double dt = .01;
+  int const icycle = 1;
+  double const time = .01;
+  double const dt = .01;
 
   std::string const gd_wpath =
       rtt_dsxx::getFilenameComponent(ut.getTestInputPath(), rtt_dsxx::FC_NATIVE);
@@ -48,10 +58,10 @@ void ensight_dump_test_unstr2d(rtt_dsxx::UnitTest &ut, std::string prefix, bool 
   // >>> INITIALIZE AND SET VECTOR DATA
 
   // dimensions
-  size_t ncells = 2;
-  size_t nvert = 8;
-  size_t ndim = 2;
-  size_t ndata = 2;
+  size_t const ncells = 2;
+  size_t const nvert = 8;
+  size_t const ndim = 2;
+  size_t const ndata = 2;
   std::vector<size_t> nvert_per_cell = {4, 6};
 
   // size the cell-vertex vector
@@ -61,17 +71,17 @@ void ensight_dump_test_unstr2d(rtt_dsxx::UnitTest &ut, std::string prefix, bool 
   vec2_d cell_data(ncells, vec_d(ndata));
   vec2_d pt_coor(nvert, vec_d(ndim));
   // set the element type to be unstructured
-  vec_i iel_type(ncells, rtt_viz::unstructured);
+  vec_i const iel_type(ncells, rtt_viz::unstructured);
   // set the vertex-centered and cell-centered data names
-  vec_s vdata_names = {"Densities", "Temperatures"};
+  vec_s const vdata_names = {"Densities", "Temperatures"};
   Check(vdata_names.size() == ndata);
-  vec_s cdata_names = {"Velocity", "Pressure"};
+  vec_s const cdata_names = {"Velocity", "Pressure"};
   Check(cdata_names.size() == ndata);
   // region information
-  vec_i rgn_index = {1, 1};
+  vec_i const rgn_index = {1, 1};
   Check(rgn_index.size() == ncells);
-  vec_s rgn_name = {"RGN_A"};
-  vec_i rgn_data = {1};
+  vec_s const rgn_name = {"RGN_A"};
+  vec_i const rgn_data = {1};
 
   // create some arbitrary cell and vertex based data (as in structured test)
   for (size_t i = 0; i < ndata; i++) {
@@ -137,18 +147,18 @@ void ensight_dump_test_unstr3d(rtt_dsxx::UnitTest &ut, std::string prefix, bool 
   using vec2_d = std::vector<vec_d>;
 
   if (binary)
-    std::cout << "\nGenerating binary files...\n" << std::endl;
+    std::cout << "\nGenerating binary files...\n\n";
   else
-    std::cout << "\nGenerating ascii files...\n" << std::endl;
+    std::cout << "\nGenerating ascii files...\n\n";
 
   // >>> SET SCALAR ENSIGHT CTOR ARGS
 
   if (binary)
     prefix += "_binary";
 
-  int icycle = 1;
-  double time = .01;
-  double dt = .01;
+  int const icycle = 1;
+  double const time = .01;
+  double const dt = .01;
 
   std::string const gd_wpath =
       rtt_dsxx::getFilenameComponent(ut.getTestInputPath(), rtt_dsxx::FC_NATIVE);
@@ -156,10 +166,10 @@ void ensight_dump_test_unstr3d(rtt_dsxx::UnitTest &ut, std::string prefix, bool 
   // >>> INITIALIZE AND SET VECTOR DATA
 
   // dimensions
-  size_t ncells = 3;
-  size_t nvert = 14;
-  size_t ndim = 3;
-  size_t ndata = 2;
+  size_t const ncells = 3;
+  size_t const nvert = 14;
+  size_t const ndim = 3;
+  size_t const ndata = 2;
   std::vector<size_t> nface_per_cell = {5, 5, 7};
   std::vector<std::vector<size_t>> nvert_per_face_per_cell = {
       {3, 3, 4, 4, 4}, {3, 3, 4, 4, 4}, {5, 5, 4, 4, 4, 4, 4}};
@@ -177,17 +187,16 @@ void ensight_dump_test_unstr3d(rtt_dsxx::UnitTest &ut, std::string prefix, bool 
   vec2_d cell_data(ncells, vec_d(ndata));
   vec2_d pt_coor(nvert, vec_d(ndim));
   // set the element type to be unstructured
-  vec_i iel_type(ncells, rtt_viz::unstructured_3d);
+  vec_i const iel_type(ncells, rtt_viz::unstructured_3d);
   // set the vertex-centered and cell-centered data names
-  vec_s vdata_names = {"Densities", "Temperatures"};
+  vec_s const vdata_names = {"Densities", "Temperatures"};
   Check(vdata_names.size() == ndata);
-  vec_s cdata_names = {"Velocity", "Pressure"};
+  vec_s const cdata_names = {"Velocity", "Pressure"};
   Check(cdata_names.size() == ndata);
   // region information
-  vec_i rgn_index = {1, 1, 1};
-  Check(rgn_index.size() == ncells);
-  vec_s rgn_name = {"RGN_A"};
-  vec_i rgn_data = {1};
+  vec_i const rgn_index = {1, 1, 1};
+  vec_s const rgn_name = {"RGN_A"};
+  vec_i const rgn_data = {1};
 
   // create some arbitrary cell and vertex based data (as in structured test)
   for (size_t i = 0; i < ndata; i++) {
@@ -247,11 +256,11 @@ int main(int argc, char *argv[]) {
   try {
     // ASCII dumps
     bool binary(false);
-    bool geom{false};
+    bool const geom{false};
     if (rtt_c4::node() == 0) {
 
       // check serial writes
-      bool decomposed{false};
+      bool const decomposed{false};
 
       // 2D
       std::string prefix = "unstr2d_testproblem_serial_" + std::to_string(rtt_c4::nodes());
@@ -277,7 +286,7 @@ int main(int argc, char *argv[]) {
     }
 
     // check decomposed writes
-    bool decomposed{true};
+    bool const decomposed{true};
 
     // 2D
     std::string prefix = "unstr2d_testproblem_parallel_" + std::to_string(rtt_c4::nodes());

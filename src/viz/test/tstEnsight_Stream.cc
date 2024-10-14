@@ -10,9 +10,16 @@
 #include "dsxx/Packing_Utils.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "viz/Ensight_Stream.hh"
 #include <array>
+#include <cstddef>
+#include <fstream>
+#include <ios>
+#include <iostream>
+#include <string>
 
 using namespace std;
 using rtt_viz::Ensight_Stream;
@@ -88,10 +95,10 @@ void test_simple(rtt_dsxx::UnitTest &ut, bool const binary, bool const geom,
     std::ios::openmode mode = std::ios::in;
 
     if (binary) {
-      cout << "Testing binary mode." << endl;
+      cout << "Testing binary mode.\n";
       mode = mode | std::ios::binary;
     } else
-      cout << "Testing ascii mode." << endl;
+      cout << "Testing ascii mode.\n";
 
     ifstream in(file.c_str(), mode);
     // read out the "C Binary" data

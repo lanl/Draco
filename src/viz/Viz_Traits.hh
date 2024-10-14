@@ -16,9 +16,6 @@
 
 namespace rtt_viz {
 
-// helper for SFINAE
-template <bool C, typename T> using enable_if_t = typename std::enable_if<C, T>::type;
-
 //================================================================================================//
 /*!
  * \class Viz_Traits
@@ -65,16 +62,17 @@ public:
   }
 
   //! Overloaded operator() with 3 args used on 2D data
-  template <typename U = elementType, enable_if_t<std::is_pod<U>::value, bool> = true>
+  template <typename U = elementType, typename std::enable_if_t<std::is_pod<U>::value, bool> = true>
   auto operator()(size_t i, size_t j, size_t /*k*/) const {
     return this->operator()(i, j);
   }
-  /*
-  * \brief Overloaded operator() with 3 args used on 3D data.
-  * \bug If the innermost container is \c std::set, then the [k] operator is invalid.  You cannot
-  *      access the elements of a \c std::set with an index.
-  */
-  template <typename U = elementType, enable_if_t<!std::is_pod<U>::value, bool> = true>
+  /*!
+   * \brief Overloaded operator() with 3 args used on 3D data.
+   * \bug If the innermost container is \c std::set, then the [k] operator is invalid.  You cannot
+   *      access the elements of a \c std::set with an index.
+   */
+  template <typename U = elementType,
+            typename std::enable_if_t<!std::is_pod<U>::value, bool> = true>
   auto operator()(size_t i, size_t j, size_t k) const {
     Require(i < field.size());
     Require(j < field[i].size());
@@ -92,13 +90,14 @@ public:
   }
 
   //! Depth size accessor for 2D fields
-  template <typename U = elementType, enable_if_t<std::is_pod<U>::value, bool> = true>
+  template <typename U = elementType, typename std::enable_if_t<std::is_pod<U>::value, bool> = true>
   NODISCARD size_t ndpth(size_t /*row*/, size_t /*col*/) const {
     return 0;
   }
 
   //! Depth size accessor for 3D fields
-  template <typename U = elementType, enable_if_t<!std::is_pod<U>::value, bool> = true>
+  template <typename U = elementType,
+            typename std::enable_if_t<!std::is_pod<U>::value, bool> = true>
   NODISCARD size_t ndpth(size_t row, size_t col) const {
     Require(row < field.size());
     Require(col < field[row].size());
