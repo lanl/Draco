@@ -56,9 +56,11 @@ target_link_libraries(Exe_do_exception Lib_dsxx)
 set_target_properties(Exe_do_exception PROPERTIES FOLDER dsxx_test OUTPUT_NAME do_exception)
 dbs_std_tgt_props(Exe_do_exception)
 
-# This is currently broken for clang-cl under MSVC because we are picking up <float.h> from LLVM
-# instead of from MSVC toolkits.
-if(NOT (MSVC AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
+# * This is currently broken for clang-cl under MSVC because we are picking up <float.h> from LLVM
+#   instead of from MSVC toolkits.
+# * This also seems to break under gcov.
+
+if(NOT (MSVC AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang") AND (NOT DEFINED CODE_COVERAGE))
   include(ApplicationUnitTest)
   add_app_unit_test(
     DRIVER ${CMAKE_CURRENT_SOURCE_DIR}/test_fpe_trap.py
