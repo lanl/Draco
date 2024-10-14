@@ -14,6 +14,8 @@
 #include "mesh/Draco_Mesh.hh"
 #include <algorithm>
 
+// cSpell:ignore xdir, ydir, lpair, poff
+
 namespace rtt_mesh_test {
 
 //================================================================================================//
@@ -32,12 +34,12 @@ public:
 
   // >>> DATA
 
-  const unsigned dim;
+  const unsigned dim{2};
   const size_t num_cells;
   const size_t num_nodes;
   const size_t num_sides;
-  const unsigned num_nodes_per_cell;
-  const unsigned num_faces_per_cell;
+  const unsigned num_nodes_per_cell{4};
+  const unsigned num_faces_per_cell{4};
   std::vector<unsigned> cell_type;
   std::vector<unsigned> cell_to_node_linkage;
   std::vector<unsigned> side_set_flag;
@@ -68,9 +70,8 @@ public:
 Test_Mesh_Interface::Test_Mesh_Interface(const size_t num_xdir_, const size_t num_ydir_,
                                          std::vector<unsigned> global_node_number_,
                                          const double xdir_offset_, const double ydir_offset_)
-    : dim(2), num_cells(num_xdir_ * num_ydir_), num_nodes((num_xdir_ + 1) * (num_ydir_ + 1)),
-      num_sides(2 * (num_xdir_ + num_ydir_)), num_nodes_per_cell(4), num_faces_per_cell(4),
-      global_node_number(std::move(global_node_number_)) {
+    : num_cells(num_xdir_ * num_ydir_), num_nodes((num_xdir_ + 1) * (num_ydir_ + 1)),
+      num_sides(2 * (num_xdir_ + num_ydir_)), global_node_number(std::move(global_node_number_)) {
 
   // set the number of cells and nodes
   const size_t num_xdir = num_xdir_;
@@ -91,7 +92,7 @@ Test_Mesh_Interface::Test_Mesh_Interface(const size_t num_xdir_, const size_t nu
     for (size_t i = 0; i < num_xdir; ++i) {
 
       // get a serial cell index
-      size_t cell = i + num_xdir * j;
+      size_t const cell = i + num_xdir * j;
 
       // set each node entry per cell
       Check(cell + num_xdir + 1 + j + 1 < UINT_MAX);
@@ -151,8 +152,8 @@ Test_Mesh_Interface::Test_Mesh_Interface(const size_t num_xdir_, const size_t nu
   }
 
   // set uniform coordinate increments
-  double dx = 1.0;
-  double dy = 1.0;
+  double const dx = 1.0;
+  double const dy = 1.0;
 
   // generate some coordinates and global node indices
   coordinates.resize(dim * num_nodes);
@@ -160,7 +161,7 @@ Test_Mesh_Interface::Test_Mesh_Interface(const size_t num_xdir_, const size_t nu
     for (size_t i = 0; i < num_xdir + 1; ++i) {
 
       // get a serial cell index
-      size_t node = i + (num_xdir + 1) * j;
+      size_t const node = i + (num_xdir + 1) * j;
 
       // TODO: generalize coordinate generation
       coordinates[dim * node] = xdir_offset_ + static_cast<double>(i) * dx;
@@ -235,7 +236,7 @@ std::vector<unsigned> Test_Mesh_Interface::flatten_sn_linkage(const Layout &bd_l
       for (auto lpair : bd_layout.at(cell)) {
 
         // get the side
-        unsigned side = lpair.first;
+        unsigned const side = lpair.first;
 
         // set the vertices
         sn_linkage[2 * side] = lpair.second[0];

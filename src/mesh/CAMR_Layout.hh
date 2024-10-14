@@ -18,6 +18,8 @@
 #include <memory>
 #include <vector>
 
+// cSpell:ignore nghosts, ndim
+
 namespace rtt_mesh {
 
 //================================================================================================//

@@ -10,19 +10,27 @@
 #include "Test_Topology.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
-#include "c4/Compare.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
+#include "mesh/Comm_Patterns.hh"
 #include "mesh/DD_Topology.hh"
 #include "mesh/Parallel_Data_Operator.hh"
 #include "mesh/Rep_Topology.hh"
-#include <deque>
+#include <algorithm>
+#include <cstddef>
+#include <limits>
+#include <memory>
 #include <sstream>
+#include <vector>
 
 using rtt_mesh::Comm_Patterns;
 using rtt_mesh::DD_Topology;
 using rtt_mesh::Parallel_Data_Operator;
 using rtt_mesh::Rep_Topology;
 using rtt_mesh::Topology;
+
+// cSpell:ignore pdop, ITFAILS
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -34,37 +42,34 @@ double const local_eps = std::numeric_limits<double>::epsilon();
 //------------------------------------------------------------------------------------------------//
 
 void test_mapping_replication(rtt_dsxx::UnitTest &ut) {
-  size_t ncells = 6;
+  size_t const numcells = 6;
   // build a full replication topology
-  std::shared_ptr<Topology> topology(new Rep_Topology(ncells));
+  std::shared_ptr<Topology> const topology(new Rep_Topology(numcells));
 
   // build a Parallel_Data_Operator
   Parallel_Data_Operator pdop(topology);
 
   // make a MT::CCSF field
-  std::vector<int> local(ncells);
-  std::vector<int> global(ncells);
-  for (size_t cell = 0; cell < ncells; cell++)
+  std::vector<int> local(numcells);
+  std::vector<int> global(numcells);
+  for (size_t cell = 0; cell < numcells; cell++)
     local[cell] = 10;
 
   // Do a local_global mapping with data-replicated data
   pdop.local_to_global(local, global, Parallel_Data_Operator::Data_Replicated());
 
-  for (size_t cell = 0; cell < ncells; cell++)
-    if (global[cell] != local[cell])
-      ITFAILS;
+  for (size_t cell = 0; cell < numcells; cell++)
+    FAIL_IF(global[cell] != local[cell]);
 
   // Do a local_global mapping with data-decomposed data
   pdop.local_to_global(local, global, Parallel_Data_Operator::Data_Decomposed());
 
-  for (size_t cell = 0; cell < ncells; cell++)
-    if (global[cell] != local[cell] * rtt_c4::nodes())
-      ITFAILS;
+  for (size_t cell = 0; cell < numcells; cell++)
+    FAIL_IF(global[cell] != local[cell] * rtt_c4::nodes());
 
   // check local data
-  for (size_t cell = 1; cell < ncells; cell++)
-    if (local[cell] != 10)
-      ITFAILS;
+  for (size_t cell = 1; cell < numcells; cell++)
+    FAIL_IF(local[cell] != 10);
 
   if (ut.numFails == 0) {
     std::ostringstream m;
@@ -85,8 +90,8 @@ void test_mapping_DD(rtt_dsxx::UnitTest &ut) {
   DD_Topology::Vec_Int bc(3);
   DD_Topology::Vec_Int bp(3);
 
-  DD_Topology::Vec_Int cpp(2, 3);
-  size_t global_ncells = 6;
+  DD_Topology::Vec_Int const cpp(2, 3);
+  size_t const global_numcells = 6;
 
   if (rtt_c4::node() == 0) {
     bc[0] = 1;
@@ -107,56 +112,44 @@ void test_mapping_DD(rtt_dsxx::UnitTest &ut) {
   }
 
   // build topology
-  std::shared_ptr<Topology> topology(new DD_Topology(cpp, bc, bp));
+  std::shared_ptr<Topology> const topology(new DD_Topology(cpp, bc, bp));
 
   // build a Parallel_Data_Operator
   Parallel_Data_Operator pdop(topology);
 
   // make fields
   std::vector<int> local(3, rtt_c4::node() + 1);
-  std::vector<int> global_vect(6);
+  std::vector<int> global_vector(6);
 
-  pdop.local_to_global(local, global_vect, Parallel_Data_Operator::Data_Distributed());
+  pdop.local_to_global(local, global_vector, Parallel_Data_Operator::Data_Distributed());
 
   // check value of global data
-  if (global_vect[0] != 1)
-    ITFAILS;
-  if (global_vect[1] != 1)
-    ITFAILS;
-  if (global_vect[2] != 1)
-    ITFAILS;
-  if (global_vect[3] != 2)
-    ITFAILS;
-  if (global_vect[4] != 2)
-    ITFAILS;
-  if (global_vect[5] != 2)
-    ITFAILS;
+  FAIL_IF_NOT(global_vector[0] == 1);
+  FAIL_IF_NOT(global_vector[1] == 1);
+  FAIL_IF_NOT(global_vector[2] == 1);
+  FAIL_IF_NOT(global_vector[3] == 2);
+  FAIL_IF_NOT(global_vector[4] == 2);
+  FAIL_IF_NOT(global_vector[5] == 2);
 
   // make sure local data unchanged
-  for (int loc : local)
+  for (int const loc : local)
     FAIL_IF_NOT(loc == rtt_c4::node() + 1);
 
   // now check mapping with different field types (vector and ccsf)
-  std::vector<int> global(global_ncells);
+  std::vector<int> global(global_numcells);
 
   pdop.local_to_global(local, global, Parallel_Data_Operator::Data_Distributed());
 
   // check value of global data
-  if (global[0] != 1)
-    ITFAILS;
-  if (global[1] != 1)
-    ITFAILS;
-  if (global[2] != 1)
-    ITFAILS;
-  if (global[3] != 2)
-    ITFAILS;
-  if (global[4] != 2)
-    ITFAILS;
-  if (global[5] != 2)
-    ITFAILS;
+  FAIL_IF_NOT(global[0] == 1);
+  FAIL_IF_NOT(global[1] == 1);
+  FAIL_IF_NOT(global[2] == 1);
+  FAIL_IF_NOT(global[3] == 2);
+  FAIL_IF_NOT(global[4] == 2);
+  FAIL_IF_NOT(global[5] == 2);
 
   // make sure local data unchanged
-  for (int loc : local)
+  for (int const loc : local)
     FAIL_IF_NOT(loc == rtt_c4::node() + 1);
 
   if (ut.numFails == 0) {
@@ -175,10 +168,10 @@ void gather(rtt_dsxx::UnitTest &ut) {
     return;
 
   // make topology of 9 cell mesh
-  std::shared_ptr<Topology> topology = rtt_mesh_test::build_DD_Topology();
+  std::shared_ptr<Topology> const topology = rtt_mesh_test::build_DD_Topology();
 
   // make a comm patterns
-  std::shared_ptr<Comm_Patterns> pattern(new Comm_Patterns());
+  std::shared_ptr<Comm_Patterns> const pattern(new Comm_Patterns());
   pattern->calc_patterns(topology);
 
   // make the parallel data operator class
@@ -189,48 +182,39 @@ void gather(rtt_dsxx::UnitTest &ut) {
   for (double &lf : local_field)
     lf = rtt_c4::node() + 10.5;
 
-  // Get boundary cell data in a plain array:
-  auto *bc_data = new double[topology->num_ghost_cells()];
+  // Ensure that bc_data will have size > 0.
+  FAIL_IF_NOT(topology->num_ghost_cells() > 0);
 
-  pdop.gather_ghost_cell_data(pattern, local_field, bc_data);
+  // Get boundary cell data in a plain array:
+  std::vector<double> bc_data(topology->num_ghost_cells(), 0.0);
+
+  pdop.gather_ghost_cell_data(pattern, local_field, &bc_data[0]);
 
   // Check boundary cell data
   if (rtt_c4::node() == 0) {
-    if (!rtt_dsxx::soft_equiv(bc_data[0], 11.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[1], 11.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[2], 12.5, local_eps))
-      ITFAILS;
+    FAIL_IF(topology->num_ghost_cells() < 3);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[0], 11.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[1], 11.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[2], 12.5, local_eps));
   } else if (rtt_c4::node() == 1) {
-    if (!rtt_dsxx::soft_equiv(bc_data[0], 10.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[1], 10.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[2], 12.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[3], 12.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[4], 13.5, local_eps))
-      ITFAILS;
+    FAIL_IF(topology->num_ghost_cells() < 5);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[0], 10.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[1], 10.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[2], 12.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[3], 12.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[4], 13.5, local_eps));
   } else if (rtt_c4::node() == 2) {
-    if (!rtt_dsxx::soft_equiv(bc_data[0], 10.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[1], 11.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[2], 11.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[3], 13.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[4], 13.5, local_eps))
-      ITFAILS;
+    FAIL_IF(topology->num_ghost_cells() < 5);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[0], 10.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[1], 11.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[2], 11.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[3], 13.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[4], 13.5, local_eps));
   } else if (rtt_c4::node() == 3) {
-    if (!rtt_dsxx::soft_equiv(bc_data[0], 11.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[1], 12.5, local_eps))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(bc_data[2], 12.5, local_eps))
-      ITFAILS;
+    FAIL_IF(topology->num_ghost_cells() < 3);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[0], 11.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[1], 12.5, local_eps));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(bc_data[2], 12.5, local_eps));
   } else {
     ITFAILS;
   }
@@ -241,21 +225,17 @@ void gather(rtt_dsxx::UnitTest &ut) {
 
   // Check the sizes of the vectors
   const size_t boundary_cells = topology->num_ghost_cells();
-  if (bc_data_vec.size() != boundary_cells)
-    ITFAILS;
+  FAIL_IF_NOT(bc_data_vec.size() == boundary_cells);
 
   // Compare the results to the plain data.
-  if (!rtt_dsxx::soft_equiv(bc_data_vec.begin(), bc_data_vec.end(), bc_data,
-                            bc_data + boundary_cells))
-    ITFAILS;
+  FAIL_IF_NOT(
+      rtt_dsxx::soft_equiv(bc_data_vec.begin(), bc_data_vec.end(), bc_data.begin(), bc_data.end()));
 
   if (ut.numFails == 0) {
     std::ostringstream m;
     m << "test_gather finished on " << rtt_c4::node();
     PASSMSG(m.str());
   }
-
-  delete[] bc_data;
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -267,10 +247,10 @@ void gather_vector_data(rtt_dsxx::UnitTest &ut) {
     return;
 
   // make topology of 9 cell mesh
-  std::shared_ptr<Topology> topology = rtt_mesh_test::build_DD_Topology();
+  std::shared_ptr<Topology> const topology = rtt_mesh_test::build_DD_Topology();
 
   // make a comm patterns
-  std::shared_ptr<Comm_Patterns> pattern(new Comm_Patterns());
+  std::shared_ptr<Comm_Patterns> const pattern(new Comm_Patterns());
   pattern->calc_patterns(topology);
 
   // make the parallel data operator class
@@ -288,27 +268,25 @@ void gather_vector_data(rtt_dsxx::UnitTest &ut) {
         loc[g] = true;
 
   pdop.gather_ghost_cell_data(pattern, local_field, bc_data.begin(), Ng);
-  if (bc_data.size() != topology->num_ghost_cells())
-    ITFAILS;
+  FAIL_IF(bc_data.size() != topology->num_ghost_cells());
   for (size_t cell = 0; cell < topology->num_ghost_cells(); cell++)
-    if (bc_data[cell].size() != Ng)
-      ITFAILS;
+    FAIL_IF(bc_data[cell].size() != Ng);
 
   // Check boundary cell data
   if (rtt_c4::node() == 0) {
     for (size_t g = 0; g < Ng; g++) {
       if (g < 1 && !bc_data[0][g])
         ITFAILS;
-      else if (g >= 1 && bc_data[0][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 1 && bc_data[0][g]);
       if (g < 1 && !bc_data[1][g])
         ITFAILS;
-      else if (g >= 1 && bc_data[1][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 1 && bc_data[1][g]);
       if (g < 2 && !bc_data[2][g])
         ITFAILS;
-      else if (g >= 2 && bc_data[2][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 2 && bc_data[2][g]);
     }
   } else if (rtt_c4::node() == 1) {
     for (size_t g = 0; g < Ng; g++) {
@@ -318,16 +296,16 @@ void gather_vector_data(rtt_dsxx::UnitTest &ut) {
         ITFAILS;
       if (g < 2 && !bc_data[2][g])
         ITFAILS;
-      else if (g >= 2 && bc_data[2][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 2 && bc_data[2][g]);
       if (g < 2 && !bc_data[3][g])
         ITFAILS;
-      else if (g >= 2 && bc_data[3][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 2 && bc_data[3][g]);
       if (g < 3 && !bc_data[4][g])
         ITFAILS;
-      else if (g >= 3 && bc_data[4][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 3 && bc_data[4][g]);
     }
   } else if (rtt_c4::node() == 2) {
     for (size_t g = 0; g < Ng; g++) {
@@ -335,35 +313,35 @@ void gather_vector_data(rtt_dsxx::UnitTest &ut) {
         ITFAILS;
       if (g < 1 && !bc_data[1][g])
         ITFAILS;
-      else if (g >= 1 && bc_data[1][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 1 && bc_data[1][g]);
       if (g < 1 && !bc_data[2][g])
         ITFAILS;
-      else if (g >= 1 && bc_data[2][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 1 && bc_data[2][g]);
       if (g < 3 && !bc_data[3][g])
         ITFAILS;
-      else if (g >= 3 && bc_data[3][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 3 && bc_data[3][g]);
       if (g < 3 && !bc_data[4][g])
         ITFAILS;
-      else if (g >= 3 && bc_data[4][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 3 && bc_data[4][g]);
     }
   } else if (rtt_c4::node() == 3) {
     for (size_t g = 0; g < Ng; g++) {
       if (g < 1 && !bc_data[0][g])
         ITFAILS;
-      else if (g >= 1 && bc_data[0][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 1 && bc_data[0][g]);
       if (g < 2 && !bc_data[1][g])
         ITFAILS;
-      else if (g >= 2 && bc_data[1][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 2 && bc_data[1][g]);
       if (g < 2 && !bc_data[2][g])
         ITFAILS;
-      else if (g >= 2 && bc_data[2][g])
-        ITFAILS;
+      else
+        FAIL_IF(g >= 2 && bc_data[2][g]);
     }
   } else {
     ITFAILS;
@@ -375,13 +353,11 @@ void gather_vector_data(rtt_dsxx::UnitTest &ut) {
 
   // Check the sizes of the vectors
   const size_t boundary_cells = topology->num_ghost_cells();
-  if (bc_data_vec.size() != boundary_cells)
-    ITFAILS;
+  FAIL_IF(bc_data_vec.size() != boundary_cells);
 
   // Compare the results to the plain data.
   for (size_t cell = 0; cell < boundary_cells; cell++) {
-    if (!std::equal(bc_data_vec[cell].begin(), bc_data_vec[cell].end(), bc_data[cell].begin()))
-      ITFAILS;
+    FAIL_IF(!std::equal(bc_data_vec[cell].begin(), bc_data_vec[cell].end(), bc_data[cell].begin()));
   }
 
   if (ut.numFails == 0) {
@@ -400,10 +376,10 @@ void gather_variable_data(rtt_dsxx::UnitTest &ut) {
     return;
 
   // make topology of 9 cell mesh
-  std::shared_ptr<Topology> topology = rtt_mesh_test::build_DD_Topology();
+  std::shared_ptr<Topology> const topology = rtt_mesh_test::build_DD_Topology();
 
   // make a comm patterns
-  std::shared_ptr<Comm_Patterns> pattern(new Comm_Patterns());
+  std::shared_ptr<Comm_Patterns> const pattern(new Comm_Patterns());
   pattern->calc_patterns(topology);
 
   // make the parallel data operator class
@@ -460,10 +436,10 @@ void gather_variable_vector_data(rtt_dsxx::UnitTest &ut) {
     return;
 
   // make topology of 9 cell mesh
-  std::shared_ptr<Topology> topology = rtt_mesh_test::build_DD_Topology();
+  std::shared_ptr<Topology> const topology = rtt_mesh_test::build_DD_Topology();
 
   // make a comm patterns
-  std::shared_ptr<Comm_Patterns> pattern(new Comm_Patterns());
+  std::shared_ptr<Comm_Patterns> const pattern(new Comm_Patterns());
   pattern->calc_patterns(topology);
 
   // make the parallel data operator class

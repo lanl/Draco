@@ -8,12 +8,17 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Topology.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "mesh/Comm_Patterns.hh"
 #include "mesh/DD_Topology.hh"
 #include "mesh/Rep_Topology.hh"
+#include <memory>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 
@@ -41,7 +46,7 @@ std::shared_ptr<Topology> build_2p_DD_Topology() {
   cpp[0] = 3;
   cpp[1] = 5;
 
-  int n = rtt_c4::node();
+  int const n = rtt_c4::node();
 
   if (n == 0) {
     bc.resize(4);
@@ -83,7 +88,7 @@ std::shared_ptr<Topology> build_4p_DD_Topology_multiple() {
   cpp[2] = 2;
   cpp[3] = 3;
 
-  int n = rtt_c4::node();
+  int const n = rtt_c4::node();
 
   if (n == 0) {
     bc.resize(4);
@@ -164,13 +169,13 @@ void DD_Comm_Patterns_2(rtt_dsxx::UnitTest &ut) {
   if (rtt_c4::nodes() != 2)
     return;
 
-  int n = rtt_c4::node();
+  int const n = rtt_c4::node();
   int p = 0;
   Comm_Patterns::const_iterator itr;
   vector<int> cells;
 
   // build a DD topology for a nine cell mesh
-  std::shared_ptr<Topology> topology = build_2p_DD_Topology();
+  std::shared_ptr<Topology> const topology = build_2p_DD_Topology();
   FAIL_IF_NOT(topology->get_parallel_scheme() == "DD");
 
   // make a Comm_Patterns object
@@ -267,27 +272,24 @@ void DD_Comm_Patterns_4_multiple_indices(rtt_dsxx::UnitTest &ut) {
   if (rtt_c4::nodes() != 4)
     return;
 
-  int n = rtt_c4::node();
+  int const n = rtt_c4::node();
   int p = 0;
   Comm_Patterns::const_iterator itr;
   vector<int> cells;
 
   // build a DD topology for a nine cell mesh
-  std::shared_ptr<Topology> topology = build_4p_DD_Topology_multiple();
-  if (topology->get_parallel_scheme() != "DD")
-    ITFAILS;
+  std::shared_ptr<Topology> const topology = build_4p_DD_Topology_multiple();
+  FAIL_IF(topology->get_parallel_scheme() != "DD");
 
   // make a cp object
   Comm_Patterns cp;
 
   // nothing should be set yet
-  if (cp)
-    ITFAILS;
+  FAIL_IF(cp);
 
   // calculate comm_patterns
   cp.calc_patterns(topology);
-  if (!cp)
-    ITFAILS;
+  FAIL_IF(!cp);
 
   if (n == 0) {
     FAIL_IF_NOT(cp.get_num_recv_procs() == 2);
@@ -556,17 +558,16 @@ void DD_Comm_Patterns_4(rtt_dsxx::UnitTest &ut) {
     return;
 
   // build a DD topology for a nine cell mesh
-  std::shared_ptr<Topology> topology = rtt_mesh_test::build_DD_Topology();
+  std::shared_ptr<Topology> const topology = rtt_mesh_test::build_DD_Topology();
   FAIL_IF_NOT(topology->get_parallel_scheme() == "DD");
 
   // make a cp object
   Comm_Patterns cp;
 
   // nothing should be set yet
-  if (cp)
-    ITFAILS;
+  FAIL_IF(cp);
 
-  int n = rtt_c4::node();
+  int const n = rtt_c4::node();
   Comm_Patterns::const_iterator itr;
   int p = 0;
   vector<int> cells;
@@ -575,8 +576,7 @@ void DD_Comm_Patterns_4(rtt_dsxx::UnitTest &ut) {
   for (int run = 1; run <= 3; run++) {
     // calculate comm_patterns
     cp.calc_patterns(topology);
-    if (!cp)
-      ITFAILS;
+    FAIL_IF(!cp);
 
     // check comm_patterns
     if (n == 0) {
@@ -802,10 +802,9 @@ void DD_Comm_Patterns_4(rtt_dsxx::UnitTest &ut) {
       FAIL_IF_NOT(cells[1] == 3);
 
       itr++;
-      if (itr != cp.get_send_end())
-        ITFAILS;
+      FAIL_IF_NOT(itr == cp.get_send_end());
     } else {
-      ITFAILS;
+      FAILMSG("Should never get here!");
     }
   }
 
@@ -821,20 +820,18 @@ void DD_Comm_Patterns_4(rtt_dsxx::UnitTest &ut) {
 
 void rep_Comm_Patterns(rtt_dsxx::UnitTest &ut) {
   // make a full replication topology for nine cell mesh
-  std::shared_ptr<Topology> topology(new Rep_Topology(9));
+  std::shared_ptr<Topology> const topology(new Rep_Topology(9));
 
   // make a comm_pattern object
   Comm_Patterns cp;
 
-  if (cp)
-    ITFAILS;
+  FAIL_IF(cp);
 
   // now build comm patterns.  This should be a null operation because we are in a full replication
   // topology
   cp.calc_patterns(topology);
 
-  if (cp)
-    ITFAILS;
+  FAIL_IF(cp);
 
   if (ut.numFails == 0) {
     ostringstream m;

@@ -13,6 +13,8 @@
 #include <iterator>
 #include <limits>
 
+// cSpell:ignore LCOV, gsum, itor
+
 namespace rtt_mesh {
 
 //------------------------------------------------------------------------------------------------//
@@ -362,7 +364,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
 
   for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
     // Determine the processor to receive from and the size of the data.
-    int processor = itor->first;
+    int const processor = itor->first;
     size_t const data_size = itor->second.size();
 
     data_request->allocate(data_size * vector_size);
@@ -378,8 +380,8 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
 
   for (auto itor = send_begin; itor != send_end; itor++) {
     // Determine the processor we are sending to and the size of the data.
-    int processor = itor->first;
-    size_t data_size = itor->second.size();
+    int const processor = itor->first;
+    size_t const data_size = itor->second.size();
 
     Data_Send<Recv_T> sender(data_size * vector_size);
 
@@ -509,7 +511,7 @@ void Parallel_Data_Operator::gather_fv_ghost_cell_data(SP_Comm_Patterns const &p
 
   for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
     // Determine the processor to receive from and the size of the data.
-    int processor = itor->first;
+    int const processor = itor->first;
     size_t const data_size = itor->second.size();
 
     data_request->allocate(data_size * vector_size);
@@ -525,8 +527,8 @@ void Parallel_Data_Operator::gather_fv_ghost_cell_data(SP_Comm_Patterns const &p
 
   for (auto itor = send_begin; itor != send_end; itor++) {
     // Determine the processor we are sending to and the size of the data.
-    int processor = itor->first;
-    size_t data_size = itor->second.size();
+    int const processor = itor->first;
+    size_t const data_size = itor->second.size();
 
     Data_Send<Recv_T> sender(data_size * vector_size);
 
@@ -645,8 +647,8 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
 
   for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
     // Determine the processor to receive from and the size of the data.
-    int processor = itor->first;
-    size_t data_size = itor->second.size();
+    int const processor = itor->first;
+    size_t const data_size = itor->second.size();
 
     data_request->allocate(data_size);
     data_request->post(processor, comm_tag);
@@ -661,8 +663,8 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
 
   for (auto itor = send_begin; itor != send_end; itor++) {
     // Determine the processor we are sending to and the size of the data.
-    int processor = itor->first;
-    size_t data_size = itor->second.size();
+    int const processor = itor->first;
+    size_t const data_size = itor->second.size();
 
     Data_Send<Recv_T> sender(data_size);
 
@@ -872,7 +874,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(
 
   for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
     // Determine the processor to receive from and the size of the data.
-    int processor = itor->first;
+    int const processor = itor->first;
 
     // Processor ordering of comm_patterns map must match provided ghost_vector_size.
     size_t data_size = 0;
@@ -893,7 +895,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(
 
   for (auto itor = send_begin; itor != send_end; itor++) {
     // Determine the processor we are sending to and the size of the data.
-    int processor = itor->first;
+    int const processor = itor->first;
     size_t data_size = 0;
     for (auto cell : itor->second) {
       data_size += local_vector_size[cell - 1];
@@ -1038,7 +1040,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(
 
   for (auto itor = recv_begin; itor != recv_end; ++itor, ++data_request) {
     // Determine the processor to receive from and the size of the data.
-    int processor = itor->first;
+    int const processor = itor->first;
 
     // Processor ordering of comm_patterns map must match provided ghost_vector_size.
     //Require(itor->second.size() == ghost_vector_size.size());
@@ -1061,7 +1063,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(
 
   for (auto itor = send_begin; itor != send_end; itor++) {
     // Determine the processor we are sending to and the size of the data.
-    int processor = itor->first;
+    int const processor = itor->first;
     size_t data_size = 0;
     for (auto cell : itor->second) {
       data_size += local_vector_size[cell - 1];
@@ -1139,20 +1141,20 @@ void Parallel_Data_Operator::fill_ghost_cell_data(SP_Comm_Patterns pattern,
                                                   std::vector<T> &local_data,
                                                   const size_t vector_size) {
   size_t const nowned = topology->num_local_cells();
-  size_t nghosts = topology->num_ghost_cells();
-  if (nghosts == 0)
+  size_t const numGhosts = topology->num_ghost_cells();
+  if (numGhosts == 0)
     return;
 
-  std::vector<T> ghost_data(nghosts * vector_size);
+  std::vector<T> ghost_data(numGhosts * vector_size);
 
   gather_fv_ghost_cell_data(pattern, local_data, ghost_data.begin(), vector_size);
-  size_t cntr(0);
+  size_t index(0);
   // resize local_data..
-  local_data.resize((nowned + nghosts) * vector_size);
+  local_data.resize((nowned + numGhosts) * vector_size);
 
-  for (size_t i = nowned; i < nowned + nghosts; ++i) {
+  for (size_t i = nowned; i < nowned + numGhosts; ++i) {
     for (size_t j = 0; j < vector_size; ++j)
-      local_data[i * vector_size + j] = ghost_data[cntr++];
+      local_data[i * vector_size + j] = ghost_data[index++];
   }
 }
 } // end namespace rtt_mesh

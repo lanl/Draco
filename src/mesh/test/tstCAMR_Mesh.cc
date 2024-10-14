@@ -8,9 +8,19 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "c4/ParallelUnitTest.hh"
+#include "mesh/CAMR_Layout.hh"
 #include "mesh/CAMR_Mesh.hh"
 #include "viz/Ensight_Translator.hh"
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <cstddef>
+#include <cstdint>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace rtt_mesh;
@@ -20,7 +30,7 @@ using namespace rtt_dsxx;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 struct CAMR_Mesh_Data {
-  //! RZ data and AMR connectivities
+  //! RZ data and AMR connectivity
   int *num_across_face = nullptr;  //!< Num. cells across a coarse face. (RZ, XYZ)
   int *cell_across_face = nullptr; //!< Cells across a face. (All)
   double *rx_extent = nullptr;     //!< low/hi X/R dimensions per cell, cm (R, RZ).
@@ -58,6 +68,8 @@ void test_2D_mesh(rtt_c4::ParallelUnitTest &ut) {
   /*
    * Create a simple 2D CAMR_Mesh
    *
+   * ~~~
+   *
    * // --------------------
    * // |       |       || -4
    * // |       |       ||---
@@ -68,6 +80,8 @@ void test_2D_mesh(rtt_c4::ParallelUnitTest &ut) {
    * // | 1     | 4 | 6 || -1
    * // --------------------
    * ////////////////////
+   *
+   * ~~~
    *
    * Top level dimension is 1.0cm. Lower left corner is at (0,0).
    */
@@ -80,16 +94,16 @@ void test_2D_mesh(rtt_c4::ParallelUnitTest &ut) {
 
   std::array<int, 7> level_values = {0, 0, 0, 1, 1, 1, 1};
 
-  double dimension = 1.0;
+  double constexpr dimension = 1.0;
 
   std::array<double, 14> vertex_data = {0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
                                         0.0, 1.0, 0.5, 1.5, 0.0, 1.5, 0.5};
 
-  CAMR_Mesh<2> mesh(7, dimension, vertex_data.begin(), level_values.data(), neighbor_count.data(),
-                    neighbor_values.data());
+  CAMR_Mesh<2> const mesh(7, dimension, vertex_data.begin(), level_values.data(),
+                          neighbor_count.data(), neighbor_values.data());
 
   // Test the equality operator
-  FAIL_IF(!(mesh == mesh));
+  FAIL_IF_NOT((mesh == mesh));
   FAIL_IF(mesh != mesh);
   FAIL_IF_NOT(soft_equiv(mesh.get_total_volume(), 4.0));
   FAIL_IF_NOT(mesh.full_Mesh());
@@ -123,7 +137,7 @@ void test_2D_mesh(rtt_c4::ParallelUnitTest &ut) {
 
     // Check the vertices of _all_ of the cells, because I can:
     for (int cell = 1; cell <= 7; ++cell) {
-      std::vector<double> vertex = mesh.get_vertex(cell);
+      std::vector<double> const vertex = mesh.get_vertex(cell);
       FAIL_IF_NOT(soft_equiv(vertex.begin(), vertex.end(), vertex_data.begin() + 2 * (cell - 1),
                              vertex_data.begin() + 2 * cell));
     }
@@ -139,8 +153,7 @@ void test_2D_mesh(rtt_c4::ParallelUnitTest &ut) {
     cell = 1;
     position[0] = 0.5;
     position[1] = 0.5;
-    if (mesh.in_cell(cell, position) != true)
-      ITFAILS;
+    FAIL_IF(mesh.in_cell(cell, position) != true);
 
     position[0] = 1.0;
     FAIL_IF_NOT(mesh.in_cell(cell, position));
@@ -148,12 +161,10 @@ void test_2D_mesh(rtt_c4::ParallelUnitTest &ut) {
 
     position[0] = 1.0 + 1.0e-14;
     FAIL_IF_NOT(mesh.in_cell(cell, position));
-    if (mesh.hard_in_cell(cell, position))
-      ITFAILS;
+    FAIL_IF(mesh.hard_in_cell(cell, position));
 
     cell = 2;
-    if (mesh.in_cell(cell, position) != false)
-      ITFAILS;
+    FAIL_IF(mesh.in_cell(cell, position) != false);
 
     FAIL_IF_NOT(soft_equiv(mesh.min(1, cell), 0.));
     FAIL_IF_NOT(soft_equiv(mesh.max(1, cell), 1.));
@@ -174,79 +185,53 @@ void test_2D_mesh(rtt_c4::ParallelUnitTest &ut) {
 
     position[0] = 1.0;
     position[1] = 0.75;
-    if (mesh.next_cell(1, 2, position) != 5)
-      ITFAILS;
+    FAIL_IF(mesh.next_cell(1, 2, position) != 5);
 
     position[0] = 1.0;
     position[1] = 1.5;
-    if (mesh.next_cell(2, 2, position) != 3)
-      ITFAILS;
+    FAIL_IF(mesh.next_cell(2, 2, position) != 3);
 
     position[0] = 1.25;
     position[1] = 1.0;
-    if (mesh.next_cell(3, 3, position) != 5)
-      ITFAILS;
+    FAIL_IF(mesh.next_cell(3, 3, position) != 5);
 
     position[0] = 2.0;
     position[1] = 1.75;
-    if (mesh.next_cell(3, 2, position) != -4)
-      ITFAILS;
+    FAIL_IF(mesh.next_cell(3, 2, position) != -4);
 
     position[0] = 1.5;
     position[1] = 2.0;
-    if (mesh.next_cell(3, 4, position) != 0)
-      ITFAILS;
+    FAIL_IF(mesh.next_cell(3, 4, position) != 0);
 
     position[0] = 1.25;
     position[1] = 0.0;
-    if (mesh.next_cell(4, 3, position) != 4)
-      ITFAILS;
+    FAIL_IF(mesh.next_cell(4, 3, position) != 4);
   }
 
   // ---------
   // Next face:
   // ---------
   {
-    if (mesh.next_face(1, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(1, 4) != 3)
-      ITFAILS;
-    if (mesh.next_face(2, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(2, 3) != 4)
-      ITFAILS;
-    if (mesh.next_face(3, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(3, 3) != 4)
-      ITFAILS;
-    if (mesh.next_face(4, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(4, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(4, 4) != 3)
-      ITFAILS;
-    if (mesh.next_face(5, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(5, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(5, 3) != 4)
-      ITFAILS;
-    if (mesh.next_face(5, 4) != 3)
-      ITFAILS;
-    if (mesh.next_face(6, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(6, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(6, 4) != 3)
-      ITFAILS;
-    if (mesh.next_face(7, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(7, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(7, 3) != 4)
-      ITFAILS;
-    if (mesh.next_face(7, 4) != 3)
-      ITFAILS;
+    FAIL_IF(mesh.next_face(1, 2) != 1);
+    FAIL_IF(mesh.next_face(1, 4) != 3);
+    FAIL_IF(mesh.next_face(2, 2) != 1);
+    FAIL_IF(mesh.next_face(2, 3) != 4);
+    FAIL_IF(mesh.next_face(3, 1) != 2);
+    FAIL_IF(mesh.next_face(3, 3) != 4);
+    FAIL_IF(mesh.next_face(4, 1) != 2);
+    FAIL_IF(mesh.next_face(4, 2) != 1);
+    FAIL_IF(mesh.next_face(4, 4) != 3);
+    FAIL_IF(mesh.next_face(5, 1) != 2);
+    FAIL_IF(mesh.next_face(5, 2) != 1);
+    FAIL_IF(mesh.next_face(5, 3) != 4);
+    FAIL_IF(mesh.next_face(5, 4) != 3);
+    FAIL_IF(mesh.next_face(6, 1) != 2);
+    FAIL_IF(mesh.next_face(6, 2) != 1);
+    FAIL_IF(mesh.next_face(6, 4) != 3);
+    FAIL_IF(mesh.next_face(7, 1) != 2);
+    FAIL_IF(mesh.next_face(7, 2) != 1);
+    FAIL_IF(mesh.next_face(7, 3) != 4);
+    FAIL_IF(mesh.next_face(7, 4) != 3);
     // For completeness, be sure you can't access a cell across an invalid face:
     bool caught(false);
     try {
@@ -266,18 +251,15 @@ void test_2D_mesh(rtt_c4::ParallelUnitTest &ut) {
 
     position[0] = 0.5;
     position[1] = 0.5;
-    if (mesh.get_cell(position) != 1)
-      ITFAILS;
+    FAIL_IF(mesh.get_cell(position) != 1);
 
     position[0] = 1.25;
     position[1] = 0.75;
-    if (mesh.get_cell(position) != 5)
-      ITFAILS;
+    FAIL_IF(mesh.get_cell(position) != 5);
 
     position[0] = -100;
     position[1] = 0.75;
-    if (mesh.get_cell(position) != -1)
-      ITFAILS;
+    FAIL_IF(mesh.get_cell(position) != -1);
   }
 
   // --------
@@ -287,25 +269,20 @@ void test_2D_mesh(rtt_c4::ParallelUnitTest &ut) {
     std::array<double, 3> position{0., 0., 0.};
     position[0] = 1.5;
     position[1] = 0.75;
-    if (mesh.get_face(position, 7) != 1)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 7) != 1);
 
     position[0] = 2.0;
-    if (mesh.get_face(position, 7) != 2)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 7) != 2);
 
     position[0] = 1.75;
     position[1] = 0.5;
-    if (mesh.get_face(position, 7) != 3)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 7) != 3);
 
     position[1] = 1.0;
-    if (mesh.get_face(position, 7) != 4)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 7) != 4);
 
     position[1] = 0.75;
-    if (mesh.get_face(position, 7) != 0)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 7) != 0);
   }
 
   //-----------------
@@ -507,6 +484,8 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
   /*
    * Create a simple 2D CAMR_Mesh
    *
+   * ~~~
+   *
    * // --------------------
    * // |       |       || -4
    * // |       |       ||---
@@ -517,6 +496,8 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
    * // | 1     | 4 | 6 || -1
    * // --------------------
    * ////////////////////
+   *
+   * ~~~
    *
    * Top level dimension is 1.0cm. Lower left corner is at (0,0).
    */
@@ -529,16 +510,16 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
 
   std::array<int, 7> level_values = {0, 0, 0, 1, 1, 1, 1};
 
-  double dimension = 1.0;
+  double constexpr dimension = 1.0;
 
   std::array<double, 14> vertex_data = {0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
                                         0.0, 1.0, 0.5, 1.5, 0.0, 1.5, 0.5};
 
-  CAMR_Mesh<2> mesh(7, dimension, vertex_data.begin(), level_values.data(), neighbor_count.data(),
-                    neighbor_values.data());
+  CAMR_Mesh<2> const mesh(7, dimension, vertex_data.begin(), level_values.data(),
+                          neighbor_count.data(), neighbor_values.data());
 
   // Test the equality operator
-  FAIL_IF(!(mesh == mesh));
+  FAIL_IF_NOT((mesh == mesh));
   FAIL_IF(mesh != mesh);
   FAIL_IF_NOT(soft_equiv(mesh.get_total_volume(), 4.0));
   FAIL_IF_NOT(mesh.full_Mesh());
@@ -679,22 +660,14 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
   // Get information about refinement level
   // ------------------------
   {
-    if (mesh.is_refined(1, 1))
-      ITFAILS;
-    if (!mesh.is_refined(1, 2))
-      ITFAILS;
-    if (mesh.is_refined(1, 3))
-      ITFAILS;
-    if (mesh.is_refined(1, 4))
-      ITFAILS;
-    if (mesh.is_refined(3, 1))
-      ITFAILS;
-    if (!mesh.is_refined(3, 2))
-      ITFAILS;
-    if (!mesh.is_refined(3, 3))
-      ITFAILS;
-    if (mesh.is_refined(3, 4))
-      ITFAILS;
+    FAIL_IF(mesh.is_refined(1, 1));
+    FAIL_IF_NOT(mesh.is_refined(1, 2));
+    FAIL_IF(mesh.is_refined(1, 3));
+    FAIL_IF(mesh.is_refined(1, 4));
+    FAIL_IF(mesh.is_refined(3, 1));
+    FAIL_IF_NOT(mesh.is_refined(3, 2));
+    FAIL_IF_NOT(mesh.is_refined(3, 3));
+    FAIL_IF(mesh.is_refined(3, 4));
   }
 
   // ------------------------
@@ -702,11 +675,11 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
   // ------------------------
   const double halfsqrttwo = std::sqrt(2.0) / 2.0;
   {
-    std::array<double, 3> pos{1.21, 1.5, 0.0};
-    std::array<double, 3> omega{-1.0, 0.0, 0.0};
-    double dist(0.21);
-    int current_cell(3);
-    int face(1);
+    std::array<double, 3> const pos{1.21, 1.5, 0.0};
+    std::array<double, 3> const omega{-1.0, 0.0, 0.0};
+    double const dist(0.21);
+    int const current_cell(3);
+    int const face(1);
 
     std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
 
@@ -714,11 +687,11 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     FAIL_IF_NOT(soft_equiv(loc[1], 1.5));
   }
   {
-    std::array<double, 3> pos{0.99, 1.11, 0.0};
-    std::array<double, 3> omega{1.0, 0.0, 0.0};
-    double dist(0.01);
-    int current_cell(2);
-    int face(2);
+    std::array<double, 3> const pos{0.99, 1.11, 0.0};
+    std::array<double, 3> const omega{1.0, 0.0, 0.0};
+    double const dist(0.01);
+    int const current_cell(2);
+    int const face(2);
 
     std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
 
@@ -726,11 +699,11 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     FAIL_IF_NOT(soft_equiv(loc[1], 1.11));
   }
   {
-    std::array<double, 3> pos{0.25, 1.5, 0.0};
-    std::array<double, 3> omega{halfsqrttwo, -halfsqrttwo, 0.0};
-    double dist(0.91);
-    int current_cell(2);
-    int face(3);
+    std::array<double, 3> const pos{0.25, 1.5, 0.0};
+    std::array<double, 3> const omega{halfsqrttwo, -halfsqrttwo, 0.0};
+    double const dist(0.91);
+    int const current_cell(2);
+    int const face(3);
 
     std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
 
@@ -738,11 +711,11 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     FAIL_IF_NOT(soft_equiv(loc[1], 1.0));
   }
   {
-    std::array<double, 3> pos{0.25, 0.5, 0.0};
-    std::array<double, 3> omega{halfsqrttwo, halfsqrttwo, 0.0};
-    double dist(0.91);
-    int current_cell(1);
-    int face(4);
+    std::array<double, 3> const pos{0.25, 0.5, 0.0};
+    std::array<double, 3> const omega{halfsqrttwo, halfsqrttwo, 0.0};
+    double const dist(0.91);
+    int const current_cell(1);
+    int const face(4);
 
     std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
 
@@ -766,8 +739,7 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     cell = 1;
 
     FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), 1.0));
-    if (face != 2)
-      ITFAILS;
+    FAIL_IF_NOT(face == 2);
 
     position[0] = 1.5;
     position[1] = 0.5;
@@ -777,14 +749,12 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     cell = 7;
 
     FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), sqrt(2.0) / 2.0));
-    if (face != 2 && face != 4)
-      ITFAILS; // Allow both for a tie.
+    FAIL_IF(face != 2 && face != 4); // Allow both for a tie
 
     // Since the position is a corner. Try another cell.
     cell = 4;
     FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), 0.0));
-    if (face != 2 && face != 4)
-      ITFAILS; // Allow both for a tie.
+    FAIL_IF(face != 2 && face != 4); // Allow both for a tie
 
     // Try an out-of-cell computation, where the point is not inside of the given cell. This is one
     // of the capabilities which provides robustness in the presence of roundoff.
@@ -796,8 +766,7 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     cell = 7;
 
     FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), sqrt(2.0)));
-    if (face != 2 && face != 4)
-      ITFAILS; // Allow both for a tie.
+    FAIL_IF(face != 2 && face != 4); // Allow both for a tie
 
     // Test the other direction.
     position[0] = 1.5;
@@ -808,8 +777,7 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     cell = 4;
 
     FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), 0.5));
-    if (face != 1)
-      ITFAILS;
+    FAIL_IF_NOT(face == 1);
 
     position[0] = 1.5;
     position[1] = 0.5;
@@ -819,8 +787,7 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     cell = 4;
 
     FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), 0.5));
-    if (face != 3)
-      ITFAILS;
+    FAIL_IF(face != 3);
   }
 
   // ------------------
@@ -856,50 +823,42 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     result[0] = -1.0;
     result[1] = 0.0;
     face = 1;
-    if (mesh.get_normal(1, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal(1, face) != result);
 
     result[0] = 1.0;
     result[1] = 0.0;
     face = 2;
-    if (mesh.get_normal(2, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal(2, face) != result);
 
     result[0] = 0.0;
     result[1] = -1.0;
     face = 3;
-    if (mesh.get_normal(3, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal(3, face) != result);
 
     result[0] = 0.0;
     result[1] = 1.0;
     face = 4;
-    if (mesh.get_normal(4, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal(4, face) != result);
 
     result[0] = 1.0;
     result[1] = 0.0;
     face = 1;
-    if (mesh.get_normal_in(1, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal_in(1, face) != result);
 
     result[0] = -1.0;
     result[1] = 0.0;
     face = 2;
-    if (mesh.get_normal_in(2, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal_in(2, face) != result);
 
     result[0] = 0.0;
     result[1] = 1.0;
     face = 3;
-    if (mesh.get_normal_in(3, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal_in(3, face) != result);
 
     result[0] = 0.0;
     result[1] = -1.0;
     face = 4;
-    if (mesh.get_normal_in(4, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal_in(4, face) != result);
   }
 
   // ---------------------------
@@ -929,12 +888,9 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
 
     cell = 1;
     vertices = mesh.get_vertices(cell);
-    if (vertices.size() != 2)
-      ITFAILS;
-    if (vertices[0].size() != 4)
-      ITFAILS;
-    if (vertices[1].size() != 4)
-      ITFAILS;
+    FAIL_IF(vertices.size() != 2);
+    FAIL_IF(vertices[0].size() != 4);
+    FAIL_IF(vertices[1].size() != 4);
 
     FAIL_IF_NOT(soft_equiv(vertices[0][0], 0.0));
     FAIL_IF_NOT(soft_equiv(vertices[1][3], 1.0));
@@ -956,12 +912,9 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     cell = 1;
     face = 2;
     vertices = mesh.get_vertices(cell, face);
-    if (vertices.size() != 2)
-      ITFAILS;
-    if (vertices[0].size() != 2)
-      ITFAILS;
-    if (vertices[1].size() != 2)
-      ITFAILS;
+    FAIL_IF(vertices.size() != 2);
+    FAIL_IF(vertices[0].size() != 2);
+    FAIL_IF(vertices[1].size() != 2);
 
     FAIL_IF_NOT(soft_equiv(vertices[0][0], 1.0));
     FAIL_IF_NOT(soft_equiv(vertices[1][0], 0.0));
@@ -969,8 +922,7 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     cell = 5;
     face = 3;
     vertices = mesh.get_vertices(cell, face);
-    if (vertices.size() != 2)
-      ITFAILS;
+    FAIL_IF(vertices.size() != 2);
 
     FAIL_IF_NOT(soft_equiv(vertices[0][0], 1.0));
     FAIL_IF_NOT(soft_equiv(vertices[1][0], 0.5));
@@ -982,16 +934,12 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
   // Boundary Labels
   // ---------------
   {
-    int cell = 0;
+    int constexpr cell = 0;
 
-    if (mesh.get_bndface("lox", cell) != 1)
-      ITFAILS;
-    if (mesh.get_bndface("hix", cell) != 2)
-      ITFAILS;
-    if (mesh.get_bndface("loy", cell) != 3)
-      ITFAILS;
-    if (mesh.get_bndface("hiy", cell) != 4)
-      ITFAILS;
+    FAIL_IF(mesh.get_bndface("lox", cell) != 1);
+    FAIL_IF(mesh.get_bndface("hix", cell) != 2);
+    FAIL_IF(mesh.get_bndface("loy", cell) != 3);
+    FAIL_IF(mesh.get_bndface("hiy", cell) != 4);
   }
 
   // ---------------
@@ -1006,13 +954,11 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[1] = 2;
     surface_cells = mesh.get_surcells("lox");
     std::sort(surface_cells.begin(), surface_cells.end());
-    if (surface_cells != surface_cells_ref)
-      ITFAILS;
+    FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(0);
     surface_cells = mesh.get_surcells("hix");
-    if (surface_cells != surface_cells_ref)
-      ITFAILS;
+    FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(3);
     surface_cells_ref[0] = 1;
@@ -1020,16 +966,14 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[2] = 6;
     surface_cells = mesh.get_surcells("loy");
     std::sort(surface_cells.begin(), surface_cells.end());
-    if (surface_cells != surface_cells_ref)
-      ITFAILS;
+    FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(2);
     surface_cells_ref[0] = 2;
     surface_cells_ref[1] = 3;
     surface_cells = mesh.get_surcells("hiy");
     std::sort(surface_cells.begin(), surface_cells.end());
-    if (surface_cells != surface_cells_ref)
-      ITFAILS;
+    FAIL_IF(surface_cells != surface_cells_ref);
 
     // Checking surface cells:
     // -----------------------
@@ -1037,14 +981,11 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     surface_cells.resize(2);
     surface_cells[0] = 2;
     surface_cells[1] = 3;
-    if (mesh.check_defined_surcells("hiy", surface_cells) != true)
-      ITFAILS;
+    FAIL_IF(mesh.check_defined_surcells("hiy", surface_cells) != true);
 
     surface_cells[1] = 1;
-    if (mesh.check_defined_surcells("hiy", surface_cells) != false)
-      ITFAILS;
-    if (mesh.check_defined_surcells("lox", surface_cells) != false)
-      ITFAILS;
+    FAIL_IF(mesh.check_defined_surcells("hiy", surface_cells) != false);
+    FAIL_IF(mesh.check_defined_surcells("lox", surface_cells) != false);
   }
 
   // ---------------------------
@@ -1084,57 +1025,41 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     vector<vector<double>> vertices = mesh.get_point_coord();
     vector<vector<int>> indices = mesh.get_cell_pair();
 
-    if (vertices.size() != mesh.get_size() * 4)
-      ITFAILS;
+    FAIL_IF(vertices.size() != mesh.get_size() * 4);
 
     // Cell three, first corner:
     int index = indices[3 - 1][0] - 1;
-    if (index != 8)
-      ITFAILS;
+    FAIL_IF(index != 8);
 
-    if (!soft_equiv(vertices[index][0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[index][1], 1.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(vertices[index][0], 1.0));
+    FAIL_IF_NOT(soft_equiv(vertices[index][1], 1.0));
 
     // Cell 4, upper right corner.
     index = indices[4 - 1][2] - 1;
-    if (index != 14)
-      ITFAILS;
+    FAIL_IF(index != 14);
 
-    if (!soft_equiv(vertices[index][0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(vertices[index][1], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(vertices[index][0], 1.5));
+    FAIL_IF_NOT(soft_equiv(vertices[index][1], 0.5));
 
     // Cell 7, second corner:
     index = indices[7 - 1][1] - 1;
-    if (index != 25)
-      ITFAILS;
+    FAIL_IF(index != 25);
 
-    if (!soft_equiv(vertices[index][0], 2.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[index][1], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(vertices[index][0], 2.0));
+    FAIL_IF_NOT(soft_equiv(vertices[index][1], 0.5));
   }
 
   // Check the valid faces
   vector<int> valid_faces(mesh.get_valid_cell_faces());
-  if (valid_faces.size() != 4)
-    ITFAILS;
-  if (valid_faces[0] != 1)
-    ITFAILS;
-  if (valid_faces[1] != 2)
-    ITFAILS;
-  if (valid_faces[2] != 3)
-    ITFAILS;
-  if (valid_faces[3] != 4)
-    ITFAILS;
+  FAIL_IF(valid_faces.size() != 4);
+  FAIL_IF(valid_faces[0] != 1);
+  FAIL_IF(valid_faces[1] != 2);
+  FAIL_IF(valid_faces[2] != 3);
+  FAIL_IF(valid_faces[3] != 4);
 
   // Check the number of faces
   for (size_t cell = 1; cell < mesh.num_cells(); ++cell)
-    if (mesh.get_number_of_faces() != 4)
-      ITFAILS;
+    FAIL_IF(mesh.get_number_of_faces() != 4);
 
   if (ut.numFails == 0)
     PASSMSG("2D CAMR_Mesh2 test passed");
@@ -1182,7 +1107,7 @@ void test_3D_mesh(rtt_c4::ParallelUnitTest &ut) {
 
   std::array<int, 9> level_values = {0, 1, 1, 1, 1, 1, 1, 1, 1};
 
-  double width = 1.0;
+  double constexpr width = 1.0;
 
   std::array<double, 27> vertex_data = {
       0.0, 0.0, 0.0, // Cell 1
@@ -1198,16 +1123,15 @@ void test_3D_mesh(rtt_c4::ParallelUnitTest &ut) {
       1.5, 0.5, 0.5, // Cell 9
   };
 
-  CAMR_Mesh<3> mesh(9, width, vertex_data.begin(), level_values.data(), neighbor_count.data(),
-                    neighbor_values.data());
+  CAMR_Mesh<3> const mesh(9, width, vertex_data.begin(), level_values.data(), neighbor_count.data(),
+                          neighbor_values.data());
 
   FAIL_IF_NOT(soft_equiv(mesh.get_total_volume(), 2.0));
 
   // ----------------------------------------------------------------
   // check that the mesh returns proper coordinate system information
   // ----------------------------------------------------------------
-  if (mesh.get_spatial_dimension() != 3)
-    ITFAILS;
+  FAIL_IF(mesh.get_spatial_dimension() != 3);
 
   // ----------------------------------------------
   // Check the vertices and widths of the cells
@@ -1215,20 +1139,14 @@ void test_3D_mesh(rtt_c4::ParallelUnitTest &ut) {
   {
     std::array<double, 2> dim = {1.0, 0.5};
 
-    if (mesh.get_spatial_dimension() != 3)
-      ITFAILS;
-    if (mesh.get_size() != 9)
-      ITFAILS;
-    if (mesh.get_maximum_level() != 1)
-      ITFAILS;
-    if (!soft_equiv(mesh.get_width(), 1.0))
-      ITFAILS;
-    if (!soft_equiv(mesh.get_width(0), 1.0))
-      ITFAILS;
-    if (!soft_equiv(mesh.get_width(1), 0.5))
-      ITFAILS;
-    if (!soft_equiv(mesh.get_widths().begin(), mesh.get_widths().end(), dim.begin(), dim.end()))
-      ITFAILS;
+    FAIL_IF(mesh.get_spatial_dimension() != 3);
+    FAIL_IF(mesh.get_size() != 9);
+    FAIL_IF(mesh.get_maximum_level() != 1);
+    FAIL_IF_NOT(soft_equiv(mesh.get_width(), 1.0));
+    FAIL_IF_NOT(soft_equiv(mesh.get_width(0), 1.0));
+    FAIL_IF_NOT(soft_equiv(mesh.get_width(1), 0.5));
+    FAIL_IF_NOT(
+        soft_equiv(mesh.get_widths().begin(), mesh.get_widths().end(), dim.begin(), dim.end()));
 
     for (int cell = 1; cell <= 9; ++cell)
       FAIL_IF_NOT(static_cast<int>(mesh.get_level(cell)) == level_values[cell - 1]);
@@ -1253,36 +1171,26 @@ void test_3D_mesh(rtt_c4::ParallelUnitTest &ut) {
     position[0] = 0.5;
     position[1] = 0.5;
     position[2] = 0.5;
-    if (mesh.in_cell(cell, position) != true)
-      ITFAILS;
+    FAIL_IF(mesh.in_cell(cell, position) != true);
 
     position[1] = 0.0 + 1.0e-14;
-    if (!mesh.in_cell(cell, position))
-      ITFAILS;
-    if (!mesh.hard_in_cell(cell, position))
-      ITFAILS;
+    FAIL_IF_NOT(mesh.in_cell(cell, position));
+    FAIL_IF_NOT(mesh.hard_in_cell(cell, position));
 
     position[1] = 0.0;
-    if (!mesh.in_cell(cell, position))
-      ITFAILS;
-    if (!mesh.hard_in_cell(cell, position))
-      ITFAILS;
+    FAIL_IF_NOT(mesh.in_cell(cell, position));
+    FAIL_IF_NOT(mesh.hard_in_cell(cell, position));
 
     position[1] = 0.0 - 1.0e-14;
-    if (!mesh.in_cell(cell, position))
-      ITFAILS;
-    if (mesh.hard_in_cell(cell, position))
-      ITFAILS;
+    FAIL_IF_NOT(mesh.in_cell(cell, position));
+    FAIL_IF(mesh.hard_in_cell(cell, position));
 
     position[1] = 0.0 - 1.0e-8;
-    if (mesh.in_cell(cell, position))
-      ITFAILS;
-    if (mesh.hard_in_cell(cell, position))
-      ITFAILS;
+    FAIL_IF(mesh.in_cell(cell, position));
+    FAIL_IF(mesh.hard_in_cell(cell, position));
 
     cell = 2;
-    if (mesh.in_cell(cell, position) != false)
-      ITFAILS;
+    FAIL_IF(mesh.in_cell(cell, position) != false);
   }
 
   // ---------
@@ -1297,123 +1205,76 @@ void test_3D_mesh(rtt_c4::ParallelUnitTest &ut) {
     position[0] = 1.0;
     position[1] = 0.25;
     position[2] = 0.25;
-    if (mesh.next_cell(cell, face, position) != 2)
-      ITFAILS;
+    FAIL_IF(mesh.next_cell(cell, face, position) != 2);
 
     position[0] = 1.0;
     position[1] = 0.75;
     position[2] = 0.25;
-    if (mesh.next_cell(cell, face, position) != 3)
-      ITFAILS;
+    FAIL_IF(mesh.next_cell(cell, face, position) != 3);
 
     position[0] = 1.0;
     position[1] = 0.25;
     position[2] = 0.75;
-    if (mesh.next_cell(cell, face, position) != 6)
-      ITFAILS;
+    FAIL_IF(mesh.next_cell(cell, face, position) != 6);
 
     position[0] = 1.0;
     position[1] = 0.75;
     position[2] = 0.75;
-    if (mesh.next_cell(cell, face, position) != 7)
-      ITFAILS;
+    FAIL_IF(mesh.next_cell(cell, face, position) != 7);
 
     vector<int> next_cells = mesh.next_cells(cell, face);
 
-    if (next_cells.size() != 4)
-      ITFAILS;
-    if (next_cells[0] != 2)
-      ITFAILS;
-    if (next_cells[1] != 3)
-      ITFAILS;
-    if (next_cells[2] != 6)
-      ITFAILS;
-    if (next_cells[3] != 7)
-      ITFAILS;
+    FAIL_IF(next_cells.size() != 4);
+    FAIL_IF(next_cells[0] != 2);
+    FAIL_IF(next_cells[1] != 3);
+    FAIL_IF(next_cells[2] != 6);
+    FAIL_IF(next_cells[3] != 7);
 
     vector<int> next_cells2 = mesh.next_cells(static_cast<size_t>(cell), static_cast<size_t>(face));
-    if (next_cells2.size() != 4)
-      ITFAILS;
-    if (next_cells2[0] != 2)
-      ITFAILS;
-    if (next_cells2[1] != 3)
-      ITFAILS;
-    if (next_cells2[2] != 6)
-      ITFAILS;
-    if (next_cells2[3] != 7)
-      ITFAILS;
+    FAIL_IF(next_cells2.size() != 4);
+    FAIL_IF(next_cells2[0] != 2);
+    FAIL_IF(next_cells2[1] != 3);
+    FAIL_IF(next_cells2[2] != 6);
+    FAIL_IF(next_cells2[3] != 7);
   }
 
   // ---------
   // Next face:
   // ---------
   {
-    if (mesh.next_face(static_cast<size_t>(1), static_cast<size_t>(2)) != 1)
-      ITFAILS;
-    if (mesh.next_face(2, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(2, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(2, 4) != 3)
-      ITFAILS;
-    if (mesh.next_face(2, 6) != 5)
-      ITFAILS;
-    if (mesh.next_face(3, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(3, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(3, 3) != 4)
-      ITFAILS;
-    if (mesh.next_face(3, 6) != 5)
-      ITFAILS;
-    if (mesh.next_face(4, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(4, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(4, 4) != 3)
-      ITFAILS;
-    if (mesh.next_face(4, 6) != 5)
-      ITFAILS;
-    if (mesh.next_face(5, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(5, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(5, 3) != 4)
-      ITFAILS;
-    if (mesh.next_face(5, 6) != 5)
-      ITFAILS;
-    if (mesh.next_face(6, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(6, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(6, 4) != 3)
-      ITFAILS;
-    if (mesh.next_face(6, 5) != 6)
-      ITFAILS;
-    if (mesh.next_face(7, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(7, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(7, 3) != 4)
-      ITFAILS;
-    if (mesh.next_face(7, 5) != 6)
-      ITFAILS;
-    if (mesh.next_face(8, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(8, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(8, 4) != 3)
-      ITFAILS;
-    if (mesh.next_face(8, 5) != 6)
-      ITFAILS;
-    if (mesh.next_face(9, 1) != 2)
-      ITFAILS;
-    if (mesh.next_face(9, 2) != 1)
-      ITFAILS;
-    if (mesh.next_face(9, 3) != 4)
-      ITFAILS;
-    if (mesh.next_face(9, 5) != 6)
-      ITFAILS;
+    FAIL_IF(mesh.next_face(static_cast<size_t>(1), static_cast<size_t>(2)) != 1);
+    FAIL_IF(mesh.next_face(2, 1) != 2);
+    FAIL_IF(mesh.next_face(2, 2) != 1);
+    FAIL_IF(mesh.next_face(2, 4) != 3);
+    FAIL_IF(mesh.next_face(2, 6) != 5);
+    FAIL_IF(mesh.next_face(3, 1) != 2);
+    FAIL_IF(mesh.next_face(3, 2) != 1);
+    FAIL_IF(mesh.next_face(3, 3) != 4);
+    FAIL_IF(mesh.next_face(3, 6) != 5);
+    FAIL_IF(mesh.next_face(4, 1) != 2);
+    FAIL_IF(mesh.next_face(4, 2) != 1);
+    FAIL_IF(mesh.next_face(4, 4) != 3);
+    FAIL_IF(mesh.next_face(4, 6) != 5);
+    FAIL_IF(mesh.next_face(5, 1) != 2);
+    FAIL_IF(mesh.next_face(5, 2) != 1);
+    FAIL_IF(mesh.next_face(5, 3) != 4);
+    FAIL_IF(mesh.next_face(5, 6) != 5);
+    FAIL_IF(mesh.next_face(6, 1) != 2);
+    FAIL_IF(mesh.next_face(6, 2) != 1);
+    FAIL_IF(mesh.next_face(6, 4) != 3);
+    FAIL_IF(mesh.next_face(6, 5) != 6);
+    FAIL_IF(mesh.next_face(7, 1) != 2);
+    FAIL_IF(mesh.next_face(7, 2) != 1);
+    FAIL_IF(mesh.next_face(7, 3) != 4);
+    FAIL_IF(mesh.next_face(7, 5) != 6);
+    FAIL_IF(mesh.next_face(8, 1) != 2);
+    FAIL_IF(mesh.next_face(8, 2) != 1);
+    FAIL_IF(mesh.next_face(8, 4) != 3);
+    FAIL_IF(mesh.next_face(8, 5) != 6);
+    FAIL_IF(mesh.next_face(9, 1) != 2);
+    FAIL_IF(mesh.next_face(9, 2) != 1);
+    FAIL_IF(mesh.next_face(9, 3) != 4);
+    FAIL_IF(mesh.next_face(9, 5) != 6);
   }
 
   // --------
@@ -1425,20 +1286,17 @@ void test_3D_mesh(rtt_c4::ParallelUnitTest &ut) {
     position[0] = 0.5;
     position[1] = 0.5;
     position[2] = 0.5;
-    if (mesh.get_cell(position) != 1)
-      ITFAILS;
+    FAIL_IF(mesh.get_cell(position) != 1);
 
     position[0] = 1.25;
     position[1] = 0.75;
     position[2] = 0.75;
-    if (mesh.get_cell(position) != 7)
-      ITFAILS;
+    FAIL_IF(mesh.get_cell(position) != 7);
 
     position[0] = -100;
     position[1] = 0.75;
     position[2] = 0.0;
-    if (mesh.get_cell(position) != -1)
-      ITFAILS;
+    FAIL_IF(mesh.get_cell(position) != -1);
   }
 
   // --------
@@ -1449,34 +1307,27 @@ void test_3D_mesh(rtt_c4::ParallelUnitTest &ut) {
     position[0] = 1.5;
     position[1] = 0.75;
     position[2] = 0.75;
-    if (mesh.get_face(position, 9) != 1)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 9) != 1);
 
     position[0] = 2.0;
-    if (mesh.get_face(position, 9) != 2)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 9) != 2);
 
     position[0] = 1.75;
     position[1] = 0.5;
-    if (mesh.get_face(position, 9) != 3)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 9) != 3);
 
     position[1] = 1.0;
-    if (mesh.get_face(position, 9) != 4)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 9) != 4);
 
     position[1] = 0.75;
     position[2] = 0.5;
-    if (mesh.get_face(position, 9) != 5)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 9) != 5);
 
     position[2] = 1.0;
-    if (mesh.get_face(position, 9) != 6)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 9) != 6);
 
     position[2] = 0.75;
-    if (mesh.get_face(position, 9) != 0)
-      ITFAILS;
+    FAIL_IF(mesh.get_face(position, 9) != 0);
   }
 
   if (ut.numFails == 0)
@@ -1525,7 +1376,7 @@ void test_3D_mesh1(rtt_c4::ParallelUnitTest &ut) {
 
   std::array<int, 9> level_values = {0, 1, 1, 1, 1, 1, 1, 1, 1};
 
-  double width = 1.0;
+  double constexpr width = 1.0;
 
   std::array<double, 27> vertex_data = {
       0.0, 0.0, 0.0, // Cell 1
@@ -1541,16 +1392,15 @@ void test_3D_mesh1(rtt_c4::ParallelUnitTest &ut) {
       1.5, 0.5, 0.5, // Cell 9
   };
 
-  CAMR_Mesh<3> mesh(9, width, vertex_data.begin(), level_values.data(), neighbor_count.data(),
-                    neighbor_values.data());
+  CAMR_Mesh<3> const mesh(9, width, vertex_data.begin(), level_values.data(), neighbor_count.data(),
+                          neighbor_values.data());
 
   FAIL_IF_NOT(soft_equiv(mesh.get_total_volume(), 2.0));
 
   // ----------------------------------------------------------------
   // check that the mesh returns proper coordinate system information
   // ----------------------------------------------------------------
-  if (mesh.get_spatial_dimension() != 3)
-    ITFAILS;
+  FAIL_IF_NOT(mesh.get_spatial_dimension() == 3);
 
   //-----------------
   // Get face center:
@@ -1559,436 +1409,274 @@ void test_3D_mesh1(rtt_c4::ParallelUnitTest &ut) {
     std::array<double, 3> center{0., 0., 0.};
 
     center = mesh.get_face_center(1, 1);
-    if (!soft_equiv(center[0], 0.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 0.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(1, 2);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(1, 3);
-    if (!soft_equiv(center[0], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.0));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(1, 4);
-    if (!soft_equiv(center[0], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(1, 5);
-    if (!soft_equiv(center[0], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.0));
 
     center = mesh.get_face_center(1, 6);
-    if (!soft_equiv(center[0], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 1.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 1.0));
 
     center = mesh.get_face_center(2, 1);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(2, 2);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(2, 3);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.0));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(2, 4);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(2, 5);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.0));
 
     center = mesh.get_face_center(2, 6);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(3, 1);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(3, 2);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(3, 3);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(3, 4);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(3, 5);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.0));
 
     center = mesh.get_face_center(3, 6);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(4, 1);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(4, 2);
-    if (!soft_equiv(center[0], 2.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 2.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(4, 3);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.0));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(4, 4);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(4, 5);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.0));
 
     center = mesh.get_face_center(4, 6);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(5, 1);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(5, 2);
-    if (!soft_equiv(center[0], 2.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 2.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(5, 3);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(5, 4);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_face_center(5, 5);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.0));
 
     center = mesh.get_face_center(5, 6);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(6, 1);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(6, 2);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(6, 3);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.0));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(6, 4);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(6, 5);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(6, 6);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 1.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 1.0));
 
     center = mesh.get_face_center(7, 1);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(7, 2);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(7, 3);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(7, 4);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(7, 5);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(7, 6);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 1.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 1.0));
 
     center = mesh.get_face_center(8, 1);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(8, 2);
-    if (!soft_equiv(center[0], 2.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 2.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(8, 3);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.0));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(8, 4);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(8, 5);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(8, 6);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 1.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 1.0));
 
     center = mesh.get_face_center(9, 1);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(9, 2);
-    if (!soft_equiv(center[0], 2.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 2.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(9, 3);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(9, 4);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_face_center(9, 5);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_face_center(9, 6);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 1.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 1.0));
   }
   if (ut.numFails == 0)
     PASSMSG("3D CAMR_Mesh1 test passed");
@@ -1998,6 +1686,8 @@ void test_3D_mesh1(rtt_c4::ParallelUnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void test_3D_mesh2(rtt_c4::ParallelUnitTest &ut) {
   /* Create a simple 3D mesh
+   *
+   * ~~~
    *
    *          ---------------------
    *         /|       | 7 | 9 || -4
@@ -2015,6 +1705,8 @@ void test_3D_mesh2(rtt_c4::ParallelUnitTest &ut) {
    *   | /     Vacuum in positive y and z. Processor boundary in
    *   |/      positive x.
    *   +--y
+   *
+   * ~~~
    */
 
   std::array<int, 54> neighbor_count = {1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -2036,7 +1728,7 @@ void test_3D_mesh2(rtt_c4::ParallelUnitTest &ut) {
 
   std::array<int, 9> level_values = {0, 1, 1, 1, 1, 1, 1, 1, 1};
 
-  double width = 1.0;
+  double constexpr width = 1.0;
 
   std::array<double, 27> vertex_data = {
       0.0, 0.0, 0.0, // Cell 1
@@ -2052,26 +1744,25 @@ void test_3D_mesh2(rtt_c4::ParallelUnitTest &ut) {
       1.5, 0.5, 0.5, // Cell 9
   };
 
-  CAMR_Mesh<3> mesh(9, width, vertex_data.begin(), level_values.data(), neighbor_count.data(),
-                    neighbor_values.data());
+  CAMR_Mesh<3> const mesh(9, width, vertex_data.begin(), level_values.data(), neighbor_count.data(),
+                          neighbor_values.data());
 
   FAIL_IF_NOT(soft_equiv(mesh.get_total_volume(), 2.0));
 
   // ----------------------------------------------------------------
   // check that the mesh returns proper coordinate system information
   // ----------------------------------------------------------------
-  if (mesh.get_spatial_dimension() != 3)
-    ITFAILS;
+  FAIL_IF_NOT(mesh.get_spatial_dimension() == 3);
 
   // ------------------------
   // Test the intersection location feature for extra 3-D faces.
   // ------------------------
   {
-    std::array<double, 3> pos{1.75, 0.75, 0.75};
-    std::array<double, 3> omega{0.0, 0.0, -1.0};
-    double dist(0.25);
-    int current_cell(8);
-    int face(5);
+    std::array<double, 3> const pos{1.75, 0.75, 0.75};
+    std::array<double, 3> const omega{0.0, 0.0, -1.0};
+    double const dist(0.25);
+    int const current_cell(8);
+    int const face(5);
 
     std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
     FAIL_IF_NOT(soft_equiv(loc[0], 1.75));
@@ -2079,11 +1770,11 @@ void test_3D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     FAIL_IF_NOT(soft_equiv(loc[2], 0.5));
   }
   {
-    std::array<double, 3> pos{1.99, 0.49, 1.01};
-    std::array<double, 3> omega{0.0, 0.0, 1.0};
-    double dist(0.01);
-    int current_cell(5);
-    int face(6);
+    std::array<double, 3> const pos{1.99, 0.49, 1.01};
+    std::array<double, 3> const omega{0.0, 0.0, 1.0};
+    double const dist(0.01);
+    int const current_cell(5);
+    int const face(6);
 
     std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
 
@@ -2099,292 +1790,184 @@ void test_3D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     std::array<double, 3> center{0., 0., 0.};
 
     center = mesh.get_shared_face_center(1, 2, 2);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(1, 2, 3);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(1, 2, 6);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(1, 2, 7);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(2, 1, 1);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(2, 2, 4);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(2, 4, 3);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(2, 6, 6);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_shared_face_center(3, 1, 1);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(3, 2, 5);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(3, 3, 2);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(3, 6, 7);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_shared_face_center(4, 1, 2);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(4, 2, -1);
-    if (!soft_equiv(center[0], 2.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 2.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(4, 4, 5);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(4, 6, 8);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_shared_face_center(5, 1, 3);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(5, 2, -2);
-    if (!soft_equiv(center[0], 2.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 2.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(5, 3, 4);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.25))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.25));
 
     center = mesh.get_shared_face_center(5, 6, 9);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_shared_face_center(6, 1, 1);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(6, 2, 8);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(6, 4, 7);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(6, 5, 2);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_shared_face_center(7, 1, 1);
-    if (!soft_equiv(center[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(7, 2, 9);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(7, 3, 6);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(7, 5, 3);
-    if (!soft_equiv(center[0], 1.25))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.25));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_shared_face_center(8, 1, 6);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(8, 2, -3);
-    if (!soft_equiv(center[0], 2.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 2.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(8, 4, 9);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(8, 5, 4);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.25))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.25));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
 
     center = mesh.get_shared_face_center(9, 1, 7);
-    if (!soft_equiv(center[0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.5));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(9, 2, -4);
-    if (!soft_equiv(center[0], 2.0))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 2.0));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(9, 3, 8);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.75))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.5));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.75));
 
     center = mesh.get_shared_face_center(9, 5, 5);
-    if (!soft_equiv(center[0], 1.75))
-      ITFAILS;
-    if (!soft_equiv(center[1], 0.75))
-      ITFAILS;
-    if (!soft_equiv(center[2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(center[0], 1.75));
+    FAIL_IF_NOT(soft_equiv(center[1], 0.75));
+    FAIL_IF_NOT(soft_equiv(center[2], 0.5));
   }
 
   if (ut.numFails == 0)
@@ -2395,6 +1978,7 @@ void test_3D_mesh2(rtt_c4::ParallelUnitTest &ut) {
 void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
   /* Create a simple 3D mesh
    *
+   * ~~~
    *          ---------------------
    *         /|       | 7 | 9 || -4
    *        / |       |-------||---
@@ -2411,6 +1995,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
    *   | /     Vacuum in positive y and z. Processor boundary in
    *   |/      positive x.
    *   +--y
+   * ~~~
    */
 
   std::array<int, 54> neighbor_count = {1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -2432,7 +2017,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
 
   std::array<int, 9> level_values = {0, 1, 1, 1, 1, 1, 1, 1, 1};
 
-  double width = 1.0;
+  double constexpr width = 1.0;
 
   std::array<double, 27> vertex_data = {
       0.0, 0.0, 0.0, // Cell 1
@@ -2448,26 +2033,25 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
       1.5, 0.5, 0.5, // Cell 9
   };
 
-  CAMR_Mesh<3> mesh(9, width, vertex_data.begin(), level_values.data(), neighbor_count.data(),
-                    neighbor_values.data());
+  CAMR_Mesh<3> const mesh(9, width, vertex_data.begin(), level_values.data(), neighbor_count.data(),
+                          neighbor_values.data());
 
   FAIL_IF_NOT(soft_equiv(mesh.get_total_volume(), 2.0));
 
   // ----------------------------------------------------------------
   // check that the mesh returns proper coordinate system information
   // ----------------------------------------------------------------
-  if (mesh.get_spatial_dimension() != 3)
-    ITFAILS;
+  FAIL_IF_NOT(mesh.get_spatial_dimension() == 3);
 
   // ------------------------
   // Test the intersection location feature for extra 3-D faces.
   // ------------------------
   {
-    std::array<double, 3> pos{1.75, 0.75, 0.75};
-    std::array<double, 3> omega{0.0, 0.0, -1.0};
-    double dist(0.25);
-    int current_cell(8);
-    int face(5);
+    std::array<double, 3> const pos{1.75, 0.75, 0.75};
+    std::array<double, 3> const omega{0.0, 0.0, -1.0};
+    double const dist(0.25);
+    int const current_cell(8);
+    int const face(5);
 
     std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
     FAIL_IF_NOT(soft_equiv(loc[0], 1.75));
@@ -2475,11 +2059,11 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     FAIL_IF_NOT(soft_equiv(loc[2], 0.5));
   }
   {
-    std::array<double, 3> pos{1.99, 0.49, 1.01};
-    std::array<double, 3> omega{0.0, 0.0, 1.0};
-    double dist(0.01);
-    int current_cell(5);
-    int face(6);
+    std::array<double, 3> const pos{1.99, 0.49, 1.01};
+    std::array<double, 3> const omega{0.0, 0.0, 1.0};
+    double const dist(0.01);
+    int const current_cell(5);
+    int const face(6);
 
     std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
 
@@ -2504,10 +2088,8 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     direction[2] = 0.0;
     cell = 1;
 
-    if (!soft_equiv(mesh.get_db(position, direction, cell, face), 1.0))
-      ITFAILS;
-    if (face != 2)
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), 1.0));
+    FAIL_IF_NOT(face == 2);
 
     position[0] = 1.5;
     position[1] = 0.5;
@@ -2517,17 +2099,13 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     direction[2] = 0.0;
     cell = 5;
 
-    if (!soft_equiv(mesh.get_db(position, direction, cell, face), sqrt(2.0) / 2.0))
-      ITFAILS;
-    if (face != 2 && face != 4)
-      ITFAILS; // Allow both for a tie.
+    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), sqrt(2.0) / 2.0));
+    FAIL_IF(face != 2 && face != 4); // Allow both for a tie.
 
     // Since the position is a corner. Try another cell.
     cell = 2;
-    if (!soft_equiv(mesh.get_db(position, direction, cell, face), 0.0))
-      ITFAILS;
-    if (face != 2 && face != 4)
-      ITFAILS; // Allow both for a tie.
+    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), 0.0));
+    FAIL_IF(face != 2 && face != 4); // Allow both for a tie.
 
     // Try an out-of-cell computation, where the point is not inside of the given cell. This is one
     // of the capabilities which provides robustness in the presence of roundoff.
@@ -2539,11 +2117,9 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     direction[2] = sqrt(3.0) / 3.0;
     cell = 9;
 
-    if (!soft_equiv(mesh.get_db(position, direction, cell, face), sqrt(3.0)))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), sqrt(3.0)));
     // Allow all three in a tie.
-    if (face != 2 && face != 4 && face != 6)
-      ITFAILS;
+    FAIL_IF(face != 2 && face != 4 && face != 6);
 
     // Test the other direction.
     position[0] = 1.5;
@@ -2554,10 +2130,8 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     direction[2] = 0.0;
     cell = 2;
 
-    if (!soft_equiv(mesh.get_db(position, direction, cell, face), 0.5))
-      ITFAILS;
-    if (face != 1)
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), 0.5));
+    FAIL_IF(face != 1);
 
     position[0] = 1.5;
     position[1] = 0.5;
@@ -2567,10 +2141,8 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     direction[2] = 0.0;
     cell = 2;
 
-    if (!soft_equiv(mesh.get_db(position, direction, cell, face), 0.5))
-      ITFAILS;
-    if (face != 3)
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), 0.5));
+    FAIL_IF(face != 3);
   }
 
   // ------------------
@@ -2584,22 +2156,19 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     position[1] = 0.5;
     position[2] = 0.5;
     cell = 1;
-    if (!soft_equiv(mesh.get_orthogonal_dist_to_bnd(position, cell), 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(mesh.get_orthogonal_dist_to_bnd(position, cell), 0.5));
 
     position[0] = 1.0;
     position[1] = 0.5;
     position[2] = 0.75;
     cell = 1;
-    if (!soft_equiv(mesh.get_orthogonal_dist_to_bnd(position, cell), 0.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(mesh.get_orthogonal_dist_to_bnd(position, cell), 0.0));
 
     position[0] = 1.1;
     position[1] = 0.75;
     position[2] = 0.25;
     cell = 3;
-    if (!soft_equiv(mesh.get_orthogonal_dist_to_bnd(position, cell), 0.1))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(mesh.get_orthogonal_dist_to_bnd(position, cell), 0.1));
   }
 
   // -----------
@@ -2607,92 +2176,80 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
   // -----------
   {
     std::array<double, 3> result{0., 0., 0.};
-    int cell = 1;
+    int constexpr cell = 1;
     int face;
 
     result[0] = -1.0;
     result[1] = 0.0;
     result[2] = 0.0;
     face = 1;
-    if (mesh.get_normal(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal(cell, face) != result);
 
     result[0] = 1.0;
     result[1] = 0.0;
     result[2] = 0.0;
     face = 2;
-    if (mesh.get_normal(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal(cell, face) != result);
 
     result[0] = 0.0;
     result[1] = -1.0;
     result[2] = 0.0;
     face = 3;
-    if (mesh.get_normal(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal(cell, face) != result);
 
     result[0] = 0.0;
     result[1] = 1.0;
     result[2] = 0.0;
     face = 4;
-    if (mesh.get_normal(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal(cell, face) != result);
 
     result[0] = 0.0;
     result[1] = 0.0;
     result[2] = -1.0;
     face = 5;
-    if (mesh.get_normal(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal(cell, face) != result);
 
     result[0] = 0.0;
     result[1] = 0.0;
     result[2] = 1.0;
     face = 6;
-    if (mesh.get_normal(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal(cell, face) != result);
 
     result[0] = 1.0;
     result[1] = 0.0;
     result[2] = 0.0;
     face = 1;
-    if (mesh.get_normal_in(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal_in(cell, face) != result);
 
     result[0] = -1.0;
     result[1] = 0.0;
     result[2] = 0.0;
     face = 2;
-    if (mesh.get_normal_in(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal_in(cell, face) != result);
 
     result[0] = 0.0;
     result[1] = 1.0;
     result[2] = 0.0;
     face = 3;
-    if (mesh.get_normal_in(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal_in(cell, face) != result);
 
     result[0] = 0.0;
     result[1] = -1.0;
     result[2] = 0.0;
     face = 4;
-    if (mesh.get_normal_in(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal_in(cell, face) != result);
 
     result[0] = 0.0;
     result[1] = 0.0;
     result[2] = 1.0;
     face = 5;
-    if (mesh.get_normal_in(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal_in(cell, face) != result);
 
     result[0] = 0.0;
     result[1] = 0.0;
     result[2] = -1.0;
     face = 6;
-    if (mesh.get_normal_in(cell, face) != result)
-      ITFAILS;
+    FAIL_IF(mesh.get_normal_in(cell, face) != result);
   }
 
   // ---------------------------
@@ -2702,24 +2259,18 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     int cell;
 
     cell = 1;
-    if (!soft_equiv(mesh.volume(cell), 1.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(mesh.volume(cell), 1.0));
     for (int face = 1; face <= 6; ++face)
-      if (!soft_equiv(mesh.face_area(cell, face), 1.0))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(mesh.face_area(cell, face), 1.0));
 
-    if (!soft_equiv(mesh.mean_chord_length(cell), (2.0 / 3.0)))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(mesh.mean_chord_length(cell), (2.0 / 3.0)));
 
     cell = 4;
-    if (!soft_equiv(mesh.volume(cell), 0.125))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(mesh.volume(cell), 0.125));
     for (int face = 1; face <= 6; ++face)
-      if (!soft_equiv(mesh.face_area(cell, face), 0.25))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(mesh.face_area(cell, face), 0.25));
 
-    if (!soft_equiv(mesh.mean_chord_length(cell), (1.0 / 3.0)))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(mesh.mean_chord_length(cell), (1.0 / 3.0)));
   }
 
   // -------------------------
@@ -2731,28 +2282,19 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
 
     cell = 1;
     vertices = mesh.get_vertices(cell);
-    if (vertices.size() != 3)
-      ITFAILS;
-    if (vertices[0].size() != 8)
-      ITFAILS;
-    if (vertices[1].size() != 8)
-      ITFAILS;
-    if (vertices[2].size() != 8)
-      ITFAILS;
+    FAIL_IF(vertices.size() != 3);
+    FAIL_IF(vertices[0].size() != 8);
+    FAIL_IF(vertices[1].size() != 8);
+    FAIL_IF(vertices[2].size() != 8);
 
-    if (!soft_equiv(vertices[0][0], 0.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[1][3], 1.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(vertices[0][0], 0.0));
+    FAIL_IF_NOT(soft_equiv(vertices[1][3], 1.0));
 
     cell = 9;
     vertices = mesh.get_vertices(cell);
-    if (!soft_equiv(vertices[0][1], 2.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[1][1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(vertices[2][3], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(vertices[0][1], 2.0));
+    FAIL_IF_NOT(soft_equiv(vertices[1][1], 0.5));
+    FAIL_IF_NOT(soft_equiv(vertices[2][3], 0.5));
   }
 
   // ---------------------
@@ -2765,59 +2307,40 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     cell = 1;
     face = 2;
     vertices = mesh.get_vertices(cell, face);
-    if (vertices.size() != 3)
-      ITFAILS;
-    if (vertices[0].size() != 4)
-      ITFAILS;
-    if (vertices[1].size() != 4)
-      ITFAILS;
+    FAIL_IF(vertices.size() != 3);
+    FAIL_IF(vertices[0].size() != 4);
+    FAIL_IF(vertices[1].size() != 4);
 
-    if (!soft_equiv(vertices[0][0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[1][0], 0.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[2][0], 0.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(vertices[0][0], 1.0));
+    FAIL_IF_NOT(soft_equiv(vertices[1][0], 0.0));
+    FAIL_IF_NOT(soft_equiv(vertices[2][0], 0.0));
 
     cell = 9;
     face = 3;
     vertices = mesh.get_vertices(cell, face);
-    if (vertices.size() != 3)
-      ITFAILS;
+    FAIL_IF(vertices.size() != 3);
 
-    if (!soft_equiv(vertices[0][0], 1.5))
-      ITFAILS;
-    if (!soft_equiv(vertices[1][0], 0.5))
-      ITFAILS;
-    if (!soft_equiv(vertices[2][0], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(vertices[0][0], 1.5));
+    FAIL_IF_NOT(soft_equiv(vertices[1][0], 0.5));
+    FAIL_IF_NOT(soft_equiv(vertices[2][0], 0.5));
 
-    if (!soft_equiv(vertices[0][3], 2.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[1][3], 0.5))
-      ITFAILS;
-    if (!soft_equiv(vertices[2][3], 1.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(vertices[0][3], 2.0));
+    FAIL_IF_NOT(soft_equiv(vertices[1][3], 0.5));
+    FAIL_IF_NOT(soft_equiv(vertices[2][3], 1.0));
   }
 
   // ---------------
   // Boundary Labels
   // ---------------
   {
-    int cell = 0;
+    int constexpr cell = 0;
 
-    if (mesh.get_bndface("lox", cell) != 1)
-      ITFAILS;
-    if (mesh.get_bndface("hix", cell) != 2)
-      ITFAILS;
-    if (mesh.get_bndface("loy", cell) != 3)
-      ITFAILS;
-    if (mesh.get_bndface("hiy", cell) != 4)
-      ITFAILS;
-    if (mesh.get_bndface("loz", cell) != 5)
-      ITFAILS;
-    if (mesh.get_bndface("hiz", cell) != 6)
-      ITFAILS;
+    FAIL_IF(mesh.get_bndface("lox", cell) != 1);
+    FAIL_IF(mesh.get_bndface("hix", cell) != 2);
+    FAIL_IF(mesh.get_bndface("loy", cell) != 3);
+    FAIL_IF(mesh.get_bndface("hiy", cell) != 4);
+    FAIL_IF(mesh.get_bndface("loz", cell) != 5);
+    FAIL_IF(mesh.get_bndface("hiz", cell) != 6);
   }
 
   // ---------------
@@ -2831,13 +2354,11 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[0] = 1;
     surface_cells = mesh.get_surcells("lox");
     std::sort(surface_cells.begin(), surface_cells.end());
-    if (surface_cells != surface_cells_ref)
-      ITFAILS;
+    FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(0);
     surface_cells = mesh.get_surcells("hix");
-    if (surface_cells != surface_cells_ref)
-      ITFAILS;
+    FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(5);
     surface_cells_ref[0] = 1;
@@ -2847,8 +2368,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[4] = 8;
     surface_cells = mesh.get_surcells("loy");
     std::sort(surface_cells.begin(), surface_cells.end());
-    if (surface_cells != surface_cells_ref)
-      ITFAILS;
+    FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(5);
     surface_cells_ref[0] = 1;
@@ -2858,8 +2378,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[4] = 9;
     surface_cells = mesh.get_surcells("hiy");
     std::sort(surface_cells.begin(), surface_cells.end());
-    if (surface_cells != surface_cells_ref)
-      ITFAILS;
+    FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(5);
     surface_cells_ref[0] = 1;
@@ -2869,8 +2388,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[4] = 5;
     surface_cells = mesh.get_surcells("loz");
     std::sort(surface_cells.begin(), surface_cells.end());
-    if (surface_cells != surface_cells_ref)
-      ITFAILS;
+    FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(5);
     surface_cells_ref[0] = 1;
@@ -2880,8 +2398,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[4] = 9;
     surface_cells = mesh.get_surcells("hiz");
     std::sort(surface_cells.begin(), surface_cells.end());
-    if (surface_cells != surface_cells_ref)
-      ITFAILS;
+    FAIL_IF(surface_cells != surface_cells_ref);
 
     // Checking surface cells:
     // -----------------------
@@ -2890,16 +2407,12 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     surface_cells[0] = 1;
     surface_cells[1] = 3;
     surface_cells[2] = 9;
-    if (mesh.check_defined_surcells("hiy", surface_cells) != true)
-      ITFAILS;
+    FAIL_IF(mesh.check_defined_surcells("hiy", surface_cells) != true);
 
     surface_cells[2] = 4;
-    if (mesh.check_defined_surcells("loz", surface_cells) != false)
-      ITFAILS;
-    if (mesh.check_defined_surcells("hiy", surface_cells) != false)
-      ITFAILS;
-    if (mesh.check_defined_surcells("lox", surface_cells) != false)
-      ITFAILS;
+    FAIL_IF(mesh.check_defined_surcells("loz", surface_cells) != false);
+    FAIL_IF(mesh.check_defined_surcells("hiy", surface_cells) != false);
+    FAIL_IF(mesh.check_defined_surcells("lox", surface_cells) != false);
   }
 
   // ---------------------------
@@ -2930,8 +2443,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
   {
     vector<int> cell_types(mesh.get_cell_types());
 
-    if (cell_types.size() != mesh.get_size())
-      ITFAILS;
+    FAIL_IF_NOT(cell_types.size() == mesh.get_size());
 
     FAIL_IF(std::find_if(cell_types.begin(), cell_types.end(), [](const int i) {
               return i != rtt_viz::eight_node_hexahedron;
@@ -2940,67 +2452,46 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     vector<vector<double>> vertices = mesh.get_point_coord();
     vector<vector<int>> indices = mesh.get_cell_pair();
 
-    if (vertices.size() != mesh.get_size() * 8)
-      ITFAILS;
+    FAIL_IF(vertices.size() != mesh.get_size() * 8);
 
     // Cell 1, first vertex:
     int index = indices[1 - 1][0] - 1;
-    if (index != 0)
-      ITFAILS;
+    FAIL_IF(index != 0);
 
-    if (!soft_equiv(vertices[index][0], 0.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[index][1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[index][2], 0.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(vertices[index][0], 0.0));
+    FAIL_IF_NOT(soft_equiv(vertices[index][1], 0.0));
+    FAIL_IF_NOT(soft_equiv(vertices[index][2], 0.0));
 
     // Cell 6, fourth vertex:
     index = indices[6 - 1][3] - 1;
-    if (index != 43)
-      ITFAILS;
+    FAIL_IF(index != 43);
 
-    if (!soft_equiv(vertices[index][0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[index][1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(vertices[index][2], 0.5))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(vertices[index][0], 1.0));
+    FAIL_IF_NOT(soft_equiv(vertices[index][1], 0.5));
+    FAIL_IF_NOT(soft_equiv(vertices[index][2], 0.5));
 
     // Cell 9, 7th vertex:
     index = indices[9 - 1][6] - 1;
-    if (index != 70)
-      ITFAILS;
+    FAIL_IF(index != 70);
 
-    if (!soft_equiv(vertices[index][0], 2.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[index][1], 1.0))
-      ITFAILS;
-    if (!soft_equiv(vertices[index][2], 1.0))
-      ITFAILS;
+    FAIL_IF_NOT(soft_equiv(vertices[index][0], 2.0));
+    FAIL_IF_NOT(soft_equiv(vertices[index][1], 1.0));
+    FAIL_IF_NOT(soft_equiv(vertices[index][2], 1.0));
   }
 
   // Check the valid faces
   vector<int> valid_faces(mesh.get_valid_cell_faces());
-  if (valid_faces.size() != 6)
-    ITFAILS;
-  if (valid_faces[0] != 1)
-    ITFAILS;
-  if (valid_faces[1] != 2)
-    ITFAILS;
-  if (valid_faces[2] != 3)
-    ITFAILS;
-  if (valid_faces[3] != 4)
-    ITFAILS;
-  if (valid_faces[4] != 5)
-    ITFAILS;
-  if (valid_faces[5] != 6)
-    ITFAILS;
+  FAIL_IF(valid_faces.size() != 6);
+  FAIL_IF(valid_faces[0] != 1);
+  FAIL_IF(valid_faces[1] != 2);
+  FAIL_IF(valid_faces[2] != 3);
+  FAIL_IF(valid_faces[3] != 4);
+  FAIL_IF(valid_faces[4] != 5);
+  FAIL_IF(valid_faces[5] != 6);
 
   // Check the number of faces
   for (size_t cell = 1; cell < mesh.num_cells(); ++cell)
-    if (mesh.get_number_of_faces() != 6)
-      ITFAILS;
+    FAIL_IF_NOT(mesh.get_number_of_faces() == 6);
 
   if (ut.numFails == 0)
     PASSMSG("3D CAMR_Mesh3 test passed");
@@ -3012,6 +2503,7 @@ void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
   /*
    * Create a simple 2D CAMR_Mesh
    *
+   * ~~~
    * // --------------------
    * // |       |       || -4
    * // |       |       ||---
@@ -3022,7 +2514,7 @@ void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
    * // | 1     | 4 | 6 || -1
    * // --------------------
    * ////////////////////
-   *
+   * ~~~
    * Top level dimension is 1.0cm. Lower left corner is at (0,0).
    */
 
@@ -3034,7 +2526,7 @@ void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
 
   std::array<int, 7> level_values = {0, 0, 0, 1, 1, 1, 1};
 
-  double dimension = 1.0;
+  double const dimension = 1.0;
 
   std::array<double, 14> vertex_data = {0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
                                         0.0, 1.0, 0.5, 1.5, 0.0, 1.5, 0.5};
@@ -3046,8 +2538,8 @@ void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
   md.cell_levels = level_values.data();
   md.cell_across_face = neighbor_values.data();
 
-  CAMR_Mesh<2> mesh(7, dimension, md.xyz_extents, md.cell_levels, md.num_across_face,
-                    md.cell_across_face);
+  CAMR_Mesh<2> const mesh(7, dimension, md.xyz_extents, md.cell_levels, md.num_across_face,
+                          md.cell_across_face);
 
   // mesh.get_Layout().print(std::cout, 1);
 
@@ -3059,13 +2551,13 @@ void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
   }
 
   // Test the equality operator
-  FAIL_IF(!(mesh == mesh));
+  FAIL_IF_NOT((mesh == mesh));
   FAIL_IF(mesh != mesh);
   FAIL_IF_NOT(soft_equiv(mesh.get_total_volume(), 4.0));
   FAIL_IF_NOT(mesh.full_Mesh());
 
-  size_t nc = mesh.get_num_full_cells();
-  size_t ng = mesh.get_num_ghost_cells();
+  size_t const nc = mesh.get_num_full_cells();
+  size_t const ng = mesh.get_num_ghost_cells();
   FAIL_IF_NOT(nc == 7);
   FAIL_IF_NOT(ng == 0);
 

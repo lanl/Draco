@@ -7,10 +7,17 @@
  * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "mesh/CAMR_Mesh.hh"
-#include "viz/Ensight_Translator.hh"
+#include <cstddef>
+#include <cstdint>
+#include <iostream>
+#include <utility>
+#include <vector>
 
 using namespace std;
 using namespace rtt_mesh;
@@ -20,7 +27,7 @@ using namespace rtt_dsxx;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 struct CAMR_Mesh_Data {
-  //! RZ data and AMR connectivities
+  //! RZ data and AMR connectivity
   int *num_across_face = nullptr;  //!< Num. cells across a coarse face. (RZ, XYZ)
   int *cell_across_face = nullptr; //!< Cells across a face. (All)
   double *rx_extent = nullptr;     //!< low/hi X/R dimensions per cell, cm (R, RZ).
@@ -59,8 +66,8 @@ void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
   /*
 --
 -- Create a simple 2D Rage_Mesh (test for domian decomposed,
---  non-orthgonal dd boundary
---   * 
+--  non-orthogonal dd boundary
+--   *
 --   * // ------------------
 --   * // |       |        |
 --   * // |       | -1     |
@@ -101,16 +108,16 @@ void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
    * Top level dimension is 1.0cm. Lower left corner is at (0,0).
    */
 
-  std::cout << "in dd host" << std::endl;
+  std::cout << "in dd host\n";
 
   CAMR_Mesh_Data md;
 
   //    size_t full_size=4;
   size_t ghost_size = 0;
 
-  double dx = 0.5;
-  double x0 = 0;
-  double y0 = 0;
+  double const dx = 0.5;
+  double const x0 = 0;
+  double const y0 = 0;
 
   std::vector<int> full2active;
   std::vector<int> active2full;
@@ -182,10 +189,10 @@ void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
   md.num_full_cells = md.num_active_cells;
   ghost_size = bnd_cells.size();
 
-  CAMR_Mesh<2> mesh(4, md.num_active_cells, md.num_full_cells, ghost_size, dx, md.xyz_extents,
-                    md.cell_levels, md.num_across_face, md.cell_across_face,
-                    md.processor_boundary_cells, md.processor_boundary_procs, full2active.data(),
-                    active2full.data());
+  CAMR_Mesh<2> const mesh(4, md.num_active_cells, md.num_full_cells, ghost_size, dx, md.xyz_extents,
+                          md.cell_levels, md.num_across_face, md.cell_across_face,
+                          md.processor_boundary_cells, md.processor_boundary_procs,
+                          full2active.data(), active2full.data());
 
   // mesh.get_Layout().print(std::cout, 1);
 
@@ -196,7 +203,7 @@ void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
   FAIL_IF(mesh != mesh);
   FAIL_IF_NOT(mesh.full_Mesh());
 
-  std::vector<double> sv = mesh.get_short_vertices(1);
+  std::vector<double> const sv = mesh.get_short_vertices(1);
 
   if (rtt_c4::node() == 0) {
     FAIL_IF_NOT(sv.size() == 3);
@@ -231,7 +238,7 @@ void test_2D_amr_host(rtt_c4::ParallelUnitTest &ut) {
 --
 --
 -- Create a simple 2D Rage_Mesh (test for domian decomposed,
---  non-orthgonal dd boundary
+--  non-orthogonal dd boundary
 --   * P1
 --   * // ------------------
 --   * // |       |-2  |   |
@@ -274,20 +281,20 @@ void test_2D_amr_host(rtt_c4::ParallelUnitTest &ut) {
    * Top level dimension is 1.0cm. Lower left corner is at (0,0).
    */
 
-  std::cout << "in dd host" << std::endl;
+  std::cout << "in dd host\n";
 
   CAMR_Mesh_Data md;
 
   //    size_t full_size=4;
   size_t ghost_size = 0;
 
-  double dx = 0.5;
-  double x0 = 0;
-  double y0 = 0;
-  double x1 = dx;
-  double y1 = dx;
-  double dx1 = dx / 2.;
-  double dy1 = dx1;
+  double const dx = 0.5;
+  double const x0 = 0;
+  double const y0 = 0;
+  double const x1 = dx;
+  double const y1 = dx;
+  double const dx1 = dx / 2.;
+  double const dy1 = dx1;
 
   std::vector<int> full2active;
   std::vector<int> active2full;
@@ -366,10 +373,10 @@ void test_2D_amr_host(rtt_c4::ParallelUnitTest &ut) {
   md.num_full_cells = md.num_active_cells;
   ghost_size = bnd_cells.size();
 
-  CAMR_Mesh<2> mesh(7, md.num_active_cells, md.num_full_cells, ghost_size, dx, md.xyz_extents,
-                    md.cell_levels, md.num_across_face, md.cell_across_face,
-                    md.processor_boundary_cells, md.processor_boundary_procs, full2active.data(),
-                    active2full.data());
+  CAMR_Mesh<2> const mesh(7, md.num_active_cells, md.num_full_cells, ghost_size, dx, md.xyz_extents,
+                          md.cell_levels, md.num_across_face, md.cell_across_face,
+                          md.processor_boundary_cells, md.processor_boundary_procs,
+                          full2active.data(), active2full.data());
 
   // mesh.get_Layout().print(std::cout, 1);
   if (rtt_c4::node() == 0)
@@ -380,7 +387,7 @@ void test_2D_amr_host(rtt_c4::ParallelUnitTest &ut) {
   FAIL_IF(mesh != mesh);
   FAIL_IF_NOT(mesh.full_Mesh());
 
-  std::vector<double> sv = mesh.get_short_vertices(1);
+  std::vector<double> const sv = mesh.get_short_vertices(1);
 
   if (rtt_c4::node() == 0) {
     FAIL_IF_NOT(sv.size() == 3);
@@ -418,8 +425,8 @@ void test_3D_amr_host(rtt_c4::ParallelUnitTest &ut) {
 --
 --
 -- Create a simple 2D Rage_Mesh (test for domian decomposed,
---  
---  non-orthgonal dd boundary
+--
+--  non-orthogonal dd boundary
 --   * P0 y @z=0
 --        ^
 --   * // ------------------
@@ -464,15 +471,15 @@ void test_3D_amr_host(rtt_c4::ParallelUnitTest &ut) {
   //    size_t full_size=4;
   size_t ghost_size = 0;
 
-  double dx = 1.;
-  double x0 = 0;
-  double y0 = 0;
-  double z0 = 0;
+  double const dx = 1.;
+  double const x0 = 0;
+  double const y0 = 0;
+  double const z0 = 0;
 
-  double x1 = dx;
-  double dx1 = dx / 2.;
-  double dy1 = dx1;
-  double dz1 = dx1;
+  double const x1 = dx;
+  double const dx1 = dx / 2.;
+  double const dy1 = dx1;
+  double const dz1 = dx1;
 
   std::vector<int> full2active;
   std::vector<int> active2full;
@@ -563,10 +570,10 @@ void test_3D_amr_host(rtt_c4::ParallelUnitTest &ut) {
   md.num_full_cells = md.num_active_cells;
   ghost_size = bnd_cells.size();
 
-  CAMR_Mesh<3> mesh(9, md.num_active_cells, md.num_full_cells, ghost_size, dx, md.xyz_extents,
-                    md.cell_levels, md.num_across_face, md.cell_across_face,
-                    md.processor_boundary_cells, md.processor_boundary_procs, full2active.data(),
-                    active2full.data());
+  CAMR_Mesh<3> const mesh(9, md.num_active_cells, md.num_full_cells, ghost_size, dx, md.xyz_extents,
+                          md.cell_levels, md.num_across_face, md.cell_across_face,
+                          md.processor_boundary_cells, md.processor_boundary_procs,
+                          full2active.data(), active2full.data());
 
   // mesh.get_Layout().print(std::cout, 1);
 
@@ -577,7 +584,7 @@ void test_3D_amr_host(rtt_c4::ParallelUnitTest &ut) {
   FAIL_IF(mesh != mesh);
   FAIL_IF_NOT(mesh.full_Mesh());
 
-  std::vector<double> sv = mesh.get_short_vertices(1);
+  std::vector<double> const sv = mesh.get_short_vertices(1);
 
   if (rtt_c4::node() == 0) {
     FAIL_IF_NOT(sv.size() == 4);
@@ -618,8 +625,8 @@ void test_3D_amr_host2(rtt_c4::ParallelUnitTest &ut) {
 --
 --
 -- Create a simple 2D Rage_Mesh (test for domian decomposed,
---  
---  non-orthgonal dd boundary
+--
+--  non-orthogonal dd boundary
 --   * P0 y @z=0
 --        ^
 --   * // ------------------
@@ -664,14 +671,14 @@ void test_3D_amr_host2(rtt_c4::ParallelUnitTest &ut) {
   //    size_t full_size=4;
   size_t ghost_size = 0;
 
-  double dx = 1.;
-  double x0 = 0;
-  double y0 = 0;
-  double z0 = 0;
+  double const dx = 1.;
+  double const x0 = 0;
+  double const y0 = 0;
+  double const z0 = 0;
 
-  double x1 = dx;
-  double dx1 = dx / 2.;
-  double dy1 = dx1;
+  double const x1 = dx;
+  double const dx1 = dx / 2.;
+  double const dy1 = dx1;
 
   std::vector<int> full2active;
   std::vector<int> active2full;
@@ -762,10 +769,10 @@ void test_3D_amr_host2(rtt_c4::ParallelUnitTest &ut) {
   md.num_full_cells = md.num_active_cells;
   ghost_size = bnd_cells.size();
 
-  CAMR_Mesh<3> mesh(9, md.num_active_cells, md.num_full_cells, ghost_size, dx, md.xyz_extents,
-                    md.cell_levels, md.num_across_face, md.cell_across_face,
-                    md.processor_boundary_cells, md.processor_boundary_procs, full2active.data(),
-                    active2full.data());
+  CAMR_Mesh<3> const mesh(9, md.num_active_cells, md.num_full_cells, ghost_size, dx, md.xyz_extents,
+                          md.cell_levels, md.num_across_face, md.cell_across_face,
+                          md.processor_boundary_cells, md.processor_boundary_procs,
+                          full2active.data(), active2full.data());
 
   // mesh.get_Layout().print(std::cout, 1);
 
@@ -776,7 +783,7 @@ void test_3D_amr_host2(rtt_c4::ParallelUnitTest &ut) {
   FAIL_IF(mesh != mesh);
   FAIL_IF_NOT(mesh.full_Mesh());
 
-  std::vector<double> sv = mesh.get_short_vertices(1);
+  std::vector<double> const sv = mesh.get_short_vertices(1);
 
   if (rtt_c4::node() == 0) {
     FAIL_IF_NOT(sv.size() == 4);

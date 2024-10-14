@@ -8,10 +8,17 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Hex_Mesh_Reader.hh"
-#include <algorithm>
+#include "dsxx/Assert.hh"
+#include "mesh_element/Element_Definition.hh"
+#include <climits> // UINT_MAX
+#include <cstddef> // size_t
 #include <fstream>
 #include <iostream>
+#include <map>
+#include <set>
 #include <sstream>
+#include <string>
+#include <vector>
 
 namespace rtt_meshReaders {
 
@@ -19,8 +26,7 @@ using rtt_mesh_element::Element_Definition;
 
 //------------------------------------------------------------------------------------------------//
 Hex_Mesh_Reader::Hex_Mesh_Reader(std::string const &filename)
-    : meshfile_name(filename), version("unknown"), npoints(0), ncells(0), nvrtx(0), nvrpf(0),
-      ndim(0), nvb_faces(0), nrb_faces(0), nmat(0), point_coords(), ipar(), imat_index(),
+    : meshfile_name(filename), version("unknown"), point_coords(), ipar(), imat_index(),
       irgn_vb_index(), ipar_vb(), ipar_rb(), node_sets() {
 
   // Open the mesh file for read.
@@ -216,7 +222,6 @@ std::map<std::string, std::set<unsigned>> Hex_Mesh_Reader::get_element_sets() co
   // done in the constructor. This would be more efficient if this is going to be used repetively.
   using resultT = std::map<std::string, std::set<unsigned>>;
   resultT result;
-  std::vector<int> tmp;
   std::set<int> rgn_index;
   std::set<unsigned> stmp;
 
@@ -305,10 +310,11 @@ bool Hex_Mesh_Reader::invariant() const {
 }
 
 bool Hex_Mesh_Reader::check_dims() const {
-  bool ldum = (npoints > 0) && (ncells > 0) &&
-              ((ndim == 3 && nvrtx == 8 && nvrpf == 4) || (ndim == 2 && nvrtx == 4 && nvrpf == 2) ||
-               (ndim == 1 && nvrtx == 2 && nvrpf == 1)) &&
-              nmat > 0;
+  bool const ldum =
+      (npoints > 0) && (ncells > 0) &&
+      ((ndim == 3 && nvrtx == 8 && nvrpf == 4) || (ndim == 2 && nvrtx == 4 && nvrpf == 2) ||
+       (ndim == 1 && nvrtx == 2 && nvrpf == 1)) &&
+      nmat > 0;
   return ldum;
 }
 
