@@ -23,8 +23,12 @@ using namespace rtt_dsxx;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
-static void ederivs(double /*x*/, const vector<double> &y, vector<double> &dydx) { dydx[0] = y[0]; }
+// Instead of declaring ederivs 'static', use an unnamed namespece to limit the scope to this file.
+namespace {
+void ederivs(double /*x*/, const vector<double> &y, vector<double> &dydx) { dydx[0] = y[0]; }
+} // namespace
 
+//------------------------------------------------------------------------------------------------//
 void tstrkqs(UnitTest &ut) {
   vector<double> y(1, 1.0);
   vector<double> dydx(1, 1.0);
@@ -41,7 +45,7 @@ void tstrkqs(UnitTest &ut) {
   y[0] = 1.0;
   dydx[0] = 1.0;
   x = 0.0;
-  vector<double> yscal(1, 1.0);
+  vector<double> const yscal(1, 1.0);
   double hdid, hnext;
   rkqs(y, dydx, x, 1.0, numeric_limits<double>::epsilon(), yscal, hdid, hnext, ederivs);
 

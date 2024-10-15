@@ -6,8 +6,14 @@
  * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/UnitTest.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
+#include <climits>
+#include <cstddef>
+#include <iostream>
 #include <parmetis.h>
 #include <sstream>
 #include <vector>
@@ -16,7 +22,11 @@
 
 void test_parmetis(rtt_c4::ParallelUnitTest &ut) {
   using std::cout;
-  using std::endl;
+
+  // Don't warn about missing MPI and Parmetis headers that define some macros and variables used
+  // here.
+
+  // NOLINTBEGIN(misc-include-cleaner)
 
   Insist(rtt_c4::nodes() == 3, "test_parmetis must be called with 3 MPI ranks exactly.");
 
@@ -94,9 +104,9 @@ void test_parmetis(rtt_c4::ParallelUnitTest &ut) {
   if (MPI_PROC_ID == 0)
     cout << "parmetis initialized." << '\n';
 
-  int result = ParMETIS_V3_PartKway(&vtxdist[0], &xadj[0], &adjncy[0], vwgt, adjwgt, &wgtflag,
-                                    &numflag, &ncon, &nparts, &tpwgts[0], &ubvec, &options[0],
-                                    &edgecut, &part[0], &rtt_c4::communicator);
+  int const result = ParMETIS_V3_PartKway(&vtxdist[0], &xadj[0], &adjncy[0], vwgt, adjwgt, &wgtflag,
+                                          &numflag, &ncon, &nparts, &tpwgts[0], &ubvec, &options[0],
+                                          &edgecut, &part[0], &rtt_c4::communicator);
 
   if (result == METIS_OK) {
     std::ostringstream msg;
@@ -109,14 +119,16 @@ void test_parmetis(rtt_c4::ParallelUnitTest &ut) {
   }
 
   if (MPI_PROC_ID == 0)
-    cout << "parmetis finalized." << endl;
+    cout << "parmetis finalized.\n";
 
   for (size_t pid = 0; pid < MPI_PROC_TOTAL_NUM; ++pid) {
     rtt_c4::global_barrier();
     cout << MPI_PROC_ID << " edgecut " << edgecut << '\n';
     for (int i = 0; i < 5; i++)
-      cout << "[" << MPI_PROC_ID << "] " << part[i] << endl;
+      cout << "[" << MPI_PROC_ID << "] " << part[i] << '\n';
   }
+
+  // NOLINTEND(misc-include-cleaner)
 
   return;
 }

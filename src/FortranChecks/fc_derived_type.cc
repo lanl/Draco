@@ -7,8 +7,8 @@
  * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "dsxx/config.h"
 #include <cmath>
+#include <cstdint> // int64_t
 #include <iostream>
 
 //! Define the derived type as a C structure
@@ -27,8 +27,7 @@ extern "C" void rtt_test_derived_type(const my_informative_type &mit, int &error
             << "\nint = " << mit.some_int << "\nlarge_int = " << mit.some_large_int
             << "\n*some_pointer[1] = " << *(mit.some_pointer)
             << "\n*some_pointer[2] = " << *(mit.some_pointer + 1)
-            << "\nsome_enum = " << mit.some_enum << "\n"
-            << std::endl;
+            << "\nsome_enum = " << mit.some_enum << "\n\n";
 
   error_code = 0;
 
