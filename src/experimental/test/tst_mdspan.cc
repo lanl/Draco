@@ -8,9 +8,14 @@
  * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+// NOLINTBEGIN(misc-include-cleaner)
+
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "experimental/mdspan"
+#include <array>
+#include <iostream>
 
 //------------------------------------------------------------------------------------------------//
 // Helper Classes.
@@ -71,7 +76,7 @@ void t1(rtt_dsxx::UnitTest &ut) {
   fill_in_order(b);
 
   FAIL_IF_NOT(dot_product(a, b) == 204);
-  std::cout << "dot product = " << dot_product(a, b) << std::endl;
+  std::cout << "dot product = " << dot_product(a, b) << '\n';
   if (ut.numFails == 0)
     PASSMSG("done with t1");
   return;
@@ -97,7 +102,7 @@ void t2(rtt_dsxx::UnitTest &ut) {
   fill_in_order(b);
 
   FAIL_IF_NOT(dot_product(a, b) == 204);
-  std::cout << "dot product = " << dot_product(a, b) << std::endl;
+  std::cout << "dot product = " << dot_product(a, b) << '\n';
   if (ut.numFails == 0)
     PASSMSG("done with t2");
   return;
@@ -112,6 +117,8 @@ int main(int argc, char *argv[]) {
   }
   UT_EPILOG(ut);
 }
+
+// NOLINTEND(misc-include-cleaner)
 
 //------------------------------------------------------------------------------------------------//
 // end of tst_mdspan.cc

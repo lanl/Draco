@@ -50,7 +50,7 @@ typename Function_Traits<Function>::return_type quad(Function func, double x1, d
 
   using Field = typename Function_Traits<Function>::return_type;
 
-  double x = x1;
+  double x = x1; // NOLINT(misc-const-correctness)
   double h = x2 - x1;
   vector<Field> y(1, Field(0.0));
   vector<Field> dydx(1);

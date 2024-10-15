@@ -8,8 +8,11 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "Element_Definition.hh"
-#include <algorithm>
-#include <iostream>
+#include "dsxx/Assert.hh"
+#include <cstddef> // size_t
+#include <ostream>
+#include <string>
+#include <vector>
 
 namespace rtt_mesh_element {
 
@@ -159,7 +162,7 @@ bool Element_Definition::invariant_satisfied() const {
   for (size_t i = 0; i < side_nodes.size(); i++) {
     ldum = ldum && (side_nodes[i].size() > 0);
     ldum = ldum && (side_nodes[i].size() == elem_defs[side_type[i]].number_of_nodes);
-    for (unsigned int side_node : side_nodes[i]) {
+    for (unsigned int const side_node : side_nodes[i]) {
       ldum = ldum && (side_node < number_of_nodes);
     }
   }
@@ -503,7 +506,7 @@ std::ostream &Element_Definition::print(std::ostream &os_out) const {
     for (unsigned j = 0; j < get_number_of_sides(); j++) {
       tmp = get_side_nodes(j);
       os_out << "  side# " << j << " -    ";
-      for (unsigned k : tmp)
+      for (unsigned const k : tmp)
         os_out << k << " ";
       os_out << "\n";
     }
@@ -520,7 +523,7 @@ std::ostream &Element_Definition::print(std::ostream &os_out) const {
       os_out << "\n";
     }
   }
-  os_out << std::endl;
+  os_out << '\n';
   return os_out;
 }
 

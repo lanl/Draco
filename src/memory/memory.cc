@@ -6,12 +6,16 @@
  * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "memory/memory.hh"
-#include "dsxx/Assert.hh"
+#include "memory.hh"
 #include "dsxx/StackTrace.hh"
+#include "dsxx/config.h"
+#include <cstdint> // uint64_t
 #include <iostream>
-#include <limits>
+#include <new> // std::set_new_handler
+
+#if DRACO_DIAGNOSTICS & 2
 #include <map>
+#endif
 
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -32,9 +36,11 @@
 namespace rtt_memory {
 using namespace std;
 
-static uint64_t total;
-static uint64_t peak;
-static uint64_t largest;
+namespace {
+uint64_t total;
+uint64_t peak;
+uint64_t largest;
+} // namespace
 
 #if DRACO_DIAGNOSTICS & 2
 
@@ -57,7 +63,9 @@ static uint64_t report_threshold = numeric_limits<uint64_t>::max();
 
 #endif
 
-static bool is_active = false;
+namespace {
+bool is_active = false;
+} // namespace
 
 #if DRACO_DIAGNOSTICS & 2
 
@@ -98,7 +106,7 @@ struct memory_diagnostics {
 
 //------------------------------------------------------------------------------------------------//
 bool set_memory_checking(bool new_status) {
-  bool Result = is_active;
+  bool const Result = is_active;
 
 #if DRACO_DIAGNOSTICS & 2
   total = 0;
@@ -142,11 +150,11 @@ void report_leaks(ostream &out) {
       map<void *, alloc_t>::const_iterator i;
       for (i = st.alloc_map.begin(); i != st.alloc_map.end(); ++i) {
         out << i->second.size << " bytes allocated at address " << i->first << " as allocation "
-            << i->second.count << " of this size" << endl;
+            << i->second.count << " of this size\n";
       }
     }
 #else
-    out << "No leak report available." << endl;
+    out << "No leak report available.\n";
 #endif
   }
 }

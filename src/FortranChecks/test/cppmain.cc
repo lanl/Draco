@@ -9,6 +9,8 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
+#include <cstddef>
 #include <iostream>
 
 //------------------------------------------------------------------------------------------------//
@@ -17,14 +19,14 @@ extern "C" void sub1(double alpha, size_t *numPass, size_t *numFail);
 
 //------------------------------------------------------------------------------------------------//
 void test_isocbinding_sub1(rtt_dsxx::UnitTest &ut) {
-  double alpha = 1.0;
+  double const alpha = 1.0;
   size_t np(ut.numPasses);
   size_t nf(ut.numFails);
   // Call fortran subroutine
   sub1(alpha, &np, &nf);
   ut.numPasses = static_cast<unsigned>(np);
   ut.numFails = static_cast<unsigned>(nf);
-  std::cout << ut.numPasses << " " << ut.numFails << std::endl;
+  std::cout << ut.numPasses << " " << ut.numFails << '\n';
   return;
 }
 

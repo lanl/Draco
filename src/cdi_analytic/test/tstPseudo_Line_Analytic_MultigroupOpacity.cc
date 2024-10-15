@@ -25,21 +25,17 @@ using namespace std;
 using namespace rtt_dsxx;
 using namespace rtt_cdi_analytic;
 using namespace rtt_parser;
+using PLAMO = Pseudo_Line_Analytic_MultigroupOpacity;
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
-Pseudo_Line_Analytic_MultigroupOpacity::Averaging const NONE =
-    Pseudo_Line_Analytic_MultigroupOpacity::NONE;
+PLAMO::Averaging const NONE = PLAMO::NONE;
+PLAMO::Averaging const ROSSELAND = PLAMO::ROSSELAND;
+PLAMO::Averaging const PLANCK = PLAMO::PLANCK;
 
-Pseudo_Line_Analytic_MultigroupOpacity::Averaging const ROSSELAND =
-    Pseudo_Line_Analytic_MultigroupOpacity::ROSSELAND;
-
-Pseudo_Line_Analytic_MultigroupOpacity::Averaging const PLANCK =
-    Pseudo_Line_Analytic_MultigroupOpacity::PLANCK;
-
-void tstPseudo_Line_Analytic_MultigroupOpacity(UnitTest &ut) {
+void tstPLAMO(UnitTest &ut) {
   unsigned const NG = 12288; // 10;
   int const number_of_lines = 20;
   int const number_of_edges = 10;
@@ -68,9 +64,8 @@ void tstPseudo_Line_Analytic_MultigroupOpacity(UnitTest &ut) {
   }
 
   {
-    Pseudo_Line_Analytic_MultigroupOpacity const model(
-        group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width, number_of_edges,
-        edge_ratio, Tref, Tpow, emin, emax, NONE, 0, seed);
+    PLAMO const model(group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width,
+                      number_of_edges, edge_ratio, Tref, Tpow, emin, emax, NONE, 0, seed);
 
     PASSMSG("Created Pseudo_Line_Analytic_MultigroupOpacity");
 
@@ -85,9 +80,8 @@ void tstPseudo_Line_Analytic_MultigroupOpacity(UnitTest &ut) {
   }
 
   {
-    Pseudo_Line_Analytic_MultigroupOpacity const model(
-        group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width, number_of_edges,
-        edge_ratio, Tref, Tpow, emin, emax, ROSSELAND, 0, seed);
+    PLAMO const model(group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width,
+                      number_of_edges, edge_ratio, Tref, Tpow, emin, emax, ROSSELAND, 0, seed);
 
     PASSMSG("Created Pseudo_Line_Analytic_MultigroupOpacity");
 
@@ -102,9 +96,8 @@ void tstPseudo_Line_Analytic_MultigroupOpacity(UnitTest &ut) {
   }
 
   {
-    Pseudo_Line_Analytic_MultigroupOpacity const model(
-        group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width, number_of_edges,
-        edge_ratio, Tref, Tpow, emin, emax, PLANCK, 0, seed);
+    PLAMO const model(group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width,
+                      number_of_edges, edge_ratio, Tref, Tpow, emin, emax, PLANCK, 0, seed);
 
     PASSMSG("Created Pseudo_Line_Analytic_MultigroupOpacity");
 
@@ -119,9 +112,8 @@ void tstPseudo_Line_Analytic_MultigroupOpacity(UnitTest &ut) {
   }
 
   {
-    Pseudo_Line_Analytic_MultigroupOpacity const model(
-        group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width, number_of_edges,
-        edge_ratio, Tref, Tpow, emin, emax, ROSSELAND, 1, seed);
+    PLAMO const model(group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width,
+                      number_of_edges, edge_ratio, Tref, Tpow, emin, emax, ROSSELAND, 1, seed);
 
     PASSMSG("Created Pseudo_Line_Analytic_MultigroupOpacity");
 
@@ -136,9 +128,8 @@ void tstPseudo_Line_Analytic_MultigroupOpacity(UnitTest &ut) {
   }
 
   {
-    Pseudo_Line_Analytic_MultigroupOpacity const model(
-        group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width, number_of_edges,
-        edge_ratio, Tref, Tpow, emin, emax, PLANCK, 1, seed);
+    PLAMO const model(group_bounds, rtt_cdi::ABSORPTION, continuum, number_of_lines, peak, width,
+                      number_of_edges, edge_ratio, Tref, Tpow, emin, emax, PLANCK, 1, seed);
 
     PASSMSG("Created Pseudo_Line_Analytic_MultigroupOpacity");
 
@@ -157,7 +148,7 @@ void tstPseudo_Line_Analytic_MultigroupOpacity(UnitTest &ut) {
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, release);
   try {
-    tstPseudo_Line_Analytic_MultigroupOpacity(ut);
+    tstPLAMO(ut);
   }
   UT_EPILOG(ut);
 }

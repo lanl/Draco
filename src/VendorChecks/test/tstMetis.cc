@@ -20,7 +20,10 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include <array>
+#include <cstdint> // int32_t
+#include <iostream>
 #include <vector>
 
 // Original provided by Erik Zenker, https://gist.github.com/erikzenker/c4dc42c8d5a8c1cd3e5a
@@ -49,19 +52,17 @@ void test_metis(rtt_dsxx::UnitTest &ut) {
   // index:         0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13, 14,15,16,17
   std::array<idx_t, 18> adjncy = {4, 4, 4, 4, 0, 1, 2, 3, 5, 4, 6, 7, 8, 9, 5, 5, 5, 5};
 
-  // Weights of vertices: if all weights are equal then can be set to NULL
-  std::vector<idx_t> vwgt(nVertices * nWeights, 0);
-
   // Partition a graph into k parts using either multilevel recursive bisection or multilevel k-way
   // partitioning.
-  int ret = METIS_PartGraphKway(&nVertices, &nWeights, xadj.data(), adjncy.data(), nullptr, nullptr,
-                                nullptr, &nParts, nullptr, nullptr, nullptr, &objval, &part[0]);
+  int const ret =
+      METIS_PartGraphKway(&nVertices, &nWeights, xadj.data(), adjncy.data(), nullptr, nullptr,
+                          nullptr, &nParts, nullptr, nullptr, nullptr, &objval, &part[0]);
 
   std::cout << "partition: ";
   for (int32_t i = 0; i < nVertices; ++i) {
     std::cout << part[i] << " ";
   }
-  std::cout << std::endl;
+  std::cout << '\n';
 
   if (ret == METIS_OK)
     PASSMSG("Successfully called METIS_PartGraphKway().");
@@ -70,9 +71,9 @@ void test_metis(rtt_dsxx::UnitTest &ut) {
 
   std::array<int, 10> expectedResult = {1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
   std::array<int, 10> mirrorExpectedResult = {0, 0, 0, 0, 0, 1, 1, 1, 1, 1};
-  std::vector<idx_t> vExpectedResult(expectedResult.begin(), expectedResult.end());
-  std::vector<idx_t> vMirrorExpectedResult(mirrorExpectedResult.begin(),
-                                           mirrorExpectedResult.end());
+  std::vector<idx_t> const vExpectedResult(expectedResult.begin(), expectedResult.end());
+  std::vector<idx_t> const vMirrorExpectedResult(mirrorExpectedResult.begin(),
+                                                 mirrorExpectedResult.end());
   if (part == vExpectedResult || part == vMirrorExpectedResult)
     PASSMSG("Metis returned the expected result.");
   else

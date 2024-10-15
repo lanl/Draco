@@ -8,8 +8,14 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
+#include "dsxx/config.h"
 #include "memory/memory.hh"
-#include <sstream>
+#include <cstddef>  // size_t
+#include <iostream> // cerr
+#include <limits>
+#include <new> // bad_alloc, set_new_handler
+#include <vector>
 
 using namespace std;
 using namespace rtt_memory;
@@ -131,14 +137,14 @@ void tst_memory(rtt_dsxx::UnitTest &ut) {
 void tst_bad_alloc(rtt_dsxx::UnitTest &ut) {
   size_t const num_fails_start(ut.numFails);
 
-  std::cout << "\nTesting special handler (stack trace) for std::bad_alloc...\n" << std::endl;
+  std::cout << "\nTesting special handler (stack trace) for std::bad_alloc...\n\n";
 
   // Set a specialized memory handler.
   std::set_new_handler(rtt_memory::out_of_memory_handler);
 
   try {
     // trigger a std::bad_alloc exception
-    std::cout << "Attempt to allocate some memory." << std::endl;
+    std::cout << "Attempt to allocate some memory.\n";
 
     char *pBigArray = new char[get_really_big_size_t()];
 
@@ -146,12 +152,12 @@ void tst_bad_alloc(rtt_dsxx::UnitTest &ut) {
     {
       pBigArray[0] = 'a';
       std::cout << "pBigArray[0] = " << pBigArray[0]
-                << "\ntotal_allocation = " << total_allocation() << std::endl;
+                << "\ntotal_allocation = " << total_allocation() << '\n';
     }
 
     delete[] pBigArray;
   } catch (std::bad_alloc & /*error*/) {
-    std::cout << "Successfully caught an expected std::bad_alloc exception." << std::endl;
+    std::cout << "Successfully caught an expected std::bad_alloc exception.\n";
   } catch (...) {
     FAILMSG("Failed to catch a bad_alloc.");
   }
