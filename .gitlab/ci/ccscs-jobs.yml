@@ -47,9 +47,7 @@ ccs1_clangtidy:
 #--------------------------------------------------------------------------------------------------#
 
 .ccscs_deploy:
-  id_tokens:
-    CI_JOB_JWT:
-      aud: https://re-git.lanl.gov
+  extends: .ccscs
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
@@ -250,6 +248,7 @@ ccs5_deb_llvm12_deploy:
 #--------------------------------------------------------------------------------------------------#
 
 .ccscs_deploy_release:
+  extends: .ccscs
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
