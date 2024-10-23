@@ -7,12 +7,29 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature_test.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
+#include "mesh_element/Geometry.hh"
 #include "parser/String_Token_Stream.hh"
 #include "parser/utilities.hh"
-#include <iomanip>
+#include "quadrature/Moment.hh"
+#include "quadrature/Ordinate.hh"
+#include "quadrature/Ordinate_Set.hh"
+#include "quadrature/Ordinate_Space.hh"
+#include "quadrature/QIM.hh"
+#include "quadrature/Quadrature.hh"
+#include "quadrature/Quadrature_Class.hh"
+#include "quadrature/Quadrature_Interface.hh"
+#include <algorithm>
+#include <array>
+#include <climits>
+#include <cmath>
+#include <cstddef>
 #include <iostream>
-#include <numeric>
+#include <memory>
 #include <string>
+#include <vector>
 
 namespace rtt_quadrature {
 using namespace std;
@@ -42,8 +59,10 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
     FAIL_IF(ordinate_space->bookkeeping_coefficient(
                 static_cast<unsigned>(number_of_ordinates - 1)) <= 0.0);
 
-    double pc = ordinate_space->psi_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
-    double os = ordinate_space->source_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
+    double const pc =
+        ordinate_space->psi_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
+    double const os =
+        ordinate_space->source_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
     FAIL_IF(std::abs(pc) > 1.0e-12);
     FAIL_IF(os > -1.0);
     // check that throws no exception
@@ -53,12 +72,14 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
     FAIL_IF(ordinate_space->bookkeeping_coefficient(
                 static_cast<unsigned>(number_of_ordinates - 1)) <= 0.0);
 
-    double pc = ordinate_space->psi_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
-    double os = ordinate_space->source_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
+    double const pc =
+        ordinate_space->psi_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
+    double const os =
+        ordinate_space->source_coefficient(static_cast<unsigned>(number_of_ordinates - 1));
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(pc, 0.0));
     FAIL_IF(os > -0.1);
-    std::cout << "==> pc = " << pc << std::endl;
-    std::cout << "==> os = " << os << std::endl;
+    std::cout << "==> pc = " << pc << '\n';
+    std::cout << "==> os = " << os << '\n';
 
     // check that throws no exception
 
@@ -133,8 +154,8 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
 
   // See if count matches class
 
-  unsigned L = quadrature.number_of_levels();
-  size_t Num = ordinate_space->ordinates().size();
+  unsigned const L = quadrature.number_of_levels();
+  size_t const Num = ordinate_space->ordinates().size();
   switch (quadrature.quadrature_class()) {
   case TRIANGLE_QUADRATURE:
     if (dimension == 1) {
@@ -194,7 +215,7 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
     vector<double> M = ordinate_space->M();
     vector<double> D = ordinate_space->D();
 
-    unsigned number_of_moments = ordinate_space->number_of_moments();
+    unsigned const number_of_moments = ordinate_space->number_of_moments();
 
     FAIL_IF_NOT(M.size() == number_of_moments * number_of_ordinates);
     FAIL_IF_NOT(D.size() == number_of_moments * number_of_ordinates);
@@ -256,7 +277,7 @@ void test_no_axis(UnitTest &ut, Quadrature &quadrature, unsigned const dimension
 
   // Build an angle operator
 
-  std::shared_ptr<Ordinate_Space> ordinate_space = quadrature.create_ordinate_space(
+  std::shared_ptr<Ordinate_Space> const ordinate_space = quadrature.create_ordinate_space(
       dimension, geometry, expansion_order, add_extra_directions, ordering, qim);
 
   test_either(ut, ordinate_space, quadrature, expansion_order);
@@ -276,7 +297,7 @@ void test_axis(UnitTest &ut, Quadrature &quadrature, unsigned const dimension,
 
   // Build an angle operator
 
-  std::shared_ptr<Ordinate_Space> ordinate_space = quadrature.create_ordinate_space(
+  std::shared_ptr<Ordinate_Space> const ordinate_space = quadrature.create_ordinate_space(
       dimension, geometry, expansion_order, mu_axis, eta_axis, add_extra_directions, ordering, qim);
 
   test_either(ut, ordinate_space, quadrature, expansion_order);
@@ -287,7 +308,7 @@ void quadrature_integration_test(UnitTest & /*ut*/, Quadrature &quadrature) {
 
   if (quadrature.quadrature_class() != INTERVAL_QUADRATURE) {
     // Build an ordinate set
-    std::shared_ptr<Ordinate_Set> ordinate_set =
+    std::shared_ptr<Ordinate_Set> const ordinate_set =
         quadrature.create_ordinate_set(3U, // dimension
                                        rtt_mesh_element::Geometry::CARTESIAN,
                                        1.0,   // norm,
@@ -303,7 +324,7 @@ void quadrature_integration_test(UnitTest & /*ut*/, Quadrature &quadrature) {
     double test_int4 = 0.0;
     double test_int2 = 0.0;
 
-    std::cout << "Testing S-" << quadrature.sn_order() << " quadrature integration" << std::endl;
+    std::cout << "Testing S-" << quadrature.sn_order() << " quadrature integration\n";
 
     for (unsigned i = 0; i < Num; ++i) {
 
@@ -325,31 +346,31 @@ void quadrature_integration_test(UnitTest & /*ut*/, Quadrature &quadrature) {
       }
     }
     std::cout << " test int (2) = " << test_int2 << "( " << test_int2 * 4 * 3.1415926535897932384
-              << " )" << std::endl;
+              << " )\n";
     std::cout << " test int (4) = " << test_int4 << "( " << test_int4 * 4 * 3.1415926535897932384
-              << " )" << std::endl;
+              << " )\n";
     std::cout << " test int (6) = " << test_int6 << "( " << test_int6 * 4 * 3.1415926535897932384
-              << " )" << std::endl;
+              << " )\n";
     std::cout << " test int (8) = " << test_int8 << "( " << test_int8 * 4 * 3.1415926535897932384
-              << " )" << std::endl;
+              << " )\n";
   }
 }
 
 //------------------------------------------------------------------------------------------------//
 void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_tests_only) {
   cout << "Testing quadrature " << quadrature.name()
-       << "\n  Parse name: " << quadrature.parse_name() << endl;
+       << "\n  Parse name: " << quadrature.parse_name() << '\n';
   switch (quadrature.quadrature_class()) {
   case INTERVAL_QUADRATURE:
-    cout << "  This is an interval quadrature." << endl;
+    cout << "  This is an interval quadrature.\n";
     break;
 
   case TRIANGLE_QUADRATURE:
-    cout << "  This is a triangle quadrature." << endl;
+    cout << "  This is a triangle quadrature.\n";
     {
-      unsigned L = quadrature.number_of_levels();
+      unsigned const L = quadrature.number_of_levels();
       if (L) {
-        cout << "  Number of level sets = " << L << endl;
+        cout << "  Number of level sets = " << L << '\n';
       } else {
         FAILMSG("no level sets are defined.");
       }
@@ -357,11 +378,11 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
     break;
 
   case SQUARE_QUADRATURE:
-    cout << "  This is a square quadrature." << endl;
+    cout << "  This is a square quadrature.\n";
     {
-      unsigned L = quadrature.number_of_levels();
+      unsigned const L = quadrature.number_of_levels();
       if (L) {
-        cout << "  Number of level sets = " << L << endl;
+        cout << "  Number of level sets = " << L << '\n';
       } else {
         FAILMSG("no level sets are defined.");
       }
@@ -369,11 +390,11 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
     break;
 
   case OCTANT_QUADRATURE:
-    cout << "  This is an octant quadrature." << endl;
+    cout << "  This is an octant quadrature.\n";
     if (quadrature.number_of_levels()) {
-      cout << "  Number of level sets = " << quadrature.number_of_levels() << endl;
+      cout << "  Number of level sets = " << quadrature.number_of_levels() << '\n';
     } else {
-      cout << "  No level sets are defined." << endl;
+      cout << "  No level sets are defined.\n";
     }
     break;
 
@@ -408,15 +429,15 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
   // Test textifying and parsing.
 
-  string text = quadrature.as_text("\n");
+  string const text = quadrature.as_text("\n");
   String_Token_Stream tokens(text);
-  std::shared_ptr<Quadrature> parsed_quadrature = parse_class<Quadrature>(tokens);
+  std::shared_ptr<Quadrature> const parsed_quadrature = parse_class<Quadrature>(tokens);
 
   if (tokens.error_count()) {
     FAILMSG("Textification and parse did NOT succeed");
   }
 
-  string text2 = parsed_quadrature->as_text("\n");
+  string const text2 = parsed_quadrature->as_text("\n");
   if (text2 != text) {
     FAILMSG("Textification and parse did NOT give identical results");
   }
@@ -429,7 +450,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 
     // Build an ordinate set
 
-    std::shared_ptr<Ordinate_Set> ordinate_set =
+    std::shared_ptr<Ordinate_Set> const ordinate_set =
         quadrature.create_ordinate_set(1U, // dimension
                                        rtt_mesh_element::Geometry::CARTESIAN,
                                        1.0,   // norm,
@@ -506,7 +527,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
   {
     // Build an ordinate set
 
-    std::shared_ptr<Ordinate_Set> ordinate_set =
+    std::shared_ptr<Ordinate_Set> const ordinate_set =
         quadrature.create_ordinate_set(3U, // dimension
                                        rtt_mesh_element::Geometry::CARTESIAN,
                                        1.0,   // norm,
@@ -594,19 +615,18 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 extern "C" void rtt_test_quadrature_interfaces(const quadrature_data &quad, int &error_code) {
   using rtt_dsxx::soft_equiv;
   using std::cout;
-  using std::endl;
 
-  cout << "In C++, checking validity of quadrature_data..." << endl;
+  cout << "In C++, checking validity of quadrature_data...\n";
   check_quadrature_validity(quad);
-  cout << "If we got here, it should be valid." << endl << endl;
+  cout << "If we got here, it should be valid.\n\n";
 
-  cout << "The quadrature_data type has dimension " << quad.dimension << endl
-       << "The type is \t" << quad.type << endl
-       << "The order is \t" << quad.order << endl
-       << "The geometry is\t" << quad.geometry << endl
+  cout << "The quadrature_data type has dimension " << quad.dimension << '\n'
+       << "The type is \t" << quad.type << '\n'
+       << "The order is \t" << quad.order << '\n'
+       << "The geometry is\t" << quad.geometry << '\n'
        << "The first ordinate is " << quad.mu[0] << "\t" << quad.eta[0] << "\t" << quad.xi[0]
-       << "\t" << quad.weights[0] << endl
-       << endl;
+       << "\t" << quad.weights[0] << '\n'
+       << '\n';
 
   // Error checking
   error_code = 0;
@@ -625,15 +645,15 @@ extern "C" void rtt_test_quadrature_interfaces(const quadrature_data &quad, int 
     return;
   }
 
-  double tcl_mu[12] = {-0.3598878562, 0.3598878562, -0.8688461434, 0.8688461434,
-                       -0.3594747925, 0.3594747925, -0.3594747925, 0.3594747925,
-                       -0.8688461434, 0.8688461434, -0.3598878562, 0.3598878562};
-  double tcl_eta[12] = {-0.8688461434, -0.8688461434, -0.3598878562, -0.3598878562,
-                        -0.3594747925, -0.3594747925, 0.3594747925,  0.3594747925,
-                        0.3598878562,  0.3598878562,  0.8688461434,  0.8688461434};
-  double tcl_wt[12] = {0.08151814436, 0.08151814436, 0.08151814436, 0.08151814436,
-                       0.08696371128, 0.08696371128, 0.08696371128, 0.08696371128,
-                       0.08151814436, 0.08151814436, 0.08151814436, 0.08151814436};
+  double const tcl_mu[12] = {-0.3598878562, 0.3598878562, -0.8688461434, 0.8688461434,
+                             -0.3594747925, 0.3594747925, -0.3594747925, 0.3594747925,
+                             -0.8688461434, 0.8688461434, -0.3598878562, 0.3598878562};
+  double const tcl_eta[12] = {-0.8688461434, -0.8688461434, -0.3598878562, -0.3598878562,
+                              -0.3594747925, -0.3594747925, 0.3594747925,  0.3594747925,
+                              0.3598878562,  0.3598878562,  0.8688461434,  0.8688461434};
+  double const tcl_wt[12] = {0.08151814436, 0.08151814436, 0.08151814436, 0.08151814436,
+                             0.08696371128, 0.08696371128, 0.08696371128, 0.08696371128,
+                             0.08151814436, 0.08151814436, 0.08151814436, 0.08151814436};
 
   for (size_t i = 0; i < 12; ++i) {
     if (!soft_equiv(tcl_mu[i], quad.mu[i], 1e-8))
