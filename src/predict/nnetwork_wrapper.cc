@@ -3,10 +3,13 @@
  * \file   predict/nnetwork_wrapper.cc
  * \author Mathew Cleveland
  * \brief Definition of the neural network backend to enable build specific implementations.
- * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "nnetwork_wrapper.hh"
+#include <cstddef>
+#include <string>
+#include <vector>
 
 namespace rtt_predict {
 

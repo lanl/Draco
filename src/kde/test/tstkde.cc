@@ -8,34 +8,42 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "kde/kde.hh"
 #include "kde/quick_index.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
+#include <array>
+#include <cmath>
+#include <cstddef>
 #include <numeric>
+#include <vector>
 
 using namespace rtt_dsxx;
 using namespace rtt_c4;
 using namespace rtt_kde;
+
+// cSpell:ignore hicpp, epan, qindex, tstkde, ITFAILS
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
 //
 void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
-  kde test_kde;
+  kde const test_kde;
 
   // test the epan kernel
-  double value = test_kde.epan_kernel(0.0);
-  if (!rtt_dsxx::soft_equiv(value, 0.75))
-    ITFAILS;
+  double const value = test_kde.epan_kernel(0.0);
+  FAIL_IF_NOT(rtt_dsxx::soft_equiv(value, 0.75));
 
   // spherical reconstruction
   {
     const bool spherical = true;
     const std::array<double, 3> sphere_center{0.0, -1.0, 0.0};
-    kde sphere_kde;
+    kde const sphere_kde;
     // reflect on the theta boundary
-    kde theta_reflected_sphere_kde({false, false, true, true, false, false});
+    kde const theta_reflected_sphere_kde({false, false, true, true, false, false});
     const std::array<double, 8> radial_edges{0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0};
     const std::array<double, 9> cosine_edges{-1.0, -0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75, 1.0};
     const size_t data_size = radial_edges.size() * cosine_edges.size();
@@ -45,7 +53,7 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     std::vector<double> shell_data(data_size, 0.0);
     std::vector<double> spoke_data(data_size, 0.0);
-    std::vector<double> const_data(data_size, 1.0);
+    std::vector<double> const const_data(data_size, 1.0);
     std::vector<double> shell_weights(data_size, 0.0);
     size_t point_i = 0;
     size_t ri = 0;
@@ -58,7 +66,7 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
           shell_weights[point_i] = 1e3;
         else
           shell_weights[point_i] = 1.0;
-        double rel_y = r * mu;
+        double const rel_y = r * mu;
         position_array[point_i][0] =
             rtt_dsxx::soft_equiv(r * r, rel_y * rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
         position_array[point_i][1] = sphere_center[1] + rel_y;
@@ -68,23 +76,22 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       }
       ri++;
     }
-
     // zero reconstruction array
     {
       std::vector<double> zero_data(data_size, 0.0);
       // R-theta space bandwidths in spherical reconstruction
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           data_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
       const bool dd = false;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, delta_array, max_window_size, n_coarse_bins, dd,
-                         spherical, sphere_center);
+      quick_index const qindex(dim, position_array, delta_array, max_window_size, n_coarse_bins, dd,
+                               spherical, sphere_center);
 
-      std::vector<int> maskids(1, 1);
-      std::vector<int> reconstruction_mask(data_size, 1);
+      std::vector<int> const maskids(1, 1);
+      std::vector<int> const reconstruction_mask(data_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           zero_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
@@ -101,41 +108,36 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], zero_data[i]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], zero_data[i]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(sampled_smooth_result[i], zero_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], zero_data[i]));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], zero_data[i]));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(sampled_smooth_result[i], zero_data[i]));
       }
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(std::accumulate(zero_data.begin(), zero_data.end(), 0.0),
-                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(
-              std::accumulate(zero_data.begin(), zero_data.end(), 0.0),
-              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(
-              std::accumulate(zero_data.begin(), zero_data.end(), 0.0),
-              std::accumulate(sampled_smooth_result.begin(), sampled_smooth_result.end(), 0.0)))
-        ITFAILS;
+      FAIL_IF_NOT(
+          rtt_dsxx::soft_equiv(std::accumulate(zero_data.begin(), zero_data.end(), 0.0),
+                               std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+          std::accumulate(zero_data.begin(), zero_data.end(), 0.0),
+          std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+          std::accumulate(zero_data.begin(), zero_data.end(), 0.0),
+          std::accumulate(sampled_smooth_result.begin(), sampled_smooth_result.end(), 0.0)));
     }
     // spoke reconstruction array
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           data_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
       const bool dd = false;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                               sphere_center);
 
-      std::vector<int> maskids(1, 1);
-      std::vector<int> reconstruction_mask(data_size, 1);
+      std::vector<int> const maskids(1, 1);
+      std::vector<int> const reconstruction_mask(data_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
@@ -148,36 +150,33 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], spoke_data[i]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], spoke_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], spoke_data[i]));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], spoke_data[i]));
       }
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
-                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(
-              std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
-              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-        ITFAILS;
+      FAIL_IF_NOT(
+          rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                               std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+          std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+          std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
     }
 
     // shell reconstruction array
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           data_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
       const bool dd = false;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                               sphere_center);
 
-      std::vector<int> maskids(1, 1);
-      std::vector<int> reconstruction_mask(data_size, 1);
+      std::vector<int> const maskids(1, 1);
+      std::vector<int> const reconstruction_mask(data_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
@@ -190,20 +189,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], shell_data[i]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], shell_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], shell_data[i]));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], shell_data[i]));
       }
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
-                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(
-              std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
-              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-        ITFAILS;
+      FAIL_IF_NOT(
+          rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+                               std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+          std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+          std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
     }
 
     // spoke smoothing on shell array
@@ -218,18 +214,18 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
           4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528, 4.67528,
           5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495, 5.21495,
           6.41471, 6.41472, 6.41472, 6.41472, 6.41471, 6.41471, 6.41471, 6.41471, 6.41471};
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           data_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
       const bool dd = false;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                               sphere_center);
 
-      std::vector<int> maskids(1, 1);
-      std::vector<int> reconstruction_mask(data_size, 1);
+      std::vector<int> const maskids(1, 1);
+      std::vector<int> const reconstruction_mask(data_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = sphere_kde.reconstruction(
@@ -242,20 +238,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], spoke_smoothed_shells[i], 1e-3))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], spoke_smoothed_shells[i], 1e-3))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], spoke_smoothed_shells[i], 1e-3));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], spoke_smoothed_shells[i], 1e-3));
       }
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
-                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(
-              std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
-              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-        ITFAILS;
+      FAIL_IF_NOT(
+          rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+                               std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+          std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+          std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
     }
 
     // spoke smoothing on shell array with weights
@@ -271,18 +264,18 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
           6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379, 6.41379,
           6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621,
           6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8};
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           data_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
       const bool dd = false;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                               sphere_center);
 
-      std::vector<int> maskids(1, 1);
-      std::vector<int> reconstruction_mask(data_size, 1);
+      std::vector<int> const maskids(1, 1);
+      std::vector<int> const reconstruction_mask(data_size, 1);
       std::vector<double> smooth_result = sphere_kde.weighted_reconstruction(
           shell_data, shell_weights, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
@@ -291,14 +284,14 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], spoke_weighted_smoothed_shells[i], 1e-3))
-          ITFAILS;
+        FAIL_IF_NOT(
+            rtt_dsxx::soft_equiv(smooth_result[i], spoke_weighted_smoothed_shells[i], 1e-3));
       }
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
-                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-        ITFAILS;
+      FAIL_IF_NOT(
+          rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+                               std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
     }
 
     // shell smoothing on spoke array
@@ -312,18 +305,18 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
           1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675,
           1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675,
           1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675};
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           data_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
       const bool dd = false;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                               sphere_center);
 
-      std::vector<int> maskids(1, 1);
-      std::vector<int> reconstruction_mask(data_size, 1);
+      std::vector<int> const maskids(1, 1);
+      std::vector<int> const reconstruction_mask(data_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = sphere_kde.reconstruction(
@@ -336,20 +329,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], shell_smoothed_spoke[i], 1e-3))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], shell_smoothed_spoke[i], 1e-3))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], shell_smoothed_spoke[i], 1e-3));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], shell_smoothed_spoke[i], 1e-3));
       }
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
-                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(
-              std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
-              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-        ITFAILS;
+      FAIL_IF_NOT(
+          rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                               std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+          std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+          std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
     }
 
     // shell smoothing on spoke array with mask over inner sphere points
@@ -363,22 +353,22 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
           1.0,     2.0,     3.0,     4.0,     5, 6.0,     7.0,     8.0,     9.0,
           1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675,
           1.32325, 2.77318, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.22682, 8.67675};
-      std::vector<int> shell_mask{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                  2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+      std::vector<int> const shell_mask{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           data_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
       const bool dd = false;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                               sphere_center);
 
-      std::vector<int> maskids = {1, 2};
+      std::vector<int> const maskids = {1, 2};
       std::vector<double> smooth_result =
           sphere_kde.reconstruction(spoke_data, shell_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result =
@@ -391,20 +381,18 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], masked_shell_smoothed_spoke[i], 1e-3))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], masked_shell_smoothed_spoke[i], 1e-3))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], masked_shell_smoothed_spoke[i], 1e-3));
+        FAIL_IF_NOT(
+            rtt_dsxx::soft_equiv(log_smooth_result[i], masked_shell_smoothed_spoke[i], 1e-3));
       }
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
-                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(
-              std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
-              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-        ITFAILS;
+      FAIL_IF_NOT(
+          rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                               std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+          std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+          std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
     }
 
     // shell smoothing on spoke array with theta reflection
@@ -418,18 +406,18 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
           1.32325, 2.5489, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.4511, 8.67675,
           1.32325, 2.5489, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.4511, 8.67675,
           1.32325, 2.5489, 3.67834, 4.30104, 5, 5.69896, 6.32166, 7.4511, 8.67675};
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           data_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
       const bool dd = false;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd, spherical,
+                               sphere_center);
 
-      std::vector<int> maskids = {1};
-      std::vector<int> reconstruction_mask(data_size, 1);
+      std::vector<int> const maskids = {1};
+      std::vector<int> const reconstruction_mask(data_size, 1);
       std::vector<double> smooth_result = theta_reflected_sphere_kde.reconstruction(
           spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = theta_reflected_sphere_kde.reconstruction(
@@ -442,20 +430,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < data_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], shell_smoothed_spoke[i], 1e-3))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], shell_smoothed_spoke[i], 1e-3))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], shell_smoothed_spoke[i], 1e-3));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], shell_smoothed_spoke[i], 1e-3));
       }
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
-                                std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(
-              std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
-              std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-        ITFAILS;
+      FAIL_IF_NOT(
+          rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                               std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+          std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+          std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
     }
   }
 
@@ -467,17 +452,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.1, 0.0, 0.0});
     const bool dd = false;
     // two bins per point
     const size_t n_coarse_bins = 5;
     const double max_window_size = 0.1;
     const size_t dim = 1;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -490,20 +475,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.1))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.1))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], 0.1));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], 0.1));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
   // 2D No mean reconstruction because of small basis functions
@@ -514,17 +496,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.1, 1.0 / 0.1, 0.0});
     const bool dd = false;
     // two bins per point
     const size_t n_coarse_bins = 5;
     const double max_window_size = 0.1;
     const size_t dim = 2;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -537,20 +519,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.1))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.1))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], 0.1));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], 0.1));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
   // "Smoothed" reconstruction.
@@ -561,16 +540,16 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 0.0, 0.0});
     const bool dd = false;
     // one bin per point
     const size_t n_coarse_bins = 10;
     const double max_window_size = 4.0;
     const size_t dim = 1;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -583,20 +562,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.1, 1e-1))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.1, 1e-1))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], 0.1, 1e-1));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], 0.1, 1e-1));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
   // 2D "Smoothed" reconstruction.
@@ -607,16 +583,16 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 1.0 / 4.0, 0.0});
     const bool dd = false;
     // one bin per point
     const size_t n_coarse_bins = 10;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -629,20 +605,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.1, 1e-1))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.1, 1e-1))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], 0.1, 1e-1));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], 0.1, 1e-1));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
   // No reconstruction because of small basis functions
@@ -653,16 +626,16 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.1, 0.0, 0.0});
     const bool dd = false;
     // 2X bin per point
     const size_t n_coarse_bins = 20;
     const double max_window_size = 0.1;
     const size_t dim = 1;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -675,20 +648,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(data[i], smooth_result[i]))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(data[i], log_smooth_result[i]))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(data[i], smooth_result[i]));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(data[i], log_smooth_result[i]));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
   // 2D No reconstruction because of small basis in both directions
@@ -699,16 +669,16 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.1, 1.0 / 0.1, 0.0});
     const bool dd = false;
     // 2X bin per point
     const size_t n_coarse_bins = 20;
     const double max_window_size = 0.1;
     const size_t dim = 2;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -721,26 +691,22 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(data[i], smooth_result[i]))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(data[i], log_smooth_result[i]))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(data[i], smooth_result[i]));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(data[i], log_smooth_result[i]));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
-  // 2D No reconstruction because of small bias in dim=1 keeps dim=2 from
-  // accumulating offset data. This test can't be achieved in the opposite
-  // direction without a small bandwidth in both dirs because the rows are
-  // exactly in line with one another, while the columns are offset.
+  // 2D No reconstruction because of small bias in dim=1 keeps dim=2 from accumulating offset data.
+  // This test can't be achieved in the opposite direction without a small bandwidth in both dirs
+  // because the rows are exactly in line with one another, while the columns are offset.
   {
     std::vector<double> data{0.1, 0.2, 0.1, 0.2, 0.1, 0.2, 0.1, 0.2, 0.1, 0.2};
     std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
@@ -748,16 +714,16 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.1, 1.0 / 4.0, 0.0});
     const bool dd = false;
     // 2X bin per point
     const size_t n_coarse_bins = 20;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -770,20 +736,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(data[i], smooth_result[i]))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(data[i], log_smooth_result[i]))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(data[i], smooth_result[i]));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(data[i], log_smooth_result[i]));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
   // 2D reconstruct only along dim=1 for each row in dim=2
@@ -794,16 +757,16 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 1.0 / 0.1, 0.0});
     const bool dd = false;
     // 2X bin per point
     const size_t n_coarse_bins = 20;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -818,33 +781,27 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     for (int i = 0; i < 10; i++) {
       if (i < 5) {
         // 0.14 = (0.1*3+0.2*2)/5
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.14, 3e-2))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], 0.14, 3e-2));
         // 0.14 = (0.1*3+0.2*2)/5
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.14, 3e-2))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], 0.14, 3e-2));
       } else {
         // 0.16 = (0.1*2+0.2*3)/5
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.16, 3e-2))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.16, 3e-2))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], 0.16, 3e-2));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], 0.16, 3e-2));
       }
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
-  // 2D reconstruct mainly along dim=2 (rows are offset by 0.5 so we have to
-  // have a larger bandwidth in dim=1 to get any smoothing in dim=2) for each
-  // column in dim=1
+  // 2D reconstruct mainly along dim=2 (rows are offset by 0.5 so we have to have a larger bandwidth
+  // in dim=1 to get any smoothing in dim=2) for each column in dim=1
   {
     std::vector<double> data{0.1, 0.2, 0.1, 0.2, 0.1, 0.2, 0.1, 0.2, 0.1, 0.2};
     std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
@@ -852,16 +809,16 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.6, 1.0 / 4.0, 0.0});
     const bool dd = false;
     // 2X bin per point
     const size_t n_coarse_bins = 20;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -880,20 +837,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(smooth_result[i], bench[i], 1e-4))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(log_smooth_result[i], log_bench[i], 1e-4))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], bench[i], 1e-4));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], log_bench[i], 1e-4));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
   // 2D Smoothed reconstruction should be close to the problem mean of 0.15
@@ -904,16 +858,16 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 1.0 / 4.0, 0.0});
     const bool dd = false;
     // 1 bin per point
     const size_t n_coarse_bins = 10;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -926,21 +880,18 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.15, 1e-1))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.15, 1e-1))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], 0.15, 1e-1));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], 0.15, 1e-1));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
   // Smoothed reconstruction should be close to the problem mean of 0.15
@@ -951,16 +902,16 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 0.0, 0.0});
     const bool dd = false;
     // 1 bin per point
     const size_t n_coarse_bins = 10;
     const double max_window_size = 4.0;
     const size_t dim = 1;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -973,20 +924,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.15, 1e-1))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.15, 1e-1))
-        ITFAILS;
+      FAIL_IF(!rtt_dsxx::soft_equiv(smooth_result[i], 0.15, 1e-1));
+      FAIL_IF(!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.15, 1e-1));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
   // No variable band width test.
@@ -997,7 +945,7 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0, 0.0, 0.0});
 
     const bool dd = false;
@@ -1005,10 +953,10 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 10;
     const double max_window_size = 1.0;
     const size_t dim = 1;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
@@ -1020,14 +968,13 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(bench[i], smooth_result[i], 1e-4))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(bench[i], smooth_result[i], 1e-4));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                             std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
   }
 
   // 2D No variable band width test.
@@ -1038,7 +985,7 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0, 1.0 / 4.0, 0.0});
 
     const bool dd = false;
@@ -1046,10 +993,10 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 10;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
@@ -1061,14 +1008,13 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(bench[i], smooth_result[i], 1e-4))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(bench[i], smooth_result[i], 1e-4));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF(
+        !rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
   }
 
   // 2D  variable band width test.
@@ -1092,10 +1038,10 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 10;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
@@ -1107,14 +1053,13 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(bench[i], smooth_result[i], 1e-4))
-        ITFAILS;
+      FAIL_IF(!rtt_dsxx::soft_equiv(bench[i], smooth_result[i], 1e-4));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF(
+        !rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
   }
 
   //  step band width test.
@@ -1145,10 +1090,10 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 10;
     const double max_window_size = 3.0;
     const size_t dim = 1;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
@@ -1160,14 +1105,13 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(bench[i], smooth_result[i], 1e-4))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(bench[i], smooth_result[i], 1e-4));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF(
+        !rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
   }
 
   // what if half of it is negative and the mean is zero
@@ -1178,7 +1122,7 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 0.0, 0.0});
 
     // lets make the array a little bit more complicated
@@ -1187,10 +1131,10 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 10;
     const double max_window_size = 4.0;
     const size_t dim = 1;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(data, reconstruction_mask, one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result =
@@ -1202,21 +1146,18 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
                                 qindex.domain_decomposed);
 
     for (int i = 0; i < 10; i++) {
-      if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.0, 1e-2))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], 0.0, 1e-2));
     }
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF(
+        !rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                              std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0)));
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(
-            std::accumulate(data.begin(), data.end(), 0.0),
-            std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)))
-      ITFAILS;
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(
+        std::accumulate(data.begin(), data.end(), 0.0),
+        std::accumulate(log_smooth_result.begin(), log_smooth_result.end(), 0.0)));
   }
 
   // 2D variable band width test on multigroup data.
@@ -1247,10 +1188,10 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     // max window size must be 2x the max bandwidth size
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(10, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(10, 1);
     std::vector<std::vector<double>> smooth_result = test_kde.reconstruction(
         data, data[0].size(), reconstruction_mask, one_over_bandwidth_array, qindex);
     // Apply Conservation
@@ -1284,24 +1225,21 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
 //------------------------------------------------------------------------------------------------//
 void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
-  kde test_kde;
+  kde const test_kde;
 
   // test the epan kernel
-  double value = test_kde.epan_kernel(0.0);
-  if (!rtt_dsxx::soft_equiv(value, 0.75))
-    ITFAILS;
-
-  if (rtt_c4::nodes() != 3)
-    ITFAILS;
+  double const value = test_kde.epan_kernel(0.0);
+  FAIL_IF(!rtt_dsxx::soft_equiv(value, 0.75));
+  FAIL_IF(rtt_c4::nodes() != 3);
 
   // spherical reconstruction
   {
     const bool spherical = true;
     const size_t local_size = 24;
     const std::array<double, 3> sphere_center{0.0, -1.0, 0.0};
-    kde sphere_kde;
+    kde const sphere_kde;
     // reflect on the theta boundary
-    kde theta_reflected_sphere_kde({false, false, true, true, false, false});
+    kde const theta_reflected_sphere_kde({false, false, true, true, false, false});
     const std::array<double, 8> radial_edges{0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0};
     const std::array<double, 9> cosine_edges{-1.0, -0.75, -0.5, -0.25, 0.0, 0.25, 0.5, 0.75, 1.0};
     const size_t data_size = radial_edges.size() * cosine_edges.size();
@@ -1323,7 +1261,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
           shell_weights[point_i] = 1e3;
         else
           shell_weights[point_i] = 1.0;
-        double rel_y = r * mu;
+        double const rel_y = r * mu;
         position_array[point_i][0] =
             rtt_dsxx::soft_equiv(r * r, rel_y * rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
         position_array[point_i][1] = sphere_center[1] + rel_y;
@@ -1394,7 +1332,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
         6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621, 6.58621,
         6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8,     6.8};
 
-    std::vector<double> dd_const_data(local_size, 1.0);
+    std::vector<double> const dd_const_data(local_size, 1.0);
     std::vector<double> dd_spoke_data(local_size);
     std::vector<double> dd_shell_data(local_size);
     std::vector<double> dd_shell_weights(local_size);
@@ -1428,17 +1366,17 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     // zero reconstruction array on a shell mesh
     {
       std::vector<double> zero_data(local_size, 0.0);
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           local_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
       const bool dd = true;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 2.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
-      std::vector<int> maskids = {1};
-      std::vector<int> reconstruction_mask(local_size, 1);
+      quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd,
+                               spherical, sphere_center);
+      std::vector<int> const maskids = {1};
+      std::vector<int> const reconstruction_mask(local_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           zero_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
@@ -1456,12 +1394,9 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], zero_data[i]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], zero_data[i]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(sampled_smooth_result[i], zero_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], zero_data[i]));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], zero_data[i]));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(sampled_smooth_result[i], zero_data[i]));
       }
 
       double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
@@ -1474,28 +1409,25 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       rtt_c4::global_sum(sampled_smooth_conservation);
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(0.0, smooth_conservation))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(0.0, log_smooth_conservation))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(0.0, sampled_smooth_conservation))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(0.0, smooth_conservation));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(0.0, log_smooth_conservation));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(0.0, sampled_smooth_conservation));
     }
 
     // spoke reconstruction array
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           local_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
       const bool dd = true;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 2.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd,
+                               spherical, sphere_center);
 
-      std::vector<int> maskids = {1};
-      std::vector<int> reconstruction_mask(local_size, 1);
+      std::vector<int> const maskids = {1};
+      std::vector<int> const reconstruction_mask(local_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           dd_spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
@@ -1508,10 +1440,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], dd_spoke_data[i]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], dd_spoke_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], dd_spoke_data[i]));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], dd_spoke_data[i]));
       }
 
       double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
@@ -1521,28 +1451,26 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       rtt_c4::global_sum(log_smooth_conservation);
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
-                                smooth_conservation))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
-                                log_smooth_conservation))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                                       smooth_conservation));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(std::accumulate(spoke_data.begin(), spoke_data.end(), 0.0),
+                                       log_smooth_conservation));
     }
 
     // spoke reconstruction array with cell sizes (deltas)
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           local_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
       const bool dd = true;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 2.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, dd_delta_array, max_window_size, n_coarse_bins, dd,
-                         spherical, sphere_center);
+      quick_index const qindex(dim, dd_position_array, dd_delta_array, max_window_size,
+                               n_coarse_bins, dd, spherical, sphere_center);
 
-      std::vector<int> maskids = {1};
-      std::vector<int> reconstruction_mask(local_size, 1);
+      std::vector<int> const maskids = {1};
+      std::vector<int> const reconstruction_mask(local_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           dd_spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> smooth_reflect_result = theta_reflected_sphere_kde.reconstruction(
@@ -1559,12 +1487,9 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], dd_spoke_data[i]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(smooth_reflect_result[i], dd_spoke_data[i]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], dd_spoke_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], dd_spoke_data[i]));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_reflect_result[i], dd_spoke_data[i]));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], dd_spoke_data[i]));
       }
 
       double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
@@ -1578,28 +1503,25 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       double spoke_conservation = std::accumulate(dd_spoke_data.begin(), dd_spoke_data.end(), 0.0);
       rtt_c4::global_sum(spoke_conservation);
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(spoke_conservation, smooth_conservation))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(spoke_conservation, smooth_reflect_conservation))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(spoke_conservation, log_smooth_conservation))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(spoke_conservation, smooth_conservation));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(spoke_conservation, smooth_reflect_conservation));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(spoke_conservation, log_smooth_conservation));
     }
 
     // shell reconstruction array
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           local_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
       const bool dd = true;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 2.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd,
+                               spherical, sphere_center);
 
-      std::vector<int> maskids = {1};
-      std::vector<int> reconstruction_mask(local_size, 1);
+      std::vector<int> const maskids = {1};
+      std::vector<int> const reconstruction_mask(local_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           dd_shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
@@ -1612,10 +1534,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], dd_shell_data[i]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], dd_shell_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], dd_shell_data[i]));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], dd_shell_data[i]));
       }
 
       double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
@@ -1625,28 +1545,26 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       rtt_c4::global_sum(log_smooth_conservation);
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
-                                smooth_conservation))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
-                                log_smooth_conservation))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+                                       smooth_conservation));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+                                       log_smooth_conservation));
     }
 
     // shell reconstruction array
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           local_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
       const bool dd = true;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 2.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd,
+                               spherical, sphere_center);
 
-      std::vector<int> maskids = {1};
-      std::vector<int> reconstruction_mask(local_size, 1);
+      std::vector<int> const maskids = {1};
+      std::vector<int> const reconstruction_mask(local_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           dd_shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = sphere_kde.log_reconstruction(
@@ -1659,10 +1577,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       // Check smooth result
       for (size_t i = 0; i < local_size; i++) {
-        if (!rtt_dsxx::soft_equiv(smooth_result[i], dd_shell_data[i]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(log_smooth_result[i], dd_shell_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], dd_shell_data[i]));
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], dd_shell_data[i]));
       }
 
       double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
@@ -1672,28 +1588,26 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       rtt_c4::global_sum(log_smooth_conservation);
 
       // Energy conservation
-      if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
-                                smooth_conservation))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
-                                log_smooth_conservation))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+                                       smooth_conservation));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(std::accumulate(shell_data.begin(), shell_data.end(), 0.0),
+                                       log_smooth_conservation));
     }
 
     // spoke smoothing on shell array
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           local_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
       const bool dd = true;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 2.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd,
+                               spherical, sphere_center);
 
-      std::vector<int> maskids = {1};
-      std::vector<int> reconstruction_mask(local_size, 1);
+      std::vector<int> const maskids = {1};
+      std::vector<int> const reconstruction_mask(local_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           dd_shell_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = sphere_kde.reconstruction(
@@ -1729,18 +1643,18 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // spoke smoothing on shell array with shell weights
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           local_size, std::array<double, 3>{1.0, 1.0e12, 0.0});
       const bool dd = true;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 2.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd,
+                               spherical, sphere_center);
 
-      std::vector<int> maskids = {1};
-      std::vector<int> reconstruction_mask(local_size, 1);
+      std::vector<int> const maskids = {1};
+      std::vector<int> const reconstruction_mask(local_size, 1);
       std::vector<double> smooth_result = sphere_kde.weighted_reconstruction(
           dd_shell_data, dd_shell_weights, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
@@ -1764,18 +1678,18 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // shell smoothing on spoke array
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           local_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
       const bool dd = true;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd,
+                               spherical, sphere_center);
 
-      std::vector<int> maskids = {1};
-      std::vector<int> reconstruction_mask(local_size, 1);
+      std::vector<int> const maskids = {1};
+      std::vector<int> const reconstruction_mask(local_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           dd_spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = sphere_kde.reconstruction(
@@ -1811,18 +1725,18 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // shell cell size integral smoothing on spoke array
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           local_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
       const bool dd = true;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, dd_delta_array, max_window_size, n_coarse_bins, dd,
-                         spherical, sphere_center);
+      quick_index const qindex(dim, dd_position_array, dd_delta_array, max_window_size,
+                               n_coarse_bins, dd, spherical, sphere_center);
 
-      std::vector<int> maskids = {1};
-      std::vector<int> reconstruction_mask(local_size, 1);
+      std::vector<int> const maskids = {1};
+      std::vector<int> const reconstruction_mask(local_size, 1);
       std::vector<double> smooth_result = sphere_kde.reconstruction(
           dd_spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
@@ -1846,22 +1760,22 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // shell smoothing on spoke array with mask
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           local_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
       const bool dd = true;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd,
+                               spherical, sphere_center);
 
       std::vector<double> smooth_result =
           sphere_kde.reconstruction(dd_spoke_data, dd_shell_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result =
           sphere_kde.reconstruction(dd_spoke_data, dd_shell_mask, one_over_bandwidth_array, qindex);
       // Apply Conservation
-      std::vector<int> maskids = {2, 1};
+      std::vector<int> const maskids = {2, 1};
       rtt_kde::apply_conservation(dd_spoke_data, maskids, dd_shell_mask, smooth_result,
                                   qindex.domain_decomposed);
       rtt_kde::apply_conservation(dd_spoke_data, maskids, dd_shell_mask, log_smooth_result,
@@ -1892,18 +1806,18 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // shell smoothing on spoke array with theta reflection
     {
-      std::vector<std::array<double, 3>> one_over_bandwidth_array(
+      std::vector<std::array<double, 3>> const one_over_bandwidth_array(
           local_size, std::array<double, 3>{1.0e12, 1.0, 0.0});
       const bool dd = true;
       // two bins per point
       const size_t n_coarse_bins = 5;
       const double max_window_size = 1.0;
       const size_t dim = 2;
-      quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd, spherical,
-                         sphere_center);
+      quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd,
+                               spherical, sphere_center);
 
-      std::vector<int> maskids = {1};
-      std::vector<int> reconstruction_mask(local_size, 1);
+      std::vector<int> const maskids = {1};
+      std::vector<int> const reconstruction_mask(local_size, 1);
       std::vector<double> smooth_result = theta_reflected_sphere_kde.reconstruction(
           dd_spoke_data, reconstruction_mask, one_over_bandwidth_array, qindex);
       std::vector<double> log_smooth_result = theta_reflected_sphere_kde.reconstruction(
@@ -1951,7 +1865,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.1, 0.0, 0.0});
 
     // map to dd arrays with simple stride
@@ -1972,10 +1886,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 10;
     const double max_window_size = 0.1;
     const size_t dim = 1;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -2016,7 +1930,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.1, 1.0 / 0.1, 0.0});
 
     // map to dd arrays with simple stride
@@ -2037,10 +1951,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 10;
     const double max_window_size = 0.1;
     const size_t dim = 2;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -2081,7 +1995,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 0.0, 0.0});
 
     // map to dd arrays with simple stride
@@ -2102,10 +2016,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 5;
     const double max_window_size = 4.0;
     const size_t dim = 1;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -2146,10 +2060,11 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 1.0 / 4.0, 0.0});
 
     // map to dd arrays with simple stride
+
     std::vector<double> dd_data(local_size, 0.0);
     std::vector<std::array<double, 3>> dd_position_array(local_size,
                                                          std::array<double, 3>{0.0, 0.0, 0.0});
@@ -2167,10 +2082,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 5;
     const double max_window_size = 4.0;
     const size_t dim = 1;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -2211,7 +2126,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.1, 0.0, 0.0});
 
     // map to dd arrays with simple stride
@@ -2232,10 +2147,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 20;
     const double max_window_size = 0.1;
     const size_t dim = 1;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -2248,10 +2163,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
-      if (!rtt_dsxx::soft_equiv(data[i + rtt_c4::node() * 3], smooth_result[i]))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(data[i + rtt_c4::node() * 3], log_smooth_result[i]))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(data[i + rtt_c4::node() * 3], smooth_result[i]));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(data[i + rtt_c4::node() * 3], log_smooth_result[i]));
     }
 
     double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
@@ -2261,11 +2174,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     rtt_c4::global_sum(log_smooth_conservation);
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              log_smooth_conservation))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                                     log_smooth_conservation));
   }
 
   // 2D No reconstruction because of small basis functions
@@ -2276,7 +2188,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.1, 1.0, 0.0});
 
     // map to dd arrays with simple stride
@@ -2297,10 +2209,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 20;
     const double max_window_size = 1.0;
     const size_t dim = 2;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -2333,10 +2245,9 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       ITFAILS;
   }
 
-  // 2D No reconstruction because of small bias in dim=1 keeps dim=2 from
-  // accumulating offset data. This test can't be achieved in the opposite
-  // direction without a small bandwidth in both dirs because the rows are
-  // exactly in line with one another, while the columns are offset.
+  // 2D No reconstruction because of small bias in dim=1 keeps dim=2 from accumulating offset data.
+  // This test can't be achieved in the opposite direction without a small bandwidth in both dirs
+  // because the rows are exactly in line with one another, while the columns are offset.
   {
     std::vector<double> data{0.1, 0.2, 0.1, 0.2, 0.1, 0.2, 0.1, 0.2, 0.1, 0.2};
     std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
@@ -2344,7 +2255,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.1, 1.0 / 4.0, 0.0});
 
     // map to dd arrays with simple stride
@@ -2365,10 +2276,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 20;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -2409,7 +2320,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 1.0 / 0.1, 0.0});
 
     // map to dd arrays with simple stride
@@ -2430,10 +2341,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 20;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -2486,7 +2397,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 0.6, 1.0 / 4.0, 0.0});
 
     std::vector<double> bench{0.122267, 0.181788, 0.118212, 0.181788, 0.118212,
@@ -2516,10 +2427,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 20;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -2545,11 +2456,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     rtt_c4::global_sum(log_smooth_conservation);
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              log_smooth_conservation))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                                     log_smooth_conservation));
   }
 
   // Smoothed reconstruction should be close to the problem mean of 0.15
@@ -2560,7 +2470,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 0.0, 0.0});
 
     // map to dd arrays with simple stride
@@ -2582,10 +2492,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     // window size must be 2X bigger then biggest bandwidth
     const double max_window_size = 9.0;
     const size_t dim = 1;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -2611,11 +2521,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     rtt_c4::global_sum(log_smooth_conservation);
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              log_smooth_conservation))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                                     log_smooth_conservation));
   }
 
   // 2D Smoothed reconstruction should be close to the problem mean of 0.15
@@ -2626,7 +2535,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 1.0 / 4.0, 0.0});
 
     // map to dd arrays with simple stride
@@ -2648,10 +2557,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     // window size must be 2X bigger then biggest bandwidth
     const double max_window_size = 9.0;
     const size_t dim = 2;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -2692,7 +2601,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0, 0.0, 0.0});
     std::vector<double> bench{0.01446,   0.0172074, 0.10425,  0.172074, 0.131586,
                               0.0172074, 0.040488,  0.172074, 0.131586, 0.15906};
@@ -2715,10 +2624,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 10;
     const double max_window_size = 1.0;
     const size_t dim = 1;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
@@ -2747,7 +2656,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0, 1.0 / 4.0, 0.0});
     std::vector<double> bench{0.0142901, 0.0172733, 0.104099, 0.172733, 0.130699,
                               0.0172733, 0.0396694, 0.172733, 0.130699, 0.160531};
@@ -2770,10 +2679,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 10;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
@@ -2833,10 +2742,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     // max window size must be 2x the max bandwidth size
     const double max_window_size = 4.0;
     const size_t dim = 1;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
@@ -2896,10 +2805,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     // max window size must be 2x the max bandwidth size
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
@@ -2908,16 +2817,15 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // Check smooth result
     for (int i = 0; i < local_size; i++) {
-      if (!rtt_dsxx::soft_equiv(bench[i + rtt_c4::node() * 3], smooth_result[i], 1e-4))
-        ITFAILS;
+      FAIL_IF(!rtt_dsxx::soft_equiv(bench[i + rtt_c4::node() * 3], smooth_result[i], 1e-4));
     }
 
     double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
     rtt_c4::global_sum(smooth_conservation);
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation))
-      ITFAILS;
+    FAIL_IF(
+        !rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation));
   }
 
   // 2D variable band width test on multigroup data.
@@ -2961,10 +2869,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     // max window size must be 2x the max bandwidth size
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<std::vector<double>> smooth_result = test_kde.reconstruction(
         dd_data, dd_data[0].size(), reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     // Apply Conservation
@@ -3001,7 +2909,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 0.0, 0.0});
 
     // map to dd arrays with simple stride
@@ -3022,10 +2930,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 10;
     const double max_window_size = 4.0;
     const size_t dim = 1;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         test_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = test_kde.log_reconstruction(
@@ -3037,10 +2945,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
                                 qindex.domain_decomposed);
 
     for (int i = 0; i < local_size; i++) {
-      if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.0, 1e-2))
-        ITFAILS;
+      FAIL_IF(!rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2));
+      FAIL_IF(!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.0, 1e-2));
     }
 
     double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
@@ -3050,8 +2956,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     rtt_c4::global_sum(log_smooth_conservation);
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation))
-      ITFAILS;
+    FAIL_IF(
+        !rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation));
     if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
                               log_smooth_conservation))
       ITFAILS;
@@ -3060,14 +2966,14 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
   // what if half of it is negative and the mean is zero for a reconstruction
   // what if we also reflect the bc
   {
-    kde refl_kde({true, true, true, true, true, true});
+    kde const refl_kde({true, true, true, true, true, true});
     std::vector<double> data{-0.2, 0.2, -0.2, 0.2, -0.2, 0.2, -0.2, 0.2, -0.2, 0.2};
     std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
     for (int i = 0; i < 10; i++) {
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
     }
-    std::vector<std::array<double, 3>> one_over_bandwidth_array(
+    std::vector<std::array<double, 3>> const one_over_bandwidth_array(
         10, std::array<double, 3>{1.0 / 4.0, 1.0 / 4.0, 0.0});
 
     // map to dd arrays with simple stride
@@ -3088,10 +2994,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     const size_t n_coarse_bins = 10;
     const double max_window_size = 4.0;
     const size_t dim = 2;
-    quick_index qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
+    quick_index const qindex(dim, dd_position_array, max_window_size, n_coarse_bins, dd);
 
-    std::vector<int> maskids = {1};
-    std::vector<int> reconstruction_mask(local_size, 1);
+    std::vector<int> const maskids = {1};
+    std::vector<int> const reconstruction_mask(local_size, 1);
     std::vector<double> smooth_result =
         refl_kde.reconstruction(dd_data, reconstruction_mask, dd_one_over_bandwidth_array, qindex);
     std::vector<double> log_smooth_result = refl_kde.log_reconstruction(
@@ -3103,10 +3009,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
                                 qindex.domain_decomposed);
 
     for (int i = 0; i < local_size; i++) {
-      if (!rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(log_smooth_result[i], 0.0, 1e-2))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(smooth_result[i], 0.0, 1e-2));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(log_smooth_result[i], 0.0, 1e-2));
     }
 
     double smooth_conservation = std::accumulate(smooth_result.begin(), smooth_result.end(), 0.0);
@@ -3116,11 +3020,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     rtt_c4::global_sum(log_smooth_conservation);
 
     // Energy conservation
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation))
-      ITFAILS;
-    if (!rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
-                              log_smooth_conservation))
-      ITFAILS;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0), smooth_conservation));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(std::accumulate(data.begin(), data.end(), 0.0),
+                                     log_smooth_conservation));
   }
 
   if (ut.numFails == 0) {

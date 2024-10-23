@@ -8,22 +8,32 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
-#include "dsxx/dbc.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "kde/quick_index.hh"
+#include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
-#include <numeric>
+#include "units/MathConstants.hh"
+#include <array>
+#include <cmath>
+#include <cstddef>
+#include <map>
+#include <string>
+#include <vector>
 
 using namespace rtt_dsxx;
 using namespace rtt_c4;
 using namespace rtt_kde;
 
+// cSpell:ignore qindex, hicpp
+
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
-//
+
 void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
   {
-    std::vector<double> data{0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
+    std::vector<double> const data{0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
     std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
     for (int i = 0; i < 10; i++) {
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
@@ -37,25 +47,17 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     quick_index qindex(dim, position_array, max_window_size, bins_per_dim, dd);
     // Check public data
     //------------------------
-    if (qindex.domain_decomposed)
-      ITFAILS;
-    if (qindex.coarse_bin_resolution != bins_per_dim)
-      ITFAILS;
+    FAIL_IF(qindex.domain_decomposed);
+    FAIL_IF(qindex.coarse_bin_resolution != bins_per_dim);
     // Check global bounding box
-    if (!soft_equiv(qindex.bounding_box_min[0], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[2], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[0], 4.5))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[2], 0.0))
-      ITFAILS;
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[0], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[1], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[2], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[0], 4.5));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[1], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[2], 0.0));
     // Check local coarse_index map
-    // build up a global gold to check the map
+    // * build up a global gold to check the map
     std::map<size_t, std::vector<size_t>> gold_map;
     gold_map[0] = {0};
     gold_map[1] = {5};
@@ -67,12 +69,10 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     gold_map[7] = {8};
     gold_map[8] = {4};
     gold_map[9] = {9};
-    if (gold_map.size() != qindex.coarse_index_map.size())
-      ITFAILS;
+    FAIL_IF(gold_map.size() != qindex.coarse_index_map.size());
     for (auto &map : qindex.coarse_index_map)
       for (size_t i = 0; i < map.second.size(); i++)
-        if (gold_map[map.first][i] != map.second[i])
-          ITFAILS;
+        FAIL_IF(gold_map[map.first][i] != map.second[i]);
 
     // Check non-spherical orthogonal distance calculation
     auto distance = qindex.calc_orthogonal_distance({-1, -1, -1}, {1, 1, 1});
@@ -89,7 +89,7 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
 void test_replication_sphere(ParallelUnitTest &ut) {
   {
-    std::vector<double> data{0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
+    std::vector<double> const data{0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
     std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
     for (int i = 0; i < 10; i++) {
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
@@ -106,25 +106,17 @@ void test_replication_sphere(ParallelUnitTest &ut) {
                        sphere_center);
     // Check public data
     //------------------------
-    if (qindex.domain_decomposed)
-      ITFAILS;
-    if (qindex.coarse_bin_resolution != bins_per_dim)
-      ITFAILS;
+    FAIL_IF(qindex.domain_decomposed);
+    FAIL_IF(qindex.coarse_bin_resolution != bins_per_dim);
     // Check global bounding box
-    if (!soft_equiv(qindex.bounding_box_min[0], 0.5))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[2], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[0], 2.54951, 1e-4))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[1], 5.17604, 1e-4))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[2], 0.0))
-      ITFAILS;
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[0], 0.5));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[1], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[2], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[0], 2.54951, 1e-4));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[1], 5.17604, 1e-4));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[2], 0.0));
     // Check local coarse_index map
-    // build up a global gold to check the map
+    // * build up a global gold to check the map
     std::map<size_t, std::vector<size_t>> gold_map;
     gold_map[0] = {2};
     gold_map[23] = {3};
@@ -136,12 +128,10 @@ void test_replication_sphere(ParallelUnitTest &ut) {
     gold_map[85] = {5};
     gold_map[93] = {1};
     gold_map[97] = {0};
-    if (gold_map.size() != qindex.coarse_index_map.size())
-      ITFAILS;
+    FAIL_IF(gold_map.size() != qindex.coarse_index_map.size());
     for (auto &map : qindex.coarse_index_map)
       for (size_t i = 0; i < map.second.size(); i++)
-        if (gold_map[map.first][i] != map.second[i])
-          ITFAILS;
+        FAIL_IF(gold_map[map.first][i] != map.second[i]);
 
     // Check non-spherical orthogonal distance calculation
     auto distance = qindex.calc_orthogonal_distance({-1, -1, -1}, {1, 1, 1});
@@ -158,8 +148,7 @@ void test_replication_sphere(ParallelUnitTest &ut) {
 
 //------------------------------------------------------------------------------------------------//
 void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
-  if (rtt_c4::nodes() != 3)
-    ITFAILS;
+  FAIL_IF_NOT(rtt_c4::nodes() == 3);
 
   int local_size = 3;
   // give the odd size to the final rank to make striding easy
@@ -171,8 +160,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     std::vector<int> int_data{3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
     std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
     std::vector<std::array<double, 3>> delta_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
-    // This cell spatial ordering is difficult for this setup in that every
-    // rank requires a sub set of information from every other rank
+    // This cell spatial ordering is difficult for this setup in that every rank requires a sub set
+    // of information from every other rank
     for (int i = 0; i < 10; i++) {
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
@@ -212,25 +201,18 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
                              dd);
 
     // Check the local state data
-    if (!qindex.domain_decomposed)
-      ITFAILS;
-    if (qindex.coarse_bin_resolution != bins_per_dim)
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[0], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[2], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[0], 4.5))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[2], 0.0))
-      ITFAILS;
-    // Check local coarse_index map
-    // local indexing will not match the domain replicated case (different
-    // number of points per rank so different local indexing)
+    FAIL_IF(!qindex.domain_decomposed);
+    FAIL_IF(qindex.coarse_bin_resolution != bins_per_dim);
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[0], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[1], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[2], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[0], 4.5));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[1], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[2], 0.0));
+
+    // Check local coarse_index map.
+    // * local indexing will not match the domain replicated case (different number of points per
+    //   rank so different local indexing)
     std::map<size_t, std::vector<size_t>> gold_map;
     if (rtt_c4::node() == 0) {
       gold_map[0] = {0}; // 0.0
@@ -246,54 +228,34 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_map[7] = {2}; // 3.5
       gold_map[9] = {3}; // 4.5
     }
-    if (gold_map.size() != qindex.coarse_index_map.size())
-      ITFAILS;
+    FAIL_IF(gold_map.size() != qindex.coarse_index_map.size());
     for (auto &map : qindex.coarse_index_map)
       for (size_t i = 0; i < map.second.size(); i++)
-        if (gold_map[map.first][i] != map.second[i])
-          ITFAILS;
+        FAIL_IF(gold_map[map.first][i] != map.second[i]);
 
     // Check Domain Decomposed Data
-    // local bounding box extends beyond local data based on the window + bin size
+    // * local bounding box extends beyond local data based on the window + bin size
     if (rtt_c4::node() == 0) {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[1], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 2.5 + 4.5 / 10.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_min[0], 0.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_min[1], 0.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_min[2], 0.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_max[0], 2.5 + 4.5 / 10.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_max[1], 0.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     } else if (rtt_c4::node() == 1) {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[1], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 4.5))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_min[0], 0.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_min[1], 0.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_min[2], 0.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_max[0], 4.5));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_max[1], 0.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     } else {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 1.0 - 4.5 / 10.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[1], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 4.5))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_min[0], 1.0 - 4.5 / 10.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_min[1], 0.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_min[2], 0.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_max[0], 4.5));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_max[1], 0.0));
+      FAIL_IF_NOT(soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     }
     // global bins that span the local domains
     std::vector<size_t> gold_bins;
@@ -305,11 +267,9 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_bins = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     }
 
-    if (gold_bins.size() != qindex.local_bins.size())
-      ITFAILS;
+    FAIL_IF(gold_bins.size() != qindex.local_bins.size());
     for (size_t i = 0; i < qindex.local_bins.size(); i++)
-      if (gold_bins[i] != qindex.local_bins[i])
-        ITFAILS;
+      FAIL_IF(gold_bins[i] != qindex.local_bins[i]);
 
     // local ghost index map (how to find general location of the ghost data)
     std::map<size_t, std::vector<size_t>> gold_ghost_index_map;
@@ -333,19 +293,16 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_ghost_index_map[6] = {3}; // 3.0 from rank 1
       gold_ghost_index_map[8] = {4}; // 4.0 from rank 1
     }
-    if (gold_ghost_index_map.size() != qindex.local_ghost_index_map.size())
-      ITFAILS;
+    FAIL_IF(gold_ghost_index_map.size() != qindex.local_ghost_index_map.size());
     for (auto &map : qindex.local_ghost_index_map) {
-      if (gold_ghost_index_map[map.first].size() != map.second.size())
-        ITFAILS;
+      FAIL_IF(gold_ghost_index_map[map.first].size() != map.second.size());
       for (size_t i = 0; i < map.second.size(); i++) {
-        if (map.second[i] != gold_ghost_index_map[map.first][i])
-          ITFAILS;
+        FAIL_IF(map.second[i] != gold_ghost_index_map[map.first][i]);
       }
     }
 
-    // Check the local ghost locations (this tangentially checks the private
-    // put_window_map which is used to build this local data).
+    // Check the local ghost locations (this tangentially checks the private put_window_map which is
+    // used to build this local data).
     std::vector<std::array<double, 3>> gold_ghost_locations;
     std::vector<std::array<double, 3>> gold_ghost_deltas;
     if (rtt_c4::node() == 0) {
@@ -363,14 +320,13 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_ghost_deltas = {
           {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}};
     }
-    if (gold_ghost_locations.size() != qindex.local_ghost_locations.size())
-      ITFAILS;
+    FAIL_IF(gold_ghost_locations.size() != qindex.local_ghost_locations.size());
     for (size_t i = 0; i < qindex.local_ghost_locations.size(); i++) {
       for (size_t d = 0; d < 3; d++) {
-        if (!rtt_dsxx::soft_equiv(gold_ghost_locations[i][d], qindex.local_ghost_locations[i][d]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(gold_ghost_deltas[i][d], delta_qindex.local_ghost_deltas[i][d]))
-          ITFAILS;
+        FAIL_IF(
+            !rtt_dsxx::soft_equiv(gold_ghost_locations[i][d], qindex.local_ghost_locations[i][d]));
+        FAIL_IF(
+            !rtt_dsxx::soft_equiv(gold_ghost_deltas[i][d], delta_qindex.local_ghost_deltas[i][d]));
       }
     }
 
@@ -409,25 +365,18 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_3x_ghost_data[2] = {-4.0, -5.0, -8.0, -6.0, -7.0};
     }
     for (size_t i = 0; i < ghost_data.size(); i++) {
-      if (!rtt_dsxx::soft_equiv(ghost_data[i], gold_ghost_data[i]))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(ghost_data_mg[i][0], gold_ghost_data[i]))
-        ITFAILS;
-      if (!rtt_dsxx::soft_equiv(ghost_data_mg[i][1], gold_ghost_data[i] + 1.0))
-        ITFAILS;
+      FAIL_IF(!rtt_dsxx::soft_equiv(ghost_data[i], gold_ghost_data[i]));
+      FAIL_IF(!rtt_dsxx::soft_equiv(ghost_data_mg[i][0], gold_ghost_data[i]));
+      FAIL_IF(!rtt_dsxx::soft_equiv(ghost_data_mg[i][1], gold_ghost_data[i] + 1.0));
     }
     for (size_t i = 0; i < int_ghost_data.size(); i++)
-      if (int_ghost_data[i] != gold_int_ghost_data[i])
-        ITFAILS;
+      FAIL_IF(int_ghost_data[i] != gold_int_ghost_data[i]);
     for (size_t i = 0; i < ghost_3x_data[0].size(); i++)
-      if (!rtt_dsxx::soft_equiv(ghost_3x_data[0][i], gold_3x_ghost_data[0][i]))
-        ITFAILS;
+      FAIL_IF(!rtt_dsxx::soft_equiv(ghost_3x_data[0][i], gold_3x_ghost_data[0][i]));
     for (size_t i = 0; i < ghost_3x_data[1].size(); i++)
-      if (!rtt_dsxx::soft_equiv(ghost_3x_data[1][i], gold_3x_ghost_data[1][i]))
-        ITFAILS;
+      FAIL_IF(!rtt_dsxx::soft_equiv(ghost_3x_data[1][i], gold_3x_ghost_data[1][i]));
     for (size_t i = 0; i < ghost_3x_data[2].size(); i++)
-      if (!rtt_dsxx::soft_equiv(ghost_3x_data[2][i], gold_3x_ghost_data[2][i]))
-        ITFAILS;
+      FAIL_IF(!rtt_dsxx::soft_equiv(ghost_3x_data[2][i], gold_3x_ghost_data[2][i]));
 
     // check max window mapping (more bins then data) functions
     {
@@ -465,12 +414,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
     // check min window mapping (more bins then data) functions
@@ -508,12 +455,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
     // check min_fill window mapping (more bins then data) functions
@@ -551,12 +496,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
     // check ave window mapping (more bins then data) functions
@@ -594,12 +537,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
     // check ave_fill window mapping (more bins then data) functions
@@ -637,12 +578,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
     // check normalize window mapping (more bins then data) functions
@@ -681,11 +620,9 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
     }
 
     // check ave_fill + normalize window mapping (more bins then data) functions
@@ -724,11 +661,9 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
     }
 
     // check bias window mapping (more bins then data) functions
@@ -767,13 +702,11 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       for (size_t v = 0; v < 3; v++) {
         for (size_t i = 0; i < bin_sizes[0]; i++) {
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
         }
       }
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
     }
 
     // check bias and normal window mapping (more bins then data) functions
@@ -812,13 +745,11 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       for (size_t v = 0; v < 3; v++) {
         for (size_t i = 0; i < bin_sizes[0]; i++) {
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
         }
       }
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
     }
 
     // check max mapping (fewer bins then data) functions
@@ -858,19 +789,17 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       for (size_t v = 0; v < 3; v++) {
         for (size_t i = 0; i < bin_sizes[0]; i++) {
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
         }
       }
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
     }
 
     // check min mapping (fewer bins then data) functions
     {
-      // put two particles in the topmost bin
-      // build a length=1.0 window around the first point on each node
+      // * put two particles in the topmost bin
+      // * build a length=1.0 window around the first point on each node
       const std::array<double, 3> min{dd_position_array[0][0] - 0.5, 0.0, 0.0};
       const std::array<double, 3> max{dd_position_array[0][0] + 0.5, 0.0, 0.0};
       const std::array<size_t, 3> bin_sizes{2, 0, 0};
@@ -904,13 +833,11 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       for (size_t v = 0; v < 3; v++) {
         for (size_t i = 0; i < bin_sizes[0]; i++) {
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
         }
       }
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
     }
 
     // check ave mapping (fewer bins then data) functions
@@ -952,20 +879,18 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       for (size_t v = 0; v < 3; v++) {
         for (size_t i = 0; i < bin_sizes[0]; i++) {
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
         }
       }
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
     }
 
-    // check nearest mapping (fewer bins then data) functions
-    // this is the same as average because the simple spacing
+    // * check nearest mapping (fewer bins then data) functions.
+    // * this is the same as average because the simple spacing.
     {
-      // put two particles in the topmost bin
-      // build a length=1.0 window around the first point on each node
+      // * put two particles in the topmost bin.
+      // * build a length=1.0 window around the first point on each node.
       const std::array<double, 3> min{dd_position_array[0][0] - 0.5, 0.0, 0.0};
       const std::array<double, 3> max{dd_position_array[0][0] + 0.5, 0.0, 0.0};
       const std::array<size_t, 3> bin_sizes{2, 0, 0};
@@ -1001,13 +926,11 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       for (size_t v = 0; v < 3; v++) {
         for (size_t i = 0; i < bin_sizes[0]; i++) {
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
         }
       }
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
     }
 
     // check nearest mapping (fewer bins then data) functions
@@ -1049,13 +972,11 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       for (size_t v = 0; v < 3; v++) {
         for (size_t i = 0; i < bin_sizes[0]; i++) {
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
         }
       }
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
     }
 
     // check bias and normal window mapping (fewer bins then data) functions
@@ -1097,13 +1018,11 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
       for (size_t v = 0; v < 3; v++) {
         for (size_t i = 0; i < bin_sizes[0]; i++) {
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
         }
       }
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
     }
   }
 
@@ -1112,8 +1031,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     std::vector<double> data{3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0};
     std::vector<std::array<double, 3>> position_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
     std::vector<std::array<double, 3>> delta_array(10, std::array<double, 3>{0.0, 0.0, 0.0});
-    // This cell spatial ordering is difficult for this setup in that every
-    // rank requires a sub set of information from every other rank
+    // This cell spatial ordering is difficult for this setup in that every rank requires a sub set
+    // of information from every other rank
     for (int i = 0; i < 10; i++) {
       position_array[i][0] = i < 5 ? i % 5 : i % 5 + 0.5;
       position_array[i][1] = i < 5 ? 0.5 : -0.5;
@@ -1148,25 +1067,17 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
                              bins_per_dim, dd);
 
     // Check the local state data
-    if (!qindex.domain_decomposed)
-      ITFAILS;
-    if (qindex.coarse_bin_resolution != bins_per_dim)
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[0], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[1], -0.5))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[2], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[0], 4.5))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[1], 0.5))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[2], 0.0))
-      ITFAILS;
+    FAIL_IF(!qindex.domain_decomposed);
+    FAIL_IF(qindex.coarse_bin_resolution != bins_per_dim);
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[0], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[1], -0.5));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[2], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[0], 4.5));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[1], 0.5));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[2], 0.0));
     // Check local coarse_index map
-    // local indexing will not match the domain replicated case (different
-    // number of points per rank so different local indexing)
+    // * local indexing will not match the domain replicated case (different number of points per
+    //   rank so different local indexing)
     std::map<size_t, std::vector<size_t>> gold_map;
     if (rtt_c4::node() == 0) {
       gold_map[90] = {0}; // 0.0 0.5
@@ -1182,54 +1093,33 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_map[7] = {2}; // 3.5 -0.5
       gold_map[9] = {3}; // 4.5 -0.5
     }
-    if (gold_map.size() != qindex.coarse_index_map.size())
-      ITFAILS;
+    FAIL_IF(gold_map.size() != qindex.coarse_index_map.size());
     for (auto &map : qindex.coarse_index_map)
       for (size_t i = 0; i < map.second.size(); i++)
-        if (gold_map[map.first][i] != map.second[i])
-          ITFAILS;
+        FAIL_IF(gold_map[map.first][i] != map.second[i]);
 
     // Check Domain Decomposed Data
-    // local bounding box extends beyond local data based on the window + bin size
+    // * local bounding box extends beyond local data based on the window + bin size
     if (rtt_c4::node() == 0) {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[1], 0.0 - 1.0 / 10.))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 2.5 + 4.5 / 10.))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 0.5))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[0], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[1], 0.0 - 1.0 / 10.));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[0], 2.5 + 4.5 / 10.));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[1], 0.5));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     } else if (rtt_c4::node() == 1) {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[1], -0.5))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 4.5))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 0.5))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[0], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[1], -0.5));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[2], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[0], 4.5));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[1], 0.5));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     } else {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 1.0 - 4.5 / 10.))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[1], -0.5))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 4.5))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 0.0 + 1.0 / 10.))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[0], 1.0 - 4.5 / 10.));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[1], -0.5));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[2], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[0], 4.5));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[1], 0.0 + 1.0 / 10.));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     }
     // global bins that span the local domains
     std::vector<size_t> gold_bins;
@@ -1252,11 +1142,9 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
                    54, 55, 56, 57, 58, 59, 61, 62, 63, 64, 65, 66, 67, 68, 69};
     }
 
-    if (gold_bins.size() != qindex.local_bins.size())
-      ITFAILS;
+    FAIL_IF(gold_bins.size() != qindex.local_bins.size());
     for (size_t i = 0; i < qindex.local_bins.size(); i++)
-      if (gold_bins[i] != qindex.local_bins[i])
-        ITFAILS;
+      FAIL_IF(gold_bins[i] != qindex.local_bins[i]);
 
     // local ghost index map (how to find general location of the ghost data)
     std::map<size_t, std::vector<size_t>> gold_ghost_index_map;
@@ -1274,12 +1162,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_ghost_index_map[1] = {0}; // 0.5, -0.5 from rank 0
     }
 
-    if (gold_ghost_index_map.size() != qindex.local_ghost_index_map.size())
-      ITFAILS;
+    FAIL_IF(gold_ghost_index_map.size() != qindex.local_ghost_index_map.size());
     for (auto &map : qindex.local_ghost_index_map) {
       for (size_t i = 0; i < map.second.size(); i++) {
-        if (map.second[i] != gold_ghost_index_map[map.first][i])
-          ITFAILS;
+        FAIL_IF(map.second[i] != gold_ghost_index_map[map.first][i]);
       }
     }
 
@@ -1300,14 +1186,13 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_ghost_locations = {{0.5, -0.5, 0.0}};
       gold_ghost_deltas = {{1.0, 1.0, 0.0}};
     }
-    if (gold_ghost_locations.size() != qindex.local_ghost_locations.size())
-      ITFAILS;
+    FAIL_IF(gold_ghost_locations.size() != qindex.local_ghost_locations.size());
     for (size_t i = 0; i < qindex.local_ghost_locations.size(); i++) {
       for (size_t d = 0; d < 3; d++) {
-        if (!rtt_dsxx::soft_equiv(gold_ghost_locations[i][d], qindex.local_ghost_locations[i][d]))
-          ITFAILS;
-        if (!rtt_dsxx::soft_equiv(gold_ghost_deltas[i][d], delta_qindex.local_ghost_deltas[i][d]))
-          ITFAILS;
+        FAIL_IF_NOT(
+            rtt_dsxx::soft_equiv(gold_ghost_locations[i][d], qindex.local_ghost_locations[i][d]));
+        FAIL_IF_NOT(
+            rtt_dsxx::soft_equiv(gold_ghost_deltas[i][d], delta_qindex.local_ghost_deltas[i][d]));
       }
     }
 
@@ -1338,17 +1223,13 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     }
 
     for (size_t i = 0; i < ghost_data.size(); i++)
-      if (!rtt_dsxx::soft_equiv(ghost_data[i], gold_ghost_data[i]))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ghost_data[i], gold_ghost_data[i]));
     for (size_t i = 0; i < ghost_3x_data[0].size(); i++)
-      if (!rtt_dsxx::soft_equiv(ghost_3x_data[0][i], gold_3x_ghost_data[0][i]))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ghost_3x_data[0][i], gold_3x_ghost_data[0][i]));
     for (size_t i = 0; i < ghost_3x_data[1].size(); i++)
-      if (!rtt_dsxx::soft_equiv(ghost_3x_data[1][i], gold_3x_ghost_data[1][i]))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ghost_3x_data[1][i], gold_3x_ghost_data[1][i]));
     for (size_t i = 0; i < ghost_3x_data[2].size(); i++)
-      if (!rtt_dsxx::soft_equiv(ghost_3x_data[2][i], gold_3x_ghost_data[2][i]))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ghost_3x_data[2][i], gold_3x_ghost_data[2][i]));
 
     // check max window mapping (more bins then data) functions
     {
@@ -1388,12 +1269,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
     // check exact mapping with deltas
@@ -1440,12 +1319,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
         gold_window_3x_data[2] = {-8.0, -9.0, -9.0, -9.0, -10.0};
       }
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
     // check max_fill window mapping (more bins then data) functions
@@ -1486,12 +1363,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
     // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all domain space
@@ -1517,12 +1392,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_window_3x_data[2] = {-9.0, -4.0};
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
     // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all domain space
@@ -1548,12 +1421,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_window_3x_data[2] = {-8.5, -4.0};
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
     // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all domain space
@@ -1580,12 +1451,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_window_3x_data[2] = {-8.0, 0.0};
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
     // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all domain space
@@ -1611,12 +1480,10 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
       gold_window_3x_data[2] = {-8.0, -4.0};
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 3; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
   }
 
@@ -1629,8 +1496,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
 //------------------------------------------------------------------------------------------------//
 void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
-  if (rtt_c4::nodes() != 3)
-    ITFAILS;
+  FAIL_IF_NOT(rtt_c4::nodes() == 3);
 
   //2d sphere
   {
@@ -1650,10 +1516,10 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     for (auto &mu : cosine_edges) {
       size_t ri = 0;
       for (auto &r : radial_edges) {
-        double sign = mui < 3 ? 1.0 : -1.0;
+        double const sign = mui < 3 ? 1.0 : -1.0;
         spoke_data[point_i] = static_cast<double>(mui) + 1.0;
         shell_data[point_i] = static_cast<double>(ri) + 1.0;
-        double rel_y = r * mu;
+        double const rel_y = r * mu;
         position_array[point_i][0] =
             rtt_dsxx::soft_equiv(r * r, rel_y * rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
         position_array[point_i][0] *= sign;
@@ -1664,8 +1530,8 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       mui++;
     }
 
-    std::vector<double> dd_data(local_size, 1.0);
-    std::vector<std::vector<double>> dd_3x_data(3, std::vector<double>(local_size, 1.0));
+    std::vector<double> const dd_data(local_size, 1.0);
+    std::vector<std::vector<double>> const dd_3x_data(3, std::vector<double>(local_size, 1.0));
     std::vector<double> dd_spoke_data(local_size);
     std::vector<double> dd_shell_data(local_size);
     std::vector<std::array<double, 3>> dd_position_array(local_size);
@@ -1684,27 +1550,19 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     quick_index qindex(dim, dd_position_array, max_window_size, bins_per_dim, dd, spherical,
                        sphere_center);
     // Check the local state data
-    if (!qindex.domain_decomposed)
-      ITFAILS;
-    if (qindex.coarse_bin_resolution != bins_per_dim)
-      ITFAILS;
+    FAIL_IF(!qindex.domain_decomposed);
+    FAIL_IF(qindex.coarse_bin_resolution != bins_per_dim);
 
     // Check global bounding box
-    if (!soft_equiv(qindex.bounding_box_min[0], 0.5))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[1], 0.141539, 1e-4))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[2], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[1], 6.14165, 1e-4))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[2], 0.0))
-      ITFAILS;
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[0], 0.5));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[1], 0.141539, 1e-4));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[2], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[0], 1.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[1], 6.14165, 1e-4));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[2], 0.0));
     // Check local coarse_index map
-    // local indexing will not match the domain replicated case (different
-    // number of points per rank so different local indexing)
+    // * local indexing will not match the domain replicated case (different number of points per
+    //   rank so different local indexing)
     std::map<size_t, std::vector<size_t>> gold_map;
     if (rtt_c4::node() == 0) {
       gold_map[20] = {2};
@@ -1722,57 +1580,37 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       gold_map[90] = {2};
       gold_map[99] = {3};
     }
-    if (gold_map.size() != qindex.coarse_index_map.size())
-      ITFAILS;
+    FAIL_IF(gold_map.size() != qindex.coarse_index_map.size());
 
     for (auto &map : qindex.coarse_index_map)
       for (size_t i = 0; i < map.second.size(); i++)
-        if (gold_map[map.first][i] != map.second[i])
-          ITFAILS;
+        FAIL_IF(gold_map[map.first][i] != map.second[i]);
 
     // Check Domain Decomposed Data
-    // local bounding box extends beyond local data based on the window size
+    // * local bounding box extends beyond local data based on the window size
     if (rtt_c4::node() == 0) {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[1], 1.05466, 1e-4))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 1.5 + 5. / 100.))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 3.51619, 1e-4))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[0], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[1], 1.05466, 1e-4));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[2], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[0], 1.5 + 5. / 100.));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[1], 3.51619, 1e-4));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     } else if (rtt_c4::node() == 1) {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 0.0))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[0], 0.0));
       // overlaps the theta=0=pi*2 boundary
-      if (!soft_equiv(qindex.local_bounding_box_min[1], -0.374593, 1e-4))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 1.5 + 5.0 / 100.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 3.79926, 1e-4))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[1], -0.374593, 1e-4));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[2], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[0], 1.5 + 5.0 / 100.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[1], 3.79926, 1e-4));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     } else {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[1], 4.19626, 1e-4))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 1.5 + 5.0 / 100.0))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[0], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[1], 4.19626, 1e-4));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[2], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[0], 1.5 + 5.0 / 100.0));
       // overlaps the theta=0=pi*2 boundary
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 6.65778, 1e-4))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[1], 6.65778, 1e-4));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     }
     // global bins that span the local domains
     std::vector<size_t> gold_bins;
@@ -1791,11 +1629,9 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
                    94, 95, 96, 97, 98, 99, 0,  1,  2,  3,  4,  5,  6,  7,  8,  9};
     }
 
-    if (gold_bins.size() != qindex.local_bins.size())
-      ITFAILS;
+    FAIL_IF(gold_bins.size() != qindex.local_bins.size());
     for (size_t i = 0; i < qindex.local_bins.size(); i++)
-      if (gold_bins[i] != qindex.local_bins[i])
-        ITFAILS;
+      FAIL_IF(gold_bins[i] != qindex.local_bins[i]);
 
     // local ghost index map (how to find general location of the ghost data)
     std::map<size_t, std::vector<size_t>> gold_ghost_index_map;
@@ -1814,19 +1650,16 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       gold_ghost_index_map[9] = {1};
     }
 
-    if (gold_ghost_index_map.size() != qindex.local_ghost_index_map.size())
-      ITFAILS;
+    FAIL_IF(gold_ghost_index_map.size() != qindex.local_ghost_index_map.size());
     for (auto &map : qindex.local_ghost_index_map) {
-      if (gold_ghost_index_map[map.first].size() != map.second.size())
-        ITFAILS;
+      FAIL_IF(gold_ghost_index_map[map.first].size() != map.second.size());
       for (size_t i = 0; i < map.second.size(); i++) {
-        if (map.second[i] != gold_ghost_index_map[map.first][i])
-          ITFAILS;
+        FAIL_IF(map.second[i] != gold_ghost_index_map[map.first][i]);
       }
     }
 
-    // Check the local ghost locations (this tangentially checks the private
-    // put_window_map which is used to build this local data).
+    // Check the local ghost locations (this tangentially checks the private put_window_map which is
+    // used to build this local data).
     std::vector<std::array<double, 3>> gold_ghost_locations;
     if (rtt_c4::node() == 0) {
       gold_ghost_locations = {{0.5, 3.28313, 0.0}, {1, 3.28313, 0.0}};
@@ -1837,14 +1670,12 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       gold_ghost_locations = {{0.5, 0.141539, 0.0}, {1, 0.141539, 0.0}};
     }
 
-    if (gold_ghost_locations.size() != qindex.local_ghost_locations.size())
-      ITFAILS;
+    FAIL_IF(gold_ghost_locations.size() != qindex.local_ghost_locations.size());
 
     for (size_t i = 0; i < qindex.local_ghost_locations.size(); i++) {
       for (size_t d = 0; d < 2; d++)
-        if (!rtt_dsxx::soft_equiv(gold_ghost_locations[i][d], qindex.local_ghost_locations[i][d],
-                                  1e-4))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(gold_ghost_locations[i][d],
+                                         qindex.local_ghost_locations[i][d], 1e-4));
     }
   }
 
@@ -1870,7 +1701,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       for (auto &mu : cosine_edges) {
         spoke_data[point_i] = static_cast<double>(mui) + 1.0;
         shell_data[point_i] = static_cast<double>(ri) + 1.0;
-        double rel_y = r * mu;
+        double const rel_y = r * mu;
         position_array[point_i][0] =
             rtt_dsxx::soft_equiv(r * r, rel_y * rel_y, 1e-6) ? 0.0 : sqrt(r * r - rel_y * rel_y);
         position_array[point_i][1] = sphere_center[1] + rel_y;
@@ -1902,8 +1733,8 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     const size_t dim = 2;
     quick_index qindex(dim, dd_position_array, max_window_size, bins_per_dim, dd, spherical,
                        sphere_center);
-    quick_index delta_qindex(dim, dd_position_array, dd_delta_array, max_window_size, bins_per_dim,
-                             dd, spherical, sphere_center);
+    quick_index const delta_qindex(dim, dd_position_array, dd_delta_array, max_window_size,
+                                   bins_per_dim, dd, spherical, sphere_center);
 
     // sum the spherical area to be sure it matches the original Cartesian area
     double spherical_area = 0.0;
@@ -1916,24 +1747,16 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(spherical_area, sum_area));
 
     // Check the local state data
-    if (!qindex.domain_decomposed)
-      ITFAILS;
-    if (qindex.coarse_bin_resolution != bins_per_dim)
-      ITFAILS;
+    FAIL_IF(!qindex.domain_decomposed);
+    FAIL_IF(qindex.coarse_bin_resolution != bins_per_dim);
 
     // Check global bounding box
-    if (!soft_equiv(qindex.bounding_box_min[0], 0.025))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[1], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_min[2], 0.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[0], 1.0))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[1], rtt_units::PI, 1e-6))
-      ITFAILS;
-    if (!soft_equiv(qindex.bounding_box_max[2], 0.0))
-      ITFAILS;
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[0], 0.025));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[1], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_min[2], 0.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[0], 1.0));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[1], rtt_units::PI, 1e-6));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[2], 0.0));
     // Check local coarse_index map
     // local indexing will not match the domain replicated case (different
     // number of points per rank so different local indexing)
@@ -1990,54 +1813,34 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       gold_map[97] = {6};
       gold_map[99] = {15};
     }
-    if (gold_map.size() != qindex.coarse_index_map.size())
-      ITFAILS;
+    FAIL_IF(gold_map.size() != qindex.coarse_index_map.size());
     for (auto &map : qindex.coarse_index_map)
       for (size_t i = 0; i < map.second.size(); i++)
-        if (gold_map[map.first][i] != map.second[i])
-          ITFAILS;
+        FAIL_IF(gold_map[map.first][i] != map.second[i]);
 
     // Check Domain Decomposed Data
-    // local bounding box extends beyond local data based on the window size
+    // * local bounding box extends beyond local data based on the window size
     if (rtt_c4::node() == 0) {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[1], -0.97707, 1e-6))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 0.6725))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 4.11866, 1e-6))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[0], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[1], -0.97707, 1e-6));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[2], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[0], 0.6725));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[1], 4.11866, 1e-6));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     } else if (rtt_c4::node() == 1) {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[1], -0.598706, 1e-6))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 1.0975))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 3.7403, 1e-6))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[0], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[1], -0.598706, 1e-6));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[2], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[0], 1.0975));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[1], 3.7403, 1e-6));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     } else {
-      if (!soft_equiv(qindex.local_bounding_box_min[0], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[1], -0.411317, 1e-5))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_min[2], 0.0))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[0], 1.5975))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[1], 3.55291, 1e-6))
-        ITFAILS;
-      if (!soft_equiv(qindex.local_bounding_box_max[2], 0.0))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[0], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[1], -0.411317, 1e-5));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_min[2], 0.0));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[0], 1.5975));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[1], 3.55291, 1e-6));
+      FAIL_IF(!soft_equiv(qindex.local_bounding_box_max[2], 0.0));
     }
     // global bins that span the local domains
     std::vector<size_t> gold_bins;
@@ -2060,11 +1863,9 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
                    80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99};
     }
 
-    if (gold_bins.size() != qindex.local_bins.size())
-      ITFAILS;
+    FAIL_IF(gold_bins.size() != qindex.local_bins.size());
     for (size_t i = 0; i < qindex.local_bins.size(); i++)
-      if (gold_bins[i] != qindex.local_bins[i])
-        ITFAILS;
+      FAIL_IF(gold_bins[i] != qindex.local_bins[i]);
 
     // local ghost index map (how to find general location of the ghost data)
     std::map<size_t, std::vector<size_t>> gold_ghost_index_map;
@@ -2145,21 +1946,17 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       gold_ghost_index_map[94] = {47};
     }
 
-    if (gold_ghost_index_map.size() != qindex.local_ghost_index_map.size())
-      ITFAILS;
+    FAIL_IF(gold_ghost_index_map.size() != qindex.local_ghost_index_map.size());
     for (auto &map : qindex.local_ghost_index_map) {
-      if (gold_ghost_index_map[map.first].size() != map.second.size())
-        ITFAILS;
+      FAIL_IF(gold_ghost_index_map[map.first].size() != map.second.size());
       for (size_t i = 0; i < map.second.size(); i++) {
-        if (map.second[i] != gold_ghost_index_map[map.first][i])
-          ITFAILS;
+        FAIL_IF(map.second[i] != gold_ghost_index_map[map.first][i]);
       }
     }
 
-    // Check the local ghost locations (this tangentially checks the private
-    // put_window_map which is used to build this local data).
+    // Check the local ghost locations (this tangentially checks the private put_window_map which is
+    // used to build this local data).
     std::vector<std::array<double, 3>> gold_ghost_locations;
-    std::vector<std::array<double, 3>> gold_ghost_deltas;
     if (rtt_c4::node() == 0) {
       gold_ghost_locations = {
           {0.075, 0, 0.0},      {0.1, 0, 0.0},         {0.25, 0, 0.0},       {0.075, 0.722734, 0.0},
@@ -2205,13 +2002,11 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
                               {0.1, 2.41886, 0.0},    {0.25, 2.41886, 0.0},  {0.5, 2.41886, 0.0},
                               {0.1, 3.14159, 0.0},    {0.25, 3.14159, 0.0},  {0.5, 3.14159, 0.0}};
     }
-    if (gold_ghost_locations.size() != qindex.local_ghost_locations.size())
-      ITFAILS;
+    FAIL_IF(gold_ghost_locations.size() != qindex.local_ghost_locations.size());
     for (size_t i = 0; i < qindex.local_ghost_locations.size(); i++) {
       for (size_t d = 0; d < 2; d++)
-        if (!rtt_dsxx::soft_equiv(gold_ghost_locations[i][d], qindex.local_ghost_locations[i][d],
-                                  1e-4))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(gold_ghost_locations[i][d],
+                                         qindex.local_ghost_locations[i][d], 1e-4));
     }
 
     // Check collect_ghost_data vector call
@@ -2251,14 +2046,11 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     }
 
     for (size_t i = 0; i < ghost_data.size(); i++)
-      if (!rtt_dsxx::soft_equiv(ghost_data[i], gold_ghost_data[i]))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ghost_data[i], gold_ghost_data[i]));
     for (size_t i = 0; i < ghost_2x_data[0].size(); i++)
-      if (!rtt_dsxx::soft_equiv(ghost_2x_data[0][i], gold_2x_ghost_data[0][i]))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ghost_2x_data[0][i], gold_2x_ghost_data[0][i]));
     for (size_t i = 0; i < ghost_2x_data[1].size(); i++)
-      if (!rtt_dsxx::soft_equiv(ghost_2x_data[1][i], gold_2x_ghost_data[1][i]))
-        ITFAILS;
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(ghost_2x_data[1][i], gold_2x_ghost_data[1][i]));
 
     // check max sphere r window mapping (spoke shape more bins then data) functions
     {
@@ -2296,12 +2088,10 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 2; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]));
     }
 
     // check nearest sphere r window mapping (spoke shape more bins then data) functions
@@ -2340,12 +2130,10 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       }
 
       for (size_t i = 0; i < bin_sizes[0]; i++)
-        if (!rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 2; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]));
     }
 
     // check max sphere r window mapping (shell shape more bins then data) functions
@@ -2384,12 +2172,10 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       }
 
       for (size_t i = 0; i < bin_sizes[1]; i++)
-        if (!rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 2; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]));
     }
 
     // check max sphere r window mapping (shell shape more bins then data) functions with fill
@@ -2428,12 +2214,10 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       }
 
       for (size_t i = 0; i < bin_sizes[1]; i++)
-        if (!rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 2; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]));
     }
 
     // check min sphere r window mapping (shell shape more bins then data) functions with fill
@@ -2472,12 +2256,10 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       }
 
       for (size_t i = 0; i < bin_sizes[1]; i++)
-        if (!rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 2; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]));
     }
 
     // check nearest sphere r window mapping (shell shape more bins then data) functions with fill
@@ -2516,12 +2298,10 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       }
 
       for (size_t i = 0; i < bin_sizes[1]; i++)
-        if (!rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]))
-          ITFAILS;
+        FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_data[i], gold_window_data[i]));
       for (size_t v = 0; v < 2; v++)
         for (size_t i = 0; i < bin_sizes[0]; i++)
-          if (!rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]))
-            ITFAILS;
+          FAIL_IF_NOT(rtt_dsxx::soft_equiv(sphere_window_2x_data[v][i], gold_window_2x_data[v][i]));
     }
   }
 

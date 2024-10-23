@@ -18,10 +18,16 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "kde.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "kde/quick_index.hh"
+#include "c4/C4_Functions.hh"
+#include <algorithm>
+#include <array>
 #include <cmath>
-#include <fstream>
-#include <iostream>
+#include <cstddef>
 #include <numeric>
+#include <vector>
 
 namespace rtt_kde {
 
@@ -277,8 +283,8 @@ kde::reconstruction(const std::vector<double> &distribution,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief KDE reconstruction 
- * 
+ * \brief KDE reconstruction
+ *
  * \pre The local reconstruction data is passed into this function which includes the original data
  * distribution, its spatial position, and the optimal bandwidth to be used at each point.
  *
@@ -419,8 +425,8 @@ kde::reconstruction(const std::vector<std::vector<double>> &distribution, const 
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief KDE weighted reconstruction 
- * 
+ * \brief KDE weighted reconstruction
+ *
  * \pre The local reconstruction data is passed into this function which includes the original data
  * distribution, its spatial position, and the optimal bandwidth to be used at each point.
  * Additional bandwidth weights are passed, these weights are used to scale the distance of the
@@ -952,11 +958,11 @@ kde::log_reconstruction(const std::vector<double> &distribution,
  *  Calculate the bounding window (via win_min (x_min,y_min,z_min) and win_max (x_max, y_max,
  *  z_max)) given a central location and the bandwidth size in each dimension (dx,dy) for Cartesian
  *  or (dr, dtheta) for spherical.
- * 
+ *
  * \param[in] qindex quick index class for finding bounds xy bounds of a wedge shape
  * \param[in] position is the central location of the bounds
  * \param[in] one_over_bandwidth size of the reconstruction domain in each dimension. This is
- * (dx,dy) for Caresian and (dr, arc_length) for spherical. 
+ * (dx,dy) for Caresian and (dr, arc_length) for spherical.
  * \param[in,out] win_min is the minimum corner of the bounding box (x_min, y_min, z_min)
  * \param[in,out] win_max is the maximum corner of the bounding box (x_max, y_max, z_max)
  *
@@ -1049,7 +1055,7 @@ void apply_conservation(const std::vector<double> &original_distribution,
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief KDE apply conservation to individual distributions per cell
- * 
+ *
  * \pre Apply conservation fix to the new distribution so sum(original_distribution) ==
  * sum(new_distribution)
  *

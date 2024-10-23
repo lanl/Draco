@@ -4,11 +4,14 @@
  * \author Mathew Cleveland
  * \date   Jan. 11t 2021
  * \brief  Explicit instansiation of the nnetwork_interface class
- * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "nnetwork_interface.hh"
+#include "predict/nnetwork_wrapper.hh"
+#include <cstddef>
+#include <string>
+#include <vector>
 
 namespace rtt_predict {
 
@@ -17,7 +20,7 @@ namespace rtt_predict {
  * \brief Load Neural Network state data
  *
  * \param[in] network_state_file (dependes on the NN backend)
- * 
+ *
  */
 //================================================================================================//
 nnetwork_interface::nnetwork_interface(const std::string &network_state_file) {
