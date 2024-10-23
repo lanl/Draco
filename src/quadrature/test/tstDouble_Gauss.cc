@@ -3,14 +3,16 @@
  * \file   quadrature/test/tstDouble_Gauss.cc
  * \author Kent G. Budge
  * \date   Tue Nov  6 13:08:49 2012
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "quadrature_test.hh"
 #include "quadrature/Double_Gauss.hh"
+#include "quadrature/QIM.hh"
 
 using namespace std;
 using namespace rtt_dsxx;

@@ -3,14 +3,12 @@
  * \file   quadrature/test/tstGauss_Legendre.cc
  * \author Kent G. Budge
  * \date   Tue Nov  6 13:08:49 2012
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
- */
-//------------------------------------------------------------------------------------------------//
-// $Id: template_test.cc 5830 2011-05-05 19:43:43Z kellyt $
+ * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "quadrature_test.hh"
 #include "quadrature/Gauss_Legendre.hh"
 

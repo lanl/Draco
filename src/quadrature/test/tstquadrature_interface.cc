@@ -9,13 +9,15 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
-#include "quadrature/Quadrature.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "quadrature/Quadrature_Interface.hh"
 #include <array>
+#include <vector>
 
 using namespace std;
 using namespace rtt_dsxx;
-using namespace rtt_quadrature;
+// using namespace rtt_quadrature;
 
 //------------------------------------------------------------------------------------------------//
 // Unit tests
@@ -23,11 +25,11 @@ using namespace rtt_quadrature;
 
 void quadrature_interface_test(rtt_dsxx::UnitTest &ut) {
 
-  int dimension = 1;
-  int type = 0;
-  int order = 4;
-  int azimuthal_order = 2;
-  int geometry = 0;
+  int const dimension = 1;
+  int const type = 0;
+  int const order = 4;
+  int const azimuthal_order = 2;
+  int const geometry = 0;
   std::vector<double> mu(30, 0.0);
   std::vector<double> eta(30, 0.0);
   std::vector<double> xi(30, 0.0);
@@ -54,15 +56,15 @@ void quadrature_interface_test(rtt_dsxx::UnitTest &ut) {
 
   for (unsigned i = 0; i < 4; ++i) {
     if (!soft_equiv(quad.mu[i], gs_mu[i], 1e-8)) {
-      ut.failure("incorrect mu");
+      FAILMSG("incorrect mu");
       return;
     }
     if (!soft_equiv(quad.weights[i], gs_wt[i], 1e-8)) {
-      ut.failure("incorrect wt");
+      FAILMSG("incorrect wt");
       return;
     }
   }
-  ut.passes("Gauss_Legendre passed");
+  PASSMSG("Gauss_Legendre passed");
 
   // testing Lobato
   init_quadrature(quad);
@@ -81,15 +83,15 @@ void quadrature_interface_test(rtt_dsxx::UnitTest &ut) {
 
   for (unsigned i = 0; i < 4; ++i) {
     if (!soft_equiv(quad.mu[i], lobato_mu[i], 1e-8)) {
-      ut.failure("incorrect mu");
+      FAILMSG("incorrect mu");
       return;
     }
     if (!soft_equiv(quad.weights[i], lobato_wt[i], 1e-8)) {
-      ut.failure("incorrect wt");
+      FAILMSG("incorrect wt");
       return;
     }
   }
-  ut.passes("Lobato passed");
+  PASSMSG("Lobato passed");
 
   // testing Level Symmetric
   init_quadrature(quad);
@@ -131,19 +133,19 @@ void quadrature_interface_test(rtt_dsxx::UnitTest &ut) {
 
   for (unsigned i = 0; i < 16; ++i) {
     if (!soft_equiv(quad.mu[i], ls_mu[i], 1e-8)) {
-      ut.failure("incorrect mu");
+      FAILMSG("incorrect mu");
       return;
     }
     if (!soft_equiv(quad.eta[i], ls_eta[i], 1e-8)) {
-      ut.failure("incorrect eta");
+      FAILMSG("incorrect eta");
       return;
     }
     if (!soft_equiv(quad.weights[i], ls_wt[i], 1e-8)) {
-      ut.failure("incorrect wt");
+      FAILMSG("incorrect wt");
       return;
     }
   }
-  ut.passes("Level Symmetric passed");
+  PASSMSG("Level Symmetric passed");
 
   // testing Tri Chebyshev Legendre
   init_quadrature(quad);
@@ -170,19 +172,19 @@ void quadrature_interface_test(rtt_dsxx::UnitTest &ut) {
 
   for (unsigned i = 0; i < 12; ++i) {
     if (!soft_equiv(quad.mu[i], tcl_mu[i], 1e-8)) {
-      ut.failure("incorrect mu");
+      FAILMSG("incorrect mu");
       return;
     }
     if (!soft_equiv(quad.eta[i], tcl_eta[i], 1e-8)) {
-      ut.failure("incorrect eta");
+      FAILMSG("incorrect eta");
       return;
     }
     if (!soft_equiv(quad.weights[i], tcl_wt[i], 1e-8)) {
-      ut.failure("incorrect wt");
+      FAILMSG("incorrect wt");
       return;
     }
   }
-  ut.passes("Tri Chebyshev Legendre passed");
+  PASSMSG("Tri Chebyshev Legendre passed");
 
   // testing Square Chebyshev Legendre
   init_quadrature(quad);
@@ -213,19 +215,19 @@ void quadrature_interface_test(rtt_dsxx::UnitTest &ut) {
 
   for (unsigned i = 0; i < 16; ++i) {
     if (!soft_equiv(quad.mu[i], scl_mu[i], 1e-8)) {
-      ut.failure("incorrect mu");
+      FAILMSG("incorrect mu");
       return;
     }
     if (!soft_equiv(quad.eta[i], scl_eta[i], 1e-8)) {
-      ut.failure("incorrect eta");
+      FAILMSG("incorrect eta");
       return;
     }
     if (!soft_equiv(quad.weights[i], scl_wt[i], 1e-8)) {
-      ut.failure("incorrect wt");
+      FAILMSG("incorrect wt");
       return;
     }
   }
-  ut.passes("Square Chebyshev Legendre passed");
+  PASSMSG("Square Chebyshev Legendre passed");
 
   // testing Product Chebyshev Legendre
   init_quadrature(quad);
@@ -249,19 +251,19 @@ void quadrature_interface_test(rtt_dsxx::UnitTest &ut) {
 
   for (unsigned i = 0; i < 8; ++i) {
     if (!soft_equiv(quad.mu[i], pcl_mu[i], 1e-8)) {
-      ut.failure("incorrect mu");
+      FAILMSG("incorrect mu");
       return;
     }
     if (!soft_equiv(quad.eta[i], pcl_eta[i], 1e-8)) {
-      ut.failure("incorrect eta");
+      FAILMSG("incorrect eta");
       return;
     }
     if (!soft_equiv(quad.weights[i], pcl_wt[i], 1e-8)) {
-      ut.failure("incorrect wt");
+      FAILMSG("incorrect wt");
       return;
     }
   }
-  ut.passes("Product Chebyshev Legendre passed");
+  PASSMSG("Product Chebyshev Legendre passed");
 
   if (ut.numFails == 0)
     PASSMSG("test successfull.");

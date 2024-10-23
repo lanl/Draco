@@ -8,8 +8,10 @@
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "quadrature_test.hh"
 #include "quadrature/Level_Symmetric.hh"
+#include <iostream>
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -25,12 +27,10 @@ int main(int argc, char *argv[]) {
     for (unsigned N = 2; N < 25; N += 2)
     // Pathological in curvilinear geometry at N>=18
     {
-      cout << "Order " << N << ':' << endl;
+      cout << "Order " << N << ":\n";
       Level_Symmetric quadrature(N);
-      if (quadrature.sn_order() != N) {
-        ut.failure("NOT correct SN order");
-      }
-      bool cartesian_tests_only(N >= 18);
+      FAIL_IF_NOT(quadrature.sn_order() == N);
+      bool const cartesian_tests_only(N >= 18);
       quadrature_test(ut, quadrature, cartesian_tests_only);
     }
   }

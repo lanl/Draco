@@ -3,14 +3,12 @@
  * \file   quadrature/test/tstProduct_Chebyshev_Legendre.cc
  * \author James S. Warsa
  * \date   Tue Nov  6 13:08:49 2012
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved.
- */
-//------------------------------------------------------------------------------------------------//
-// $Id: template_test.cc 5830 2011-05-05 19:43:43Z kellyt $
+ * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "quadrature_test.hh"
 #include "quadrature/Product_Chebyshev_Legendre.hh"
 
@@ -29,7 +27,7 @@ int main(int argc, char *argv[]) {
 
       Product_Chebyshev_Legendre quadrature(8, 12);
       if (quadrature.sn_order() != 8) {
-        ut.failure("NOT correct SN order");
+        FAILMSG("NOT correct SN order");
       }
       quadrature_test(ut, quadrature);
     }
