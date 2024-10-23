@@ -7,9 +7,18 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "quick_index.hh"
-#include "dsxx/dbc.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "c4/C4_Functions.hh"
+#include "units/MathConstants.hh"
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <cstddef>
 #include <numeric>
+#include <string>
 #include <tuple>
+#include <vector>
 
 namespace { // unnamed namespace for pure local function
 //------------------------------------------------------------------------------------------------//
@@ -33,7 +42,7 @@ transform_spherical(const size_t dim, const std::array<double, 3> &sphere_center
                                   0.0};
     const double r = sqrt(v[0] * v[0] + v[1] * v[1]);
     const double mag = sqrt(v[0] * v[0] + v[1] * v[1]);
-    double cos_theta = mag > 0.0 ? std::max(std::min(v[1] / mag, 1.0), -1.0) : 0.0;
+    double const cos_theta = mag > 0.0 ? std::max(std::min(v[1] / mag, 1.0), -1.0) : 0.0;
     location = std::array<double, 3>{
         r, location[0] < sphere_center[0] ? 2.0 * rtt_units::PI - acos(cos_theta) : acos(cos_theta),
         0.0};
@@ -304,7 +313,8 @@ void quick_index::initialize_data() {
 //------------------------------------------------------------------------------------------------//
 // call MPI_put using a chunk style write to avoid error in MPI_put with large local buffers.
 auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win,
-                     MPI_Datatype mpi_data_type) {
+                     MPI_Datatype mpi_data_type) // NOLINT(misc-include-cleaner)
+{
   // temporary work around until RMA is available in c4
   // loop over all ranks we need to send this buffer too.
   for (auto &putv : put.second) {
@@ -349,6 +359,9 @@ void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &l
          "ghost_data input must be sized via quick_index.local_ghost_buffer_size");
 #ifdef C4_MPI // temporary work around until RMA is available in c4
   // Use one sided MPI Put commands to fill up the ghost cell location data
+
+  // Don't warin about including mpi.h
+  // NOLINTBEGIN(misc-include-cleaner)
   std::vector<double> local_ghost_buffer(local_ghost_buffer_size, 0.0);
   std::vector<double> put_buffer(max_put_buffer_size, 0.0);
   MPI_Win win;
@@ -383,6 +396,7 @@ void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &l
     }
   }
   MPI_Win_free(&win);
+  // NOLINTEND(misc-include-cleaner)
 #endif
 }
 
@@ -402,8 +416,8 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
                                      std::vector<std::vector<double>> &local_ghost_data) const {
   Insist(domain_decomposed, "Calling collect_ghost_data with a quick_index object that specified "
                             "domain_decomposed=.false.");
-  size_t data_dim = local_data.size();
-  size_t ghost_data_dim = local_ghost_data.size();
+  size_t const data_dim = local_data.size();
+  size_t const ghost_data_dim = local_ghost_data.size();
   Insist(data_dim == ghost_data_dim,
          "The local_data.size() and the local_ghost_data.size() vectors much match");
   // Check ghost data
@@ -414,6 +428,9 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
   }
 #ifdef C4_MPI // temporary work around until RMA is available in c4
   // Use one sided MPI Put commands to fill up the ghost cell location data
+
+  // Don't warin about including mpi.h
+  // NOLINTBEGIN(misc-include-cleaner)
   std::vector<double> local_ghost_buffer(local_ghost_buffer_size, 0.0);
   std::vector<double> put_buffer(max_put_buffer_size, 0.0);
   MPI_Win win;
@@ -448,6 +465,7 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
     }
   }
   MPI_Win_free(&win);
+  // NOLINTEND(misc-include-cleaner)
 #endif
 }
 
@@ -471,7 +489,7 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
   Insist(domain_decomposed, "Calling collect_ghost_data with a quick_index object that specified "
                             "domain_decomposed=.false.");
   Require(local_data.size() == n_locations);
-  size_t ghost_data_size = local_ghost_data.size();
+  size_t const ghost_data_size = local_ghost_data.size();
   Insist(ghost_data_size == local_ghost_buffer_size,
          "The local_ghost_data must be sized via quick_index.local_ghost_buffer_size");
   // Check ghost data
@@ -481,6 +499,9 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
   }
 #ifdef C4_MPI // temporary work around until RMA is available in c4
   // Use one sided MPI Put commands to fill up the ghost cell location data
+
+  // Don't warin about including mpi.h
+  // NOLINTBEGIN(misc-include-cleaner)
   std::vector<double> local_ghost_buffer(local_ghost_buffer_size, 0.0);
   std::vector<double> put_buffer(max_put_buffer_size, 0.0);
   MPI_Win win;
@@ -513,6 +534,7 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
     }
   }
   MPI_Win_free(&win);
+  // NOLINTEND(misc-include-cleaner)
 #endif
 }
 //------------------------------------------------------------------------------------------------//
@@ -534,7 +556,9 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
   Insist(local_ghost_data.size() == local_ghost_buffer_size,
          "ghost_data input must be sized via quick_index.local_ghost_buffer_size");
 #ifdef C4_MPI // temporary work around until RMA is available in c4
-  std::vector<double> local_ghost_buffer(local_ghost_buffer_size, 0.0);
+  // Don't warin about including mpi.h
+  // NOLINTBEGIN(misc-include-cleaner)
+  std::vector<double> const local_ghost_buffer(local_ghost_buffer_size, 0.0);
   std::vector<double> put_buffer(max_put_buffer_size, 0.0);
   MPI_Win win;
   MPI_Win_create(local_ghost_data.data(), local_ghost_buffer_size * sizeof(double), sizeof(double),
@@ -559,6 +583,7 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
                     win);
   Check(errorcode == MPI_SUCCESS);
   MPI_Win_free(&win);
+  // NOLINTEND(misc-include-cleaner)
 #endif
 }
 
@@ -581,7 +606,9 @@ void quick_index::collect_ghost_data(const std::vector<int> &local_data,
   Insist(local_ghost_data.size() == local_ghost_buffer_size,
          "ghost_data input must be sized via quick_index.local_ghost_buffer_size");
 #ifdef C4_MPI // temporary work around until RMA is available in c4
-  std::vector<int> local_ghost_buffer(local_ghost_buffer_size, 0);
+  // Don't warin about including mpi.h
+  // NOLINTBEGIN(misc-include-cleaner)
+  std::vector<int> const local_ghost_buffer(local_ghost_buffer_size, 0);
   std::vector<int> put_buffer(max_put_buffer_size, 0);
   MPI_Win win;
   MPI_Win_create(local_ghost_data.data(), local_ghost_buffer_size * sizeof(int), sizeof(int),
@@ -606,6 +633,7 @@ void quick_index::collect_ghost_data(const std::vector<int> &local_data,
                     win);
   Check(errorcode == MPI_SUCCESS);
   MPI_Win_free(&win);
+  // NOLINTEND(misc-include-cleaner)
 #endif
 }
 
@@ -668,7 +696,7 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
   for (size_t k = index_min[2]; k <= index_max[2]; k++) {
     for (size_t j = index_min[1]; j <= index_max[1]; j++) {
       for (size_t i = index_min[0]; i <= index_max[0]; i++) {
-        size_t bin_index =
+        size_t const bin_index =
             i + j * coarse_bin_resolution + k * coarse_bin_resolution * coarse_bin_resolution;
         bin_list[count] = bin_index;
         count++;
@@ -718,7 +746,7 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
     for (size_t k = index_min[2]; k <= index_max[2]; k++) {
       for (size_t j = index_min[1]; j <= index_max[1]; j++) {
         for (size_t i = index_min[0]; i <= index_max[0]; i++) {
-          size_t bin_index =
+          size_t const bin_index =
               i + j * coarse_bin_resolution + k * coarse_bin_resolution * coarse_bin_resolution;
           // make sure we don't duplicate a bin here
           if (std::find(bin_list.begin(), bin_list.end(), bin_index) == bin_list.end()) {
@@ -937,7 +965,8 @@ void quick_index::map_data_to_grid_window(
   Require(domain_decomposed
               ? (fabs(window_max[0] - window_min[0]) - max_window_size) / max_window_size < 1e-6
               : true);
-  Remember(double ymax = spherical ? std::min(rtt_units::PI / 2.0, max_window_size / window_max[0])
+  Remember(double const ymax = spherical
+                                   ? std::min(rtt_units::PI / 2.0, max_window_size / window_max[0])
                                    : max_window_size);
   Require(domain_decomposed ? (fabs(window_max[1] - window_min[1]) - ymax) / ymax < 1e-6 : true);
   Require(domain_decomposed
@@ -997,7 +1026,7 @@ void quick_index::map_data_to_grid_window(
   std::fill(grid_data.begin(), grid_data.end(), 0.0);
 
   // Grab the global bins that lie in this window
-  std::vector<size_t> global_bins = window_coarse_index_list(window_min, window_max);
+  std::vector<size_t> const global_bins = window_coarse_index_list(window_min, window_max);
 
   std::vector<int> data_count(n_map_bins, 0);
   std::vector<double> min_distance(n_map_bins, 0);
@@ -1074,7 +1103,7 @@ void quick_index::map_data_to_grid_window(
     double right_val = 0.0;
     int right_data_count = 0;
     for (size_t i = 0; i < n_map_bins; i++) {
-      size_t ri = n_map_bins - 1 - i;
+      size_t const ri = n_map_bins - 1 - i;
       if (data_count[i] > 0) {
         left_val = grid_data[i];
         left_data_count = data_count[i];
@@ -1249,7 +1278,7 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
 
   const size_t vsize = local_data.size();
   // Grab the global bins that lie in this window
-  std::vector<size_t> global_bins = window_coarse_index_list(window_min, window_max);
+  std::vector<size_t> const global_bins = window_coarse_index_list(window_min, window_max);
   size_t n_map_bins = 1;
   for (size_t d = 0; d < dim; d++) {
     n_map_bins *= grid_bins[d];
@@ -1340,7 +1369,7 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
     int right_data_count = 0;
     for (size_t i = 0; i < n_map_bins; i++) {
       for (size_t v = 0; v < vsize; v++) {
-        size_t ri = n_map_bins - 1 - i;
+        size_t const ri = n_map_bins - 1 - i;
         if (data_count[i] > 0) {
           left_val[v] = grid_data[v][i];
           left_data_count = data_count[i];

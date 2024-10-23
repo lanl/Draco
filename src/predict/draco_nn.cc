@@ -8,11 +8,14 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "draco_nn.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/FMA.hh"
-#include "dsxx/dbc.hh"
+#include <algorithm>
+#include <array>
+#include <cstddef>
 #include <fstream>
-#include <numeric>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace rtt_predict {
@@ -30,8 +33,8 @@ void draco_nn::load_network(const std::string &net_file) {
   int test_int;
   in.read(reinterpret_cast<char *>(&test_int), sizeof(int));
   Insist(test_int == 1,
-         "Test integer in binary file should be equal to one check *.nnb binary file "
-         "for endianness and correct binary format");
+         "Test integer in binary file should be equal to one check *.nnb binary file for "
+         "endianness and correct binary format");
   int ibuffer;
   in.read(reinterpret_cast<char *>(&ibuffer), sizeof(int));
   n_layers = static_cast<size_t>(ibuffer);

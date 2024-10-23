@@ -68,7 +68,7 @@ transform_spherical_delta(const size_t dim, const std::array<double, 3> &sphere_
                                     0.0};
       const double r = sqrt(v[0] * v[0] + v[1] * v[1]);
       const double mag = sqrt(v[0] * v[0] + v[1] * v[1]);
-      double cos_theta = mag > 0.0 ? std::max(std::min(v[1] / mag, 1.0), -1.0) : 0.0;
+      double const cos_theta = mag > 0.0 ? std::max(std::min(v[1] / mag, 1.0), -1.0) : 0.0;
       location = std::array<double, 3>{
           r,
           location[0] < sphere_center[0] ? 2.0 * rtt_units::PI - acos(cos_theta) : acos(cos_theta),
