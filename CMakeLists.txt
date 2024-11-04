@@ -120,6 +120,9 @@ if(TARGET Exe_draco_info)
 endif()
 add_subdirectory(config) #< This must be processed after 'src'
 
+# Helper for vs-code developer environments.
+dbs_vscode_env_helper()
+
 # install top level documents
 install(FILES ChangeLog LICENSE.md README.md DESTINATION ${CMAKE_INSTALL_PREFIX})
 

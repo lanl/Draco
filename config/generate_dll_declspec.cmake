@@ -17,27 +17,24 @@ function(generate_dll_declspec dir components)
       "/*------------------------------------------*-C-*------------------------------------------*/
 /*!
  * file   dll_declspec.h
- * brief  Defined macros that are used as declarators to control dllexport
- *        or dllimport linkage for dll files.
+ * brief  Defined macros that are used as declarators to control dllexport or dllimport linkage
+ *        for dll files.
  * note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved.
  *
- * Provide toolset for hiding symbols from shared libraries.  By default MSVC
- * hides everying unless they are marked as 'dllexport'.  By default
- * Linux-based linkers export everything unless they are marked as
- * 'hidden'. The macros DLL_PUBLIC_<pkg> and DLL_LOCAL_<pkg> are provided to
- * help make symbol export portable between Linux and Windows.
+ * Provide toolset for hiding symbols from shared libraries.  By default MSVC hides everying unless
+ * they are marked as 'dllexport'.  By default Linux-based linkers export everything unless they
+ * are marked as 'hidden'. The macros DLL_PUBLIC_<pkg> and DLL_LOCAL_<pkg> are provided to help
+ * make symbol export portable between Linux and Windows.
  *
  * - http://gcc.gnu.org/wiki/Visibility
  * - https://msdn.microsoft.com/en-us/library/3y1sfaz2.aspx
  * - http://www.cmake.org/Wiki/BuildingWinDLL
  *
- * For MSVC, you must also mark functions as dllexport or dllimport.  When
- * compiling a file to place it in a dll, the symbols must be marked
- * 'dllexport', but when including a header that is associated with an
- * external .dll (include Array.hh and linking against -ldsxx.so), the same
- * symbol must be marked as 'dllimport.' The macro '<target>_EXPORTS>' will
- * be used to control how the symbols are marked.  This CPP definition is set
- * by cmake.
+ * For MSVC, you must also mark functions as dllexport or dllimport.  When compiling a file to
+ * place it in a dll, the symbols must be marked 'dllexport', but when including a header that is
+ * associated with an external .dll (include Array.hh and linking against -ldsxx.so), the same
+ * symbol must be marked as 'dllimport.' The macro '<target>_EXPORTS>' will be used to control how
+ * the symbols are marked.  This CPP definition is set by cmake.
  *
  * Example use of DLL_PUBLIC_foo CPP Symbol:
  *
@@ -106,32 +103,19 @@ function(generate_dll_declspec dir components)
   set(dll_declspec_content "${dll_declspec_content}
     #define DLL_LOCAL")
 
-  # set( dll_declspec_content "${dll_declspec_content} #else /* DRACO_SHARED_LIBS */ /* when
-  # building static libraries, no need to export symbols. */")
-
-  # foreach(pkg ${components} ) set( dll_declspec_content "${dll_declspec_content} #define
-  # DLL_PUBLIC_${pkg}") endforeach()
-
-  # set( dll_declspec_content "${dll_declspec_content} #define DLL_LOCAL
-
-  # #endif /* DRACO_SHARED_LIBS */")
-
   set(dll_declspec_content
       "${dll_declspec_content}
 
   /* Linux ---------------------------------------- */
   #else
     #if defined CMAKE_COMPILER_IS_GNUCXX && __GNUC__ >= 4
-/* GCC's attributes don't work exactly like MSVC's declspec for the
-way we implement explicit instantiations.  In Jayenne, we often have
-class templates defined in the package directory and the explicit
-instantiations are done in the test directory. Neither GCC nor MSVC
-expect the instantiations to be defined in a library other than the
-main package where the class template is declared.  Under this model,
-MSVC requires the explicit instantiation to be exported from the test
-library but GCC ignores these attributes (with a warning) because
-declaration does not have the same attributes.  Because of this
-distiction, I am disabling setting attributes when GCC is used.
+/* GCC's attributes don't work exactly like MSVC's declspec for the way we implement explicit
+instantiations.  In Jayenne, we often have class templates defined in the package directory and the
+explicit instantiations are done in the test directory. Neither GCC nor MSVC expect the
+instantiations to be defined in a library other than the main package where the class template is
+declared.  Under this model, MSVC requires the explicit instantiation to be exported from the test
+library but GCC ignores these attributes (with a warning) because declaration does not have the
+same attributes.  Because of this distiction, I am disabling setting attributes when GCC is used.
 (KT 2016-03-04) */
 ")
 
@@ -142,14 +126,20 @@ distiction, I am disabling setting attributes when GCC is used.
       #define DLL_PUBLIC_${pkg} ")
   endforeach()
 
+  if("${safedir}" STREQUAL "dsxx")
+    set(dll_declspec_content
+        "${dll_declspec_content}
+        #define DLL_LOCAL  __attribute__ ((visibility(\"hidden\")))
+        /* These defines are taken from dsxx/Compiler.hh written by Paul Henning */
+        /* #define HIDE_FUNC __attribute__ ((visibility (\"hidden\"))) */
+        /* #define EXPORT_FUNC __attribute__ ((visibility (\"default\"))) */
+        /* #define HIDE_CLASS __attribute ((visibility (\"hidden\"))) */
+        /* #define EXPORT_CLASS __attribute ((visibility (\"default\"))) */
+")
+  endif()
   set(dll_declspec_content
       "${dll_declspec_content}
-      #define DLL_LOCAL  __attribute__ ((visibility(\"hidden\")))
-      /* These defines are taken from dsxx/Compiler.hh written by Paul Henning */
-      /* #define HIDE_FUNC __attribute__ ((visibility (\"hidden\"))) */
-      /* #define EXPORT_FUNC __attribute__ ((visibility (\"default\"))) */
-      /* #define HIDE_CLASS __attribute ((visibility (\"hidden\"))) */
-      /* #define EXPORT_CLASS __attribute ((visibility (\"default\"))) */
+
     #else
 ")
 
