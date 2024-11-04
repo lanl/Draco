@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 June 5
 # brief  Default CMake build parameters
-# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
 #------------------------------------------------------------------------------------------------- #
 
 include_guard(GLOBAL)
@@ -316,6 +316,51 @@ macro(dbsConfigInfo)
   endif()
 
 endmacro()
+
+# ------------------------------------------------------------------------------------------------ #
+# vscode_env_helper
+#
+# Extra setup for VS Code's C/C++ extension.  This plugin needs some help finding header files since
+# it doesn't know about the data in CMakeCache.txt.
+#
+# In VS Code,
+#
+# cmake-lint: disable=E1126
+# ------------------------------------------------------------------------------------------------ #
+function(dbs_vscode_env_helper)
+
+  # Only run this function if the developer is using vscode on a Unix-like system.
+  if(NOT UNIX OR NOT IS_DIRECTORY "${${CMAKE_PROJECT_NAME}_SOURCE_DIR}/.vscode")
+    return()
+  endif()
+
+  # Create a directory that includes symbolic links to all discovered vendors.  This helps VS Code
+  # find all of the header files used by the project.
+  set(dep_binary_dir "${${CMAKE_PROJECT_NAME}_BINARY_DIR}/deps")
+  if(NOT EXISTS "${dep_binary_dir}")
+    file(MAKE_DIRECTORY "${${CMAKE_PROJECT_NAME}_BINARY_DIR}/deps")
+  endif()
+  if(NOT ${CMAKE_PROJECT_NAME} STREQUAL "Draco" AND EXISTS "${draco_DIR}/../include")
+    file(REAL_PATH "${draco_DIR}/../include" rddir)
+    file(CREATE_LINK "${rddir}" "${dep_binary_dir}/draco" SYMBOLIC)
+  endif()
+  if(EXISTS "${LIBQUO_INCLUDE_DIR}")
+    file(CREATE_LINK "${LIBQUO_INCLUDE_DIR}" "${dep_binary_dir}/quo" SYMBOLIC)
+  endif()
+  if(EXISTS "${MPI_CXX_HEADER_DIR}")
+    file(CREATE_LINK "${MPI_CXX_HEADER_DIR}" "${dep_binary_dir}/mpi" SYMBOLIC)
+  endif()
+  if(EXISTS "${RANDOM123_INCLUDE_DIR}")
+    file(CREATE_LINK "${RANDOM123_INCLUDE_DIR}" "${dep_binary_dir}/random123" SYMBOLIC)
+  endif()
+  if(EXISTS "${GSL_INCLUDE_DIR}")
+    file(CREATE_LINK "${GSL_INCLUDE_DIR}" "${dep_binary_dir}/gsl" SYMBOLIC)
+  endif()
+  if(EXISTS "${CALIPER_INCLUDE_DIR}")
+    file(CREATE_LINK "${CALIPER_INCLUDE_DIR}" "${dep_binary_dir}/caliper" SYMBOLIC)
+  endif()
+
+endfunction(dbs_vscode_env_helper)
 
 # ------------------------------------------------------------------------------------------------ #
 # End

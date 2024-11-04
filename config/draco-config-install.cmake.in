@@ -155,7 +155,6 @@ if(NDI_FOUND AND NOT TARGET NDI::ndi)
   setupndi()
 endif()
 
-
 # If HAVE_LIBQUO is 1, then this build of Draco requires the LIBQUO::libquo target. If this
 # target is not defined, then create it.
 set(HAVE_LIBQUO @HAVE_LIBQUO@)

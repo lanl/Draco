@@ -28,6 +28,13 @@
 #cmakedefine MPIEXEC_PREFLAGS     "@MPIEXEC_PREFLAGS@"
 #cmakedefine MPIEXEC_NUMPROC_FLAG "@MPIEXEC_NUMPROC_FLAG@"
 
+/* Helper */
+#ifdef C4_MPI
+#define DRACO_MPI_ANY_SOURCE MPI_ANY_SOURCE
+#else
+#define DRACO_MPI_ANY_SOURCE 0
+#endif
+
 /* ---------------------------------------- */
 /* All build systems                        */
 /* ---------------------------------------- */

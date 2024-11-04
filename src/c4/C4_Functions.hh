@@ -314,7 +314,7 @@ template <typename T> void global_sum(T &x);
  *
  * \param[in,out] send_buffer scalar value on this processing element
  * \param[in,out] recv_buffer scalar value summed across all ranks
- * \param[in,out] request C4_Requst handle for testing completed message
+ * \param[in,out] request C4_Request handle for testing completed message
  */
 template <typename T> void global_isum(T &send_buffer, T &recv_buffer, C4_Req &request);
 
