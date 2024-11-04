@@ -143,36 +143,6 @@
       }
     },
     {
-      "name": "darwin-p9",
-      "hidden": true,
-      "generator": "Unix Makefiles",
-      "binaryDir": "${sourceDir}/build/${presetName}-$env{SLURM_JOB_PARTITION}-$env{CC}",
-      "installDir": "${sourceDir}/install/${presetName}-$env{SLURM_JOB_PARTITION}-$env{CC}",
-      "condition": {
-        "type": "equals",
-        "lhs": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
-        "rhs": "darwin-power9"
-      }
-    },
-    {
-      "name": "darwin-p9-debug",
-      "displayName": "Darwin Power9 Debug",
-      "description": "Target Darwin Power9 for Debug build.",
-      "inherits": "darwin-p9",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
-      "name": "darwin-p9-release",
-      "displayName": "Darwin Power9 Releaes",
-      "description": "Target Darwin Power9 for Release build.",
-      "inherits": "darwin-p9",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      }
-    },
-    {
       "name": "macos-debug",
       "displayName": "macOS Debug",
       "description": "Target a remote macOS system.",
@@ -317,21 +287,13 @@
     {
       "name": "darwin-haswell-clang-tidy",
       "configurePreset": "darwin-haswell-clang-tidy"
-    },
-    {
-      "name": "darwin-p9-debug",
-      "configurePreset": "darwin-p9-debug"
-    },
-    {
-      "name": "darwin-p9-release",
-      "configurePreset": "darwin-p9-release"
     }
   ],
   "testPresets": [
     {
       "name": "linux-ctest",
       "description": "Run all tests",
-      "displayName": "Ctest",
+      "displayName": "Run all tests in parallel with ctest",
       "hidden": true,
       "condition": {
         "type": "equals",
@@ -390,14 +352,17 @@
       "configurePreset": "linux-debug-clang-tidy"
     },
     {
-      "name": "darwin-p9-ctest",
-      "description": "Run all tests",
-      "displayName": "Ctest",
+      "name": "darwin-haswell-ctest",
+      "displayName": "Run all tests",
+      "description": "Run all tests in parallel with ctest",
       "hidden": true,
       "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
-        "rhs": "Linux-darwin"
+        "type": "inList",
+        "string": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
+        "list": [
+          "darwin-general",
+          "darwin-sid-spr"
+        ]
       },
       "output": {
         "outputOnFailure": true
@@ -408,18 +373,18 @@
       }
     },
     {
-      "name": "darwin-p9-debug",
-      "inherits": "darwin-p9-ctest",
+      "name": "darwin-haswell-release",
+      "inherits": "darwin-haswell-ctest",
       "description": "Run all tests",
       "displayName": "Ctest",
-      "configurePreset": "darwin-p9-debug"
+      "configurePreset": "darwin-haswell-release"
     },
     {
-      "name": "darwin-p9-release",
-      "inherits": "darwin-p9-ctest",
+      "name": "darwin-haswell-debug",
+      "inherits": "darwin-haswell-ctest",
       "description": "Run all tests",
       "displayName": "Ctest",
-      "configurePreset": "darwin-p9-release"
+      "configurePreset": "darwin-haswell-debug"
     },
     {
       "name": "windows-ctest",
