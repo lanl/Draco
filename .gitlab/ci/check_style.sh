@@ -168,7 +168,7 @@ else
     run "git apply $patchfile_c"
     cat "${patchfile_c}"
   else
-    echo -ne "      run clang-formt -i < file> to fix files, or"
+    echo -ne "      run clang-format -i <file> to fix files, or"
     echo -e  "      run ${0##*/} with option -f to automatically apply this patch.\n"
     cat "${patchfile_c}"
   fi
