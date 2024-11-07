@@ -18,8 +18,7 @@ namespace rtt_c4 {
 /*!
  * \struct MPI_Traits
  *
- * \brief Provide a generic way to get MPI_Datatype arguments for MPI function
- *        calls.
+ * \brief Provide a generic way to get MPI_Datatype arguments for MPI function calls.
  *
  * This struct provides a generic programming--common way to get MPI_Datatype arguments for MPI
  * function calls. The static function, element_type(), returns an argument of type MPI_Datatype

@@ -7,14 +7,27 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ipcress_test.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "dsxx/path.hh"
+#include "cdi/GrayOpacity.hh"
+#include "cdi/MultigroupOpacity.hh"
 #include "cdi/OpacityCommon.hh"
 #include "cdi_ipcress/IpcressFile.hh"
 #include "cdi_ipcress/IpcressGrayOpacity.hh"
 #include "cdi_ipcress/IpcressMultigroupOpacity.hh"
-#include <algorithm>
+#include <cmath>
+#include <cstddef>
+#include <iostream>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <vector>
+
+// cSpell:ignore ipcress, matid, rtmg, ramg, pgray, vtabulated
 
 using namespace std;
 
@@ -31,11 +44,11 @@ using rtt_dsxx::soft_equiv;
 
 void file_check_two_mats(rtt_dsxx::ScalarUnitTest &ut) {
   // Ipcress data filename (IPCRESS format required)
-  string op_data_file = ut.getTestSourcePath() + "two-mats.ipcress";
+  string const op_data_file = ut.getTestSourcePath() + "two-mats.ipcress";
   FAIL_IF_NOT(rtt_dsxx::fileExists(op_data_file));
 
-  cout << "Starting test \"file_check_two_mats\"...\n"
-       << "Examining the ipcress file \"" << op_data_file << "\"...\n\n";
+  cout << "Starting test \"file_check_two_mats\"...\nExamining the ipcress file \"" << op_data_file
+       << "\"...\n\n";
 
   // ------------------------- //
   // Create IpcressFile object //
@@ -48,7 +61,7 @@ void file_check_two_mats(rtt_dsxx::ScalarUnitTest &ut) {
     try {
       spIF = std::make_shared<IpcressFile>(op_data_file);
     } catch (rtt_dsxx::assertion const &error) {
-      cout << "While testing tIpcressOpacity, " << error.what() << endl;
+      cout << "While testing tIpcressOpacity, " << error.what() << '\n';
       return;
     }
 
@@ -82,16 +95,15 @@ void file_check_two_mats(rtt_dsxx::ScalarUnitTest &ut) {
   shared_ptr<GrayOpacity> spOp_twomat_rgt;
 
   try {
-    shared_ptr<IpcressFile> spIF(new IpcressFile(op_data_file));
+    shared_ptr<IpcressFile> const spIF(new IpcressFile(op_data_file));
     spOp_twomat_rgt =
         std::make_shared<IpcressGrayOpacity>(spIF, matid, rtt_cdi::ROSSELAND, rtt_cdi::TOTAL);
     // spIF goes out of scope
   } catch (rtt_dsxx::assertion const &excpt) {
     ostringstream message;
-    message << "Failed to create shared_ptr to new IpcressOpacity object for "
-            << "two_mats.ipcress data.\n\t" << excpt.what();
+    message << "Failed to create shared_ptr to new IpcressOpacity object for two_mats.ipcress "
+            << "data.\n\t" << excpt.what() << "\nAborting tests";
     FAILMSG(message.str());
-    FAILMSG("Aborting tests.");
     return;
   }
 
@@ -104,7 +116,7 @@ void file_check_two_mats(rtt_dsxx::ScalarUnitTest &ut) {
 
   double temperature = 0.1;                        // keV
   double density = 27.0;                           // g/cm^3
-  double tabulatedGrayOpacity = 6.157321485417703; // cm^2/g
+  double const tabulatedGrayOpacity = 6.157321485417703; // cm^2/g
 
   if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_twomat_rgt, temperature, density,
                                                    tabulatedGrayOpacity)) {
@@ -126,11 +138,10 @@ void file_check_two_mats(rtt_dsxx::ScalarUnitTest &ut) {
   else
     FAILMSG("EDP != gray");
 
-  if (!spOp_twomat_rgt->data_in_tabular_form())
-    ITFAILS;
+  FAIL_IF(!spOp_twomat_rgt->data_in_tabular_form());
 
-  size_t nd(spOp_twomat_rgt->getNumDensities());
-  size_t nt(spOp_twomat_rgt->getNumTemperatures());
+  size_t const nd(spOp_twomat_rgt->getNumDensities());
+  size_t const nt(spOp_twomat_rgt->getNumTemperatures());
   if (nd != 5)
     FAILMSG("Found wrong number of density values.");
   if (nt != 5)
@@ -138,10 +149,8 @@ void file_check_two_mats(rtt_dsxx::ScalarUnitTest &ut) {
 
   vector<double> densGrid(spOp_twomat_rgt->getDensityGrid());
   vector<double> tempGrid(spOp_twomat_rgt->getTemperatureGrid());
-  if (densGrid.size() != nd)
-    ITFAILS;
-  if (tempGrid.size() != nt)
-    ITFAILS;
+  FAIL_IF(densGrid.size() != nd);
+  FAIL_IF(tempGrid.size() != nt);
 
   vector<double> expected_densGrid = {0.01, 0.1, 1.0, 10.0, 100.0};
   vector<double> expected_tempGrid = {0.01, 0.2575, 0.505, 0.7525, 1.0};
@@ -160,15 +169,14 @@ void file_check_two_mats(rtt_dsxx::ScalarUnitTest &ut) {
 
   // Try to instantiate the Opacity object.
   try {
-    shared_ptr<IpcressFile> spIF(new IpcressFile(op_data_file));
+    shared_ptr<IpcressFile> const spIF(new IpcressFile(op_data_file));
     spOp_twomat_rtmg =
         std::make_shared<IpcressMultigroupOpacity>(spIF, matid, rtt_cdi::ROSSELAND, rtt_cdi::TOTAL);
   } catch (rtt_dsxx::assertion const &excpt) {
     ostringstream message;
     message << "Failed to create shared_ptr to new IpcressOpacity object for two_mats.ipcress data."
-            << "\n\t" << excpt.what();
+            << "\n\t" << excpt.what() << "\nAborting tests.";
     FAILMSG(message.str());
-    FAILMSG("Aborting tests.");
     return;
   }
 
@@ -192,11 +200,11 @@ void file_check_two_mats(rtt_dsxx::ScalarUnitTest &ut) {
 
   FAIL_IF_NOT(spOp_twomat_rtmg->data_in_tabular_form());
 
-  size_t numGroups = 33;
+  size_t const numGroups = 33;
   FAIL_IF_NOT(spOp_twomat_rtmg->getNumGroups() == numGroups);
 
   // The solution to compare against:
-  vector<double> tabulatedMGOpacity = {
+  vector<double> const tabulatedMGOpacity = {
       1.65474413066534,  1.25678363987902,  0.969710642123251, 0.809634824544866, 0.724209752535695,
       0.657174133970242, 0.60418067688849,  0.56102837685666,  0.526678715472818, 0.498691712866007,
       0.476029518181352, 0.458069153077808, 0.443645292733958, 0.432168463782148, 0.422976580403301,
@@ -229,7 +237,7 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   //-----------------------------------------------------------------
 
   // Ipcress data filename (IPCRESS format required)
-  string op_data_file = ut.getTestSourcePath() + "analyticOpacities.ipcress";
+  string const op_data_file = ut.getTestSourcePath() + "analyticOpacities.ipcress";
   FAIL_IF_NOT(rtt_dsxx::fileExists(op_data_file));
 
   // ------------------------- //
@@ -296,7 +304,7 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
 
   double temperature = 10.0; // keV
   double density = 1.0;      // g/cm^3
-  double tabulatedGrayOpacity = density * pow(temperature, 4);
+  double const tabulatedGrayOpacity = density * pow(temperature, 4);
 
   if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_ragray, temperature, density,
                                                    tabulatedGrayOpacity)) {
@@ -318,9 +326,8 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   } catch (rtt_dsxx::assertion const &error) {
     ostringstream message;
     message << "Failed to create shared_ptr to new IpcressOpacity object for "
-            << "analyticOpacities.ipcress data.\n\t" << error.what();
+            << "analyticOpacities.ipcress data.\n\t" << error.what() << "\nAborting tests.";
     FAILMSG(message.str());
-    FAILMSG("Aborting tests.");
     return;
   }
 
@@ -333,7 +340,7 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   density = 0.7;     // g/cm^3
 
   // This is the solution we compare against.
-  int numGroups = 12;
+  int const numGroups = 12;
   vector<double> tabulatedMGOpacity(numGroups);
   for (int i = 0; i < numGroups; ++i)
     tabulatedMGOpacity[i] = density * pow(temperature, 4); // cm^2/gm
@@ -370,9 +377,8 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   } catch (rtt_dsxx::assertion const &error) {
     ostringstream message;
     message << "Failed to create shared_ptr to new IpcressOpacity object for "
-            << "analyticOpacities.ipcress data.\n\t" << error.what();
+            << "analyticOpacities.ipcress data.\n\t" << error.what() << "\nAborting tests.";
     FAILMSG(message.str());
-    FAILMSG("Aborting tests.");
     return;
   }
 
@@ -384,7 +390,7 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
 
   temperature = 3.0;                                     // keV
   density = 0.7;                                         // g/cm^3
-  double tabulatedValue = density * pow(temperature, 4); // cm^2/g
+  double const tabulatedValue = density * pow(temperature, 4); // cm^2/g
 
   if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_pgray, temperature, density,
                                                    tabulatedValue)) {
@@ -406,9 +412,8 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   } catch (rtt_dsxx::assertion const &error) {
     ostringstream message;
     message << "Failed to create shared_ptr to new IpcressOpacity object for "
-            << "analyticOpacities.ipcress data.\n\t" << error.what();
+            << "analyticOpacities.ipcress data.\n\t" << error.what() << "\nAborting tests";
     FAILMSG(message.str());
-    FAILMSG("Aborting tests.");
     return;
   }
 
@@ -462,16 +467,14 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   // Vector of temperatures //
   // ---------------------- //
 
-  vector<double> vtemperature(2);
-  vtemperature[0] = 0.5; // keV
-  vtemperature[1] = 0.7; // keV
-  density = 0.35;        // g/cm^3
+  vector<double> vTemperature = {0.5, 0.7}; // keV
+  density = 0.35;                           // g/cm^3
 
-  vector<double> vtabulatedGrayOpacity(vtemperature.size());
+  vector<double> vtabulatedGrayOpacity(vTemperature.size());
   for (size_t i = 0; i < vtabulatedGrayOpacity.size(); ++i)
-    vtabulatedGrayOpacity[i] = density * pow(vtemperature[i], 4);
+    vtabulatedGrayOpacity[i] = density * pow(vTemperature[i], 4);
 
-  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_ragray, vtemperature, density,
+  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_ragray, vTemperature, density,
                                                    vtabulatedGrayOpacity)) {
     FAILMSG("Aborting tests.");
     return;
@@ -481,65 +484,55 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   // Vector of densities    //
   // ---------------------- //
 
-  vector<double> vdensity(3);
-  temperature = 0.3; //keV
-  vdensity[0] = 0.2; // g/cm^3
-  vdensity[1] = 0.4; // g/cm^3
-  vdensity[2] = 0.6; // g/cm^3
+  vector<double> vDensity = {0.2, 0.4, 0.6}; // g/cm^3
+  temperature = 0.3;                         // keV
 
-  vtabulatedGrayOpacity.resize(vdensity.size());
+  vtabulatedGrayOpacity.resize(vDensity.size());
   for (size_t i = 0; i < vtabulatedGrayOpacity.size(); ++i)
-    vtabulatedGrayOpacity[i] = vdensity[i] * pow(temperature, 4);
+    vtabulatedGrayOpacity[i] = vDensity[i] * pow(temperature, 4);
 
-  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_ragray, temperature, vdensity,
+  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_ragray, temperature, vDensity,
                                                    vtabulatedGrayOpacity)) {
     FAILMSG("Aborting tests.");
     return;
   }
 
-  // -------------------------------------------------------- //
+  // ---------------------------------------------------------- //
   // Test alternate (vector-based) accessors for getGray Planck //
-  // -------------------------------------------------------- //
+  // ---------------------------------------------------------- //
 
   // ---------------------- //
   // Vector of temperatures //
   // ---------------------- //
 
-  vtemperature.resize(2);
-  vtemperature[0] = 0.5; // keV
-  vtemperature[1] = 0.7; // keV
-  density = 0.35;        // g/cm^3q
+  vTemperature = {0.5, 0.7}; // keV
+  density = 0.35;            // g/cm^3
 
-  vtabulatedGrayOpacity.resize(vtemperature.size());
+  vtabulatedGrayOpacity.resize(vTemperature.size());
   for (size_t i = 0; i < vtabulatedGrayOpacity.size(); ++i)
-    vtabulatedGrayOpacity[i] = density * pow(vtemperature[i], 4);
+    vtabulatedGrayOpacity[i] = density * pow(vTemperature[i], 4);
 
-  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_pgray, vtemperature, density,
+  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_pgray, vTemperature, density,
                                                    vtabulatedGrayOpacity)) {
     FAILMSG("Aborting tests.");
     return;
   }
-
   // ------------------- //
   // Vector of densities //
   // ------------------- //
 
-  vdensity.resize(3);
-  temperature = 0.3; //keV
-  vdensity[0] = 0.2; // g/cm^3
-  vdensity[1] = 0.4; // g/cm^3
-  vdensity[2] = 0.6; // g/cm^3
+  vDensity = {0.2, 0.4, 0.6}; // g/cm^3
+  temperature = 0.3;          //keV
 
-  vtabulatedGrayOpacity.resize(vdensity.size());
+  vtabulatedGrayOpacity.resize(vDensity.size());
   for (size_t i = 0; i < vtabulatedGrayOpacity.size(); ++i)
-    vtabulatedGrayOpacity[i] = vdensity[i] * pow(temperature, 4);
+    vtabulatedGrayOpacity[i] = vDensity[i] * pow(temperature, 4);
 
-  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_pgray, temperature, vdensity,
+  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_pgray, temperature, vDensity,
                                                    vtabulatedGrayOpacity)) {
     FAILMSG("Aborting tests.");
     return;
   }
-
   // ---------------------------------------------------------- //
   // Test alternate (vector-based) accessors for getMGRosseland //
   // ---------------------------------------------------------- //
@@ -548,20 +541,18 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   // Vector of temperatures //
   // ---------------------- //
 
-  vtemperature.resize(2);
-  vtemperature[0] = 0.5; // keV
-  vtemperature[1] = 0.7; // keV
+  vTemperature = {0.5, 0.7}; // keV
   density = 0.35;        // g/cm^3
   ng = spOp_Analytic_ramg->getNumGroupBoundaries() - 1;
 
-  vector<vector<double>> vtabulatedMGOpacity(vtemperature.size());
-  for (size_t i = 0; i < vtemperature.size(); ++i) {
+  vector<vector<double>> vtabulatedMGOpacity(vTemperature.size());
+  for (size_t i = 0; i < vTemperature.size(); ++i) {
     vtabulatedMGOpacity[i].resize(ng);
     for (size_t ig = 0; ig < ng; ++ig)
-      vtabulatedMGOpacity[i][ig] = density * pow(vtemperature[i], 4);
+      vtabulatedMGOpacity[i][ig] = density * pow(vTemperature[i], 4);
   }
 
-  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_ramg, vtemperature, density,
+  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_ramg, vTemperature, density,
                                                    vtabulatedMGOpacity)) {
     FAILMSG("Aborting tests.");
     return;
@@ -571,20 +562,18 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   // Vector of densities //
   // ------------------- //
 
-  vdensity.resize(2);
-  vdensity[0] = 0.3; // g/cm^3
-  vdensity[1] = 0.7; // g/cm^3
+  vDensity = {0.3, 0.7}; // g/cm^3
   temperature = 7.0; // keV
   ng = spOp_Analytic_ramg->getNumGroupBoundaries() - 1;
 
-  vtabulatedMGOpacity.resize(vdensity.size());
-  for (size_t i = 0; i < vdensity.size(); ++i) {
+  vtabulatedMGOpacity.resize(vDensity.size());
+  for (size_t i = 0; i < vDensity.size(); ++i) {
     vtabulatedMGOpacity[i].resize(ng);
     for (size_t ig = 0; ig < ng; ++ig)
-      vtabulatedMGOpacity[i][ig] = vdensity[i] * pow(temperature, 4);
+      vtabulatedMGOpacity[i][ig] = vDensity[i] * pow(temperature, 4);
   }
 
-  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_ramg, temperature, vdensity,
+  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_ramg, temperature, vDensity,
                                                    vtabulatedMGOpacity)) {
     FAILMSG("Aborting tests.");
     return;
@@ -598,20 +587,18 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   // Vector of temperatures //
   // ---------------------- //
 
-  vtemperature.resize(2);
-  vtemperature[0] = 0.5; // keV
-  vtemperature[1] = 0.7; // keV
+  vTemperature = {0.5, 0.7}; // keV
   density = 0.35;        // g/cm^3
   ng = spOp_Analytic_pmg->getNumGroupBoundaries() - 1;
 
-  vtabulatedMGOpacity.resize(vtemperature.size());
-  for (size_t i = 0; i < vtemperature.size(); ++i) {
+  vtabulatedMGOpacity.resize(vTemperature.size());
+  for (size_t i = 0; i < vTemperature.size(); ++i) {
     vtabulatedMGOpacity[i].resize(ng);
     for (size_t ig = 0; ig < ng; ++ig)
-      vtabulatedMGOpacity[i][ig] = density * pow(vtemperature[i], 4);
+      vtabulatedMGOpacity[i][ig] = density * pow(vTemperature[i], 4);
   }
 
-  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_pmg, vtemperature, density,
+  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_pmg, vTemperature, density,
                                                    vtabulatedMGOpacity)) {
     FAILMSG("Aborting tests.");
     return;
@@ -621,20 +608,18 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
   // Vector of densities //
   // ------------------- //
 
-  vdensity.resize(2);
-  vdensity[0] = 0.3; // g/cm^3
-  vdensity[1] = 0.7; // g/cm^3
+  vDensity = {0.3, 0.7}; // g/cm^3
   temperature = 7.0; // keV
   ng = spOp_Analytic_pmg->getNumGroupBoundaries() - 1;
 
-  vtabulatedMGOpacity.resize(vdensity.size());
-  for (size_t i = 0; i < vdensity.size(); ++i) {
+  vtabulatedMGOpacity.resize(vDensity.size());
+  for (size_t i = 0; i < vDensity.size(); ++i) {
     vtabulatedMGOpacity[i].resize(ng);
     for (size_t ig = 0; ig < ng; ++ig)
-      vtabulatedMGOpacity[i][ig] = vdensity[i] * pow(temperature, 4);
+      vtabulatedMGOpacity[i][ig] = vDensity[i] * pow(temperature, 4);
   }
 
-  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_pmg, temperature, vdensity,
+  if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, spOp_Analytic_pmg, temperature, vDensity,
                                                    vtabulatedMGOpacity)) {
     FAILMSG("Aborting tests.");
     return;
@@ -647,7 +632,7 @@ void check_ipcress_stl_accessors(rtt_dsxx::ScalarUnitTest &ut) {
   cout << "\nStarting test \"check_ipcress_stl_accessors\"...\n";
 
   // Ipcress data filename (IPCRESS format required)
-  string op_data_file = ut.getTestSourcePath() + "analyticOpacities.ipcress";
+  string const op_data_file = ut.getTestSourcePath() + "analyticOpacities.ipcress";
 
   // ------------------------- //
   // Create IpcressFile object //
@@ -661,8 +646,8 @@ void check_ipcress_stl_accessors(rtt_dsxx::ScalarUnitTest &ut) {
     spGFAnalytic = std::make_shared<rtt_cdi_ipcress::IpcressFile>(op_data_file);
   } catch (rtt_dsxx::assertion const &error) {
     ostringstream message;
-    FAILMSG(error.what());
-    FAILMSG("Aborting tests.");
+    message << error.what() << "\nAborting tests.";
+    FAILMSG(message.str());
     return;
   }
 
@@ -688,60 +673,39 @@ void check_ipcress_stl_accessors(rtt_dsxx::ScalarUnitTest &ut) {
     ostringstream message;
     message << "Failed to create shared_ptr to new IpcressGrayOpacity object for\n\t"
             << "analyticOpacities.ipcress data (shared_ptr not templated on cdi/GrayOpacity).\n\t"
-            << error.what();
+            << error.what() << "\nAborting tests.";
     FAILMSG(message.str());
-    FAILMSG("Aborting tests.");
     return;
   }
 
-  vector<double> vdensity;
-  vector<double> vtemperature;
+  vector<double> vDensity;
+  vector<double> vTemperature;
   vector<double> vtabulatedGrayOpacity;
 
-  double density = 0.35;    // g/cm^3
-  double temperature = 7.0; // kev
+  double const density = 0.35;    // g/cm^3
+  double const temperature = 7.0; // kev
 
   // Setup the temperature and density parameters for this test.
-  vdensity.resize(6);
-  vtemperature.resize(6);
-
-  // (temperature,density) tuples.
-
-  vtemperature[0] = 0.5; // keV
-  vdensity[0] = 0.2;     // g/cm^3
-
-  vtemperature[1] = 0.7; // keV
-  vdensity[1] = 0.2;     // g/cm^3
-
-  vtemperature[2] = 0.5; // keV
-  vdensity[2] = 0.4;     // g/cm^3
-
-  vtemperature[3] = 0.7; // keV
-  vdensity[3] = 0.4;     // g/cm^3
-
-  vtemperature[4] = 0.5; // keV
-  vdensity[4] = 0.6;     // g/cm^3
-
-  vtemperature[5] = 0.7; // keV
-  vdensity[5] = 0.6;     // g/cm^3
+  vDensity = {0.2, 0.2, 0.4, 0.4, 0.6, 0.6};     // g/cm^3
+  vTemperature = {0.5, 0.7, 0.5, 0.7, 0.5, 0.7}; // keV
 
   // we want to test the const_iterator version of getOpacity() so we need to create const vectors
   // with the tuple data.
-  const vector<double> cvdensity = vdensity;
-  const vector<double> cvtemperature = vtemperature;
+  const vector<double> cvDensity = vDensity;
+  const vector<double> cvTemperature = vTemperature;
 
-  size_t nt = cvtemperature.size();
-  size_t nd = cvdensity.size();
+  size_t const nt = cvTemperature.size();
+  size_t const nd = cvDensity.size();
 
   // Here is the reference solution
   vtabulatedGrayOpacity.resize(nt);
   for (size_t i = 0; i < nt; ++i)
-    vtabulatedGrayOpacity[i] = cvdensity[i] * pow(cvtemperature[i], 4);
+    vtabulatedGrayOpacity[i] = cvDensity[i] * pow(cvTemperature[i], 4);
 
   // Here is the solution from Ipcress
   vector<double> graOp(nt);
-  spGGOp_Analytic_ra->getOpacity(cvtemperature.begin(), cvtemperature.end(), cvdensity.begin(),
-                                 cvdensity.end(), graOp.begin());
+  spGGOp_Analytic_ra->getOpacity(cvTemperature.begin(), cvTemperature.end(), cvDensity.begin(),
+                                 cvDensity.end(), graOp.begin());
   if (rtt_dsxx::soft_equiv(graOp, vtabulatedGrayOpacity)) {
     ostringstream message;
     message << spGGOp_Analytic_ra->getDataDescriptor() << " opacity computation was good for \n\t"
@@ -761,8 +725,8 @@ void check_ipcress_stl_accessors(rtt_dsxx::ScalarUnitTest &ut) {
   // Using non-const iterator              //
   // ------------------------------------- //
 
-  spGGOp_Analytic_ra->getOpacity(vtemperature.begin(), vtemperature.end(), vdensity.begin(),
-                                 vdensity.end(), graOp.begin());
+  spGGOp_Analytic_ra->getOpacity(vTemperature.begin(), vTemperature.end(), vDensity.begin(),
+                                 vDensity.end(), graOp.begin());
   if (rtt_dsxx::soft_equiv(graOp, vtabulatedGrayOpacity)) {
     ostringstream message;
     message << spGGOp_Analytic_ra->getDataDescriptor() << " opacity computation was good for \n\t"
@@ -785,19 +749,21 @@ void check_ipcress_stl_accessors(rtt_dsxx::ScalarUnitTest &ut) {
   graOp.resize(nt);
   vtabulatedGrayOpacity.resize(nt);
   for (size_t it = 0; it < nt; ++it)
-    vtabulatedGrayOpacity[it] = density * pow(vtemperature[it], 4);
+    vtabulatedGrayOpacity[it] = density * pow(vTemperature[it], 4);
 
-  spGGOp_Analytic_ra->getOpacity(cvtemperature.begin(), cvtemperature.end(), density,
+  spGGOp_Analytic_ra->getOpacity(cvTemperature.begin(), cvTemperature.end(), density,
                                  graOp.begin());
   if (rtt_dsxx::soft_equiv(graOp, vtabulatedGrayOpacity)) {
     ostringstream message;
     message << spGGOp_Analytic_ra->getDataDescriptor() << " opacity computation was good for \n\t"
-            << spGGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vtemps).";
+            << spGGOp_Analytic_ra->getDataFilename()
+            << " (const iterator accessor, vTemperatures).";
     PASSMSG(message.str());
   } else {
     ostringstream message;
     message << spGGOp_Analytic_ra->getDataDescriptor() << " opacity value is out of spec. for \n\t"
-            << spGGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vtemps).";
+            << spGGOp_Analytic_ra->getDataFilename()
+            << " (const iterator accessor, vTemperatures).";
     FAILMSG(message.str());
   }
 
@@ -809,18 +775,18 @@ void check_ipcress_stl_accessors(rtt_dsxx::ScalarUnitTest &ut) {
   graOp.resize(nd);
   vtabulatedGrayOpacity.resize(nd);
   for (size_t id = 0; id < nd; ++id)
-    vtabulatedGrayOpacity[id] = vdensity[id] * pow(temperature, 4);
+    vtabulatedGrayOpacity[id] = vDensity[id] * pow(temperature, 4);
 
-  spGGOp_Analytic_ra->getOpacity(temperature, cvdensity.begin(), cvdensity.end(), graOp.begin());
+  spGGOp_Analytic_ra->getOpacity(temperature, cvDensity.begin(), cvDensity.end(), graOp.begin());
   if (rtt_dsxx::soft_equiv(graOp, vtabulatedGrayOpacity)) {
     ostringstream message;
     message << spGGOp_Analytic_ra->getDataDescriptor() << " opacity computation was good for \n\t"
-            << spGGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vdensity).";
+            << spGGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vDensity).";
     PASSMSG(message.str());
   } else {
     ostringstream message;
     message << spGGOp_Analytic_ra->getDataDescriptor() << " opacity value is out of spec. for \n\t"
-            << spGGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vdensity).";
+            << spGGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vDensity).";
     FAILMSG(message.str());
   }
 
@@ -843,9 +809,8 @@ void check_ipcress_stl_accessors(rtt_dsxx::ScalarUnitTest &ut) {
     ostringstream message;
     message << "Failed to create shared_ptr to new IpcressGrayOpacity object for\n\t"
             << "analyticOpacities.ipcress data (shared_ptr not templated on cdi/GrayOpacity).\n\t"
-            << error.what();
+            << error.what() << "\nAborting tests.";
     FAILMSG(message.str());
-    FAILMSG("Aborting tests.");
     return;
   }
 
@@ -853,17 +818,17 @@ void check_ipcress_stl_accessors(rtt_dsxx::ScalarUnitTest &ut) {
   PASSMSG("shared_ptr to new Opacity object created for analyticOpacities.ipcress.");
 
   // Here is the reference solution
-  size_t ng = spGMGOp_Analytic_ra->getNumGroupBoundaries() - 1;
+  size_t const ng = spGMGOp_Analytic_ra->getNumGroupBoundaries() - 1;
   vector<double> vtabulatedOpacity(ng * nt);
 
   for (size_t i = 0; i < nt; ++i)
     for (size_t ig = 0; ig < ng; ++ig)
-      vtabulatedOpacity[i * ng + ig] = cvdensity[i] * pow(cvtemperature[i], 4);
+      vtabulatedOpacity[i * ng + ig] = cvDensity[i] * pow(cvTemperature[i], 4);
 
   // Here is the solution from Ipcress
   vector<double> mgOp(nt * ng);
-  spGMGOp_Analytic_ra->getOpacity(cvtemperature.begin(), cvtemperature.end(), cvdensity.begin(),
-                                  cvdensity.end(), mgOp.begin());
+  spGMGOp_Analytic_ra->getOpacity(cvTemperature.begin(), cvTemperature.end(), cvDensity.begin(),
+                                  cvDensity.end(), mgOp.begin());
 
   if (rtt_dsxx::soft_equiv(mgOp, vtabulatedOpacity)) {
     ostringstream message;
@@ -889,8 +854,8 @@ void check_ipcress_stl_accessors(rtt_dsxx::ScalarUnitTest &ut) {
     mgOp[i] = 0.0;
 
   // use Ipcress to obtain new data
-  spGMGOp_Analytic_ra->getOpacity(vtemperature.begin(), vtemperature.end(), vdensity.begin(),
-                                  vdensity.end(), mgOp.begin());
+  spGMGOp_Analytic_ra->getOpacity(vTemperature.begin(), vTemperature.end(), vDensity.begin(),
+                                  vDensity.end(), mgOp.begin());
 
   // compare the results to the reference solution and report our findings.
   if (rtt_dsxx::soft_equiv(mgOp, vtabulatedOpacity)) {
@@ -919,22 +884,24 @@ void check_ipcress_stl_accessors(rtt_dsxx::ScalarUnitTest &ut) {
   // Calculate the reference solution.
   for (size_t it = 0; it < nt; ++it)
     for (size_t ig = 0; ig < ng; ++ig)
-      vtabulatedOpacity[it * ng + ig] = density * pow(vtemperature[it], 4);
+      vtabulatedOpacity[it * ng + ig] = density * pow(vTemperature[it], 4);
 
   // Obtain new solution
-  spGMGOp_Analytic_ra->getOpacity(cvtemperature.begin(), cvtemperature.end(), density,
+  spGMGOp_Analytic_ra->getOpacity(cvTemperature.begin(), cvTemperature.end(), density,
                                   mgOp.begin());
 
   // Compare solutions and report the results.
   if (rtt_dsxx::soft_equiv(mgOp, vtabulatedOpacity)) {
     ostringstream message;
     message << spGMGOp_Analytic_ra->getDataDescriptor() << " opacity computation was good for \n\t"
-            << spGMGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vtemps).";
+            << spGMGOp_Analytic_ra->getDataFilename()
+            << " (const iterator accessor, vTemperatures).";
     PASSMSG(message.str());
   } else {
     ostringstream message;
     message << spGMGOp_Analytic_ra->getDataDescriptor() << " opacity value is out of spec. for \n\t"
-            << spGMGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vtemps).";
+            << spGMGOp_Analytic_ra->getDataFilename()
+            << " (const iterator accessor, vTemperatures).";
     FAILMSG(message.str());
   }
 
@@ -950,21 +917,21 @@ void check_ipcress_stl_accessors(rtt_dsxx::ScalarUnitTest &ut) {
   // Calculate the reference solution.
   for (size_t id = 0; id < nd; ++id)
     for (size_t ig = 0; ig < ng; ++ig)
-      vtabulatedOpacity[id * ng + ig] = vdensity[id] * pow(temperature, 4);
+      vtabulatedOpacity[id * ng + ig] = vDensity[id] * pow(temperature, 4);
 
   // Obtain new solution
-  spGMGOp_Analytic_ra->getOpacity(temperature, cvdensity.begin(), cvdensity.end(), mgOp.begin());
+  spGMGOp_Analytic_ra->getOpacity(temperature, cvDensity.begin(), cvDensity.end(), mgOp.begin());
 
   // Compare solutions and report the results.
   if (rtt_dsxx::soft_equiv(mgOp, vtabulatedOpacity)) {
     ostringstream message;
     message << spGMGOp_Analytic_ra->getDataDescriptor() << " opacity computation was good for \n\t"
-            << spGMGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vdensity).";
+            << spGMGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vDensity).";
     PASSMSG(message.str());
   } else {
     ostringstream message;
     message << spGMGOp_Analytic_ra->getDataDescriptor() << " opacity value is out of spec. for \n\t"
-            << spGMGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vdensity).";
+            << spGMGOp_Analytic_ra->getDataFilename() << " (const iterator accessor, vDensity).";
     FAILMSG(message.str());
   }
 }
@@ -990,8 +957,8 @@ void gray_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
     spGFAnalytic = std::make_shared<rtt_cdi_ipcress::IpcressFile>(op_data_file);
   } catch (rtt_dsxx::assertion const &error) {
     ostringstream message;
-    FAILMSG(error.what());
-    FAILMSG("Aborting tests.");
+    message << error.what() << "\nAborting tests.";
+    FAILMSG(message.str());
     return;
   }
 
@@ -1004,7 +971,7 @@ void gray_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
   spOp_Analytic_ragray = std::make_shared<IpcressGrayOpacity>(
       spGFAnalytic, matid, rtt_cdi::ROSSELAND, rtt_cdi::ABSORPTION);
   // pack up the opacity
-  vector<char> packed = spOp_Analytic_ragray->pack();
+  vector<char> const packed = spOp_Analytic_ragray->pack();
 
   // make a new IpcressGrayOpacity from packed data
   shared_ptr<GrayOpacity> unpacked_opacity;
@@ -1015,9 +982,8 @@ void gray_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
   } catch (rtt_dsxx::assertion const &error) {
     ostringstream message;
     message << "Failed to create shared_ptr to unpacked IpcressOpacity object for "
-            << "analyticOpacities.ipcress data.\n\t" << error.what();
+            << "analyticOpacities.ipcress data.\n\t" << error.what() << "\nAborting tests.";
     FAILMSG(message.str());
-    FAILMSG("Aborting tests.");
     return;
   }
 
@@ -1030,9 +996,9 @@ void gray_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
   // Gray Opacity Test //
   // ----------------- //
 
-  double temperature = 10.0; // keV
-  double density = 1.0;      // g/cm^3
-  double tabulatedGrayOpacity = density * pow(temperature, 4);
+  double const temperature = 10.0; // keV
+  double const density = 1.0;      // g/cm^3
+  double const tabulatedGrayOpacity = density * pow(temperature, 4);
 
   if (!rtt_cdi_ipcress_test::opacityAccessorPassed(ut, unpacked_opacity, temperature, density,
                                                    tabulatedGrayOpacity)) {
@@ -1043,7 +1009,7 @@ void gray_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
   // try to unpack gray opacity as multigroup opacity
   bool caught = false;
   try {
-    shared_ptr<MultigroupOpacity> opacity(new IpcressMultigroupOpacity(packed));
+    shared_ptr<MultigroupOpacity> const opacity(new IpcressMultigroupOpacity(packed));
   } catch (rtt_dsxx::assertion const &error) {
     caught = true;
     ostringstream message;
@@ -1051,7 +1017,7 @@ void gray_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
     PASSMSG(message.str());
   }
   if (!caught) {
-    FAILMSG("Failed to catch an illegal packing asserion.");
+    FAILMSG("Failed to catch an illegal packing assertion.");
   }
 }
 
@@ -1076,8 +1042,8 @@ void mg_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
     spGFAnalytic = std::make_shared<rtt_cdi_ipcress::IpcressFile>(op_data_file);
   } catch (rtt_dsxx::assertion const &error) {
     ostringstream message;
-    FAILMSG(error.what());
-    FAILMSG("Aborting tests.");
+    message << error.what() << "\nAborting tests.";
+    FAILMSG(message.str());
     return;
   }
 
@@ -1093,7 +1059,7 @@ void mg_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
 
   spOp_Analytic_pmg = std::make_shared<IpcressMultigroupOpacity>(
       spGFAnalytic, matid, rtt_cdi::PLANCK, rtt_cdi::ABSORPTION);
-  vector<char> packed = spOp_Analytic_pmg->pack();
+  vector<char> const packed = spOp_Analytic_pmg->pack();
 
   // make a new IpcressGrayOpacity from packed data
   shared_ptr<MultigroupOpacity> unpacked_opacity;
@@ -1104,9 +1070,8 @@ void mg_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
   } catch (rtt_dsxx::assertion const &error) {
     ostringstream message;
     message << "Failed to create shared_ptr to unpacked IpcressOpacity object for "
-            << "analyticOpacities.ipcress data.\n\t" << error.what();
+            << "analyticOpacities.ipcress data.\n\t" << error.what() << "\nAborting tests.";
     FAILMSG(message.str());
-    FAILMSG("Aborting tests.");
     return;
   }
 
@@ -1117,10 +1082,10 @@ void mg_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
 
   // Setup the test problem.
 
-  size_t ng(12);
+  size_t const ng(12);
   vector<double> tabulatedMGOpacity(ng);
-  double temperature = 0.4; // keV
-  double density = 0.22;    // g/cm^3
+  double const temperature = 0.4; // keV
+  double const density = 0.22;    // g/cm^3
   for (size_t ig = 0; ig < ng; ++ig)
     tabulatedMGOpacity[ig] = density * pow(temperature, 4); // cm^2/g
 
@@ -1152,7 +1117,7 @@ void mg_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
   // try to unpack multigroup as gray opacity
   bool caught = false;
   try {
-    shared_ptr<GrayOpacity> opacity(new IpcressGrayOpacity(packed));
+    shared_ptr<GrayOpacity> const opacity(new IpcressGrayOpacity(packed));
   } catch (rtt_dsxx::assertion const &error) {
     caught = true;
     ostringstream message;
@@ -1160,7 +1125,7 @@ void mg_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
     PASSMSG(message.str());
   }
   if (!caught) {
-    FAILMSG("Failed to catch an illegal packing asserion.");
+    FAILMSG("Failed to catch an illegal packing assertion.");
   }
 }
 

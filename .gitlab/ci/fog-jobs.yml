@@ -19,8 +19,8 @@
   variables:
     SITE_ID: fog
     CTEST_SITE: ${SITE_ID}
-    SCHEDULER_PARAMETERS: -N 1 -A asc-ci --partition=ci --qos=ci --reservation=ci -L none@slurmdb
-      --exclude fg010
+    SCHEDULER_PARAMETERS: -N 1 -t 30:00 -A asc-ci --partition=ci --qos=ci --reservation=ci
+      -L none@slurmdb --exclude fg010,fg022
     EXTRA_CMAKE_ARGS: -GNinja
     # CI_DEBUG_TRACE: "true"
 
@@ -119,6 +119,7 @@ fg_rwdi_i2120_deploy_release:
   extends: .fog
   # allow_failure: true
   script:
+    - echo "==> This node is ${SLURM_JOB_NODELIST}"
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
     - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_fog/'

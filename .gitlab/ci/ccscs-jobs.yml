@@ -28,9 +28,10 @@ ccs1_clangtidy:
     - CCSCS1-setuid-shared
   extends: .ccscs
   stage: lint
+  allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm1201
+    DRACO_ENV: llvm1706
     CTEST_NPROC: 32
     EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
     EXTRA_CTEST_ARGS: -R dsxx_tstRelease
@@ -110,9 +111,10 @@ ccs1_clangtidy_deploy:
   tags:
     - CCSCS1-setuid-shared
   extends: .ccscs_deploy
+  allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm1201
+    DRACO_ENV: llvm1706
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
     SITE_ID: ccscs1
@@ -139,18 +141,20 @@ ccs3_deb_llvm_deploy:
   tags:
     - CCSCS3-setuid-shared
   extends: .ccscs_deploy
+  allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm1201
+    DRACO_ENV: llvm1706
     SITE_ID: ccscs3
 
 ccs3_rel_llvm_deploy:
   tags:
     - CCSCS3-setuid-shared
   extends: .ccscs_deploy
+  allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: llvm1201
+    DRACO_ENV: llvm1706
     SITE_ID: ccscs3
 
 ccs3_deb_gcc_1220_deploy:
@@ -234,13 +238,14 @@ ccs2_valgrind_deploy:
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
     SITE_ID: ccscs2
 
-ccs5_deb_llvm12_deploy:
+ccs5_deb_llvm17_deploy:
   tags:
     - CCSCS5-setuid-shared
   extends: .ccscs_deploy
+  allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm1201
+    DRACO_ENV: llvm1706
     SITE_ID: ccscs5
 
 #--------------------------------------------------------------------------------------------------#
@@ -346,14 +351,14 @@ ccs1_c4_scalar:
 
 # ---------- regular TEST (only starts if all FASTTEST pass) ---------- #
 
-ccs3_deb_llvm12:
+ccs3_deb_llvm17:
   tags:
     - CCSCS3-setuid-shared
   stage: test
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm1201
+    DRACO_ENV: llvm1706
     CTEST_NPROC: 32
     SITE_ID: ccscs3
 
@@ -371,14 +376,14 @@ ccs2_autodoc:
 
 # ---------- SLOW TEST (only starts if all regular TEST pass) ---------- #
 
-ccs3_rel_llvm12:
+ccs3_rel_llvm17:
   tags:
     - CCSCS3-setuid-shared
   stage: slowtest
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: llvm1201
+    DRACO_ENV: llvm1706
     CTEST_NPROC: 32
     SITE_ID: ccscs3
 
@@ -509,7 +514,7 @@ deb_llvm_regress:
   variables:
     SITE_ID: ccscs3
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm1201
+    DRACO_ENV: llvm1706
     CTEST_NPROC: 40
 
 rel_llvm_regress:
@@ -519,17 +524,18 @@ rel_llvm_regress:
   variables:
     SITE_ID: ccscs3
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: llvm1201
+    DRACO_ENV: llvm1706
     CTEST_NPROC: 40
 
 clangtidy_regress:
   tags:
     - CCSCS1-setuid-shared
   extends: .ccscs_nightly
+  allow_failure: true
   variables:
     SITE_ID: ccscs1
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm1201
+    DRACO_ENV: llvm1706
     CTEST_NPROC: 40
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy

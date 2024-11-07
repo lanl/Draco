@@ -4,14 +4,17 @@
  * \author Kent G. Budge
  * \date   Wed May 19 11:26:15 MDT 2004
  * \brief  Unit tests for Console_Token_Stream class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/UnitTest.hh"
 #include "parser/Console_Token_Stream.hh"
-#include <sstream>
+#include "parser/Text_Token_Stream.hh"
+#include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
+#include <set>
 
 using namespace std;
 using namespace rtt_parser;
@@ -25,7 +28,7 @@ void tstConsole_Token_Stream(rtt_dsxx::UnitTest &ut) {
   {
     set<char> ws;
     ws.insert(' ');
-    Console_Token_Stream tokens(ws);
+    Console_Token_Stream const tokens(ws);
     if (tokens.whitespace() != ws)
       FAILMSG("whitespace characters are NOT correctly set");
     else
@@ -101,139 +104,98 @@ void tstConsole_Token_Stream(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(caught); // FAILMSG("Syntax error NOT correctly thrown");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "COLOR")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "COLOR");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "BLACK")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "BLACK");
 
     token = tokens.shift();
-    if (token.type() != END)
-      ITFAILS;
+    FAIL_IF(token.type() != END);
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "-")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "-");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.563e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.563e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.563e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.563e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != ".563e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != ".563e+3");
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != ".")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != ".");
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "-")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "-");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.563")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.563");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1.e3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1.e3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1e+3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1e+3");
 
     token = tokens.shift();
-    if (token.type() != REAL || token.text() != "1e3")
-      ITFAILS;
+    FAIL_IF(token.type() != REAL || token.text() != "1e3");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "19090")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "19090");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "01723")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "01723");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "0x1111a")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "0x1111a");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "0")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "0");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "8123")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "8123");
 
     token = tokens.shift();
-    if (token.type() != STRING || token.text() != "\"manifest string\"")
-      ITFAILS;
+    FAIL_IF(token.type() != STRING || token.text() != "\"manifest string\"");
 
     token = tokens.shift();
     FAIL_IF(token.type() != STRING || token.text() != R"("manifest \"string\"")");
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "@")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "@");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "1")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "1");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "e")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "e");
 
     token = tokens.shift();
-    if (token.type() != INTEGER || token.text() != "0")
-      ITFAILS;
+    FAIL_IF(token.type() != INTEGER || token.text() != "0");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "x")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "x");
 
     // Test that #include is treated as a syntax error (not supported)
     try {
       tokens.shift();
-      ut.failure("Did NOT correctly report #include as error");
+      FAILMSG("Did NOT correctly report #include as error");
     } catch (const Syntax_Error & /*msg*/) {
       PASSMSG("#include not supported error correctly thrown and caught");
     }
 
     token = tokens.shift();
-    if (token.type() != EXIT)
-      ITFAILS;
+    FAIL_IF(token.type() != EXIT);
     token = tokens.shift();
-    if (token.type() != EXIT)
-      ITFAILS;
-
-    // [2015-09-01 KT] After talking to Kent about this implementation, we
-    // decided that it does not make sense to rewind an interactive standard
-    // input buffer.  In fact, if this is done under an MPI environment
-    // (e.g. mpirun -np 1, aprun -n 1, etc. ), the seekg() will return an
-    // error condition.
-
-    // {
-    //     tokens.rewind();
-    //     token = tokens.lookahead();
-    //     token = tokens.shift();
-    //     if (token.type()!=KEYWORD || token.text()!="BLUE") ITFAILS;
-    // }
+    FAIL_IF(token.type() != EXIT);
   }
   return;
 }

@@ -4,8 +4,7 @@
  * \author Kelly Thompson
  * \date   Wednesday, Nov 16, 2011, 17:07 pm
  * \brief  Header file for IpcressDataTable
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_ipcress_IpcressDataTable_hh
@@ -15,64 +14,59 @@
 #include "cdi/OpacityCommon.hh"
 #include <memory>
 
+// cSpell:ignore ipcress, Gandolf, Fontes, Zhang, rgray, rsgray, Opac
+
 namespace rtt_cdi_ipcress {
 
 //================================================================================================//
 /*!
- * \brief Encapsulates all of the data associated with a specific opacity type
- *        (e.g.: total, plank, multigroup) for a single single material.
+ * \brief Encapsulates all of the data associated with a specific opacity type (e.g.: total, Planck,
+ *        multigroup) for a single single material.
  *
- * When the user instantiates a IpcressOpacity object a IpcressDataTable object
- * is also created.  There is a one-to-one correspondence between these two
- * objects.  The IpcressDataTable object will load a single opacity table from
- * the IPCRESS file specified by the associated IpcressFile object.  The table
- * that is loaded is specified by the combination of { opacityModel,
- * opacityReaction and the opacityEnergyDescriptor }.
+ * When the user instantiates a IpcressOpacity object a IpcressDataTable object is also created.
+ * There is a one-to-one correspondence between these two objects.  The IpcressDataTable object will
+ * load a single opacity table from the IPCRESS file specified by the associated IpcressFile object.
+ * The table that is loaded is specified by the combination of { opacityModel, opacityReaction and
+ * the opacityEnergyDescriptor }.
  *
  * Additional data about keywords and the IPCRESS format is available in
- * - Judd, B., Fontes, C.J., and Zhang, H.L. Gandolf : Interface Routines for
- *   IPCRESS Files," Los Alamos Technical Report LA-UR-01-5543, 2001.
+ * - Judd, B., Fontes, C.J., and Zhang, H.L. Gandolf : Interface Routines for IPCRESS Files," Los
+ *   Alamos Technical Report LA-UR-01-5543, 2001.
  */
 //================================================================================================//
 class IpcressDataTable {
 
-  // NESTED CLASSES AND TYPEDEFS
-
   // Data Descriptors:
 
   /*!
-   * \brief A string that specifies the type of data being stored.  Possible
-   *     values are rgray, ragray, rsgray, etc.  This key is provided to the
-   *     Ipcress libraries as a data specifier. */
+   * \brief A string that specifies the type of data being stored.  Possible values are rgray,
+   *     ragray, rsgray, etc.  This key is provided to the Ipcress libraries as a data specifier. */
   std::string mutable ipcressDataTypeKey;
 
   /*!
-   * \brief A string that specifies the type of data being stored.  This
-   *     variables holds an English version of ipcressDataTypeKey. */
+   * \brief A string that specifies the type of data being stored.  This variable holds an English
+   *     version of ipcressDataTypeKey. */
   std::string mutable dataDescriptor;
 
   /*!
-   * \brief A string that specifies the energy model for the data being stored.
-   *     Possible values are "mg" or "gray". */
+   * \brief A string that specifies the energy model for the data being stored. Possible values are
+   *     "mg" or "gray". */
   std::string const opacityEnergyDescriptor;
 
   /*!
-   * \brief An enumerated value defined in IpcressOpacity.hh that specifies the
-   *     data model.  Possible values are "Rosseland" or "Plank". */
+   * \brief An enumerated valued defined in IpcressOpacity.hh that specifies the data model.
+   *     Possible values are "Rosseland" or "Plank". */
   rtt_cdi::Model const opacityModel;
 
   /*!
-   * \brief An enumerated valued defined in IpcressOpacity.hh that specifies the
-   *     reaction model.  Possible values are "Total", "Absorption" or
-   *     "Scattering". */
+   * \brief An enumerated valued defined in IpcressOpacity.hh that specifies the reaction model.
+   *     Possible values are "Total", "Absorption" or "Scattering". */
   rtt_cdi::Reaction const opacityReaction;
 
   //! A list of keys that are known by the IPCRESS file.
   std::vector<std::string> const &fieldNames;
 
-  /*!
-   * \brief The IPCRESS material number assocated with the data contained in
-   *     this object. */
+  //! The IPCRESS material number associated with the data contained in this object.
   size_t const matID;
 
   // Data Tables:
@@ -123,7 +117,7 @@ public:
   //! Return a "plain English" description of the data table.
   std::string const &getDataDescriptor() const { return dataDescriptor; }
 
-  //! Perform linear interploation of log(opacity) values.
+  //! Perform linear interpolation of log(opacity) values.
   double interpOpac(double const T, double const rho, size_t const group = 0) const;
 
 private:

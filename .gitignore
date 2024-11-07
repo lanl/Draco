@@ -1,14 +1,16 @@
 # See https://github.com/cpp-best-practices/cpp_starter_project/blob/main/.gitignore
 
+.*.sw[a-p]
+.nfs*
+.settings/
 *.elc
 *.orig
 *.pyc
 *~
-.settings/
+build
 build*/
+install
 install*/
-.*.sw[a-p]
-.nfs*
 
 GPATH
 GRTAGS
@@ -16,31 +18,31 @@ GTAGS
 TAGS
 
 # Ignore IDE files
-*sublime-project
-*sublime-workspace
-.idea
-cmake-build-*/
-vcpkg/
-.vs/
-.idea/
-.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
 !.vscode/settings.json
 !.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.idea
+.idea/
+.vs/
+.vscode/
+*sublime-project
+*sublime-workspace
+cmake-build-*/
 out/
-wget-log
 Testing/
+vcpkg/
+wget-log
 
 # OS Generated Files
-.DS_Store
-.AppleDouble
-.LSOverride
 ._*
+.AppleDouble
+.DS_Store
+.LSOverride
 .Spotlight-V100
-.Trashes
-.Trash-*
-$RECYCLE.BIN/
 .TemporaryItems
+.Trash-*
+.Trashes
+$RECYCLE.BIN/
 ehthumbs.db
 Thumbs.db

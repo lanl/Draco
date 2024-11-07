@@ -13,9 +13,13 @@
 #include "dsxx/Assert.hh"
 #include <algorithm>
 #include <cctype>
+#include <cstddef> // size_t
 #include <fstream>
 #include <iostream>
 #include <vector>
+
+// cSpell:ignore ipcress, tgrid, rgrid, hnugrid, ramg, rsmg, rgray, rtmg, pgray, tfree, pelect
+// cSpell:ignore eelect, pnuc, enuc, hgnuplas, frct, atwt, opname
 
 namespace rtt_cdi_ipcress {
 
@@ -118,7 +122,7 @@ public:
     } else {
 
       // Overwrite existing entries.
-      size_t index = std::distance(fieldNames.begin(), itr);
+      size_t const index = std::distance(fieldNames.begin(), itr);
       Check(fieldValues[index].size() == in_values.size());
       fieldValues[index] = in_values;
     }
@@ -145,8 +149,8 @@ private:
     Require(fieldName.size() > 0);
     Remember(auto pos = find(fieldNames.begin(), fieldNames.end(), fieldName));
     Check(pos != fieldNames.end());
-    size_t fieldIndex = std::distance(fieldNames.begin(),
-                                      std::find(fieldNames.begin(), fieldNames.end(), fieldName));
+    size_t const fieldIndex = std::distance(
+        fieldNames.begin(), std::find(fieldNames.begin(), fieldNames.end(), fieldName));
     Ensure(fieldIndex < fieldNames.size());
     return fieldIndex;
   }

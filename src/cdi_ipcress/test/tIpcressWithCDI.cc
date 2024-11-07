@@ -7,12 +7,26 @@
  * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "cdi_ipcress_test.hh"
+#include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include "dsxx/UnitTest.hh"
 #include "cdi/CDI.hh" // this includes everything from CDI
+#include "cdi/GrayOpacity.hh"
+#include "cdi/MultigroupOpacity.hh"
+#include "cdi/OpacityCommon.hh"
 #include "cdi_ipcress/IpcressFile.hh"
 #include "cdi_ipcress/IpcressGrayOpacity.hh"
 #include "cdi_ipcress/IpcressMultigroupOpacity.hh"
+#include <cmath>
+#include <cstddef>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <vector>
+
+// cSpell:ignore ipcress, matid, ramg
 
 using namespace std;
 
@@ -35,17 +49,17 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
 
   // -----------------------------------------------------------------
   // The Opacities in this file are computed from the following analytic formula:
-  //     opacity = rho * T^4,
-  // rho is the density and T is the temperature.
+  // * opacity = rho * T^4,
+  // * rho is the density and T is the temperature.
   //
   // The grid in this data file has the following structure:
-  //    T   = { 0.1, 1.0, 10.0 } keV.
-  //    rho = { 0.1, 0.5, 1.0 } g/cm^3
-  //    E_bounds = { 0.01, 0.03, 0.07, 0.1, 0.3, 0.7, 1.0, 3.0, 7.0, 10.0, 30.0, 70.0 100.0 } keV.
+  // * T   = { 0.1, 1.0, 10.0 } keV.
+  // * rho = { 0.1, 0.5, 1.0 } g/cm^3
+  // * E_bounds = { 0.01, 0.03, 0.07, 0.1, 0.3, 0.7, 1.0, 3.0, 7.0, 10.0, 30.0, 70.0 100.0 } keV.
   //-----------------------------------------------------------------
 
   // Ipcress data filename (IPCRESS format required)
-  string op_data_file = ut.getTestSourcePath() + "analyticOpacities.ipcress";
+  string const op_data_file = ut.getTestSourcePath() + "analyticOpacities.ipcress";
 
   // ------------------------- //
   // Create IpcressFile object //
@@ -98,13 +112,9 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
 
   shared_ptr<CDI> spCDI_Analytic;
   if ((spCDI_Analytic = std::make_shared<CDI>()), spCDI_Analytic) {
-    ostringstream message;
-    message << "shared_ptr to CDI object created successfully (GrayOpacity).";
-    PASSMSG(message.str());
+    PASSMSG("shared_ptr to CDI object created successfully (GrayOpacity).");
   } else {
-    ostringstream message;
-    message << "Failed to create shared_ptr to CDI object (GrayOpacity).";
-    FAILMSG(message.str());
+    FAILMSG("Failed to create shared_ptr to CDI object (GrayOpacity).");
   }
 
   // ------------------ //
@@ -116,12 +126,12 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
 
   double temperature = 10.0;                                   // keV
   double density = 1.0;                                        // g/cm^3
-  double tabulatedGrayOpacity = density * pow(temperature, 4); // cm^2/g
+  double const tabulatedGrayOpacity = density * pow(temperature, 4); // cm^2/g
 
-  rtt_cdi::Model r = rtt_cdi::ROSSELAND;
-  rtt_cdi::Reaction a = rtt_cdi::ABSORPTION;
+  rtt_cdi::Model const r = rtt_cdi::ROSSELAND;
+  rtt_cdi::Reaction const a = rtt_cdi::ABSORPTION;
 
-  double opacity = spCDI_Analytic->gray(r, a)->getOpacity(temperature, density);
+  double const opacity = spCDI_Analytic->gray(r, a)->getOpacity(temperature, density);
 
   if (rtt_dsxx::soft_equiv(opacity, tabulatedGrayOpacity)) {
     ostringstream message;
@@ -137,13 +147,13 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
 
   // try using a vector of temps.
 
-  vector<double> vtemperature = {0.5, 0.7}; // keV
+  vector<double> vTemperature = {0.5, 0.7}; // keV
   density = 0.35;                           // g/cm^3
-  vector<double> vRefOpacity(vtemperature.size());
-  for (size_t i = 0; i < vtemperature.size(); ++i)
-    vRefOpacity[i] = density * pow(vtemperature[i], 4);
+  vector<double> vRefOpacity(vTemperature.size());
+  for (size_t i = 0; i < vTemperature.size(); ++i)
+    vRefOpacity[i] = density * pow(vTemperature[i], 4);
 
-  vector<double> vOpacity = spCDI_Analytic->gray(r, a)->getOpacity(vtemperature, density);
+  vector<double> const vOpacity = spCDI_Analytic->gray(r, a)->getOpacity(vTemperature, density);
 
   if (rtt_dsxx::soft_equiv(vOpacity, vRefOpacity)) {
     ostringstream message;
@@ -162,7 +172,7 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
   // The virtual base class does not support STL-like accessors so we don't test this feature.
 
   // ----------------------------------------- //
-  // Create a IpcressMultigorupOpacity object. //
+  // Create a IpcressMultigroupOpacity object. //
   // ----------------------------------------- //
 
   // Create a smart pointer to an opacity object.
@@ -175,17 +185,16 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
   } catch (rtt_dsxx::assertion const &excpt) {
     ostringstream message;
     message << "Failed to create shared_ptr to new IpcressMultigroupOpacity object for "
-            << "two-mats.ipcress data.\n\t" << excpt.what();
+            << "two-mats.ipcress data.\n\t" << excpt.what() << "\nAborting tests.";
     FAILMSG(message.str());
-    FAILMSG("Aborting tests.");
     return;
   }
 
   // If we get here then the object was successfully instantiated.
   {
     ostringstream message;
-    message << "shared_ptr to new Ipcress multigroup opacity object created"
-            << "\n\tfor analyticOpacities.ipcress.";
+    message << "shared_ptr to new Ipcress multigroup opacity object created for "
+            << "analyticOpacities.ipcress.";
     PASSMSG(message.str());
   }
 
@@ -207,13 +216,13 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
   density = 0.7;     // g/cm^3
 
   // This is the solution we compare against.
-  int numGroups = 12;
+  int const numGroups = 12;
   vector<double> tabulatedMGOpacity(numGroups);
   for (int i = 0; i < numGroups; ++i)
     tabulatedMGOpacity[i] = density * pow(temperature, 4); // cm^2/gm
 
   // Request the multigroup opacity vector.
-  vector<double> mgOpacity = spCDI_Analytic->mg(r, a)->getOpacity(temperature, density);
+  vector<double> const mgOpacity = spCDI_Analytic->mg(r, a)->getOpacity(temperature, density);
 
   if (rtt_dsxx::soft_equiv(mgOpacity, tabulatedMGOpacity)) {
     ostringstream message;

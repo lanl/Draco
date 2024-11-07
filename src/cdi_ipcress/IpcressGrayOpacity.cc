@@ -7,11 +7,18 @@
  * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "IpcressGrayOpacity.hh"
-#include "IpcressDataTable.hh"
-#include "IpcressFile.hh"
+#include "cdi_ipcress/IpcressGrayOpacity.hh"
 #include "dsxx/Assert.hh"
 #include "dsxx/Packing_Utils.hh"
+#include "cdi/OpacityCommon.hh"
+#include "cdi_ipcress/IpcressDataTable.hh"
+#include "cdi_ipcress/IpcressFile.hh"
+#include <cstddef> // size_t
+#include <memory>  // make_shared
+#include <string>
+#include <vector>
+
+// cSpell:ignore ipcress, itmp, Opac
 
 namespace rtt_cdi_ipcress {
 
@@ -127,7 +134,7 @@ IpcressGrayOpacity::IpcressGrayOpacity(std::vector<char> const &packed)
  *        multigroup EnergyPolicy) that corresponds to the provided temperature and density.
  */
 double IpcressGrayOpacity::getOpacity(double targetTemperature, double targetDensity) const {
-  double opacity = spIpcressDataTable->interpOpac(targetTemperature, targetDensity);
+  double const opacity = spIpcressDataTable->interpOpac(targetTemperature, targetDensity);
   Check(opacity > 0.0);
   return opacity;
 }
@@ -143,7 +150,7 @@ std::vector<double> IpcressGrayOpacity::getOpacity(std::vector<double> const &ta
   std::vector<double> opacity(targetTemperature.size(),
                               -99.0 * targetTemperature[0] * targetDensity);
   for (size_t i = 0; i < targetTemperature.size(); ++i) {
-    // logorithmic interpolation:
+    // logarithmic interpolation:
     opacity[i] = spIpcressDataTable->interpOpac(targetTemperature[i], targetDensity);
     Check(opacity[i] > 0.0);
   }
@@ -160,7 +167,7 @@ std::vector<double> IpcressGrayOpacity::getOpacity(double targetTemperature,
                                                    std::vector<double> const &targetDensity) const {
   std::vector<double> opacity(targetDensity.size(), -99 * targetTemperature);
   for (size_t i = 0; i < targetDensity.size(); ++i) {
-    // logorithmic interpolation:
+    // logarithmic interpolation:
     opacity[i] = spIpcressDataTable->interpOpac(targetTemperature, targetDensity[i]);
     Check(opacity[i] > 0.0);
   }
@@ -192,7 +199,7 @@ std::vector<char> IpcressGrayOpacity::pack() const {
 
   // determine the total size: 3 ints (reaction, model, material id) + 2 ints for packed_filename
   // size and packed_descriptor size + char in packed_filename and packed_descriptor
-  size_t size = 5 * sizeof(int) + packed_filename.size() + packed_descriptor.size();
+  size_t const size = 5 * sizeof(int) + packed_filename.size() + packed_descriptor.size();
 
   // make a container to hold packed data
   vector<char> packed(size);
@@ -203,12 +210,12 @@ std::vector<char> IpcressGrayOpacity::pack() const {
 
   // pack the descriptor
   packer << static_cast<int>(packed_descriptor.size());
-  for (char &c : packed_descriptor)
+  for (char const &c : packed_descriptor)
     packer << c;
 
   // pack the filename (size and elements)
   packer << static_cast<int>(packed_filename.size());
-  for (char &c : packed_filename)
+  for (char const &c : packed_filename)
     packer << c;
 
   // pack the material id

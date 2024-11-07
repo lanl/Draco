@@ -4,15 +4,23 @@
  * \author Kelly Thompson
  * \date   Wednesday, Nov 16, 2011, 17:04 pm
  * \brief  Implementation file for IpcressDataTable objects.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "IpcressDataTable.hh"
-#include "IpcressFile.hh"
+#include "cdi_ipcress/IpcressDataTable.hh"
 #include "dsxx/Assert.hh"
 #include "cdi/OpacityCommon.hh"
-#include <cmath> // we need to define log(double)
+#include "cdi_ipcress/IpcressFile.hh"
+#include <algorithm> // transform
+#include <cmath>     // we need to define log(double)
+#include <cstddef>   // size_t
+#include <cstdlib>   // atoi
+#include <memory>    // shared_ptr
+#include <string>
+#include <utility> // move
+#include <vector>
+
+// cSpell:ignore ipcress, ramg, rsmg, rtmg, rgray, rsgray, pgray, tgrid, hnugrid, irho, rgrid, Opac
 
 // ------------------------- //
 // NAMESPACE RTT_CDI_IPCRESS //
@@ -27,29 +35,25 @@ double unary_log(double x) { return std::log(x); }
 /*!
  * \brief IpcressData Table constructor.
  *
- * The constructor requires that the data state be completely defined.  With
- * this information the DataTypeKey is set, then the data table sizes are loaded
- * and finally the table data is loaded.
+ * The constructor requires that the data state be completely defined.  With this information the
+ * DataTypeKey is set, then the data table sizes are loaded and finally the table data is loaded.
  *
- * \param[in] in_opacityEnergyDescriptor This string variable specifies the
- *     energy model { "gray" or "mg" } for the opacity data contained in this
- *     IpcressDataTable object.
- * \param in_opacityModel This enumerated value specifies the physics model
- *     {Rosseland or Planck} for the opacity data contained in this object.
- *     The enumeration is defined in IpcressOpacity.hh
- * \param in_opacityReaction This enumerated value specifies the interaction
- *     model { total, scattering, absorption " for the opacity data contained
- *     in this object.  The enumeration is defined in IpcressOpacity.hh
- * \param in_fieldNames This vector of strings is a list of data keys that the
- *     IPCRESS file knows about.  This list is read from the IPCRESS file when
- *     a IpcressOpacity object is instantiated but before the associated
- *     IpcressDataTable object is created.
- * \param in_matID The material identifier that specifies a particular material
- *     in the IPCRESS file to associate with the IpcressDataTable container.
- * \param spIpcressFile A dsxx SmartPointer to a IpcressFile object.  One
- *     GanolfFile object should exist for each IPCRESS file.  Many
- *     IpcressOpacity (and thus IpcressDataTable) objects may point to the
- *     same IpcressFile object.
+ * \param[in] in_opacityEnergyDescriptor This string variable specifies the energy model { "gray" or
+ *     "mg" } for the opacity data contained in this IpcressDataTable object.
+ * \param in_opacityModel This enumerated value specifies the physics model {Rosseland or Planck}
+ *     for the opacity data contained in this object. The enumeration is defined in
+ *     IpcressOpacity.hh
+ * \param in_opacityReaction This enumerated value specifies the interaction model { total,
+ *     scattering, absorption " for the opacity data contained in this object.  The enumeration is
+ *     defined in IpcressOpacity.hh
+ * \param in_fieldNames This vector of strings is a list of data keys that the IPCRESS file knows
+ *     about.  This list is read from the IPCRESS file when a IpcressOpacity object is instantiated
+ *     but before the associated IpcressDataTable object is created.
+ * \param in_matID The material identifier that specifies a particular material in the IPCRESS file
+ *     to associate with the IpcressDataTable container.
+ * \param spIpcressFile A dsxx SmartPointer to a IpcressFile object.  One GandalfFile object should
+ *     exist for each IPCRESS file.  Many IpcressOpacity (and thus IpcressDataTable) objects may
+ *     point to the same IpcressFile object.
  */
 IpcressDataTable::IpcressDataTable(std::string in_opacityEnergyDescriptor,
                                    rtt_cdi::Model in_opacityModel,
@@ -61,10 +65,10 @@ IpcressDataTable::IpcressDataTable(std::string in_opacityEnergyDescriptor,
       opacityReaction(in_opacityReaction), fieldNames(in_fieldNames), matID(in_matID),
       logTemperatures(), temperatures(), logDensities(), densities(), groupBoundaries(),
       logOpacities() {
-  // Obtain the Ipcress keyword for the opacity data type specified by the
-  // EnergyPolicy, opacityModel and the opacityReaction.  Valid keywords are:
-  // {ramg, rsmg, rtmg, pmg, rgray, ragray, rsgray, pgray} This function also
-  // ensures that the requested data type is available in the IPCRESS file.
+  // Obtain the Ipcress keyword for the opacity data type specified by the opacityEnergyDescriptor,
+  // opacityModel and the opacityReaction.  Valid keywords are: {ramg, rsmg, rtmg, pmg, rgray,
+  // ragray, rsgray, pgray} This function also ensures that the requested data type is available in
+  // the IPCRESS file.
   setIpcressDataTypeKey();
 
   // Retrieve the data set and resize the vector containers.
@@ -72,8 +76,8 @@ IpcressDataTable::IpcressDataTable(std::string in_opacityEnergyDescriptor,
   densities = spIpcressFile->getData(matID, "rgrid");
   groupBoundaries = spIpcressFile->getData(matID, "hnugrid");
 
-  // Retrieve table data (temperatures, densities, group boundaries and
-  // opacities.  These are stored as logorithmic values.
+  // Retrieve table data (temperatures, densities, group boundaries and opacities.  These are stored
+  // as logarithmic values.
   loadDataTable(spIpcressFile);
 
 } // end of IpcressDataTable constructor.
@@ -84,13 +88,12 @@ IpcressDataTable::IpcressDataTable(std::string in_opacityEnergyDescriptor,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief This function sets both "ipcressDataTypeKey" and "dataDescriptor"
- *     based on the values given for opacityEnergyDescriptor, opacityModel and
- *     opacityReaction.
+ * \brief This function sets both "ipcressDataTypeKey" and "dataDescriptor" based on the values
+ *     given for opacityEnergyDescriptor, opacityModel and opacityReaction.
  */
 void IpcressDataTable::setIpcressDataTypeKey() const {
-  // Build the Ipcress key for the requested data.  Valid keys are: { ramg,
-  // rsmg, rtmg, pmg, rgray, ragray, rsgray, pgray }
+  // Build the Ipcress key for the requested data.  Valid keys are: { ramg, rsmg, rtmg, pmg, rgray,
+  // ragray, rsgray, pgray }
 
   if (opacityEnergyDescriptor == "gray") {
     switch (opacityModel) {
@@ -178,13 +181,12 @@ void IpcressDataTable::setIpcressDataTypeKey() const {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Load the temperature, density, energy boundary and opacity opacity
- *     tables from the IPCRESS file.  Convert all tables (except energy
- *     boundaries) to log values.
+ * \brief Load the temperature, density, energy boundary and opacity opacity tables from the IPCRESS
+ *     file.  Convert all tables (except energy boundaries) to log values.
  */
 void IpcressDataTable::loadDataTable(std::shared_ptr<const IpcressFile> const &spIpcressFile) {
-  // The interpolation routines expect everything to be in log form so we only
-  // store the logorithmic temperature, density and opacity data.
+  // The interpolation routines expect everything to be in log form so we only store the logarithmic
+  // temperature, density and opacity data.
   logTemperatures.resize(temperatures.size());
   std::transform(temperatures.begin(), temperatures.end(), logTemperatures.begin(), unary_log);
   logDensities.resize(densities.size());
@@ -197,13 +199,13 @@ void IpcressDataTable::loadDataTable(std::shared_ptr<const IpcressFile> const &s
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief This function returns "true" if "key" is found in the list of "keys".
- *        This is a static member function.
+ * \brief This function returns "true" if "key" is found in the list of "keys". This is a static
+ *        member function.
  */
 template <typename T>
 bool IpcressDataTable::key_available(T const &key, std::vector<T> const &keys) const {
-  // Loop over all available keys.  If the requested key matches one in the list
-  // return true.  If we reach the end of the list without a match return false.
+  // Loop over all available keys.  If the requested key matches one in the list return true.  If we
+  // reach the end of the list without a match return false.
   for (size_t i = 0; i < keys.size(); ++i)
     if (key == keys[i])
       return true;
@@ -219,8 +221,8 @@ bool IpcressDataTable::key_available(T const &key, std::vector<T> const &keys) c
  * \param[in] group Group index
  * \return An interpolated opacity value.
  *
- * \note The opacity array is a 1D array.  group id is the fastest moving index
- *       and temperatures are the slowest moving index.
+ * \note The opacity array is a 1D array.  group id is the fastest moving index and temperatures are
+ *       the slowest moving index.
  */
 double IpcressDataTable::interpOpac(double const targetTemperature, double const targetDensity,
                                     size_t const group) const {
@@ -231,8 +233,8 @@ double IpcressDataTable::interpOpac(double const targetTemperature, double const
   size_t const numT = logTemperatures.size();
   size_t const ng = opacityEnergyDescriptor == std::string("gray") ? 1 : groupBoundaries.size() - 1;
 
-  // Check if we are off the table boundaries.  We don't allow extrapolation,
-  // so move the target temperature or density to the table boundary.
+  // Check if we are off the table boundaries.  We don't allow extrapolation, so move the target
+  // temperature or density to the table boundary.
   Check(numT > 1);
   Check(numrho > 1);
   if (targetTemperature < temperatures[0])
@@ -247,6 +249,7 @@ double IpcressDataTable::interpOpac(double const targetTemperature, double const
   /*
    * The grid looks like this:
    *
+   * ~~~
    *      |   T1     |   T      |   T2
    * -----------------------------------------
    * rho1 |   sig11  |          |   sig13
@@ -254,12 +257,13 @@ double IpcressDataTable::interpOpac(double const targetTemperature, double const
    * rho  |   sig21  |  sig22   |   sig23
    * -----------------------------------------
    * rho2 |   sig31  |          |   sig33
+   * ~~~
    *
    * - rho1, rho2, T1 and T2 are table values.
    * - sig11, sig13, sig31 and sig33 are table values.
    *
-   * Use linear interploation wrt log(rho) to find sig21 and sig23, then use
-   * linear interpolation wrt log(T) to find sig22.
+   * Use linear interpolation wrt log(rho) to find sig21 and sig23, then use linear interpolation
+   * wrt log(T) to find sig22.
    */
 
   // Find the bracketing table values (T1, T2) and (rho1, rho2) for rho and T.
@@ -281,22 +285,21 @@ double IpcressDataTable::interpOpac(double const targetTemperature, double const
   // Perform the linear interpolation.
 
   // index of cell with lower T and lower rho bound
-  size_t i = (iT * numrho + irho) * ng + group;
-  size_t k = i + ng * numrho; // index for cell with higher T value
+  size_t const i = (iT * numrho + irho) * ng + group;
+  size_t const k = i + ng * numrho; // index for cell with higher T value
 
-  // If we are on the edge of the opacity table, return the edge values.  So
-  // there are 4 cases:
+  // If we are on the edge of the opacity table, return the edge values.  So there are 4 cases:
   double logOpacity(0.0);
 
   // 1. Normal path
   if (irho + 1 < numrho && iT + 1 < numT) {
-    double logsig12 = logOpacities[i] + (logrho - logDensities[irho]) /
-                                            (logDensities[irho + 1] - logDensities[irho]) *
-                                            (logOpacities[i + ng] - logOpacities[i]);
+    double const logsig12 = logOpacities[i] + (logrho - logDensities[irho]) /
+                                                  (logDensities[irho + 1] - logDensities[irho]) *
+                                                  (logOpacities[i + ng] - logOpacities[i]);
 
-    double logsig32 = logOpacities[k] + (logrho - logDensities[irho]) /
-                                            (logDensities[irho + 1] - logDensities[irho]) *
-                                            (logOpacities[k + ng] - logOpacities[k]);
+    double const logsig32 = logOpacities[k] + (logrho - logDensities[irho]) /
+                                                  (logDensities[irho + 1] - logDensities[irho]) *
+                                                  (logOpacities[k + ng] - logOpacities[k]);
 
     logOpacity = logsig12 + (logT - logTemperatures[iT]) /
                                 (logTemperatures[iT + 1] - logTemperatures[iT]) *

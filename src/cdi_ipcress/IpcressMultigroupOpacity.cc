@@ -7,13 +7,18 @@
  * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "IpcressMultigroupOpacity.hh"
-#include "IpcressDataTable.hh"
-#include "IpcressFile.hh"
+#include "cdi_ipcress/IpcressMultigroupOpacity.hh"
 #include "dsxx/Assert.hh"
 #include "dsxx/Packing_Utils.hh"
-#include <cmath>
+#include "cdi/OpacityCommon.hh"
+#include "cdi_ipcress/IpcressDataTable.hh"
+#include "cdi_ipcress/IpcressFile.hh"
+#include <cstddef> // size_t
 #include <memory>
+#include <string>
+#include <vector>
+
+// cSpell:ignore ipcress, itmp, Opac
 
 namespace rtt_cdi_ipcress {
 
@@ -31,8 +36,7 @@ IpcressMultigroupOpacity::IpcressMultigroupOpacity(
       energyPolicyDescriptor("mg"), spIpcressDataTable() {
   // Verify that the requested material ID is available in the specified IPCRESS file.
   Insist(spIpcressFile->materialFound(materialID),
-         std::string("The requested material ID is not available in the ") +
-             std::string("specified Ipcress file."));
+         "The requested material ID is not available in the specified Ipcress file.");
 
   // Retrieve keys available for this material from the IPCRESS file.
   fieldNames = spIpcressFile->listDataFieldNames(materialID);
@@ -148,9 +152,9 @@ std::vector<double> IpcressMultigroupOpacity::getOpacity(double targetTemperatur
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Opacity accessor that returns a vector of opacities (or a vector of
- *     vectors of opacities for the multigroup EnergyPolicy) that correspond to
- *     the provided vector of temperatures and a single density value.
+ * \brief Opacity accessor that returns a vector of opacities (or a vector of vectors of opacities
+ *     for the multigroup EnergyPolicy) that correspond to the provided vector of temperatures and a
+ *     single density value.
  */
 std::vector<std::vector<double>>
 IpcressMultigroupOpacity::getOpacity(std::vector<double> const &targetTemperature,
@@ -182,13 +186,12 @@ IpcressMultigroupOpacity::getOpacity(double targetTemperature,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * Pack the IpcressMultigroupOpacity state into a char string represented by a vector<char>. This
+ * Pack the IpcressMultigroupOpacity state into a char string represented by a \c vector<char>. This
  * can be used for persistence, communication, etc. by accessing the char * under the vector
  * (required by implication by the standard) with the syntax &char_string[0]. Note, it is unsafe to
  * use iterators because they are \b not required to be char *.
  */
 std::vector<char> IpcressMultigroupOpacity::pack() const {
-  using std::string;
   using std::vector;
 
   // pack up the energy policy descriptor
@@ -201,7 +204,7 @@ std::vector<char> IpcressMultigroupOpacity::pack() const {
 
   // determine the total size: 3 ints (reaction, model, material id) + 2 ints for packed_filename
   // size and packed_descriptor size + char in packed_filename and packed_descriptor
-  size_t size = 5 * sizeof(int) + packed_filename.size() + packed_descriptor.size();
+  size_t const size = 5 * sizeof(int) + packed_filename.size() + packed_descriptor.size();
 
   // make a container to hold packed data
   vector<char> packed(size);
@@ -212,12 +215,12 @@ std::vector<char> IpcressMultigroupOpacity::pack() const {
 
   // pack the descriptor
   packer << static_cast<int>(packed_descriptor.size());
-  for (char &c : packed_descriptor)
+  for (char const &c : packed_descriptor)
     packer << c;
 
   // pack the filename (size and elements)
   packer << static_cast<int>(packed_filename.size());
-  for (char &c : packed_filename)
+  for (char const &c : packed_filename)
     packer << c;
 
   // pack the material id
