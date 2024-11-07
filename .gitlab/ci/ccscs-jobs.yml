@@ -34,6 +34,7 @@ ccs1_clangtidy:
     DRACO_ENV: llvm1706
     CTEST_NPROC: 32
     EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
+      -DDraco_C_LANGUAGE_STANDARD=17
     EXTRA_CTEST_ARGS: -R dsxx_tstRelease
     SITE_ID: ccscs1
   script:
@@ -116,7 +117,8 @@ ccs1_clangtidy_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm1706
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
-    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
+      -DDraco_C_LANGUAGE_STANDARD=17
     SITE_ID: ccscs1
 
 ccs2_deb_gcc_1220_deploy:
@@ -537,7 +539,8 @@ clangtidy_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm1706
     CTEST_NPROC: 40
-    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
+      -DDraco_C_LANGUAGE_STANDARD=17
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
     CTEST_BUILD_NAME: clang-tidy
 

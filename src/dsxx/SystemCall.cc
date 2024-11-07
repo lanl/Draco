@@ -22,7 +22,9 @@
 #include <sstream>
 #endif
 #if defined UNIX || defined MINGW
-#include <cstdio>      // remove()
+#if defined(__cplusplus) && __cplusplus > 201402L // C++17 or newer
+#include <cstdio>                                 // std::remove()
+#endif
 #include <sys/param.h> // MAXPATHLEN
 #endif
 
@@ -216,7 +218,7 @@ bool draco_getstat::isdir() {
 #ifdef _MSC_VER
 bool draco_getstat::has_permission_bit(int /*mask*/) {
   Insist(isreg(), "Can only check permission bit for regular files.");
-  Insist(false, "draco_getstat::hsa_permission_bit() not implemented for WIN32");
+  Insist(false, "draco_getstat::has_permission_bit() not implemented for WIN32");
   return false;
 }
 #else
@@ -233,9 +235,7 @@ std::string draco_getrealpath(std::string const &path) {
 #if defined(__cplusplus) && __cplusplus > 201402L // C++17 or newer
 
   return std::filesystem::canonical(path).generic_string() + rtt_dsxx::dirSep;
-
 #else // C++14 or older
-
   std::array<char, MAXPATHLEN> buffer{}; // _MAX_PATH
   buffer.fill('a');
 #ifdef _MSC_VER
@@ -331,31 +331,31 @@ void draco_remove(std::string const &dirpath) {
 
 #else // C++14 or older
 
-  // remove() works for all unix items but only for files (not directories) for windows.
+  // std::remove() works for all unix items but only for files (not directories) for windows.
 #ifdef _MSC_VER
   if (draco_getstat(dirpath).isdir()) {
     // Clear any special directory attributes.
     bool ok = ::SetFileAttributes(dirpath.c_str(), FILE_ATTRIBUTE_NORMAL);
     if (!ok) {
-      int myerr = ::GetLastError();
+      int drError = ::GetLastError();
       std::ostringstream msg;
-      msg << "ERROR: File attribute not normal. myerr = " << myerr << ", file = " << dirpath;
+      msg << "ERROR: File attribute not normal. drError = " << drError << ", file = " << dirpath;
       Insist(ok, msg.str());
     }
 
     // Delete directory
     ok = ::RemoveDirectory(dirpath.c_str());
     if (!ok) {
-      int myerr = ::GetLastError();
+      int drError = ::GetLastError();
       std::ostringstream msg;
-      msg << "ERROR: Error deteting file, myerr = " << myerr << ", file = " << dirpath;
+      msg << "ERROR: Error deleting file, drError = " << drError << ", file = " << dirpath;
       Insist(ok, msg.str());
     }
   } else {
-    remove(dirpath.c_str());
+    std::remove(dirpath.c_str());
   }
 #else
-  remove(dirpath.c_str());
+  std::remove(dirpath.c_str());
 #endif
 
 #endif
