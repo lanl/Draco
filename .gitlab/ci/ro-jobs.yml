@@ -86,13 +86,13 @@ ro_rel_gnu_deploy:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.4.0-gnu"
+    DRACO_ENV: "lapse/2.5.2-1-gnu"
 
 ro_deb_gnu_deploy:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.4.0-gnu"
+    DRACO_ENV: "lapse/2.5.2-1-gnu"
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
@@ -170,20 +170,20 @@ ro_rel_gnu_deploy_release:
   extends: .ro_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.4.0-gnu"
+    DRACO_ENV: "lapse/2.5.2-1-gnu"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
 
 ro_deb_gnu_deploy_release:
   extends: .ro_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.4.0-gnu"
+    DRACO_ENV: "lapse/2.5.2-1-gnu"
 
 ro_rwdi_gnu_deploy_release:
   extends: .ro_deploy_release
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/2.4.0-gnu"
+    DRACO_ENV: "lapse/2.5.2-1-gnu"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
 #--------------------------------------------------------------------------------------------------#
@@ -229,7 +229,7 @@ ro_deb_gnu_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.4.0-gnu"
+    DRACO_ENV: "lapse/2.5.2-1-gnu"
 
 # ----- slow -----
 
@@ -313,7 +313,7 @@ ro_deb_gnu_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.4.0-gnu"
+    DRACO_ENV: "lapse/2.5.2-1-gnu"
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/ro-jobs.yml
