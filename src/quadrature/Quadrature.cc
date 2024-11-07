@@ -111,9 +111,9 @@ Quadrature::create_ordinate_set(unsigned const dimension, Geometry const geometr
   std::vector<Ordinate> const ordinates = create_ordinates_(
       dimension, geometry, norm, include_starting_directions, include_extra_directions);
 
-  std::shared_ptr<Ordinate_Set> Result(new Ordinate_Set(dimension, geometry, ordinates,
-                                                        include_starting_directions,
-                                                        include_extra_directions, ordering));
+  const auto Result =
+      std::make_shared<Ordinate_Set>(dimension, geometry, ordinates, include_starting_directions,
+                                     include_extra_directions, ordering);
 
   return Result;
 }

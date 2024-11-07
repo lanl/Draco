@@ -16,11 +16,6 @@
         "type": "equals",
         "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
         "rhs": "Linux-"
-      },
-      "vendor": {
-        "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
-          "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
-        }
       }
     },
     {
@@ -93,8 +88,15 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "DRACO_STATIC_ANALYZER": "clang-tidy",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
         "Draco_CXX_LANGUAGE_STANDARD": "17",
         "Draco_C_LANGUAGE_STANDARD": "17"
+      },
+      "condition": {
+        "type": "matches",
+        "string": "$env{CC}",
+        "regex": "clang"
       }
     },
     {
@@ -349,7 +351,13 @@
       "inherits": "linux-ctest",
       "description": "Run all tests",
       "displayName": "Ctest",
-      "configurePreset": "linux-debug-clang-tidy"
+      "configurePreset": "linux-debug-clang-tidy",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "stopOnFailure": true
+      }
     },
     {
       "name": "darwin-haswell-ctest",
@@ -418,6 +426,25 @@
       "configurePreset": "win-x64-release",
       "configuration": "Release",
       "displayName": "Ctest"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "linux-debug",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "linux-debug"
+        },
+        {
+          "type": "build",
+          "name": "linux-debug"
+        },
+        {
+          "type": "test",
+          "name": "linux-debug"
+        }
+      ]
     }
   ]
 }

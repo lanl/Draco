@@ -7,10 +7,20 @@
  * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "IpcressFile.hh"
-#include "IpcressFile.t.hh"
+#include "cdi_ipcress/IpcressFile.hh"
 #include "dsxx/Assert.hh"
 #include "dsxx/Endian.hh"
+#include "dsxx/path.hh"
+#include "cdi_ipcress/IpcressFile.t.hh" // NOLINT(misc-include-cleaner)
+#include <algorithm>                    // find
+#include <cstddef>                      // size_t
+#include <cstdlib>                      // atoi
+#include <fstream>
+#include <ios>
+#include <string>
+#include <vector>
+
+// cSpell:ignore ipcress, matid, tgrid, rgrid
 
 namespace rtt_cdi_ipcress {
 
@@ -21,7 +31,7 @@ namespace rtt_cdi_ipcress {
  * This is the standard IpcressFile constructor. This object is typically instantiated as a smart
  * pointer.
  *
- * \param[in] ipcressDataFilename A string that contains the name of the Ipcress data file in 
+ * \param[in] ipcressDataFilename A string that contains the name of the Ipcress data file in
  *     IPCRESS format.  The f77 Ipcress vendor library expects a name with 80 characters or less. If
  *     the filename is longer than 80 characters the library will not be able to open the file.
  *
@@ -45,7 +55,7 @@ IpcressFile::IpcressFile(const std::string &ipcressDataFilename)
   Insist(ipcressFileHandle.is_open(), "IpcressFile: Unable to open ipcress file.");
 
   // Save the size of the file (bytes) to check against value of toc[21].
-  Remember(std::ifstream::pos_type sizeOfFile(ipcressFileHandle.tellg()););
+  Remember(std::ifstream::pos_type const sizeOfFile(ipcressFileHandle.tellg()););
 
   //
   // Read the title (the first record of binary file).
@@ -103,9 +113,9 @@ IpcressFile::IpcressFile(const std::string &ipcressDataFilename)
   //
 
   byte_offset = ipcress_word_size * dfo[0];
-  std::vector<int> vdata(1);
-  read_v(byte_offset, vdata);
-  size_t nummat = vdata[0];
+  std::vector<int> vData(1);
+  read_v(byte_offset, vData);
+  size_t const nummat = vData[0];
 
   // Consistency check.  ds[0] is the total reserved space in the file for material IDs.
   Check(nummat < ds[0]);
@@ -137,7 +147,6 @@ bool IpcressFile::materialFound(size_t matid) const {
 
 //------------------------------------------------------------------------------------------------//
 std::string IpcressFile::locateIpcressFile(std::string const &ipcressFile) {
-  std::string foundFile;
 
   // ensure a name is provided
   Insist(ipcressFile.size() > 0,
@@ -153,12 +162,12 @@ std::string IpcressFile::locateIpcressFile(std::string const &ipcressFile) {
  * \brief Read 8 character strings from the binary file
  *
  * \param[in]  byte_offset offset into the ipcress file where the data exists.
- * \param[out] vdata       return value
+ * \param[out] vData       return value
  */
-void IpcressFile::read_strings(size_t const byte_offset, std::vector<std::string> &vdata) const {
+void IpcressFile::read_strings(size_t const byte_offset, std::vector<std::string> &vData) const {
   Require(ipcressFileHandle.is_open());
 
-  size_t const nitems(vdata.size());
+  size_t const nitems(vData.size());
 
   // temporary space for loading data from file
   std::vector<char> memblock(ipcress_word_size * nitems);
@@ -171,7 +180,7 @@ void IpcressFile::read_strings(size_t const byte_offset, std::vector<std::string
 
   // Copy data into vector<string> container
   for (size_t i = 0; i < nitems; ++i)
-    vdata[i] = std::string(&memblock[i * ipcress_word_size], ipcress_word_size);
+    vData[i] = std::string(&memblock[i * ipcress_word_size], ipcress_word_size);
 
   return;
 }
@@ -182,25 +191,25 @@ void IpcressFile::loadFieldData() {
   // Attempt to open the ipcress file.
   Insist(ipcressFileHandle.is_open(), "getKeys: Unable to open ipcress file.");
 
-  // number of fields for the material (trid, rgrid, ...)
+  // number of fields for the material (tgrid, rgrid, ...)
   size_t const numFields(toc[14]);
 
   // read the data from the file.  each entry is 24 bytes (3 words).
-  size_t byte_offset = toc[10] * ipcress_word_size;
+  size_t const byte_offset = toc[10] * ipcress_word_size;
   // container for three 8-byte words.
-  std::vector<std::string> thirdofkey(3);
+  std::vector<std::string> thirdOfKey(3);
 
   for (size_t i = 1; i < numFields; ++i) {
     // Note i=0 case is {'mats','fill',fill'}.  We skip this case by starting at
     // i=1.
 
     // read three 8-byte words.
-    read_strings(byte_offset + 9 * i * ipcress_word_size, thirdofkey);
+    read_strings(byte_offset + 9 * i * ipcress_word_size, thirdOfKey);
     // store result into 'keys'
-    std::string field = thirdofkey[0] + thirdofkey[1] + thirdofkey[2];
+    std::string field = thirdOfKey[0] + thirdOfKey[1] + thirdOfKey[2];
 
     // find associated material index
-    size_t id = atoi(field.c_str());
+    size_t const id = atoi(field.c_str());
     Check(id > 0);
     size_t matid(0);
     for (size_t j = 0; j < matIDs.size(); ++j)
@@ -210,9 +219,9 @@ void IpcressFile::loadFieldData() {
       }
 
     // read three 8-byte words.
-    read_strings(byte_offset + 3 * (3 * i + 1) * ipcress_word_size, thirdofkey);
+    read_strings(byte_offset + 3 * (3 * i + 1) * ipcress_word_size, thirdOfKey);
     // store result into 'keys'
-    field = thirdofkey[0] + thirdofkey[1] + thirdofkey[2];
+    field = thirdOfKey[0] + thirdOfKey[1] + thirdOfKey[2];
 
     // Read and save all values at this time.
     std::vector<double> value(ds[i], 0);
@@ -232,7 +241,7 @@ void IpcressFile::loadFieldData() {
         a = 1.0;
         z = 0.5;
       }
-      double zoa = z / a;
+      double const zoa = z / a;
       materialData[matid].set_zoa(zoa);
     }
   }

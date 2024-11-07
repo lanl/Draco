@@ -99,7 +99,7 @@ darwin_style_cxx:
   extends: .darwin
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/haswell-gcc1120
+    DRACO_ENV: draco/haswell-gcc850
     ARCH: haswell
     CTEST_NPROC: 32
     MAXLOAD: 64

@@ -14,6 +14,8 @@
 #include "dsxx/Soft_Equivalence.hh"
 #include <sstream>
 
+// cSpell:ignore IPCRESS
+
 namespace rtt_cdi_ipcress_test {
 
 //------------------------------------------------------------------------------------------------//
@@ -25,23 +27,21 @@ template <typename temperatureType, typename densityType, typename testValueType
 bool opacityAccessorPassed(rtt_dsxx::ScalarUnitTest &ut, opacityClassType const spOpacity,
                            temperatureType const temperature, densityType const density,
                            testValueType const tabulatedValue) {
-  using std::ostringstream;
 
   // Interpolate the multigroup opacities.
   testValueType grayOpacity = spOpacity->getOpacity(temperature, density);
 
   // Make sure that the interpolated value matches previous interpolations.
-
+  std::ostringstream message; // NOLINT(misc-const-correctness) // false-positive
   if (rtt_dsxx::soft_equiv(grayOpacity, tabulatedValue)) {
-    ostringstream message;
-    message << spOpacity->getDataDescriptor() << " opacity computation was good for \n\t"
-            << "\"" << spOpacity->getDataFilename() << "\" data.";
-    ut.passes(message.str());
+    message << spOpacity->getDataDescriptor() << " opacity computation was good for \n\t\""
+            << spOpacity->getDataFilename() << "\" data.";
+    PASSMSG(message.str());
   } else {
-    ostringstream message;
-    message << spOpacity->getDataDescriptor() << " opacity value is out of spec. for \n\t"
-            << "\"" << spOpacity->getDataFilename() << "\" data.";
-    return ut.failure(message.str());
+    message << spOpacity->getDataDescriptor() << " opacity value is out of spec. for \n\t\""
+            << spOpacity->getDataFilename() << "\" data.";
+    FAILMSG(message.str());
+    return false;
   }
 
   // If we get here then the test passed.
@@ -52,37 +52,29 @@ bool opacityAccessorPassed(rtt_dsxx::ScalarUnitTest &ut, opacityClassType const 
 
 template <typename opacityClassType>
 void testTemperatureGridAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType const spOpacity) {
-  using std::ostringstream;
 
   // Read the temperature grid from the IPCRESS file.
-  std::vector<double> temps = spOpacity->getTemperatureGrid();
+  std::vector<double> const temps = spOpacity->getTemperatureGrid();
 
   // Verify that the size of the temperature grid looks right.  If it is the right size then compare
   // the temperature grid data to the data specified when we created the IPCRESS file using TOPS.
   if (temps.size() == spOpacity->getNumTemperatures() && temps.size() == 3) {
-    ostringstream message;
-    message << "The number of temperature points found in the data\n\t"
-            << "grid matches the number returned by the\n\t"
-            << "getNumTemperatures() accessor.";
-    ut.passes(message.str());
+    PASSMSG("The number of temperature points found in the data grid matches the number returned"
+            " by the getNumTemperatures() accessor.");
 
     // The grid specified by TOPS has 3 temperature points.
-    std::vector<double> temps_ref = {0.1, 1.0, 10.0};
+    std::vector<double> const temps_ref = {0.1, 1.0, 10.0};
     Check(temps.size() == 3);
 
     // Compare the grids.
     if (rtt_dsxx::soft_equiv(temps, temps_ref))
-      ut.passes("Temperature grid matches.");
+      PASSMSG("Temperature grid matches.");
     else
-      ut.failure("Temperature grid did not match.");
+      FAILMSG("Temperature grid did not match.");
   } else {
-    ostringstream message;
-    message << "The number of temperature points found in the data\n\t"
-            << "grid does not match the number returned by the\n\t"
-            << "getNumTemperatures() accessor. \n"
-            << "Did not test the results returned by\n\t"
-            << "getTemperatureGrid().";
-    ut.failure(message.str());
+    FAILMSG("The number of temperature points found in the data grid does not match the number "
+            "returned by the getNumTemperatures() accessor.\nDid not test the results returned by "
+            "getTemperatureGrid().");
   }
 }
 
@@ -90,74 +82,60 @@ void testTemperatureGridAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType 
 
 template <typename opacityClassType>
 void testDensityGridAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType const spOpacity) {
-  using std::ostringstream;
 
   // Read the grid from the IPCRESS file.
-  std::vector<double> density = spOpacity->getDensityGrid();
+  std::vector<double> const density = spOpacity->getDensityGrid();
 
-  // Verify that the size of the density grid looks right.  If it is the right
-  // size then compare the density grid data to the data specified when we
-  // created the IPCRESS file using TOPS.
+  // Verify that the size of the density grid looks right.  If it is the right size then compare the
+  // density grid data to the data specified when we created the IPCRESS file using TOPS.
   if (density.size() == 3 && density.size() == spOpacity->getNumDensities()) {
-    ostringstream message;
-    message << "The number of density points found in the data\n\t"
-            << "grid matches the number returned by the\n\tgetNumDensities() accessor.";
-    ut.passes(message.str());
+    PASSMSG("The number of density points found in the data grid matches the number returned by"
+            " the getNumDensities() accessor.");
 
     // The grid specified by TOPS has 3 density points
-    std::vector<double> density_ref = {0.1, 0.5, 1.0};
+    std::vector<double> const density_ref = {0.1, 0.5, 1.0};
     Check(density.size() == 3);
 
     // Compare the grids.
     if (rtt_dsxx::soft_equiv(density, density_ref))
-      ut.passes("Density grid matches.");
+      PASSMSG("Density grid matches.");
     else
-      ut.failure("Density grid did not match.");
+      FAILMSG("Density grid did not match.");
   } else {
-    ostringstream message;
-    message << "The number of density points found in the data\n\t"
-            << "grid does not match the number returned by the\n\t"
-            << "getNumDensities() accessor. \n"
-            << "Did not test the results returned by\n\tgetDensityGrid().";
-    ut.failure(message.str());
+    FAILMSG("The number of density points found in the data grid does not match the number "
+            "returned by the getNumDensities() accessor.\nDid not test the results returned by "
+            "getDensityGrid().");
   }
 }
 
 //------------------------------------------------------------------------------------------------//
 template <typename opacityClassType>
 void testEnergyBoundaryAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType const spOpacity) {
-  using std::ostringstream;
 
   // Read the grid from the IPCRESS file.
-  std::vector<double> ebounds = spOpacity->getGroupBoundaries();
+  std::vector<double> const eBounds = spOpacity->getGroupBoundaries();
 
   // Verify that the size of the group boundary grid looks right.  If it is the right size then
   // compare the energy groups grid data to the data specified when we created the IPCRESS file
   // using TOPS.
-  if (ebounds.size() == 13 && ebounds.size() == spOpacity->getNumGroupBoundaries()) {
-    ostringstream message;
-    message << "The number of energy boundary points found in the data\n\t"
-            << "grid matches the number returned by the\n\t"
-            << "getNumGroupBoundaries() accessor.";
-    ut.passes(message.str());
+  if (eBounds.size() == 13 && eBounds.size() == spOpacity->getNumGroupBoundaries()) {
+    PASSMSG("The number of energy boundary points found in the data grid matches the number "
+            "returned by the getNumGroupBoundaries() accessor.");
 
     // The grid specified by TOPS has 13 energy boundaries.
-    std::vector<double> ebounds_ref = {0.01, 0.03, 0.07, 0.1,  0.3,  0.7,  1.0,
-                                       3.0,  7.0,  10.0, 30.0, 70.0, 100.0};
-    Check(ebounds.size() == 13);
+    std::vector<double> const eBounds_ref = {0.01, 0.03, 0.07, 0.1,  0.3,  0.7,  1.0,
+                                             3.0,  7.0,  10.0, 30.0, 70.0, 100.0};
+    Check(eBounds.size() == 13);
 
     // Compare the grids.
-    if (rtt_dsxx::soft_equiv(ebounds, ebounds_ref))
-      ut.passes("Energy group boundary grid matches.");
+    if (rtt_dsxx::soft_equiv(eBounds, eBounds_ref))
+      PASSMSG("Energy group boundary grid matches.");
     else
-      ut.failure("Energy group boundary grid did not match.");
+      FAILMSG("Energy group boundary grid did not match.");
   } else {
-    ostringstream message;
-    message << "The number of energy boundary points found in the data\n\t"
-            << "grid does not match the number returned by the\n\t"
-            << "get NumGroupBoundaries() accessor. \n"
-            << "Did not test the results returned by\n\tgetGroupBoundaries().";
-    ut.failure(message.str());
+    FAILMSG("The number of energy boundary points found in the data grid does not match the "
+            "number returned by the get NumGroupBoundaries() accessor.\nDid not test the results "
+            "returned by\n\tgetGroupBoundaries().");
   }
 }
 

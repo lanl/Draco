@@ -4,8 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Aug 22 15:15:49 2000
  * \brief  Header file for IpcressFile class
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_ipcress_IpcressFile_hh
@@ -13,21 +12,21 @@
 
 #include "IpcressMaterial.hh"
 
+// cSpell:ignore ipcress, matid, tgrid, rgrid, mxrec, mxkey, vdata, ramg
+
 namespace rtt_cdi_ipcress {
 
 //================================================================================================//
 /*!
  * \class IpcressFile
  *
- * \brief This class controls access the physical IPCRESS data file for
- *        IpcressOpacity. Only one IpcressFile object should exist for each data
- *        file. Several IpcressOpacity objects will access the same IpcressFile
- *        object (one per material found in the data file).
+ * \brief This class controls access the physical IPCRESS data file for IpcressOpacity. Only one
+ *        IpcressFile object should exist for each data file. Several IpcressOpacity objects will
+ *        access the same IpcressFile object (one per material found in the data file).
  *
- * This class is designed to be used in conjunction with IpcressOpacity. The
- * client code should create a IpcressFile object and that object is passed to
- * the IpcressOpacity constructor to create a link between the opacity object
- * and the IPCRESS data file.
+ * This class is designed to be used in conjunction with IpcressOpacity. The client code should
+ * create a IpcressFile object and that object is passed to the IpcressOpacity constructor to create
+ * a link between the opacity object and the IPCRESS data file.
  *
  * Ipcress file layout
  *
@@ -72,7 +71,7 @@ class IpcressFile {
   std::string const dataFilename;
 
   //! Each value in the ipcress file uses 8-bytes.
-  size_t const ipcress_word_size;
+  size_t const ipcress_word_size{0};
 
   //! File handle for the open ipcress file
   std::ifstream mutable ipcressFileHandle;
@@ -89,7 +88,7 @@ class IpcressFile {
    * [6]  - disk length of information block
    * [7]  - disk address of information block
    * [8]  - logical length of index block
-   * [9]  - disk length ofindex block (3*mxkey+2)*mxrec)
+   * [9]  - disk length of index block (3*mxkey+2)*mxrec)
    * [10] - disk address of keys ([1]+mxrec)
    * [11] - disk length of data block used.
    * [12] - disk length of data block
@@ -120,8 +119,8 @@ class IpcressFile {
   std::vector<size_t> ds;
 
   /*!
-   * \brief A vector of containers.  Each contains all field data (tgrid,
-   *        ramg,...) for one material as loaded from the IPCRESS file. */
+   * \brief A vector of containers.  Each contains all field data (tgrid, ramg,...) for one material
+   *        as loaded from the IPCRESS file. */
   std::vector<IpcressMaterial> materialData;
 
 public:
@@ -144,11 +143,9 @@ public:
   //! Indicate if the requested material id is available in the data file.
   bool materialFound(size_t matid) const;
 
-  /*!
-   * \brief Locate the index into the materialData array for provided material
-   *        identifier. */
+  //! Locate the index into the materialData array for provided material identifier.
   size_t getMatIndex(size_t const matid) const {
-    size_t pos = std::find(matIDs.begin(), matIDs.end(), matid) - matIDs.begin();
+    size_t const pos = std::find(matIDs.begin(), matIDs.end(), matid) - matIDs.begin();
     Ensure(pos < matIDs.size());
     return pos;
   }
@@ -156,14 +153,14 @@ public:
   //! Provide a list of loaded data field names for matid.
   std::vector<std::string> listDataFieldNames(size_t const matid) const {
     Require(materialFound(matid));
-    size_t matidx = getMatIndex(matid);
+    size_t const matidx = getMatIndex(matid);
     return materialData[matidx].listDataFieldNames();
   }
 
   //! Provide access to data arrays
   std::vector<double> getData(size_t const matid, std::string const &fieldName) const {
     Require(materialFound(matid));
-    size_t matidx = getMatIndex(matid);
+    size_t const matidx = getMatIndex(matid);
     return materialData[matidx].data(fieldName);
   }
 
@@ -174,9 +171,8 @@ private:
   static std::string locateIpcressFile(std::string const &ipcressFile);
 
   /*!
-   * \brief Load the list of field data names and the associated data arrays for
-   *        the requested material from the Ipcress file and save them into the
-   *        IpcressMaterial container. */
+   * \brief Load the list of field data names and the associated data arrays for the requested
+   *        material from the Ipcress file and save them into the IpcressMaterial container. */
   void loadFieldData();
 
   //! Read an array of integers or doubles from the ipcress file.
