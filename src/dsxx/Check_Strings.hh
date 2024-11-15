@@ -29,6 +29,16 @@ namespace rtt_dsxx {
 
 // Private functors for internal use by string checking utilities.
 
+/*!
+ * \struct char_in_string
+ * \brief A callable struct that checks if any character from a given string (str2) appears in
+ *        another string (str1).
+ *
+ * The `char_in_string` struct takes a string as input during construction and stores it in the
+ * `str2` member variable. It provides an `operator()` that can be used to check if any character
+ * from `str2` appears in another string (`str1`). This is useful for filtering or finding strings
+ * that contain specific characters.
+ */
 struct char_in_string {
   std::string str2;
   explicit char_in_string(std::string s) : str2(std::move(s)) {}
