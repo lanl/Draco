@@ -13,7 +13,7 @@ fi
 ##-----------------------------------------------------------------------------------------------##
 
 if [[ ! ${VENDOR_DIR} ]]; then
-  export VENDOR_DIR=/usr/projects/draco/vendors
+  export VENDOR_DIR=/projects/draco/vendors
   export PATH=$PATH:$VENDOR_DIR/bin
 fi
 
@@ -26,19 +26,11 @@ if [[ -n "$MODULESHOME" ]]; then
     # arm)     module load draco/arm-gcc831 ;;
     crossroads*)
       module load draco/spr-oneapi20230201-nda ;;
-    power9-rhel8*)
-      module load lapse/2.3.1-power9-rhel8-xl ;;
-    power9-rhel7*)
-      module load lapse/2.3.1-power9-rhel7-xl ;;
-    power9*)
-      module load lapse/2.3.1-power9-xl ;;
     shared-gpu)
       module load draco/haswell-gcc1120 cuda ;;
     volta*)
       module load draco/haswell-gcc1120 cuda ;;
-    skylake-gold)
-      module load draco/haswell-gcc1120 ;;
-    general)
+    skylake-gold | general | x86_64)
       module load draco/haswell-gcc1120 ;;
   esac
 fi

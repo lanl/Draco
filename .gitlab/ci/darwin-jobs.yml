@@ -21,9 +21,7 @@
     - darwin-slurm-shared
   variables:
     SITE_ID: darwin
-    SP_power9_rhel8: "--nodes=1 --partition=power9-rhel8,power9-rhel8-asc --qos=debug"
-    SP_power9_rhel7: "--nodes=1 --partition=power9-rhel7,power9-rhel7-asc --qos=debug"
-    SP_power9: "--nodes=1 --partition=power9,power9-asc --qos=debug"
+    EXTRA_CMAKE_ARGS: -G Ninja
     SP_skylake: "--nodes=1 --partition=skylake --qos=debug"
     SP_volta_x86: "--nodes=1 --partition=volta-x86 --qos=debug --constraint='cpu_family:broadwell|\
                   cpu_family:haswell'"
@@ -55,7 +53,14 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-# none
+darwin_debug_llvm_deploy:
+  extends: .darwin_deploy
+  allow_failure: true
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-llvm1706
+    ARCH: x86_64
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
@@ -100,10 +105,10 @@ darwin_style_cxx:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: draco/haswell-gcc850
-    ARCH: haswell
     CTEST_NPROC: 32
-    MAXLOAD: 64
-    SCHEDULER_PARAMETERS: ${SP_x86_64}
+    MAXLOAD: 32
+    ARCH: x86_64
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-style-checks.sh"
   rules:
@@ -128,7 +133,15 @@ darwin_style_cxx:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
 
-# none
+darwin_debug_llvm17_mr:
+  stage: test
+  extends: .darwin_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-llvm1706
+    CTEST_NPROC: 32
+    ARCH: x86_64
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -139,12 +152,21 @@ darwin_style_cxx:
   variables:
     CTEST_MODE: Nightly
     CTEST_BUILD_NAME: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
+    EXTRA_CMAKE_ARGS: -G Ninja
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-# none
+darwin_debug_llvm17:
+  stage: test
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-llvm1706
+    CTEST_NPROC: 32
+    ARCH: x86_64
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/darwin-jobs.yml
