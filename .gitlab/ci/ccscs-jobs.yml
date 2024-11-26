@@ -58,7 +58,6 @@ ccs1_clangtidy:
     EXTRA_CMAKE_ARGS: -G Ninja
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
-  resource_group: ${SITE_ID}-${DRACO_ENV}-${CMAKE_BUILD_TYPE}
   rules:
     # Don't deploy if this is a forked repository.
     - if: '$CI_PROJECT_NAMESPACE != "draco"'
@@ -273,7 +272,6 @@ ccs5_deb_llvm17_deploy:
       fi
     - EXTRA_CMAKE_ARGS="${EXTRA_CMAKE_ARGS} -DDraco_VERSION_PATCH=${VERSION_PATCH}"
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
-  resource_group: ${SITE_ID}-${DRACO_ENV}-${CMAKE_BUILD_TYPE}
   rules:
     # Don't deploy if this is a forked repository.
     - if: '$CI_PROJECT_NAMESPACE != "draco"'
