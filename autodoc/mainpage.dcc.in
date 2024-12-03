@@ -38,7 +38,7 @@ section of the documentation. Also see:
 
 
    # The entities
-   ML, SN, TT, Sierra, ElCap, xrds, CTS2;
+   ML, SN, TT, Sierra, ElCap, xrds, CTS2, Venado;
 
    # Small gap before the boxes
    |||;
@@ -47,19 +47,24 @@ section of the documentation. Also see:
    ML rbox ML [label="Moonlight", textbgcolour="#ff7f7f"],
    SN rbox SN [label="CTS-1/Snow/Fog", textbgcolour="#ffff00"],
    TT rbox TT [label="Trinitite", textbgcolour="#ff7f7f"],
-   Sierra rbox Sierra [label="Sierra", textbgcolour="#006e33"],
-   ElCap rbox ElCap [label="El Capitan", textbgcolour="#006e33"],
-   xrds rbox xrds [label="Crossroads", textbgcolour="#006e33"],
-   CTS2 rbox CTS2 [label="CTS-2/Roci", textbgcolour="#006e33"];
+   Sierra rbox Sierra [label="Sierra", textbgcolour="#ffff00"],
+   ElCap rbox ElCap [label="El Capitan", textbgcolour="#00CC33"],
+   xrds rbox xrds [label="Crossroads", textbgcolour="#00CC33"],
+   CTS2 rbox CTS2 [label="CTS-2/Roci", textbgcolour="#00CC33"];
+   Venado rbox Venado [label="Venado", textbgcolour="#00CC33"];
 
    # Version support (one per line, semicolon)
-   ML abox TT [label="Draco-6_24_0", textbgcolor="#ffff9f"];
-   ML abox TT [label="Draco-6_23_0", textbgcolor="#ffff9f"];
-   ML abox TT [label="Draco-6_22_0", textbgcolor="#ffff9f"];
+   ML abox TT [label="Draco-6_24_0", textbgcolor="#ff7f7f"];
+   ML abox TT [label="Draco-6_23_0", textbgcolor="#ff7f7f"];
+   ML abox TT [label="Draco-6_22_0", textbgcolor="#ff7f7f"];
    SN abox TT [label="Draco-7_0_0", textbgcolor="#ffff9f"];
    SN abox Sierra [label="Draco-7_14_0", textbgcolor="#ffff9f"];
    SN abox SN [label="Draco-7_17_0", textbgcolor="#ffff9f"],
    Sierra abox CTS2 [label="Draco-7_17_0", textbgcolor="#ffff9f"];
+   SN abox SN [label="Draco-7_18_0", textbgcolor="#ffff9f"],
+   Sierra abox CTS2 [label="Draco-7_18_0", textbgcolor="#ffff9f"];
+   SN abox SN [label="Draco-7_19_0", textbgcolor="#ffff9f"],
+   Sierra abox CTS2 [label="Draco-7_19_0", textbgcolor="#ffff9f"];
 
 \endmsc
 

@@ -13,9 +13,7 @@
 
 ---
 .ccscs:
-  id_tokens:
-    CI_JOB_JWT:
-      aud: https://re-git.lanl.gov
+  extends: .jacamar
   # variables:
   #   CI_DEBUG_TRACE: "true"
 
@@ -239,15 +237,15 @@ ccs2_valgrind_deploy:
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
     SITE_ID: ccscs2
 
-ccs5_deb_llvm17_deploy:
+ccs6_deb_llvm17_deploy:
   tags:
-    - CCSCS5-setuid-shared
+    - CCSCS6-setuid-shared
   extends: .ccscs_deploy
   allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: llvm1706
-    SITE_ID: ccscs5
+    SITE_ID: ccscs6
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
