@@ -237,16 +237,6 @@ ccs2_valgrind_deploy:
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
     SITE_ID: ccscs2
 
-ccs6_deb_llvm17_deploy:
-  tags:
-    - CCSCS6-setuid-shared
-  extends: .ccscs_deploy
-  allow_failure: true
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: llvm1706
-    SITE_ID: ccscs6
-
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
 #--------------------------------------------------------------------------------------------------#
