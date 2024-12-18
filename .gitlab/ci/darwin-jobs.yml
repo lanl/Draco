@@ -21,6 +21,7 @@
     - darwin-slurm-shared
   variables:
     SITE_ID: darwin
+    CTEST_SITE: ${SITE_ID}
     EXTRA_CMAKE_ARGS: -G Ninja
     SP_skylake: "--nodes=1 --partition=skylake --qos=debug"
     SP_volta_x86: "--nodes=1 --partition=volta-x86 --qos=debug --constraint='cpu_family:broadwell|\
