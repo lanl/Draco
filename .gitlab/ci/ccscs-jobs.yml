@@ -120,7 +120,7 @@ ccs1_clangtidy_deploy:
 
 ccs2_deb_gcc_1220_deploy:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS2-test
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -129,7 +129,7 @@ ccs2_deb_gcc_1220_deploy:
 
 ccs2_rel_gcc_1220_deploy:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS2-test
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
@@ -138,7 +138,7 @@ ccs2_rel_gcc_1220_deploy:
 
 ccs3_deb_llvm_deploy:
   tags:
-    - CCSCS3-setuid-shared
+    - CCSCS3-test
   extends: .ccscs_deploy
   allow_failure: true
   variables:
@@ -148,7 +148,7 @@ ccs3_deb_llvm_deploy:
 
 ccs3_rel_llvm_deploy:
   tags:
-    - CCSCS3-setuid-shared
+    - CCSCS3-test
   extends: .ccscs_deploy
   allow_failure: true
   variables:
@@ -158,7 +158,7 @@ ccs3_rel_llvm_deploy:
 
 ccs3_deb_gcc_1220_deploy:
   tags:
-    - CCSCS3-setuid-shared
+    - CCSCS3-test
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -167,7 +167,7 @@ ccs3_deb_gcc_1220_deploy:
 
 ccs3_rel_gcc_1220_deploy:
   tags:
-    - CCSCS3-setuid-shared
+    - CCSCS3-test
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
@@ -216,7 +216,7 @@ ccs1_fulldiag_deploy:
 
 ccs2_gcov_deploy:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS2-test
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -227,7 +227,7 @@ ccs2_gcov_deploy:
 
 ccs2_valgrind_deploy:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS2-test
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -314,7 +314,7 @@ ccs1_rel_gcc_1220_deploy_release:
 
 ccs3_deb_gcc_1220:
   tags:
-    - CCSCS3-setuid-shared
+    - CCSCS3-test
   stage: fasttest
   extends: .ccscs_merge
   variables:
@@ -341,7 +341,7 @@ ccs1_c4_scalar:
 
 ccs3_deb_llvm17:
   tags:
-    - CCSCS3-setuid-shared
+    - CCSCS3-test
   stage: test
   extends: .ccscs_merge
   variables:
@@ -352,7 +352,7 @@ ccs3_deb_llvm17:
 
 ccs2_autodoc:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS2-test
   stage: test
   extends: .ccscs_merge
   allow_failure: true
@@ -366,7 +366,7 @@ ccs2_autodoc:
 
 ccs3_rel_llvm17:
   tags:
-    - CCSCS3-setuid-shared
+    - CCSCS3-test
   stage: slowtest
   extends: .ccscs_merge
   variables:
@@ -377,7 +377,7 @@ ccs3_rel_llvm17:
 
 ccs3_rel_gcc_1220:
   tags:
-    - CCSCS3-setuid-shared
+    - CCSCS3-test
   stage: slowtest
   extends: .ccscs_merge
   variables:
@@ -413,7 +413,7 @@ ccs1_fulldiag:
 
 ccs2_gcov:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS2-test
   stage: slowtest
   extends: .ccscs_merge
   # https://regex101.com/
@@ -433,7 +433,7 @@ ccs2_gcov:
 
 ccs3_deb_gcc_1220_cxx17:
   tags:
-    - CCSCS3-setuid-shared
+    - CCSCS3-test
   stage: slowtest
   extends: .ccscs_merge
   variables:
@@ -445,7 +445,7 @@ ccs3_deb_gcc_1220_cxx17:
 
 # ccs2_valgrind:
 #   tags:
-#     - CCSCS2-setuid-shared
+#     - CCSCS2-test
 #   stage: slowtest
 #   extends: .ccscs_merge
 #   variables:
@@ -487,7 +487,7 @@ rel_gcc_12.2.0_regress:
 
 deb_gcc_12.2.0_regress:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS2-test
   extends: .ccscs_nightly
   variables:
     SITE_ID: ccscs2
@@ -497,7 +497,7 @@ deb_gcc_12.2.0_regress:
 
 deb_llvm_regress:
   tags:
-    - CCSCS3-setuid-shared
+    - CCSCS3-test
   extends: .ccscs_nightly
   variables:
     SITE_ID: ccscs3
@@ -507,7 +507,7 @@ deb_llvm_regress:
 
 rel_llvm_regress:
   tags:
-    - CCSCS3-setuid-shared
+    - CCSCS3-test
   extends: .ccscs_nightly
   variables:
     SITE_ID: ccscs3
@@ -560,7 +560,7 @@ fulldiag_regress:
 
 gcov_regress:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS2-test
   extends: .ccscs_nightly
   coverage: '/Coverage:\s\d+\.\d+%/'
   variables:
@@ -574,7 +574,7 @@ gcov_regress:
 
 valgrind_regress:
   tags:
-    - CCSCS2-setuid-shared
+    - CCSCS2-test
   extends: .ccscs_nightly
   variables:
     SITE_ID: ccscs2
