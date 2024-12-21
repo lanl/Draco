@@ -20,16 +20,55 @@
   tags:
     - darwin-slurm-shared
   variables:
+    ARCH: x86_64
     SITE_ID: darwin
     CTEST_SITE: ${SITE_ID}
     EXTRA_CMAKE_ARGS: -G Ninja
-    SP_skylake: "--nodes=1 --partition=skylake --qos=debug"
     SP_volta_x86: "--nodes=1 --partition=volta-x86 --qos=debug --constraint='cpu_family:broadwell|\
                   cpu_family:haswell'"
     SP_x86_64: "--nodes=1 --partition=general --qos=debug --constraint='cpu_family:broadwell|\
-               cpu_family:haswell|cpu_family:skylake'"
-    SP_spr: "--nodes=1 --partition=crossroads-spr --qos=debug"
+               cpu_family:haswell|cpu_family:skylake|cpu_family:cascadelake'"
     # CI_DEBUG_TRACE: "true"
+
+#--------------------------------------------------------------------------------------------------#
+# MRs - linters
+#--------------------------------------------------------------------------------------------------#
+
+darwin_clangtidy:
+  extends: .darwin
+  stage: lint
+  allow_failure: true
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-llvm1706
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
+      -DDraco_C_LANGUAGE_STANDARD=17
+    EXTRA_CTEST_ARGS: -R dsxx_tstRelease
+  script:
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
+  rules:
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_ccsnet/'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+darwin_style_cxx:
+  stage: lint
+  extends: .darwin
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: draco/haswell-gcc850
+    CTEST_NPROC: 32
+    MAXLOAD: 32
+    ARCH: x86_64
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+  script:
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-style-checks.sh"
+  rules:
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
 
 #--------------------------------------------------------------------------------------------------#
 # Deployment Jobs (run on develop after MRs are merged)
@@ -53,20 +92,38 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
+darwin_clangtidy_deploy:
+  extends: .darwin_deploy
+  allow_failure: true
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-llvm1706
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
+      -DDraco_C_LANGUAGE_STANDARD=17
+
 darwin_debug_llvm_deploy:
   extends: .darwin_deploy
   allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-llvm1706
-    ARCH: x86_64
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+
+darwin_release_llvm_deploy:
+  extends: .darwin_deploy
+  allow_failure: true
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: draco/haswell-llvm1706
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
 #--------------------------------------------------------------------------------------------------#
 
-.dx64_deploy_release:
+.darwin_deploy_release:
   extends: .darwin
   stage: deploy
   variables:
@@ -92,29 +149,21 @@ darwin_debug_llvm_deploy:
     - if: '$CI_COMMIT_TAG =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-# none
+darwin_debug_llvm_deploy_release:
+  extends: .darwin_deploy_release
+  allow_failure: true
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-llvm1706
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
-#--------------------------------------------------------------------------------------------------#
-# MRs - linters
-#--------------------------------------------------------------------------------------------------#
-
-darwin_style_cxx:
-  stage: lint
-  extends: .darwin
+darwin_release_llvm_deploy_release:
+  extends: .darwin_deploy_release
+  allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/haswell-gcc850
-    CTEST_NPROC: 32
-    MAXLOAD: 32
-    ARCH: x86_64
+    DRACO_ENV: draco/haswell-llvm1706
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
-  script:
-    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-style-checks.sh"
-  rules:
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
 
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
@@ -132,13 +181,21 @@ darwin_style_cxx:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
 
-darwin_debug_llvm17_mr:
+darwin_debug_llvm_mr:
   stage: test
   extends: .darwin_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-llvm1706
-    CTEST_NPROC: 32
+    ARCH: x86_64
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+
+darwin_debug_llvm_mr:
+  stage: slowtest
+  extends: .darwin_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-llvm1706
     ARCH: x86_64
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
@@ -157,15 +214,36 @@ darwin_debug_llvm17_mr:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-darwin_debug_llvm17:
+darwin_debug_llvm:
   stage: test
   extends: .darwin_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-llvm1706
-    CTEST_NPROC: 32
     ARCH: x86_64
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+
+darwin_release_llvm:
+  stage: test
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: draco/haswell-llvm1706
+    ARCH: x86_64
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+
+darwin_clangtidy_llvm:
+  stage: test
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-llvm1706
+    ARCH: x86_64
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
+      -DDraco_C_LANGUAGE_STANDARD=17
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
+    CTEST_BUILD_NAME: clang-tidy
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/darwin-jobs.yml
