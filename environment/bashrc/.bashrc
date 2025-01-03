@@ -44,6 +44,9 @@ case ${-} in
     HISTSIZE=1000
     HISTFILESIZE=2000
 
+    # Avoid the use of the proxy server for lanl.gov URLs.
+    export no_proxy=.lanl.gov
+
     # colored GCC warnings and errors
     export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
     export TERM=xterm-256color
@@ -56,7 +59,7 @@ case ${-} in
       export DRACO_ENV_DIR="${DRACO_SRC_DIR}/environment"
     fi
     [[ "${DRACO_ENV_DIR:-notset}" == "notset" ]] && \
-      echo "DRACO_ENV_DIR not set, some draco env will be disabled."
+      echo "DRACO_ENV_DIR not set, some draco environment will be disabled."
 
     #----------------------------------------------------------------------------------------------#
     # Common aliases

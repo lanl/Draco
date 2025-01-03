@@ -14,33 +14,11 @@
 ---
 .ccscs:
   extends: .jacamar
-  # variables:
+  tags:
+    - CCSNET-setuid-shared
+  variables:
+    SITE_ID: ccsnet
   #   CI_DEBUG_TRACE: "true"
-
-#--------------------------------------------------------------------------------------------------#
-# MRs - linters
-#--------------------------------------------------------------------------------------------------#
-
-# ccs1_clangtidy:
-#   tags:
-#     - CCSCS1-setuid-shared
-#   extends: .ccscs
-#   stage: lint
-#   allow_failure: true
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: llvm1706
-#     CTEST_NPROC: 32
-#     EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
-#       -DDraco_C_LANGUAGE_STANDARD=17
-#     EXTRA_CTEST_ARGS: -R dsxx_tstRelease
-#     SITE_ID: ccscs1
-#   script:
-#     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
-#   rules:
-#     - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_ccsnet/'
-#       when: never
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 #--------------------------------------------------------------------------------------------------#
 # Deployment Jobs (run on develop after MRs are merged)
@@ -52,7 +30,7 @@
   variables:
     DEPLOY: 'TRUE'
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-    DRACO_INSTALL_DIR: "/scratch/regress/deploy/draco/${FLAVOR}"
+    DRACO_INSTALL_DIR: "/ccs/codes/radtran/regress/deploy/draco/${FLAVOR}"
     EXTRA_CMAKE_ARGS: -G Ninja
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
@@ -65,145 +43,77 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-ccs1_deb_gcc_1220_deploy:
-  tags:
-    - CCSCS1-setuid-shared
+ccs_deb_gcc_1220_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs1
 
-ccs1_deb_gcc_cxx17_deploy:
-  tags:
-    - CCSCS1-setuid-shared
+ccs_deb_gcc_cxx17_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs1
     EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=17
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-cxx17
 
-ccs1_rwdi_gcc_1220_deploy:
-  tags:
-    - CCSCS1-setuid-shared
+ccs_rwdi_gcc_1220_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs1
 
-ccs1_c4_scalar_deploy:
-  tags:
-    - CCSCS1-setuid-shared
+ccs_c4_scalar_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
-    SITE_ID: ccscs1
 
-# ccs1_clangtidy_deploy:
-#   tags:
-#     - CCSCS1-setuid-shared
-#   extends: .ccscs_deploy
-#   allow_failure: true
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: llvm1706
-#     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
-#     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
-#       -DDraco_C_LANGUAGE_STANDARD=17
-#     SITE_ID: ccscs1
-
-ccs2_deb_gcc_1220_deploy:
-  tags:
-    - CCSCS2-test
+ccs_deb_gcc_1220_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs2
 
-ccs2_rel_gcc_1220_deploy:
-  tags:
-    - CCSCS2-test
+ccs_rel_gcc_1220_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs2
 
-# ccs3_deb_llvm_deploy:
-#   tags:
-#     - CCSCS3-test
-#   extends: .ccscs_deploy
-#   allow_failure: true
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: llvm1706
-#     SITE_ID: ccscs3
-
-# ccs3_rel_llvm_deploy:
-#   tags:
-#     - CCSCS3-test
-#   extends: .ccscs_deploy
-#   allow_failure: true
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: llvm1706
-#     SITE_ID: ccscs3
-
-ccs3_deb_gcc_1220_deploy:
-  tags:
-    - CCSCS3-test
+ccs_deb_gcc_1220_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs3
 
-ccs3_rel_gcc_1220_deploy:
-  tags:
-    - CCSCS3-test
+ccs_rel_gcc_1220_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs3
 
-ccs4_deb_gcc_1220_deploy:
-  tags:
-    - CCSCS4-setuid-shared
+ccs_deb_gcc_1220_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs4
 
-ccs4_rel_gcc_1220_deploy:
-  tags:
-    - CCSCS4-setuid-shared
+ccs_rel_gcc_1220_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs4
 
-ccs4_rwdi_gcc_1220_deploy:
-  tags:
-    - CCSCS4-setuid-shared
+ccs_rwdi_gcc_1220_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs4
 
-ccs1_fulldiag_deploy:
-  tags:
-    - CCSCS1-setuid-shared
+ccs_fulldiag_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -212,22 +122,16 @@ ccs1_fulldiag_deploy:
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
-    SITE_ID: ccscs1
 
-ccs2_gcov_deploy:
-  tags:
-    - CCSCS2-test
+ccs_gcov_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
     EXTRA_CMAKE_ARGS: -DCODE_COVERAGE=ON
-    SITE_ID: ccscs2
 
-ccs2_valgrind_deploy:
-  tags:
-    - CCSCS2-test
+ccs_valgrind_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -235,7 +139,6 @@ ccs2_valgrind_deploy:
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
     EXTRA_CMAKE_ARGS: -DENABLE_MEMORYCHECK=ON
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
-    SITE_ID: ccscs2
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a Release
@@ -268,23 +171,17 @@ ccs2_valgrind_deploy:
     - if: '$CI_COMMIT_TAG =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-ccs1_deb_gcc_1220_deploy_release:
-  tags:
-    - CCSCS1-setuid-shared
+ccs_deb_gcc_1220_deploy_release:
   extends: .ccscs_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs1
 
-ccs1_rel_gcc_1220_deploy_release:
-  tags:
-    - CCSCS1-setuid-shared
+ccs_rel_gcc_1220_deploy_release:
   extends: .ccscs_deploy_release
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1220
-    SITE_ID: ccscs1
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_ROUNDOFF_MODE=FAST
 
 #--------------------------------------------------------------------------------------------------#
@@ -312,9 +209,7 @@ ccs1_rel_gcc_1220_deploy_release:
 
 # FAST TEST
 
-ccs3_deb_gcc_1220:
-  tags:
-    - CCSCS3-test
+ccs_deb_gcc_1220:
   stage: fasttest
   extends: .ccscs_merge
   variables:
@@ -322,11 +217,8 @@ ccs3_deb_gcc_1220:
     DRACO_ENV: gcc1220
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=2
     CTEST_NPROC: 32
-    SITE_ID: ccscs3
 
-ccs1_c4_scalar:
-  tags:
-    - CCSCS1-setuid-shared
+ccs_c4_scalar:
   stage: fasttest
   extends: .ccscs_merge
   variables:
@@ -334,25 +226,11 @@ ccs1_c4_scalar:
     DRACO_ENV: gcc1220
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
     CTEST_NPROC: 40
-    SITE_ID: ccscs1
     #TEST_EXCLUSIONS: mcgrid_cylindrical_mg_mgrztp04
 
 # ---------- regular TEST (only starts if all FASTTEST pass) ---------- #
 
-# ccs3_deb_llvm17:
-#   tags:
-#     - CCSCS3-test
-#   stage: test
-#   extends: .ccscs_merge
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: llvm1706
-#     CTEST_NPROC: 32
-#     SITE_ID: ccscs3
-
-ccs2_autodoc:
-  tags:
-    - CCSCS2-test
+ccs_autodoc:
   stage: test
   extends: .ccscs_merge
   allow_failure: true
@@ -360,46 +238,26 @@ ccs2_autodoc:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
     AUTODOC: "ON"
-    SITE_ID: ccscs2
 
 # ---------- SLOW TEST (only starts if all regular TEST pass) ---------- #
 
-# ccs3_rel_llvm17:
-#   tags:
-#     - CCSCS3-test
-#   stage: slowtest
-#   extends: .ccscs_merge
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: llvm1706
-#     CTEST_NPROC: 32
-#     SITE_ID: ccscs3
-
-ccs3_rel_gcc_1220:
-  tags:
-    - CCSCS3-test
+ccs_rel_gcc_1220:
   stage: slowtest
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1220
     CTEST_NPROC: 32
-    SITE_ID: ccscs3
 
-ccs4_rwdi_gcc_1220:
-  tags:
-    - CCSCS4-setuid-shared
+ccs_rwdi_gcc_1220:
   stage: slowtest
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: gcc1220
     CTEST_NPROC: 32
-    SITE_ID: ccscs4
 
-ccs1_fulldiag:
-  tags:
-    - CCSCS1-setuid-shared
+ccs_fulldiag:
   stage: slowtest
   extends: .ccscs_merge
   variables:
@@ -409,11 +267,8 @@ ccs1_fulldiag:
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     CTEST_NPROC: 32
-    SITE_ID: ccscs1
 
-ccs2_gcov:
-  tags:
-    - CCSCS2-test
+ccs_gcov:
   stage: slowtest
   extends: .ccscs_merge
   # https://regex101.com/
@@ -429,11 +284,8 @@ ccs2_gcov:
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
     EXTRA_CMAKE_ARGS: -G Ninja -DCODE_COVERAGE=ON
     CTEST_NPROC: 20
-    SITE_ID: ccscs2
 
-ccs3_deb_gcc_1220_cxx17:
-  tags:
-    - CCSCS3-test
+ccs_deb_gcc_1220_cxx17:
   stage: slowtest
   extends: .ccscs_merge
   variables:
@@ -441,11 +293,8 @@ ccs3_deb_gcc_1220_cxx17:
     DRACO_ENV: gcc1220
     EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=17
     CTEST_NPROC: 32
-    SITE_ID: ccscs3
 
-# ccs2_valgrind:
-#   tags:
-#     - CCSCS2-test
+# ccs_valgrind:
 #   stage: slowtest
 #   extends: .ccscs_merge
 #   variables:
@@ -455,7 +304,6 @@ ccs3_deb_gcc_1220_cxx17:
 #       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
 #     EXTRA_CTEST_ARGS: -L memcheck -LE nomemcheck
 #     CTEST_NPROC: 40
-#     SITE_ID: ccscs2
 
 # ---------- Optional ---------- #
 
@@ -476,66 +324,22 @@ ccs3_deb_gcc_1220_cxx17:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
 rel_gcc_12.2.0_regress:
-  tags:
-    - CCSCS1-setuid-shared
   extends: .ccscs_nightly
   variables:
-    SITE_ID: ccscs1
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1220
     CTEST_NPROC: 40
 
 deb_gcc_12.2.0_regress:
-  tags:
-    - CCSCS2-test
   extends: .ccscs_nightly
   variables:
-    SITE_ID: ccscs2
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
     CTEST_NPROC: 40
 
-# deb_llvm_regress:
-#   tags:
-#     - CCSCS3-test
-#   extends: .ccscs_nightly
-#   variables:
-#     SITE_ID: ccscs3
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: llvm1706
-#     CTEST_NPROC: 40
-
-# rel_llvm_regress:
-#   tags:
-#     - CCSCS3-test
-#   extends: .ccscs_nightly
-#   variables:
-#     SITE_ID: ccscs3
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: llvm1706
-#     CTEST_NPROC: 40
-
-# clangtidy_regress:
-#   tags:
-#     - CCSCS1-setuid-shared
-#   extends: .ccscs_nightly
-#   allow_failure: true
-#   variables:
-#     SITE_ID: ccscs1
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: llvm1706
-#     CTEST_NPROC: 40
-#     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
-#       -DDraco_C_LANGUAGE_STANDARD=17
-#     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
-#     CTEST_BUILD_NAME: clang-tidy
-
 deb_gcc_scalar_regress:
-  tags:
-    - CCSCS1-setuid-shared
   extends: .ccscs_nightly
   variables:
-    SITE_ID: ccscs1
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
@@ -544,11 +348,8 @@ deb_gcc_scalar_regress:
     CTEST_BUILD_NAME: c4-scalar
 
 fulldiag_regress:
-  tags:
-    - CCSCS1-setuid-shared
   extends: .ccscs_nightly
   variables:
-    SITE_ID: ccscs1
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
@@ -559,12 +360,9 @@ fulldiag_regress:
     CTEST_BUILD_NAME: fulldiag-static
 
 gcov_regress:
-  tags:
-    - CCSCS2-test
   extends: .ccscs_nightly
   coverage: '/Coverage:\s\d+\.\d+%/'
   variables:
-    SITE_ID: ccscs2
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
@@ -573,11 +371,8 @@ gcov_regress:
     CTEST_BUILD_NAME: gcov
 
 valgrind_regress:
-  tags:
-    - CCSCS2-test
   extends: .ccscs_nightly
   variables:
-    SITE_ID: ccscs2
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
@@ -590,12 +385,9 @@ valgrind_regress:
     CTEST_BUILD_NAME: valgrind
 
 pages:
-  tags:
-    - CCSCS4-setuid-shared
   stage: test
   extends: .ccscs_nightly
   variables:
-    SITE_ID: ccscs4
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
     DEPLOY: "TRUE"

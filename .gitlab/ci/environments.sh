@@ -12,7 +12,7 @@ echo "    SITE_ID = ${SITE_ID}"
 [[ -n "${SCHEDULER_PARAMETERS}" ]] && echo "    Using: salloc ${SCHEDULER_PARAMETERS}"
 
 case ${SITE_ID} in
-  darwin | ccscs* | roci* | rz* | sn* | fog*) ;;
+  darwin | ccs* | roci* | rz* | sn* | fog*) ;;
   *) die ".gitlab/ci/environments.sh :: SITE_ID not recognized, SITE_ID = ${SITE_ID}" ;;
 esac
 
@@ -46,9 +46,8 @@ if [[ "${SITE_ID}" == "darwin" ]]; then
 #------------------------------------------------------------------------------#
 # CCS-NET
 #------------------------------------------------------------------------------#
-elif [[ "${SITE_ID}" =~ "ccscs" ]]; then
+elif [[ "${SITE_ID}" =~ "ccscs" ]] || [[ "${SITE_ID}" =~ "ccsnet" ]] ; then
   run "module use --append /ccs/codes/radtran/Modules"
-  export PATH=/scratch/vendors/bin:$PATH # clang-format
   if ! [[ -f "/ccs/codes/radtran/Modules/draco/${DRACO_ENV}.lua" ]]; then
     die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}"
   fi
