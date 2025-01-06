@@ -273,6 +273,30 @@ function(setupNDI)
 
 endfunction()
 
+# ------------------------------------------------------------------------------
+# Setup shacl-physics
+# ------------------------------------------------------------------------------
+function(setupShaclPhysics)
+
+  if(NOT TARGET shacl::physics)
+    message(STATUS "Looking for SHACL physics...")
+    list(APPEND CMAKE_PREFIX_PATH "${SHACL_PHYSICS_ROOT_DIR}")
+    find_package(shacl-physics QUIET)
+    if(shacl-physics_FOUND)
+      message(STATUS "Looking for SHACL physics....found ${shacl-physics_DIR}")
+    else()
+      message(STATUS "Looking for SHACL physics....not found")
+    endif()
+  endif()
+  set(SHACL_PHYSICS_FOUND
+      "${shacl-physics_FOUND}"
+      CACHE STRING "Did we find the SHACL physics library?")
+  set(SHACL_PHYSICS_VERSION_STRING
+      "${shacl-physics_VERSION}"
+      CACHE STRING ".")
+
+endfunction()
+
 # ------------------------------------------------------------------------------------------------ #
 # This function should contain all the system libraries which are required to link the main objects.
 # ------------------------------------------------------------------------------------------------ #
@@ -286,6 +310,7 @@ macro(setupVendorLibraries)
   setuprandom123()
   setupeospac()
   setupndi()
+  setupshaclphysics()
   setuppython()
   setupvtune()
   if(UNIX)
