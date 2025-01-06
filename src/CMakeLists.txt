@@ -53,6 +53,9 @@ if(USE_MDSPAN)
   add_subdirectory(experimental) #< only the tests need dsxx
   add_subdirectory(cdi_CPEloss) #< needs cdi, units, experimental
 endif()
+if(SHACL_PHYSICS_FOUND)
+  add_subdirectory(cdi_cpt)
+endif()
 add_subdirectory(cdi_eospac) #< needs parser, ode, cdi
 add_subdirectory(cdi_ipcress) #< needs cdi
 add_subdirectory(diagnostics) #< needs c4
