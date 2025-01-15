@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2024 Oct 9
  * \brief  Collision_Source member definitions.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_cpt/Collision_Source.hh"
@@ -35,7 +35,7 @@ CollisionSource::CollisionSource(const rtt_cdi::CParticle target_in,
 
   auto atarget = GetParticleID(target_in);
   // TODO(BRR) verify that projectile_in is correct for this data table?
-  auto aprojectile = GetParticleID(projectile_in);
+  // auto aprojectile = GetParticleID(projectile_in);
 
   // If no custom path provided, use ndatk default
   std::vector<std::string> ndatk_path =
@@ -46,7 +46,7 @@ CollisionSource::CollisionSource(const rtt_cdi::CParticle target_in,
   Insist(!temperatures.empty(), "No temperature points found for this target!");
 
   // Create a vector of elastic reactions at each temperature
-  for (int n = 0; n < temperatures.size(); n++) {
+  for (size_t n = 0; n < temperatures.size(); n++) {
     // Use each temperature value of datafiles to extract correct table
     auto ace_path = ace_lib.path(std::to_string(target_in.get_zaid()), temperatures[n]);
 
@@ -83,7 +83,7 @@ double CollisionSource::get_cross_section(const double incident_energy,
 }
 
 double
-CollisionSource::get_cross_section(const double incident_energy, const double temperature,
+CollisionSource::get_cross_section(const double /*incident_energy*/, const double temperature,
                                    const shacl::physics::InterpolationCache &interpCache) const {
   const int temp_idx = get_data_idx(temperature);
   const auto &proj_targ = projTargetDatas[temp_idx];

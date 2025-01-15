@@ -1,4 +1,4 @@
-//---------------------------------*-c++-*-----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 // RTT_Format_Reader.dcc
 // RTT_Format_Reader Overview page
 // Thomas M. Evans
@@ -53,7 +53,7 @@ RTT_Format_Reader directly. A standard mesh reader interface has been specified 
 package and, thus, future packages should incorporate this interface rather than the
 RTT_Format_Reader interface.
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \page rtt_format_defined RTT Format File Structure
 
@@ -263,7 +263,7 @@ General comments:
 
 \endcode
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \page rtt_stdcell RTT Format ICEM/DDN Cell Definitions
 

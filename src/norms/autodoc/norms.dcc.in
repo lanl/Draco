@@ -1,39 +1,36 @@
-//---------------------------------*-c++-*-----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 // norms.dcc
 // norms Overview page
 // Rob Lowrie
 // Fri Jan 14 13:08:37 2005
 //------------------------------------------------------------------------------------------------//
 
-//------------------------------------------------------------------------------------------------//
-
 /*!
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \page overview_norms Overview of the norms package
 \version Draco-@Draco_VERSION@
 \author Rob Lowrie
 
-Provides classes that compute various norms, including across
-processors.  The primary workhorse class is rtt_norms::Norms_Index,
-which is templated on the index type used to label the position of the
-max norm (\f$ L_{\infty} \f$).  See rtt_norms::Norms_Index
-documentation for information on the specific norms that are computed.
+Provides classes that compute various norms, including across processors.  The primary workhorse
+class is rtt_norms::Norms_Index, which is templated on the index type used to label the position of
+the max norm (\f$ L_{\infty} \f$).  See rtt_norms::Norms_Index documentation for information on the
+specific norms that are computed.
 
 Several instantiations of rtt_norms::Norms_Index are provided:
-- rtt_norms::Norms.  This is equivalent to Norms_Index<size_t>.
-Specifically, the location of the max norm (accessed via the member
-function index_Linf()), is returned as a size_t.
-- rtt_norms::Norms_Proc.  This is equivalent to
-Norms_Index<Index_Proc>.  The location of the max norm not only
-reports the "index" (type size_t), but also the processor number that
-the maximum occurred at.
-- rtt_norms::Norms_Labeled.  This is equivalent to
-Norms_Index<Index_Labeled>.  The location of the max norm reports the
-index, the processor number, and a string label.
 
-<!---------------------------------------------------------------------------->
+- rtt_norms::Norms.  This is equivalent to Norms_Index<size_t>. Specifically, the location of the
+  max norm (accessed via the member function index_Linf()), is returned as a size_t.
+
+- rtt_norms::Norms_Proc.  This is equivalent to Norms_Index<Index_Proc>.  The location of the max
+  norm not only reports the "index" (type size_t), but also the processor number that the maximum
+  occurred at.
+
+- rtt_norms::Norms_Labeled.  This is equivalent to Norms_Index<Index_Labeled>.  The location of the
+  max norm reports the index, the processor number, and a string label.
+
+<!---------------------------------------------------------------------------------------------- -->
 
 */
 

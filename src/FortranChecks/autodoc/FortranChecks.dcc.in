@@ -1,13 +1,13 @@
-//---------------------------------*-c++-*-----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 // FortranChecks.dcc
 // FortranChecks Overview page
 // Kelly Thompson
 // Wednesday, Jun 13, 2012, 12:35 pm
-//---------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
 /*!
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \page overview_FortranChecks Overview of the FortranChecks package
 \version Draco-@Draco_VERSION@
@@ -15,38 +15,35 @@
 
 \section abstract Abstract
 
-This component provides some simple tests for creating a F90 main that calls
-C++ functions found in C++ libraries and a C++ main that calls Fortran
-subroutines found in Fortran libraries.  It make use of ISO_C_BINDING to
-provide the correct name mangling and type conversions in the 2-language
+This component provides some simple tests for creating a F90 main that calls C++ functions found in
+C++ libraries and a C++ main that calls Fortran subroutines found in Fortran libraries.  It make use
+of ISO_C_BINDING to provide the correct name mangling and type conversions in the 2-language
 interoperability tests.
 
-This component is also used to ensure that the Fortran portions of the build
-system work correctly on all target platforms and compiler vendors.  This
-component does not currently provide any installable features -- but it could
-potentially provide wrapper routines at some point in the future.
+This component is also used to ensure that the Fortran portions of the build system work correctly
+on all target platforms and compiler vendors.  This component does not currently provide any
+installable features -- but it could potentially provide wrapper routines at some point in the
+future.
 
-<!--------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 \section cpp_fortran_interop C++/Fortran Interoperability
 
 - http://gcc.gnu.org/onlinedocs/gfortran/Interoperable-Subroutines-and-Functions.html
 - http://www.fortran.bcs.org/2002/interop.htm (Example of C calling Fortran)
 - http://software.intel.com/sites/products/documentation/hpc/compilerpro/en-us/fortran/lin/compiler_f/bldaps_for/common/bldaps_interopc.htm
 
-<!--------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 \section cpp_fortran_interop_cmake C++/Fortran Interoperability with CMake Macros
 
-If you are calling an external Fortran package (e.g.: LAPACK),
-consider using the FortranCInterface feature found in CMake.
+If you are calling an external Fortran package (e.g.: LAPACK), consider using the FortranCInterface
+feature found in CMake.
 
-<!--------------------------------------------------------------------------->
-<!--------------------------------------------------------------------------->
-<!--------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section cf_interop_c_calls_fortran Example of C Calling Fortran
 
-The following example calls a Fortran subroutine called \c SIMULATION. This
-subroutine corresponds to the C void function simulation.
+The following example calls a Fortran subroutine called \c SIMULATION. This subroutine corresponds
+to the C void function simulation.
 
 Fortran Code:
 
@@ -88,7 +85,7 @@ C Calling Sequence:
 simulation(alpha, &beta, &gamma, delta, &arrays);
 \endcode
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 \section cf_interop_Fortran_calls_c Example of Fortran Calling C
 
 The following example calls a C function.
@@ -107,7 +104,7 @@ MODULE FTN_C_2
    INTERFACE
       INTEGER (C_INT) FUNCTION C_LIBRARY_FUNCTION &
          (SENDBUF, SENDCOUNT, RECVCOUNTS) &
-         BIND(C, NAME=’C_Library_Function’)
+         BIND(C, NAME=ï¿½C_Library_Functionï¿½)
       USE FTN_C_1
       IMPLICIT NONE
       TYPE (C_PTR), VALUE :: SENDBUF
@@ -132,7 +129,7 @@ CALL C_LIBRARY_FUNCTION(C_LOC(SEND), SENDCOUNT, C_LOC(RECVCOUNTS))
 ...
 \endcode
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 */
 

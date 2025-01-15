@@ -4,14 +4,14 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  Parser for various quadrature classes.
- * \note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2015-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "parser/Abstract_Class_Parser.hh"
 #include "parser/Class_Parse_Table.hh"
 #include "quadrature/Quadrature.hh"
 
 namespace rtt_parser {
-using rtt_quadrature::Quadrature;
 
 //================================================================================================//
 /*!
@@ -20,11 +20,11 @@ using rtt_quadrature::Quadrature;
  */
 //================================================================================================//
 
-template <> class Class_Parse_Table<Quadrature> {
+template <> class Class_Parse_Table<rtt_quadrature::Quadrature> {
 public:
   // TYPEDEFS
 
-  using Return_Class = Quadrature;
+  using Return_Class = rtt_quadrature::Quadrature;
 
   // MANAGEMENT
 
@@ -44,21 +44,34 @@ public:
 
   void check_completeness(Token_Stream &tokens);
 
-  std::shared_ptr<Quadrature> create_object();
+  std::shared_ptr<rtt_quadrature::Quadrature> create_object();
 
   // STATICS
 
-  static void register_quadrature(std::string const &keyword,
-                                  std::shared_ptr<Quadrature> parse_function(Token_Stream &));
+  /*!
+   * \brief This function allows local developers to add new transport models to Capsaicin, by
+   *        adding their names to the set of transport models recognized by the \c Transport_Model
+   *        parser.
+   *
+   * \param keyword Name of the new transport model. Must be unique.
+   * \param parse_function Function to call to parse a specification for the new transport model.
+   *        Must return an instance of the transport model class.
+   */
+  static void
+  register_quadrature(std::string const &keyword,
+                      std::shared_ptr<rtt_quadrature::Quadrature> parse_function(Token_Stream &)) {
+    Abstract_Class_Parser<rtt_quadrature::Quadrature, get_parse_table,
+                          get_parsed_object>::register_child(keyword, parse_function);
+  }
 
 private:
   // STATICS
 
   static Parse_Table &get_parse_table() { return parse_table_; }
-  static std::shared_ptr<Quadrature> &get_parsed_object();
+  static std::shared_ptr<rtt_quadrature::Quadrature> &get_parsed_object();
   static Class_Parse_Table *current_;
   static Parse_Table parse_table_;
-  static std::shared_ptr<Quadrature> child_;
+  static std::shared_ptr<rtt_quadrature::Quadrature> child_;
 };
 
 } // namespace rtt_parser

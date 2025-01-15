@@ -1,4 +1,4 @@
-//---------------------------------*-c++-*-----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 // quadrature.dcc
 // quadrature Overview page
 // Thomas M. Evans
@@ -13,28 +13,26 @@
 
 \section quadrature_abstract Abstract
 
-The quadrature package provides services related to the angular transport
-discretization.  This package provides many different quadrature sets (Level
-Symmetric, Gauss Legendre, etc.) for problems of varying dimension.
+The quadrature package provides services related to the angular transport discretization.  This
+package provides many different quadrature sets (Level Symmetric, Gauss Legendre, etc.) for problems
+of varying dimension.
 
-This package also performs other related services including integrating
-angularly dependent variables over the quadrature set range (aka: psi2phi or
-MtoD).
+This package also performs other related services including integrating angularly dependent
+variables over the quadrature set range (aka: psi2phi or MtoD).
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section background Background
 
-The discrete ordinates approximation for the angular variable in the Boltzmann
-transport equation can be expressed as
+The discrete ordinates approximation for the angular variable in the Boltzmann transport equation
+can be expressed as
 
 \f[ \int\limits_{4\pi}{d\mathbf\Omega f(\mathbf\Omega)} \approx
 \sum\limits_{m=1}^M{w_m f(\mathbf\Omega_m)}, \f]
 
-where \f$ w_m \f$ is the point weight and \f$ \mathbf\Omega_m \f$ are the \e
-discrete \e ordinates. A \e quadrature \e set specifies the discrete ordinates
-at which the function is evaluated as well as the weight associated with each
-ordinate.
+where \f$ w_m \f$ is the point weight and \f$ \mathbf\Omega_m \f$ are the \e discrete \e ordinates.
+A \e quadrature \e set specifies the discrete ordinates at which the function is evaluated as well
+as the weight associated with each ordinate.
 
 In 1-D, the number of quadrature points, \e M, is equal to the quadrature order
 (the \e N in \f$ S_N \f$).
@@ -53,22 +51,20 @@ Quadrature directions are normally written with the vector notation
 \mathbf\Omega = \mu \mathbf{\hat{e}}_x + \eta \mathbf{\hat{e}}_y + \xi \mathbf{\hat{e}}_z.
 \f]
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \subsection level_symmetric Level Symmetric Sets
 
-The 3D level symmetric set arranges quadrature directions into \f$ N/2 \f$
-levels in the primary octant.  Each level has \f$ N/2 - n + 1 \f$ points, where
-\f$ n \f$ is the index of the level.
+The 3D level symmetric set arranges quadrature directions into \f$ N/2 \f$ levels in the primary
+octant.  Each level has \f$ N/2 - n + 1 \f$ points, where \f$ n \f$ is the index of the level.
 
 This set assumes 90 degree rotational symmetry.
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section usage Usage
 
-The QuadCreator object is an \e abstract \e factory for creating Quadrature
-objects.
+The QuadCreator object is an \e abstract \e factory for creating Quadrature objects.
 
 \code
 using rtt_dsxx::SP;
@@ -80,8 +76,7 @@ SP< const Quadrature > spQuad = QuadCreator().quadCreate(
    QuadCreator::LevelSym, 4 );
 \endcode
 
-The QuadServices object provides moment-to-discrete and discrete-to-moment
-transformations.
+The QuadServices object provides moment-to-discrete and discrete-to-moment transformations.
 
 \code
 using rtt_dsxx::SP;
@@ -102,26 +97,26 @@ std::vector< double > psi( 20 );
 psi = qs.applyM( phi );
 \endcode
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section reference References
 
-\li E.E. Lewis and W.F. Miller, "Computational Methods of Neutron Transport,"
-American Nuclear Socienty, La Grange Park, IL, 1993.
-\li B.G. Carlson, "The Numerical Theory of Neutron Transport," in Methods in
-Computational Physics, Vol. 1, Academic Press, NY, 1963.
-\li K.D. Lathrop and B.G. Carlson, "Discrete Ordinates Angular Quadrature of the
-Neutron Transport Equation," LA-3186, Los Alamos Scientific Laboratory (1965).
-\li B.G. Carlson and K.D. Lathrop, "Transport Theory -- The Method of Discrete
-Ordinates," in Computing Methods in Reactor Physics, H. Greenspan, C.N. Kelber
-and D. Okrent (eds.), Gordon and Breach, NY 1968.
-\li B.G. Carlson, "Transport Theory: Discrete Ordinates Quadrature over the Unit
-Sphere," LA-4554, Los Alamos Scientific Laboratory (1970).
-\li B.G. Carlson, "On a More Precise Definition of Discrete Ordinates Methods, "
-Proc. Second Conf. Transport Theory, April 1971, Los Alamos, NM, pp. 348-390
-CONF-710107, U.S. Atomic Energy Commission (1971).
-\li C.E. Lee, "The Disctete Sn Approximation to Transport Theory," LA-2595, Los
-Alamos Scientific Laboratory (1961).
+\li E.E. Lewis and W.F. Miller, "Computational Methods of Neutron Transport," American Nuclear
+    Society, La Grange Park, IL, 1993.
+\li B.G. Carlson, "The Numerical Theory of Neutron Transport," in Methods in Computational Physics,
+    Vol. 1, Academic Press, NY, 1963.
+\li K.D. Lathrop and B.G. Carlson, "Discrete Ordinates Angular Quadrature of the Neutron Transport
+    Equation," LA-3186, Los Alamos Scientific Laboratory (1965).
+\li B.G. Carlson and K.D. Lathrop, "Transport Theory -- The Method of Discrete Ordinates," in
+    Computing Methods in Reactor Physics, H. Greenspan, C.N. Kelber and D. Okrent (eds.), Gordon and
+    Breach, NY 1968.
+\li B.G. Carlson, "Transport Theory: Discrete Ordinates Quadrature over the Unit Sphere," LA-4554,
+    Los Alamos Scientific Laboratory (1970).
+\li B.G. Carlson, "On a More Precise Definition of Discrete Ordinates Methods, " Proc. Second Conf.
+    Transport Theory, April 1971, Los Alamos, NM, pp. 348-390 CONF-710107, U.S. Atomic Energy 
+    Commission (1971).
+\li C.E. Lee, "The Discrete Sn Approximation to Transport Theory," LA-2595, Los Alamos Scientific
+    Laboratory (1961).
 
 */
 

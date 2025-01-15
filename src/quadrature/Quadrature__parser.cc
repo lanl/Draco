@@ -4,11 +4,10 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  Parsers for various quadrature classes.
- * \note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2015-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Quadrature__parser.hh"
-#include "parser/Abstract_Class_Parser.hh"
 #include "parser/Class_Parse_Table.hh"
 #include "parser/Parse_Table.hh"
 #include "parser/Token.hh"
@@ -20,64 +19,74 @@
 #include "quadrature/Level_Symmetric.hh"
 #include "quadrature/Lobatto.hh"
 #include "quadrature/Product_Chebyshev_Legendre.hh"
+#include "quadrature/Quadrature.hh"
 #include "quadrature/Square_Chebyshev_Legendre.hh"
 #include "quadrature/Tri_Chebyshev_Legendre.hh"
 #include <memory>
 #include <string>
 
-using namespace rtt_parser;
-using namespace rtt_quadrature;
-
+//------------------------------------------------------------------------------------------------//
 namespace // anonymous
 {
 //------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> parse_gauss_legendre(Token_Stream &tokens) {
-  return Gauss_Legendre::parse(tokens);
+std::shared_ptr<rtt_quadrature::Quadrature> parse_gauss_legendre(rtt_parser::Token_Stream &tokens) {
+  return rtt_quadrature::Gauss_Legendre::parse(tokens);
 }
 
 //------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> parse_level_symmetric(Token_Stream &tokens) {
-  return Level_Symmetric::parse(tokens);
+std::shared_ptr<rtt_quadrature::Quadrature>
+parse_level_symmetric(rtt_parser::Token_Stream &tokens) {
+  return rtt_quadrature::Level_Symmetric::parse(tokens);
 }
 
 //------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> parse_tri_cl(Token_Stream &tokens) {
-  return Tri_Chebyshev_Legendre::parse(tokens);
+std::shared_ptr<rtt_quadrature::Quadrature> parse_tri_cl(rtt_parser::Token_Stream &tokens) {
+  return rtt_quadrature::Tri_Chebyshev_Legendre::parse(tokens);
 }
 
 //------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> parse_square_cl(Token_Stream &tokens) {
-  return Square_Chebyshev_Legendre::parse(tokens);
+std::shared_ptr<rtt_quadrature::Quadrature> parse_square_cl(rtt_parser::Token_Stream &tokens) {
+  return rtt_quadrature::Square_Chebyshev_Legendre::parse(tokens);
 }
 
 //------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> parse_product_cl(Token_Stream &tokens) {
-  return Product_Chebyshev_Legendre::parse(tokens);
+std::shared_ptr<rtt_quadrature::Quadrature> parse_product_cl(rtt_parser::Token_Stream &tokens) {
+  return rtt_quadrature::Product_Chebyshev_Legendre::parse(tokens);
 }
 
 //------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> parse_double_gauss(Token_Stream &tokens) {
-  return Double_Gauss::parse(tokens);
+std::shared_ptr<rtt_quadrature::Quadrature> parse_double_gauss(rtt_parser::Token_Stream &tokens) {
+  return rtt_quadrature::Double_Gauss::parse(tokens);
 }
 
 //------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> parse_general_octant_quadrature(Token_Stream &tokens) {
-  return General_Octant_Quadrature::parse(tokens);
+std::shared_ptr<rtt_quadrature::Quadrature>
+parse_general_octant_quadrature(rtt_parser::Token_Stream &tokens) {
+  return rtt_quadrature::General_Octant_Quadrature::parse(tokens);
 }
 
 //------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> parse_lobatto(Token_Stream &tokens) { return Lobatto::parse(tokens); }
+std::shared_ptr<rtt_quadrature::Quadrature> parse_lobatto(rtt_parser::Token_Stream &tokens) {
+  return rtt_quadrature::Lobatto::parse(tokens);
+}
 
 } // namespace
 
-namespace rtt_parser {
 //------------------------------------------------------------------------------------------------//
-Class_Parse_Table<Quadrature> *Class_Parse_Table<Quadrature>::current_;
-Parse_Table Class_Parse_Table<Quadrature>::parse_table_(nullptr, 0, Parse_Table::ONCE);
-std::shared_ptr<Quadrature> Class_Parse_Table<Quadrature>::child_;
+
+namespace rtt_parser {
 
 //------------------------------------------------------------------------------------------------//
-Class_Parse_Table<Quadrature>::Class_Parse_Table() {
+Class_Parse_Table<rtt_quadrature::Quadrature>
+    *Class_Parse_Table<rtt_quadrature::Quadrature>::current_;
+
+Parse_Table Class_Parse_Table<rtt_quadrature::Quadrature>::parse_table_(nullptr, 0,
+                                                                        Parse_Table::ONCE);
+
+std::shared_ptr<rtt_quadrature::Quadrature> Class_Parse_Table<rtt_quadrature::Quadrature>::child_;
+
+//------------------------------------------------------------------------------------------------//
+Class_Parse_Table<rtt_quadrature::Quadrature>::Class_Parse_Table() {
   // Be sure parse table has standard models
   static bool first_time = true;
   if (first_time) {
@@ -95,38 +104,30 @@ Class_Parse_Table<Quadrature>::Class_Parse_Table() {
 }
 
 //------------------------------------------------------------------------------------------------//
-void Class_Parse_Table<Quadrature>::check_completeness(Token_Stream &tokens) {
+void Class_Parse_Table<rtt_quadrature::Quadrature>::check_completeness(Token_Stream &tokens) {
   tokens.check_semantics(child_ != nullptr, "no quadrature specified");
 }
 
 //------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> Class_Parse_Table<Quadrature>::create_object() { return child_; }
-
-//------------------------------------------------------------------------------------------------//
-std::shared_ptr<Quadrature> &Class_Parse_Table<Quadrature>::get_parsed_object() { return child_; }
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * This function allows local developers to add new transport models to Capsaicin, by adding their
- * names to the set of transport models recognized by the \c Transport_Model parser.
- *
- * \param keyword Name of the new transport model. Must be unique.
- * \param parse_function Function to call to parse a specification for the new transport model. Must
- *        return an instance of the transport model class.
- */
-/* static */
-void Class_Parse_Table<Quadrature>::register_quadrature(
-    std::string const &keyword, std::shared_ptr<Quadrature> parse_function(Token_Stream &)) {
-  Abstract_Class_Parser<Quadrature, get_parse_table, get_parsed_object>::register_child(
-      keyword, parse_function);
+std::shared_ptr<rtt_quadrature::Quadrature>
+Class_Parse_Table<rtt_quadrature::Quadrature>::create_object() {
+  return child_;
 }
 
 //------------------------------------------------------------------------------------------------//
-template <> std::shared_ptr<Quadrature> parse_class<Quadrature>(Token_Stream &tokens) {
+std::shared_ptr<rtt_quadrature::Quadrature> &
+Class_Parse_Table<rtt_quadrature::Quadrature>::get_parsed_object() {
+  return child_;
+}
+
+//------------------------------------------------------------------------------------------------//
+template <>
+std::shared_ptr<rtt_quadrature::Quadrature>
+parse_class<rtt_quadrature::Quadrature>(Token_Stream &tokens) {
   Token const token = tokens.shift();
   tokens.check_syntax(token.text() == "type", "expected type keyword");
 
-  return parse_class_from_table<Class_Parse_Table<Quadrature>>(tokens);
+  return parse_class_from_table<Class_Parse_Table<rtt_quadrature::Quadrature>>(tokens);
 }
 
 } // namespace rtt_parser
