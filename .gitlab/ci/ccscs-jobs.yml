@@ -392,7 +392,9 @@ valgrind_regress:
     DRACO_ENV: gcc1220
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
     MEMCHECK_CONFIGURATION: "ON"
-    # EXTRA_CMAKE_ARGS: -GNinja -DENABLE_MEMORYCHECK=ON
+    # Use broadwell arch flag to prevent use of avx512 instructions that break valgrind
+    EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
+      -DCMAKE_Fortran_FLAGS="-march=broadwell"
     CTEST_MEMORYCHECK_SUPPRESSIONS_FILE: "${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
     # EXTRA_CTEST_ARGS: "INCLUDE_LABEL memcheck EXCLUDE_LABEL nomemcheck"
     EXTRA_CTEST_ARGS: "EXCLUDE_LABEL nomemcheck"
