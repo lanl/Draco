@@ -3,7 +3,7 @@
 # author Kelly Thompson
 # date   2010 Nov 1
 # brief  Establish flags for Linux64 - Cray C/C++
-# note   Copyright (C) 2015-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2015-2025 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -32,7 +32,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
       CACHE INTERNAL "using draco settings.")
 
   string(APPEND CMAKE_C_FLAGS " -g -DR123_USE_GNU_UINT128=0")
-  set(CMAKE_C_FLAGS_DEBUG "-O0 -DDEBUG")
+  set(CMAKE_C_FLAGS_DEBUG "-fno-inline -O0 -DDEBUG")
   set(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
   set(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_RELEASE}")
   set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG")
