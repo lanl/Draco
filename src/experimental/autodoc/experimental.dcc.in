@@ -1,41 +1,36 @@
-//---------------------------------*-c++-*-----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 // experimental.dcc
 // Overview page for package experimental
 // Kelly G. Thompson <kgt@lanl.gov>
 // Saturday, Dec 28, 2019, 20:43 pm
 //------------------------------------------------------------------------------------------------//
 
-//------------------------------------------------------------------------------------------------//
-
 /*!
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \page overview_experimental Overview of the experimental package
 \version Draco-@Draco_VERSION@
 \author Kelly G. Thompson
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section project_experimental
 
-The experimental package provides C++ backports for future C++ language
-features.
+The experimental package provides C++ backports for future C++ language features.
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section mdspan
 
 Polymorphic Multidimensional Array Reference,
-http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0009r5.html. The
-proposed polymorphic multidimensional array reference (mdspan) defines types and
-functions for mapping indices from a multidimensional index space (the domain)
-to members of a contiguous span of objects (the codomain). A multidimensional
-index space is defined as the Cartesian product of integer extents, [0..N0) X
+http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0009r5.html. The proposed polymorphic
+multidimensional array reference (mdspan) defines types and functions for mapping indices from a
+multidimensional index space (the domain) to members of a contiguous span of objects (the codomain).
+A multidimensional index space is defined as the Cartesian product of integer extents, [0..N0) X
 [0..N1) X [0..N2) ...
 
-Implementation from https://github.com/kokkos/mdspan. This provides backports
-for C++14, 17, and 20.
+Implementation from https://github.com/kokkos/mdspan. This provides backports for C++14, 17, and 20.
 
 */
 

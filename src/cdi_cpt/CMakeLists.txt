@@ -3,7 +3,7 @@
 # author Ben. R. Ryan <brryan@lanl.gov>
 # date   2024 Oct 9
 # brief  Instructions for building cdi_cpt Makefiles.
-# note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(cdi_cpt CXX)
@@ -24,7 +24,7 @@ add_component_library(
   SOURCES "${sources}"
   HEADERS "${headers}")
 
-target_compile_definitions(Lib_cdi_cpt PUBLIC SHACL_PHYSICS_DIR="${shacl-physics_DIR}")
+target_compile_definitions(Lib_cdi_cpt PUBLIC AVALANCHE_DIR="${avalanche_DIR}")
 
 # ------------------------------------------------------------------------------------------------ #
 # Installation instructions

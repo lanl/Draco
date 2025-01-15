@@ -217,6 +217,13 @@ ccs_rel_gcc_1220_deploy_release:
 
 # FAST TEST
 
+ccs_deb_gcc_1330:
+  stage: fasttest
+  extends: .ccscs_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1330
+
 ccs_deb_gcc_1220:
   stage: fasttest
   extends: .ccscs_merge

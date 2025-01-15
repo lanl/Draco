@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2024 Oct 9
  * \brief  CPT_Collision_Source test
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_cpt/Collision_Source.hh"
@@ -38,11 +38,9 @@ void simple_collision_test(rtt_dsxx::UnitTest &ut) {
   rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
   // Projectile energy
   double const projectile_energy = 1.0; // keV
-  // Material temperature
-  double const temperature = 0.1; // keV
 
   // Path to stable ACE data provided by Avalanche for testing
-  std::string ndatk_path_base = std::string(SHACL_PHYSICS_DIR) + std::string("/../../../") +
+  std::string ndatk_path_base = std::string(AVALANCHE_DIR) + std::string("/../../../") +
                                 std::string(avalanche_test_resources_DIR);
   std::vector<std::string> ndatk_path_list = {ndatk_path_base,
                                               ndatk_path_base + std::string("/data")};

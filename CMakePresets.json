@@ -66,6 +66,8 @@
       "inherits": "linux-ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_FLAGS": "-march=broadwell",
+        "CMAKE_Fortran_FLAGS": "-march=broadwell",
         "ENABLE_MEMORYCHECK": "ON",
         "CTEST_MEMORYCHECK_SUPPRESSIONS_FILE": "${sourceDir}/.gitlab/ci/valgrind_suppress.txt"
       }

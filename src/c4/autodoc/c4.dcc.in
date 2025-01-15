@@ -1,37 +1,34 @@
-//---------------------------------*-c++-*-----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 // c4.dcc
 // c4 Overview page
 // Thomas M. Evans
 // Mon Apr 19 14:11:01 2004
 //------------------------------------------------------------------------------------------------//
 
-//------------------------------------------------------------------------------------------------//
-
 /*!
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \page overview_c4 Overview of the c4 package
 \version Draco-@Draco_VERSION@
 \author Thomas M. Evans, Geoff Furnish, Kent G. Budge, Kelly G. Thompson
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section Overview
 
-The c4 package provides the facilities of a generic communicator.  It
-sits between Draco code and the real parallel communications library.
-It does this to encapsulate the functionality of the parallel
-communications library (e.g.: MPICH or OpenMPI).
+The c4 package provides the facilities of a generic communicator.  It sits between Draco code and
+the real parallel communications library. It does this to encapsulate the functionality of the
+parallel communications library (e.g.: MPICH or OpenMPI).
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section fe Functionality and Examples
 
-The basic functions provided by c4 sit in the C4_Functions.hh header.
-These are canonical forms of message passing functions.  c4 is set to
-either serial or mpi (as determined by the C4_MPI or C4_SCALAR
-macros). To use c4 include the following:
+The basic functions provided by c4 sit in the C4_Functions.hh header. These are canonical forms of
+message passing functions.  c4 is set to either serial or mpi (as determined by the C4_MPI or
+C4_SCALAR macros). To use c4 include the following:
+
 \code
 #include "c4/global.hh"
 
@@ -58,41 +55,33 @@ int main( int argc, char *argv[] )
 }
 \endcode
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section co Configure Options
 
-The c4 package must be configured correctly so that it knows what
-communicator is being wrapped.  The following CMake options need
-to be specified before building libc4.
+The c4 package must be configured correctly so that it knows what communicator is being wrapped.
+The following CMake options need to be specified before building libc4.
 
-\c DRACO_C4=[MPI|SCALAR] Tell c4 that the communicator follows the MPI
-standard.  If \c MPI is replaced by \c SCALAR, the communicator
-assumes that all data will be on a local processor (no parallelism).
-In this case, calls to c4 functions like initialize() are valid but
-don't do anything.  If \c mpiexec is found in \c PATH, the default is
-\c MPI, otherwise the default is \c SCALAR.  For details concerning
-the discover of MPI, please see:
+\c DRACO_C4=[MPI|SCALAR] Tell c4 that the communicator follows the MPI standard.  If \c MPI is
+replaced by \c SCALAR, the communicator assumes that all data will be on a local processor (no
+parallelism). In this case, calls to c4 functions like initialize() are valid but don't do anything.
+If \c mpiexec is found in \c PATH, the default is \c MPI, otherwise the default is \c SCALAR.  For
+details concerning the discover of MPI, please see:
 
     cmake --help-module FindMPI
 
-
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section c4_hist History and discussion
 
 c4 was specifically designed for supporting <a
-href="http://www.mcs.anl.gov/research/projects/mpich2/">MPICH</a>.
-Today, <a href="www.open-mpi.org">OpenMPI</a> is typically used
-alongside MPICH.
+href="http://www.mcs.anl.gov/research/projects/mpich2/">MPICH</a>. Today, <a
+href="www.open-mpi.org">OpenMPI</a> is typically used alongside MPICH.
 
-The architecture of c4 allows a code to be written for distributed
-parallel computing (via MPI) but compiled in a special mode
-<tt>DRACO_C4=SCALAR</tt> that removes all of the overhead associated
-with MPI.  Thus, the implementation includes 2 complete sets of
-instructions.  The primary set of instructions wraps an MPI
-implementation while the other provides empty c4 functions
-definitions.
+The architecture of c4 allows a code to be written for distributed parallel computing (via MPI) but
+compiled in a special mode <tt>DRACO_C4=SCALAR</tt> that removes all of the overhead associated with
+MPI.  Thus, the implementation includes 2 complete sets of instructions.  The primary set of
+instructions wraps an MPI implementation while the other provides empty c4 functions definitions.
 
 */
 

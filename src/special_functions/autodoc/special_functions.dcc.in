@@ -1,4 +1,4 @@
-//---------------------------------*-c++-*-----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 // special_functions.dcc
 // Draco Special Functions Overview page
 // Kelly Thompson
@@ -12,18 +12,17 @@
 
 \section sf_abstract Abstract
 
-The sf package provides generali mathematical functions that are not readily
-available from a 3rd party library like GSL or Trilinos.  Some of the function
-provided in this package partially duplicate GSL functions, but may be a
-generalized template form.
+The sf package provides generali mathematical functions that are not readily available from a 3rd
+party library like GSL or Trilinos.  Some of the function provided in this package partially
+duplicate GSL functions, but may be a generalized template form.
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section sf_background Background
 
 Nothing yet.
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section sf_factorial Factorial
 
@@ -32,12 +31,12 @@ The factorial \f$n!\f$ is defined for a positive integer \f$n\f$ as
 n! \equiv n(n - 1) \cdots 2 \cdot 1.
 \f]
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section sf_Delta Kronecker Delta
 
-The simplest interpretation of the Kronecker delta is as the discrete version of
-the delta function defined by
+The simplest interpretation of the Kronecker delta is as the discrete version of the delta function
+defined by
 
 \f[
 \delta _{i,j}  = \left\{ {\begin{array}{*{20}c}
@@ -49,7 +48,7 @@ the delta function defined by
 \end{array}
 \f]
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section sf_sph Spherical Harmonics
 
@@ -67,12 +66,13 @@ In general, any arbitrary function, \f$ f_{surface}(\theta, \phi) \f$, can be
 expanded in a seriece of spherical harmonics.
 
 \f[
-f_{surface} (\theta ,\phi ) = \sum\limits_{l = 0}^\infty  {\sum\limits_{k =  - l}^l {c_{l,k} Y_{l,k} } } (\theta ,\phi ),
+f_{surface} (\theta ,\phi ) = \sum\limits_{l = 0}^\infty  {\sum\limits_{k =  - l}^l 
+  {c_{l,k} Y_{l,k} } } (\theta ,\phi ),
 \f]
 
-where the \f$ c_{l,k} \f$ are real, constant coefficients associated with a
-specific, complex spherical harmonic \f$ Y_{l,k} \f$.  The coefficients must be
-defined so that the following orthonormal condition is obeyed.
+where the \f$ c_{l,k} \f$ are real, constant coefficients associated with a specific, complex
+spherical harmonic \f$ Y_{l,k} \f$.  The coefficients must be defined so that the following
+orthonormal condition is obeyed.
 
 \f[
 \int d\mathbf\Omega Y_{l,k}(\mathbf\Omega_m)Y_{l',k'}^*(\mathbf\Omega_m) = \delta_{ll'}\delta_{kk'}
@@ -80,8 +80,7 @@ defined so that the following orthonormal condition is obeyed.
 
 In this expression \f$ Y^* \f$ represents the complex conjugate of the function.
 
-For our uses, we define the spherical harmonic function to have the following
-form,
+For our uses, we define the spherical harmonic function to have the following form,
 
 \f[
 Y_{\ell,k}(\mathbf\Omega_m) = Y_{\ell,k}(\theta_m,\omega_m)
@@ -92,31 +91,26 @@ Y_{\ell,k}(\theta_m,\omega_m) = c_{\ell,k}P_{\ell,k}(\mu_m) e^{i k\omega_m}, \,\
 \forall \,\,\,\,\, k \ge 0, \mu_m = \cos(\theta_m),
 \f]
 
-where \f$ P_{\ell,k} \f$ are the \ref sf_assoc_leg_poly "Associated Legendre
-Functions" of degree \f$ \ell \f$ and order \f$ k \f$.  See the associated
-figure below.  Note, for 1D quadrature sets, \f$ k=0 \f$, and the spherical
-harmonics functions become the associated Legendre polynomials.
+where \f$ P_{\ell,k} \f$ are the \ref sf_assoc_leg_poly "Associated Legendre Functions" of degree
+\f$ \ell \f$ and order \f$ k \f$.  See the associated figure below.  Note, for 1D quadrature sets,
+\f$ k=0 \f$, and the spherical harmonics functions become the associated Legendre polynomials.
 
 \htmlonly
 <center>
-<img src="angular_coordinate_system.jpg" border=0 alt="Angular
-coordinate system">
+<img src="angular_coordinate_system.jpg" border=0 alt="Angular coordinate system">
 </center>
 \endhtmlonly
 
-The imaginary exponential in the definition of the spherical harmonic
-function is equivalent to
+The imaginary exponential in the definition of the spherical harmonic function is equivalent to
 
 \f[
 e^{i k\omega_m} = \cos( k\omega_m ) + i \sin( k\omega_m )
 \f]
 
-Our software can provide either the real (rtt_sf::realYlk) or the
-imaginary part (rtt_sf::complexYlk) of the spherical harmonic
-expression.
+Our software can provide either the real (rtt_sf::realYlk) or the imaginary part
+(rtt_sf::complexYlk) of the spherical harmonic expression.
 
-We define the azimuthal angle, \f$\omega_m\f$, in terms of quadrature
-ordinates, as:
+We define the azimuthal angle, \f$\omega_m\f$, in terms of quadrature ordinates, as:
 \f[
 \omega_m = tan^{-1}\frac{\xi_m}{\eta_m}, \,\,\,\,\, \forall
 \,\,\,\,\,\eta_m \ge 0,\,\,\,\,\,\xi_m \ge 0,
@@ -167,10 +161,9 @@ Y_{2,2}(\theta,\phi) = \frac{1}{4}\sqrt{\frac{15}{2\pi}}\sin^2\theta e^{2i\phi}
 
 \section sf_norm_sph Normalized Spherical Harmonics
 
-In practice, we are only concerned with real surface quantities, so it is
-more convenient to work with real spherical harmonics, \f$
-y_{l,k}(\theta,\phi) \f$.  We define the following approximations (common
-in literature)
+In practice, we are only concerned with real surface quantities, so it is more convenient to work
+with real spherical harmonics, \f$ y_{l,k}(\theta,\phi) \f$.  We define the following approximations
+(common in literature)
 
 \f[
 \begin{array}{l}
@@ -182,8 +175,8 @@ Y_{l,\left| k \right|}^* (\theta ,\phi )} \right]. \\
 \end{array}
 \f]
 
-This expression can be evaluated so that only the real component
-remains.  This is the value provided by the function rtt_sf::normalizedYlk.
+This expression can be evaluated so that only the real component remains.  This is the value
+provided by the function rtt_sf::normalizedYlk.
 
 \f[
 \begin{array}{l}
@@ -193,11 +186,9 @@ remains.  This is the value provided by the function rtt_sf::normalizedYlk.
  \end{array}
 \f]
 
-This is equivalent to the formulation provided by Morel in \em
-"Collocation-Galerkin-Sn Solution." Morel writes this expression more
-compactly.  The \f$ (2-\delta_{k,0}) \f$ in this paper provides the extra
-factor of \f$ \sqrt{2} \f$ that exists for \f$ k>0 \f$ but not for \f$ k=0
-\f$.
+This is equivalent to the formulation provided by Morel in \em "Collocation-Galerkin-Sn Solution."
+Morel writes this expression more compactly.  The \f$ (2-\delta_{k,0}) \f$ in this paper provides
+the extra factor of \f$ \sqrt{2} \f$ that exists for \f$ k>0 \f$ but not for \f$ k=0 \f$.
 
 The Normalized Form, \f$ y_{l,k} \f$ have the following forms:
 
@@ -235,8 +226,8 @@ y_{2,2}(\theta,\phi) = \sqrt\frac{15}{16\pi}\sin^2\theta\cos 2\phi
 
 \section sf_assoc_leg_poly Associated Legendre Polynomials
 
-The associated Legendre function, \f$ P_{\ell,k}(\mu) \f$ is defined for
-integer values \f$ k = 0, 1, 2, \ldots, \ell \f$ by the formula
+The associated Legendre function, \f$ P_{\ell,k}(\mu) \f$ is defined for integer values \f$ k = 0,
+1, 2, \ldots, \ell \f$ by the formula
 
 \f[
 P_{\ell,k}(\mu) = (-1)^k(1-\mu^2)^{k/2}\frac{d^k}{d\mu^k}P_\ell(\mu),
@@ -246,8 +237,7 @@ where
 P_{\ell,k=0}(\mu) = P_\ell(\mu).
 \f]
 
-Taking \f$ \mu \equiv cos\theta \f$ we may write the first few associated
-Legendre polynomials as:
+Taking \f$ \mu \equiv cos\theta \f$ we may write the first few associated Legendre polynomials as:
 
 \f[ P_{0,0}(\mu) = 1, \f]
 \f[ P_{1,0}(\mu) = \mu = cos\theta, \f]
@@ -260,23 +250,19 @@ Legendre polynomials as:
 \f[ P_{5,0}(\mu) = \frac{63\mu^5-70\mu^3+15\mu}{8}, \f]
 \f[ P_{6,0}(\mu) = \frac{231\mu^6-315\mu^4+105\mu^2-5}{16}, \f]
 
-For more information, see <a
-href="http://mathworld.wolfram.com/LegendrePolynomial.html">Wolfram
+For more information, see <a href="http://mathworld.wolfram.com/LegendrePolynomial.html">Wolfram
 Research's MathWorld</a>.
 
 \section sf_galerkin_sph Galerkin Spherical Harmonics
 
- We use a special form of spherical harmonics for creating the
- moment-to-discrete and discrete-to-moment matrixes.  Morel describes
- the functional form in his paper \e A \e Hybrid \e
- Collocation-Galerkin-Sn \e Method \e for \e Solving \e the \e
- Boltzmann \e Transport \e Equation," Nuclear Science and Engineering,
- \b 101, 72-87, 1989.
+ We use a special form of spherical harmonics for creating the moment-to-discrete and
+ discrete-to-moment matrixes.  Morel describes the functional form in his paper \e A \e Hybrid \e
+ Collocation-Galerkin-Sn \e Method \e for \e Solving \e the \e Boltzmann \e Transport \e Equation,"
+ Nuclear Science and Engineering, \b 101, 72-87, 1989.
 
-The principal difference is that the \f$ \frac{2\ell+1}{4\pi} \f$ coefficient
-does not appear inside of a square root.  This change from the normal spherical
-harmonic coefficient is required in order to provide the correct magnitude for
-the quadrature weights.  Morel's formulation is
+The principal difference is that the \f$ \frac{2\ell+1}{4\pi} \f$ coefficient does not appear inside
+of a square root.  This change from the normal spherical harmonic coefficient is required in order
+to provide the correct magnitude for the quadrature weights.  Morel's formulation is
 
 \f[
 \begin{array}{l}
@@ -286,25 +272,23 @@ the quadrature weights.  Morel's formulation is
  \end{array}
 \f]
 
-This computation is provided by the routines rtt_sf::galerkinYlk and
-rtt_sf::cPlkGalerkin.
+This computation is provided by the routines rtt_sf::galerkinYlk and rtt_sf::cPlkGalerkin.
 
-Morel's scheme only includes specific order and moment combinations.  Please see
-the reference for a full description.
+Morel's scheme only includes specific order and moment combinations.  Please see the reference for a
+full description.
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \section sf_reference References
 
 \li <a href="http://mathworld.wolfram.com">MathWorld</a>: <a
-href="http://mathworld.wolfram.com/SphericalHarmonic.html">Spherical
-Harmonics</a>, <a href="http://mathworld.wolfram.com/Factorial.html">Factorial</a>, <a href="http://mathworld.wolfram.com/KroneckerDelta.html">Kronecker Delta</a>.
-
-\li E.E. Lewis and W.F. Miller, Jr., Computational Methods of Neutron
-Transport, American Nuclear Society, 1993, Appendix A.
-\li J.E. Morel, \e A \e Hybrid \e Collocation-Galerkin-Sn \e Method \e
-for \e Solving \e the \e Boltzmann \e Transport \e Equation," Nuclear
-Science and Engineering, \b 101, 72-87, 1989.
+    href="http://mathworld.wolfram.com/SphericalHarmonic.html">Spherical Harmonics</a>, <a
+    href="http://mathworld.wolfram.com/Factorial.html">Factorial</a>, <a
+    href="http://mathworld.wolfram.com/KroneckerDelta.html">Kronecker Delta</a>.
+\li E.E. Lewis and W.F. Miller, Jr., Computational Methods of Neutron Transport, American Nuclear
+    Society, 1993, Appendix A.
+\li J.E. Morel, \e A \e Hybrid \e Collocation-Galerkin-Sn \e Method \e for \e Solving \e the \e
+    Boltzmann \e Transport \e Equation," Nuclear Science and Engineering, \b 101, 72-87, 1989.
 \li Numerical Recipies in C
 
 */

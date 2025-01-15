@@ -3,14 +3,14 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 April 28
 # brief  Instructions for building root level Makefile.
-# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
 #
 # Build notes:
 #
 # * https://re-git.lanl.gov/draco/draco/-/wikis/home
 # * https://re-git.lanl.gov/draco/draco/-/wiki/Common_Configure_Options
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.21.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.30.0 FATAL_ERROR)
 string(CONCAT ddesc "An object-oriented component library supporting radiation transport "
               "applications.")
 project(

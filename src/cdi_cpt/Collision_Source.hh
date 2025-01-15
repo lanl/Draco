@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2024 Oct 9
  * \brief  Collision_Source class definition.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef cdi_cpt_Collision_Source_hh
@@ -92,16 +92,17 @@ private:
   // Get index into data array for given temperature
   int get_data_idx(const double temperature) const {
     Check(temperature >= 0.);
-    int idx = 0;
-    for (int n = 1; n < temperatures.size(); n++) {
+    size_t idx = 0;
+    for (size_t n = 1; n < temperatures.size(); n++) {
       if (temperatures[n] < temperature) {
         idx++;
       } else {
         break;
       }
     }
-    Check(idx >= 0 && idx < projTargetDatas.size());
-    return idx;
+    Check(idx < projTargetDatas.size());
+    Check(idx < INT32_MAX); // is the cast safe?
+    return static_cast<int>(idx);
   }
 };
 

@@ -1,26 +1,24 @@
-//---------------------------------*-c++-*-----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 // viz.dcc
 // viz Overview page
 // Thomas M. Evans
 // Mon Apr 19 21:47:53 2004
 //------------------------------------------------------------------------------------------------//
 
-//------------------------------------------------------------------------------------------------//
-
 /*!
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \page overview_viz Overview of the viz package
 \version Draco-@Draco_VERSION@
 \author Thomas M. Evans and John McGhee
 
-The viz package contains translators to visualization software.
-Currently supported are output translators for EnSight.
+The viz package contains translators to visualization software. Currently supported are output
+translators for EnSight.
 
 More translators will come on line as need arises.
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 */
 

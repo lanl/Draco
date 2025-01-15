@@ -1,24 +1,20 @@
-//---------------------------------*-c++-*-----------------------------------//
+//--------------------------------------------*-C++-*---------------------------------------------//
 // units.dcc
 // units Overview page
 // Thomas M. Evans
 // Mon Apr 19 21:45:55 2004
 //------------------------------------------------------------------------------------------------//
-
-//------------------------------------------------------------------------------------------------//
-
 /*!
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 \page overview_units Overview of the units package
 \version Draco-@Draco_VERSION@
 \author Kelly Thompson
 
-This package provides a mechanism to keep track of, compare and
-convert between unit systems.  It also provides access to physical
-constants (speed of light, pi, avogadro's number, etc.)  The general
-usage is:
+This package provides a mechanism to keep track of, compare and convert between unit systems.  It
+also provides access to physical constants (speed of light, pi, avogadro's number, etc.)  The
+general usage is:
 
 \code
 UnitSystem SI_Units( UnitSystemType:SI() );
@@ -35,7 +31,7 @@ my_energy = 5.0; // g * m^2 / us^2
 my_energy_si = my_energy * SI_Units.e() / my_Units.e(); // J = kg * m^2 / s^2
 \endcode
 
-<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------- -->
 
 */
 
