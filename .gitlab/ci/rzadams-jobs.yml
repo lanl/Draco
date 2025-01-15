@@ -39,7 +39,7 @@
   variables:
     DEPLOY: 'TRUE'
     DRACO_ENV: "lapse/2.4.2-mi300-cce"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
+    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
   script:
@@ -97,7 +97,7 @@ rzadams_deb_cce1800_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/2.4.2-mi300-cce"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
+    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -110,7 +110,7 @@ rzadams_deb_cce1800_mr:
     CTEST_MODE: Nightly
     CTEST_NPROC: 128
     DRACO_ENV: "lapse/2.4.2-mi300-cce"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON
+    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
     CTEST_BUILD_NAME: "lapse240-cce-${CMAKE_BUILD_TYPE}"
   artifacts:
     when: always
