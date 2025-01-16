@@ -165,22 +165,6 @@ export CTEST_NPROC
 # Build and run the tests for draco; post results to CDash.
 #--------------------------------------------------------------------------------------------------#
 
-# export http_proxy=http://proxyout.lanl.gov:8080;
-# export https_proxy=$http_proxy;
-# export HTTP_PROXY=$http_proxy;
-# export HTTPS_PROXY=$http_proxy;
-# export proxy_rsync=$http_proxy;
-# export RSYNC_PROXY=$http_proxy;
-# export proxy_http=$http_proxy;
-# export proxy_skip=$http_proxy;
-# export proxy_https=$http_proxy;
-
-unset http_proxy
-unset https_proxy
-unset HTTP_PROXY
-unset HTTPS_PROXY
-export no_proxy=localhost,127.0.0.1,.lanl.gov
-
 echo "To rerun manually, cd to CI directory (pwd), set these variables, run ctest."
 echo " "
 run "pwd"
@@ -206,7 +190,6 @@ echo "export MEMCHECK_COMMAND_OPTIONS=${MEMCHECK_COMMAND_OPTIONS}"
 echo "export MEMCHECK_CONFIGURATION=${MEMCHECK_CONFIGURATION}"
 echo " "
 echo "modes       = ${modes}"
-echo "HTTPS_PROXY = ${HTTPS_PROXY}"
 echo " "
 
 if [[ "${cdash_upload_auth_token}x" == "x" ]]; then
