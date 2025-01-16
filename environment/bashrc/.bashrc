@@ -117,27 +117,6 @@ if [[ ${INTERACTIVE} == true ]]; then
   add_to_path "${DRACO_ENV_DIR}/bin"
   add_to_path "${DRACO_SRC_DIR}/tools"
 
-  # Tell wget to use LANL's www proxy (see
-  # trac.lanl.gov/cgi-bin/ctn/trac.cgi/wiki/SelfHelpCenter/ProxyUsage)
-  # export http_proxy=http://wpad.lanl.gov/wpad.dat
-  current_domain=$(awk '/^domain/ {print $2}' /etc/resolv.conf)
-  if [[ ${current_domain} == "lanl.gov" ]]; then
-    export http_proxy=http://proxyout.lanl.gov:8080
-    export https_proxy=$http_proxy
-    export HTTP_PROXY=$http_proxy
-    export HTTPS_PROXY=$http_proxy
-    export proxy_rsync=$http_proxy
-    export RSYNC_PROXY=$http_proxy
-    export proxy_http=$http_proxy
-    export proxy_skip=$http_proxy
-    export proxy_https=$http_proxy
-    export proxy_ftp=$http_proxy
-    if ! [[ "${nodename}" =~ "-rfe" ]]; then
-      export no_proxy=".lanl.gov,127.0.0.1,localhost"
-      export NO_PROXY=$no_proxy
-    fi
-  fi
-
   # cd paths - disable here, let user choose in ~/.bashrc
   CDPATH=
 

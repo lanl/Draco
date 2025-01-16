@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 June 5
 # brief  Default CMake build parameters
-# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
 #------------------------------------------------------------------------------------------------- #
 
 include_guard(GLOBAL)
@@ -358,6 +358,15 @@ function(dbs_vscode_env_helper)
   endif()
   if(EXISTS "${CALIPER_INCLUDE_DIR}")
     file(CREATE_LINK "${CALIPER_INCLUDE_DIR}" "${dep_binary_dir}/caliper" SYMBOLIC)
+  endif()
+  if(EXISTS "${NDI_INCLUDE_DIR}")
+    file(CREATE_LINK "${NDI_INCLUDE_DIR}" "${dep_binary_dir}/ndi" SYMBOLIC)
+  endif()
+  if(EXISTS "${METIS_INCLUDE_DIR}")
+    file(CREATE_LINK "${METIS_INCLUDE_DIR}" "${dep_binary_dir}/metis" SYMBOLIC)
+  endif()
+  if(EXISTS "${ParMETIS_INCLUDE_DIR}")
+    file(CREATE_LINK "${ParMETIS_INCLUDE_DIR}" "${dep_binary_dir}/parmetis" SYMBOLIC)
   endif()
 
 endfunction(dbs_vscode_env_helper)
