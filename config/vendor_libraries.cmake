@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 June 6
 # brief  Look for any libraries which are required at the top level.
-# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -80,10 +80,7 @@ function(setupGSL)
     if("$ENV{GSL_ROOT_DIR}x" STREQUAL "x" AND "${GSL_ROOT_DIR}x" STREQUAL "x")
       find_program(GSL_CONFIG gsl-config)
       if(EXISTS "${GSL_CONFIG}")
-        exec_program(
-          "${GSL_CONFIG}" "."
-          ARGS --prefix
-          OUTPUT_VARIABLE GSL_ROOT_DIR)
+        execute_process(COMMAND "${GSL_CONFIG}" "." --prefix OUTPUT_VARIABLE GSL_ROOT_DIR)
       endif()
     endif()
 
