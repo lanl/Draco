@@ -10,7 +10,7 @@
 # * https://re-git.lanl.gov/draco/draco/-/wikis/home
 # * https://re-git.lanl.gov/draco/draco/-/wiki/Common_Configure_Options
 #--------------------------------------------------------------------------------------------------#
-cmake_minimum_required(VERSION 3.30.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.29.0 FATAL_ERROR)
 string(CONCAT ddesc "An object-oriented component library supporting radiation transport "
               "applications.")
 project(
