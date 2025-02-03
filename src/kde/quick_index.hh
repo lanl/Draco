@@ -5,7 +5,7 @@
  * \brief  This class generates coarse spatial indexing to quickly access near-neighbor data. This
  *         additionally provides simple interpolation schemes to map data to simple structured
  *         meshes.
- * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_kde_quick_index_hh
@@ -141,7 +141,7 @@ public:
                           const size_t data_size) const;
 
   //! Fetch list of coarse index values bound by the window
-  NODISCARD std::vector<size_t>
+  [[nodiscard]] std::vector<size_t>
   window_coarse_index_list(const std::array<double, 3> &window_min,
                            const std::array<double, 3> &window_max) const;
 
@@ -164,8 +164,8 @@ public:
                                const bool normalize, const bool bias) const;
 
   //! Calculate the orthogonal distance between to locations
-  NODISCARD std::array<double, 3> calc_orthogonal_distance(const std::array<double, 3> &r0,
-                                                           const std::array<double, 3> &r) const;
+  [[nodiscard]] std::array<double, 3>
+  calc_orthogonal_distance(const std::array<double, 3> &r0, const std::array<double, 3> &r) const;
 
   // PUBLIC DATA
   // Quick index initialization data

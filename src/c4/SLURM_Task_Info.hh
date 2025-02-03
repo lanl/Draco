@@ -4,14 +4,14 @@
  * \author Tim Kelley
  * \date   Fri Jun 7 08:06:53 2019
  * \brief  Functions for working with your environment
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef SLURM_Task_Info_hh
 #define SLURM_Task_Info_hh
 
 #include "dsxx/Query_Env.hh"
-#include "dsxx/config.h" // defines NODISCARD
+#include "dsxx/config.h" // defines [[nodiscard]]
 #include <cstdint>
 #include <tuple>
 
@@ -36,28 +36,28 @@ namespace rtt_c4 {
 class SLURM_Task_Info {
 public:
   /**\brief Get SLURM_CPUS_PER_TASK */
-  NODISCARD uint32_t get_cpus_per_task() const { return cpus_per_task_; }
+  [[nodiscard]] uint32_t get_cpus_per_task() const { return cpus_per_task_; }
 
   /**\brief Get SLURM_NTASKS */
-  NODISCARD uint32_t get_ntasks() const { return ntasks_; }
+  [[nodiscard]] uint32_t get_ntasks() const { return ntasks_; }
 
   /**\brief Get SLURM_JOB_NUM_NODES */
-  NODISCARD uint32_t get_job_num_nodes() const { return job_num_nodes_; }
+  [[nodiscard]] uint32_t get_job_num_nodes() const { return job_num_nodes_; }
 
   /**\brief Get SLURM_CPUS_ON_NODE */
-  NODISCARD uint32_t get_cpus_on_node() const { return cpus_on_node_; }
+  [[nodiscard]] uint32_t get_cpus_on_node() const { return cpus_on_node_; }
 
   //! Return value of SLURM_NODELIST
-  NODISCARD std::string get_nodelist() const { return nodelist_; }
+  [[nodiscard]] std::string get_nodelist() const { return nodelist_; }
 
   /**\brief Was SLURM_CPUS_PER_TASK set? */
-  NODISCARD bool is_cpus_per_task_set() const { return def_cpus_per_task_; }
+  [[nodiscard]] bool is_cpus_per_task_set() const { return def_cpus_per_task_; }
 
   /**\brief Was SLURM_NTASKS set? */
-  NODISCARD bool is_ntasks_set() const { return def_ntasks_; }
+  [[nodiscard]] bool is_ntasks_set() const { return def_ntasks_; }
 
   /**\brief Was SLURM_JOB_NUM_NODES set? */
-  NODISCARD bool is_job_num_nodes_set() const { return def_job_num_nodes_; }
+  [[nodiscard]] bool is_job_num_nodes_set() const { return def_job_num_nodes_; }
 
   // ctor
   SLURM_Task_Info() {

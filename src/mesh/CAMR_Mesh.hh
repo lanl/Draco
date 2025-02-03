@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   May 10 2023
  * \brief  CAMR_Mesh class definition.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_CAMR_Mesh_hh
@@ -107,34 +107,38 @@ public:
   ~CAMR_Mesh() = default;
 
   // ACCESSORS
-  NODISCARD sf_double const &get_widths() const { return widths; }
-  NODISCARD size_t get_level(size_t cell) const;
-  NODISCARD size_t get_maximum_level() const { return maximum_level; }
-  NODISCARD size_t get_size() const { return active_size; }
-  NODISCARD size_t num_cells() const { return active_size; }
-  NODISCARD size_t get_num_global_cells() const { return num_global_cells; }
-  NODISCARD size_t get_num_full_cells() const { return full_size; }
-  NODISCARD size_t get_num_ghost_cells() const { return ghost_size; }
+  [[nodiscard]] sf_double const &get_widths() const { return widths; }
+  [[nodiscard]] size_t get_level(size_t cell) const;
+  [[nodiscard]] size_t get_maximum_level() const { return maximum_level; }
+  [[nodiscard]] size_t get_size() const { return active_size; }
+  [[nodiscard]] size_t num_cells() const { return active_size; }
+  [[nodiscard]] size_t get_num_global_cells() const { return num_global_cells; }
+  [[nodiscard]] size_t get_num_full_cells() const { return full_size; }
+  [[nodiscard]] size_t get_num_ghost_cells() const { return ghost_size; }
 
-  NODISCARD double get_width(size_t level = 0) const;
-  NODISCARD double get_cell_width(size_t cell) const;
+  [[nodiscard]] double get_width(size_t level = 0) const;
+  [[nodiscard]] double get_cell_width(size_t cell) const;
 
-  NODISCARD sf_double get_vertex(size_t cell) const;
+  [[nodiscard]] sf_double get_vertex(size_t cell) const;
 
-  NODISCARD sf_int get_bnd_cells() const { return bnd_cells; }
-  NODISCARD sf_int get_bnd_procs() const { return bnd_procs; }
-  NODISCARD sf_int get_active2full() const { return active2full; }
-  NODISCARD sf_int get_full2active() const { return full2active; }
+  [[nodiscard]] sf_int get_bnd_cells() const { return bnd_cells; }
+  [[nodiscard]] sf_int get_bnd_procs() const { return bnd_procs; }
+  [[nodiscard]] sf_int get_active2full() const { return active2full; }
+  [[nodiscard]] sf_int get_full2active() const { return full2active; }
 
-  NODISCARD inline bool is_refined(int const cell, uint32_t const face) const;
-  NODISCARD inline int is_coarse(int const cell, uint32_t const face) const;
+  [[nodiscard]] inline bool is_refined(int const cell, uint32_t const face) const;
+  [[nodiscard]] inline int is_coarse(int const cell, uint32_t const face) const;
 
-  NODISCARD inline sf_int next_cells(int const cell, int const coarse_face) const;
-  NODISCARD inline sf_int next_cells(size_t const cell, size_t const coarse_face) const;
+  [[nodiscard]] inline sf_int next_cells(int const cell, int const coarse_face) const;
+  [[nodiscard]] inline sf_int next_cells(size_t const cell, size_t const coarse_face) const;
 
-  NODISCARD int64_t global_cell(size_t const cell) const { return topology_->global_cell(cell); }
-  NODISCARD int64_t get_global_offset(int rank) const { return topology_->get_global_offset(rank); }
-  NODISCARD int remote_proc(size_t boundary_cell) const {
+  [[nodiscard]] int64_t global_cell(size_t const cell) const {
+    return topology_->global_cell(cell);
+  }
+  [[nodiscard]] int64_t get_global_offset(int rank) const {
+    return topology_->get_global_offset(rank);
+  }
+  [[nodiscard]] int remote_proc(size_t boundary_cell) const {
     return topology_->remote_proc(boundary_cell);
   }
 
@@ -144,7 +148,7 @@ public:
   //! Negative comparison operator
   bool operator!=(CAMR_Mesh<D> const &rhs) const { return !(*this == rhs); }
 
-  NODISCARD rtt_mesh::CAMR_Layout const &get_Layout() const { return *layout; }
+  [[nodiscard]] rtt_mesh::CAMR_Layout const &get_Layout() const { return *layout; }
 
   //! Return the number of finite elements per cell (placeholder).
   static constexpr size_t get_num_fe() {
@@ -156,65 +160,65 @@ public:
 
   // Mesh-wide information:
 
-  NODISCARD int get_spatial_dimension() const { return D; }
-  NODISCARD bool full_Mesh() const { return !submesh; } //!< Full or partitioned mesh?
-  NODISCARD double get_total_volume() const { return local_volume; }
+  [[nodiscard]] int get_spatial_dimension() const { return D; }
+  [[nodiscard]] bool full_Mesh() const { return !submesh; } //!< Full or partitioned mesh?
+  [[nodiscard]] double get_total_volume() const { return local_volume; }
 
   // Cell-by-cell information. Geometric and topological.
 
-  NODISCARD double min(size_t d, size_t cell) const;
-  NODISCARD double max(size_t d, size_t cell) const;
+  [[nodiscard]] double min(size_t d, size_t cell) const;
+  [[nodiscard]] double max(size_t d, size_t cell) const;
 
-  NODISCARD inline double cell_width(size_t const coordinate, size_t const cell) const;
-  NODISCARD bool in_cell(size_t const cell, U3 const &position) const;
-  NODISCARD bool hard_in_cell(size_t const cell, U3 const &position) const;
-  NODISCARD bool in_cell(size_t const cell, const uint32_t face, U3 const &position) const;
-  NODISCARD int next_cell(int const cell, uint32_t const face, U3 const &position) const;
-  NODISCARD inline size_t next_face(int const cell, const uint32_t coarse_face) const;
-  NODISCARD inline size_t next_face(size_t const cell, const size_t coarse_face) const;
-  NODISCARD int get_cell(U3 const &position) const;
-  NODISCARD inline uint32_t get_face(U3 const &position, const size_t cell) const;
-  NODISCARD inline U3 get_face_center(size_t const cell, const uint32_t face) const;
-  NODISCARD inline U3 get_cell_centroid(size_t const cell) const;
-  NODISCARD U3 get_shared_face_center(size_t const cell, uint32_t const face,
-                                      int const next_cell) const;
-  NODISCARD double get_db(U3 const &position, U3 const &direction, int const cell,
-                          uint32_t &face) const;
-  NODISCARD double get_orthogonal_dist_to_bnd(U3 const &position, int const cell) const;
-  NODISCARD U3 get_normal(int const cell, uint32_t const face) const;
-  NODISCARD U3 get_normal_in(size_t const cell, uint32_t const face) const;
-  NODISCARD double face_area(size_t const cell, const size_t face) const;
-  NODISCARD double mean_chord_length(int const cell) const;
-  NODISCARD double get_min_width(size_t cell) const;
+  [[nodiscard]] inline double cell_width(size_t const coordinate, size_t const cell) const;
+  [[nodiscard]] bool in_cell(size_t const cell, U3 const &position) const;
+  [[nodiscard]] bool hard_in_cell(size_t const cell, U3 const &position) const;
+  [[nodiscard]] bool in_cell(size_t const cell, const uint32_t face, U3 const &position) const;
+  [[nodiscard]] int next_cell(int const cell, uint32_t const face, U3 const &position) const;
+  [[nodiscard]] inline size_t next_face(int const cell, const uint32_t coarse_face) const;
+  [[nodiscard]] inline size_t next_face(size_t const cell, const size_t coarse_face) const;
+  [[nodiscard]] int get_cell(U3 const &position) const;
+  [[nodiscard]] inline uint32_t get_face(U3 const &position, const size_t cell) const;
+  [[nodiscard]] inline U3 get_face_center(size_t const cell, const uint32_t face) const;
+  [[nodiscard]] inline U3 get_cell_centroid(size_t const cell) const;
+  [[nodiscard]] U3 get_shared_face_center(size_t const cell, uint32_t const face,
+                                          int const next_cell) const;
+  [[nodiscard]] double get_db(U3 const &position, U3 const &direction, int const cell,
+                              uint32_t &face) const;
+  [[nodiscard]] double get_orthogonal_dist_to_bnd(U3 const &position, int const cell) const;
+  [[nodiscard]] U3 get_normal(int const cell, uint32_t const face) const;
+  [[nodiscard]] U3 get_normal_in(size_t const cell, uint32_t const face) const;
+  [[nodiscard]] double face_area(size_t const cell, const size_t face) const;
+  [[nodiscard]] double mean_chord_length(int const cell) const;
+  [[nodiscard]] double get_min_width(size_t cell) const;
   // this returns dx*dy or dr*dz, not true volume for rz.
-  NODISCARD double volume(size_t const cell) const;
-  NODISCARD vf_double get_vertices(int const cell) const;
-  NODISCARD vf_double get_vertices(int const cell, const uint32_t face) const;
-  NODISCARD inline sf_double get_short_vertices(size_t cell) const;
-  NODISCARD inline U3 get_intersection(const U3 &r, const U3 &omega, const double &distance,
-                                       const int &cell, const uint32_t face) const;
-  NODISCARD sf_int get_neighbors(uint32_t const cell) const;
-  NODISCARD size_t get_number_of_faces() const { return layout->num_coarse_faces(); }
-  NODISCARD inline sf_int get_valid_cell_faces() const;
+  [[nodiscard]] double volume(size_t const cell) const;
+  [[nodiscard]] vf_double get_vertices(int const cell) const;
+  [[nodiscard]] vf_double get_vertices(int const cell, const uint32_t face) const;
+  [[nodiscard]] inline sf_double get_short_vertices(size_t cell) const;
+  [[nodiscard]] inline U3 get_intersection(const U3 &r, const U3 &omega, const double &distance,
+                                           const int &cell, const uint32_t face) const;
+  [[nodiscard]] sf_int get_neighbors(uint32_t const cell) const;
+  [[nodiscard]] size_t get_number_of_faces() const { return layout->num_coarse_faces(); }
+  [[nodiscard]] inline sf_int get_valid_cell_faces() const;
 
   // Mesh boundary information:
 
-  NODISCARD size_t get_bndface(std::string const &boundary_name, int const /*cell*/) const;
-  NODISCARD sf_int get_surcells(std::string const &boundary_name) const;
-  NODISCARD bool check_defined_surcells(std::string const &boundary_name,
-                                        sf_int const &cell_list) const;
+  [[nodiscard]] size_t get_bndface(std::string const &boundary_name, int const /*cell*/) const;
+  [[nodiscard]] sf_int get_surcells(std::string const &boundary_name) const;
+  [[nodiscard]] bool check_defined_surcells(std::string const &boundary_name,
+                                            sf_int const &cell_list) const;
 
   // END APPLICATION INTERFACE
   //------------------------//
 
   //-----------------------------------//
   // Methods required for graphics dumps.
-  NODISCARD sf_int get_cell_types() const;
-  NODISCARD vf_double get_point_coord() const;
-  NODISCARD vf_int get_cell_pair() const;
+  [[nodiscard]] sf_int get_cell_types() const;
+  [[nodiscard]] vf_double get_point_coord() const;
+  [[nodiscard]] vf_int get_cell_pair() const;
 
-  NODISCARD const sf_double &get_vertices() const { return vertices; }
-  NODISCARD const sf_int &get_levels() const { return levels; }
+  [[nodiscard]] const sf_double &get_vertices() const { return vertices; }
+  [[nodiscard]] const sf_int &get_levels() const { return levels; }
   //-----------------------------------//
 
 private:
@@ -227,7 +231,7 @@ private:
   template <typename I_IT, typename D_IT>
   void constructor_body(I_IT level_data, D_IT vertex_data, I_IT neighbor_count);
 
-  NODISCARD inline sf_double::const_iterator vertex_data(size_t cell) const;
+  [[nodiscard]] inline sf_double::const_iterator vertex_data(size_t cell) const;
 
   // DATA
 

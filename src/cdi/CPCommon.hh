@@ -4,13 +4,13 @@
  * \author Kendra Long
  * \date   Mon Jan 19 13:41:01 2001
  * \brief  Datatypes needed in CPEloss classes
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPCommon_hh
 #define rtt_cdi_CPCommon_hh
 
-#include "dsxx/config.h" // defines NODISCARD
+#include "dsxx/config.h" // defines [[nodiscard]]
 #include <cstdint>
 
 namespace rtt_cdi {
@@ -42,8 +42,8 @@ private:
   double mass;
 
 public:
-  NODISCARD int32_t get_zaid() const { return zaid; }
-  NODISCARD int32_t get_z() const {
+  [[nodiscard]] int32_t get_zaid() const { return zaid; }
+  [[nodiscard]] int32_t get_z() const {
     if (zaid != -1) {
       // Integer division to extract the ZZZ from ZAID format ZZZAAA
       return zaid / 1000;
@@ -52,8 +52,8 @@ public:
       return -1;
     }
   }
-  NODISCARD int32_t get_a() const { return zaid % 1000; }
-  NODISCARD double get_mass() const { return mass; }
+  [[nodiscard]] int32_t get_a() const { return zaid % 1000; }
+  [[nodiscard]] double get_mass() const { return mass; }
 
   CParticle(const int32_t zaid_in, const double mass_in) : zaid(zaid_in), mass(mass_in) {}
 };

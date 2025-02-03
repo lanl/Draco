@@ -42,8 +42,7 @@ darwin_clangtidy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-llvm1706
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
-    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
-      -DDraco_C_LANGUAGE_STANDARD=17
+    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
     EXTRA_CTEST_ARGS: -R dsxx_tstRelease
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
@@ -100,8 +99,7 @@ darwin_clangtidy_deploy:
     DRACO_ENV: draco/haswell-llvm1706
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
-    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
-      -DDraco_C_LANGUAGE_STANDARD=17
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
 
 darwin_debug_llvm_deploy:
   extends: .darwin_deploy
@@ -240,8 +238,7 @@ darwin_clangtidy_llvm:
     DRACO_ENV: draco/haswell-llvm1706
     ARCH: x86_64
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
-    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy -DDraco_CXX_LANGUAGE_STANDARD=17
-      -DDraco_C_LANGUAGE_STANDARD=17
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
     CTEST_BUILD_NAME: clang-tidy
 

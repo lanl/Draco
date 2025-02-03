@@ -4,7 +4,7 @@
  * \author Kendra P. Long
  * \date   Fri Aug  2 14:28:08 2019
  * \brief  Analytic_CP_Eloss class definition.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPEloss_Analytic_CP_Eloss_hh
@@ -48,41 +48,41 @@ public:
                     CPModelAngleCutoff model_angle_cutoff_in);
 
   // >>> ACCESSORS
-  NODISCARD const_SP_Model get_Analytic_Model() const { return analytic_model; }
+  [[nodiscard]] const_SP_Model get_Analytic_Model() const { return analytic_model; }
 
   // >>> INTERFACE SPECIFIED BY rtt_cdi::CPEloss
 
   // Get an eloss.
-  NODISCARD double getEloss(const double temperature, const double density,
-                            const double v0) const override;
+  [[nodiscard]] double getEloss(const double temperature, const double density,
+                                const double v0) const override;
 
   //! Query to see if data is in tabular or functional form (false).
   constexpr static bool is_data_in_tabular_form() { return false; }
 
   //! Get the temperature grid (size 0 for function-based analytic data).
-  NODISCARD sf_double getTemperatureGrid() const override { return sf_double(0); }
+  [[nodiscard]] sf_double getTemperatureGrid() const override { return sf_double(0); }
 
   //! Get the density grid (size 0 for function-based analytic data).
-  NODISCARD sf_double getDensityGrid() const override { return sf_double(0); }
+  [[nodiscard]] sf_double getDensityGrid() const override { return sf_double(0); }
 
   //! Get the density grid (size 0 for function-based analytic data).
-  NODISCARD sf_double getEnergyGrid() const override { return sf_double(0); }
+  [[nodiscard]] sf_double getEnergyGrid() const override { return sf_double(0); }
 
   //! Get the size of the temperature grid (size 0).
-  NODISCARD size_t getNumTemperatures() const override { return 0; }
+  [[nodiscard]] size_t getNumTemperatures() const override { return 0; }
 
   //! Get the size of the density grid (size 0).
-  NODISCARD size_t getNumDensities() const override { return 0; }
+  [[nodiscard]] size_t getNumDensities() const override { return 0; }
 
   //! Get the size of the density grid (size 0).
-  NODISCARD size_t getNumEnergies() const override { return 0; }
+  [[nodiscard]] size_t getNumEnergies() const override { return 0; }
 
   /*!
    * \brief Returns the general eloss model type
    *
    * Since this is an analytic model, return 1 (rtt_cdi::ANALYTIC_ETYPE)
    */
-  NODISCARD rtt_cdi::CPModelType getModelType() const {
+  [[nodiscard]] rtt_cdi::CPModelType getModelType() const {
     return rtt_cdi::CPModelType::ANALYTIC_ETYPE;
   }
 };

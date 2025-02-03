@@ -4,14 +4,13 @@
  * \author Kent G. Budge
  * \date   Tue Nov  9 14:34:11 2010
  * \brief  Test the Abstract_Class_Parser template
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-#include "dsxx/config.h"
 #include "parser/Abstract_Class_Parser.hh"
 #include "parser/Class_Parse_Table.hh"
 #include "parser/Expression.hh"
@@ -63,9 +62,9 @@ public:
 
   // SERVICES
 
-  NODISCARD Parse_Table const &parse_table() const { return parse_table_; }
+  [[nodiscard]] Parse_Table const &parse_table() const { return parse_table_; }
 
-  NODISCARD bool allow_exit() const { return false; }
+  [[nodiscard]] bool allow_exit() const { return false; }
 
   void check_completeness(Token_Stream &tokens) {
     if (child_ == std::shared_ptr<Parent>()) {
@@ -158,9 +157,9 @@ public:
 
   // SERVICES
 
-  NODISCARD bool allow_exit() const { return false; }
+  [[nodiscard]] bool allow_exit() const { return false; }
 
-  NODISCARD Parse_Table const &parse_table() const { return parse_table_; }
+  [[nodiscard]] Parse_Table const &parse_table() const { return parse_table_; }
 
   void check_completeness(Token_Stream &tokens) {
     if (rtt_dsxx::soft_equiv(parsed_snips_and_snails, -1.0,
@@ -242,9 +241,9 @@ public:
 
   // SERVICES
 
-  NODISCARD bool allow_exit() const { return false; }
+  [[nodiscard]] bool allow_exit() const { return false; }
 
-  NODISCARD Parse_Table const &parse_table() const { return parse_table_; }
+  [[nodiscard]] Parse_Table const &parse_table() const { return parse_table_; }
 
   void check_completeness(Token_Stream &tokens) {
     if (rtt_dsxx::soft_equiv(parsed_sugar_and_spice, -1.0,

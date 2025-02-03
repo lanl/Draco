@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wed Sep  1 10:19:52 2004
  * \brief  A class to encapsulate a 3D Level Symmetric quadrature set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_General_Octant_Quadrature_hh
@@ -33,22 +33,22 @@ public:
 
   // ACCESSORS
 
-  NODISCARD std::vector<double> const &mu() const { return mu_; }
-  NODISCARD std::vector<double> const &eta() const { return eta_; }
-  NODISCARD std::vector<double> const &xi() const { return xi_; }
-  NODISCARD std::vector<double> const &wt() const { return wt_; }
+  [[nodiscard]] std::vector<double> const &mu() const { return mu_; }
+  [[nodiscard]] std::vector<double> const &eta() const { return eta_; }
+  [[nodiscard]] std::vector<double> const &xi() const { return xi_; }
+  [[nodiscard]] std::vector<double> const &wt() const { return wt_; }
 
   // SERVICES
 
   // These functions override the virtual member functions specifed in the parent class Quadrature.
 
-  NODISCARD std::string name() const override;
-  NODISCARD std::string parse_name() const override;
-  NODISCARD Quadrature_Class quadrature_class() const override;
-  NODISCARD unsigned number_of_levels() const override;
-  NODISCARD std::string as_text(std::string const &indent) const override;
-  NODISCARD bool is_open_interval() const override;
-  NODISCARD bool check_class_invariants() const;
+  [[nodiscard]] std::string name() const override;
+  [[nodiscard]] std::string parse_name() const override;
+  [[nodiscard]] Quadrature_Class quadrature_class() const override;
+  [[nodiscard]] unsigned number_of_levels() const override;
+  [[nodiscard]] std::string as_text(std::string const &indent) const override;
+  [[nodiscard]] bool is_open_interval() const override;
+  [[nodiscard]] bool check_class_invariants() const;
 
   // STATICS
 

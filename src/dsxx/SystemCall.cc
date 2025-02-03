@@ -3,32 +3,14 @@
  * \file  dsxx/SystemCall.cc
  * \brief Implementation for the Draco wrapper for system calls. This routine attempts to hide
  *        differences between Unix/Windows system calls.
- * \note  Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note  Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "SystemCall.hh"
 #include "Assert.hh"
 #include <array>
-#include <string>
-
-#if defined(__cplusplus) & __cplusplus > 201402L // C++17 or newer
 #include <filesystem>
-#else // older than C++17
-
-#ifdef _MSC_VER
-#include <cerrno>   // errno
-#include <cstdlib>  // _fullpath
-#include <direct.h> // _getcwd
-#include <sstream>
-#endif
-#if defined UNIX || defined MINGW
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17 or newer
-#include <cstdio>                                 // std::remove()
-#endif
-#include <sys/param.h> // MAXPATHLEN
-#endif
-
-#endif // C++17
+#include <string>
 
 #if defined UNIX || defined MINGW
 #include <cstring>    // strncpy()
@@ -108,32 +90,7 @@ int draco_getpid() {
  *
  *  This should always return a trailing directory separator. */
 std::string draco_getcwd() {
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17 or newer
-
   return std::filesystem::current_path().generic_string() + rtt_dsxx::dirSep;
-
-#else // C++14 or older
-
-#ifdef _MSC_VER
-  char *buffer;
-  Insist((buffer = _getcwd(nullptr, 0)) != nullptr,
-         std::string("getcwd failed: " + std::string(strerror(errno))));
-  std::string cwd(buffer, buffer + strnlen(buffer, MAXPATHLEN));
-  free(buffer);
-#else
-  std::array<char, MAXPATHLEN> curr_path{};
-  curr_path.fill('z');
-  Insist(getcwd(&curr_path[0], MAXPATHLEN) != nullptr,
-         "getcwd failed: " + std::string(strerror(errno)));
-  std::string cwd(curr_path.data());
-#endif // MSC?
-
-  // Ensure that the last character is a directory separator.
-  if (cwd.at(cwd.length() - 1) != rtt_dsxx::dirSep)
-    cwd = cwd + rtt_dsxx::dirSep;
-  return cwd;
-
-#endif // C++17 or newer
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -232,27 +189,7 @@ bool draco_getstat::has_permission_bit(int mask) {
 //------------------------------------------------------------------------------------------------//
 //! Wrapper for system dependent realpath call.
 std::string draco_getrealpath(std::string const &path) {
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17 or newer
-
   return std::filesystem::canonical(path).generic_string() + rtt_dsxx::dirSep;
-#else // C++14 or older
-  std::array<char, MAXPATHLEN> buffer{}; // _MAX_PATH
-  buffer.fill('a');
-#ifdef _MSC_VER
-  // http://msdn.microsoft.com/en-us/library/506720ff%28v=vs.100%29.aspx
-  Insist(_fullpath(&buffer[0], path.c_str(), MAXPATHLEN) != nullptr, "Invalid path.");
-  std::string retVal(buffer.data());
-#else
-  Insist((realpath(path.c_str(), &buffer[0])) != nullptr, "Invalid path.");
-  std::string retVal(buffer.data());
-  if (draco_getstat(retVal).isdir()) {
-    // realpath trims the trailing slash, append now.
-    retVal += std::string(&dirSep, 1);
-  }
-#endif
-  return retVal;
-
-#endif
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -264,49 +201,9 @@ std::string draco_getrealpath(std::string const &path) {
  * \todo Do we need a permissions argument?  For now, just create directories with 0700 permission.
  */
 void draco_mkdir(std::string const &path) {
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17 or newer
-
   namespace fs = std::filesystem;
   fs::create_directories(path);
   fs::permissions(path, fs::perms::owner_all, fs::perm_options::replace);
-
-#else // C++14 or older
-
-#ifdef _MSC_VER
-  draco_getstat dirInfo(path);
-  if (!dirInfo.isdir()) {
-    /*! \note If path contains the location of a directory, it cannot contain a trailing backslash.
-     *        If it does, -1 will be returned and errno will be set to ENOENT. */
-    std::string clean_fqName;
-    if (path[path.size() - 1] == rtt_dsxx::WinDirSep ||
-        path[path.size() - 1] == rtt_dsxx::UnixDirSep)
-      clean_fqName = path.substr(0, path.size() - 1);
-    else
-      clean_fqName = path;
-
-    // make the directory
-    int errorCode = _mkdir(clean_fqName.c_str());
-    if (errorCode == -1) {
-      switch (errno) {
-      case EEXIST:
-        Insist(errno != EEXIST, "ERROR: Unable to create directory," + clean_fqName + ", because" +
-                                    " it already exists.");
-        break;
-      case ENOENT:
-        Insist(errno != ENOENT, "ERROR: Unable to create directory," + clean_fqName + ", because " +
-                                    "the path is not found.");
-        break;
-      default:
-        /* should never get here */
-        Insist(errno == 0, "ERROR: Unable to create directory, " + clean_fqName);
-      }
-    }
-  }
-#else
-  mkdir(path.c_str(), 0700);
-// S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
-#endif
-#endif
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -325,40 +222,8 @@ void draco_mkdir(std::string const &path) {
  */
 void draco_remove(std::string const &dirpath) {
 
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17 or newer
-
   std::filesystem::remove_all(dirpath);
 
-#else // C++14 or older
-
-  // std::remove() works for all unix items but only for files (not directories) for windows.
-#ifdef _MSC_VER
-  if (draco_getstat(dirpath).isdir()) {
-    // Clear any special directory attributes.
-    bool ok = ::SetFileAttributes(dirpath.c_str(), FILE_ATTRIBUTE_NORMAL);
-    if (!ok) {
-      int drError = ::GetLastError();
-      std::ostringstream msg;
-      msg << "ERROR: File attribute not normal. drError = " << drError << ", file = " << dirpath;
-      Insist(ok, msg.str());
-    }
-
-    // Delete directory
-    ok = ::RemoveDirectory(dirpath.c_str());
-    if (!ok) {
-      int drError = ::GetLastError();
-      std::ostringstream msg;
-      msg << "ERROR: Error deleting file, drError = " << drError << ", file = " << dirpath;
-      Insist(ok, msg.str());
-    }
-  } else {
-    std::remove(dirpath.c_str());
-  }
-#else
-  std::remove(dirpath.c_str());
-#endif
-
-#endif
   // If the file still exists this check will fail.
   Ensure(!draco_getstat(dirpath).valid());
   return;

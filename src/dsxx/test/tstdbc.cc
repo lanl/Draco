@@ -3,10 +3,9 @@
  * \file   dsxx/test/tstdbc.cc
  * \author Kent G. Budge
  * \date   Feb 18 2003
- * \brief  Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \brief  Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "dsxx/DracoMath.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/UnitTest.hh"
@@ -34,7 +33,6 @@ public:
 
 //------------------------------------------------------------------------------------------------//
 void dbc_test(UnitTest &ut) {
-  using rtt_dsxx::dim;
   using std::pair;
   using std::vector;
   using namespace std;
@@ -45,13 +43,6 @@ void dbc_test(UnitTest &ut) {
     FAILMSG("abs function template FAILED");
   else
     PASSMSG("abs function template ok");
-
-  if (abs(dim(2, 7) - 0) > std::numeric_limits<int>::epsilon() ||
-      abs(dim(5, -3) - 8) > std::numeric_limits<int>::epsilon() ||
-      abs(dim(4, 4) - 0) > std::numeric_limits<int>::epsilon())
-    FAILMSG("dim function template FAILED");
-  else
-    PASSMSG("dim function template ok");
 
   array<double, 6> sum_test_array = {1., 4., 3., 2., 5., 6.};
 

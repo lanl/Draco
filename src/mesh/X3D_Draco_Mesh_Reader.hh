@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>, Kendra Long
  * \date   Wednesday, Jul 11, 2018, 14:24 pm
  * \brief  X3D_Draco_Mesh_Reader header file.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_X3D_Draco_Mesh_Reader_hh
@@ -98,49 +98,49 @@ public:
   // >>> ACCESSORS
 
   // header data
-  NODISCARD unsigned get_process() const {
+  [[nodiscard]] unsigned get_process() const {
     Check(x3d_header_map.at("process")[0] - 1 < UINT_MAX);
     return static_cast<unsigned>(x3d_header_map.at("process")[0] - 1);
   }
-  NODISCARD unsigned get_numdim() const override {
+  [[nodiscard]] unsigned get_numdim() const override {
     Check(x3d_header_map.at("numdim")[0] < UINT_MAX);
     return static_cast<unsigned>(x3d_header_map.at("numdim")[0]);
   }
-  NODISCARD size_t get_numcells() const override { return x3d_header_map.at("elements")[0]; }
-  NODISCARD size_t get_numnodes() const override { return x3d_header_map.at("nodes")[0]; }
+  [[nodiscard]] size_t get_numcells() const override { return x3d_header_map.at("elements")[0]; }
+  [[nodiscard]] size_t get_numnodes() const override { return x3d_header_map.at("nodes")[0]; }
 
   // coordinate data
-  NODISCARD std::vector<double> get_nodecoord(size_t node) const override {
+  [[nodiscard]] std::vector<double> get_nodecoord(size_t node) const override {
     Check(node + 1 < INT_MAX);
     return x3d_coord_map.at(static_cast<int>(node + 1));
   }
 
   // matid data
-  NODISCARD std::string get_matid(size_t cell) const {
+  [[nodiscard]] std::string get_matid(size_t cell) const {
     Check(cell + 1 < INT_MAX);
     return x3d_matids.at(cell);
   }
 
   // accessors with deferred implementations
-  NODISCARD unsigned get_celltype(size_t cell) const override;
-  NODISCARD std::vector<unsigned> get_cellnodes(size_t cell) const override;
-  NODISCARD std::vector<unsigned> get_cellfacenodes(size_t cell, size_t face) const;
+  [[nodiscard]] unsigned get_celltype(size_t cell) const override;
+  [[nodiscard]] std::vector<unsigned> get_cellnodes(size_t cell) const override;
+  [[nodiscard]] std::vector<unsigned> get_cellfacenodes(size_t cell, size_t face) const;
 
   // data needed from x3d boundary file
-  NODISCARD size_t get_numsides() const override { return x3d_sidenode_map.size(); }
-  NODISCARD size_t get_sidetype(size_t side) const override {
+  [[nodiscard]] size_t get_numsides() const override { return x3d_sidenode_map.size(); }
+  [[nodiscard]] size_t get_sidetype(size_t side) const override {
     Check(side < INT_MAX);
     return x3d_sidenode_map.at(static_cast<int>(side)).size();
   }
-  NODISCARD unsigned get_sideflag(size_t side) const override {
+  [[nodiscard]] unsigned get_sideflag(size_t side) const override {
     Check(side < INT_MAX);
     return x3d_sideflag_map.at(static_cast<int>(side));
   }
-  NODISCARD std::vector<unsigned> get_sidenodes(size_t side) const override {
+  [[nodiscard]] std::vector<unsigned> get_sidenodes(size_t side) const override {
     Check(side < INT_MAX);
     return x3d_sidenode_map.at(static_cast<int>(side));
   }
-  NODISCARD const std::map<size_t, std::vector<unsigned>> &get_bc_node_map() const {
+  [[nodiscard]] const std::map<size_t, std::vector<unsigned>> &get_bc_node_map() const {
     return bc_node_map;
   }
 
@@ -155,7 +155,7 @@ private:
 
   template <typename KT> KT convert_key(const std::string &skey);
 
-  NODISCARD std::vector<unsigned> get_facenodes(size_t face) const;
+  [[nodiscard]] std::vector<unsigned> get_facenodes(size_t face) const;
 
   void read_bdy_files();
 };

@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Apr  2 15:57:11 2002
  * \brief  Ping Pong communication test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -159,9 +159,8 @@ void non_blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
 
   // assign on node 0
   if (rtt_c4::node() == 0) {
-    // post receives
-    // Test two forms of the receive_async command plus one deprecated
-    // form (namespace C4::)
+    // - post receives
+    // - Test two forms of the receive_async command plus one deprecated form (namespace C4::)
 
     brr = receive_async(&br, 1, 1);
     receive_async(crr, &cr, 1, 1);
@@ -178,8 +177,8 @@ void non_blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
     f = 1.5;
     d = 2.5;
 
-    // send out data - test two forms of the send_async command plus one
-    // deprecated form (namespace C4::)
+    // send out data - test two forms of the send_async command plus one deprecated form (namespace
+    // C4::)
     brs = send_async(&b, 1, 1);
     send_async(crs, &c, 1, 1);
     irs = send_async(&i, 1, 1);
@@ -329,8 +328,8 @@ void non_blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
 
 //------------------------------------------------------------------------------------------------//
 // Test the C4_Req.free() function.
-// After a asynchronous receive command is given, it can be terminated by
-// using the free() command.
+// - After a asynchronous receive command is given, it can be terminated by using the free()
+//   command.
 //------------------------------------------------------------------------------------------------//
 void tstC4_Req_free() {
 

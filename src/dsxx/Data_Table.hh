@@ -3,7 +3,7 @@
  * \file    Data_Table.hh
  * \author  Paul Henning
  * \brief   Declaration of class Data_Table
- * \note    Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note    Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 #ifndef dsxx_Data_Table_hh
 #define dsxx_Data_Table_hh
@@ -50,12 +50,12 @@ public:
   //! Access operator
   constexpr inline T const &operator[](const unsigned i) const;
   //! begin iterator
-  NODISCARD constexpr inline const_iterator begin() const { return d_begin; }
+  [[nodiscard]] constexpr inline const_iterator begin() const { return d_begin; }
   //! end iterator
-  NODISCARD constexpr inline const_iterator end() const { return d_end - 1; }
-  NODISCARD constexpr inline uint64_t size() const { return d_end - d_begin; }
-  NODISCARD constexpr inline T const &front() const;
-  NODISCARD constexpr inline T const &back() const;
+  [[nodiscard]] constexpr inline const_iterator end() const { return d_end - 1; }
+  [[nodiscard]] constexpr inline uint64_t size() const { return d_end - d_begin; }
+  [[nodiscard]] constexpr inline T const &front() const;
+  [[nodiscard]] constexpr inline T const &back() const;
   constexpr inline T *access();
 
 private:

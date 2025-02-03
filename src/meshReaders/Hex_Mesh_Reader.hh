@@ -4,7 +4,7 @@
  * \author John McGhee
  * \date   Tue Mar  7 08:38:04 2000
  * \brief  Header file for CIC-19 Hex format mesh reader.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_meshReaders_Hex_Mesh_Reader_hh
@@ -58,7 +58,7 @@ public:
   // ACCESSORS
 
   //! Returns the point coordinates.
-  NODISCARD std::vector<std::vector<double>> get_node_coords() const override {
+  [[nodiscard]] std::vector<std::vector<double>> get_node_coords() const override {
     return point_coords;
   }
 
@@ -66,13 +66,13 @@ public:
    * The Hex mesh format has no provision for labeling coordinate units Consequently, this method
    * always returns the default string: "unknown".
    */
-  NODISCARD std::string get_node_coord_units() const override { return "unknown"; }
+  [[nodiscard]] std::string get_node_coord_units() const override { return "unknown"; }
 
   /*!
    * The Hex mesh format has no provision for flagging nodes.  This method therefore always returns
    * a map with one entry which contains all the nodes.
    */
-  NODISCARD std::map<std::string, std::set<unsigned>> get_node_sets() const override {
+  [[nodiscard]] std::map<std::string, std::set<unsigned>> get_node_sets() const override {
     return node_sets;
   }
 
@@ -80,24 +80,24 @@ public:
    * There is no provision in the Hex format for naming a mesh.  This function always returns the
    * default string: "Untitled -- CIC-19 Hex Mesh"
    */
-  NODISCARD std::string get_title() const override { return "Untitled -- CIC-19 Hex Mesh"; }
+  [[nodiscard]] std::string get_title() const override { return "Untitled -- CIC-19 Hex Mesh"; }
 
-  NODISCARD std::vector<std::vector<unsigned>> get_element_nodes() const override;
+  [[nodiscard]] std::vector<std::vector<unsigned>> get_element_nodes() const override;
 
-  NODISCARD bool invariant() const override;
+  [[nodiscard]] bool invariant() const override;
 
-  NODISCARD std::map<std::string, std::set<unsigned>> get_element_sets() const override;
+  [[nodiscard]] std::map<std::string, std::set<unsigned>> get_element_sets() const override;
 
-  NODISCARD std::vector<rtt_mesh_element::Element_Definition::Element_Type>
+  [[nodiscard]] std::vector<rtt_mesh_element::Element_Definition::Element_Type>
   get_element_types() const override;
 
-  NODISCARD std::vector<rtt_mesh_element::Element_Definition::Element_Type>
+  [[nodiscard]] std::vector<rtt_mesh_element::Element_Definition::Element_Type>
   get_unique_element_types() const override;
 
-  NODISCARD size_t get_dims_ndim() const override { return ndim; }
+  [[nodiscard]] size_t get_dims_ndim() const override { return ndim; }
 
 private:
-  NODISCARD bool check_dims() const;
+  [[nodiscard]] bool check_dims() const;
 };
 
 } // end namespace rtt_meshReaders

@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Aug. 1 2023
  * \brief  Rep_Topology header file.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_Rep_Topology_hh
@@ -57,49 +57,49 @@ public:
   // >>> DERIVED INTERFACE
 
   //! Return the number of cells on a processor.
-  NODISCARD int64_t num_local_cells() const override { return Base::num_global_cells_d; }
+  [[nodiscard]] int64_t num_local_cells() const override { return Base::num_global_cells_d; }
 
-  NODISCARD bool valid_local_cell(int cell) const override {
+  [[nodiscard]] bool valid_local_cell(int cell) const override {
     Require(Base::num_global_cells_d < std::numeric_limits<int>::max());
     return (cell >= 1) && (cell <= static_cast<int>(Base::num_global_cells_d));
   }
 
   //! Get the global cell index on processor.
-  NODISCARD int64_t global_cell(size_t lcell) const override {
+  [[nodiscard]] int64_t global_cell(size_t lcell) const override {
     validate(lcell);
     return lcell;
   }
 
   //! Get the local cell index on processor.
-  NODISCARD int local_cell(int64_t gcell) const override {
+  [[nodiscard]] int local_cell(int64_t gcell) const override {
     validate(gcell);
     Check(gcell < INT32_MAX);
     return static_cast<int>(gcell);
   }
 
   //! Get the number of boundary cells on a processor.
-  NODISCARD size_t num_ghost_cells() const override { return 0; }
+  [[nodiscard]] size_t num_ghost_cells() const override { return 0; }
 
   //! Get the remote local cell index for a boundary cell.
-  NODISCARD int remote_local_cell(size_t /*c*/) const override {
+  [[nodiscard]] int remote_local_cell(size_t /*c*/) const override {
     Insist(0, "Illegal"); // LCOV_EXCL_LINE
     return 0;             // LCOV_EXCL_LINE
   }
 
   //! Get the remote processor id for a boundary cell.
-  NODISCARD int remote_proc(size_t /*c*/) const override {
+  [[nodiscard]] int remote_proc(size_t /*c*/) const override {
     Insist(0, "Illegal"); // LCOV_EXCL_LINE
     return 0;             // LCOV_EXCL_LINE
   }
 
   //! Get the global offset at a rank
-  NODISCARD int64_t get_global_offset(int /*rank*/) const override {
+  [[nodiscard]] int64_t get_global_offset(int /*rank*/) const override {
     Insist(0, "Illegal"); // LCOV_EXCL_LINE
     return 0;             // LCOV_EXCL_LINE
   }
 
   // Pack function.
-  NODISCARD packed_type pack() const override;
+  [[nodiscard]] packed_type pack() const override;
 
   // Diagnostics.
   void print(std::ostream &out) const override;

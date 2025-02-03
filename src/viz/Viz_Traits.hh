@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 17:10:54 2000
  * \brief  Viz_Traits header file.
- * \note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_viz_Viz_Traits_hh
@@ -81,24 +81,24 @@ public:
   }
 
   //! Row size accessor.
-  NODISCARD size_t nrows() const { return field.size(); }
+  [[nodiscard]] size_t nrows() const { return field.size(); }
 
   //! Column size accessor.
-  NODISCARD size_t ncols(size_t row) const {
+  [[nodiscard]] size_t ncols(size_t row) const {
     Require(row < field.size());
     return field[row].size();
   }
 
   //! Depth size accessor for 2D fields
   template <typename U = elementType, typename std::enable_if_t<std::is_pod<U>::value, bool> = true>
-  NODISCARD size_t ndpth(size_t /*row*/, size_t /*col*/) const {
+  [[nodiscard]] size_t ndpth(size_t /*row*/, size_t /*col*/) const {
     return 0;
   }
 
   //! Depth size accessor for 3D fields
   template <typename U = elementType,
             typename std::enable_if_t<!std::is_pod<U>::value, bool> = true>
-  NODISCARD size_t ndpth(size_t row, size_t col) const {
+  [[nodiscard]] size_t ndpth(size_t row, size_t col) const {
     Require(row < field.size());
     Require(col < field[row].size());
     return field[row][col].size();

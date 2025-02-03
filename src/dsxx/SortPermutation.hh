@@ -4,7 +4,7 @@
  * \author Randy M. Roberts
  * \date   Mon Feb 14 14:18:27 2000
  * \brief  SortPermutation class definition.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_SortPermutation_hh
@@ -109,7 +109,7 @@ private:
       return *this;
     }
 
-    NODISCARD const value_type &value() const { return *iters[pos]; }
+    [[nodiscard]] const value_type &value() const { return *iters[pos]; }
 
     operator SortPermutation::value_type() { return pos; } // NOLINT [hicpp-explicit-conversions]
   };
@@ -167,10 +167,10 @@ public:
   value_type operator[](unsigned i) const { return indexTable_m[i]; }
 
   //! Returns the begin const_iterator into the index table.
-  NODISCARD const_iterator begin() const { return indexTable_m.begin(); }
+  [[nodiscard]] const_iterator begin() const { return indexTable_m.begin(); }
 
   //! Returns the end const_iterator into the index table.
-  NODISCARD const_iterator end() const { return indexTable_m.end(); }
+  [[nodiscard]] const_iterator end() const { return indexTable_m.end(); }
 
   /*!
    * \brief Returns the i'th entry into the rank table.
@@ -186,16 +186,16 @@ public:
    * \endcode
    * results in sorted containing the sorted elements of [first, last).
    */
-  NODISCARD value_type inv(int i) const { return rankTable_m[i]; }
+  [[nodiscard]] value_type inv(int i) const { return rankTable_m[i]; }
 
   //! Returns the begin const_iterator into the rank table.
-  NODISCARD const_iterator inv_begin() const { return rankTable_m.begin(); }
+  [[nodiscard]] const_iterator inv_begin() const { return rankTable_m.begin(); }
 
   //! Returns the end const_iterator into the rank table.
-  NODISCARD const_iterator inv_end() const { return rankTable_m.end(); }
+  [[nodiscard]] const_iterator inv_end() const { return rankTable_m.end(); }
 
   //! Returns the size of the index and rank tables.
-  NODISCARD int size() const { return static_cast<int>(indexTable_m.size()); }
+  [[nodiscard]] int size() const { return static_cast<int>(indexTable_m.size()); }
 
 private:
   // IMPLEMENTATION

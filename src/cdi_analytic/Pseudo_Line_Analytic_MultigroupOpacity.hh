@@ -3,7 +3,7 @@
  * \file   cdi_analytic/Pseudo_Line_Analytic_MultigroupOpacity.hh
  * \author Kent G. Budge
  * \date   Tue Apr  5 08:36:13 MDT 2011
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Pseudo_Line_Analytic_MultigroupOpacity_hh
@@ -50,21 +50,21 @@ public:
   explicit Pseudo_Line_Analytic_MultigroupOpacity(const sf_char &packed);
 
   //! Get the group opacities.
-  NODISCARD sf_double getOpacity(double targetTemperature, double targetDensity) const override;
+  [[nodiscard]] sf_double getOpacity(double targetTemperature, double targetDensity) const override;
 
   //! Get the group opacity fields given a field of temperatures.
-  NODISCARD vf_double getOpacity(const sf_double &targetTemperature,
-                                 double targetDensity) const override;
+  [[nodiscard]] vf_double getOpacity(const sf_double &targetTemperature,
+                                     double targetDensity) const override;
 
   //! Get the group opacity fields given a field of densities.
-  NODISCARD vf_double getOpacity(double targetTemperature,
-                                 const sf_double &targetDensity) const override;
+  [[nodiscard]] vf_double getOpacity(double targetTemperature,
+                                     const sf_double &targetDensity) const override;
 
   //! Get the data description of the opacity.
-  NODISCARD std::string getDataDescriptor() const override;
+  [[nodiscard]] std::string getDataDescriptor() const override;
 
   //! Pack up the class for persistence.
-  NODISCARD sf_char pack() const override;
+  [[nodiscard]] sf_char pack() const override;
 };
 
 } // end namespace rtt_cdi_analytic

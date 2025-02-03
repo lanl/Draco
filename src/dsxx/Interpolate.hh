@@ -4,7 +4,7 @@
  * \author Kendra P. Long, Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Interpolation functions.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 #ifndef rtt_compton_tools_Interpolate_hh
 #define rtt_compton_tools_Interpolate_hh
@@ -15,12 +15,7 @@
 #include <limits>
 #include <vector>
 
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 namespace rtt_dsxx::interpolate {
-#else
-namespace rtt_dsxx {    // NOLINT
-namespace interpolate { // NOLINT
-#endif
 
 //! Perform a 3-d (trilinear) interpolation
 double linear_3d(double const x0, double const x1, double const y0, double const y1,
@@ -70,12 +65,7 @@ constexpr inline double linear_1d(double const x1, double const x2, double const
   return value;
 }
 
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 } // namespace rtt_dsxx::interpolate
-#else
-} // namespace interpolate
-} // namespace rtt_dsxx
-#endif
 
 #endif
 

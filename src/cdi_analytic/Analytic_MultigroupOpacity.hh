@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Nov 13 11:19:59 2001
  * \brief  Analytic_MultigroupOpacity class definition.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Analytic_MultigroupOpacity_hh
@@ -67,7 +67,7 @@ protected:
   explicit Analytic_MultigroupOpacity(const sf_char &packed);
 
   // Get the packed size of the object
-  NODISCARD unsigned packed_size() const;
+  [[nodiscard]] unsigned packed_size() const;
 
 public:
   // >>> ACCESSORS
@@ -81,64 +81,65 @@ public:
   Analytic_MultigroupOpacity &operator=(Analytic_MultigroupOpacity &&rhs) noexcept = delete;
 
   // Get the group opacities.
-  NODISCARD sf_double getOpacity(double targetTemperature, double targetDensity) const override = 0;
+  [[nodiscard]] sf_double getOpacity(double targetTemperature,
+                                     double targetDensity) const override = 0;
 
   // Get the group opacity fields given a field of temperatures.
-  NODISCARD vf_double getOpacity(const sf_double &targetTemperature,
-                                 double targetDensity) const override = 0;
+  [[nodiscard]] vf_double getOpacity(const sf_double &targetTemperature,
+                                     double targetDensity) const override = 0;
 
   // Get the group opacity fields given a field of densities.
-  NODISCARD vf_double getOpacity(double targetTemperature,
-                                 const sf_double &targetDensity) const override = 0;
+  [[nodiscard]] vf_double getOpacity(double targetTemperature,
+                                     const sf_double &targetDensity) const override = 0;
 
   //! Query to see if data is in tabular or functional form (false).
-  NODISCARD bool data_in_tabular_form() const override { return false; }
+  [[nodiscard]] bool data_in_tabular_form() const override { return false; }
 
   //! Query to get the reaction type.
-  NODISCARD rtt_cdi::Reaction getReactionType() const override { return reaction; }
+  [[nodiscard]] rtt_cdi::Reaction getReactionType() const override { return reaction; }
 
   //! Query for model type.
-  NODISCARD rtt_cdi::Model getModelType() const override { return model; }
+  [[nodiscard]] rtt_cdi::Model getModelType() const override { return model; }
 
   //! Return the energy policy descriptor (mg).
-  NODISCARD inline std::string getEnergyPolicyDescriptor() const override { return "mg"; }
+  [[nodiscard]] inline std::string getEnergyPolicyDescriptor() const override { return "mg"; }
 
   // Get the data description of the opacity.
-  NODISCARD std::string getDataDescriptor() const override = 0;
+  [[nodiscard]] std::string getDataDescriptor() const override = 0;
 
   // Get the name of the associated data file.
-  NODISCARD inline std::string getDataFilename() const override { return ""; }
+  [[nodiscard]] inline std::string getDataFilename() const override { return ""; }
 
   //! Get the temperature grid (size 0 for function-based analytic data).
-  NODISCARD sf_double getTemperatureGrid() const override { return sf_double(0); }
+  [[nodiscard]] sf_double getTemperatureGrid() const override { return sf_double(0); }
 
   //! Get the density grid (size 0 for function-based analytic data).
-  NODISCARD sf_double getDensityGrid() const override { return sf_double(0); }
+  [[nodiscard]] sf_double getDensityGrid() const override { return sf_double(0); }
 
   //! Get the group boundaries (keV) of the multigroup set.
-  NODISCARD sf_double getGroupBoundaries() const override { return group_boundaries; }
+  [[nodiscard]] sf_double getGroupBoundaries() const override { return group_boundaries; }
 
   //! Get the size of the temperature grid (size 0).
-  NODISCARD size_t getNumTemperatures() const override { return 0; }
+  [[nodiscard]] size_t getNumTemperatures() const override { return 0; }
 
   //! Get the size of the density grid (size 0).
-  NODISCARD size_t getNumDensities() const override { return 0; }
+  [[nodiscard]] size_t getNumDensities() const override { return 0; }
 
   //! Get the number of frequency group boundaries.
-  NODISCARD size_t getNumGroupBoundaries() const override { return group_boundaries.size(); }
+  [[nodiscard]] size_t getNumGroupBoundaries() const override { return group_boundaries.size(); }
 
   //! Get the number of frequency group boundaries.
-  NODISCARD size_t getNumGroups() const override { return group_boundaries.size() - 1; }
+  [[nodiscard]] size_t getNumGroups() const override { return group_boundaries.size() - 1; }
 
   // Pack the Analytic_MultigroupOpacity into a character string.
-  NODISCARD sf_char pack() const override = 0;
+  [[nodiscard]] sf_char pack() const override = 0;
 
   /*!
    * \brief Returns the general opacity model type, defined in OpacityCommon.hh
    *
    * Since this is an analytic model, return 1 (rtt_cdi::ANALYTIC_TYPE)
    */
-  NODISCARD rtt_cdi::OpacityModelType getOpacityModelType() const override {
+  [[nodiscard]] rtt_cdi::OpacityModelType getOpacityModelType() const override {
     return rtt_cdi::ANALYTIC_TYPE;
   }
 };

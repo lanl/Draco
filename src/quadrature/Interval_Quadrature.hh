@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  A class representing an interval Legendre quadrature set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_quadrature_Interval_Quadrature_hh
@@ -34,18 +34,18 @@ public:
 
   // ACCESSORS
 
-  NODISCARD Quadrature_Class quadrature_class() const override;
+  [[nodiscard]] Quadrature_Class quadrature_class() const override;
 
-  NODISCARD bool has_axis_assignments() const override;
+  [[nodiscard]] bool has_axis_assignments() const override;
 
-  NODISCARD double mu(unsigned const m) const {
+  [[nodiscard]] double mu(unsigned const m) const {
     Require(mu_.size() == sn_order());
     Require(m < mu_.size());
 
     return mu_[m];
   }
 
-  NODISCARD double wt(unsigned const m) const {
+  [[nodiscard]] double wt(unsigned const m) const {
     Require(wt_.size() == sn_order());
     Require(m < wt_.size());
 
@@ -58,19 +58,18 @@ protected:
   using Quadrature::create_ordinates_;
 
   //! Virtual hook for create_ordinate_set
-  NODISCARD std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/,
-                                                    double norm, unsigned mu_axis,
-                                                    unsigned eta_axis,
-                                                    bool include_starting_directions,
-                                                    bool include_extra_directions) const override;
+  [[nodiscard]] std::vector<Ordinate>
+  create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm, unsigned mu_axis,
+                    unsigned eta_axis, bool include_starting_directions,
+                    bool include_extra_directions) const override;
 
   //! Virtual hook for create_ordinate_set
-  NODISCARD std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/,
-                                                    double norm, bool include_starting_directions,
-                                                    bool include_extra_directions) const override;
+  [[nodiscard]] std::vector<Ordinate>
+  create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm,
+                    bool include_starting_directions, bool include_extra_directions) const override;
 
   //! Virtual hook for create_ordinate_set
-  NODISCARD virtual std::vector<Ordinate> create_level_ordinates_(double norm) const = 0;
+  [[nodiscard]] virtual std::vector<Ordinate> create_level_ordinates_(double norm) const = 0;
 
   // DATA
 

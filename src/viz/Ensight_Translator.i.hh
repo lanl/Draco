@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 16:36:10 2000
  * \brief  Ensight_Translator template definitions.
- * \note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2015-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include <map>
@@ -164,17 +164,10 @@ Ensight_Translator::Ensight_Translator(const std::string &prefix, std::string gd
  *           field types.
  * \sa Examples page for more details about how to do Ensight dumps.
  */
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 template <typename ISF, typename IVF, typename SSF, typename FVF>
 std::enable_if_t<std::is_integral_v<typename ISF::value_type> &&
                      std::is_unsigned_v<typename ISF::value_type>,
                  void>
-#else
-template <typename ISF, typename IVF, typename SSF, typename FVF>
-std::enable_if_t<std::is_integral<typename ISF::value_type>::value &&
-                     std::is_unsigned<typename ISF::value_type>::value,
-                 void>
-#endif
 Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &ipar_in,
                                  const ISF &iel_type, const ISF &cell_rgn_index,
                                  const FVF &pt_coor_in, const FVF &vrtx_data_in,
@@ -348,17 +341,10 @@ Ensight_Translator::ensight_dump(int icycle, double time, double dt, const IVF &
  *
  * \sa Examples page for more details about how to do Ensight dumps.
  */
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 template <typename ISF, typename IVF, typename FVF>
 std::enable_if_t<std::is_integral_v<typename ISF::value_type> &&
                      std::is_unsigned_v<typename ISF::value_type>,
                  void>
-#else
-template <typename ISF, typename IVF, typename FVF>
-std::enable_if_t<std::is_integral<typename ISF::value_type>::value &&
-                     std::is_unsigned<typename ISF::value_type>::value,
-                 void>
-#endif
 Ensight_Translator::write_part(uint32_t part_num, const std::string &part_name, const IVF &ipar_in,
                                const ISF &iel_type, const FVF &pt_coor_in, const FVF &vrtx_data_in,
                                const FVF &cell_data_in, const ISF &g_vrtx_indices,

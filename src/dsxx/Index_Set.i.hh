@@ -3,7 +3,7 @@
  * \file   dsxx/Index_Set.i.hh
  * \author Mike Buksas
  * \date   Thu Feb  2 10:01:46 2006
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_Index_Set_i_hh
@@ -56,7 +56,7 @@ inline bool Index_Set<D, OFFSET>::operator==(const Index_Set &rhs) const {
  */
 template <unsigned D, int OFFSET>
 template <typename IT>
-NODISCARD bool Index_Set<D, OFFSET>::indices_in_range(IT indices) const {
+[[nodiscard]] bool Index_Set<D, OFFSET>::indices_in_range(IT indices) const {
 
   int dimension = 0;
   for (unsigned index = 0; index < D; ++index, ++dimension)

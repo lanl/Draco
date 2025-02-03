@@ -3,7 +3,7 @@
  * \file   parser/Parse_Table.hh
  * \author Kent G. Budge
  * \brief  Definition of Keyword and Parse_Table.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Parse_Table_HH
@@ -186,10 +186,10 @@ public:
   // ACCESSORS
 
   //! Return the number of elements in the vector
-  NODISCARD std::vector<Keyword>::size_type size() const { return vec.size(); }
+  [[nodiscard]] std::vector<Keyword>::size_type size() const { return vec.size(); }
 
   //! Return the current parser options.
-  NODISCARD unsigned char get_flags() const { return flags_; }
+  [[nodiscard]] unsigned char get_flags() const { return flags_; }
 
   // SERVICES
 
@@ -200,7 +200,7 @@ public:
   Token parseforkeyword(Token_Stream &tokens) const;
 
   //! Check the class invariants
-  NODISCARD bool check_class_invariants() const;
+  [[nodiscard]] bool check_class_invariants() const;
 
 private:
   // TYPEDEFS AND ENUMERATIONS

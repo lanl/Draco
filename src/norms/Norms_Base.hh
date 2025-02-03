@@ -4,7 +4,7 @@
   \author Rob Lowrie
   \date   Fri Jan 14 13:01:19 2005
   \brief  Header file for Norms_Base.
-  \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+  \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_norms_Norms_Base_hh
@@ -70,19 +70,19 @@ public:
   // ACCESSORS
 
   /// Returns the current \f$ L_1 \f$ norm.
-  NODISCARD double L1() const {
+  [[nodiscard]] double L1() const {
     Require(d_sum_weights > 0.0);
     return d_sum_L1 / d_sum_weights;
   }
 
   /// Returns the current \f$ L_2 \f$ norm.
-  NODISCARD double L2() const {
+  [[nodiscard]] double L2() const {
     Require(d_sum_weights > 0.0);
     return std::sqrt(d_sum_L2 / d_sum_weights);
   }
 
   /// Returns the current \f$ L_{\infty} \f$ norm.
-  NODISCARD double Linf() const { return d_Linf; }
+  [[nodiscard]] double Linf() const { return d_Linf; }
 };
 
 } // namespace rtt_norms

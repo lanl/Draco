@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Aug 1 2023
  * \brief  Member definitions of class Parallel_Data_Operator
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef mesh_Parallel_Data_Operator_i_hh
@@ -215,8 +215,8 @@ public:
   }
 
   // C4_Req.complete should be const
-  NODISCARD bool complete() { return request.complete(); }
-  NODISCARD bool inuse() const { return request.inuse(); }
+  [[nodiscard]] bool complete() { return request.complete(); }
+  [[nodiscard]] bool inuse() const { return request.inuse(); }
 
   void post(int processor, int tag) {
     Check(data_size < INT32_MAX);
@@ -224,9 +224,9 @@ public:
   }
 
   T *get_data() { return data; }
-  NODISCARD T get_data(int c) const { return data[c]; }
+  [[nodiscard]] T get_data(int c) const { return data[c]; }
 
-  NODISCARD size_t size() const { return data_size; }
+  [[nodiscard]] size_t size() const { return data_size; }
 
   //! Copy constructor
   Data_Request(Data_Request const &rhs) : data(nullptr), data_size(rhs.data_size), request() {
@@ -286,7 +286,7 @@ public:
   T *get_data() { return data; }
   T &get_data(int c) { return data[c]; }
 
-  NODISCARD size_t size() const { return data_size; }
+  [[nodiscard]] size_t size() const { return data_size; }
 
 private:
   void assign(T *data_, size_t size) {

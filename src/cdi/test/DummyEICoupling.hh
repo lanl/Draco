@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   March 2019
  * \brief  DummyEICoupling class header file (derived from ../EICoupling)
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_DummyEICoupling_hh
@@ -66,19 +66,19 @@ public:
   // --------- //
 
   //! EICoupling accessor.
-  NODISCARD double getElectronIonCoupling(const double etemperature, const double itemperature,
-                                          const double density, const double w_e,
-                                          const double w_i) const override;
+  [[nodiscard]] double getElectronIonCoupling(const double etemperature, const double itemperature,
+                                              const double density, const double w_e,
+                                              const double w_i) const override;
 
   //! EICoupling accessor.
-  NODISCARD std::vector<double>
+  [[nodiscard]] std::vector<double>
   getElectronIonCoupling(const std::vector<double> &etemperature,
                          const std::vector<double> &itemperature,
                          const std::vector<double> &density, const std::vector<double> &w_e,
                          const std::vector<double> &w_i) const override;
 
   // Dummy pack function.
-  NODISCARD std::vector<char> pack() const override { return {}; }
+  [[nodiscard]] std::vector<char> pack() const override { return {}; }
 
 }; // end of class DummyEICoupling
 

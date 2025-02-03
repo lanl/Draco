@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Aug 24 13:13:46 2001
  * \brief  Analytic_Gray_Opacity class definition.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Analytic_Gray_Opacity_hh
@@ -79,58 +79,58 @@ public:
   explicit Analytic_Gray_Opacity(const sf_char &packed);
 
   // >>> ACCESSORS
-  NODISCARD const_SP_Model get_Analytic_Model() const { return analytic_model; }
+  [[nodiscard]] const_SP_Model get_Analytic_Model() const { return analytic_model; }
 
   // >>> INTERFACE SPECIFIED BY rtt_cdi::GrayOpacity
 
   // Get an opacity.
-  NODISCARD double getOpacity(double temperature, double density) const override;
+  [[nodiscard]] double getOpacity(double temperature, double density) const override;
 
   // Get an opacity field given a field of temperatures.
-  NODISCARD sf_double getOpacity(const sf_double &temperature, double density) const override;
+  [[nodiscard]] sf_double getOpacity(const sf_double &temperature, double density) const override;
 
   // Get an opacity field given a field of densities.
-  NODISCARD sf_double getOpacity(double temperature, const sf_double &density) const override;
+  [[nodiscard]] sf_double getOpacity(double temperature, const sf_double &density) const override;
 
   //! Query to see if data is in tabular or functional form (false).
-  NODISCARD bool data_in_tabular_form() const override { return false; }
+  [[nodiscard]] bool data_in_tabular_form() const override { return false; }
 
   //! Query to get the reaction type.
-  NODISCARD rtt_cdi::Reaction getReactionType() const override { return reaction; }
+  [[nodiscard]] rtt_cdi::Reaction getReactionType() const override { return reaction; }
 
   //! Query for model type.
-  NODISCARD rtt_cdi::Model getModelType() const override { return model; }
+  [[nodiscard]] rtt_cdi::Model getModelType() const override { return model; }
 
   // Return the energy policy (gray).
-  NODISCARD inline std_string getEnergyPolicyDescriptor() const override;
+  [[nodiscard]] inline std_string getEnergyPolicyDescriptor() const override;
 
   // Get the data description of the opacity.
-  NODISCARD inline std_string getDataDescriptor() const override;
+  [[nodiscard]] inline std_string getDataDescriptor() const override;
 
   // Get the name of the associated data file.
-  NODISCARD inline std_string getDataFilename() const override;
+  [[nodiscard]] inline std_string getDataFilename() const override;
 
   //! Get the temperature grid (size 0 for function-based analytic data).
-  NODISCARD sf_double getTemperatureGrid() const override { return sf_double(0); }
+  [[nodiscard]] sf_double getTemperatureGrid() const override { return sf_double(0); }
 
   //! Get the density grid (size 0 for function-based analytic data).
-  NODISCARD sf_double getDensityGrid() const override { return sf_double(0); }
+  [[nodiscard]] sf_double getDensityGrid() const override { return sf_double(0); }
 
   //! Get the size of the temperature grid (size 0).
-  NODISCARD size_t getNumTemperatures() const override { return 0; }
+  [[nodiscard]] size_t getNumTemperatures() const override { return 0; }
 
   //! Get the size of the density grid (size 0).
-  NODISCARD size_t getNumDensities() const override { return 0; }
+  [[nodiscard]] size_t getNumDensities() const override { return 0; }
 
   // Pack the Analytic_Gray_Opacity into a character string.
-  NODISCARD sf_char pack() const override;
+  [[nodiscard]] sf_char pack() const override;
 
   /*!
    * \brief Returns the general opacity model type, defined in OpacityCommon.hh
    *
    * Since this is an analytic model, return 1 (rtt_cdi::ANALYTIC_TYPE)
    */
-  NODISCARD rtt_cdi::OpacityModelType getOpacityModelType() const override {
+  [[nodiscard]] rtt_cdi::OpacityModelType getOpacityModelType() const override {
     return rtt_cdi::ANALYTIC_TYPE;
   }
 };

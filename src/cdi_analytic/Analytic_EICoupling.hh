@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   March 2019
  * \brief  Analytic_EICoupling class definition.
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Analytic_EICoupling_hh
@@ -59,22 +59,22 @@ public:
   explicit Analytic_EICoupling(const sf_char &packed);
 
   // >>> ACCESSORS
-  NODISCARD const_SP_Model get_Analytic_Model() const { return analytic_model; }
+  [[nodiscard]] const_SP_Model get_Analytic_Model() const { return analytic_model; }
 
   // >>> INTERFACE SPECIFIED BY rtt_cdi::EICoupling
 
   // Get electron ion coupling.
-  NODISCARD double getElectronIonCoupling(const double eTemperature, const double iTemperature,
-                                          const double density, const double w_e,
-                                          const double w_i) const override;
+  [[nodiscard]] double getElectronIonCoupling(const double eTemperature, const double iTemperature,
+                                              const double density, const double w_e,
+                                              const double w_i) const override;
 
-  NODISCARD sf_double getElectronIonCoupling(const sf_double &vetemperature,
-                                             const sf_double &vitemperature,
-                                             const sf_double &vdensity, const sf_double &vw_e,
-                                             const sf_double &vw_i) const override;
+  [[nodiscard]] sf_double getElectronIonCoupling(const sf_double &vetemperature,
+                                                 const sf_double &vitemperature,
+                                                 const sf_double &vdensity, const sf_double &vw_e,
+                                                 const sf_double &vw_i) const override;
 
   // Pack the Analytic_EICoupling into a character string.
-  NODISCARD sf_char pack() const override;
+  [[nodiscard]] sf_char pack() const override;
 };
 
 } // end namespace rtt_cdi_analytic

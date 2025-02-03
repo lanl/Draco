@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2019 Nov 4
  * \brief  NDI_Base class definition.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef cdi_ndi_NDI_Base_hh
@@ -76,13 +76,13 @@ public:
   NDI_Base &operator=(NDI_Base &&rhs) noexcept = delete;
 
   //! Get the name of the gendir file
-  NODISCARD inline std::string get_gendir() const & { return gendir; }
+  [[nodiscard]] inline std::string get_gendir() const & { return gendir; }
 
   //! Get the dataset
-  NODISCARD inline std::string get_dataset() const & { return dataset; }
+  [[nodiscard]] inline std::string get_dataset() const & { return dataset; }
 
   //! Get the library
-  NODISCARD inline std::string get_library() const & { return library; }
+  [[nodiscard]] inline std::string get_library() const & { return library; }
 
   // >> Non-interacting helper functions.
 

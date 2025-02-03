@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 17:35:07 2002
  * \brief  Define class Timer, a POSIX standard timer.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_Timer_hh
@@ -134,7 +134,7 @@ private:
   int num_intervals{0};
 
   //! determine if MPI Wtime is available.
-  NODISCARD bool setIsMPIWtimeAvailable() const;
+  [[nodiscard]] bool setIsMPIWtimeAvailable() const;
 
 public:
   Timer(); //! default constructor
@@ -146,40 +146,40 @@ public:
   virtual ~Timer() = default;
   inline void start();
   inline void stop();
-  NODISCARD inline double wall_clock() const;
-  NODISCARD inline double system_cpu() const;
-  NODISCARD inline double user_cpu() const;
-  NODISCARD inline double posix_err() const;
+  [[nodiscard]] inline double wall_clock() const;
+  [[nodiscard]] inline double system_cpu() const;
+  [[nodiscard]] inline double user_cpu() const;
+  [[nodiscard]] inline double posix_err() const;
 
-  NODISCARD bool on() const { return timer_on; }
+  [[nodiscard]] bool on() const { return timer_on; }
 
   //! Return the wall clock time in seconds, summed over all intervals.
-  NODISCARD double sum_wall_clock() const {
+  [[nodiscard]] double sum_wall_clock() const {
     Require(!timer_on);
     return sum_wall;
   }
 
   //! Return the system cpu time in seconds, summed over all intervals.
-  NODISCARD double sum_system_cpu() const {
+  [[nodiscard]] double sum_system_cpu() const {
     Require(!timer_on);
     return sum_system;
   }
 
   //! Return the user cpu time in seconds, summed over all intervals.
-  NODISCARD double sum_user_cpu() const {
+  [[nodiscard]] double sum_user_cpu() const {
     Require(!timer_on);
     return sum_user;
   }
 
   //! Return the number of time intervals used in the sums.
-  NODISCARD int intervals() const {
+  [[nodiscard]] int intervals() const {
     Require(!timer_on);
     return num_intervals;
   }
 
-  NODISCARD long long sum_cache_misses() const { return 0; }
-  NODISCARD long long sum_cache_hits() const { return 0; }
-  NODISCARD long long sum_floating_operations() const { return 0; }
+  [[nodiscard]] long long sum_cache_misses() const { return 0; }
+  [[nodiscard]] long long sum_cache_hits() const { return 0; }
+  [[nodiscard]] long long sum_floating_operations() const { return 0; }
 
   inline void reset();
   static void pause(double const pauseSeconds);

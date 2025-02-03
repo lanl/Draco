@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Mon Nov 8 11:17:12 2004
  * \brief  Provide declaration of templatized KroneckerDelta function.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef sf_KroneckerDelta_hh
@@ -23,9 +23,6 @@ namespace rtt_sf {
  * \param[in] offset
  * \return 1 if test_value == offset, otherwise return 0;
  */
-
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
-
 template <typename T>
 unsigned int
 kronecker_delta(T const test_value, T const offset,
@@ -40,25 +37,6 @@ kronecker_delta(T const test_value, T const offset,
   T const eps = std::numeric_limits<T>::epsilon();
   return rtt_dsxx::soft_equiv(test_value, offset, eps) ? 1 : 0;
 }
-
-#else
-
-template <typename T>
-unsigned int
-kronecker_delta(T const test_value, T const offset,
-                typename std::enable_if_t<std::is_integral<T>::value> * /*unused*/ = nullptr) {
-  return (test_value == offset) ? 1 : 0;
-}
-
-template <typename T>
-unsigned int kronecker_delta(
-    T const test_value, T const offset,
-    typename std::enable_if_t<std::is_floating_point<T>::value> * /*unused*/ = nullptr) {
-  T const eps = std::numeric_limits<T>::epsilon();
-  return rtt_dsxx::soft_equiv(test_value, offset, eps) ? 1 : 0;
-}
-
-#endif
 
 } // end namespace rtt_sf
 

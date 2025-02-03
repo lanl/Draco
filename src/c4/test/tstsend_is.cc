@@ -4,14 +4,13 @@
  * \author Kelly Thompson
  * \date   Friday, Dec 07, 2012, 14:02 pm
  * \brief  Unit tests for rtt_c4::send_is()
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
 #include "dsxx/Release.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-#include "dsxx/config.h"
 #include "c4/C4_Functions.hh"
 #include "c4/C4_Req.hh"
 #include "c4/ParallelUnitTest.hh"
@@ -88,13 +87,13 @@ public:
 
 #endif
 
-  NODISCARD int get_int1() const { return my_ints[0]; }
-  NODISCARD int get_int2() const { return my_ints[1]; }
-  NODISCARD int get_int3() const { return my_ints[2]; }
-  NODISCARD double get_double1() const { return my_doubles[0]; }
-  NODISCARD double get_double2() const { return my_doubles[1]; }
-  NODISCARD long get_long1() const { return my_longs[0]; }
-  NODISCARD long get_long2() const { return my_longs[1]; }
+  [[nodiscard]] int get_int1() const { return my_ints[0]; }
+  [[nodiscard]] int get_int2() const { return my_ints[1]; }
+  [[nodiscard]] int get_int3() const { return my_ints[2]; }
+  [[nodiscard]] double get_double1() const { return my_doubles[0]; }
+  [[nodiscard]] double get_double2() const { return my_doubles[1]; }
+  [[nodiscard]] long get_long1() const { return my_longs[0]; }
+  [[nodiscard]] long get_long2() const { return my_longs[1]; }
 
 private:
   std::array<int, 3> my_ints;

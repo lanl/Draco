@@ -2,7 +2,7 @@
 /*!
  * \file  dsxx/SystemCall.hh
  * \brief Wrapper for system calls. Hide differences between Unix/Windows system calls.
- * \note  Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note  Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_SystemCall_hh
@@ -178,8 +178,8 @@ private:
 
   /* Private accessors */
 
-  NODISCARD size_t machIdleTime(CPUData const &c) const { return c.times[3] + c.times[4]; }
-  NODISCARD size_t machActiveTime(CPUData const &c) const {
+  [[nodiscard]] size_t machIdleTime(CPUData const &c) const { return c.times[3] + c.times[4]; }
+  [[nodiscard]] size_t machActiveTime(CPUData const &c) const {
     return c.times[0] + c.times[1] + c.times[2] + c.times[5] + c.times[6] + c.times[7] +
            c.times[8] + c.times[9];
   }

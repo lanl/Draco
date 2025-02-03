@@ -1,7 +1,7 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   config/compilerEnv.cmake
 # brief  Default CMake build parameters
-# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 include_guard(GLOBAL)
@@ -1020,7 +1020,7 @@ function(dbssetupstdtargetprops)
 
   # Apply these properties to all targets (libraries, executables)
   # cmake-format: off
-  set(Draco_CXX_LANGUAGE_STANDARD 14 CACHE STRING "Target language standard")
+  set(Draco_CXX_LANGUAGE_STANDARD 17 CACHE STRING "Target language standard")
   set_property(CACHE Draco_CXX_LANGUAGE_STANDARD PROPERTY STRINGS 98 11 14 17 20 23 26)
   # Intel only supports C11 (not C17).
   set(Draco_C_LANGUAGE_STANDARD 11 CACHE STRING "Target language standard")

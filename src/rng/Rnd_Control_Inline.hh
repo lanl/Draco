@@ -3,7 +3,7 @@
  * \file   rng/Rnd_Control_Inline.hh
  * \author Paul Henning
  * \brief  Rnd_Control header file.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_rng_Rnd_Control_Inline_hh
@@ -44,7 +44,7 @@ public:
   }
 
   //! Return the next available stream number.
-  NODISCARD uint64_t get_num() const { return d_streamnum; }
+  [[nodiscard]] uint64_t get_num() const { return d_streamnum; }
 
   //! Reset the stream number.
   void set_num(const uint64_t num) {
@@ -54,10 +54,10 @@ public:
   }
 
   //! Return the seed value.
-  NODISCARD uint32_t get_seed() const { return d_seed; }
+  [[nodiscard]] uint32_t get_seed() const { return d_seed; }
 
   //! Return the maximum number of streams allowed.
-  NODISCARD uint64_t get_max_streams() const { return d_max_streams; }
+  [[nodiscard]] uint64_t get_max_streams() const { return d_max_streams; }
 
   GPU_HOST_DEVICE
   inline void initialize(const uint64_t snum, Counter_RNG &cbrng);

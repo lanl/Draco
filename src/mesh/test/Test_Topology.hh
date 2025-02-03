@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Nov. 2023
  * \brief  Build a DD Topology for testing.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_test_Test_Topology_hh
@@ -28,16 +28,16 @@ namespace rtt_mesh_test {
 class One_Proc {
 public:
   One_Proc() = default;
-  NODISCARD int decomposition_scheme() const;
-  NODISCARD int get_num_global_cells() const { return 6; }
-  NODISCARD int get_num_bnd_cells() const { return 0; }
-  NODISCARD const int *get_bnd_cells() const { return nullptr; }
-  NODISCARD const int *get_bnd_procs() const { return nullptr; }
-  NODISCARD const int *get_full_active() const { return nullptr; }
-  NODISCARD const int *get_active_full() const { return nullptr; }
-  NODISCARD int get_num_cells() const { return 0; }
-  NODISCARD int get_num_full_cells() const { return 0; }
-  NODISCARD bool has_ghost_cells() const { return get_num_full_cells() != 0; }
+  [[nodiscard]] int decomposition_scheme() const;
+  [[nodiscard]] int get_num_global_cells() const { return 6; }
+  [[nodiscard]] int get_num_bnd_cells() const { return 0; }
+  [[nodiscard]] const int *get_bnd_cells() const { return nullptr; }
+  [[nodiscard]] const int *get_bnd_procs() const { return nullptr; }
+  [[nodiscard]] const int *get_full_active() const { return nullptr; }
+  [[nodiscard]] const int *get_active_full() const { return nullptr; }
+  [[nodiscard]] int get_num_cells() const { return 0; }
+  [[nodiscard]] int get_num_full_cells() const { return 0; }
+  [[nodiscard]] bool has_ghost_cells() const { return get_num_full_cells() != 0; }
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -59,22 +59,22 @@ private:
 
 public:
   Two_Proc();
-  NODISCARD int decomposition_scheme() const;
-  NODISCARD int get_num_global_cells() const { return 15; }
-  NODISCARD int get_num_bnd_cells() const;
-  NODISCARD const int *get_bnd_cells() const { return &bnd_cells[0]; }
-  NODISCARD const int *get_bnd_procs() const { return &bnd_procs[0]; }
-  NODISCARD const int *get_full_active() const { return &full_active[0]; }
-  NODISCARD const int64_t *get_active_full() const { return &active_full[0]; }
-  NODISCARD const int *get_active_full_int() const { return &active_full_int[0]; }
-  NODISCARD int get_num_cells() const;
-  NODISCARD int get_num_full_cells() const;
-  NODISCARD bool has_ghost_cells() const { return get_num_full_cells() != 0; }
+  [[nodiscard]] int decomposition_scheme() const;
+  [[nodiscard]] int get_num_global_cells() const { return 15; }
+  [[nodiscard]] int get_num_bnd_cells() const;
+  [[nodiscard]] const int *get_bnd_cells() const { return &bnd_cells[0]; }
+  [[nodiscard]] const int *get_bnd_procs() const { return &bnd_procs[0]; }
+  [[nodiscard]] const int *get_full_active() const { return &full_active[0]; }
+  [[nodiscard]] const int64_t *get_active_full() const { return &active_full[0]; }
+  [[nodiscard]] const int *get_active_full_int() const { return &active_full_int[0]; }
+  [[nodiscard]] int get_num_cells() const;
+  [[nodiscard]] int get_num_full_cells() const;
+  [[nodiscard]] bool has_ghost_cells() const { return get_num_full_cells() != 0; }
 
-  NODISCARD const int *get_num_cells_across_face() const;
-  NODISCARD const int64_t *get_cells_across_face() const;
-  NODISCARD const double *get_r_dimensions() const;
-  NODISCARD const double *get_z_dimensions() const;
+  [[nodiscard]] const int *get_num_cells_across_face() const;
+  [[nodiscard]] const int64_t *get_cells_across_face() const;
+  [[nodiscard]] const double *get_r_dimensions() const;
+  [[nodiscard]] const double *get_z_dimensions() const;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -87,15 +87,15 @@ private:
 
 public:
   Two_Proc_NGC();
-  NODISCARD int decomposition_scheme() const;
-  NODISCARD int get_num_global_cells() const { return 15; }
-  NODISCARD int get_num_bnd_cells() const;
-  NODISCARD const int *get_bnd_cells() const { return &bnd_cells[0]; }
-  NODISCARD const int *get_bnd_procs() const { return &bnd_procs[0]; }
-  NODISCARD const int *get_full_active() const { return nullptr; }
-  NODISCARD int get_num_cells() const;
-  NODISCARD int get_num_full_cells() const { return 0; }
-  NODISCARD bool has_ghost_cells() const { return get_num_full_cells() != 0; }
+  [[nodiscard]] int decomposition_scheme() const;
+  [[nodiscard]] int get_num_global_cells() const { return 15; }
+  [[nodiscard]] int get_num_bnd_cells() const;
+  [[nodiscard]] const int *get_bnd_cells() const { return &bnd_cells[0]; }
+  [[nodiscard]] const int *get_bnd_procs() const { return &bnd_procs[0]; }
+  [[nodiscard]] const int *get_full_active() const { return nullptr; }
+  [[nodiscard]] int get_num_cells() const;
+  [[nodiscard]] int get_num_full_cells() const { return 0; }
+  [[nodiscard]] bool has_ghost_cells() const { return get_num_full_cells() != 0; }
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -119,22 +119,22 @@ public:
   Four_Proc();
 
   // Topology builder interface.
-  NODISCARD int decomposition_scheme() const;
-  NODISCARD int get_num_global_cells() const { return 18; }
-  NODISCARD int get_num_bnd_cells() const;
-  NODISCARD const int *get_bnd_cells() const { return &bnd_cells[0]; }
-  NODISCARD const int *get_bnd_procs() const { return &bnd_procs[0]; }
-  NODISCARD const int *get_full_active() const { return &full_active[0]; }
-  NODISCARD const int64_t *get_active_full() const { return &active_full[0]; }
-  NODISCARD const int *get_active_full_int() const { return &active_full_int[0]; }
-  NODISCARD int get_num_full_cells() const;
-  NODISCARD bool has_ghost_cells() const { return get_num_full_cells() != 0; }
+  [[nodiscard]] int decomposition_scheme() const;
+  [[nodiscard]] int get_num_global_cells() const { return 18; }
+  [[nodiscard]] int get_num_bnd_cells() const;
+  [[nodiscard]] const int *get_bnd_cells() const { return &bnd_cells[0]; }
+  [[nodiscard]] const int *get_bnd_procs() const { return &bnd_procs[0]; }
+  [[nodiscard]] const int *get_full_active() const { return &full_active[0]; }
+  [[nodiscard]] const int64_t *get_active_full() const { return &active_full[0]; }
+  [[nodiscard]] const int *get_active_full_int() const { return &active_full_int[0]; }
+  [[nodiscard]] int get_num_full_cells() const;
+  [[nodiscard]] bool has_ghost_cells() const { return get_num_full_cells() != 0; }
 
-  NODISCARD int get_num_cells() const;
-  NODISCARD const int *get_num_cells_across_face() const;
-  NODISCARD const int64_t *get_cells_across_face() const;
-  NODISCARD const double *get_r_dimensions() const;
-  NODISCARD const double *get_z_dimensions() const;
+  [[nodiscard]] int get_num_cells() const;
+  [[nodiscard]] const int *get_num_cells_across_face() const;
+  [[nodiscard]] const int64_t *get_cells_across_face() const;
+  [[nodiscard]] const double *get_r_dimensions() const;
+  [[nodiscard]] const double *get_z_dimensions() const;
 };
 
 //================================================================================================//

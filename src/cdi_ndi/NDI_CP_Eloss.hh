@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2020 Jun 3
  * \brief  NDI_CP_Eloss class definition.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef cdi_ndi_NDI_CP_Eloss_hh
@@ -64,32 +64,32 @@ public:
   // >>> ACCESSORS
 
   //! Get a stopping power.
-  NODISCARD double getEloss(const double temperature, const double density,
-                            const double partSpeed) const override;
+  [[nodiscard]] double getEloss(const double temperature, const double density,
+                                const double partSpeed) const override;
 
   //! Query to see if data is in tabular or functional form (true)
   static constexpr bool is_data_in_tabular_form() { return true; }
 
   //! Get the material temperature grid.
-  NODISCARD sf_double getTemperatureGrid() const override { return temperatures; }
+  [[nodiscard]] sf_double getTemperatureGrid() const override { return temperatures; }
 
   //! Get the material density grid.
-  NODISCARD sf_double getDensityGrid() const override { return densities; }
+  [[nodiscard]] sf_double getDensityGrid() const override { return densities; }
 
   //! Get the projectile energy grid.
-  NODISCARD sf_double getEnergyGrid() const override { return energies; }
+  [[nodiscard]] sf_double getEnergyGrid() const override { return energies; }
 
   //! Get the number of material temperature grid points.
-  NODISCARD size_t getNumTemperatures() const override { return n_temperature; }
+  [[nodiscard]] size_t getNumTemperatures() const override { return n_temperature; }
 
   //! Get the number of material density grid points.
-  NODISCARD size_t getNumDensities() const override { return n_density; }
+  [[nodiscard]] size_t getNumDensities() const override { return n_density; }
 
   //! Get the number of projectile energy grid points.
-  NODISCARD size_t getNumEnergies() const override { return n_energy; }
+  [[nodiscard]] size_t getNumEnergies() const override { return n_energy; }
 
   //! Get the general eloss model type
-  NODISCARD rtt_cdi::CPModelType getModelType() const {
+  [[nodiscard]] rtt_cdi::CPModelType getModelType() const {
     return rtt_cdi::CPModelType::TABULAR_ETYPE;
   }
 
@@ -130,7 +130,7 @@ private:
   sf_double stopping_data_1d{};
 
   //! 3D indexing of 1D stopping power data
-  NODISCARD inline double get_stopping_data(int i_e, int i_d, int i_t) const {
+  [[nodiscard]] inline double get_stopping_data(int i_e, int i_d, int i_t) const {
     return stopping_data_1d[i_t + n_temperature * (i_d + n_density * i_e)];
   }
 };

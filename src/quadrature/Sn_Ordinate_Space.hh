@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Mon Mar 26 16:11:19 2007
  * \brief  Definition of class Sn_Ordinate_Space
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_Sn_Ordinate_Space_hh
@@ -37,17 +37,17 @@ public:
 
   // ACCESSORS
 
-  NODISCARD bool check_class_invariants() const;
+  [[nodiscard]] bool check_class_invariants() const;
 
   // SERVICES
 
-  NODISCARD QIM quadrature_interpolation_model() const override;
+  [[nodiscard]] QIM quadrature_interpolation_model() const override;
 
   //! Return the discrete to moment transform matrix
-  NODISCARD std::vector<double> D() const override;
+  [[nodiscard]] std::vector<double> D() const override;
 
   //! Return the moment to discrete transform matrix
-  NODISCARD std::vector<double> M() const override;
+  [[nodiscard]] std::vector<double> M() const override;
 
 protected:
   // IMPLEMENTATION

@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Dec 21 14:20:03 2004
  * \brief  Declaration file for the class rtt_quadrature::Ordinate.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_quadrature_Ordinate_hh
@@ -47,14 +47,14 @@ public:
 
   // Accessors
 
-  NODISCARD double mu() const { return mu_; }
-  NODISCARD double eta() const { return eta_; }
-  NODISCARD double xi() const { return xi_; }
-  NODISCARD double wt() const { return wt_; }
+  [[nodiscard]] double mu() const { return mu_; }
+  [[nodiscard]] double eta() const { return eta_; }
+  [[nodiscard]] double xi() const { return xi_; }
+  [[nodiscard]] double wt() const { return wt_; }
 
   void set_wt(double const wt) { wt_ = wt; }
 
-  NODISCARD double const *cosines() const {
+  [[nodiscard]] double const *cosines() const {
     // This is a little crufty, but guaranteed to work according to C++ object layout rules.
     return &mu_;
   }

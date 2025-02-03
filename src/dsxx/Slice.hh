@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Thu Jul  8 08:06:53 2004
  * \brief  Definition of Slice template
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef container_Slice_hh
@@ -49,9 +49,9 @@ public:
     using pointer = typename traits::pointer;
     using reference = typename traits::reference;
 
-    NODISCARD Ran first() const { return first_; }
-    NODISCARD difference_type offset() const { return offset_; }
-    NODISCARD size_type stride() const { return stride_; }
+    [[nodiscard]] Ran first() const { return first_; }
+    [[nodiscard]] difference_type offset() const { return offset_; }
+    [[nodiscard]] size_type stride() const { return stride_; }
 
     iterator &operator++() {
       offset_ += stride_;
@@ -107,9 +107,9 @@ public:
     using pointer = typename traits::pointer;
     using reference = typename traits::reference;
 
-    NODISCARD Ran first() const { return first_; }
-    NODISCARD difference_type offset() const { return offset_; }
-    NODISCARD size_type stride() const { return stride_; }
+    [[nodiscard]] Ran first() const { return first_; }
+    [[nodiscard]] difference_type offset() const { return offset_; }
+    [[nodiscard]] size_type stride() const { return stride_; }
 
     const_iterator &operator++() {
       offset_ += stride_;
@@ -201,14 +201,16 @@ public:
   // ACCESSORS
 
   iterator begin() { return iterator(first, 0, stride); }
-  NODISCARD const_iterator begin() const { return const_iterator(first, 0, stride); }
+  [[nodiscard]] const_iterator begin() const { return const_iterator(first, 0, stride); }
   iterator end() { return iterator(first, length * stride, stride); }
-  NODISCARD const_iterator end() const { return const_iterator(first, length * stride, stride); }
+  [[nodiscard]] const_iterator end() const {
+    return const_iterator(first, length * stride, stride);
+  }
 
   reverse_iterator rbegin();
-  NODISCARD const_reverse_iterator rbegin() const;
+  [[nodiscard]] const_reverse_iterator rbegin() const;
   reverse_iterator rend();
-  NODISCARD const_reverse_iterator rend() const;
+  [[nodiscard]] const_reverse_iterator rend() const;
 
   reference operator[](size_type n) {
     Require(n < size());
@@ -220,16 +222,16 @@ public:
   }
 
   reference at(size_type n);
-  NODISCARD const_reference at(size_type n) const;
+  [[nodiscard]] const_reference at(size_type n) const;
 
   reference front();
-  NODISCARD const_reference front() const { return first[0]; }
+  [[nodiscard]] const_reference front() const { return first[0]; }
   reference back();
-  NODISCARD const_reference back() const { return first[stride * (size() - 1)]; }
+  [[nodiscard]] const_reference back() const { return first[stride * (size() - 1)]; }
 
-  NODISCARD size_type size() const { return length; }
-  NODISCARD bool empty() const { return size() == 0; }
-  NODISCARD size_type max_size() const;
+  [[nodiscard]] size_type size() const { return length; }
+  [[nodiscard]] bool empty() const { return size() == 0; }
+  [[nodiscard]] size_type max_size() const;
 
 private:
   // DATA

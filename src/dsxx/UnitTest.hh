@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Thu May 18 15:46:19 2006
  * \brief  Provide some common functions for unit testing within Draco
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_UnitTest_hh
@@ -120,13 +120,13 @@ public:
     return;
   }
 
-  NODISCARD bool dbcRequire() const { return m_dbcRequire; }
-  NODISCARD bool dbcCheck() const { return m_dbcCheck; }
-  NODISCARD bool dbcEnsure() const { return m_dbcEnsure; }
-  NODISCARD bool dbcNothrow() const { return m_dbcNothrow; }
-  NODISCARD bool dbcOn() const { return m_dbcRequire || m_dbcCheck || m_dbcEnsure; }
-  NODISCARD std::string getTestPath() const { return testPath; }
-  NODISCARD std::string getTestName() const { return testName; }
+  [[nodiscard]] bool dbcRequire() const { return m_dbcRequire; }
+  [[nodiscard]] bool dbcCheck() const { return m_dbcCheck; }
+  [[nodiscard]] bool dbcEnsure() const { return m_dbcEnsure; }
+  [[nodiscard]] bool dbcNothrow() const { return m_dbcNothrow; }
+  [[nodiscard]] bool dbcOn() const { return m_dbcRequire || m_dbcCheck || m_dbcEnsure; }
+  [[nodiscard]] std::string getTestPath() const { return testPath; }
+  [[nodiscard]] std::string getTestName() const { return testName; }
   /*!
    * \brief Returns the path of the test binary directory (useful for locating input files).
    *
@@ -187,7 +187,7 @@ public:
 
 protected:
   // IMPLEMENTATION
-  NODISCARD std::string resultMessage() const;
+  [[nodiscard]] std::string resultMessage() const;
 
   // DATA
 

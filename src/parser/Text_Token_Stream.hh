@@ -3,7 +3,7 @@
  * \file   parser/Text_Token_Stream.hh
  * \author Kent G. Budge
  * \brief  Definition of the Text_Token_Stream class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Text_Token_Stream_HH
@@ -31,18 +31,18 @@ public:
   // ACCESSORS
 
   //! Return the current line in the text stream.
-  NODISCARD unsigned line() const {
+  [[nodiscard]] unsigned line() const {
     Ensure(line_ > 0);
     return line_;
   }
 
-  NODISCARD bool no_nonbreaking_ws() const { return no_nonbreaking_ws_; }
+  [[nodiscard]] bool no_nonbreaking_ws() const { return no_nonbreaking_ws_; }
 
   //! Return the current set of whitespace characters.
-  NODISCARD std::set<char> const &whitespace() const { return whitespace_; }
+  [[nodiscard]] std::set<char> const &whitespace() const { return whitespace_; }
 
   //! Check the class invariants.
-  NODISCARD bool check_class_invariants() const;
+  [[nodiscard]] bool check_class_invariants() const;
 
   // MANIPULATORS
 
@@ -51,10 +51,10 @@ public:
   // SERVICES
 
   //! Does the Token_Stream consider \c c to be whitespace?
-  NODISCARD bool is_whitespace(char c) const;
+  [[nodiscard]] bool is_whitespace(char c) const;
 
   //! Does the Token_Stream consider \e c to be non-breaking
-  NODISCARD bool is_nb_whitespace(char c) const;
+  [[nodiscard]] bool is_nb_whitespace(char c) const;
 
   // CONST DATA
 
@@ -79,9 +79,9 @@ protected:
   //! Move one or more characters from the text stream into the character buffer.
   virtual void fill_character_buffer_() = 0;
 
-  NODISCARD virtual bool error_() const = 0;
-  NODISCARD virtual bool end_() const = 0;
-  NODISCARD virtual std::string location_() const = 0;
+  [[nodiscard]] virtual bool error_() const = 0;
+  [[nodiscard]] virtual bool end_() const = 0;
+  [[nodiscard]] virtual std::string location_() const = 0;
 
   //! Pop a character off the internal buffer.
   char pop_char_();

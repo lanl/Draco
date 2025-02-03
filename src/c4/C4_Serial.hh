@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 17:06:25 2002
  * \brief  Serial implementation of C4.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_C4_Serial_hh
@@ -42,11 +42,7 @@ int create_vector_type(unsigned /*count*/, unsigned /*blocklength*/, unsigned /*
 // Global_<Op> functions
 //------------------------------------------------------------------------------------------------//
 
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 template <typename T, typename L, typename std::enable_if_t<std::is_integral_v<L>, bool>>
-#else
-template <typename T, typename L, typename std::enable_if_t<std::is_integral<L>::value, bool>>
-#endif
 void global_sum(T * /*x*/, L /*n*/) {
   return;
 }

@@ -4,7 +4,7 @@
  * \author Tim Kelley
  * \date   Fri Jun 7 08:06:53 2019
  * \brief  Functions for working with your environment
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef Query_Env_hh
@@ -41,13 +41,8 @@ namespace rtt_dsxx {
 template <typename T>
 std::pair<bool, T> get_env_val(std::string const &key, T default_value = T{}) {
 
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
   static_assert(std::is_default_constructible_v<T>,
                 "get_env_val only usable with default constructible types");
-#else
-  static_assert(std::is_default_constructible<T>::value,
-                "get_env_val only usable with default constructible types");
-#endif
 
   T val{default_value};
   char *s_val = getenv(key.c_str());

@@ -4,7 +4,7 @@
  * \author Mike Buksas
  * \date   Fri Jan 20 14:51:51 2006
  * \brief  Decleration and Definition of Index_Converter
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_Index_Converter_hh
@@ -62,7 +62,9 @@ public:
   void set_size(unsigned size);
 
   //! Re-implement base function.
-  NODISCARD int limit_of_index(unsigned d, bool pos) const { return Base::limit_of_index(d, pos); }
+  [[nodiscard]] int limit_of_index(unsigned d, bool pos) const {
+    return Base::limit_of_index(d, pos);
+  }
 
   // ACCESSORS
 
@@ -70,23 +72,23 @@ public:
   template <typename IT> int get_index(IT indices) const;
 
   //! Convert 1-index to N-index
-  NODISCARD std::vector<int> get_indices(int index) const;
+  [[nodiscard]] std::vector<int> get_indices(int index) const;
 
   //! Convert 1-index to N-index and store in provided iterator.
   template <typename IT> void get_indices(int index, IT begin) const;
 
   //! Extract a single N-index from the 1-index
-  NODISCARD int get_single_index(int index, unsigned dimension) const;
+  [[nodiscard]] int get_single_index(int index, unsigned dimension) const;
 
   //! Get the next index from a 1-index and direction
-  NODISCARD int get_next_index(int index, int direction) const;
+  [[nodiscard]] int get_next_index(int index, int direction) const;
 
   //! Get the next index from an Index_Counter and direction
-  NODISCARD int get_next_index(const typename Index_Converter<D, OFFSET>::Counter &counter,
-                               int direction) const;
+  [[nodiscard]] int get_next_index(const typename Index_Converter<D, OFFSET>::Counter &counter,
+                                   int direction) const;
 
   //! Create an iterator over the index set
-  NODISCARD Counter counter() const { return Counter(*this); }
+  [[nodiscard]] Counter counter() const { return Counter(*this); }
 
 private:
   // DATA
@@ -127,7 +129,7 @@ inline void Index_Converter<D, OFFSET>::set_size(unsigned dimension) {
 //! Convert an N-index to a 1-index
 template <unsigned D, int OFFSET>
 template <typename IT>
-NODISCARD int Index_Converter<D, OFFSET>::get_index(IT indices) const {
+[[nodiscard]] int Index_Converter<D, OFFSET>::get_index(IT indices) const {
 
   Check(Base::indices_in_range(indices));
 

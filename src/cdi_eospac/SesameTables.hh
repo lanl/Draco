@@ -4,13 +4,13 @@
  * \author Kelly Thompson
  * \date   Fri Apr  6 08:57:48 2001
  * \brief  Header file for SesameTables (mapping material IDs to Sesame table indexes).
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_eospac_SesameTables_hh
 #define rtt_cdi_eospac_SesameTables_hh
 
-#include "dsxx/config.h" // defines NODISCARD
+#include "dsxx/config.h" // defines [[nodiscard]]
 #include "eos_Interface.h"
 #include <algorithm> // transform
 #include <iterator>
@@ -169,13 +169,13 @@ public:
   // Get functions
 
   //! Return the material identifier associated with a Sesame return type.
-  NODISCARD unsigned matID(EOS_INTEGER returnType) const;
+  [[nodiscard]] unsigned matID(EOS_INTEGER returnType) const;
 
   //! Return the enumerated data type associated with the integer index.
-  NODISCARD std::vector<EOS_INTEGER> returnTypes(unsigned const index) const;
+  [[nodiscard]] std::vector<EOS_INTEGER> returnTypes(unsigned const index) const;
 
   //! Return a list of table/material identifiers associated with this SesameTables object.
-  NODISCARD std::vector<unsigned> matList() const {
+  [[nodiscard]] std::vector<unsigned> matList() const {
     std::vector<unsigned> mlist;
     mlist.reserve(rtMap.size()); // preallocate the vector storage for
     std::transform(rtMap.begin(), rtMap.end(), std::back_inserter(mlist),
@@ -184,7 +184,7 @@ public:
   }
 
   //! Pack a SesameTables object into a vector<char> stream.
-  NODISCARD std::vector<char> pack() const;
+  [[nodiscard]] std::vector<char> pack() const;
 
   //! Print a list of EOS tables that EOSPAC knows about
   void printEosTableList() const;

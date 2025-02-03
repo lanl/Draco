@@ -4,7 +4,7 @@
  * \author Kendra P. Long, Ben R. Ryan
  * \date   Feb 21 2020
  * \brief  Analytic_Eloss_Model class definition.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPEloss_Analytic_Eloss_Model_hh
@@ -46,8 +46,8 @@ public:
   Analytic_Eloss_Model &operator=(Analytic_Eloss_Model &&rhs) noexcept = delete;
 
   //! Interface for derived analytic eloss models.
-  NODISCARD virtual double calculate_eloss(const double T, const double rho,
-                                           const double v0) const = 0;
+  [[nodiscard]] virtual double calculate_eloss(const double T, const double rho,
+                                               const double v0) const = 0;
 
 protected:
   //! Constructor initializes generically useful physical quantities.

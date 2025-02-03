@@ -4,7 +4,7 @@
  * \author Thomas M. Evans, Tim Kelley <tkelley@lanl.gov>
  * \date   Thu Jul 19 11:27:46 2001
  * \brief  Packing Utilities, classes for packing stuff.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved.
  *
  * This file contains classes and utilities that are used to "pack" data into byte-streams. The
  * byte-streams are represented by the char* type.  The following classes are:
@@ -104,25 +104,25 @@ public:
   // >>> ACCESSORS
 
   //! Get a pointer to the current position of the data stream.
-  NODISCARD const_pointer get_ptr() const {
+  [[nodiscard]] const_pointer get_ptr() const {
     Require(!size_mode);
     return ptr;
   }
 
   //! Get a pointer to the beginning position of the data stream.
-  NODISCARD const_pointer begin() const {
+  [[nodiscard]] const_pointer begin() const {
     Require(!size_mode);
     return begin_ptr;
   }
 
   //! Get a pointer to the ending position of the data stream.
-  NODISCARD const_pointer end() const {
+  [[nodiscard]] const_pointer end() const {
     Require(!size_mode);
     return end_ptr;
   }
 
   //! Get the size of the data stream.
-  NODISCARD uint64_t size() const { return stream_size; }
+  [[nodiscard]] uint64_t size() const { return stream_size; }
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -352,16 +352,16 @@ public:
   template <typename IT> void extract(uint64_t bytes, IT destination);
 
   //! Get a pointer to the current position of the data stream.
-  NODISCARD const_pointer get_ptr() const { return ptr; }
+  [[nodiscard]] const_pointer get_ptr() const { return ptr; }
 
   //! Get a pointer to the beginning position of the data stream.
-  NODISCARD const_pointer begin() const { return begin_ptr; }
+  [[nodiscard]] const_pointer begin() const { return begin_ptr; }
 
   //! Get a pointer to the ending position of the data stream.
-  NODISCARD const_pointer end() const { return end_ptr; }
+  [[nodiscard]] const_pointer end() const { return end_ptr; }
 
   //! Get the size of the data stream.
-  NODISCARD uint64_t size() const { return stream_size; }
+  [[nodiscard]] uint64_t size() const { return stream_size; }
 };
 
 #if defined(__clang__)

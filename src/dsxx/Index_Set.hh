@@ -3,7 +3,7 @@
  * \file   dsxx/Index_Set.hh
  * \author Mike Buksas
  * \date   Thu Feb  2 10:01:46 2006
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_Index_Set_hh
@@ -64,33 +64,33 @@ public:
   //! Uniform size re-assignment operator
   void set_size(const unsigned size);
 
-  NODISCARD bool index_in_range(int index) const {
+  [[nodiscard]] bool index_in_range(int index) const {
     return (index >= OFFSET) && (index < static_cast<int>(m_array_size) + OFFSET);
   }
-  NODISCARD bool index_in_range(int index, unsigned dimension) const;
+  [[nodiscard]] bool index_in_range(int index, unsigned dimension) const;
 
   template <typename IT> bool indices_in_range(IT indices) const;
 
-  NODISCARD unsigned get_size() const { return m_array_size; }
-  NODISCARD int min_of_index() const { return OFFSET; }
-  NODISCARD int max_of_index() const { return OFFSET + m_array_size - 1; }
-  NODISCARD int limit_of_index(const bool positive) const {
+  [[nodiscard]] unsigned get_size() const { return m_array_size; }
+  [[nodiscard]] int min_of_index() const { return OFFSET; }
+  [[nodiscard]] int max_of_index() const { return OFFSET + m_array_size - 1; }
+  [[nodiscard]] int limit_of_index(const bool positive) const {
     return positive ? max_of_index() : min_of_index();
   }
 
-  NODISCARD unsigned get_size(const unsigned d) const {
+  [[nodiscard]] unsigned get_size(const unsigned d) const {
     Check(dimension_okay(d));
     return m_dimensions[d];
   }
-  NODISCARD int min_of_index(const size_t Remember(d)) const {
+  [[nodiscard]] int min_of_index(const size_t Remember(d)) const {
     Check(dimension_okay(d));
     return OFFSET;
   }
-  NODISCARD int max_of_index(const size_t d) const {
+  [[nodiscard]] int max_of_index(const size_t d) const {
     Check(dimension_okay(d));
     return OFFSET + m_dimensions[d] - 1;
   }
-  NODISCARD int limit_of_index(const unsigned d, const bool positive) const {
+  [[nodiscard]] int limit_of_index(const unsigned d, const bool positive) const {
     return positive ? max_of_index(d) : min_of_index(d);
   }
 
@@ -105,13 +105,13 @@ private:
 
 protected:
   // Make sure the index sizes are all positive when creating or resizing:
-  NODISCARD bool sizes_okay() const {
+  [[nodiscard]] bool sizes_okay() const {
     return (std::find(m_dimensions.begin(), m_dimensions.begin() + D, 0U) ==
             m_dimensions.begin() + D);
   }
 
   // Allow derived classes const access to the dimensions.
-  NODISCARD std::array<unsigned, D> const get_dimensions() const { return m_dimensions; }
+  [[nodiscard]] std::array<unsigned, D> const get_dimensions() const { return m_dimensions; }
 };
 
 } // end namespace rtt_dsxx

@@ -4,7 +4,7 @@
  * \author Thomas M. Evans, Aimee Hungerford
  * \date   Fri Dec  9 10:52:38 2005
  * \brief  Diagnostics class for runtime info.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef diagnostics_Diagnostics_hh
@@ -43,12 +43,7 @@
  */
 //================================================================================================//
 
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 namespace rtt_diagnostics::Diagnostics {
-#else
-namespace rtt_diagnostics {
-namespace Diagnostics {
-#endif
 
 //! Map of integer data.
 extern DLL_PUBLIC_diagnostics std::map<std::string, int> integers;
@@ -65,12 +60,7 @@ extern DLL_PUBLIC_diagnostics std::map<std::string, std::vector<int>> vec_intege
 //! Map of vector, double data.
 extern DLL_PUBLIC_diagnostics std::map<std::string, std::vector<double>> vec_doubles;
 
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 } // end of namespace rtt_diagnostics::Diagnostics
-#else
-} // end of namespace Diagnostics
-} // end namespace rtt_diagnostics
-#endif
 
 //------------------------------------------------------------------------------------------------//
 /*!

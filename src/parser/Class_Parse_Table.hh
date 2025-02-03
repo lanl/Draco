@@ -3,7 +3,7 @@
  * \file   parser/Class_Parse_Table.hh
  * \author Kent Budge
  * \brief  Define template function parse_class
- * \note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2015-2025 Triad National Security, LLC., All rights reserved.
  *
  * utilities.hh declares a function template for parsers for class objects, which is consistent in
  * format with the other parse functins in utilities.hh No implementation is provided. However, we
@@ -257,7 +257,7 @@ public:
 
   // SERVICES
 
-  NODISCARD bool allow_exit() const { return allow_an_exit; }
+  [[nodiscard]] bool allow_exit() const { return allow_an_exit; }
 
   // STATIC
 

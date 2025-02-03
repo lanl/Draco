@@ -3,7 +3,7 @@
  *  \author Kelly Thompson
  *  \brief  Provide a single place where physical constants (pi, speed of light, etc) are defined.
  *  \date   Fri Nov 07 10:04:52 2003
- *  \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_units_PhysicalConstants_hh
@@ -73,76 +73,82 @@ public:
   constexpr double Na() { return avogadro(); }
 
   //! access the Planck constant (units of energy-time)
-  NODISCARD constexpr double planck() const { return d_planck; }
+  [[nodiscard]] constexpr double planck() const { return d_planck; }
   //! see planck()
-  NODISCARD constexpr double h() const { return planck(); }
+  [[nodiscard]] constexpr double h() const { return planck(); }
 
   //! access the Gas constant (units of energy/mol/temp)
-  NODISCARD constexpr double gasConstant() const { return d_gasConstant; }
+  [[nodiscard]] constexpr double gasConstant() const { return d_gasConstant; }
   //! see gasConstant()
-  NODISCARD constexpr double R() const { return gasConstant(); }
+  [[nodiscard]] constexpr double R() const { return gasConstant(); }
 
   //! accesses the Boltzmann constant (Energy/Temp)
-  NODISCARD constexpr double boltzmann() const { return d_boltzmann; }
+  [[nodiscard]] constexpr double boltzmann() const { return d_boltzmann; }
   //! see boltzmann()
-  NODISCARD constexpr double k() const { return boltzmann(); }
+  [[nodiscard]] constexpr double k() const { return boltzmann(); }
 
   //! accesses the electron charge (Charge)
-  NODISCARD constexpr double electronCharge() const { return d_electronCharge; }
+  [[nodiscard]] constexpr double electronCharge() const { return d_electronCharge; }
   //! see electronCharge()
-  NODISCARD constexpr double e() const { return electronCharge(); }
+  [[nodiscard]] constexpr double e() const { return electronCharge(); }
 
   //! accesses the speed of light (units of velocity)
-  NODISCARD constexpr double speedOfLight() const { return d_cLight; }
+  [[nodiscard]] constexpr double speedOfLight() const { return d_cLight; }
   //! see speedOfLight()
-  NODISCARD constexpr double c() const { return speedOfLight(); }
+  [[nodiscard]] constexpr double c() const { return speedOfLight(); }
 
   //! accesses the StefanBoltzmann constant (Work/Area/Temp^4 )
-  NODISCARD constexpr double stefanBoltzmann() const { return d_stefanBoltzmann; }
+  [[nodiscard]] constexpr double stefanBoltzmann() const { return d_stefanBoltzmann; }
   //! see stefanBoltzmann()
-  NODISCARD constexpr double sigma() const { return stefanBoltzmann(); }
+  [[nodiscard]] constexpr double sigma() const { return stefanBoltzmann(); }
 
   //! accesses the gravitational constant
-  NODISCARD constexpr double gravitationalConstant() const { return d_gravitationalConstant; }
+  [[nodiscard]] constexpr double gravitationalConstant() const { return d_gravitationalConstant; }
   //! see gravitationalConstant()
-  NODISCARD constexpr double G() const { return gravitationalConstant(); }
+  [[nodiscard]] constexpr double G() const { return gravitationalConstant(); }
 
   //! access the acceleration due to gravity (standard).
-  NODISCARD constexpr double accelerationFromGravity() const { return d_accelerationFromGravity; }
+  [[nodiscard]] constexpr double accelerationFromGravity() const {
+    return d_accelerationFromGravity;
+  }
   //! see accelerationFromGravity()
-  NODISCARD constexpr double g() const { return accelerationFromGravity(); }
+  [[nodiscard]] constexpr double g() const { return accelerationFromGravity(); }
 
   //! access the Faraday constant
-  NODISCARD constexpr double faradayConstant() const { return d_faradayConstant; }
+  [[nodiscard]] constexpr double faradayConstant() const { return d_faradayConstant; }
   //! see faradayConstant()
-  NODISCARD constexpr double F() const { return faradayConstant(); }
+  [[nodiscard]] constexpr double F() const { return faradayConstant(); }
 
   //! access the Permeability of vacuum (free space)
-  NODISCARD constexpr double permeabilityOfVacuum() const { return d_permeabilityOfVacuum; }
+  [[nodiscard]] constexpr double permeabilityOfVacuum() const { return d_permeabilityOfVacuum; }
   //! see permeabilityOfVacuum()
-  NODISCARD constexpr double mu0() const { return permeabilityOfVacuum(); }
+  [[nodiscard]] constexpr double mu0() const { return permeabilityOfVacuum(); }
 
   //! accesses the permittivity of free space (units of force/length)
-  NODISCARD constexpr double permittivityOfFreeSpace() const { return d_permittivityOfFreeSpace; }
+  [[nodiscard]] constexpr double permittivityOfFreeSpace() const {
+    return d_permittivityOfFreeSpace;
+  }
   //! see permittivityOfFreeSpace()
-  NODISCARD constexpr double epsi0() const { return permittivityOfFreeSpace(); }
+  [[nodiscard]] constexpr double epsi0() const { return permittivityOfFreeSpace(); }
 
   //! accesses the classical electron radius (units of length)
-  NODISCARD constexpr double classicalElectronRadius() const { return d_classicalElectronRadius; }
+  [[nodiscard]] constexpr double classicalElectronRadius() const {
+    return d_classicalElectronRadius;
+  }
   //! see classicalElectronRadius()
-  NODISCARD constexpr double re() const { return classicalElectronRadius(); }
+  [[nodiscard]] constexpr double re() const { return classicalElectronRadius(); }
 
   //! accesses the electron mass (units of mass)
-  NODISCARD constexpr double electronMass() const { return d_electronMass; }
+  [[nodiscard]] constexpr double electronMass() const { return d_electronMass; }
   //! see electronMass()
-  NODISCARD constexpr double me() const { return electronMass(); }
+  [[nodiscard]] constexpr double me() const { return electronMass(); }
 
   //! accesses the proton mass (units of mass)
-  NODISCARD constexpr double protonMass() const { return d_protonMass; }
+  [[nodiscard]] constexpr double protonMass() const { return d_protonMass; }
   //! see protonMass()
-  NODISCARD constexpr double mp() const { return protonMass(); }
+  [[nodiscard]] constexpr double mp() const { return protonMass(); }
 
-  NODISCARD double unit_convert_boltzmann(UnitSystem const &u) const;
+  [[nodiscard]] double unit_convert_boltzmann(UnitSystem const &u) const;
 
 private:
   // Base physical constants in SI units:

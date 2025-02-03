@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Mon Jan 8 14:58:55 2001
  * \brief  MultigroupOpacity class header file (an abstract class)
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_MultigroupOpacity_hh
@@ -76,8 +76,8 @@ public:
    *          (g/cm^3)
    * \return A vector of opacities (a single opacity for each group).
    */
-  NODISCARD virtual std::vector<double> getOpacity(double targetTemperature,
-                                                   double targetDensity) const = 0;
+  [[nodiscard]] virtual std::vector<double> getOpacity(double targetTemperature,
+                                                       double targetDensity) const = 0;
 
   /*!
    * \brief Opacity accessor that returns a vector of multigroup opacity vectors that correspond to
@@ -90,7 +90,7 @@ public:
    *
    * \return A vector of multigroup opacity vectors (cm^2/g).
    */
-  NODISCARD virtual std::vector<std::vector<double>>
+  [[nodiscard]] virtual std::vector<std::vector<double>>
   getOpacity(const std::vector<double> &targetTemperature, double targetDensity) const = 0;
 
   /*!
@@ -103,56 +103,56 @@ public:
    *           (g/cm^3).
    * \return A vector of multigroup opacity vectors (cm^2/g).
    */
-  NODISCARD virtual std::vector<std::vector<double>>
+  [[nodiscard]] virtual std::vector<std::vector<double>>
   getOpacity(double targetTemperature, const std::vector<double> &targetDensity) const = 0;
 
   //! Query whether the data is in tables or functional form.
-  NODISCARD virtual bool data_in_tabular_form() const = 0;
+  [[nodiscard]] virtual bool data_in_tabular_form() const = 0;
 
   //! Query to determine the reaction model.
-  NODISCARD virtual rtt_cdi::Reaction getReactionType() const = 0;
+  [[nodiscard]] virtual rtt_cdi::Reaction getReactionType() const = 0;
 
   //! Query to determine the physics model.
-  NODISCARD virtual rtt_cdi::Model getModelType() const = 0;
+  [[nodiscard]] virtual rtt_cdi::Model getModelType() const = 0;
 
   /*!
    * \brief Returns a string that describes the EnergyPolicy.  Currently this will return either
    *        "mg" or "gray."
    */
-  NODISCARD virtual std::string getEnergyPolicyDescriptor() const = 0;
+  [[nodiscard]] virtual std::string getEnergyPolicyDescriptor() const = 0;
 
   /*!
    * \brief Returns a "plain English" description of the opacity data that this class
    *        references. (e.g. "Gray Rosseland Scattering".)
    */
-  NODISCARD virtual std::string getDataDescriptor() const = 0;
+  [[nodiscard]] virtual std::string getDataDescriptor() const = 0;
 
   //! Returns the name of the associated data file (if any).
-  NODISCARD virtual std::string getDataFilename() const = 0;
+  [[nodiscard]] virtual std::string getDataFilename() const = 0;
 
   //! Returns a vector of temperatures that define the cached opacity data table.
-  NODISCARD virtual std::vector<double> getTemperatureGrid() const = 0;
+  [[nodiscard]] virtual std::vector<double> getTemperatureGrid() const = 0;
 
   //! Returns a vector of densities that define the cached opacity data table.
-  NODISCARD virtual std::vector<double> getDensityGrid() const = 0;
+  [[nodiscard]] virtual std::vector<double> getDensityGrid() const = 0;
 
   /*!
    * \brief Returns a vector of energy values (keV) that define the energy boundaries of the cached
    *        multigroup opacity data table.
    */
-  NODISCARD virtual std::vector<double> getGroupBoundaries() const = 0;
+  [[nodiscard]] virtual std::vector<double> getGroupBoundaries() const = 0;
 
   //! Returns the size of the temperature grid.
-  NODISCARD virtual size_t getNumTemperatures() const = 0;
+  [[nodiscard]] virtual size_t getNumTemperatures() const = 0;
 
   //*! Returns the size of the density grid.
-  NODISCARD virtual size_t getNumDensities() const = 0;
+  [[nodiscard]] virtual size_t getNumDensities() const = 0;
 
   //! Returns the number of group boundaries found in the current multigroup data set.
-  NODISCARD virtual size_t getNumGroupBoundaries() const = 0;
+  [[nodiscard]] virtual size_t getNumGroupBoundaries() const = 0;
 
   //! Returns the number of energy groups ( getNumGroupBoundaries() - 1 ).
-  NODISCARD virtual size_t getNumGroups() const = 0;
+  [[nodiscard]] virtual size_t getNumGroups() const = 0;
 
   /*!
    * \brief Interface for packing a derived MultigroupOpacity object.
@@ -161,10 +161,10 @@ public:
    * constructor.  Thus, even though one can pack a MultigroupOpacity through a base class pointer,
    * the client must know the derived type when unpacking.
    */
-  NODISCARD virtual std::vector<char> pack() const = 0;
+  [[nodiscard]] virtual std::vector<char> pack() const = 0;
 
   //! Returns the general opacity model type (Analytic or Gandolf), defined in OpacityCommon.hh
-  NODISCARD virtual rtt_cdi::OpacityModelType getOpacityModelType() const = 0;
+  [[nodiscard]] virtual rtt_cdi::OpacityModelType getOpacityModelType() const = 0;
 
 }; // end of class MultigroupOpacity
 
