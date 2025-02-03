@@ -71,8 +71,6 @@ namespace rtt_cdi_ipcress {
 
 class IpcressMaterial {
 
-  // NESTED CLASSES AND TYPEDEFS
-
   // DATA
 
   std::vector<std::string> fieldNames;
@@ -85,8 +83,7 @@ public:
   // CREATORS
 
   //! Default constructor builds an empty object.
-  IpcressMaterial() : fieldNames(), fieldValues() { /* empty */
-  }
+  IpcressMaterial() noexcept : fieldNames(), fieldValues() {}
 
   // MANIPULATORS
 

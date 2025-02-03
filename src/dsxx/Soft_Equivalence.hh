@@ -4,7 +4,7 @@
  * \author Thomas M. Evans and Todd Urbatsch
  * \date   Wed Nov  7 14:10:55 2001
  * \brief  Soft_Equivalence functions for floating point comparisons.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_Soft_Equivalence_hh
@@ -16,7 +16,7 @@
 // Purpose : checks that two reals or fields of reals are within a tolerance of each other.
 //================================================================================================//
 
-#include "Assert.hh"
+#include "dsxx/Assert.hh"
 #include <cmath>
 #include <cstdint>
 #include <iterator>
@@ -133,7 +133,6 @@ public:
 template <typename FPT> class soft_equiv_deep<1, FPT> {
 public:
   // Constructor
-  soft_equiv_deep<1, FPT>() = default;
   template <typename Value_Iterator, typename Ref_Iterator>
   bool equiv(Value_Iterator value, Value_Iterator value_end, Ref_Iterator ref, Ref_Iterator ref_end,
              FPT const precision = 1.0e-12) {

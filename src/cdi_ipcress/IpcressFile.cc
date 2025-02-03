@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Aug 22 15:15:49 2000
  * \brief  Implementation file for IpcressFile class.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ipcress/IpcressFile.hh"
@@ -49,8 +49,8 @@ IpcressFile::IpcressFile(const std::string &ipcressDataFilename)
   Require(rtt_dsxx::has_ieee_float_representation());
   Require(rtt_dsxx::fileExists(dataFilename));
 
-  // Attempt to open the ipcress file.  Open at end of file (ate) so that we can
-  // know the size of the binary file.
+  // Attempt to open the ipcress file.  Open at end of file (ate) so that we can know the size of
+  // the binary file.
   ipcressFileHandle.open(dataFilename.c_str(), std::ios::in | std::ios::binary | std::ios::ate);
   Insist(ipcressFileHandle.is_open(), "IpcressFile: Unable to open ipcress file.");
 
@@ -60,8 +60,8 @@ IpcressFile::IpcressFile(const std::string &ipcressDataFilename)
   //
   // Read the title (the first record of binary file).
   //
-  // The first record has 2 8-byte words.  The first word should be either the
-  // keyword 'nirvana' or possibly 'ipcress'.  The 2nd word is not used.
+  // The first record has 2 8-byte words.  The first word should be either the keyword 'nirvana' or
+  // possibly 'ipcress'.  The 2nd word is not used.
   size_t byte_offset(0);
   std::vector<std::string> title(2);
   read_strings(byte_offset, title);
@@ -69,8 +69,7 @@ IpcressFile::IpcressFile(const std::string &ipcressDataFilename)
          "The specified file is not IPCRESS format.");
 
   //
-  // Read the table records from the ipcress file. See the .hh file for a
-  // description of this data.
+  // Read the table records from the ipcress file. See the .hh file for a description of this data.
   //
 
   // This data block starts with the 3rd word in the file (byte 16).
@@ -90,8 +89,8 @@ IpcressFile::IpcressFile(const std::string &ipcressDataFilename)
   Check(static_cast<size_t>(sizeOfFile) == ipcress_word_size * toc[21]);
 
   //
-  // Read the table of memory offsets for data (dfo) and the associated table of
-  // offset data sizes (ds).
+  // Read the table of memory offsets for data (dfo) and the associated table of offset data sizes
+  // (ds).
   //
 
   // There are TOC[14] data sets in these tables.
@@ -200,8 +199,7 @@ void IpcressFile::loadFieldData() {
   std::vector<std::string> thirdOfKey(3);
 
   for (size_t i = 1; i < numFields; ++i) {
-    // Note i=0 case is {'mats','fill',fill'}.  We skip this case by starting at
-    // i=1.
+    // Note i=0 case is {'mats','fill',fill'}.  We skip this case by starting at i=1.
 
     // read three 8-byte words.
     read_strings(byte_offset + 9 * i * ipcress_word_size, thirdOfKey);
