@@ -301,6 +301,15 @@ ccs_gcov:
     EXTRA_CMAKE_ARGS: -G Ninja -DCODE_COVERAGE=ON
     CTEST_NPROC: 20
 
+ccs_deb_gcc_1220_cxx20:
+  stage: slowtest
+  extends: .ccscs_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1220
+    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=20
+    CTEST_NPROC: 32
+
 # ccs_valgrind:
 #   stage: slowtest
 #   extends: .ccscs_merge
@@ -342,6 +351,14 @@ deb_gcc_12.2.0_regress:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
+    CTEST_NPROC: 40
+
+deb_gcc_12.2.0_cxx20_regress:
+  extends: .ccscs_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1220
+    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=20
     CTEST_NPROC: 40
 
 deb_gcc_scalar_regress:

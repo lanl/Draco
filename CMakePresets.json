@@ -73,13 +73,13 @@
       }
     },
     {
-      "name": "linux-debug-cxx17",
-      "displayName": "Linux Debug with c++17 enabled",
+      "name": "linux-debug-cxx20",
+      "displayName": "Linux Debug with c++20 enabled",
       "description": "Target Linux for Debug build.",
       "inherits": "linux-ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "Draco_CXX_LANGUAGE_STANDARD": "17"
+        "Draco_CXX_LANGUAGE_STANDARD": "20"
       }
     },
     {
@@ -91,9 +91,7 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "DRACO_STATIC_ANALYZER": "clang-tidy",
         "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_COMPILER": "clang++",
-        "Draco_CXX_LANGUAGE_STANDARD": "17",
-        "Draco_C_LANGUAGE_STANDARD": "17"
+        "CMAKE_CXX_COMPILER": "clang++"
       },
       "condition": {
         "type": "matches",
@@ -141,9 +139,7 @@
       "inherits": "darwin-haswell",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "DRACO_STATIC_ANALYZER": "clang-tidy",
-        "Draco_C_LANGUAGE_STANDARD": "17",
-        "Draco_CXX_LANGUAGE_STANDARD": "17"
+        "DRACO_STATIC_ANALYZER": "clang-tidy"
       }
     },
     {
@@ -223,23 +219,23 @@
       }
     },
     {
-      "name": "win-x64-cxx17-debug",
-      "displayName": "Windows x64 Debug with C++17 (Ninja)",
-      "description": "Target Windows (64-bit) with Ninja (Debug) and C++17",
+      "name": "win-x64-cxx20-debug",
+      "displayName": "Windows x64 Debug with C++20 (Ninja)",
+      "description": "Target Windows (64-bit) with Ninja (Debug) and C++20",
       "inherits": "windows-ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "Draco_CXX_LANGUAGE_STANDARD": "17"
+        "Draco_CXX_LANGUAGE_STANDARD": "20"
       }
     },
     {
-      "name": "win-x64-cxx17-release",
-      "displayName": "Windows x64 Release with C++17 (Ninja)",
-      "description": "Target Windows (64-bit) with Ninja (Release) and C++17",
+      "name": "win-x64-cxx20-release",
+      "displayName": "Windows x64 Release with C++20 (Ninja)",
+      "description": "Target Windows (64-bit) with Ninja (Release) and C++20",
       "inherits": "windows-ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
-        "Draco_CXX_LANGUAGE_STANDARD": "17"
+        "Draco_CXX_LANGUAGE_STANDARD": "20"
       }
     }
   ],
@@ -273,8 +269,8 @@
       "configurePreset": "linux-debug-valgrind"
     },
     {
-      "name": "linux-debug-cxx17",
-      "configurePreset": "linux-debug-cxx17"
+      "name": "linux-debug-cxx20",
+      "configurePreset": "linux-debug-cxx20"
     },
     {
       "name": "linux-debug-clang-tidy",
@@ -342,11 +338,11 @@
       "configurePreset": "linux-debug-fd-static"
     },
     {
-      "name": "linux-debug-cxx17",
+      "name": "linux-debug-cxx20",
       "inherits": "linux-ctest",
       "description": "Run all tests",
       "displayName": "Ctest",
-      "configurePreset": "linux-debug-cxx17"
+      "configurePreset": "linux-debug-cxx20"
     },
     {
       "name": "linux-debug-clang-tidy",
