@@ -72,7 +72,7 @@ public:
   //! Disable trapping of fpe signals.
   void disable();
   //! Query if trapping of fpe signals is active.
-  NODISCARD bool active() const { return fpeTrappingActive; }
+  [[nodiscard]] bool active() const { return fpeTrappingActive; }
 
 private:
   bool fpeTrappingActive{false};

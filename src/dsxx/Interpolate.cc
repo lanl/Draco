@@ -4,7 +4,7 @@
  * \author Kendra P. Long, Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Interpolation functions.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Interpolate.hh"
@@ -14,12 +14,7 @@
 #include <limits>  // numeric_limits
 #include <vector>
 
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 namespace rtt_dsxx::interpolate {
-#else
-namespace rtt_dsxx {    // NOLINT
-namespace interpolate { // NOLINT
-#endif
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -152,12 +147,7 @@ double lagrange_1d(const std::vector<double> &data, const std::vector<double> &x
   return val;
 }
 
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 } // namespace rtt_dsxx::interpolate
-#else
-} // namespace interpolate
-} // namespace rtt_dsxx
-#endif
 
 //------------------------------------------------------------------------------------------------//
 // End dsxx/Interpolate.cc

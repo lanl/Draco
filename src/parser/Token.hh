@@ -3,7 +3,7 @@
  * \file   parser/Token.hh
  * \author Kent G. Budge
  * \brief  Define class Token and enum Token_Type
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Token_HH
@@ -60,16 +60,16 @@ public:
   // ACCESSORS
 
   //! Return the token type.
-  NODISCARD Token_Type type() const noexcept { return type_; }
+  [[nodiscard]] Token_Type type() const noexcept { return type_; }
 
   //! Return the token text.
-  NODISCARD std::string const &text() const { return text_; }
+  [[nodiscard]] std::string const &text() const { return text_; }
 
   //! Return the location information.
-  NODISCARD std::string const &location() const { return location_; }
+  [[nodiscard]] std::string const &location() const { return location_; }
 
   //! Check that the class invariants are satisfied.
-  NODISCARD bool check_class_invariant() const;
+  [[nodiscard]] bool check_class_invariant() const;
 
   // MANIPULATORS
 

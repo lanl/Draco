@@ -4,7 +4,7 @@
  * \author H.Park
  * \date   Aug 1 2023
  * \brief  Parallel_Data_Operator header file.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_Parallel_Data_Operator_hh
@@ -73,13 +73,15 @@ public:
   }
 
   int64_t gid(size_t lid) { return topology->global_cell(lid); }
-  NODISCARD int get_remote_proc(size_t boundary_cell) const {
+  [[nodiscard]] int get_remote_proc(size_t boundary_cell) const {
     return topology->remote_proc(boundary_cell);
   }
-  NODISCARD int get_remote_local_cell(size_t boundary_cell) const {
+  [[nodiscard]] int get_remote_local_cell(size_t boundary_cell) const {
     return topology->remote_local_cell(boundary_cell);
   }
-  NODISCARD int64_t get_global_offset(int rank) const { return topology->get_global_offset(rank); }
+  [[nodiscard]] int64_t get_global_offset(int rank) const {
+    return topology->get_global_offset(rank);
+  }
 
   //! Map local data fields to global data fields.
   template <typename FT, typename GT, typename Op>

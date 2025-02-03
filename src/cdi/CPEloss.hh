@@ -4,7 +4,7 @@
  * \author Kendra Long
  * \date   Fri Aug  2 14:28:08 2019
  * \brief  CPEloss class header file (an abstract class)
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPEloss_hh
@@ -72,8 +72,8 @@ public:
    *
    * \return A single Eloss rate coefficient (shk^-1).
    */
-  NODISCARD virtual double getEloss(const double targetTemperature, const double targetDensity,
-                                    const double partSpeed) const = 0;
+  [[nodiscard]] virtual double getEloss(const double targetTemperature, const double targetDensity,
+                                        const double partSpeed) const = 0;
   /*!
    * \brief Query whether the data is in tables or functional form.
    */
@@ -82,52 +82,52 @@ public:
   /*!
    * \brief Returns a vector of temperatures that define the cached Eloss data table (keV).
    */
-  NODISCARD virtual std::vector<double> getTemperatureGrid() const = 0;
+  [[nodiscard]] virtual std::vector<double> getTemperatureGrid() const = 0;
 
   /*!
    * \brief Returns a vector of densities that define the cached Eloss data table (g/cm^3).
    */
-  NODISCARD virtual std::vector<double> getDensityGrid() const = 0;
+  [[nodiscard]] virtual std::vector<double> getDensityGrid() const = 0;
 
   /*!
    * \brief Returns a vector of energies that define the cached Eloss data table (keV).
    */
-  NODISCARD virtual std::vector<double> getEnergyGrid() const = 0;
+  [[nodiscard]] virtual std::vector<double> getEnergyGrid() const = 0;
 
   /*!
    * \brief Returns the size of the temperature grid.
    */
-  NODISCARD virtual size_t getNumTemperatures() const = 0;
+  [[nodiscard]] virtual size_t getNumTemperatures() const = 0;
 
   /*!
    * \brief Returns the size of the density grid.
    */
-  NODISCARD virtual size_t getNumDensities() const = 0;
+  [[nodiscard]] virtual size_t getNumDensities() const = 0;
 
   /*!
    * \brief Returns the size of the energy grid.
    */
-  NODISCARD virtual size_t getNumEnergies() const = 0;
+  [[nodiscard]] virtual size_t getNumEnergies() const = 0;
 
   /*!
    * \brief Query to determine the transporting particle type.
    */
-  NODISCARD CParticle getProjectile() const { return projectile; }
+  [[nodiscard]] CParticle getProjectile() const { return projectile; }
 
   /*!
    * \brief Query to determine the target species type.
    */
-  NODISCARD CParticle getTarget() const { return target; }
+  [[nodiscard]] CParticle getTarget() const { return target; }
 
   /*!
    * \brief Query to determine the CP Model type.
    */
-  NODISCARD CPModelType getModelType() const { return model_type; }
+  [[nodiscard]] CPModelType getModelType() const { return model_type; }
 
   /*!
    * \brief Query to determine the angle cutoff used by the CP model.
    */
-  NODISCARD CPModelAngleCutoff getModelAngleCutoff() const { return model_angle_cutoff; }
+  [[nodiscard]] CPModelAngleCutoff getModelAngleCutoff() const { return model_angle_cutoff; }
 
 protected:
   // Particle being transported i.e. subject to energy loss

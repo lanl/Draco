@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wed Sep  1 10:19:52 2004
  * \brief  A class to encapsulate a 3D Level Symmetric quadrature set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_Square_Chebyshev_Legendre_hh
@@ -48,11 +48,11 @@ public:
 
   // These functions override the virtual member functions specifed in the parent class Quadrature.
 
-  NODISCARD std::string name() const override;
-  NODISCARD std::string parse_name() const override;
-  NODISCARD Quadrature_Class quadrature_class() const override;
-  NODISCARD unsigned number_of_levels() const override;
-  NODISCARD std::string as_text(std::string const &indent) const override;
+  [[nodiscard]] std::string name() const override;
+  [[nodiscard]] std::string parse_name() const override;
+  [[nodiscard]] Quadrature_Class quadrature_class() const override;
+  [[nodiscard]] unsigned number_of_levels() const override;
+  [[nodiscard]] std::string as_text(std::string const &indent) const override;
 
   // STATICS
 

@@ -3,7 +3,7 @@
  *  \author Kelly Thompson
  *  \brief  Aggregates a collection of FundUnits to create a complete UnitSystemType.
  *  \date   Fri Oct 24 15:04:41 2003
- *  \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_units_UnitSystemType_hh
@@ -93,13 +93,13 @@ public:
 
   //! Return a FundUnit type when requested.
 
-  NODISCARD FundUnit<Ltype> L() const { return d_L; }
-  NODISCARD FundUnit<Mtype> M() const { return d_M; }
-  NODISCARD FundUnit<ttype> t() const { return d_t; }
-  NODISCARD FundUnit<Ttype> T() const { return d_T; }
-  NODISCARD FundUnit<Itype> I() const { return d_I; }
-  NODISCARD FundUnit<Atype> A() const { return d_A; }
-  NODISCARD FundUnit<Qtype> Q() const { return d_Q; }
+  [[nodiscard]] FundUnit<Ltype> L() const { return d_L; }
+  [[nodiscard]] FundUnit<Mtype> M() const { return d_M; }
+  [[nodiscard]] FundUnit<ttype> t() const { return d_t; }
+  [[nodiscard]] FundUnit<Ttype> T() const { return d_T; }
+  [[nodiscard]] FundUnit<Itype> I() const { return d_I; }
+  [[nodiscard]] FundUnit<Atype> A() const { return d_A; }
+  [[nodiscard]] FundUnit<Qtype> Q() const { return d_Q; }
 
 private:
   //! Fundamental unit types.

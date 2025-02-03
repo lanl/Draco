@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Sep 24 12:04:00 2001
  * \brief  Dummy model used for testing cdi_analytic software.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_test_hh
@@ -27,22 +27,22 @@ public:
   explicit Marshak_Model(double a_) noexcept : a(a_) { /*...*/
   }
 
-  NODISCARD double calculate_opacity(double T, double /*rho*/) const override {
+  [[nodiscard]] double calculate_opacity(double T, double /*rho*/) const override {
     return a / (T * T * T);
   }
 
-  NODISCARD double calculate_opacity(double T, double rho, double /*nu*/) const override {
+  [[nodiscard]] double calculate_opacity(double T, double rho, double /*nu*/) const override {
     return calculate_opacity(T, rho);
   }
 
-  NODISCARD double calculate_opacity(double T, double rho, double /*nu0*/,
-                                     double /*nu1*/) const override {
+  [[nodiscard]] double calculate_opacity(double T, double rho, double /*nu0*/,
+                                         double /*nu1*/) const override {
     return calculate_opacity(T, rho);
   }
 
-  NODISCARD std::vector<double> get_parameters() const override { return {a}; }
+  [[nodiscard]] std::vector<double> get_parameters() const override { return {a}; }
 
-  NODISCARD std::vector<char> pack() const override {
+  [[nodiscard]] std::vector<char> pack() const override {
     rtt_dsxx::Packer packer;
     std::vector<char> p(sizeof(double) + sizeof(int));
     packer.set_buffer(p.size(), &p[0]);

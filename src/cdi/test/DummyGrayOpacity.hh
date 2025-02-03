@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Mon Jan 8 15:29:17 2001
  * \brief  DummyGrayOpacity class header file (derived from ../GrayOpacity)
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_DummyGrayOpacity_hh
@@ -86,7 +86,7 @@ public:
    * \param targetDensity The density value for which an opacity value is being requested (g/cm^3).
    * \return A single interpolated opacity (cm^2/g).
    */
-  NODISCARD double getOpacity(double targetTemperature, double targetDensity) const override;
+  [[nodiscard]] double getOpacity(double targetTemperature, double targetDensity) const override;
 
   /*!
    * \brief Opacity accessor that returns a vector of opacities that correspond to the provided
@@ -99,8 +99,8 @@ public:
    * \param targetDensity The density value for which an opacity value is being requested (g/cm^3).
    * \return A vector of opacities (cm^2/g).
    */
-  NODISCARD std::vector<double> getOpacity(const std::vector<double> &targetTemperature,
-                                           double targetDensity) const override;
+  [[nodiscard]] std::vector<double> getOpacity(const std::vector<double> &targetTemperature,
+                                               double targetDensity) const override;
 
   /*!
    * \brief Opacity accessor that returns a vector of opacities that correspond to the provided
@@ -114,26 +114,26 @@ public:
    *           (g/cm^3).
    * \return A vector of opacities (cm^2/g).
    */
-  NODISCARD std::vector<double> getOpacity(double targetTemperature,
-                                           const std::vector<double> &targetDensity) const override;
+  [[nodiscard]] std::vector<double>
+  getOpacity(double targetTemperature, const std::vector<double> &targetDensity) const override;
 
   //! Data is in tables.
-  NODISCARD bool data_in_tabular_form() const override { return true; }
+  [[nodiscard]] bool data_in_tabular_form() const override { return true; }
 
   //! Return the reaction type.
-  NODISCARD rtt_cdi::Reaction getReactionType() const override { return reaction_type; }
+  [[nodiscard]] rtt_cdi::Reaction getReactionType() const override { return reaction_type; }
 
   //! Return the model type.
-  NODISCARD rtt_cdi::Model getModelType() const override { return model_type; }
+  [[nodiscard]] rtt_cdi::Model getModelType() const override { return model_type; }
 
   //! Returns a "plain English" description of the data.
-  NODISCARD std::string getDataDescriptor() const override { return dataDescriptor; }
+  [[nodiscard]] std::string getDataDescriptor() const override { return dataDescriptor; }
 
   /*!
    * \brief Returns a "plain English" description of the energy group structure (gray
    *        vs. multigroup).
    */
-  NODISCARD std::string getEnergyPolicyDescriptor() const override {
+  [[nodiscard]] std::string getEnergyPolicyDescriptor() const override {
     return energyPolicyDescriptor;
   }
 
@@ -141,25 +141,25 @@ public:
    * \brief Returns the name of the associated data file.  Since there is no data file associated
    *        with this opacity class the string "none" is returned.
    */
-  NODISCARD std::string getDataFilename() const override { return dataFilename; }
+  [[nodiscard]] std::string getDataFilename() const override { return dataFilename; }
 
   //! Returns a vector of temperatures that define the cached opacity data table.
-  NODISCARD std::vector<double> getTemperatureGrid() const override { return temperatureGrid; }
+  [[nodiscard]] std::vector<double> getTemperatureGrid() const override { return temperatureGrid; }
 
   //*! Returns a vector of densities that define the cached opacity data table.
-  NODISCARD std::vector<double> getDensityGrid() const override { return densityGrid; }
+  [[nodiscard]] std::vector<double> getDensityGrid() const override { return densityGrid; }
 
   //! Returns the size of the temperature grid.
-  NODISCARD size_t getNumTemperatures() const override { return numTemperatures; }
+  [[nodiscard]] size_t getNumTemperatures() const override { return numTemperatures; }
 
   //! Returns the size of the density grid.
-  NODISCARD size_t getNumDensities() const override { return numDensities; }
+  [[nodiscard]] size_t getNumDensities() const override { return numDensities; }
 
   //! Dummy pack function.
-  NODISCARD std::vector<char> pack() const override { return {}; }
+  [[nodiscard]] std::vector<char> pack() const override { return {}; }
 
   //! Returns the general opacity model type, defined in OpacityCommon.hh
-  NODISCARD rtt_cdi::OpacityModelType getOpacityModelType() const override {
+  [[nodiscard]] rtt_cdi::OpacityModelType getOpacityModelType() const override {
     return rtt_cdi::DUMMY_TYPE;
   }
 };

@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2020 Mar 6
  * \brief  NDI_AtomicMass class definition.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef cdi_ndi_NDI_AtomicMass_hh
@@ -40,7 +40,7 @@ public:
       std::string gendir_path_in = rtt_dsxx::get_env_val<std::string>("NDI_GENDIR_PATH").second);
 
   //! Retrieve atomic mass weight for isotope with given ZAID
-  NODISCARD double get_amw(const int zaid) const;
+  [[nodiscard]] double get_amw(const int zaid) const;
 
 private:
   //! Path to gendir file

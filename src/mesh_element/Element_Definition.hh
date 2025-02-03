@@ -4,7 +4,7 @@
  * \author John McGhee
  * \date   Fri Feb 25 10:03:18 2000
  * \brief  Header file for the RTT Element_Definition class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_element_Element_Definition_hh
@@ -265,33 +265,33 @@ public:
    * \brief Returns the name of an element.
    * \return Returns the element name as a string.
    */
-  NODISCARD std::string get_name() const { return name; }
+  [[nodiscard]] std::string get_name() const { return name; }
 
   /*!
    * \brief Returns the type of an element.
    * \return Returns the element type.
    */
-  NODISCARD Element_Type get_type() const { return type; }
+  [[nodiscard]] Element_Type get_type() const { return type; }
 
   /*!
    * \brief Returns the total number of nodes in an element.
    * \return Total number of nodes in an element.
    */
-  NODISCARD unsigned get_number_of_nodes() const { return number_of_nodes; }
+  [[nodiscard]] unsigned get_number_of_nodes() const { return number_of_nodes; }
   /*!
    * \brief Returns the dimension of an element. i.e. nodes return 0, lines return 1, quads return
    *        2, hexahedra return 3.
    *
    * \return The element dimension (0, 1, 2, or 3).
    */
-  NODISCARD unsigned get_dimension() const { return dimension; }
+  [[nodiscard]] unsigned get_dimension() const { return dimension; }
   /*!
    * \brief Returns the number of sides on an element.
    *
    * \return The number of n-1 dimensional entities that compose an n dimensional
    *         element. i.e. nodes return 0, lines return 2, quads return 4, hexahedra return 6.
    */
-  NODISCARD unsigned get_number_of_sides() const { return number_of_sides; }
+  [[nodiscard]] unsigned get_number_of_sides() const { return number_of_sides; }
 
   /*!
    * \brief Returns the type (i.e. quad, tri, etc.) of a specified element side.
@@ -305,7 +305,7 @@ public:
    * Note that there is no valid side number for a "NODE" element.  "Side" in the context of this
    * method means the (n-1) dimensional element that composes a n dimensional element.
    */
-  NODISCARD Element_Definition get_side_type(unsigned const side_number) const {
+  [[nodiscard]] Element_Definition get_side_type(unsigned const side_number) const {
     Insist(side_number < side_type.size(), "Side index out of range!");
     return elem_defs[side_type[side_number]];
   }
@@ -337,12 +337,12 @@ public:
    *
    * Note that there is no valid side number for a "NODE" element.
    */
-  NODISCARD std::vector<unsigned> get_side_nodes(unsigned const side_number) const {
+  [[nodiscard]] std::vector<unsigned> get_side_nodes(unsigned const side_number) const {
     Insist(side_number < side_nodes.size(), "Side index out of range!");
     return side_nodes[side_number];
   }
 
-  NODISCARD std::vector<unsigned> get_number_of_face_nodes() const {
+  [[nodiscard]] std::vector<unsigned> get_number_of_face_nodes() const {
     std::vector<unsigned> number_of_face_nodes(side_type.size());
 
     for (unsigned s = 0; s < side_type.size(); ++s)
@@ -351,7 +351,7 @@ public:
     return number_of_face_nodes;
   }
 
-  NODISCARD std::vector<std::vector<unsigned>> get_face_nodes() const {
+  [[nodiscard]] std::vector<std::vector<unsigned>> get_face_nodes() const {
     std::vector<std::vector<unsigned>> face_nodes(side_nodes.size());
 
     for (unsigned s = 0; s < face_nodes.size(); ++s) {
@@ -368,7 +368,7 @@ public:
    * \brief Performs some simple sanity checks on the private data of the Element_Description
    *        class. Note that this only works with DBC turned on.
    */
-  NODISCARD bool invariant_satisfied() const;
+  [[nodiscard]] bool invariant_satisfied() const;
 
   //! Prints the element description.
   std::ostream &print(std::ostream &os_out) const;

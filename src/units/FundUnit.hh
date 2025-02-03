@@ -3,7 +3,7 @@
  *  \author Kelly Thompson
  *  \brief  This file defines a fundamental unit type.
  *  \date   Mon Oct 27 16:24:31 2003
- *  \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_units_FundUnit_hh
@@ -36,12 +36,12 @@ public:
   // ACCESSORS
 
   //! return defining enumeration as specified in units/UnitSystemEnums.hh
-  NODISCARD F enumVal() const { return d_definingEnum; }
+  [[nodiscard]] F enumVal() const { return d_definingEnum; }
   //! return conversion factor.
   //! Multiply by this number to get a value in SI units.
-  NODISCARD double cf() const { return d_cf; }
+  [[nodiscard]] double cf() const { return d_cf; }
   //! return unit label (e.g.: cm or keV)
-  NODISCARD std::string label() const { return d_label; }
+  [[nodiscard]] std::string label() const { return d_label; }
 
 private:
   // DATA

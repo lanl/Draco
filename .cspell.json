@@ -43,7 +43,7 @@
         "mkdirp",
         "MPI",
         "multigroup",
-        "nodiscard",
+        "[[nodiscard]]",
         "nranks",
         "numa",
         "nvcc",

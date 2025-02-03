@@ -50,14 +50,15 @@ ccs_deb_gcc_1220_deploy:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
 
-ccs_deb_gcc_cxx17_deploy:
+ccs_deb_gcc_cxx20_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1220
-    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=17 -DCMAKE_C_FLAGS="-march=broadwell"
+    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=20 -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
-    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-cxx17
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-cxx20
+    # With intel-classic on Roci, we need to add -gcc-name=/opt/cray/pe/gcc/10.3.0/snos/bin/g++
 
 ccs_rwdi_gcc_1220_deploy:
   extends: .ccscs_deploy
@@ -299,15 +300,6 @@ ccs_gcov:
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
     EXTRA_CMAKE_ARGS: -G Ninja -DCODE_COVERAGE=ON
     CTEST_NPROC: 20
-
-ccs_deb_gcc_1220_cxx17:
-  stage: slowtest
-  extends: .ccscs_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1220
-    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=17
-    CTEST_NPROC: 32
 
 # ccs_valgrind:
 #   stage: slowtest

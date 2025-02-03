@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  Quadrature class header file.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_quadrature_Quadrature_hh
@@ -59,51 +59,53 @@ public:
   Quadrature &operator=(Quadrature &&rhs) noexcept = delete;
 
   // ACCESSORS
-  NODISCARD unsigned sn_order() const { return sn_order_; }
+  [[nodiscard]] unsigned sn_order() const { return sn_order_; }
 
   // SERVICES
 
   //! Returns a string containing the name of the quadrature set.
-  NODISCARD virtual std::string name() const = 0;
+  [[nodiscard]] virtual std::string name() const = 0;
 
   //! Returns a string containing the input deck name of the set.
-  NODISCARD virtual std::string parse_name() const = 0;
+  [[nodiscard]] virtual std::string parse_name() const = 0;
 
   //! Is this an interval or octant (1-D or multi-D) quadrature?
-  NODISCARD virtual Quadrature_Class quadrature_class() const = 0;
+  [[nodiscard]] virtual Quadrature_Class quadrature_class() const = 0;
 
   //! Number of level sets. A value of 0 indicates this is not a level set quadrature.
-  NODISCARD virtual unsigned number_of_levels() const = 0;
+  [[nodiscard]] virtual unsigned number_of_levels() const = 0;
 
   //! Produce a text representation of the object
-  NODISCARD virtual std::string as_text(std::string const &indent) const = 0;
+  [[nodiscard]] virtual std::string as_text(std::string const &indent) const = 0;
 
   //! Are the axes assigned?
-  NODISCARD virtual bool has_axis_assignments() const = 0;
+  [[nodiscard]] virtual bool has_axis_assignments() const = 0;
 
   //! Is the quadrature an open interval quadrature?
-  NODISCARD virtual bool is_open_interval() const;
+  [[nodiscard]] virtual bool is_open_interval() const;
 
-  NODISCARD std::vector<Ordinate> create_ordinates(unsigned dimension, Geometry geometry,
-                                                   double norm, unsigned mu_axis, unsigned eta_axis,
-                                                   bool include_starting_directions,
-                                                   bool include_extra_directions) const;
+  [[nodiscard]] std::vector<Ordinate> create_ordinates(unsigned dimension, Geometry geometry,
+                                                       double norm, unsigned mu_axis,
+                                                       unsigned eta_axis,
+                                                       bool include_starting_directions,
+                                                       bool include_extra_directions) const;
 
-  NODISCARD std::vector<Ordinate> create_ordinates(unsigned dimension, Geometry geometry,
-                                                   double norm, bool include_starting_directions,
-                                                   bool include_extra_directions) const;
+  [[nodiscard]] std::vector<Ordinate> create_ordinates(unsigned dimension, Geometry geometry,
+                                                       double norm,
+                                                       bool include_starting_directions,
+                                                       bool include_extra_directions) const;
 
-  NODISCARD std::shared_ptr<Ordinate_Set>
+  [[nodiscard]] std::shared_ptr<Ordinate_Set>
   create_ordinate_set(unsigned dimension, Geometry geometry, double norm,
                       bool include_starting_directions, bool include_extra_directions,
                       Ordinate_Set::Ordering ordering) const;
 
-  NODISCARD std::shared_ptr<Ordinate_Space>
+  [[nodiscard]] std::shared_ptr<Ordinate_Space>
   create_ordinate_space(unsigned dimension, Geometry geometry, int moment_expansion_order,
                         bool include_extra_directions, Ordinate_Set::Ordering ordering,
                         QIM qim) const;
 
-  NODISCARD std::shared_ptr<Ordinate_Space>
+  [[nodiscard]] std::shared_ptr<Ordinate_Space>
   create_ordinate_space(unsigned dimension, Geometry geometry, unsigned moment_expansion_order,
                         unsigned mu_axis, unsigned eta_axis, bool include_extra_directions,
                         Ordinate_Set::Ordering ordering, QIM qim) const;
@@ -123,13 +125,13 @@ protected:
                  std::vector<double> &eta, std::vector<double> &xi) const;
 
   //! Virtual hook for create_ordinates
-  NODISCARD virtual std::vector<Ordinate>
+  [[nodiscard]] virtual std::vector<Ordinate>
   create_ordinates_(unsigned dimension, Geometry geometry, double norm, unsigned mu_axis,
                     unsigned eta_axis, bool include_starting_directions,
                     bool include_extra_directions) const = 0;
 
   //! Virtual hook for create_ordinates
-  NODISCARD virtual std::vector<Ordinate>
+  [[nodiscard]] virtual std::vector<Ordinate>
   create_ordinates_(unsigned dimension, Geometry geometry, double norm,
                     bool include_starting_directions, bool include_extra_directions) const = 0;
 

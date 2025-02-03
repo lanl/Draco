@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Extensions to the STL algorithm library
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved.
  *
  * This header defines several function templates that perform common numerical operations not
  * standardized in the STL algorithm header. It also defines some useful STL-style predicates. These
@@ -35,10 +35,6 @@ bool is_strict_monotonic_decreasing(Forward_Iterator first, Forward_Iterator con
 template <typename Random_Access_Container>
 bool is_symmetric_matrix(Random_Access_Container const &A, size_t const n,
                          double const tolerance = 1.0e-12);
-
-//! Return the positive difference of the arguments.
-template <typename Ordered_Group_Element>
-inline Ordered_Group_Element dim(Ordered_Group_Element a, Ordered_Group_Element b);
 
 } // namespace rtt_dsxx
 

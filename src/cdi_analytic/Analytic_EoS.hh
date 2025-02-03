@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Oct  2 16:22:32 2001
  * \brief  Analytic_EoS class definition.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Analytic_EoS_hh
@@ -58,49 +58,50 @@ public:
   explicit Analytic_EoS(const sf_char &packed);
 
   // >>> ACCESSORS
-  NODISCARD const_SP_Model get_Analytic_Model() const { return analytic_model; }
+  [[nodiscard]] const_SP_Model get_Analytic_Model() const { return analytic_model; }
 
   // >>> INTERFACE SPECIFIED BY rtt_cdi::EoS
 
   // Get electron internal energy.
-  NODISCARD double getSpecificElectronInternalEnergy(double T, double rho) const override;
-  NODISCARD sf_double getSpecificElectronInternalEnergy(const sf_double &T,
-                                                        const sf_double &rho) const override;
+  [[nodiscard]] double getSpecificElectronInternalEnergy(double T, double rho) const override;
+  [[nodiscard]] sf_double getSpecificElectronInternalEnergy(const sf_double &T,
+                                                            const sf_double &rho) const override;
 
   // Get ion internal energy.
-  NODISCARD double getSpecificIonInternalEnergy(double T, double rho) const override;
-  NODISCARD sf_double getSpecificIonInternalEnergy(const sf_double &T,
-                                                   const sf_double &rho) const override;
+  [[nodiscard]] double getSpecificIonInternalEnergy(double T, double rho) const override;
+  [[nodiscard]] sf_double getSpecificIonInternalEnergy(const sf_double &T,
+                                                       const sf_double &rho) const override;
 
   // Get electron heat capacity.
-  NODISCARD double getElectronHeatCapacity(double T, double rho) const override;
-  NODISCARD sf_double getElectronHeatCapacity(const sf_double &T,
-                                              const sf_double &rho) const override;
+  [[nodiscard]] double getElectronHeatCapacity(double T, double rho) const override;
+  [[nodiscard]] sf_double getElectronHeatCapacity(const sf_double &T,
+                                                  const sf_double &rho) const override;
 
   // Get ion heat capacity.
-  NODISCARD double getIonHeatCapacity(double T, double rho) const override;
-  NODISCARD sf_double getIonHeatCapacity(const sf_double &T, const sf_double &rho) const override;
+  [[nodiscard]] double getIonHeatCapacity(double T, double rho) const override;
+  [[nodiscard]] sf_double getIonHeatCapacity(const sf_double &T,
+                                             const sf_double &rho) const override;
 
   // Get the number of free electrons per ion.
-  NODISCARD double getNumFreeElectronsPerIon(double T, double rho) const override;
-  NODISCARD sf_double getNumFreeElectronsPerIon(const sf_double &T,
-                                                const sf_double &rho) const override;
+  [[nodiscard]] double getNumFreeElectronsPerIon(double T, double rho) const override;
+  [[nodiscard]] sf_double getNumFreeElectronsPerIon(const sf_double &T,
+                                                    const sf_double &rho) const override;
 
   // Get the electron thermal conductivity.
-  NODISCARD double getElectronThermalConductivity(double T, double rho) const override;
-  NODISCARD sf_double getElectronThermalConductivity(const sf_double &T,
-                                                     const sf_double &rho) const override;
+  [[nodiscard]] double getElectronThermalConductivity(double T, double rho) const override;
+  [[nodiscard]] sf_double getElectronThermalConductivity(const sf_double &T,
+                                                         const sf_double &rho) const override;
 
   // Get the new Te, given delta Ue, Te0.
-  NODISCARD double getElectronTemperature(double /*rho*/, double Ue,
-                                          double Tguess = 1.0) const override;
+  [[nodiscard]] double getElectronTemperature(double /*rho*/, double Ue,
+                                              double Tguess = 1.0) const override;
 
   // Get the new Ti, given delta Uic, Ti0.
-  NODISCARD double getIonTemperature(double /*rho*/, double Uic,
-                                     double Tguess = 1.0) const override;
+  [[nodiscard]] double getIonTemperature(double /*rho*/, double Uic,
+                                         double Tguess = 1.0) const override;
 
   // Pack the Analytic_EoS into a character string.
-  NODISCARD sf_char pack() const override;
+  [[nodiscard]] sf_char pack() const override;
 };
 
 } // end namespace rtt_cdi_analytic

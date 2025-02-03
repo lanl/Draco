@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Thu Mar 21 11:42:03 2002
  * \brief  C4 Communication Functions.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
  *
  * This file contains the declarations for communication functions provided by C4. This file allows
  * the client to include the message passing services provided by C4.  The function declarations and
@@ -341,12 +341,7 @@ template <typename T> void global_and(T &x);
  * Only instantiate this function for types L that are integral. Details of this pattern are at
  * https://en.cppreference.com/w/cpp/types/enable_if.
  */
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 template <typename T, typename L, typename std::enable_if_t<std::is_integral_v<L>, bool> = true>
-#else
-template <typename T, typename L,
-          typename std::enable_if_t<std::is_integral<L>::value, bool> = true>
-#endif
 void global_sum(T *x, L n);
 
 //------------------------------------------------------------------------------------------------//

@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Friday, Jul 13, 2018, 08:38 am
  * \brief  RTT_Draco_Mesh_Reader header file.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_RTT_Draco_Mesh_Reader_hh
@@ -41,17 +41,17 @@ public:
 
   // >>> ACCESSORS
 
-  NODISCARD unsigned get_numdim() const override { return rtt_reader->get_dims_ndim(); }
-  NODISCARD size_t get_numcells() const override { return rtt_reader->get_dims_ncells(); }
-  NODISCARD size_t get_numnodes() const override { return rtt_reader->get_dims_nnodes(); }
-  NODISCARD std::vector<double> get_nodecoord(size_t node) const override {
+  [[nodiscard]] unsigned get_numdim() const override { return rtt_reader->get_dims_ndim(); }
+  [[nodiscard]] size_t get_numcells() const override { return rtt_reader->get_dims_ncells(); }
+  [[nodiscard]] size_t get_numnodes() const override { return rtt_reader->get_dims_nnodes(); }
+  [[nodiscard]] std::vector<double> get_nodecoord(size_t node) const override {
     return rtt_reader->get_nodes_coords(node);
   }
-  NODISCARD size_t get_numsides() const override { return rtt_reader->get_dims_nsides(); }
-  NODISCARD unsigned get_sideflag(size_t side) const override {
+  [[nodiscard]] size_t get_numsides() const override { return rtt_reader->get_dims_nsides(); }
+  [[nodiscard]] unsigned get_sideflag(size_t side) const override {
     return rtt_reader->get_sides_flags(side, 0);
   }
-  NODISCARD std::vector<unsigned> get_sidenodes(size_t side) const override {
+  [[nodiscard]] std::vector<unsigned> get_sidenodes(size_t side) const override {
     return rtt_reader->get_sides_nodes(side);
   }
 
@@ -64,10 +64,10 @@ public:
   *
   * \return number of nodes for cell
   */
-  NODISCARD unsigned get_celltype(size_t cell) const override;
-  NODISCARD size_t get_sidetype(size_t side) const override;
-  NODISCARD std::vector<unsigned> get_cellnodes(size_t cell) const override;
-  NODISCARD std::vector<unsigned> get_cellfacenodes(size_t cell, size_t face) const;
+  [[nodiscard]] unsigned get_celltype(size_t cell) const override;
+  [[nodiscard]] size_t get_sidetype(size_t side) const override;
+  [[nodiscard]] std::vector<unsigned> get_cellnodes(size_t cell) const override;
+  [[nodiscard]] std::vector<unsigned> get_cellfacenodes(size_t cell, size_t face) const;
 };
 
 } // end namespace rtt_mesh

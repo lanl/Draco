@@ -4,14 +4,13 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 17:51:52 2000
  * \brief  Viz_Traits test.
- * \note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-#include "dsxx/config.h"
 #include "viz/Viz_Traits.hh"
 #include <cstddef>
 #include <vector>
@@ -33,10 +32,10 @@ public:
   explicit Test_Field(vector<vector<T>> data_in) : data(std::move(data_in)) {}
 
   T operator()(size_t i, size_t j) const { return data[i][j]; }
-  NODISCARD size_t nrows() const { return data.size(); }
-  NODISCARD size_t ncols(size_t r) const { return data[r].size(); }
-  NODISCARD size_t size() const { return data.size(); }
-  NODISCARD vector<T> operator[](size_t i) const { return data[i]; }
+  [[nodiscard]] size_t nrows() const { return data.size(); }
+  [[nodiscard]] size_t ncols(size_t r) const { return data[r].size(); }
+  [[nodiscard]] size_t size() const { return data.size(); }
+  [[nodiscard]] vector<T> operator[](size_t i) const { return data[i]; }
 };
 
 //------------------------------------------------------------------------------------------------//

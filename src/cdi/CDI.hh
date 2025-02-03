@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Thu Jun 22 16:22:06 2000
  * \brief  CDI class header file.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CDI_hh
@@ -727,12 +727,12 @@ public:
   // GETTERS
   // -------
 
-  NODISCARD SP_GrayOpacity gray(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
-  NODISCARD SP_MultigroupOpacity mg(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
-  NODISCARD SP_CPEloss eloss(rtt_cdi::CPModelAngleCutoff mAC, int32_t proj_zaid,
-                             int32_t targ_zaid) const;
-  NODISCARD SP_EoS eos() const;
-  NODISCARD SP_EICoupling ei_coupling() const;
+  [[nodiscard]] SP_GrayOpacity gray(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
+  [[nodiscard]] SP_MultigroupOpacity mg(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
+  [[nodiscard]] SP_CPEloss eloss(rtt_cdi::CPModelAngleCutoff mAC, int32_t proj_zaid,
+                                 int32_t targ_zaid) const;
+  [[nodiscard]] SP_EoS eos() const;
+  [[nodiscard]] SP_EICoupling ei_coupling() const;
 
   //! Collapse Multigroup data to single-interval data with Planck weighting.
   static double collapseMultigroupOpacitiesPlanck(std::vector<double> const &groupBounds,
@@ -758,13 +758,13 @@ public:
                                                      std::vector<double> const &rosselendSpectrum);
 
   //! Return material ID string.
-  NODISCARD const std_string &getMatID() const { return matID; }
+  [[nodiscard]] const std_string &getMatID() const { return matID; }
 
-  NODISCARD bool isGrayOpacitySet(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
-  NODISCARD bool isMultigroupOpacitySet(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
-  NODISCARD bool isCPElossSet(rtt_cdi::CPModelAngleCutoff mAC, int32_t pz, int32_t tz) const;
-  NODISCARD bool isEoSSet() const;
-  NODISCARD bool isEICouplingSet() const;
+  [[nodiscard]] bool isGrayOpacitySet(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
+  [[nodiscard]] bool isMultigroupOpacitySet(rtt_cdi::Model m, rtt_cdi::Reaction r) const;
+  [[nodiscard]] bool isCPElossSet(rtt_cdi::CPModelAngleCutoff mAC, int32_t pz, int32_t tz) const;
+  [[nodiscard]] bool isEoSSet() const;
+  [[nodiscard]] bool isEICouplingSet() const;
 
   //! Copies the vector of the stored frequency group boundary vector
   static std::vector<double> getFrequencyGroupBoundaries();

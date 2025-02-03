@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Dec 21 14:20:03 2004
  * \brief  Declaration file for the class rtt_quadrature::Ordinate.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_OrdinateSet_hh
@@ -54,34 +54,36 @@ public:
   // ACCESSORS
 
   //! Return the ordinates.
-  NODISCARD std::vector<Ordinate> const &ordinates() const { return ordinates_; }
+  [[nodiscard]] std::vector<Ordinate> const &ordinates() const { return ordinates_; }
 
   //! Return the ordinates.
-  NODISCARD std::vector<Ordinate> &ordinates() { return ordinates_; }
+  [[nodiscard]] std::vector<Ordinate> &ordinates() { return ordinates_; }
 
   //! Return the geometry.
-  NODISCARD rtt_mesh_element::Geometry geometry() const { return geometry_; }
+  [[nodiscard]] rtt_mesh_element::Geometry geometry() const { return geometry_; }
 
   //! Return the dimension.
-  NODISCARD unsigned dimension() const { return dimension_; }
+  [[nodiscard]] unsigned dimension() const { return dimension_; }
 
   //! Return the norm.
-  NODISCARD double norm() const { return norm_; }
+  [[nodiscard]] double norm() const { return norm_; }
 
   //! Does this set include starting directions?
-  NODISCARD bool has_starting_directions() const { return has_starting_directions_; }
+  [[nodiscard]] bool has_starting_directions() const { return has_starting_directions_; }
 
   //! Does this set include extra starting directions?
-  NODISCARD bool has_extra_starting_directions() const { return has_extra_starting_directions_; }
+  [[nodiscard]] bool has_extra_starting_directions() const {
+    return has_extra_starting_directions_;
+  }
 
-  NODISCARD Ordering ordering() const { return ordering_; }
+  [[nodiscard]] Ordering ordering() const { return ordering_; }
 
   // SERVICES
 
   //! Print a description of the quadrature set to the terminal.
   void display() const;
 
-  NODISCARD bool check_class_invariants() const;
+  [[nodiscard]] bool check_class_invariants() const;
 
   // STATIC
 

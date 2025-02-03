@@ -4,7 +4,7 @@
  * \author John McGhee
  * \date   Fri Feb 25 08:14:54 2000
  * \brief  Header file for the RTT Mesh_Reader base class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_meshReaders_Mesh_Reader_hh
@@ -59,10 +59,10 @@ public:
    * nodes may be children, dudded, or tracer nodes. The operator [i][j] returns node i, coordinate
    * j.
    */
-  NODISCARD virtual std::vector<std::vector<double>> get_node_coords() const = 0;
+  [[nodiscard]] virtual std::vector<std::vector<double>> get_node_coords() const = 0;
 
   //! Provides the units (inches, feet, cm, meters, etc.) of the node coordinates.
-  NODISCARD virtual std::string get_node_coord_units() const = 0;
+  [[nodiscard]] virtual std::string get_node_coord_units() const = 0;
 
   /*!
    * \brief Returns node numbers of the mesh elements.
@@ -73,14 +73,14 @@ public:
    * including multple dimensions. The elements may be spatially disjoint. The operator [i][j]
    * returns cell i, node j.
    */
-  NODISCARD virtual std::vector<std::vector<unsigned>> get_element_nodes() const = 0;
+  [[nodiscard]] virtual std::vector<std::vector<unsigned>> get_element_nodes() const = 0;
 
   //! Returns the type of all the elements in the mesh.
-  NODISCARD virtual std::vector<rtt_mesh_element::Element_Definition::Element_Type>
+  [[nodiscard]] virtual std::vector<rtt_mesh_element::Element_Definition::Element_Type>
   get_element_types() const = 0;
 
   //! Returns the unique element types that are defined in the mesh.
-  NODISCARD virtual std::vector<rtt_mesh_element::Element_Definition::Element_Type>
+  [[nodiscard]] virtual std::vector<rtt_mesh_element::Element_Definition::Element_Type>
   get_unique_element_types() const = 0;
 
   /*!
@@ -93,7 +93,7 @@ public:
    * sources. The string key to the map provides a unique and hopefully descriptive name for each
    * node sub-set.
    */
-  NODISCARD virtual std::map<std::string, std::set<unsigned>> get_node_sets() const = 0;
+  [[nodiscard]] virtual std::map<std::string, std::set<unsigned>> get_node_sets() const = 0;
 
   /*!
    * \brief Returns element sub-sets.
@@ -105,20 +105,20 @@ public:
    * edits, sources, material assignments, boudndary conditions, etc. The string key to the map
    * provides a unique and hopefully descriptive name for each element sub-set.
    */
-  NODISCARD virtual std::map<std::string, std::set<unsigned>> get_element_sets() const = 0;
+  [[nodiscard]] virtual std::map<std::string, std::set<unsigned>> get_element_sets() const = 0;
 
   //! Returns the title of the mesh.
-  NODISCARD virtual std::string get_title() const = 0;
+  [[nodiscard]] virtual std::string get_title() const = 0;
 
-  NODISCARD virtual std::vector<std::shared_ptr<rtt_mesh_element::Element_Definition>>
+  [[nodiscard]] virtual std::vector<std::shared_ptr<rtt_mesh_element::Element_Definition>>
   get_element_defs() const {
     return {};
   }
 
   //! Provides a check on the integrity of the mesh data.
-  NODISCARD virtual bool invariant() const = 0;
+  [[nodiscard]] virtual bool invariant() const = 0;
 
-  NODISCARD virtual size_t get_dims_ndim() const = 0;
+  [[nodiscard]] virtual size_t get_dims_ndim() const = 0;
 
 private:
   // IMPLEMENTATION

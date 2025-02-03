@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2019 Nov 4
  * \brief  NDI_TNReaction class definition.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef cdi_ndi_NDI_TNReaction_hh
@@ -59,49 +59,49 @@ public:
   NDI_TNReaction &operator=(NDI_TNReaction &&rhs) noexcept = delete;
 
   //! Return spectrum PDF at a given temperature
-  NODISCARD std::vector<double> get_PDF(const int product_zaid, const double temperature) const;
+  [[nodiscard]] std::vector<double> get_PDF(const int product_zaid, const double temperature) const;
 
   //! Get the reaction
-  NODISCARD inline std::string get_reaction() const & { return reaction; }
+  [[nodiscard]] inline std::string get_reaction() const & { return reaction; }
 
   //! Get the name of the reaction from the NDI file
-  NODISCARD inline std::string get_reaction_name() const & { return reaction_name; }
+  [[nodiscard]] inline std::string get_reaction_name() const & { return reaction_name; }
 
   //! Get number of reaction products
-  NODISCARD inline uint32_t get_num_products() const {
+  [[nodiscard]] inline uint32_t get_num_products() const {
     return static_cast<uint32_t>(products.size());
   }
 
   //! Get vector of reaction products
-  NODISCARD inline std::vector<int> get_products() const & { return products; }
+  [[nodiscard]] inline std::vector<int> get_products() const & { return products; }
 
   //! Get vector of reaction product multiplicities
-  NODISCARD inline std::vector<int> get_product_multiplicities() const & {
+  [[nodiscard]] inline std::vector<int> get_product_multiplicities() const & {
     return product_multiplicities;
   }
 
   //! Get vector of reaction temperature grid support points
-  NODISCARD inline std::vector<double> get_reaction_temperature() const & {
+  [[nodiscard]] inline std::vector<double> get_reaction_temperature() const & {
     return reaction_temperature;
   }
 
   //! Get vector of incident energy support points
-  NODISCARD inline std::vector<double> get_einbar() const & { return einbar; }
+  [[nodiscard]] inline std::vector<double> get_einbar() const & { return einbar; }
 
   //! Get vector of cross section support points
-  NODISCARD inline std::vector<double> get_sigvbar() const & { return sigvbar; }
+  [[nodiscard]] inline std::vector<double> get_sigvbar() const & { return sigvbar; }
 
   //! Get change in energy due to reaction
-  NODISCARD inline double get_reaction_q() const { return q_reaction; }
+  [[nodiscard]] inline double get_reaction_q() const { return q_reaction; }
 
   //! Get number of groups
-  NODISCARD inline int get_num_groups() const { return num_groups; }
+  [[nodiscard]] inline int get_num_groups() const { return num_groups; }
 
   //! Get group boundaries
-  NODISCARD inline std::vector<double> get_group_bounds() const & { return group_bounds; }
+  [[nodiscard]] inline std::vector<double> get_group_bounds() const & { return group_bounds; }
 
   //! Get group energies
-  NODISCARD inline std::vector<double> get_group_energies() const & { return group_energies; }
+  [[nodiscard]] inline std::vector<double> get_group_energies() const & { return group_energies; }
 
 private:
   //! Name of reaction to read

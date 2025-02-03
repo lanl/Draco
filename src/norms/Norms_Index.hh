@@ -4,7 +4,7 @@
  * \author Rob Lowrie
  * \date   Fri Jan 14 13:00:32 2005
  * \brief  Header file for Norms_Index.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -75,7 +75,7 @@ public:
   // ACCESSORS
 
   /// Returns the index location of the \f$ L_{\infty} \f$ norm.
-  NODISCARD Index_t index_Linf() const { return d_index_Linf; }
+  [[nodiscard]] Index_t index_Linf() const { return d_index_Linf; }
 };
 
 } // namespace rtt_norms

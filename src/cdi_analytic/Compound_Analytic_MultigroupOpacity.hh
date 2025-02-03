@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Nov 13 11:19:59 2001
  * \brief  Compound_Analytic_MultigroupOpacity class definition.
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Compound_Analytic_MultigroupOpacity_hh
@@ -81,27 +81,27 @@ public:
   explicit Compound_Analytic_MultigroupOpacity(const sf_char &packed);
 
   // Check that the class invariant is not violated.
-  NODISCARD bool check_class_invariant() const;
+  [[nodiscard]] bool check_class_invariant() const;
 
   // >>> ACCESSORS
-  NODISCARD const_Model get_Analytic_Model(size_t g) const { return group_models[g - 1]; }
+  [[nodiscard]] const_Model get_Analytic_Model(size_t g) const { return group_models[g - 1]; }
 
   // >>> INTERFACE SPECIFIED BY rtt_cdi::MultigroupOpacity
 
   // Get the group opacities.
-  NODISCARD sf_double getOpacity(double temperature, double density) const override;
+  [[nodiscard]] sf_double getOpacity(double temperature, double density) const override;
 
   // Get the group opacity fields given a field of temperatures.
-  NODISCARD vf_double getOpacity(const sf_double &temperature, double density) const override;
+  [[nodiscard]] vf_double getOpacity(const sf_double &temperature, double density) const override;
 
   // Get the group opacity fields given a field of densities.
-  NODISCARD vf_double getOpacity(double temperature, const sf_double &density) const override;
+  [[nodiscard]] vf_double getOpacity(double temperature, const sf_double &density) const override;
 
   // Get the data description of the opacity.
-  NODISCARD inline std_string getDataDescriptor() const override;
+  [[nodiscard]] inline std_string getDataDescriptor() const override;
 
   // Pack the Compound_Analytic_MultigroupOpacity into a character string.
-  NODISCARD sf_char pack() const override;
+  [[nodiscard]] sf_char pack() const override;
 };
 
 //------------------------------------------------------------------------------------------------//

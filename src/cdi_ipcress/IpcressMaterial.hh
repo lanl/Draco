@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Aug 22 15:15:49 2000
  * \brief  Header file for IpcressMaterial class
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_ipcress_IpcressMaterial_hh
@@ -132,10 +132,10 @@ public:
   // ACCESSORS
 
   //! return the list of known field descriptors
-  NODISCARD std::vector<std::string> listDataFieldNames() const { return fieldNames; }
+  [[nodiscard]] std::vector<std::string> listDataFieldNames() const { return fieldNames; }
 
   //! return the vector of data associated with a field name.
-  NODISCARD std::vector<double> data(std::string const &fieldName) const {
+  [[nodiscard]] std::vector<double> data(std::string const &fieldName) const {
     Require(fieldName.size() > 0);
     Require(find(fieldNames.begin(), fieldNames.end(), fieldName) != fieldNames.end());
     return fieldValues[getFieldIndex(fieldName)];
@@ -145,7 +145,7 @@ private:
   // IMPLEMENTATION
 
   //! Return the index of the provided string as stored in member data 'fieldNames'
-  NODISCARD size_t getFieldIndex(std::string const &fieldName) const {
+  [[nodiscard]] size_t getFieldIndex(std::string const &fieldName) const {
     Require(fieldName.size() > 0);
     Remember(auto pos = find(fieldNames.begin(), fieldNames.end(), fieldName));
     Check(pos != fieldNames.end());

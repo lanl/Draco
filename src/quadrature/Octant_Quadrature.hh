@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Friday, Nov 30, 2012, 08:28 am
  * \brief  A class to encapsulate a 3D Level Symmetric quadrature set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_Octant_Quadrature_hh
@@ -39,10 +39,10 @@ public:
       : Quadrature(sn_order), has_axis_assignments_(true), mu_axis_(mu_axis), eta_axis_(eta_axis) {}
 
   // SERVICES
-  NODISCARD bool has_axis_assignments() const override;
+  [[nodiscard]] bool has_axis_assignments() const override;
 
 protected:
-  NODISCARD std::string as_text(std::string const &indent) const override = 0;
+  [[nodiscard]] std::string as_text(std::string const &indent) const override = 0;
 
   // IMPLEMENTATION
 
@@ -61,16 +61,15 @@ private:
   using Quadrature::create_ordinates_;
 
   //! Virtual hook for create_ordinates
-  NODISCARD std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/,
-                                                    double norm, bool include_starting_directions,
-                                                    bool include_extra_directions) const override;
+  [[nodiscard]] std::vector<Ordinate>
+  create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm,
+                    bool include_starting_directions, bool include_extra_directions) const override;
 
   //! Virtual hook for create_ordinate_set
-  NODISCARD std::vector<Ordinate> create_ordinates_(unsigned dimension, Geometry /*unused*/,
-                                                    double norm, unsigned mu_axis,
-                                                    unsigned eta_axis,
-                                                    bool include_starting_directions,
-                                                    bool include_extra_directions) const override;
+  [[nodiscard]] std::vector<Ordinate>
+  create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm, unsigned mu_axis,
+                    unsigned eta_axis, bool include_starting_directions,
+                    bool include_extra_directions) const override;
 
   // DATA
 

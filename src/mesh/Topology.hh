@@ -4,13 +4,13 @@
  * \author H. Park
  * \date   Aug. 1 2023
  * \brief  Topology class header file.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_Topology_hh
 #define rtt_mesh_Topology_hh
 
-#include "dsxx/config.h" // defines NODISCARD
+#include "dsxx/config.h" // defines [[nodiscard]]
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -106,42 +106,42 @@ public:
   virtual ~Topology() = default;
 
   //! Return the parallel scheme.
-  NODISCARD const std::string &get_parallel_scheme() const { return parallel_scheme_d; }
+  [[nodiscard]] const std::string &get_parallel_scheme() const { return parallel_scheme_d; }
 
   //! Return the number of global cells.
-  NODISCARD int64_t num_cells() const { return num_global_cells_d; }
+  [[nodiscard]] int64_t num_cells() const { return num_global_cells_d; }
 
-  NODISCARD bool valid_global_cell(int cell) const {
+  [[nodiscard]] bool valid_global_cell(int cell) const {
     return (cell >= 1) && (cell <= num_global_cells_d);
   }
 
   // >>> VIRTUAL FUNCTIONS SHARED BY DERIVED CLASSES
 
   //! Return the number of cells on processor.
-  NODISCARD virtual int64_t num_local_cells() const = 0;
+  [[nodiscard]] virtual int64_t num_local_cells() const = 0;
 
-  NODISCARD virtual bool valid_local_cell(int cell) const = 0;
+  [[nodiscard]] virtual bool valid_local_cell(int cell) const = 0;
 
   //! Get the global cell index on-processor.
-  NODISCARD virtual int64_t global_cell(size_t local_cell) const = 0;
+  [[nodiscard]] virtual int64_t global_cell(size_t local_cell) const = 0;
 
   //! Get the local cell index on-processor.
-  NODISCARD virtual int local_cell(int64_t global_cell) const = 0;
+  [[nodiscard]] virtual int local_cell(int64_t global_cell) const = 0;
 
   //! Get the number of boundary cells on a processor.
-  NODISCARD virtual size_t num_ghost_cells() const = 0;
+  [[nodiscard]] virtual size_t num_ghost_cells() const = 0;
 
   //! Get the remote local cell index for a boundary cell.
-  NODISCARD virtual int remote_local_cell(size_t boundary_cell) const = 0;
+  [[nodiscard]] virtual int remote_local_cell(size_t boundary_cell) const = 0;
 
   //! Get the remote processor id for a boundary cell.
-  NODISCARD virtual int remote_proc(size_t boundary_cell) const = 0;
+  [[nodiscard]] virtual int remote_proc(size_t boundary_cell) const = 0;
 
   //! Get the global offset at a rank
-  NODISCARD virtual int64_t get_global_offset(int rank) const = 0;
+  [[nodiscard]] virtual int64_t get_global_offset(int rank) const = 0;
 
   //! Packing function.
-  NODISCARD virtual packed_type pack() const = 0;
+  [[nodiscard]] virtual packed_type pack() const = 0;
 
   //! Diagnostic printing.
   virtual void print(std::ostream &out) const = 0;

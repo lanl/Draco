@@ -4,7 +4,7 @@
  * \author Thomas M. Evans, Geoffrey Furnish
  * \date   Thu Jun  2 09:54:02 2005
  * \brief  C4_Req class definition.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_C4_Req_hh
@@ -66,7 +66,7 @@ public:
   bool complete(C4_Status *status = nullptr);
   void free();
 
-  NODISCARD bool inuse() const {
+  [[nodiscard]] bool inuse() const {
 #ifdef C4_MPI
     if (assigned) {
       Check(r != MPI_REQUEST_NULL);
@@ -114,7 +114,7 @@ public:
   void wait(C4_Status *status = nullptr) { p->wait(status); }
   bool complete(C4_Status *status = nullptr) { return p->complete(status); }
   void free() { p->free(); }
-  NODISCARD bool inuse() const {
+  [[nodiscard]] bool inuse() const {
 #ifndef __clang_analyzer__
     Insist(p != nullptr, "attempting to use freed memory.");
     return p->inuse();

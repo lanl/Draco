@@ -4,13 +4,13 @@
  * \author B.T. Adams
  * \date   Wed Jun 7 10:33:26 2000
  * \brief  Header file for RTT_Format_Reader/Flags class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_RTT_Format_Reader_Flags_hh
 #define rtt_RTT_Format_Reader_Flags_hh
 
-#include "dsxx/config.h" // defines NODISCARD
+#include "dsxx/config.h" // defines [[nodiscard]]
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -55,7 +55,7 @@ public:
    * \param flag Flag index.
    * \return The existence of the flag.
    */
-  NODISCARD bool allowed_flag(size_t flag) const {
+  [[nodiscard]] bool allowed_flag(size_t flag) const {
     return flag_nums.end() != std::find(flag_nums.begin(), flag_nums.end(), static_cast<int>(flag));
   }
 
@@ -63,27 +63,27 @@ public:
    * \brief Returns the name of specified flag type
    * \return The Flag type name.
    */
-  NODISCARD string getFlagType() const { return name; }
+  [[nodiscard]] string getFlagType() const { return name; }
 
   /*!
    * \brief Returns the flag number associated with the specified flag index.
    * \param flag Flag index.
    * \return The Flag number.
    */
-  NODISCARD int getFlagNumber(size_t flag) const { return flag_nums[flag]; }
+  [[nodiscard]] int getFlagNumber(size_t flag) const { return flag_nums[flag]; }
 
   /*!
    * \brief Returns the flag name associated with the specified index.
    * \param flag Flag index.
    * \return The flag name.
    */
-  NODISCARD string getFlagName(size_t flag) const { return flag_names[flag]; }
+  [[nodiscard]] string getFlagName(size_t flag) const { return flag_names[flag]; }
 
   /*!
    * \brief Returns the number of flags.
    * \return The number of flags.
    */
-  NODISCARD size_t getFlagSize() const { return nflags; }
+  [[nodiscard]] size_t getFlagSize() const { return nflags; }
 };
 
 } // end namespace rtt_RTT_Format_Reader

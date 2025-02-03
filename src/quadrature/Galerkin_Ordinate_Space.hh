@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Mon Mar 26 16:11:19 2007
  * \brief  Definition of class Galerkin_Ordinate_Space
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_Galerkin_Ordinate_Space_hh
@@ -53,22 +53,22 @@ public:
 
   // ACCESSORS
 
-  NODISCARD bool check_class_invariants() const;
+  [[nodiscard]] bool check_class_invariants() const;
 
   // SERVICES
 
-  NODISCARD QIM quadrature_interpolation_model() const override;
+  [[nodiscard]] QIM quadrature_interpolation_model() const override;
 
   //! Return the discrete to moment transform matrix
-  NODISCARD std::vector<double> D() const override;
+  [[nodiscard]] std::vector<double> D() const override;
 
   //! Return the moment to discrete transform matrix
-  NODISCARD std::vector<double> M() const override;
+  [[nodiscard]] std::vector<double> M() const override;
 
   /*! Prune any moments beyond the user-specified expansion order. Such moments are included in
    *  Galerkin methods for purposes of computing the M and D matrices, but are then removed from the
    *  moment space unless the GQF interpolation model has been specified. */
-  NODISCARD bool prune() const override { return method_ != GQF; }
+  [[nodiscard]] bool prune() const override { return method_ != GQF; }
 
   // STATICS
 

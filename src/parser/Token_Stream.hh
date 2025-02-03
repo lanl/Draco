@@ -3,7 +3,7 @@
  * \file   Token_Stream.hh
  * \author Kent G. Budge
  * \brief  Definition of class Token_Stream.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Token_Stream_HH
@@ -204,10 +204,10 @@ public:
   // ACCESSORS
 
   //! Return the number of errors reported to the stream since it was last constructed or rewound.
-  NODISCARD unsigned error_count() const noexcept { return error_count_; }
+  [[nodiscard]] unsigned error_count() const noexcept { return error_count_; }
 
   //! Check that all class invariants are satisfied.
-  NODISCARD bool check_class_invariants() const { return true; }
+  [[nodiscard]] bool check_class_invariants() const { return true; }
 
   // STATICS
 

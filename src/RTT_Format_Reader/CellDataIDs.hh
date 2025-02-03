@@ -4,7 +4,7 @@
  * \author B.T. Adams
  * \date   Wed Jun 7 10:33:26 2000
  * \brief  Header file for RTT_Format_Reader/CellDataIDs class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_RTT_Format_Reader_CellDataIDs_hh
@@ -59,7 +59,7 @@ public:
    * \param id_numb cell_data_id index number.
    * \return The cell_data_id name.
    */
-  NODISCARD string get_data_id_name(size_t id_numb) const {
+  [[nodiscard]] string get_data_id_name(size_t id_numb) const {
     Insist(id_numb <= dims.get_ncell_data() - 1, "Invalid cell data id number!");
     return names[id_numb];
   }
@@ -69,7 +69,7 @@ public:
    * \param id_numb cell_data_id index number.
    * \return The cell_data_id units.
    */
-  NODISCARD string get_data_id_units(size_t id_numb) const {
+  [[nodiscard]] string get_data_id_units(size_t id_numb) const {
     Insist(id_numb <= dims.get_ncell_data() - 1, "Invalid cell data id number!");
     return units[id_numb];
   }

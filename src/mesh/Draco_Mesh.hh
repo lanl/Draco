@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Thursday, Jun 07, 2018, 15:38 pm
  * \brief  Draco_Mesh class header file.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_Draco_Mesh_hh
@@ -155,52 +155,56 @@ public:
 
   // >>> ACCESSORS
 
-  NODISCARD unsigned get_dimension() const { return dimension; }
-  NODISCARD Geometry get_geometry() const { return geometry; }
-  NODISCARD unsigned get_num_cells() const { return num_cells; }
-  NODISCARD unsigned get_num_nodes() const { return num_nodes; }
-  NODISCARD std::vector<unsigned> get_side_set_flag() const { return side_set_flag; }
-  NODISCARD std::vector<int> get_ghost_cell_numbers() const { return ghost_cell_number; }
-  NODISCARD std::vector<int> get_ghost_cell_ranks() const { return ghost_cell_rank; }
-  NODISCARD std::vector<std::vector<double>> get_node_coord_vec() const { return node_coord_vec; }
-  NODISCARD std::vector<unsigned> get_num_faces_per_cell() const { return m_num_faces_per_cell; }
-  NODISCARD std::vector<unsigned> get_num_nodes_per_face_per_cell() const {
+  [[nodiscard]] unsigned get_dimension() const { return dimension; }
+  [[nodiscard]] Geometry get_geometry() const { return geometry; }
+  [[nodiscard]] unsigned get_num_cells() const { return num_cells; }
+  [[nodiscard]] unsigned get_num_nodes() const { return num_nodes; }
+  [[nodiscard]] std::vector<unsigned> get_side_set_flag() const { return side_set_flag; }
+  [[nodiscard]] std::vector<int> get_ghost_cell_numbers() const { return ghost_cell_number; }
+  [[nodiscard]] std::vector<int> get_ghost_cell_ranks() const { return ghost_cell_rank; }
+  [[nodiscard]] std::vector<std::vector<double>> get_node_coord_vec() const {
+    return node_coord_vec;
+  }
+  [[nodiscard]] std::vector<unsigned> get_num_faces_per_cell() const {
+    return m_num_faces_per_cell;
+  }
+  [[nodiscard]] std::vector<unsigned> get_num_nodes_per_face_per_cell() const {
     return m_num_nodes_per_face_per_cell;
   }
-  NODISCARD std::vector<std::vector<std::vector<unsigned>>> get_cell_to_node_linkage() const {
+  [[nodiscard]] std::vector<std::vector<std::vector<unsigned>>> get_cell_to_node_linkage() const {
     return m_cell_to_node_linkage;
   }
-  NODISCARD std::vector<unsigned> get_side_node_count() const { return m_side_node_count; }
-  NODISCARD std::vector<unsigned> get_side_to_node_linkage() const {
+  [[nodiscard]] std::vector<unsigned> get_side_node_count() const { return m_side_node_count; }
+  [[nodiscard]] std::vector<unsigned> get_side_to_node_linkage() const {
     return m_side_to_node_linkage;
   }
-  NODISCARD Layout get_cc_linkage() const { return cell_to_cell_linkage; }
-  NODISCARD Layout get_cs_linkage() const { return cell_to_side_linkage; }
-  NODISCARD Layout get_cg_linkage() const { return cell_to_ghost_cell_linkage; }
-  NODISCARD Dual_Layout get_nc_linkage() const { return node_to_cellnode_linkage; }
-  NODISCARD Dual_Ghost_Layout get_ngc_linkage() const { return node_to_ghost_cell_linkage; }
-  NODISCARD Dual_Ghost_Layout_Coords get_ngcoord_linkage() const {
+  [[nodiscard]] Layout get_cc_linkage() const { return cell_to_cell_linkage; }
+  [[nodiscard]] Layout get_cs_linkage() const { return cell_to_side_linkage; }
+  [[nodiscard]] Layout get_cg_linkage() const { return cell_to_ghost_cell_linkage; }
+  [[nodiscard]] Dual_Layout get_nc_linkage() const { return node_to_cellnode_linkage; }
+  [[nodiscard]] Dual_Ghost_Layout get_ngc_linkage() const { return node_to_ghost_cell_linkage; }
+  [[nodiscard]] Dual_Ghost_Layout_Coords get_ngcoord_linkage() const {
     return node_to_ghost_coord_linkage;
   }
 
   // >>> SERVICES
 
-  NODISCARD const std::vector<unsigned> get_cell_nodes(const unsigned cell) const;
-  NODISCARD const std::vector<unsigned> get_flat_cell_node_linkage() const;
-  NODISCARD unsigned get_global_node_index(const unsigned local_node_index) const;
+  [[nodiscard]] const std::vector<unsigned> get_cell_nodes(const unsigned cell) const;
+  [[nodiscard]] const std::vector<unsigned> get_flat_cell_node_linkage() const;
+  [[nodiscard]] unsigned get_global_node_index(const unsigned local_node_index) const;
 
   //! Get face index of adjacent face in neighboring cell
-  NODISCARD int32_t next_face(const int32_t cell, const int32_t face) const;
+  [[nodiscard]] int32_t next_face(const int32_t cell, const int32_t face) const;
 
 private:
   // >>> SUPPORT FUNCTIONS
 
   //! Calculate (merely deserialize) the vector of node coordinates
-  NODISCARD std::vector<std::vector<double>>
+  [[nodiscard]] std::vector<std::vector<double>>
   compute_node_coord_vec(const std::vector<double> &coordinates) const;
 
   //! Convert cell-node linkage into tensor for easier indexing by cell, face
-  NODISCARD std::vector<std::vector<std::vector<unsigned>>>
+  [[nodiscard]] std::vector<std::vector<std::vector<unsigned>>>
   compute_cell_to_node_tensor(const std::vector<unsigned> &num_faces_per_cell,
                               const std::vector<unsigned> &num_nodes_per_face_per_cell,
                               const std::vector<unsigned> &cell_to_node_linkage) const;
@@ -215,7 +219,7 @@ private:
                                     const std::vector<unsigned> &ghost_cell_to_node_linkage);
 
   //! Calculate a map of node vectors to indices (sides, ghost cells)
-  NODISCARD std::map<std::set<unsigned>, unsigned>
+  [[nodiscard]] std::map<std::set<unsigned>, unsigned>
   compute_node_vec_indx_map(const std::vector<unsigned> &indx_type,
                             const std::vector<unsigned> &indx_to_node_linkage) const;
 

@@ -3,7 +3,7 @@
  * \file   Parallel_File_Token_Stream.hh
  * \author Kent G. Budge
  * \brief  Definition of class Parallel_File_Token_Stream.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Parallel_File_Token_Stream_HH
@@ -61,17 +61,17 @@ public:
   // ACCESSORS
 
   //! Check the class invariants.
-  NODISCARD bool check_class_invariants() const;
+  [[nodiscard]] bool check_class_invariants() const;
 
 protected:
   // IMPLEMENTATION
 
-  NODISCARD string location_() const override;
+  [[nodiscard]] string location_() const override;
 
   void fill_character_buffer_() override;
 
-  NODISCARD bool error_() const override;
-  NODISCARD bool end_() const override;
+  [[nodiscard]] bool error_() const override;
+  [[nodiscard]] bool end_() const override;
 
   void push_include(std::string &include_file_name) override;
   void pop_include() override;

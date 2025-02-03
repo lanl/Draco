@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   March 2019
  * \brief  EICoupling class header file (an abstract class)
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_EICoupling_hh
@@ -78,9 +78,10 @@ public:
    *    Preston, and Singleton, 'Physics Reports', V410, Issue 4, 2005)
    * \return A electron-ion coupling coeffiecent (kJ/g/K/s).
    */
-  NODISCARD virtual double getElectronIonCoupling(const double eTemperature,
-                                                  const double iTemperature, const double density,
-                                                  const double w_e, const double w_i) const = 0;
+  [[nodiscard]] virtual double getElectronIonCoupling(const double eTemperature,
+                                                      const double iTemperature,
+                                                      const double density, const double w_e,
+                                                      const double w_i) const = 0;
 
   /*!
    * \brief EICoupling accessor that returns a vector electron-ion coupling coefficients.
@@ -96,7 +97,7 @@ public:
    *     Preston, and Singleton, 'Physics Reports', V410, Issue 4, 2005)
    * \return A vector of electron-ion coupling coeffiecent (kJ/g/K/s).
    */
-  NODISCARD virtual std::vector<double>
+  [[nodiscard]] virtual std::vector<double>
   getElectronIonCoupling(const std::vector<double> &vetemperature,
                          const std::vector<double> &vitemperature,
                          const std::vector<double> &vdensity, const std::vector<double> &vw_e,
@@ -109,7 +110,7 @@ public:
    * Thus, even though one can pack a EICoupling through a base class pointer, the client must know
    * the derived type when unpacking.
    */
-  NODISCARD virtual std::vector<char> pack() const = 0;
+  [[nodiscard]] virtual std::vector<char> pack() const = 0;
 
 }; // end of class EICoupling
 

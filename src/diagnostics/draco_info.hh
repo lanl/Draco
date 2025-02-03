@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wednesday, Nov 07, 2012, 18:49 pm
  * \brief  Small executable that prints the version and copyright strings.
- * \note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_diagnostics_draco_info_hh
@@ -79,13 +79,13 @@ public:
 
   /*! \brief Construct an information message that includes Draco's version, copyright and basic
    *         build parameters. */
-  NODISCARD std::string fullReport() const;
+  [[nodiscard]] std::string fullReport() const;
 
   //! Version and (C)
-  NODISCARD std::string briefReport() const;
+  [[nodiscard]] std::string briefReport() const;
 
   //! Version only
-  NODISCARD std::string versionReport() const;
+  [[nodiscard]] std::string versionReport() const;
 
 private:
   // DATA

@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Wed Jul 26 07:53:32 2006
  * \brief  Definition of class Constant_Expression
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef parser_Constant_Expression_hh
@@ -50,7 +50,7 @@ public:
 
   // ACCESSORS
 
-  NODISCARD bool is_constant() const override { return true; }
+  [[nodiscard]] bool is_constant() const override { return true; }
 
 private:
   // IMPLEMENTATION
@@ -66,7 +66,7 @@ private:
     }
   }
 
-  NODISCARD bool is_constant_(unsigned /*unused*/) const override { return true; }
+  [[nodiscard]] bool is_constant_(unsigned /*unused*/) const override { return true; }
 };
 
 } // end namespace rtt_parser

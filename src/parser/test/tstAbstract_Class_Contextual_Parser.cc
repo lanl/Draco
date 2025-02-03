@@ -4,14 +4,13 @@
  * \author Kent G. Budge
  * \date   Tue Nov  9 14:34:11 2010
  * \brief  Test the Abstract_Class_Contextual_Parser template
- * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-#include "dsxx/config.h"
 #include "parser/Abstract_Class_Parser.hh"
 #include "parser/Class_Parse_Table.hh"
 #include "parser/Contextual_Parse_Functor.hh"
@@ -44,7 +43,7 @@ public:
   // The argument is provided by the parser context and has a magic value, 42, if the parser has
   // handled context correctly.
 
-  NODISCARD int magic() const { return magic_; }
+  [[nodiscard]] int magic() const { return magic_; }
 
   virtual ~Parent() = default;
 
@@ -88,7 +87,7 @@ public:
 
   // SERVICES
 
-  NODISCARD bool allow_exit() const { return false; }
+  [[nodiscard]] bool allow_exit() const { return false; }
 
   void check_completeness(Token_Stream &tokens) {
     if (!child_) {
@@ -100,7 +99,7 @@ public:
 
   // STATICS
 
-  NODISCARD Parse_Table const &parse_table() const { return parse_table_; }
+  [[nodiscard]] Parse_Table const &parse_table() const { return parse_table_; }
 
   static void register_model(string const &keyword,
                              std::shared_ptr<Parent> parse_function(Token_Stream &, int const &)) {
@@ -204,9 +203,9 @@ public:
 
   // SERVICES
 
-  NODISCARD bool allow_exit() const { return false; }
+  [[nodiscard]] bool allow_exit() const { return false; }
 
-  NODISCARD Parse_Table const &parse_table() const { return parse_table_; }
+  [[nodiscard]] Parse_Table const &parse_table() const { return parse_table_; }
 
   void check_completeness(Token_Stream &tokens) {
     if (rtt_dsxx::soft_equiv(snips_and_snails, -1.0, std::numeric_limits<double>::epsilon())) {
@@ -301,9 +300,9 @@ public:
 
   // SERVICES
 
-  NODISCARD bool allow_exit() const { return false; }
+  [[nodiscard]] bool allow_exit() const { return false; }
 
-  NODISCARD Parse_Table const &parse_table() const { return parse_table_; }
+  [[nodiscard]] Parse_Table const &parse_table() const { return parse_table_; }
 
   void check_completeness(Token_Stream &tokens) {
     if (rtt_dsxx::soft_equiv(sugar_and_spice, -1.0, std::numeric_limits<double>::epsilon())) {

@@ -2,7 +2,7 @@
 /*!
  * \file   c4/Processor_Group.hh
  * \brief  Definition of class Processor_Group
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_Processor_Group_hh
@@ -47,9 +47,9 @@ public:
   // ACCESSORS
 
   //! Get the number of processors in the group.
-  NODISCARD unsigned size() const { return size_; }
+  [[nodiscard]] unsigned size() const { return size_; }
 
-  NODISCARD bool check_class_invariants() const { return (size() > 0); }
+  [[nodiscard]] bool check_class_invariants() const { return (size() > 0); }
 
   // SERVICES
 

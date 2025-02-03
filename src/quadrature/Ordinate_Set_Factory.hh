@@ -4,7 +4,7 @@
  * \author Allan Wollaber
  * \date   Mon Mar  7 10:42:56 EST 2016
  * \brief  Builds an Ordinate_Set using a Quadrature_Interface struct
- * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_Ordinate_Set_Factory_hh
@@ -35,7 +35,7 @@ public:
   // SERVICES
 
   //! Returns a smart pointer to the Quadrature object
-  NODISCARD std::shared_ptr<Ordinate_Set> get_Ordinate_Set() const;
+  [[nodiscard]] std::shared_ptr<Ordinate_Set> get_Ordinate_Set() const;
 
 private:
   // DATA

@@ -4,7 +4,7 @@
  * \author Allan Wollaber
  * \date   Mon Mar  7 10:42:56 EST 2016
  * \brief  Declarations for the class rtt_quadrature::Ordinate_Set_Mapper.
- * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_OrdinateSetMapper_hh
@@ -50,7 +50,7 @@ public:
   // SERVICES
 
   //! Simple check of integrity of the private data
-  NODISCARD bool check_class_invariants() const;
+  [[nodiscard]] bool check_class_invariants() const;
 
   //! Maps an ordinate and weight into the ordinate set
   void map_angle_into_ordinates(const Ordinate &ord_in, const Interpolation_Type &interp_in,
@@ -111,7 +111,7 @@ private:
   };
 
   //! Simple function to integrate the 0th moment
-  NODISCARD double zeroth_moment(const std::vector<double> &weights) const;
+  [[nodiscard]] double zeroth_moment(const std::vector<double> &weights) const;
 };
 
 } // end namespace rtt_quadrature

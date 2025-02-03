@@ -4,7 +4,7 @@
  * \author B.T. Adams
  * \date   Wed Jun 7 10:33:26 2000
  * \brief  Header file for RTT_Format_Reader/Cells class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_RTT_Format_Reader_Cells_hh
@@ -53,20 +53,20 @@ public:
    * \param cell_numb Cell number.
    * \return The cell type.
    */
-  NODISCARD int get_type(size_t cell_numb) const { return cellType[cell_numb]; }
+  [[nodiscard]] int get_type(size_t cell_numb) const { return cellType[cell_numb]; }
 
   /*!
    * \brief Returns all of the node numbers for each of the cells.
    * \return The node numbers for all cells.
   */
-  NODISCARD vector_vector_uint get_nodes() const { return nodes; }
+  [[nodiscard]] vector_vector_uint get_nodes() const { return nodes; }
 
   /*!
    * \brief Returns all of the node numbers associated with the specified cell.
    * \param cell_numb Cell number.
    * \return The cell node numbers.
    */
-  NODISCARD vector_uint get_nodes(size_t cell_numb) const { return nodes[cell_numb]; }
+  [[nodiscard]] vector_uint get_nodes(size_t cell_numb) const { return nodes[cell_numb]; }
 
   /*!
    * \brief Returns the node number associated with the specified cell and cell-node index.
@@ -74,7 +74,7 @@ public:
    * \param node_numb Cell-node index number.
    * \return The cell node number.
    */
-  NODISCARD int get_nodes(size_t cell_numb, size_t node_numb) const {
+  [[nodiscard]] int get_nodes(size_t cell_numb, size_t node_numb) const {
     return nodes[cell_numb][node_numb];
   }
 
@@ -84,7 +84,7 @@ public:
    * \param flag_numb Cell flag index.
    * \return The cell flag.
    */
-  NODISCARD int get_flags(size_t cell_numb, size_t flag_numb) const {
+  [[nodiscard]] int get_flags(size_t cell_numb, size_t flag_numb) const {
     return flags[cell_numb][flag_numb];
   }
 

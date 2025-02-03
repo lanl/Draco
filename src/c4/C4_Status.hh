@@ -4,7 +4,7 @@
  * \author Robert B. Lowrie
  * \date   Friday May 19 6:54:21 2017
  * \brief  C4_Status class definition.
- * \note   Copyright (C) 2017-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2017-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_C4_Status_hh
@@ -42,10 +42,10 @@ class C4_Status {
 
 public:
   //! Returns the message size (in bytes) of the last communication.
-  NODISCARD int get_message_size() const;
+  [[nodiscard]] int get_message_size() const;
 
   //! Returns the sending rank of the last communication.
-  NODISCARD int get_source() const;
+  [[nodiscard]] int get_source() const;
 
   //! Return a handle to the underlying data status object.
   status_type *get_status_obj() { return &d_status; }

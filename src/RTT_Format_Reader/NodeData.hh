@@ -4,7 +4,7 @@
  * \author B.T. Adams
  * \date   Wed Jun 7 10:33:26 2000
  * \brief  Header file for RTT_Format_Reader/NodeData class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_RTT_Format_Reader_NodeData_hh
@@ -51,14 +51,14 @@ public:
    * \brief Returns all of the data field values for each of the nodes.
    * \return The data field values for each of the nodes.
    */
-  NODISCARD vector_vector_dbl get_data() const { return data; }
+  [[nodiscard]] vector_vector_dbl get_data() const { return data; }
 
   /*!
    * \brief Returns all of the data field values for the specified node.
    * \param node_numb Node number.
    * \return The node data field values.
    */
-  NODISCARD vector_dbl get_data(size_t node_numb) const { return data[node_numb]; }
+  [[nodiscard]] vector_dbl get_data(size_t node_numb) const { return data[node_numb]; }
 
   /*!
    * \brief Returns the specified data field value for the specified node.
@@ -66,7 +66,7 @@ public:
    * \param data_index Data field.
    * \return The node data field value.
    */
-  NODISCARD double get_data(size_t node_numb, size_t data_index) const {
+  [[nodiscard]] double get_data(size_t node_numb, size_t data_index) const {
     return data[node_numb][data_index];
   }
 };

@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  New or overloaded cmath or cmath-like functions.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_DracoMath_hh
@@ -44,33 +44,9 @@ template <> inline std::complex<double> conj(const std::complex<double> &arg) {
  * \return x^3
  *
  * \c Semigroup is a type representing an algebraic structure closed under multiplication such as
- * the integers or the reals.
+ *    the integers or the reals.
  */
 template <typename Semigroup> inline Semigroup cube(Semigroup const &x) { return x * x * x; }
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief Return the positive difference of the arguments.
- *
- * This is a replacement for the FORTRAN DIM function.
- *
- * \arg \a Ordered_Group_Element A type for which operator< and unary operator- are defined and
- *      which can be constructed from a literal \c 0.
- *
- * \param a Minuend
- * \param b Subtrahend
- * \return max(0, a-b)
- *
- * \deprecated A FORTRAN relic that should disappear eventually.
- */
-template <typename Ordered_Group_Element>
-/* [[deprecated]] */ inline Ordered_Group_Element dim(Ordered_Group_Element a,
-                                                      Ordered_Group_Element b) {
-  if (a < b)
-    return Ordered_Group_Element(0);
-  else
-    return a - b;
-}
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -144,13 +120,8 @@ template <typename Ordered_Group> inline Ordered_Group sign(Ordered_Group a, Ord
  * If concerned about overflow, consider 1 + ((n-1)/d).
  */
 template <typename T>
-constexpr inline typename
-#if defined(__cplusplus) && __cplusplus > 201402L
-    std::enable_if_t<std::is_integral_v<T>, T>
-#else
-    std::enable_if_t<std::is_integral<T>::value, T>
-#endif
-    ceil_int_division(T const n, T const d) {
+constexpr inline typename std::enable_if_t<std::is_integral_v<T>, T> ceil_int_division(T const n,
+                                                                                       T const d) {
   Require(d != 0);
   return (n + d - 1) / d;
 }

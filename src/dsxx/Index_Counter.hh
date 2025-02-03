@@ -3,7 +3,7 @@
  * \file   dsxx/Index_Counter.hh
  * \author Mike Buksas
  * \date   Tue Jan 31 16:45:39 2006
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_Index_Counter_hh
@@ -65,15 +65,15 @@ public:
   }
 
   // Accessors for the 1-index
-  NODISCARD int get_index() const { return index; }
+  [[nodiscard]] int get_index() const { return index; }
 
   // Accessors for the N-indices
-  NODISCARD int get_index(unsigned d) const {
+  [[nodiscard]] int get_index(unsigned d) const {
     Check(dimension_okay(d));
     return indices[d];
   }
 
-  NODISCARD std::vector<int> get_indices() const {
+  [[nodiscard]] std::vector<int> get_indices() const {
     return std::vector<int>(indices.begin(), indices.begin() + D);
   }
 
@@ -81,7 +81,7 @@ public:
     std::copy(indices.begin(), indices.begin() + D, out);
   }
 
-  NODISCARD bool is_in_range() const { return in_range; }
+  [[nodiscard]] bool is_in_range() const { return in_range; }
 
 private:
   // DATA
@@ -97,7 +97,7 @@ private:
   void increment();
   void decrement();
 
-  NODISCARD bool dimension_okay(size_t d) const { return d < D; }
+  [[nodiscard]] bool dimension_okay(size_t d) const { return d < D; }
 };
 
 //------------------------------------------------------------------------------------------------//

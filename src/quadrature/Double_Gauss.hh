@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Feb 22 10:21:50 2000
  * \brief  A class representing an interval double Gauss-Legendre quadrature set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_quadrature_Double_Gauss_hh
@@ -33,17 +33,17 @@ public:
   explicit Double_Gauss(unsigned sn_order);
 
   // SERVICES
-  NODISCARD std::string name() const override;
-  NODISCARD std::string parse_name() const override;
-  NODISCARD unsigned number_of_levels() const override;
-  NODISCARD std::string as_text(std::string const &indent) const override;
-  NODISCARD bool check_class_invariants() const;
+  [[nodiscard]] std::string name() const override;
+  [[nodiscard]] std::string parse_name() const override;
+  [[nodiscard]] unsigned number_of_levels() const override;
+  [[nodiscard]] std::string as_text(std::string const &indent) const override;
+  [[nodiscard]] bool check_class_invariants() const;
 
   // STATICS
   static std::shared_ptr<Quadrature> parse(Token_Stream &tokens);
 
 protected:
-  NODISCARD std::vector<Ordinate> create_level_ordinates_(double norm) const override;
+  [[nodiscard]] std::vector<Ordinate> create_level_ordinates_(double norm) const override;
 };
 
 } // end namespace rtt_quadrature

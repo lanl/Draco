@@ -3,14 +3,13 @@
  * \file   parser/test/tstClass_Parser.cc
  * \author Kent Budge
  * \date   Mon Aug 28 07:36:50 2006
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-#include "dsxx/config.h"
 #include "parser/Class_Parse_Table.hh"
 #include "parser/Parse_Table.hh"
 #include "parser/String_Token_Stream.hh"
@@ -29,7 +28,7 @@ using namespace rtt_parser;
 class DummyClass {
 public:
   explicit DummyClass(double const insouciance_in) noexcept : insouciance(insouciance_in) {}
-  NODISCARD double Get_Insouciance() const { return insouciance; }
+  [[nodiscard]] double Get_Insouciance() const { return insouciance; }
 
 private:
   double insouciance;

@@ -3,7 +3,7 @@
  * \file   quadrature/Moment.hh
  * \author Kent Budge
  * \brief  Declaration file for the class rtt_quadrature::Moment.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_Moment_hh
@@ -41,8 +41,8 @@ public:
 
   // Accessors
 
-  NODISCARD unsigned L() const { return L_; }
-  NODISCARD int M() const { return M_; }
+  [[nodiscard]] unsigned L() const { return L_; }
+  [[nodiscard]] int M() const { return M_; }
 
 private:
   // DATA

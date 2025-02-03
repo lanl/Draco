@@ -3,7 +3,7 @@
  * \file   cdi_analytic/Pseudo_Line_Base.hh
  * \author Kent G. Budge
  * \date   Tue Apr  5 08:36:13 MDT 2011
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_analytic_Pseudo_Line_Base_hh
@@ -104,15 +104,15 @@ public:
   Pseudo_Line_Base &operator=(Pseudo_Line_Base const &rhs) = delete;
   Pseudo_Line_Base &operator=(Pseudo_Line_Base &&rhs) noexcept = delete;
 
-  NODISCARD double line_width() const { return line_width_; }
-  NODISCARD double Tref() const { return Tref_; }
-  NODISCARD double Tpow() const { return Tpow_; }
+  [[nodiscard]] double line_width() const { return line_width_; }
+  [[nodiscard]] double Tref() const { return Tref_; }
+  [[nodiscard]] double Tpow() const { return Tpow_; }
 
   //! Pack up the class for persistence.
-  NODISCARD vector<char> pack() const;
+  [[nodiscard]] vector<char> pack() const;
 
   //! Compute a monochromatic opacity
-  NODISCARD double monoOpacity(double nu, double T) const;
+  [[nodiscard]] double monoOpacity(double nu, double T) const;
 
   static double BB(double const T, double const x) {
     double const e = expm1(x / T);

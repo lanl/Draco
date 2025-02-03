@@ -3,7 +3,7 @@
  * \file   parser/File_Token_Stream.hh
  * \author Kent G. Budge
  * \brief  Definition of class File_Token_Stream.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -56,11 +56,11 @@ public:
 protected:
   // IMPLEMENTATION
 
-  NODISCARD string location_() const override;
+  [[nodiscard]] string location_() const override;
 
   void fill_character_buffer_() override;
-  NODISCARD bool error_() const override;
-  NODISCARD bool end_() const override;
+  [[nodiscard]] bool error_() const override;
+  [[nodiscard]] bool end_() const override;
 
   void push_include(std::string &file_name) override;
   void pop_include() override;

@@ -2,7 +2,7 @@
 /*!
  * \file   dsxx/path.hh
  * \brief  Encapsulate path information (path separator, etc.)
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_path_hh
@@ -10,16 +10,8 @@
 
 #include "Assert.hh"
 #include "SystemCall.hh"
-#include <iostream>
-
-#if defined(__cplusplus) & __cplusplus > 201402L // C++17 or newer
 #include <filesystem>
-#else
-#if defined UNIX || defined MINGW
-#include <dirent.h>   // struct DIR
-#include <sys/stat.h> // struct stat; S_ISDIR
-#endif
-#endif
+#include <iostream>
 
 namespace rtt_dsxx {
 
@@ -81,8 +73,6 @@ public:
 template <typename T>
 void draco_walk_directory_tree(std::string const &dirname, T const &myOperator) {
 
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
-
   namespace fs = std::filesystem;
 
   // If file does not exist, report and continue.
@@ -103,100 +93,6 @@ void draco_walk_directory_tree(std::string const &dirname, T const &myOperator) 
   // Perform action on the top level entry
   myOperator(dirname);
 
-#else // prior to C++17
-
-  // If file does not exist, report and continue.
-  if (!fileExists(dirname)) {
-    std::cout << "File/directory \"" << dirname << "\"does not exist.  Continuing...\n";
-    return;
-  }
-
-#ifdef _MSC_VER
-  /*! \note If path contains the location of a directory, it cannot contain a trailing backslash. If
-   * it does, -1 will be returned and errno will be set to ENOENT. */
-  std::string d_name;
-  if (dirname[dirname.size() - 1] == rtt_dsxx::WinDirSep ||
-      dirname[dirname.size() - 1] == rtt_dsxx::UnixDirSep)
-    d_name = dirname.substr(0, dirname.size() - 1);
-  else
-    d_name = dirname;
-
-  // If this is not a directory, no recursion is needed:
-  if (isDirectory(dirname)) {
-    // Handle to the file/directory
-    WIN32_FIND_DATA FileInformation;
-
-    // Pattern to match all items in the current directory.
-    std::string strPattern = d_name + "\\*.*";
-
-    // Handle to directory
-    HANDLE hFile = ::FindFirstFile(strPattern.c_str(), &FileInformation);
-
-    // sanity check
-    Insist(hFile != INVALID_HANDLE_VALUE, "Invalid file handle.");
-
-    // Loop over all files in the current directory.
-    do {
-      // Do not process '.' or '..'
-      if (FileInformation.cFileName[0] == '.')
-        continue;
-
-      std::string itemPath(d_name + "\\" + FileInformation.cFileName);
-
-      // if the entry is a directory, recursively delete it, otherwise, delete the file:
-      if (draco_getstat(itemPath).isdir())
-        draco_walk_directory_tree(itemPath, myOperator);
-      else
-        myOperator(itemPath);
-
-    } while (::FindNextFile(hFile, &FileInformation) == TRUE);
-
-    // Close handle
-    ::FindClose(hFile);
-  }
-
-  // Perform action on the top level entry
-  myOperator(d_name);
-
-#else
-  // If this is not a directory, no recursion is needed:
-  if (isDirectory(dirname)) {
-    DIR *dir; // Handle to directory
-    struct dirent *entry;
-    // struct stat statbuf;
-
-    dir = opendir(dirname.c_str());
-    Insist(dir != nullptr, "Error opendir()");
-
-    // Loop over all entries in the current directory.
-    while ((entry = readdir(dir)) != nullptr) {
-      std::string d_name(entry->d_name); // NOLINT [hicpp-no-array-decay]
-
-      // Don't include "." or ".." entries.
-      if (d_name[0] == '.')
-        continue;
-
-      std::string itemPath;
-      std::string const uds(1, UnixDirSep);
-      if (dirname[dirname.length() - 1] == UnixDirSep)
-        itemPath.append(dirname).append(d_name);
-      else
-        itemPath.append(dirname).append(uds).append(d_name);
-
-      // if the entry is a directory, recursively delete it, otherwise, delete the file
-      if (draco_getstat(itemPath).isdir())
-        draco_walk_directory_tree(itemPath, myOperator);
-      else
-        myOperator(itemPath);
-    }
-    closedir(dir);
-  }
-
-  // Perform action on the top level entry
-  myOperator(dirname);
-
-#endif // MSVC
-#endif // C++17
   return;
 }
 

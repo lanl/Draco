@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 16:36:10 2000
  * \brief  Ensight_Translator header file.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_viz_Ensight_Translator_hh
@@ -225,17 +225,10 @@ public:
                      const double reset_time = -1.0);
 
   // Do an Ensight_Dump.
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
   template <typename ISF, typename IVF, typename SSF, typename FVF>
   std::enable_if_t<std::is_integral_v<typename ISF::value_type> &&
                        std::is_unsigned_v<typename ISF::value_type>,
                    void>
-#else
-  template <typename ISF, typename IVF, typename SSF, typename FVF>
-  std::enable_if_t<std::is_integral<typename ISF::value_type>::value &&
-                       std::is_unsigned<typename ISF::value_type>::value,
-                   void>
-#endif
   ensight_dump(int icycle, double time, double dt, const IVF &ipar, const ISF &iel_type,
                const ISF &cell_rgn_index, const FVF &pt_coor, const FVF &vrtx_data,
                const FVF &cell_data, const ISF &rgn_numbers, const SSF &rgn_name);
@@ -247,17 +240,10 @@ public:
   void close();
 
   // Write ensight data for a single part.
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
   template <typename ISF, typename IVF, typename FVF>
   std::enable_if_t<std::is_integral_v<typename ISF::value_type> &&
                        std::is_unsigned_v<typename ISF::value_type>,
                    void>
-#else
-  template <typename ISF, typename IVF, typename FVF>
-  std::enable_if_t<std::is_integral<typename ISF::value_type>::value &&
-                       std::is_unsigned<typename ISF::value_type>::value,
-                   void>
-#endif
   write_part(uint32_t part_num, const std::string &part_name, const IVF &ipar_in,
              const ISF &iel_type, const FVF &pt_coor_in, const FVF &vrtx_data_in,
              const FVF &cell_data_in, const ISF &g_vrtx_indices, const ISF &g_cell_indices);
@@ -265,7 +251,7 @@ public:
   // >>> ACCESSORS
 
   //! Get the list of dump times.
-  NODISCARD const sf_double &get_dump_times() const { return d_dump_times; }
+  [[nodiscard]] const sf_double &get_dump_times() const { return d_dump_times; }
 };
 
 } // end namespace rtt_viz

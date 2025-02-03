@@ -4,13 +4,13 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Friday, Jul 13, 2018, 13:48 pm
  * \brief  RTT_Draco_Mesh_Reader header file.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_Draco_Mesh_Reader_hh
 #define rtt_mesh_Draco_Mesh_Reader_hh
 
-#include "dsxx/config.h" // defines NODISCARD
+#include "dsxx/config.h"
 #include <cstddef>
 #include <vector>
 
@@ -36,16 +36,16 @@ public:
 
   // >>> ACCESSORS
 
-  NODISCARD virtual unsigned get_numdim() const = 0;
-  NODISCARD virtual size_t get_numcells() const = 0;
-  NODISCARD virtual size_t get_numnodes() const = 0;
-  NODISCARD virtual std::vector<double> get_nodecoord(size_t node) const = 0;
-  NODISCARD virtual std::vector<unsigned> get_cellnodes(size_t cell) const = 0;
-  NODISCARD virtual size_t get_numsides() const = 0;
-  NODISCARD virtual unsigned get_sideflag(size_t side) const = 0;
-  NODISCARD virtual std::vector<unsigned> get_sidenodes(size_t side) const = 0;
-  NODISCARD virtual unsigned get_celltype(size_t cell) const = 0;
-  NODISCARD virtual size_t get_sidetype(size_t side) const = 0;
+  [[nodiscard]] virtual unsigned get_numdim() const = 0;
+  [[nodiscard]] virtual size_t get_numcells() const = 0;
+  [[nodiscard]] virtual size_t get_numnodes() const = 0;
+  [[nodiscard]] virtual std::vector<double> get_nodecoord(size_t node) const = 0;
+  [[nodiscard]] virtual std::vector<unsigned> get_cellnodes(size_t cell) const = 0;
+  [[nodiscard]] virtual size_t get_numsides() const = 0;
+  [[nodiscard]] virtual unsigned get_sideflag(size_t side) const = 0;
+  [[nodiscard]] virtual std::vector<unsigned> get_sidenodes(size_t side) const = 0;
+  [[nodiscard]] virtual unsigned get_celltype(size_t cell) const = 0;
+  [[nodiscard]] virtual size_t get_sidetype(size_t side) const = 0;
 
   // >>> SERVICES
 

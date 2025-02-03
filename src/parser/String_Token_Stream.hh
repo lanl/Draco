@@ -3,7 +3,7 @@
  * \file   parser/String_Token_Stream.hh
  * \author Kent G. Budge
  * \brief  Definition of class String_Token_Stream.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_String_Token_Stream_HH
@@ -55,22 +55,22 @@ public:
   // ACCESSORS
 
   //! Return the text to be tokenized.
-  NODISCARD string const &text() const { return text_; }
+  [[nodiscard]] string const &text() const { return text_; }
 
   //! Return the accumulated set of messages.
-  NODISCARD string messages() const { return messages_; }
+  [[nodiscard]] string messages() const { return messages_; }
 
   //! Check the class invariant.
-  NODISCARD bool check_class_invariants() const;
+  [[nodiscard]] bool check_class_invariants() const;
 
 protected:
   //! Generate a locator string.
-  NODISCARD string location_() const override;
+  [[nodiscard]] string location_() const override;
 
   void fill_character_buffer_() override;
 
-  NODISCARD bool error_() const override;
-  NODISCARD bool end_() const override;
+  [[nodiscard]] bool error_() const override;
+  [[nodiscard]] bool end_() const override;
 
   void push_include(std::string &include_file_name) override;
   void pop_include() override;

@@ -12,7 +12,10 @@
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
+#include "cdi/CPCommon.hh"
+#include <cstdint>
 #include <string>
+#include <vector>
 
 using rtt_dsxx::soft_equiv;
 
@@ -40,16 +43,16 @@ void simple_collision_test(rtt_dsxx::UnitTest &ut) {
   double const projectile_energy = 1.0; // keV
 
   // Path to stable ACE data provided by Avalanche for testing
-  std::string ndatk_path_base = std::string(AVALANCHE_DIR) + std::string("/../../../") +
-                                std::string(avalanche_test_resources_DIR);
-  std::vector<std::string> ndatk_path_list = {ndatk_path_base,
-                                              ndatk_path_base + std::string("/data")};
+  std::string const ndatk_path_base = std::string(AVALANCHE_DIR) + std::string("/../../../") +
+                                      std::string(avalanche_test_resources_DIR);
+  std::vector<std::string> const ndatk_path_list = {ndatk_path_base,
+                                                    ndatk_path_base + std::string("/data")};
 
   // Create CollisionSource object for this
-  rtt_cdi_cpt::CollisionSource cs(target_in, projectile_in, "endf71x", ndatk_path_list);
+  rtt_cdi_cpt::CollisionSource const cs(target_in, projectile_in, "endf71x", ndatk_path_list);
 
   // Create false RNG
-  DNG dng;
+  DNG const dng;
 
   auto target_compare = cs.get_target();
   FAIL_IF_NOT(target_compare.get_zaid() == target_in.get_zaid());
@@ -75,6 +78,9 @@ void simple_collision_test(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(
       soft_equiv(cs.get_cross_section(projectile_energy, 0.00001) * 1.e24, 2.030269e1, 1.e-5));
 
+  // * Don't warn about missing include directives for avalanche, ndatk, and shacl.
+  // * NOLINTBEGIN(misc-include-cleaner)
+
   // Retest with persistent interpolation caches at different temperatures
   auto interpCache = shacl::physics::makeInterpolationCache(cs.get_incident_energies(0.1),
                                                             projectile_energy / 1000.);
@@ -88,6 +94,8 @@ void simple_collision_test(rtt_dsxx::UnitTest &ut) {
                                                        projectile_energy / 1000.);
   FAIL_IF_NOT(soft_equiv(cs.get_cross_section(projectile_energy, 0.00001, interpCache) * 1.e24,
                          2.030269e1, 1.e-5));
+
+  // NOLINTEND(misc-include-cleaner)
 
   FAIL_IF_NOT(
       soft_equiv(cs.sample_target_energy_delta(projectile_energy, 0.1, dng), 5.005503e-01, 1e-5));

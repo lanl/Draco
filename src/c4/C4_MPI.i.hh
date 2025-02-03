@@ -4,7 +4,7 @@
  * \author Alex R Long
  * \date   Mon Aug 21 07:47:01 2017
  * \brief  C4 MPI standard implementations.
- * \note   Copyright (C) 2017-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2017-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_C4_MPI_i_hh
@@ -17,11 +17,7 @@
 namespace rtt_c4 {
 
 //------------------------------------------------------------------------------------------------//
-#if defined(__cplusplus) && __cplusplus > 201402L // C++17
 template <typename T, typename L, typename std::enable_if_t<std::is_integral_v<L>, bool>>
-#else
-template <typename T, typename L, typename std::enable_if_t<std::is_integral<L>::value, bool>>
-#endif
 void global_sum(T *x, L n) {
   Require(x != nullptr);
   Require(n > 0);

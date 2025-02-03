@@ -4,7 +4,7 @@
  * \author B.T. Adams
  * \date   Wed Jun 7 10:33:26 2000
  * \brief  Header file for RTT_Mesh_Reader library.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_RTT_Format_Reader_RTT_Mesh_Reader_hh
@@ -74,7 +74,7 @@ public:
    * \brief Returns the coordinate values for each of the nodes.
    * \return The coordinate values for the nodes.
    */
-  NODISCARD vector_vector_dbl get_node_coords() const override {
+  [[nodiscard]] vector_vector_dbl get_node_coords() const override {
     return rttMesh->get_nodes_coords();
   }
 
@@ -82,30 +82,32 @@ public:
    * \brief Returns the problem coordinate units (e.g, cm).
    * \return Coordinate units.
    */
-  NODISCARD string get_node_coord_units() const override { return rttMesh->get_dims_coor_units(); }
+  [[nodiscard]] string get_node_coord_units() const override {
+    return rttMesh->get_dims_coor_units();
+  }
 
   /*!
    * \brief Returns the topological dimenstion (1, 2 or 3).
    * \return Topological dimension.
    */
-  NODISCARD size_t get_dims_ndim() const override { return rttMesh->get_dims_ndim(); }
+  [[nodiscard]] size_t get_dims_ndim() const override { return rttMesh->get_dims_ndim(); }
 
-  NODISCARD size_t get_dims_ncells() const { return rttMesh->get_dims_ncells(); }
+  [[nodiscard]] size_t get_dims_ncells() const { return rttMesh->get_dims_ncells(); }
 
-  NODISCARD size_t get_dims_nsides() const { return rttMesh->get_dims_nsides(); }
+  [[nodiscard]] size_t get_dims_nsides() const { return rttMesh->get_dims_nsides(); }
 
-  NODISCARD vector_vector_uint get_element_nodes() const override;
+  [[nodiscard]] vector_vector_uint get_element_nodes() const override;
 
   /*!
    * \brief Returns the element (i.e., sides and cells) types (e.g., TRI_3 and TETRA_4).
    * \return Element definitions.
    */
-  NODISCARD std::vector<rtt_mesh_element::Element_Definition::Element_Type>
+  [[nodiscard]] std::vector<rtt_mesh_element::Element_Definition::Element_Type>
   get_element_types() const override {
     return element_types;
   }
 
-  NODISCARD std::vector<std::shared_ptr<rtt_mesh_element::Element_Definition>>
+  [[nodiscard]] std::vector<std::shared_ptr<rtt_mesh_element::Element_Definition>>
   get_element_defs() const override {
     return element_defs;
   }
@@ -115,22 +117,22 @@ public:
    *        file.
    * \return Element definitions.
    */
-  NODISCARD std::vector<rtt_mesh_element::Element_Definition::Element_Type>
+  [[nodiscard]] std::vector<rtt_mesh_element::Element_Definition::Element_Type>
   get_unique_element_types() const override {
     return unique_element_types;
   }
 
-  NODISCARD std::map<string, set_uint> get_node_sets() const override;
+  [[nodiscard]] std::map<string, set_uint> get_node_sets() const override;
 
-  NODISCARD std::map<string, set_uint> get_element_sets() const override;
+  [[nodiscard]] std::map<string, set_uint> get_element_sets() const override;
 
   /*!
    * \brief Returns the mesh file title.
    * \return Mesh file title.
    */
-  NODISCARD string get_title() const override { return rttMesh->get_header_title(); }
+  [[nodiscard]] string get_title() const override { return rttMesh->get_header_title(); }
 
-  NODISCARD bool invariant() const override;
+  [[nodiscard]] bool invariant() const override;
 
   // IMPLEMENTATION
 

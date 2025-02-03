@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Mon Mar 25 17:35:07 2002
  * \brief  Define class Global_Timer, a POSIX standard timer.
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_Global_Timer_hh
@@ -82,8 +82,8 @@ public:
   // Accessors
   //
 
-  NODISCARD char const *name() const { return name_; }
-  NODISCARD bool is_active() const { return active_ || global_active_; }
+  [[nodiscard]] char const *name() const { return name_; }
+  [[nodiscard]] bool is_active() const { return active_ || global_active_; }
 
   //
   // Manipulators

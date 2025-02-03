@@ -4,13 +4,13 @@
  * \author B.T. Adams
  * \date   Wed Jun 7 10:33:26 2000
  * \brief  Header file for RTT_Format_Reader/Header class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_RTT_Format_Reader_Header_hh
 #define rtt_RTT_Format_Reader_Header_hh
 
-#include "dsxx/config.h" // defines NODISCARD
+#include "dsxx/config.h" // defines [[nodiscard]]
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -61,38 +61,38 @@ public:
    * \brief Returns the mesh file version number.
    * \return Version number.
    */
-  NODISCARD string get_version() const { return version; }
+  [[nodiscard]] string get_version() const { return version; }
   /*!
    * \brief Returns the mesh file title.
    * \return Title.
    */
-  NODISCARD string get_title() const { return title; }
+  [[nodiscard]] string get_title() const { return title; }
   /*!
    * \brief Returns the mesh file date.
    * \return Date the mesh file was generated.
    */
-  NODISCARD string get_date() const { return date; }
+  [[nodiscard]] string get_date() const { return date; }
   /*!
    * \brief Returns the mesh file cycle number.
    * \return Cycle number.
    */
-  NODISCARD int get_cycle() const { return cycle; }
+  [[nodiscard]] int get_cycle() const { return cycle; }
   /*!
    * \brief Returns the mesh file problem time.
    * \return Problem time.
    */
-  NODISCARD double get_time() const { return time; }
+  [[nodiscard]] double get_time() const { return time; }
   /*!
    * \brief Returns the number of comment lines in the mesh file.
    * \return The number of comment lines.
    */
-  NODISCARD int get_ncomments() const { return ncomments; }
+  [[nodiscard]] int get_ncomments() const { return ncomments; }
   /*!
    * \brief Returns the specified comment line from the mesh file.
    * \param i Line number of the comment to be returned.
    * \return The comment line.
    */
-  NODISCARD string get_comments(size_t const i) const { return comments[i]; }
+  [[nodiscard]] string get_comments(size_t const i) const { return comments[i]; }
 };
 
 } // end namespace rtt_RTT_Format_Reader

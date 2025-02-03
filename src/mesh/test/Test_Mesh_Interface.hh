@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Thursday, Jun 07, 2018, 15:43 pm
  * \brief  Helper class for generating test meshes.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_test_Test_Mesh_Interface_hh
@@ -57,10 +57,10 @@ public:
 
   // >>> SERVICES
 
-  NODISCARD std::vector<unsigned> flatten_cn_linkage(const Layout &layout, const Layout &bd_layout,
-                                                     const Layout &go_layout) const;
+  [[nodiscard]] std::vector<unsigned>
+  flatten_cn_linkage(const Layout &layout, const Layout &bd_layout, const Layout &go_layout) const;
 
-  NODISCARD std::vector<unsigned> flatten_sn_linkage(const Layout &bd_layout) const;
+  [[nodiscard]] std::vector<unsigned> flatten_sn_linkage(const Layout &bd_layout) const;
 };
 
 //------------------------------------------------------------------------------------------------//

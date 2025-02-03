@@ -3,7 +3,7 @@
 # author Kelly Thompson
 # date   2010 Nov 1
 # brief  Establish flags for Linux64 - Intel C++
-# note   Copyright (C) 2010-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 # Compiler Flags
@@ -22,7 +22,9 @@ if(NOT CXX_FLAGS_INITIALIZED)
   if(DBS_GENERATE_OBJECT_LIBRARIES)
     string(APPEND CMAKE_C_FLAGS " -ipo")
   endif()
-  string(CONCAT CMAKE_C_FLAGS_DEBUG "-O0 -inline-level=0 -ftrapuv -check=uninit -fp-model=precise"
+  # [2025 Jan] intel-classic has a bug that prevents '-O0 -std=c++17' from working (#1475).
+  # Mitigation is to use '-O1' instead.
+  string(CONCAT CMAKE_C_FLAGS_DEBUG "-O1 -inline-level=0 -ftrapuv -check=uninit -fp-model=precise"
                 " -fp-speculation=safe -debug inline-debug-info -fno-omit-frame-pointer -DDEBUG")
   # -qno-opt-dynamic-align fixed LAP numerical sensitivity for Hypre (Gaber, 12/01/2020).
   string(CONCAT CMAKE_C_FLAGS_RELEASE "-O3 -fp-speculation=fast -fp-model=precise -pthread"
