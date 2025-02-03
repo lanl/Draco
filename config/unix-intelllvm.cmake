@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Wednesday, May 26, 2021, 13:44 pm
 # brief  Establish flags for Linux64 - Intel C++ (LLVM)
-# note   Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2021-2025 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 # cmake-lint: disable=C0301
@@ -37,6 +37,13 @@ if(NOT CXX_FLAGS_INITIALIZED)
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+
+  # This link flag fixes an issue where IPO causes wrong behavior for a draco test. It applies to
+  # Release builds only.
+  if(USE_IPO)
+    set(DRACO_LINK_OPTIONS
+        "$<$<CONFIG:RELEASE>:-Wl,-plugin-opt,--enable-std-container-alias=false>")
+  endif()
 
   # Use C99 standard.
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}") # -std=c99
