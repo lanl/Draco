@@ -44,12 +44,6 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-ccs_deb_gcc_1220_deploy:
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1220
-
 ccs_deb_gcc_cxx20_deploy:
   extends: .ccscs_deploy
   variables:
@@ -87,35 +81,17 @@ ccs_rel_gcc_1220_deploy:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1220
 
-ccs_deb_gcc_1220_deploy:
+ccs_deb_gcc_1330_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1220
+    DRACO_ENV: gcc1330
 
-ccs_rel_gcc_1220_deploy:
+ccs_rel_gcc_1330_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1220
-
-ccs_deb_gcc_1220_deploy:
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1220
-
-ccs_rel_gcc_1220_deploy:
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1220
-
-ccs_rwdi_gcc_1220_deploy:
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: gcc1220
+    DRACO_ENV: gcc1330
 
 ccs_fulldiag_deploy:
   extends: .ccscs_deploy
