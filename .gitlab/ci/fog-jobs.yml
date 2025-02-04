@@ -131,7 +131,7 @@ fg_rwdi_i2120_deploy_release:
 # ----- fast -----
 
 fg_rel_i2120_mr:
-  stage: fasttest
+  stage: slowtest
   extends: .fog_merge
   variables:
     CMAKE_BUILD_TYPE: Release
@@ -140,7 +140,7 @@ fg_rel_i2120_mr:
 # ----- regular test -----
 
 fg_deb_i2120_mr:
-  stage: test
+  stage: slowtest
   extends: .fog_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
