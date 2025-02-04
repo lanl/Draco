@@ -100,6 +100,27 @@
       }
     },
     {
+      "name": "venado-ninja",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "installDir": "${sourceDir}/install/${presetName}",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
+        "rhs": "Linux-venado"
+      }
+    },
+    {
+      "name": "venado-debug",
+      "displayName": "Venado Debug",
+      "description": "Target Venado for Debug build.",
+      "inherits": "venado-ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
       "name": "darwin-haswell",
       "hidden": true,
       "generator": "Ninja",
@@ -277,6 +298,10 @@
       "configurePreset": "linux-debug-clang-tidy"
     },
     {
+      "name": "venado-debug",
+      "configurePreset": "venado-debug"
+    },
+    {
       "name": "darwin-haswell-debug",
       "configurePreset": "darwin-haswell-debug"
     },
@@ -356,6 +381,34 @@
       "execution": {
         "stopOnFailure": true
       }
+    },
+    {
+      "name": "venado-ctest",
+      "displayName": "Run all tests",
+      "description": "Run all tests in parallel with ctest",
+      "hidden": true,
+      "condition": {
+        "type": "inList",
+        "string": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
+        "list": [
+          "venado-standard",
+          "venado-gpu"
+        ]
+      },
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    },
+    {
+      "name": "venado-debug",
+      "inherits": "venado-ctest",
+      "description": "Run all tests",
+      "displayName": "Ctest",
+      "configurePreset": "venado-debug"
     },
     {
       "name": "darwin-haswell-ctest",

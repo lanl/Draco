@@ -1,7 +1,7 @@
 # --------------------------------------------*-cmake-*------------------------------------------- #
 # file   config/unix-g++.cmake
 # brief  Establish flags for Unix/Linux - Gnu C++
-# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -100,10 +100,6 @@ if(NOT CXX_FLAGS_INITIALIZED)
   endif()
 
   string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS} -Wno-psabi")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 12.0)
-    string(APPEND CMAKE_CXX_FLAGS " -fimplicit-constexpr")
-  endif()
-
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Woverloaded-virtual -Wsuggest-override")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")

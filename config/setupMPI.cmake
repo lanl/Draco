@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2016 Sep 22
 # brief  Setup MPI Vendors
-# note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved.
 #
 # Try to find MPI in the default locations (look for mpic++ in PATH)
 #
@@ -381,8 +381,9 @@ macro(setupCrayMPI)
 
   set(preflags " ") # -N 1 --cpu_bind=verbose,cores
   if(NOT MPIEXEC_EXECUTABLE MATCHES "flux")
-    if(DEFINED ENV{PE_PRODUCT_LIST} AND "$ENV{PE_PRODUCT_LIST}" MATCHES "CRAYPE_X86_SPR")
-      # ATS-3
+    if(DEFINED ENV{PE_PRODUCT_LIST} AND ("$ENV{PE_PRODUCT_LIST}" MATCHES "CRAYPE_X86_SPR"
+                                         OR "$ENV{PE_PRODUCT_LIST}" MATCHES "CRAYPE_ARM_GRACE"))
+      # ATS-3 or Venado
       string(APPEND preflags " --overlap --cpu-bind=none --hint=nomultithread")
     else()
       string(APPEND preflags " --gres=craynetwork:0 --overlap")

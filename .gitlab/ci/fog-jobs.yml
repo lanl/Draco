@@ -19,8 +19,7 @@
   variables:
     SITE_ID: fog
     CTEST_SITE: ${SITE_ID}
-    SCHEDULER_PARAMETERS: -N 1 -t 30:00 -A asc-ci --partition=ci --qos=ci --reservation=ci
-      -L none@slurmdb --exclude fg010,fg022
+    SCHEDULER_PARAMETERS: "-N 1 -A asc-ci --partition=ci --qos=ci --reservation=ci -L none@slurmdb"
     EXTRA_CMAKE_ARGS: -GNinja
     # CI_DEBUG_TRACE: "true"
 
