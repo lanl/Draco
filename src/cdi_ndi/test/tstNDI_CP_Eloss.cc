@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2020 Jun 3
  * \brief  NDI_CP_Eloss test
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Query_Env.hh"
@@ -15,6 +15,7 @@
 #include "dsxx/path.hh"
 #include "cdi/CPCommon.hh"
 #include "cdi_ndi/NDI_CP_Eloss.hh"
+#include <cmath>
 #include <fstream>
 #include <string>
 #include <tuple>
@@ -51,32 +52,52 @@ void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
 
   NDI_CP_Eloss const eloss(gendir_path, library_in, target, projectile);
 
-  // Get eloss value for almost first (1,1,1) grid point
+  // Get eloss value for slightly above (E=1,rho=1,T=1) grid point.
   {
-    double const energy = 1.384272;
-    double const density = 3.344490e-01;
-    double const temperature = 3.981051e-04;
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss.getEloss(temperature, density, energy),
-                                     2.311354474121679232e+04, 1.e-8));
+    double const speed = 0.0982085;
+    double const density = 0.00167264;
+    double const temperature = 0.0000100;
+    // Exponentiate the table value (in log space) at (E=1,rho=1,T=1)
+    double const base_val = exp(-4.857735E+01);
+    // Calculate the unit conversion (see getEloss function):
+    const double multiplier{1000. * density / proton_mass * speed};
+    double const reference = multiplier * base_val;
+    // KPL: using loose tolerance here so we can compare directly to the data point.
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(eloss.getEloss(temperature, density, speed), reference, 1.e-4));
   }
 
-  // Get eloss value for almost last (2,3,4) grid point
+  // Get eloss value for slightly above (E=2,rho=3,T=4) grid point
   {
-    double const energy = 1.384273e+01;
-    double const density = 3.344495e+03;
-    double const temperature = 2.511868e+01;
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss.getEloss(temperature, density, energy),
-                                     1.272473147179571250e+15, 1.e-8));
+    double const speed = 0.9820851;
+    double const density = 16.726301;
+    double const temperature = 0.631000;
+    // Exponentiate the table value (in log space) at (E=2,rho=3,T=4)
+    double const base_val = exp(-5.147755E+01);
+    // Calculate the unit conversion (see getEloss function):
+    const double multiplier{1000. * density / proton_mass * speed};
+    double const reference = multiplier * base_val;
+    // KPL: using loose tolerance here so we can compare directly to the data point.
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(eloss.getEloss(temperature, density, speed), reference, 1.e-4));
   }
 
-  // Get eloss value for a point between grid points (1.5,2.5,3.5, i.e. requiring linear
+  // Get eloss value for a point between grid points (E=1.5,rho=2.5,T=3.5, i.e. requiring linear
   // interpolation)
   {
-    double const energy = 4.377453e+00;
-    double const density = 3.344494e+02;
-    double const temperature = 3.981044e+00;
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss.getEloss(temperature, density, energy),
-                                     8.794247704820802689e+09, 1.e-8));
+    // Halfway between table points 1 and 2:
+    double const speed = 0.5 * (0.0982085 + 0.982085);
+    // Halfway between table points 2 and 3:
+    double const density = 0.5 * (0.167263 + 16.7263);
+    // Halfway between table points 3 and 4:
+    double const temperature = 0.5 * (0.0158489 + 0.630957);
+    // Exponentiate the interpolated table value
+    double const base_val = exp(-3.787682963E+01);
+    // Calculate the unit conversion (see getEloss function):
+    const double multiplier{1000. * density / proton_mass * speed};
+    double const reference = multiplier * base_val;
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(eloss.getEloss(temperature, density, speed), reference, 1.e-8));
   }
 
   if (ut.numFails == 0) {

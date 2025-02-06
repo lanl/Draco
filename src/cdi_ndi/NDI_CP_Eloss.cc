@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2020 Jun 3
  * \brief  NDI_CP_Eloss member definitions.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ndi/NDI_CP_Eloss.hh"
@@ -118,10 +118,7 @@ void NDI_CP_Eloss::load_ndi() {
   ndi_error = NDI2_get_float64_vec(dataset_handle, NDI_ENERGIES, energies.data(),
                                    static_cast<int>(energies.size()));
   Require(ndi_error == 0);
-  min_log_energy = energies.front();
   d_log_energy = energies[1] - energies[0];
-  min_energy = exp(min_log_energy);
-  max_energy = exp(min_log_energy + d_log_energy * n_energy);
 
   int num_densities = 0;
   ndi_error = NDI2_get_int_val(dataset_handle, NDI_NUM_DENSITIES, &num_densities);
@@ -132,10 +129,7 @@ void NDI_CP_Eloss::load_ndi() {
   ndi_error = NDI2_get_float64_vec(dataset_handle, NDI_DENSITIES, densities.data(),
                                    static_cast<int>(densities.size()));
   Require(ndi_error == 0);
-  min_log_density = densities.front();
   d_log_density = densities[1] - densities[0];
-  min_density = target.get_mass() * exp(min_log_density);
-  max_density = target.get_mass() * exp(min_log_density + d_log_density * n_density);
 
   int num_temperatures = 0;
   ndi_error = NDI2_get_int_val(dataset_handle, NDI_NUM_TEMPS, &num_temperatures);
@@ -146,10 +140,7 @@ void NDI_CP_Eloss::load_ndi() {
   ndi_error = NDI2_get_float64_vec(dataset_handle, NDI_TEMPS, temperatures.data(),
                                    static_cast<int>(temperatures.size()));
   Require(ndi_error == 0);
-  min_log_temperature = temperatures.front();
   d_log_temperature = temperatures[1] - temperatures[0];
-  min_temperature = exp(min_log_temperature);
-  max_temperature = exp(min_log_temperature + d_log_temperature * n_temperature);
 
   stopping_data_1d.resize(n_energy * n_density * n_temperature);
   if (target.get_zaid() == -1) {
@@ -163,6 +154,7 @@ void NDI_CP_Eloss::load_ndi() {
   Require(ndi_error == 0);
 
   // Check for uniform log spacing
+  // =========================================================================================== //
   for (uint32_t n = 1; n < n_energy; n++) {
     Require(rtt_dsxx::soft_equiv(d_log_energy, energies[n] - energies[n - 1], 1.e-4));
   }
@@ -174,25 +166,35 @@ void NDI_CP_Eloss::load_ndi() {
   }
 
   // Convert units on table to match those of getEloss:
+  // =========================================================================================== //
   //   energy:      MeV -> cm/shk (using target particle mass)
-  const double energy_cgs = exp(min_log_energy) * (1.e6 * pc.electronVolt());
-  min_log_energy = log(sqrt(2. * energy_cgs / target.get_mass()) * 1.e-8);
   d_log_energy = d_log_energy / 2.;
-  //   density:     cm^-3 -> g cm^-3
-  min_log_density = log(exp(min_log_density) * target.get_mass());
-  //   temperature: keV -> keV
-  // Note that d log x = dx / x is not affected by unit conversion factors
   for (auto &energy : energies) {
-    energy = sqrt(2. * (exp(energy) * 1.e6 * pc.electronVolt()) / target.get_mass()) * 1.e-8;
+    energy = sqrt(2. * (exp(energy) * 1.e6 * pc.electronVolt()) / projectile.get_mass()) * 1.e-8;
   }
+  min_energy = energies.front();
+  min_log_energy = log(energies.front());
+  max_energy = energies.back();
+
+  //   density:     cm^-3 -> g cm^-3
+  // Note that d log x = dx / x is not affected by unit conversion factors
   for (auto &density : densities) {
     density = exp(density) * target.get_mass();
   }
+  min_density = densities.front();
+  min_log_density = log(densities.front());
+  max_density = densities.back();
+
+  //   temperature: keV -> keV
+  min_log_temperature = temperatures.front();
   for (auto &temperature : temperatures) {
     temperature = exp(temperature);
   }
+  min_temperature = temperatures.front();
+  max_temperature = temperatures.back();
 
-  //! Close datafile
+  // Close datafile
+  // =========================================================================================== //
   ndi_error = NDI2_close_gendir(gendir_handle);
   Require(ndi_error == 0);
 #else
@@ -206,6 +208,9 @@ void NDI_CP_Eloss::load_ndi() {
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Interpolate the tabulated stopping power for a given material and projectile state.
+ *
+ * \todo Share code with Tabular_CP_Eloss::getEloss (appears to be identical interp)
+ *
  * \param[in] temperature Material temperature [keV]
  * \param[in] density Material density [g cm^-3]
  * \param[in] partSpeed Particle speed [cm shk^-1]
