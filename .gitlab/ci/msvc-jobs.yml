@@ -43,6 +43,9 @@
     MAXLOAD: 24
     CTEST_NPROC: 24
     SESAMEPATH: "C:\\work\\vendors-ec\\physical_data\\eos"
+    http_proxy: "http://proxyout.lanl.gov:8080"
+    https_proxy: "http://proxyout.lanl.gov:8080"
+    no_proxy: "localhost,127.0.0.1,.lanl.gov,lanl.gov"
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}\\glr.log

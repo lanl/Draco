@@ -23,9 +23,11 @@ if(NOT CXX_FLAGS_INITIALIZED)
     string(APPEND CMAKE_C_FLAGS " -ipo")
   endif()
   # [2025 Jan] intel-classic has a bug that prevents '-O0 -std=c++17' from working (#1475).
-  # Mitigation is to use '-O1' instead.
+  # Mitigation is to use '-O1' instead.  This change also requires '-diag-disable 10182' to suppress
+  # associated warnings.
   string(CONCAT CMAKE_C_FLAGS_DEBUG "-O1 -inline-level=0 -ftrapuv -check=uninit -fp-model=precise"
-                " -fp-speculation=safe -debug inline-debug-info -fno-omit-frame-pointer -DDEBUG")
+                " -fp-speculation=safe -debug inline-debug-info -fno-omit-frame-pointer "
+                " -diag-disable 10182 -DDEBUG")
   # -qno-opt-dynamic-align fixed LAP numerical sensitivity for Hypre (Gaber, 12/01/2020).
   string(CONCAT CMAKE_C_FLAGS_RELEASE "-O3 -fp-speculation=fast -fp-model=precise -pthread"
                 " -qno-opt-dynamic-align -DNDEBUG")

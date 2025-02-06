@@ -65,7 +65,6 @@ ve_deb_gnu_mr:
   variables:
     CTEST_MODE: Nightly
     CTEST_BUILD_NAME: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-    SCHEDULER_PARAMETERS: -N 1 -t 30:00
   script:
     - module swap PrgEnv-cray PrgEnv-gnu
     - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
