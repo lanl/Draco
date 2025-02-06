@@ -99,7 +99,7 @@ public:
   Topology &operator=(const Topology &other_topo) = delete;
   // move ctor
   Topology(Topology &&) = delete;
-  //move assignement
+  //move assignment
   Topology &operator=(Topology &&) = delete;
 
   //! Destructor for proper performance in inheritance tree.

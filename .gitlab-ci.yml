@@ -2,7 +2,7 @@
 # File:    .gitlab-ci.yml
 # Author:  Kelly Thompson <kgt@lanl.gov>
 # Date:    Saturday, Nov 13, 2021, 21:09 pm
-# Purpose: Instructions for gitlab CI testing.  This script wil be run to test pull requests
+# Purpose: Instructions for gitlab CI testing.  This script will be run to test pull requests
 # Note:    Copyright (C) 2021 Triad National Security, LLC.  All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
@@ -10,9 +10,6 @@ variables:
   PROJECT: Draco
   DRACO_BINARY_DIR: ${CI_PROJECT_DIR}/build
   DRACO_SOURCE_DIR: ${CI_PROJECT_DIR}
-  http_proxy: "http://proxyout.lanl.gov:8080"
-  https_proxy: "http://proxyout.lanl.gov:8080"
-  no_proxy: "localhost,127.0.0.1,.lanl.gov,lanl.gov"
   OMP_NUM_THREADS: 8
   CTEST_MODE: Experimental
   DEPLOY: "FALSE"
