@@ -8,9 +8,13 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_cpt/Collision_Source.hh"
+// Defines SHACL_PHYSICS_FOUND
+#include "cdi_cpt/config.h" // NOLINT(misc-include-cleaner)
+#ifdef SHACL_PHYSICS_FOUND
 #include "Exsdir.hh"
 #include "avalanche/ParticleID.hpp"
 #include "avalanche/factory/AceLibrary.hpp"
+#endif
 #include "dsxx/Assert.hh"
 #include "cdi/CPCommon.hh"
 #include <string>
@@ -21,6 +25,7 @@ namespace rtt_cdi_cpt {
 // * Don't warn about missing include directives for avalanche, ndatk, and shacl.
 // * NOLINTBEGIN(misc-include-cleaner)
 
+#ifdef SHACL_PHYSICS_FOUND
 //------------------------------------------------------------------------------------------------//
 avalanche::ParticleID GetParticleID(const rtt_cdi::CParticle &particle) {
   if (particle.get_zaid() == -1) {
@@ -103,6 +108,27 @@ CollisionSource::get_cross_section(const double /*incident_energy*/, const doubl
   // Return cross section in cm^2
   return cross_section * 1.e-24;
 }
+
+#else // !(SHACL_PHYSICS_FOUND)
+// Provide stubbed interface functions that throw if called without shacl::physics support.
+
+//------------------------------------------------------------------------------------------------//
+CollisionSource::CollisionSource(const rtt_cdi::CParticle target_in,
+                                 const rtt_cdi::CParticle projectile_in,
+                                 const std::string & /*ace_library*/,
+                                 const std::vector<std::string> & /*ndatk_path_user*/,
+                                 const std::string & /*exsdir_path*/)
+    : target(target_in), projectile(projectile_in) {
+  Insist(false, "CollisionSource class only defined when SHACL_PHYSICS_FOUND!");
+}
+//------------------------------------------------------------------------------------------------//
+double CollisionSource::get_cross_section(const double /*incident_energy*/,
+                                          const double /*temperature*/) const {
+  Insist(false, "CollisionSource::get_cross_section() only defined when SHACL_PHYSICS_FOUND!");
+  return 0.0;
+}
+
+#endif
 
 // NOLINTEND(misc-include-cleaner)
 

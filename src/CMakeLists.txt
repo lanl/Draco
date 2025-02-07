@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 April 28
 # brief  Instructions for building src level Makefile.
-# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(draco_src_dir)
@@ -53,9 +53,6 @@ if(USE_MDSPAN)
   add_subdirectory(experimental) #< only the tests need dsxx
   add_subdirectory(cdi_CPEloss) #< needs cdi, units, experimental
 endif()
-if(SHACL_PHYSICS_FOUND)
-  add_subdirectory(cdi_cpt)
-endif()
 add_subdirectory(cdi_eospac) #< needs parser, ode, cdi
 add_subdirectory(cdi_ipcress) #< needs cdi
 add_subdirectory(diagnostics) #< needs c4
@@ -78,6 +75,7 @@ message(" ")
 message(STATUS "Configuring Level 4 packages --")
 add_subdirectory(cdi_analytic) #< needs parser, roots, ode, cdi
 add_subdirectory(cdi_ndi) #< needs dsxx, rng, cdi
+add_subdirectory(cdi_cpt) #< needs dsxx, c4, rng, cdi
 add_subdirectory(RTT_Format_Reader) #< needs meshReaders
 add_subdirectory(special_functions) #< needs roots, units, GSL
 

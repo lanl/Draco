@@ -1,0 +1,22 @@
+/*---------------------------------------------*-C-*----------------------------------------------*/
+/*!
+ * \file   cdi_cpt/config.h
+ * \brief  CPP defines necessary for the cdi_cpt package.
+ * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved. */
+/*------------------------------------------------------------------------------------------------*/
+
+#ifndef rtt_cdi_cpt_config_h
+#define rtt_cdi_cpt_config_h
+
+/*------------------------------------------------------------------------------------------------*/
+/* Draco/Cmake build system variables */
+/*------------------------------------------------------------------------------------------------*/
+
+/* Activate shacl::physics calls found in cdi_cpt, otherwise, use code stubs. */
+#cmakedefine SHACL_PHYSICS_FOUND @SHACL_PHYSICS_FOUND@
+
+#endif // rtt_cdi_cpt_config_h
+
+/*------------------------------------------------------------------------------------------------*/
+/* end of cdi_cpt/config.h */
+/*------------------------------------------------------------------------------------------------*/
