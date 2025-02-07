@@ -13,13 +13,32 @@ project(cdi_cpt CXX)
 # ------------------------------------------------------------------------------------------------ #
 file(GLOB sources *.cc)
 file(GLOB headers *.hh)
+list(APPEND headers ${PROJECT_BINARY_DIR}/cdi_cpt/config.h)
+
+# ------------------------------------------------------------------------------------------------ #
+# Generate config.h (only occurs when cmake is run)
+# ------------------------------------------------------------------------------------------------ #
+configure_file(config.h.in ${PROJECT_BINARY_DIR}/cdi_cpt/config.h)
+set(include_dirs PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>)
+
+# ------------------------------------------------------------------------------------------------ #
+# Set library dependencies
+# ------------------------------------------------------------------------------------------------ #
+set(deps Lib_cdi Lib_units Lib_c4)
+
+# If SHACL_PHYSICS is found, set the associated variables. Otherwise, the cdi_cpt lib will be built
+# with stubbed-out routines.
+if(TARGET shacl::physics)
+  list(APPEND deps shacl::physics)
+endif()
 
 # ------------------------------------------------------------------------------------------------ #
 # Build package library
 # ------------------------------------------------------------------------------------------------ #
 add_component_library(
   TARGET Lib_cdi_cpt
-  TARGET_DEPS "Lib_cdi;Lib_units;shacl::physics"
+  TARGET_DEPS "${deps}"
+  INCLUDE_DIRS "${include_dirs}"
   LIBRARY_NAME ${PROJECT_NAME}
   SOURCES "${sources}"
   HEADERS "${headers}")
