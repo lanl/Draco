@@ -56,7 +56,7 @@ public:
   // Sample energy of target after collision
   template <typename RNG>
   [[nodiscard]] double sample_target_energy_delta(const double incident_energy,
-                                                  const double temperature, const RNG rng) const {
+                                                  const double temperature, RNG &rng) const {
     const int temp_idx = get_data_idx(temperature);
     const auto &proj_targ = projTargetDatas[temp_idx];
     const auto &elasticReaction = proj_targ.reaction(avalanche::ReactionID(avalanche::MT::Elastic));
@@ -77,7 +77,7 @@ public:
   template <typename RNG>
   [[nodiscard]] double sample_target_energy_delta(const double /*incident_energy*/,
                                                   const double /*temperature*/,
-                                                  const RNG /*rng*/) const {
+                                                  RNG & /*rng*/) const {
     Insist(false,
            "CollisionSource::sample_target_energy_delta() only defined when SHACL_PHYSICS_FOUND!");
     return 0.0;
