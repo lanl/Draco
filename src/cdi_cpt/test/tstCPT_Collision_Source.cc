@@ -25,8 +25,13 @@ using rtt_dsxx::soft_equiv;
 
 // Deterministic Number Generator
 class DNG {
+  int i{0}; // Counter of # of calls to this DNG.
 public:
-  double operator()() const { return 0.5; }
+  // Note: This is obviously only good for ~999 calls; plenty for a test.
+  double operator()() {
+    i++;
+    return static_cast<double>(i) / 1000.0;
+  }
 };
 
 void simple_collision_test(rtt_dsxx::UnitTest &ut) {
@@ -52,7 +57,7 @@ void simple_collision_test(rtt_dsxx::UnitTest &ut) {
   rtt_cdi_cpt::CollisionSource const cs(target_in, projectile_in, "endf71x", ndatk_path_list);
 
   // Create false RNG
-  DNG const dng;
+  DNG dng;
 
   auto target_compare = cs.get_target();
   FAIL_IF_NOT(target_compare.get_zaid() == target_in.get_zaid());
@@ -96,13 +101,12 @@ void simple_collision_test(rtt_dsxx::UnitTest &ut) {
                          2.030269e1, 1.e-5));
 
   // NOLINTEND(misc-include-cleaner)
-
   FAIL_IF_NOT(
-      soft_equiv(cs.sample_target_energy_delta(projectile_energy, 0.1, dng), 5.005503e-01, 1e-5));
+      soft_equiv(cs.sample_target_energy_delta(projectile_energy, 0.1, dng), 9.98004e-01, 1e-5));
   FAIL_IF_NOT(
-      soft_equiv(cs.sample_target_energy_delta(projectile_energy, 1.0, dng), 5.005503e-01, 1.e-5));
+      soft_equiv(cs.sample_target_energy_delta(projectile_energy, 1.0, dng), 9.96008e-01, 1.e-5));
   FAIL_IF_NOT(soft_equiv(cs.sample_target_energy_delta(projectile_energy, 0.00001, dng),
-                         5.005503e-01, 1.e-5));
+                         9.94012e-01, 1.e-5));
 
   if (ut.numFails == 0) {
     PASSMSG("CPT_Collision_Source test passes.");
