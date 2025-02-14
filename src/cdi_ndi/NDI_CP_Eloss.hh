@@ -70,13 +70,13 @@ public:
   //! Query to see if data is in tabular or functional form (true)
   static constexpr bool is_data_in_tabular_form() { return true; }
 
-  //! Get the material temperature grid.
+  //! Get the material temperature grid as log(T) with units [keV]
   [[nodiscard]] sf_double getTemperatureGrid() const override { return temperatures; }
 
-  //! Get the material density grid.
+  //! Get the material density grid as log(p) with units [cm^{-3}]
   [[nodiscard]] sf_double getDensityGrid() const override { return densities; }
 
-  //! Get the projectile energy grid.
+  //! Get the projectile energy grid as log(E) with units [MeV]
   [[nodiscard]] sf_double getEnergyGrid() const override { return energies; }
 
   //! Get the number of material temperature grid points.
@@ -111,9 +111,6 @@ private:
   double d_log_energy{0.0};        //!< Log spacing of projectile energy gridpoints
   double d_log_density{0.0};       //!< Log spacing of target density gridpoints
   double d_log_temperature{0.0};   //!< Log spacing of target temperature gridpoints
-  double min_log_energy{0.0};      //!< Log of minimum projectile energy
-  double min_log_density{0.0};     //!< Log of minimum target density
-  double min_log_temperature{0.0}; //!< Log of minimum target temperature
   double min_energy{0.0};          //!< Minimum target energy
   double max_energy{0.0};          //!< Maximum target energy
   double min_density{0.0};         //!< Minimum target density
@@ -130,8 +127,8 @@ private:
   sf_double stopping_data_1d{};
 
   //! 3D indexing of 1D stopping power data
-  [[nodiscard]] inline double get_stopping_data(int i_e, int i_d, int i_t) const {
-    return stopping_data_1d[i_t + n_temperature * (i_d + n_density * i_e)];
+  [[nodiscard]] inline double get_stopping_data(int i_t, int i_d, int i_e) const {
+    return stopping_data_1d[i_e + n_energy * (i_d + n_density * i_t)];
   }
 };
 
