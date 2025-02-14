@@ -73,7 +73,7 @@ void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
     double const density = 16.726301;
     double const temperature = 0.631000;
     // Exponentiate the table value (in log space) at (E=2,rho=3,T=4)
-    double const base_val = exp(-5.147755E+01);
+    double const base_val = exp(-5.549845e+01);
     // Calculate the unit conversion (see getEloss function):
     const double multiplier{1000. * density / proton_mass * speed};
     double const reference = multiplier * base_val;
@@ -92,7 +92,7 @@ void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
     // Halfway between table points 3 and 4:
     double const temperature = 0.5 * (0.0158489 + 0.630957);
     // Exponentiate the interpolated table value
-    double const base_val = exp(-3.787682963E+01);
+    double const base_val = exp(-5.5190688639e+01);
     // Calculate the unit conversion (see getEloss function):
     const double multiplier{1000. * density / proton_mass * speed};
     double const reference = multiplier * base_val;

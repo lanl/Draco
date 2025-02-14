@@ -14,6 +14,7 @@
 #include "cdi/CPCommon.hh"
 #include "cdi/CPEloss.hh"
 #include "cdi_ndi/NDI_Base.hh"
+#include <algorithm>
 #include <cmath>
 #include <string>
 
@@ -165,31 +166,14 @@ void NDI_CP_Eloss::load_ndi() {
     Require(rtt_dsxx::soft_equiv(d_log_temperature, temperatures[n] - temperatures[n - 1], 1.e-4));
   }
 
-  // Convert units on table to match those of getEloss:
+  // Set minimum and maximum grid values
   // =========================================================================================== //
-  //   energy:      MeV -> cm/shk (using target particle mass)
-  d_log_energy = d_log_energy / 2.;
-  for (auto &energy : energies) {
-    energy = sqrt(2. * (exp(energy) * 1.e6 * pc.electronVolt()) / projectile.get_mass()) * 1.e-8;
-  }
   min_energy = energies.front();
-  min_log_energy = log(energies.front());
   max_energy = energies.back();
 
-  //   density:     cm^-3 -> g cm^-3
-  // Note that d log x = dx / x is not affected by unit conversion factors
-  for (auto &density : densities) {
-    density = exp(density) * target.get_mass();
-  }
   min_density = densities.front();
-  min_log_density = log(densities.front());
   max_density = densities.back();
 
-  //   temperature: keV -> keV
-  min_log_temperature = temperatures.front();
-  for (auto &temperature : temperatures) {
-    temperature = exp(temperature);
-  }
   min_temperature = temperatures.front();
   max_temperature = temperatures.back();
 
@@ -217,40 +201,58 @@ void NDI_CP_Eloss::load_ndi() {
  */
 double NDI_CP_Eloss::getEloss(const double temperature, const double density,
                               const double partSpeed) const {
-  if (temperature <= min_temperature || temperature >= max_temperature || density <= min_density ||
-      density >= max_density || partSpeed <= min_energy || partSpeed >= max_energy) {
+
+  // temperature: keV -> keV
+  const double log_temperature = std::log(temperature);
+
+  // density: g cm^-3 -> cm^-3
+  const double log_density = std::log(density / target.get_mass());
+
+  // energy: cm/shk -> MeV  (using projectile particle's mass)
+  const double log_energy = std::log(std::pow(partSpeed / 1.e-8, 2) * projectile.get_mass() /
+                                     (2.0 * 1.e6 * pc.electronVolt()));
+
+  if (log_temperature <= min_temperature || log_temperature >= max_temperature ||
+      log_density <= min_density || log_density >= max_density || log_energy <= min_energy ||
+      log_energy >= max_energy) {
     // Outside of the table
     return 0.;
   }
 
-  const int pt0_energy =
-      static_cast<int>(std::floor((log(partSpeed) - min_log_energy) / d_log_energy));
-  const int pt1_energy = pt0_energy + 1;
-  const int pt0_density =
-      static_cast<int>(std::floor((log(density) - min_log_density) / d_log_density));
-  const int pt1_density = pt0_density + 1;
-  const int pt0_temperature =
-      static_cast<int>(std::floor((log(temperature) - min_log_temperature) / d_log_temperature));
-  const int pt1_temperature = pt0_temperature + 1;
+  // Get grid indices
+  const int pt1_temperature =
+      static_cast<int>(std::lower_bound(temperatures.begin(), temperatures.end(), log_temperature) -
+                       temperatures.begin());
+  const int pt0_temperature = pt1_temperature - 1;
 
-  const double x0 = exp(min_log_energy + pt0_energy * d_log_energy);
-  const double x1 = exp(min_log_energy + pt1_energy * d_log_energy);
-  const double y0 = exp(min_log_density + pt0_density * d_log_density);
-  const double y1 = exp(min_log_density + pt1_density * d_log_density);
-  const double z0 = exp(min_log_temperature + pt0_temperature * d_log_temperature);
-  const double z1 = exp(min_log_temperature + pt1_temperature * d_log_temperature);
+  const int pt1_density = static_cast<int>(
+      std::lower_bound(densities.begin(), densities.end(), log_density) - densities.begin());
+  const int pt0_density = pt1_density - 1;
 
-  const double f000 = get_stopping_data(pt0_energy, pt0_density, pt0_temperature);
-  const double f100 = get_stopping_data(pt1_energy, pt0_density, pt0_temperature);
-  const double f001 = get_stopping_data(pt0_energy, pt0_density, pt1_temperature);
-  const double f101 = get_stopping_data(pt1_energy, pt0_density, pt1_temperature);
-  const double f010 = get_stopping_data(pt0_energy, pt1_density, pt0_temperature);
-  const double f110 = get_stopping_data(pt1_energy, pt1_density, pt0_temperature);
-  const double f011 = get_stopping_data(pt0_energy, pt1_density, pt1_temperature);
-  const double f111 = get_stopping_data(pt1_energy, pt1_density, pt1_temperature);
-  const double dedx =
-      exp(rtt_dsxx::interpolate::linear_3d(x0, x1, y0, y1, z0, z1, f000, f100, f001, f101, f010,
-                                           f110, f011, f111, partSpeed, density, temperature));
+  const int pt1_energy = static_cast<int>(
+      std::lower_bound(energies.begin(), energies.end(), log_energy) - energies.begin());
+  const int pt0_energy = pt1_energy - 1;
+
+  // Get grid values
+  const double x0 = temperatures[pt0_temperature];
+  const double x1 = temperatures[pt1_temperature];
+  const double y0 = densities[pt0_density];
+  const double y1 = densities[pt1_density];
+  const double z0 = energies[pt0_energy];
+  const double z1 = energies[pt1_energy];
+
+  // Get function values
+  const double f000 = get_stopping_data(pt0_temperature, pt0_density, pt0_energy);
+  const double f100 = get_stopping_data(pt1_temperature, pt0_density, pt0_energy);
+  const double f001 = get_stopping_data(pt0_temperature, pt0_density, pt1_energy);
+  const double f101 = get_stopping_data(pt1_temperature, pt0_density, pt1_energy);
+  const double f010 = get_stopping_data(pt0_temperature, pt1_density, pt0_energy);
+  const double f110 = get_stopping_data(pt1_temperature, pt1_density, pt0_energy);
+  const double f011 = get_stopping_data(pt0_temperature, pt1_density, pt1_energy);
+  const double f111 = get_stopping_data(pt1_temperature, pt1_density, pt1_energy);
+  const double dedx = std::exp(
+      rtt_dsxx::interpolate::linear_3d(x0, x1, y0, y1, z0, z1, f000, f100, f001, f101, f010, f110,
+                                       f011, f111, log_temperature, log_density, log_energy));
   const double number_density = density / target.get_mass();
   return dedx * 1000. * number_density * partSpeed; // MeV cm^2 -> keV shk^-1
 }
