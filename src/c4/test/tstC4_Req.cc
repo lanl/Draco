@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Nov  1 15:49:44 2005
  * \brief  Unit test for C4_Req class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -27,8 +27,8 @@ void tstCopyConstructor(rtt_dsxx::UnitTest &ut) {
   C4_Req requestA;
   C4_Req const requestB(requestA);
 
-  // The behavior of the copy constructor is not obvious.  If requestA has not
-  // been used (inuse() returns false) then requestA != requestB.
+  // The behavior of the copy constructor is not obvious.  If requestA has not been used (inuse()
+  // returns false) then requestA != requestB.
 
   if (!requestA.inuse() && requestA == requestB)
     FAILMSG("requestA.inuse() is false, so requestA cannot == requestB.");

@@ -4,8 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 14:44:54 2002
  * \brief  C4 MPI non-blocking send/recv instantiations.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/config.h"

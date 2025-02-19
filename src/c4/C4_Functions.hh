@@ -491,8 +491,7 @@ template <typename T> void prefix_sum(T *buffer, const int32_t n);
 } // end namespace rtt_c4
 
 //------------------------------------------------------------------------------------------------//
-// Include the appropriate header for an underlying message passing
-// implementation.
+// Include the appropriate header for an underlying message passing implementation.
 
 #ifdef C4_SCALAR
 #include "C4_Serial.hh"

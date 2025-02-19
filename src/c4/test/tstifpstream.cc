@@ -3,8 +3,8 @@
  * \file   c4/test/tstifpstream.cc
  * \author Mathew Cleveland
  * \date   Feb. 2020
- * \brief  Tests ifpstream class for paralle read
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \brief  Tests ifpstream class for parallel read
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
