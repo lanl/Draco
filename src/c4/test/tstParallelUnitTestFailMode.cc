@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Thu Jun 1 17:42:58 2006
  * \brief  Test the functionality of the class ParallelUnitTest
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 /*
@@ -87,7 +87,7 @@ void tstOne(UnitTest &ut, std::stringstream &output) {
 
   // If all is good so far clear the fail messages/counts
   if (pass) {
-    cout << "Clearing data from ParalleUnitTest...\n";
+    cout << "Clearing data from ParallelUnitTest...\n";
     ut.reset();
     output.str(""); // empty the data
     output.clear(); // reset the flags

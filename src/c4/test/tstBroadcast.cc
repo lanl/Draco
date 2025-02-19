@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Apr  2 15:57:11 2002
  * \brief  c4 Broadcast communication test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -137,14 +137,13 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
-//  By adjusting the parameters below, this test will overflow the MPI memory
-//  buffers.  Read the comments below if you'd like to do this.
+//  By adjusting the parameters below, this test will overflow the MPI memory buffers.  Read the
+//  comments below if you'd like to do this.
 void test_loop(rtt_dsxx::UnitTest &ut) {
   // save state
   unsigned const nf(ut.numFails);
 
-  // kmax controls how much data is broadcast.  If kmax is too big (like
-  // 10000000), shmem will fail.
+  // kmax controls how much data is broadcast.  If kmax is too big (like 10000000), shmem will fail.
   int const kmax = 10;
 
   if (rtt_c4::node() == 0) // host proc
@@ -157,9 +156,8 @@ void test_loop(rtt_dsxx::UnitTest &ut) {
     }
   } else // all other processors
   {
-    // Use sleep() if you want the host processor to fill up the buffers.  We
-    // comment out the sleep() command here because it's not supported on all
-    // platforms.
+    // Use sleep() if you want the host processor to fill up the buffers.  We comment out the
+    // sleep() command here because it's not supported on all platforms.
 
     // sleep(10);
 

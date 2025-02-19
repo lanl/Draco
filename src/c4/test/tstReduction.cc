@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 15:41:00 2002
  * \brief  C4 Reduction test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -66,8 +66,7 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
   // Test with deprecated form of global_sum
   xint = rtt_c4::node() + 1;
   global_sum(xint);
-  if (xint != int_answer)
-    ITFAILS;
+  FAIL_IF(xint != int_answer);
 
   // test longs for blocking and non-blocking sums
   long const max_long(numeric_limits<long>::max());
@@ -87,11 +86,9 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
   for (int i = 0; i < rtt_c4::nodes(); i++)
     long_answer += i + (max_long > ten_billion ? ten_billion : one_billion);
 
-  if (xlong != long_answer)
-    ITFAILS;
+  FAIL_IF(xlong != long_answer);
 
-  if (xlong_recv != long_answer)
-    ITFAILS;
+  FAIL_IF(xlong_recv != long_answer);
 
   // test doubles for blocking and non-blocking sums
   double xdbl = static_cast<double>(rtt_c4::node()) + 0.1;
@@ -107,11 +104,8 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
   for (int i = 0; i < rtt_c4::nodes(); i++)
     dbl_answer += static_cast<double>(i) + 0.1;
 
-  if (!soft_equiv(xdbl, dbl_answer))
-    ITFAILS;
-
-  if (!soft_equiv(xdouble_recv, dbl_answer))
-    ITFAILS;
+  FAIL_IF(!soft_equiv(xdbl, dbl_answer));
+  FAIL_IF(!soft_equiv(xdouble_recv, dbl_answer));
 
   // test product
   xlong = rtt_c4::node() + 1;

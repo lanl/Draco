@@ -4,7 +4,7 @@
  * \author Timothy Kelley
  * \date   Tue Jun  9 15:03:08 2020
  * \brief  Demonstrate basic OMP API.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -25,7 +25,7 @@ using namespace rtt_c4;
 using rtt_dsxx::UnitTest;
 
 // If OpenMP is available, we will pretend that it's not, but still use the OpenMP runtime to check
-// that the funtions do not change OpenMP state.  If OpenMP truly is not available, we will still
+// that the functions do not change OpenMP state.  If OpenMP truly is not available, we will still
 // check that the bypass versions behave as expected.
 
 #ifdef ORIG_OPENMP_FOUND

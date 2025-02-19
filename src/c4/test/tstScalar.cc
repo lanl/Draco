@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Nov  1 13:24:19 2005
  * \brief  Test functions provided by C4_Serial.cc/.hh
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -54,41 +54,41 @@ void tstScalar(rtt_dsxx::UnitTest &ut) {
   int result(0);
   result = rtt_c4::broadcast(&int3, 1, 0);
   if (result == rtt_c4::C4_SUCCESS) {
-    PASSMSG("For --with-c4=scalar, broadcast() returned C4_SUCCCESS.");
+    PASSMSG("For --with-c4=scalar, broadcast() returned C4_SUCCESS.");
   } else {
-    PASSMSG("For --with-c4=scalar, broadcast() did not return C4_SUCCCESS.");
+    PASSMSG("For --with-c4=scalar, broadcast() did not return C4_SUCCESS.");
   }
 
   // Test gather and scatter
 
   result = rtt_c4::gather(&int3, &int3, 1);
   if (result == rtt_c4::C4_SUCCESS) {
-    PASSMSG("For --with-c4=scalar, gather() returned C4_SUCCCESS.");
+    PASSMSG("For --with-c4=scalar, gather() returned C4_SUCCESS.");
   } else {
-    PASSMSG("For --with-c4=scalar, gather() did not return C4_SUCCCESS.");
+    PASSMSG("For --with-c4=scalar, gather() did not return C4_SUCCESS.");
   }
 
   result = rtt_c4::scatter(&int3, &int3, 1);
   if (result == rtt_c4::C4_SUCCESS) {
-    PASSMSG("For --with-c4=scalar, scatter() returned C4_SUCCCESS.");
+    PASSMSG("For --with-c4=scalar, scatter() returned C4_SUCCESS.");
   } else {
-    PASSMSG("For --with-c4=scalar, scatter() did not return C4_SUCCCESS.");
+    PASSMSG("For --with-c4=scalar, scatter() did not return C4_SUCCESS.");
   }
 
   // Test send function
   result = rtt_c4::send(&int3, 1, 0, 0);
   if (result == rtt_c4::C4_SUCCESS) {
-    PASSMSG("For --with-c4=scalar, send() returned C4_SUCCCESS.");
+    PASSMSG("For --with-c4=scalar, send() returned C4_SUCCESS.");
   } else {
-    PASSMSG("For --with-c4=scalar, send() did not return C4_SUCCCESS.");
+    PASSMSG("For --with-c4=scalar, send() did not return C4_SUCCESS.");
   }
 
   // Test receive function
   result = rtt_c4::receive(&int3, 1, 0, 0);
   if (result == rtt_c4::C4_SUCCESS) {
-    PASSMSG("For --with-c4=scalar, receive() returned C4_SUCCCESS.");
+    PASSMSG("For --with-c4=scalar, receive() returned C4_SUCCESS.");
   } else {
-    PASSMSG("For --with-c4=scalar, receive() did not return C4_SUCCCESS.");
+    PASSMSG("For --with-c4=scalar, receive() did not return C4_SUCCESS.");
   }
 
   // Test send_async<T>(const T*,int,int,int) and receive_async<T>(T*,int,int,int) functions:

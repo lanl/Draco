@@ -58,7 +58,7 @@ void blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
     d = 2.5;
 
     // send out data
-    // Test both active and depricated forms of the send command.
+    // * Test both active and deprecated forms of the send command.
     send(&b, 1, 1);
     send(&c, 1, 1);
     send(&i, 1, 1);
@@ -67,7 +67,7 @@ void blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
     send(&d, 1, 1);
 
     // receive back
-    // Test both active and depricated forms of the receive command.
+    // * Test both active and deprecated forms of the receive command.
     receive(&b, 1, 1);
     receive(&c, 1, 1);
     receive(&i, 1, 1);
@@ -234,7 +234,7 @@ void non_blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
   // receive and send on node 1
   if (rtt_c4::node() == 1) {
     // post receives
-    // Test both function that provide equivalent functionality.
+    // * Test both function that provide equivalent functionality.
     brr = receive_async(&br, 1, 0);
     receive_async(crr, &cr, 1, 0);
     irr = receive_async(&ir, 1, 0);
@@ -283,7 +283,7 @@ void non_blocking_ping_pong(rtt_dsxx::UnitTest &ut) {
     d = 3.5;
 
     // send them back
-    // Test both function that provide equivalent functionality.
+    // * Test both function that provide equivalent functionality.
 
     brs = send_async(&b, 1, 0);
     send_async(crs, &c, 1, 0);

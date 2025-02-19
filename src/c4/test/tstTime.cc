@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 17:19:16 2002
  * \brief  Test timing functions in C4.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -71,7 +71,7 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
 
 #ifdef _MSC_VER
   // KT: I'm not sure why I'm having so much trouble on Win32 for the timing precision check.  I may
-  // need to use a different mechanism for timing values.  Right now the ngihtly tests fail about 1
+  // need to use a different mechanism for timing values.  Right now the nightly tests fail about 1
   // out of 20 times.  When the check fails it is significant:
   //
   // t.wall_clock() value does not match the expected value.
