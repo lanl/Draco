@@ -492,7 +492,9 @@ macro(setupMPILibrariesUnix)
     # If this is a Cray system and the Cray MPI compile wrappers are used, or if this is CTS-1 with
     # Toss3, then do some special setup:
 
-    if(CMAKE_CXX_COMPILER_WRAPPER MATCHES CrayPrgEnv OR IS_DIRECTORY "/usr/projects/hpcsoft/toss3/")
+    if(CMAKE_CXX_COMPILER_WRAPPER MATCHES CrayPrgEnv
+       OR IS_DIRECTORY "/usr/projects/hpcsoft/toss3/"
+       OR "$ENV{LOADEDMODULES}" MATCHES "cray-mpich")
       if(NOT EXISTS ${MPIEXEC_EXECUTABLE})
         find_program(MPIEXEC_EXECUTABLE flux) # 1st option is flux
         if(EXISTS ${MPIEXEC_EXECUTABLE})
@@ -531,7 +533,6 @@ macro(setupMPILibrariesUnix)
           "--np"
           CACHE STRING "mpirun flag used to specify the number of processors to use" FORCE)
     endif()
-
     # Call the standard CMake FindMPI macro.
     find_package(MPI QUIET)
 
