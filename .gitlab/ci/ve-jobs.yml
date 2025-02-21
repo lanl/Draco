@@ -49,7 +49,7 @@
 # ----- fast -----
 
 ve_deb_gnu_mr:
-  stage: fasttest
+  stage: slowtest
   extends: .ve_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
