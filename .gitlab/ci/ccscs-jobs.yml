@@ -223,7 +223,7 @@ ccs_c4_scalar:
 # ---------- regular TEST (only starts if all FASTTEST pass) ---------- #
 
 ccs_autodoc:
-  stage: test
+  stage: fasttest
   extends: .ccscs_merge
   allow_failure: true
   variables:

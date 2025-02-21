@@ -17,7 +17,7 @@ superlinter:
     - charm
   stage: lint
   image:
-      name: github/super-linter:slim-latest
+      name: docker.io/github/super-linter:slim-latest
   script:
     - /action/lib/linter.sh
   # artifacts:
@@ -74,7 +74,7 @@ checkCoverage_MR:
   dependencies:
     - ccs_gcov
   image:
-    name: alpine:3.16.2
+    name: docker.io/library/alpine:3.18
   before_script:
     - apk add --quiet --update --no-cache curl jq bc
   variables:
@@ -199,7 +199,7 @@ titlechange:
     - charm
   stage: test
   image:
-    name: alpine:3.16.2
+    name: docker.io/library/alpine:3.18
   before_script:
     - apk add --quiet --update --no-cache curl jq
   script:
