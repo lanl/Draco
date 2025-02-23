@@ -176,6 +176,24 @@ fi
 rm -f "${patchfile_c}"
 
 #--------------------------------------------------------------------------------------------------#
+# Apply clang-tidy fixes for touched lines!
+#--------------------------------------------------------------------------------------------------#
+
+# Do it here via clang-tidy-diff.py
+
+# 1. Generate a diff between your current branch and master, for example
+# git diff develop..HEAD | \
+
+# 2. Pipe it into clang-tidy-diff.py
+#  clang-tidy-diff.py -p1 \
+#                     -clang-tidy-binary clang-tidy \
+#                     -checks='-*,modernize-use-auto,readability-*' \
+#                     -fix
+
+# 3. Apply the changes
+# clang-tidy-diff.py -p1 < /path/to/mydiff.patch ...
+
+#--------------------------------------------------------------------------------------------------#
 # Test CMake script for formatting issues
 #--------------------------------------------------------------------------------------------------#
 

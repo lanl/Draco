@@ -40,7 +40,7 @@ superlinter:
     PYTHON_FLAKE8_CONFIG_FILE: .flake8
     SUPPRESS_POSSUM: "true"
     JSCPD_CONFIG_FILE: "../../../builds/draco/draco/.gitlab/ci/.jscpd.json"
-    LOG_LEVEL: "NOTICE"
+    # LOG_LEVEL: NOTICE
     VALIDATE_ALL_CODEBASE: "false"
     VALIDATE_BASH: "true"
     VALIDATE_BASH_EXEC: "true"
