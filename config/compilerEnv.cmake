@@ -538,6 +538,7 @@ macro(dbsSetupStaticAnalyzers)
     # Example:
     #
     # * cmake -DDRACO_STATIC_ANALYZER=clang-tidy
+    # * -DCLANG_TIDY_CHECKS_APPLY=1 (may generate warning about cmake var not used.)
     if("${DRACO_STATIC_ANALYZER}" MATCHES "clang-tidy")
       if(NOT CMAKE_CXX_CLANG_TIDY)
         find_program(CMAKE_CXX_CLANG_TIDY clang-tidy)
@@ -552,6 +553,9 @@ macro(dbsSetupStaticAnalyzers)
           set(CLANG_TIDY_CHECKS "--config-file=${PROJECT_SOURCE_DIR}/.clang-tidy")
           if(DEFINED ENV{CI})
             string(APPEND CLANG_TIDY_CHECKS ";--warnings-as-errors=*")
+          endif()
+          if(DEFINED CLANG_TIDY_CHECKS_APPLY)
+            string(APPEND CLANG_TIDY_CHECKS ";-fix")
           endif()
         endif()
         set(CLANG_TIDY_CHECKS
