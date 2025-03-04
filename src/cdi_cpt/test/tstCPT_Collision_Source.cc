@@ -28,7 +28,7 @@ class DNG {
   int i{0}; // Counter of # of calls to this DNG.
 public:
   // Note: This is obviously only good for ~999 calls; plenty for a test.
-  double operator()() {
+  double ran() {
     i++;
     return static_cast<double>(i) / 1000.0;
   }

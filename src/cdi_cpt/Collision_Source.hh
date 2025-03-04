@@ -61,8 +61,11 @@ public:
     const auto &proj_targ = projTargetDatas[temp_idx];
     const auto &elasticReaction = proj_targ.reaction(avalanche::ReactionID(avalanche::MT::Elastic));
 
+    // This lambda wraps our ran() function in an operator-like call that shacl-physics expects.
+    auto ran_operator = [&rng]() { return rng.ran(); };
+
     const auto energyAndCosine = shacl::physics::samplePrimaryReactionAngleEnergy(
-        elasticReaction, incident_energy, awr, rng);
+        elasticReaction, incident_energy, awr, ran_operator);
 
     // Leave it to consumer to correctly interpret negative target energy here
     return incident_energy - energyAndCosine.energy;
