@@ -38,7 +38,7 @@
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
-    DRACO_ENV: "lapse/2.4.2-mi300-cce"
+    DRACO_ENV: "lapse/2.6.0-mi300-gnu"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
@@ -56,12 +56,12 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-rzadams_rel_cce1800_deploy:
+rzadams_rel_gnu_deploy:
   extends: .rzadams_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
 
-rzadams_deb_cce1800_deploy:
+rzadams_deb_gnu_deploy:
   extends: .rzadams_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
@@ -91,12 +91,12 @@ rzadams_deb_cce1800_deploy:
 
 # ----- regular test -----
 
-rzadams_deb_cce1800_mr:
+rzadams_deb_gnu_mr:
   stage: test
   extends: .rzadams_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.4.2-mi300-cce"
+    DRACO_ENV: "lapse/2.6.0-mi300-gnu"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
 
 #--------------------------------------------------------------------------------------------------#
@@ -109,9 +109,9 @@ rzadams_deb_cce1800_mr:
   variables:
     CTEST_MODE: Nightly
     CTEST_NPROC: 128
-    DRACO_ENV: "lapse/2.4.2-mi300-cce"
+    DRACO_ENV: "lapse/2.6.0-mi300-gnu"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
-    CTEST_BUILD_NAME: "lapse240-cce-${CMAKE_BUILD_TYPE}"
+    CTEST_BUILD_NAME: "lapse260-gnu-${CMAKE_BUILD_TYPE}"
   artifacts:
     when: always
     paths:
@@ -124,13 +124,13 @@ rzadams_deb_cce1800_mr:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-rzadams_rel_cce1800_regress:
+rzadams_rel_gnu_regress:
   stage: test
   extends: .rzadams_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
 
-rzadams_deb_cce1800_regress:
+rzadams_deb_gnu_regress:
   stage: test
   extends: .rzadams_nightly
   variables:
