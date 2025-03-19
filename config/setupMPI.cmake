@@ -465,6 +465,22 @@ macro(setupSpectrumMPI)
 endmacro()
 
 # ------------------------------------------------------------------------------------------------ #
+# Setup MPI (generic) on Linux
+# ------------------------------------------------------------------------------------------------ #
+macro(setupGenericMPILibrariesUnix)
+
+  # Set and run the minimal number of variables and macros, respectively, neccesary to link MPI
+  # libraries.
+
+  set(MPI_EXECUTABLE "srun")
+  set(MPI_FLAVOR "container")
+  find_package(MPI REQUIRED)
+  query_topology()
+  setupdracompivars()
+
+endmacro()
+
+# ------------------------------------------------------------------------------------------------ #
 # Setup MPI when on Linux
 # ------------------------------------------------------------------------------------------------ #
 macro(setupMPILibrariesUnix)
@@ -855,12 +871,19 @@ macro(setupMPILibrariesWindows)
 
 endmacro(setupMPILibrariesWindows)
 
+# Generic MPI setup; OFF by default.
+option(GENERIC_MPI "Enable generic MPI setup" OFF) # e.g., container env
+
 # ------------------------------------------------------------------------------------------------ #
 # Helper
 # ------------------------------------------------------------------------------------------------ #
 macro(setupMPILibraries)
   if(UNIX)
-    setupmpilibrariesunix()
+    if(GENERIC_MPI)
+      setupgenericmpilibrariesunix()
+    else()
+      setupmpilibrariesunix()
+    endif()
   elseif(WIN32)
     setupmpilibrarieswindows()
   endif()
