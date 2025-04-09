@@ -4,12 +4,11 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Tuesday, Jul 03, 2018, 11:26 am
  * \brief  Draco_Mesh_Builder class header file.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Draco_Mesh.hh"
 #include "Draco_Mesh_Builder.hh"
-#include "dsxx/Assert.hh"
 #include <algorithm>
 #include <iostream>
 #include <numeric>
@@ -54,7 +53,7 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
   // >>> GENERATE MESH CONSTRUCTOR ARGUMENTS
 
   // get the number of dimensions
-  unsigned const dimension = reader->get_numdim();
+  dimension = reader->get_numdim();
   Check(dimension >= 1);
   Check(dimension <= 3);
 
@@ -62,14 +61,13 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
   size_t const num_cells = reader->get_numcells();
 
   // generate the cell type vector
-  std::vector<unsigned> num_faces_per_cell(num_cells);
+  num_faces_per_cell.resize(num_cells);
   for (size_t cell = 0; cell < num_cells; ++cell)
     num_faces_per_cell[cell] = reader->get_celltype(cell);
 
   // \todo: Can the cell definitions past num_cells - 1 be checked as invalid?
 
   // generate the cell-to-node linkage
-  std::vector<unsigned> cell_to_node_linkage;
   for (size_t cell = 0; cell < num_cells; ++cell) {
 
     // insert the vector of node indices
@@ -82,8 +80,8 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
 
   // generate the side node count vector
   size_t sn_linkage_size = 0;
-  std::vector<unsigned> side_node_count(num_sides);
-  std::vector<unsigned> side_set_flag(num_sides);
+  side_node_count.resize(num_sides);
+  side_set_flag.resize(num_sides);
   for (size_t side = 0; side < num_sides; ++side) {
 
     // acquire the number of nodes associated with this side def
@@ -104,7 +102,6 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
   // \todo: Can the side definitions past num_sides - 1 be checked as invalid?
 
   // generate the side-to-node linkage
-  std::vector<unsigned> side_to_node_linkage;
   side_to_node_linkage.reserve(sn_linkage_size);
   for (size_t side = 0; side < num_sides; ++side) {
 
@@ -119,8 +116,8 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
   Check(num_nodes >= num_cells);
 
   // generate the global node number serialized vector of coordinates
-  std::vector<unsigned> global_node_number(num_nodes);
-  std::vector<double> coordinates(dimension * num_nodes);
+  global_node_number.resize(num_nodes);
+  coordinates.resize(dimension * num_nodes);
   for (size_t node = 0; node < num_nodes; ++node) {
 
     // set the "global" node indices
@@ -136,7 +133,6 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
   }
 
   // reserve some space for num_nodes_per_face_per_cell
-  std::vector<unsigned> num_nodes_per_face_per_cell;
   num_nodes_per_face_per_cell.reserve(
       std::accumulate(num_faces_per_cell.begin(), num_faces_per_cell.end(), 0U));
 
@@ -156,6 +152,34 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
                std::minmax_element(side_to_node_linkage.begin(), side_to_node_linkage.end()));
   Ensure(*cn_minmax.second < num_nodes);
   Ensure(side_to_node_linkage.size() > 0 ? *sn_minmax.second < num_nodes : true);
+
+  // >>> CONSTRUCT THE MESH
+
+  std::shared_ptr<Draco_Mesh> mesh(new Draco_Mesh(
+      dimension, geometry, num_faces_per_cell, cell_to_node_linkage, side_set_flag, side_node_count,
+      side_to_node_linkage, coordinates, global_node_number, num_nodes_per_face_per_cell));
+
+  return mesh;
+}
+
+/*!
+ * \brief Rebuild a Draco_Mesh object with pre-existing mesh constructor data
+ *
+ * \param[in] geometry enumeration of mesh geometry
+ *
+ * \return shared pointer to the Draco_Mesh object
+ */
+template <typename FRT>
+std::shared_ptr<Draco_Mesh>
+Draco_Mesh_Builder<FRT>::rebuild_mesh(rtt_mesh_element::Geometry geometry) {
+
+  // check data has been set previously
+  Require(dimension >= 1 && dimension <= 3);
+  Require(num_faces_per_cell.size() > 0);
+  Require(cell_to_node_linkage.size() > 0);
+  Require(coordinates.size() > 0);
+  Require(global_node_number.size() > 0);
+  Require(num_nodes_per_face_per_cell.size() > 0);
 
   // >>> CONSTRUCT THE MESH
 

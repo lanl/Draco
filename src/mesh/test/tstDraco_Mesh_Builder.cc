@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Sunday, Jul 01, 2018, 18:21 pm
  * \brief  Draco_Mesh_Builder class unit test.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Mesh_Interface.hh"
@@ -143,6 +143,38 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
       ref_sn_first += side_node_count[side];
       sn_first += side_node_count[side];
     }
+  }
+
+  // build a modified mesh with new geometry, B.C.s, and coordinates
+  {
+    const Draco_Mesh::Geometry new_geometry = Draco_Mesh::Geometry::AXISYMMETRIC;
+
+    // scale coordinates by constant scalar factor and reset them in mesh_builder
+    constexpr double s = 3.0;
+    const std::vector<double> coords = mesh_builder.get_coordinates();
+    std::vector<double> scoords(coords.size());
+    std::transform(coords.begin(), coords.end(), scoords.begin(), [](double v) { return s * v; });
+    mesh_builder.reset_coordinates(scoords);
+    FAIL_IF(rtt_dsxx::soft_equiv(coords, mesh_builder.get_coordinates()));
+
+    // add 1 to B.C. side flags and reset them in mesh_builder
+    constexpr unsigned j = 1;
+    const std::vector<unsigned> bcs = mesh_builder.get_side_set_flag();
+    std::vector<unsigned> bcsp1(bcs.size());
+    std::transform(bcs.begin(), bcs.end(), bcsp1.begin(), [](unsigned v) { return v + j; });
+    mesh_builder.reset_side_set_flag(bcsp1);
+    FAIL_IF(bcs == mesh_builder.get_side_set_flag());
+
+    // create a new mesh based on the old one, but with the above modifications
+    std::shared_ptr<Draco_Mesh> const remesh = mesh_builder.rebuild_mesh(new_geometry);
+    FAIL_IF(remesh->get_dimension() != ref_mesh->get_dimension());
+    FAIL_IF(remesh->get_num_cells() != ref_mesh->get_num_cells());
+    FAIL_IF(remesh->get_num_nodes() != ref_mesh->get_num_nodes());
+
+    // check the geometry, coordinates, and B.C.s are modified
+    FAIL_IF(remesh->get_geometry() == ref_mesh->get_geometry());
+    FAIL_IF(remesh->get_side_set_flag() == ref_mesh->get_side_set_flag());
+    FAIL_IF(remesh->get_node_coord_vec() == ref_mesh->get_node_coord_vec());
   }
 
   // successful test output
