@@ -134,7 +134,7 @@ ccs_valgrind_deploy:
     DEPLOY: 'TRUE'
     DEPLOY_RELEASE: 'TRUE'
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
-    DRACO_INSTALL_DIR: "/scratch/regress/deploy/${CI_COMMIT_TAG}${CI_COMMIT_BRANCH}/${FLAVOR}"
+    DRACO_INSTALL_DIR: "/ccs/codes/radtran/regress/deploy/${CI_COMMIT_TAG}${CI_COMMIT_BRANCH}/${FLAVOR}"
     EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
   script:

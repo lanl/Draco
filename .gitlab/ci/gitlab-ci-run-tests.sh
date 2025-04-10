@@ -3,7 +3,7 @@
 # File  : ./.gitlab/ci/gitlab-ci-run-tests.sh
 # Date  : Tuesday, Jun 02, 2020, 12:28 pm
 # Author: Kelly Thompson <kgt@lanl.gov>
-# Note  : Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
+# Note  : Copyright (C) 2021-2025 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 # Staging directory should be protected. Deployed artifacts will be set with chmod at the end of
@@ -84,36 +84,38 @@ run "pwd"
 # Setup compiler flags
 #--------------------------------------------------------------------------------------------------#
 
-for i in C CXX Fortran CUDA; do
+if [[ "${DEPLOY_RELEASE}" != "TRUE" ]]; then
+  for i in C CXX Fortran CUDA; do
 
-  # Turn build warnings into fatal errors
-  if [[ "${DRACO_ENV}" =~ "xl16" ]] || [[ "${DRACO_ENV}" =~ "power9-xl" ]]; then
-    eval export ${i}_FLAGS+=\" -qhalt=w\"
-  else
-    if [[ "${i}" == "Fortran" ]]; then
-      if [[ "${FC}" =~ "ifort" ]] || [[ "${FC}" =~ "ifx" ]] || \
-           [[ "${INTEL_COMPILER_TYPE}" == "ONEAPI" ]] || \
-           [[ "${PE_ENV}" == "INTEL" ]] ; then
-        # do not add the flag
-        echo "Skip adding -Werror to ${i}_FLAGS (FC = ${FC})"
-      elif [[ "${FC}" =~ "crayftn" ]]; then
-        eval export ${i}_FLAGS+=\" -h error_on_warning\"
+    # Turn build warnings into fatal errors for non-release-deploys
+    if [[ "${DRACO_ENV}" =~ "xl16" ]] || [[ "${DRACO_ENV}" =~ "power9-xl" ]]; then
+      eval export ${i}_FLAGS+=\" -qhalt=w\"
+    else
+      if [[ "${i}" == "Fortran" ]]; then
+        if [[ "${FC}" =~ "ifort" ]] || [[ "${FC}" =~ "ifx" ]] || \
+             [[ "${INTEL_COMPILER_TYPE}" == "ONEAPI" ]] || \
+             [[ "${PE_ENV}" == "INTEL" ]] ; then
+          # do not add the flag
+          echo "Skip adding -Werror to ${i}_FLAGS (FC = ${FC})"
+        elif [[ "${FC}" =~ "crayftn" ]]; then
+          eval export ${i}_FLAGS+=\" -h error_on_warning\"
+        else
+          eval export ${i}_FLAGS+=\" -Werror\"
+        fi
+      elif [[ "${i}" == "CUDA" ]]; then
+        eval export ${i}_FLAGS+=\" -Werror all-warnings\"
       else
+        # Works for gcc, llvm, and icpc (not ifort or ifx).
         eval export ${i}_FLAGS+=\" -Werror\"
       fi
-    elif [[ "${i}" == "CUDA" ]]; then
-      eval export ${i}_FLAGS+=\" -Werror all-warnings\"
-    else
-      # Works for gcc, llvm, and icpc (not ifort or ifx).
-      eval export ${i}_FLAGS+=\" -Werror\"
     fi
-  fi
 
-  # Enable coverage for Debug builds
-  if [[ ${CMAKE_BUILD_TYPE} == Debug ]] && [[ "${CODECOV}" == "ON" ]] ; then
-    eval export ${i}_FLAGS+=\" --coverage\"
-  fi
-done
+    # Enable coverage for Debug builds
+    if [[ ${CMAKE_BUILD_TYPE} == Debug ]] && [[ "${CODECOV}" == "ON" ]] ; then
+      eval export ${i}_FLAGS+=\" --coverage\"
+    fi
+  done
+fi
 echo "C_FLAGS       = $C_FLAGS"
 echo "CXX_FLAGS     = $CXX_FLAGS"
 # shellcheck disable=2154
