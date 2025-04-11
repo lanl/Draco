@@ -34,7 +34,6 @@ include:
   - local: /.gitlab/ci/darwin-jobs.yml
   - local: /.gitlab/ci/docker-jobs.yml
   - local: /.gitlab/ci/fog-jobs.yml
-  - local: /.gitlab/ci/msvc-jobs.yml
   - local: /.gitlab/ci/ro-jobs.yml
   - local: /.gitlab/ci/rzadams-jobs.yml
   - local: /.gitlab/ci/rzansel-jobs.yml

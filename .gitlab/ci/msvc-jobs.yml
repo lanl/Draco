@@ -20,7 +20,7 @@
 #       gitlab-ci tags for this runner: win64-msvc2019-shell
 #       executor: shell
 #    c. gitlab-runner.exe start
-
+# NOTE: Draco MSVC support is "mothballed" as of April 2025.
 #-------------------------------------------------------------------------------------------------#
 # Machine-wide default job settings
 #-------------------------------------------------------------------------------------------------#

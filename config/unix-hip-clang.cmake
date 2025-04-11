@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-hip-clang.cmake
 # brief  Establish flags for Unix/Linux - HIP
-# note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -43,8 +43,8 @@ if(NOT HIP_FLAGS_INITIALIZED)
   endif()
 
   # -O0 worked with cce-15/rocm-5.4.3, but is broken with cce-16/rocm-5.7.1. A fix is coming in
-  # rocm-6.1. For now, build Debug HIP code at -O1.
-  string(CONCAT CMAKE_HIP_FLAGS_DEBUG " -O1")
+  # rocm-6.1. So for a while we built Debug HIP code at -O1. But as of 04/2025 we are back to O0.
+  string(CONCAT CMAKE_HIP_FLAGS_DEBUG " -O0")
   # -fno-cray -mllvm -amdgpu-early-inline-all=false -mllvm -amdgpu-function-calls=true")
 
   # As of cce-16/rocm-5.7.1, everything passed at -O3. With cce-17/18, downstream codes experience
