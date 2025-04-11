@@ -46,12 +46,10 @@ if(NOT CXX_FLAGS_INITIALIZED)
   string(APPEND CMAKE_C_FLAGS
          " -g -Wall -Wextra -pedantic -Wcast-align -Wconversion -Wpointer-arith -Wfloat-equal"
          " -Wunused-macros -Wshadow -Wformat=2")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
-    # Pragmas in rng and Random123 don't seem to disable this check.
-    string(APPEND CMAKE_C_FLAGS " -Wno-expansion-to-defined")
-  endif()
+  # Pragmas in rng and Random123 don't seem to disable this check.
+  string(APPEND CMAKE_C_FLAGS " -Wno-expansion-to-defined")
   string(CONCAT CMAKE_C_FLAGS_DEBUG "-fno-inline -fno-eliminate-unused-debug-types -O0"
-                " -Wundef -Wunreachable-code -fsanitize=bounds-strict -fdiagnostics-color=auto"
+                " -Wundef -Wunreachable-code -fdiagnostics-color=auto"
                 " -Wnull-dereference -DDEBUG")
   # GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
   string(CONCAT CMAKE_C_FLAGS_RELEASE "-O3 -funroll-loops -D_FORTIFY_SOURCE=2"
@@ -60,19 +58,16 @@ if(NOT CXX_FLAGS_INITIALIZED)
   string(CONCAT CMAKE_C_FLAGS_RELWITHDEBINFO "-O3 -fno-eliminate-unused-debug-types"
                 " -funroll-loops -Wno-stringop-overflow")
 
-  if(NOT DEFINED ENV{TRAVIS})
+  # Enable additional sanitizer flags for non-Cray (i.e. ccs-net) gcc builds. These can cause
+  # link-time issues for Cray mixed builds (i.e. El Cap).
+  if(NOT DEFINED ENV{TRAVIS} AND NOT CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
     # Some options (including these) seem to confuse Travis. See
     # https://stackoverflow.com/questions/50024731/ld-unrecognized-option-push-state-no-as-needed
+    string(APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=bounds-strict")
     string(APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=float-divide-by-zero")
     string(APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=float-cast-overflow")
-  endif()
-
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.0)
-    # See https://gcc.gnu.org/gcc-7/changes.html
-    if(NOT DEFINED ENV{TRAVIS})
-      string(APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=signed-integer-overflow")
-      string(APPEND CMAKE_C_FLAGS_DEBUG " -Wduplicated-branches")
-    endif()
+    string(APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=signed-integer-overflow")
+    string(APPEND CMAKE_C_FLAGS_DEBUG " -Wduplicated-branches")
   endif()
 
   # Systems running CrayPE use compile wrappers to specify this option.
@@ -105,12 +100,9 @@ if(NOT CXX_FLAGS_INITIALIZED)
   set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
 
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 8.0)
-    # See https://gcc.gnu.org/gcc-8/changes.html
-    string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wold-style-cast -Wnon-virtual-dtor -Wuseless-cast")
-    string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fdiagnostics-show-template-tree -Wnoexcept")
-    string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wsuggest-attribute=const")
-  endif()
+  string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wold-style-cast -Wnon-virtual-dtor -Wuseless-cast")
+  string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fdiagnostics-show-template-tree -Wnoexcept")
+  string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wsuggest-attribute=const")
 
 endif()
 

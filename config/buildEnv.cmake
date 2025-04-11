@@ -17,8 +17,9 @@ macro(dbsSetDefaults)
   # Work around for cmake-3.19+. Should be fixed in cmake-3.20+
   # https://gitlab.kitware.com/cmake/cmake/-/issues/21894
   if(DEFINED ENV{CRAY_CPU_TARGET} AND "${CMAKE_CXX_COMPILER_WRAPPER}notset" STREQUAL "notset")
+    set(CMAKE_CXX_COMPILER_WRAPPER "CrayPrgEnv")
     set(CMAKE_CXX_COMPILER_WRAPPER
-        "CrayPrgEnv"
+        "${CMAKE_CXX_COMPILER_WRAPPER}"
         CACHE STRING "CrayPrgEnv?" FORCE)
   endif()
 

@@ -160,15 +160,19 @@ message("Library Type: ${DRACO_LIBRARY_TYPE}
 ")
 
 if(CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
-  message("Cray system detected: CC -craype-verbose -V|--version:
-")
-  if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Cray" AND NOT DEFINED ENV{CRAY_PE_USE_CLANG})
-    set(ver_opt "-V")
+  if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    # The -craype-verbose flag isn't recognized for PrgEnv-gnu on adams.
+    message("Cray system detected.")
   else()
-    set(ver_opt "--version")
+    message("Cray system detected: CC -craype-verbose -V|--version:
+  ")
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Cray" AND NOT DEFINED ENV{CRAY_PE_USE_CLANG})
+      set(ver_opt "-craype-verbose -V")
+    else()
+      set(ver_opt "--version")
+    endif()
+    execute_process(COMMAND ${CMAKE_CXX_COMPILER} -craype-verbose ${ver_opt} OUTPUT_VARIABLE tmp)
   endif()
-  execute_process(COMMAND ${CMAKE_CXX_COMPILER} -craype-verbose ${ver_opt} OUTPUT_VARIABLE tmp)
-  message("${tmp}")
 endif()
 
 # Push some variables up one level
