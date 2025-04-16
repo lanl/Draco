@@ -53,7 +53,7 @@ public:
   // >>> INTERFACE SPECIFIED BY rtt_cdi::CPEloss
 
   // Get an eloss.
-  [[nodiscard]] double getEloss(const double temperature, const double density,
+  [[nodiscard]] double getEloss(const double temperature, const double ndensity,
                                 const double v0) const override;
 
   //! Query to see if data is in tabular or functional form (false).

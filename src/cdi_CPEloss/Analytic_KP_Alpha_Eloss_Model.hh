@@ -38,8 +38,8 @@ public:
     Require(projectile.get_zaid() == 2004);
   }
 
-  //! Calculate the eloss rate in units of shk^-1; T given in keV, rho in g/cc, v0 in cm/shk
-  [[nodiscard]] double calculate_eloss(const double T, const double rho,
+  //! Calculate the eloss rate in units of shk^-1; T given in keV, ndens in a/cc, v0 in cm/shk
+  [[nodiscard]] double calculate_eloss(const double T, const double ndens,
                                        const double v0) const override;
 };
 

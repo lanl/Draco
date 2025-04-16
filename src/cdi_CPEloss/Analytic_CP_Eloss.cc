@@ -4,7 +4,7 @@
  * \author Kendra P. Long
  * \date   Fri Aug  2 14:28:08 2019
  * \brief  Analytic_CP_Eloss member definitions.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_CPEloss/Analytic_CP_Eloss.hh"
@@ -52,17 +52,17 @@ Analytic_CP_Eloss::Analytic_CP_Eloss(SP_Analytic_Model model_in,
  * constructor.  The analytic eloss model is specified in the constructor (Analytic_CP_Eloss()).
  *
  * \param[in] temperature material temperature in keV
- * \param[in] density material density in g/cm^3
+ * \param[in] ndensity target number density in atoms/cm^3
  * \param[in] v0 incident particle speed in cm/shk
  * \return eloss (time coefficient) in shk^-1
  */
-double Analytic_CP_Eloss::getEloss(double temperature, double density, double v0) const {
+double Analytic_CP_Eloss::getEloss(double temperature, double ndensity, double v0) const {
   Require(temperature >= 0.0);
-  Require(density >= 0.0);
+  Require(ndensity >= 0.0);
   Require(v0 >= 0.0);
 
   // define return eloss
-  double const eloss = analytic_model->calculate_eloss(temperature, density, v0);
+  double const eloss = analytic_model->calculate_eloss(temperature, ndensity, v0);
 
   Ensure(eloss >= 0.0);
   return eloss;
