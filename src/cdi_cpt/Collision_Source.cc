@@ -16,7 +16,6 @@
 #include "avalanche/factory/AceLibrary.hpp"
 #endif
 #include "dsxx/Assert.hh"
-#include "cdi/CPCommon.hh"
 #include <string>
 #include <vector>
 
@@ -27,38 +26,28 @@ namespace rtt_cdi_cpt {
 
 #ifdef SHACL_PHYSICS_FOUND
 //------------------------------------------------------------------------------------------------//
-avalanche::ParticleID GetParticleID(const rtt_cdi::CParticle &particle) {
-  if (particle.get_zaid() == -1) {
-    return avalanche::ParticleID::electron();
-  } else {
-    return {particle.get_zaid() * 100U};
-  }
-}
-
-//------------------------------------------------------------------------------------------------//
-CollisionSource::CollisionSource(const rtt_cdi::CParticle target_in,
-                                 const rtt_cdi::CParticle projectile_in,
+CollisionSource::CollisionSource(const int32_t target_zaid_in, const int32_t projectile_zaid_in,
                                  const std::string &ace_library,
                                  const std::vector<std::string> &ndatk_path_user,
                                  const std::string &exsdir_path)
-    : target(target_in), projectile(projectile_in) {
+    : target_zaid(target_zaid_in), projectile_zaid(projectile_zaid_in) {
 
-  auto atarget = GetParticleID(target_in);
+  avalanche::ParticleID atarget =
+      (projectile_zaid_in == -1) ? avalanche::ParticleID::electron() : projectile_zaid_in * 100U;
   // TODO(BRR) verify that projectile_in is correct for this data table?
-  // auto aprojectile = GetParticleID(projectile_in);
 
   // If no custom path provided, use ndatk default
   std::vector<std::string> const ndatk_path =
       ndatk_path_user.empty() ? ndatk::Exsdir::default_path() : ndatk_path_user;
 
   avalanche::AceLibrary ace_lib(exsdir_path, ace_library, ndatk_path);
-  temperatures = ace_lib.temperatures(std::to_string(target_in.get_zaid()));
+  temperatures = ace_lib.temperatures(std::to_string(target_zaid_in));
   Insist(!temperatures.empty(), "No temperature points found for this target!");
 
   // Create a vector of elastic reactions at each temperature
   for (double &temperature : temperatures) {
     // Use each temperature value of datafiles to extract correct table
-    auto ace_path = ace_lib.path(std::to_string(target_in.get_zaid()), temperature);
+    auto ace_path = ace_lib.path(std::to_string(target_zaid_in), temperature);
 
     // Create projectile target data, using MPI if available to reduce file reads
     avalanche::ace::ProjectileTargetFactory proj_targ_fac;
@@ -113,12 +102,11 @@ CollisionSource::get_cross_section(const double /*incident_energy*/, const doubl
 // Provide stubbed interface functions that throw if called without shacl::physics support.
 
 //------------------------------------------------------------------------------------------------//
-CollisionSource::CollisionSource(const rtt_cdi::CParticle target_in,
-                                 const rtt_cdi::CParticle projectile_in,
+CollisionSource::CollisionSource(const int32_t /*target_zaid_in*/,
+                                 const int32_t /*projectile_zaid_in*/,
                                  const std::string & /*ace_library*/,
                                  const std::vector<std::string> & /*ndatk_path_user*/,
-                                 const std::string & /*exsdir_path*/)
-    : target(target_in), projectile(projectile_in) {
+                                 const std::string & /*exsdir_path*/) {
   Insist(false, "CollisionSource class only defined when SHACL_PHYSICS_FOUND!");
 }
 //------------------------------------------------------------------------------------------------//
