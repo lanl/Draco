@@ -29,7 +29,7 @@ namespace rtt_cdi_cpt {
 class CollisionSource {
 public:
   // Constructor
-  CollisionSource(const rtt_cdi::CParticle target_in, const rtt_cdi::CParticle projectile_in,
+  CollisionSource(const int32_t target_zaid_in, const int32_t projectile_zaid_in,
                   const std::string &ace_library,
                   const std::vector<std::string> &ndatk_path_user = {},
                   const std::string &exsdir_path = "exsdir");
@@ -37,7 +37,7 @@ public:
 // Need ifdef for scalar builds.
 #ifdef C4_MPI
   // Constructor with MPI communicator
-  CollisionSource(const rtt_cdi::CParticle target_in, const rtt_cdi::CParticle projectile_in,
+  CollisionSource(const int32_t target_zaid_in, const int32_t projectile_zaid_in,
                   const std::string &ace_library, MPI_Comm comm_in,
                   const std::vector<std::string> &ndatk_path_user = {},
                   const std::string &exsdir_path = "exsdir");
@@ -87,11 +87,11 @@ public:
   }
 #endif
 
-  // Get target particle
-  [[nodiscard]] rtt_cdi::CParticle get_target() const { return target; }
+  // Get target particle ZAID
+  [[nodiscard]] int32_t get_target() const { return target_zaid; }
 
-  // Get projectile particle
-  [[nodiscard]] rtt_cdi::CParticle get_projectile() const { return projectile; }
+  // Get projectile particle ZAID
+  [[nodiscard]] int32_t get_projectile() const { return projectile_zaid; }
 
   // Get atomic weight ratio of target
   [[nodiscard]] double get_awr() const { return awr; }
@@ -112,10 +112,10 @@ private:
   double awr{0.0};
 
   // Target particle
-  const rtt_cdi::CParticle target;
+  const int32_t target_zaid{0};
 
   // Projectile particle
-  const rtt_cdi::CParticle projectile;
+  const int32_t projectile_zaid{0};
 
   // Get index into data array for given temperature
   [[nodiscard]] int get_data_idx(const double temperature) const {

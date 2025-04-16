@@ -36,14 +36,10 @@ public:
 
 void simple_collision_test(rtt_dsxx::UnitTest &ut) {
 
-  // Hydrogen atom
+  // Hydrogen atom (target)
   int32_t const hydrogen_zaid = 1001;
-  double const hydrogen_mass = 1.6735575e-24;
-  rtt_cdi::CParticle const target_in(hydrogen_zaid, hydrogen_mass);
-  // Alpha particle:
+  // Alpha particle (projectile)
   int32_t const alpha_zaid = 2004;
-  double const alpha_mass = 6.64424e-24;
-  rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
   // Projectile energy
   double const projectile_energy = 1.0; // keV
 
@@ -54,18 +50,14 @@ void simple_collision_test(rtt_dsxx::UnitTest &ut) {
                                                     ndatk_path_base + std::string("/data")};
 
   // Create CollisionSource object for this
-  rtt_cdi_cpt::CollisionSource const cs(target_in, projectile_in, "endf71x", ndatk_path_list);
+  rtt_cdi_cpt::CollisionSource const cs(hydrogen_zaid, alpha_zaid, "endf71x", ndatk_path_list);
 
   // Create false RNG
   DNG dng;
 
-  auto target_compare = cs.get_target();
-  FAIL_IF_NOT(target_compare.get_zaid() == target_in.get_zaid());
-  FAIL_IF_NOT(soft_equiv(target_compare.get_mass(), target_in.get_mass()));
+  FAIL_IF_NOT(cs.get_target() == hydrogen_zaid);
 
-  auto projectile_compare = cs.get_projectile();
-  FAIL_IF_NOT(projectile_compare.get_zaid() == projectile_in.get_zaid());
-  FAIL_IF_NOT(soft_equiv(projectile_compare.get_mass(), projectile_in.get_mass()));
+  FAIL_IF_NOT(cs.get_projectile() == alpha_zaid);
 
   FAIL_IF_NOT(soft_equiv(cs.get_awr(), 9.991670e-01));
 
