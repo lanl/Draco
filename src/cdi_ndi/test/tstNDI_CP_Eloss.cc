@@ -55,12 +55,12 @@ void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
   // Get eloss value for slightly above (E=1,rho=1,T=1) grid point.
   {
     double const speed = 0.0982085;
-    double const density = 0.00167264;
+    double const density = 0.00167264 / target.get_mass();
     double const temperature = 0.0000100;
     // Exponentiate the table value (in log space) at (E=1,rho=1,T=1)
     double const base_val = exp(-4.857735E+01);
     // Calculate the unit conversion (see getEloss function):
-    const double multiplier{1000. * density / proton_mass * speed};
+    const double multiplier{1000. * density * speed};
     double const reference = multiplier * base_val;
     // KPL: using loose tolerance here so we can compare directly to the data point.
     FAIL_IF_NOT(
@@ -70,12 +70,12 @@ void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
   // Get eloss value for slightly above (E=2,rho=3,T=4) grid point
   {
     double const speed = 0.9820851;
-    double const density = 16.726301;
+    double const density = 16.726301 / target.get_mass();
     double const temperature = 0.631000;
     // Exponentiate the table value (in log space) at (E=2,rho=3,T=4)
     double const base_val = exp(-5.549845e+01);
     // Calculate the unit conversion (see getEloss function):
-    const double multiplier{1000. * density / proton_mass * speed};
+    const double multiplier{1000. * density * speed};
     double const reference = multiplier * base_val;
     // KPL: using loose tolerance here so we can compare directly to the data point.
     FAIL_IF_NOT(
@@ -88,13 +88,13 @@ void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
     // Halfway between table points 1 and 2:
     double const speed = 0.5 * (0.0982085 + 0.982085);
     // Halfway between table points 2 and 3:
-    double const density = 0.5 * (0.167263 + 16.7263);
+    double const density = 0.5 * (0.167263 + 16.7263) / target.get_mass();
     // Halfway between table points 3 and 4:
     double const temperature = 0.5 * (0.0158489 + 0.630957);
     // Exponentiate the interpolated table value
     double const base_val = exp(-5.5190688639e+01);
     // Calculate the unit conversion (see getEloss function):
-    const double multiplier{1000. * density / proton_mass * speed};
+    const double multiplier{1000. * density * speed};
     double const reference = multiplier * base_val;
     FAIL_IF_NOT(
         rtt_dsxx::soft_equiv(eloss.getEloss(temperature, density, speed), reference, 1.e-8));

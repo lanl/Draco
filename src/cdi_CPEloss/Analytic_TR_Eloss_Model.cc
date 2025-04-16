@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   Feb 21 2020
  * \brief  Analytic_TR_Eloss_Model implementation file.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Analytic_TR_Eloss_Model.hh"
@@ -15,27 +15,26 @@
 
 namespace rtt_cdi_cpeloss {
 
-/*! \brief Calculate the eloss in units of keV shk^-1; T given in keV, rho in g/cc, v0 in cm/shk
+/*! \brief Calculate the eloss in units of keV shk^-1; T given in keV, ndens in a/cc, v0 in cm/shk
  *
  * CP energy loss class using Harold Rogers/Thurman Talley electron/ion stopping power expression.
  *
  * \param T material temperature in keV
- * \param rho material density in g/cm^3
+ * \param ndens number density in a/cm^3
  * \param v incident particle speed in cm/shk
  * \return eloss stopping power in keV shk^-1
  */
-double Analytic_TR_Eloss_Model::calculate_eloss(const double T, const double rho,
+double Analytic_TR_Eloss_Model::calculate_eloss(const double T, const double ndens,
                                                 const double v) const {
 
   Require(T >= 0.0);
-  Require(rho >= 0.0);
+  Require(ndens >= 0.0);
   Require(v >= 0.0);
 
   const double keV = 1e3 * pc.eV();
   const double eloss_unit_fac = 1.e-8 / keV;
   const double hbar = pc.h() / (2. * pc.pi());
 
-  const double nt = rho / mt;
   const double Tt = T * keV / pc.k();
   const double vp = v * 1.e8;
   const double vt = sqrt(2. * pc.k() * Tt / mt);
@@ -44,7 +43,7 @@ double Analytic_TR_Eloss_Model::calculate_eloss(const double T, const double rho
   if (Ep < 2. * pc.k() * Tt)
     return rtt_cdi::constants::max_eloss;
 
-  const double prefac = 4. * pc.pi() * nt * qtabs * qtabs * qpabs * qpabs / (mt * vp * vp);
+  const double prefac = 4. * pc.pi() * ndens * qtabs * qtabs * qpabs * qpabs / (mt * vp * vp);
   const double zeta = vp / vt;
 
   double Psi = 0.;
@@ -55,11 +54,11 @@ double Analytic_TR_Eloss_Model::calculate_eloss(const double T, const double rho
     Psi = std::erf(zeta) - 2. * zeta / sqrt(pc.pi()) * (1. + mt / mp) * exp(-pow(zeta, 2));
 
     // Fermi temperature
-    const double TF = pow(pc.pi(), 4. / 3.) * hbar * hbar * pow(nt, 2. / 3.) /
+    const double TF = pow(pc.pi(), 4. / 3.) * hbar * hbar * pow(ndens, 2. / 3.) /
                       (pow(3., 1. / 3.) * pc.k() * pc.me());
     double const lambsq = (12. * mt * pc.k() * pc.k()) * Tt * Tt *
                           (exp(-1.) + 4. / 9. * pow(TF / Tt, 2)) /
-                          (hbar * hbar * 4. * pc.pi() * pc.e() * pc.e() * nt);
+                          (hbar * hbar * 4. * pc.pi() * pc.e() * pc.e() * ndens);
     Require(lambsq > -1.);
     double const lamb_e = log(1. + lambsq);
     double lambcnst = 0.;
@@ -88,8 +87,8 @@ double Analytic_TR_Eloss_Model::calculate_eloss(const double T, const double rho
     Psi = std::erf(zeta) - 2. * zeta / sqrt(pc.pi()) * (1. + mt / mp) * exp(-pow(zeta, 2));
 
     double const debye =
-        sqrt(pc.k() * Tt / (4. * pc.pi() * nt * pc.e() * pc.e())); // Electron debye length
-    double const mu = mt * mp / (mt + mp);                         // Mean particle mass
+        sqrt(pc.k() * Tt / (4. * pc.pi() * ndens * pc.e() * pc.e())); // Electron debye length
+    double const mu = mt * mp / (mt + mp);                            // Mean particle mass
     double const vmin = std::min<double>(vp, vt);
     double const vmax = std::max<double>(vp, vt);
     constexpr double vfac = 0.27323954;

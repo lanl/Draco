@@ -4,7 +4,7 @@
  * \author Kendra P. Long
  * \date   Fri Aug  2 14:28:08 2019
  * \brief  Analytic_CP_Eloss test.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -72,22 +72,22 @@ void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
 
   // Get eloss values for some sample data:
   {
-    double const T = 1.0;    // keV
-    double const rho = 10.0; // g / cc
-    double const vel0 = 1.0; // cm / shk
+    double const T = 1.0;                             // keV
+    double const ndens = 10.0 / target_in.get_mass(); // a / cc
+    double const vel0 = 1.0;                          // cm / shk
 
-    double const eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_mod.getEloss(T, ndens, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 212.287, 1.0e-3));
   }
 
   // Point near the maximum on rho in [0, 20] g/cc, T in [0, 100] keV:
   {
-    double const T = 15.0;   // keV
-    double const rho = 20.0; // g / cc
-    double const vel0 = 1.0; // cm / shk
+    double const T = 15.0;                            // keV
+    double const ndens = 20.0 / target_in.get_mass(); // a / cc
+    double const vel0 = 1.0;                          // cm / shk
 
-    double const eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_mod.getEloss(T, ndens, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 78.5845, 1.0e-4));
   }
@@ -95,11 +95,11 @@ void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
   // Point where the range fit goes negative -- eloss should return 1.0e25:
   // (equivalent to the particle range limiting to a very small number)
   {
-    double const T = 90.0;   // keV
-    double const rho = 17.5; // g / cc
-    double const vel0 = 1.0; // cm / shk
+    double const T = 90.0;                            // keV
+    double const ndens = 17.5 / target_in.get_mass(); // a / cc
+    double const vel0 = 1.0;                          // cm / shk
 
-    double const eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_mod.getEloss(T, ndens, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 1.0e25));
   }
@@ -156,22 +156,22 @@ void Spitzer_test(rtt_dsxx::UnitTest &ut) {
 
   // Get eloss values for some sample data:
   {
-    double const T = 1.0;    // keV
-    double const rho = 10.0; // g / cc
-    double const vel0 = 1.0; // cm / shk
+    double const T = 1.0;                             // keV
+    double const ndens = 10.0 / target_in.get_mass(); // a / cc
+    double const vel0 = 1.0;                          // cm / shk
 
-    double const eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_mod.getEloss(T, ndens, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 9.823342835413329303e+05, 1.0e-8));
   }
 
   // Check for large value when 2kT > E
   {
-    double const T = 1.e2;   // keV
-    double const rho = 10.0; // g / cc
-    double const vel0 = 1.0; // cm / shk
+    double const T = 1.e2;     // keV
+    double const ndens = 10.0; // g / cc
+    double const vel0 = 1.0;   // cm / shk
 
-    double const eloss_coeff = eloss_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_mod.getEloss(T, ndens, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 1.e15, 1.0e-8));
   }
@@ -237,33 +237,33 @@ void TR_test(rtt_dsxx::UnitTest &ut) {
 
   // Get eloss values for some sample ion data:
   {
-    double const T = 1.0;    // keV
-    double const rho = 10.0; // g / cc
-    double const vel0 = 1.0; // cm / shk
+    double const T = 1.0;                              // keV
+    double const ndens = 10.0 / target_ion.get_mass(); // a / cc
+    double const vel0 = 1.0;                           // cm / shk
 
-    double const eloss_coeff = eloss_ion_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_ion_mod.getEloss(T, ndens, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 9.927570982586801983e+05, 1.0e-8));
   }
 
   // Get eloss values for some sample electron data:
   {
-    double const T = 1.0;     // keV
-    double const rho = 1.e-2; // g / cc
-    double const vel0 = 1.0;  // cm / shk
+    double const T = 1.0;                                    // keV
+    double const ndens = 1.e-2 / target_electron.get_mass(); // el / cc
+    double const vel0 = 1.0;                                 // cm / shk
 
-    double const eloss_coeff = eloss_ele_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_ele_mod.getEloss(T, ndens, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 4.993807286690149340e+05, 1.0e-8));
   }
 
   // Check for large value when 2kT > E
   {
-    double const T = 1.e2;   // keV
-    double const rho = 10.0; // g / cc
-    double const vel0 = 1.0; // cm / shk
+    double const T = 1.e2;                             // keV
+    double const ndens = 10.0 / target_ion.get_mass(); // g / cc
+    double const vel0 = 1.0;                           // cm / shk
 
-    double const eloss_coeff = eloss_ion_mod.getEloss(T, rho, vel0);
+    double const eloss_coeff = eloss_ion_mod.getEloss(T, ndens, vel0);
 
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 1.e15, 1.0e-8));
   }

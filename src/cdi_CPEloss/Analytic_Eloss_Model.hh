@@ -26,7 +26,7 @@ namespace rtt_cdi_cpeloss {
  * user can define any derived model class that will work with these analytic opacity generation
  * classes as long as it implements the functions required, namely:
  *
- * \arg double calculate_eloss(double T, double rho)
+ * \arg double calculate_eloss(double T, double ndens, double v0)
  *
  * This class is a pure virtual base class.
  *
@@ -46,7 +46,7 @@ public:
   Analytic_Eloss_Model &operator=(Analytic_Eloss_Model &&rhs) noexcept = delete;
 
   //! Interface for derived analytic eloss models.
-  [[nodiscard]] virtual double calculate_eloss(const double T, const double rho,
+  [[nodiscard]] virtual double calculate_eloss(const double T, const double ndens,
                                                const double v0) const = 0;
 
 protected:

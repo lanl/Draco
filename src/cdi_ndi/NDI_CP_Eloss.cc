@@ -195,8 +195,8 @@ void NDI_CP_Eloss::load_ndi() {
  *
  * \todo Share code with Tabular_CP_Eloss::getEloss (appears to be identical interp)
  *
- * \param[in] temperature Material temperature [keV]
- * \param[in] density Material density [g cm^-3]
+ * \param[in] temperature Ion temperature [keV]
+ * \param[in] density Target number density [atoms cm^-3]
  * \param[in] partSpeed Particle speed [cm shk^-1]
  */
 double NDI_CP_Eloss::getEloss(const double temperature, const double density,
@@ -205,8 +205,8 @@ double NDI_CP_Eloss::getEloss(const double temperature, const double density,
   // temperature: keV -> keV
   const double log_temperature = std::log(temperature);
 
-  // density: g cm^-3 -> cm^-3
-  const double log_density = std::log(density / target.get_mass());
+  // density: cm^-3 -> cm^-3
+  const double log_density = std::log(density);
 
   // energy: cm/shk -> MeV  (using projectile particle's mass)
   const double log_energy = std::log(std::pow(partSpeed / 1.e-8, 2) * projectile.get_mass() /
@@ -253,8 +253,7 @@ double NDI_CP_Eloss::getEloss(const double temperature, const double density,
   const double dedx = std::exp(
       rtt_dsxx::interpolate::linear_3d(x0, x1, y0, y1, z0, z1, f000, f100, f001, f101, f010, f110,
                                        f011, f111, log_temperature, log_density, log_energy));
-  const double number_density = density / target.get_mass();
-  return dedx * 1000. * number_density * partSpeed; // MeV cm^2 -> keV shk^-1
+  return dedx * 1000. * density * partSpeed; // MeV cm^2 -> keV shk^-1
 }
 
 #else

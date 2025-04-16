@@ -30,8 +30,8 @@ public:
                                 const rtt_cdi::CParticle &projectile, const double eloss_value_in)
       : Analytic_Eloss_Model(target, projectile), eloss_value(eloss_value_in) {}
 
-  //! Calculate the eloss rate in units of shk^-1; T given in keV, rho in g/cc, v0 in cm/shk
-  [[nodiscard]] double calculate_eloss(const double /*T*/, const double /*rho*/,
+  //! Calculate the eloss rate in units of shk^-1; T given in keV, ndens in a/cc, v0 in cm/shk
+  [[nodiscard]] double calculate_eloss(const double /*T*/, const double /*ndens*/,
                                        const double /*v0*/) const override {
     return eloss_value;
   }
