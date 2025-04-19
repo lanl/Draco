@@ -69,6 +69,7 @@ add_subdirectory(roots) #< needs linear
 add_subdirectory(VendorChecks) #< needs c4
 add_subdirectory(viz) #< needs c4
 add_subdirectory(predict)
+add_subdirectory(lightweight_quadrature) #< needs c4
 
 # Level 4
 message(" ")

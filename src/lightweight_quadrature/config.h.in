@@ -1,0 +1,18 @@
+/*----------------------------------------------*-C-*---------------------------------------------*/
+/*!
+ * \file   config.h
+ * \brief  CPP defines necessary for the lightweight_quadrature package.
+ * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved. */
+/*------------------------------------------------------------------------------------------------*/
+
+#ifndef rtt_lightweight_quadrature_config_h
+#define rtt_quadrature_config_h
+
+#cmakedefine GSL_FOUND
+
+#endif /* __lightweight_quadrature_config_h__ */
+
+/*------------------------------------------------------------------------------------------------*/
+/* end of config.h */
+/*------------------------------------------------------------------------------------------------*/
+
