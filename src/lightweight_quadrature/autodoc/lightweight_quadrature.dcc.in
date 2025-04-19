@@ -1,0 +1,92 @@
+//--------------------------------------------*-C++-*---------------------------------------------//
+// lightweight_quadrature.dcc
+// lightweight_quadrature overview page
+// Jim Warsa
+// Apr 1 2025
+//------------------------------------------------------------------------------------------------//
+
+/*!
+
+\page overview_lightweight_quadrature Overview of the lightweight_quadrature package
+\version Draco-@Draco_VERSION@
+\author Jim Warsa
+
+\section lightweight_quadrature_abstract Abstract
+
+The lightweight_quadrature package provides 2D quadrature on the sphere, normalized to 4 pi.
+They include multiple-range quadratures, in addition to good ol' level symmetric and
+gauss-Legendre-Chebyshev in both product and triangular arrangements.
+
+In contrast to the quadrature package, this does nothing fancy and provide no additional services,
+returing only a list of 3D points and associate quadrature weights. 
+
+The following 1D polar and azimuthal types of quadratures are available. 
+
+-------------------------------------------
+      1D polar           1D azimuthal
+-------------------------------------------
+     gauss                chebyshev
+     double-gauss
+     lobatto              az_qrs45
+     radau                az_qra45
+     double-radau         az_qrs30
+                          az_qra30
+     pol_qrs90            az_qrs90
+     pol_qrs45            az_qra90
+-------------------------------------------
+recommended product quadratures (no closed 1D polar quadratures for now)
+-------------------------------------------
+      polar              azimuthal
+   (0) gauss           (0) chebyshev
+   (1) double-gauss
+
+   (3) qrs90           (1) az_qrs45
+   (3) qrs45           (2) az_qra45
+                     (3) az_qrs30
+                       (4) az_qra30
+                       (5) az_qrs90
+                       (6) az_qra90
+-------------------------------------------
+recommended triangular quadratures (based on integration accuracy)
+-------------------------------------------
+      polar              azimuthal
+   (0) gauss           (0) chebyshev
+   (1) double-gauss
+
+   (3) qrs90           (2) az_qra45
+   (3) qrs45           (5) az_qrs90
+
+<!---------------------------------------------------------------------------------------------- -->
+
+\section lightweight_quadrature_usage Usage
+
+\code
+
+#include "lightweight_quadrature/quad_2D.hh"
+
+int polar_order = 4;
+int azimuhtal_order = 4;
+int polar_type = 0;
+int azimuthal_type = 0;
+
+std::vector<double> omega_x;
+std::vector<double> omega_y; 
+std::vector<double> omega_z; 
+std::vector<double> weights;
+auto const quad = quad_2D(polar_order, azimuthal_order, polar_type, azimuthal_type, quad_type);
+quad.create_quadrature(omega_x_, omega_y_, omega_z_, weights_);
+
+\endcode
+
+<!---------------------------------------------------------------------------------------------- -->
+
+\section lightweight_quadrature_reference References
+
+\li P.J. Spence, "The generation of arbitrary order, non-classical, Gauss-type quadrature for 
+transport applications", Journal of Computational Physics, Volume 296, 2015, Pages 25-57.
+
+*/
+
+//------------------------------------------------------------------------------------------------//
+// end of lightweight_quadrature.dcc
+//------------------------------------------------------------------------------------------------//
