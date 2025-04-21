@@ -195,8 +195,6 @@ public:
   [[nodiscard]] vf_double get_vertices(int const cell) const;
   [[nodiscard]] vf_double get_vertices(int const cell, const uint32_t face) const;
   [[nodiscard]] inline sf_double get_short_vertices(size_t cell) const;
-  [[nodiscard]] inline U3 get_intersection(const U3 &r, const U3 &omega, const double &distance,
-                                           const int &cell, const uint32_t face) const;
   [[nodiscard]] sf_int get_neighbors(uint32_t const cell) const;
   [[nodiscard]] size_t get_number_of_faces() const { return layout->num_coarse_faces(); }
   [[nodiscard]] inline sf_int get_valid_cell_faces() const;
@@ -977,62 +975,6 @@ template <int D> U3 CAMR_Mesh<D>::get_cell_centroid(const size_t cell) const {
 template <int D> typename CAMR_Mesh<D>::sf_int CAMR_Mesh<D>::get_valid_cell_faces() const {
   constexpr std::array<int, 6> f = {1, 2, 3, 4, 5, 6};
   return {f.begin(), f.begin() + D * 2};
-}
-
-//------------------------------------------------------------------------------------------------//
-/*!
- * \brief Calculate an intersection location on an CAMR_Mesh face
- *
- * \param[in] r position
- * \param[in] omega direction
- * \param[in] distance minimum distance to boundary
- * \param[in] cell index to the cell containing position r
- * \param[in] face the pre-calculated face containing the intersection
- *
- * \return intersection point on face
- */
-template <int D>
-U3 CAMR_Mesh<D>::get_intersection(const U3 &r, const U3 &omega, const double &distance,
-                                  const int &cell, const uint32_t face) const {
-  sf_double const cell_vertex = get_vertex(cell);
-  U3 intersection{0, 0, 0};
-  switch (face) {
-  case 1:
-    intersection[0] = cell_vertex[0];
-    intersection[1] = r[1] + distance * omega[1];
-    intersection[2] = r[2] + distance * omega[2];
-    break;
-  case 2:
-    intersection[0] = cell_vertex[0] + get_cell_width(cell);
-    intersection[1] = r[1] + distance * omega[1];
-    intersection[2] = r[2] + distance * omega[2];
-    break;
-  case 3:
-    intersection[0] = r[0] + distance * omega[0];
-    intersection[1] = cell_vertex[1];
-    intersection[2] = r[2] + distance * omega[2];
-    break;
-  case 4:
-    intersection[0] = r[0] + distance * omega[0];
-    intersection[1] = cell_vertex[1] + get_cell_width(cell);
-    intersection[2] = r[2] + distance * omega[2];
-    break;
-  case 5:
-    intersection[0] = r[0] + distance * omega[0];
-    intersection[1] = r[1] + distance * omega[1];
-    intersection[2] = cell_vertex[2];
-    break;
-  case 6:
-    intersection[0] = r[0] + distance * omega[0];
-    intersection[1] = r[1] + distance * omega[1];
-    intersection[2] = cell_vertex[2] + get_cell_width(cell);
-    break;
-  default:
-    Insist(0, "Invalid Face Index!"); // LCOV_EXCL_LINE
-    break;
-  }
-
-  return intersection;
 }
 
 } // namespace rtt_mesh
