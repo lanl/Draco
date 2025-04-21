@@ -47,11 +47,12 @@ if(NOT HIP_FLAGS_INITIALIZED)
   string(CONCAT CMAKE_HIP_FLAGS_DEBUG " -O0")
   # -fno-cray -mllvm -amdgpu-early-inline-all=false -mllvm -amdgpu-function-calls=true")
 
-  # As of cce-16/rocm-5.7.1, everything passed at -O3. With cce-17/18, downstream codes experience
-  # memory faults at -O3 unless the additional `disable-peephole` flag is passed.
-  set(CMAKE_HIP_FLAGS_RELEASE "-O3 -mllvm=--disable-peephole")
-  set(CMAKE_HIP_FLAGS_MINSIZEREL "-O3 -mllvm=--disable-peephole")
-  set(CMAKE_HIP_FLAGS_RELWITHDEBINFO "-O3 -mllvm=--disable-peephole")
+  # As of cce-16/rocm-5.7.1, everything passed at -O3. With cce-17/18, downstream codes experienced
+  # memory faults at -O3 unless the additional `-O3 -mllvm=-disable-peephole` flag was passed. We
+  # now handle these memory faults with in-source optimization-disabling pragmas.
+  set(CMAKE_HIP_FLAGS_RELEASE "-O3")
+  set(CMAKE_HIP_FLAGS_MINSIZEREL "-O3")
+  set(CMAKE_HIP_FLAGS_RELWITHDEBINFO "-O3")
 
   # Disable FMA at the compile level if desired
   if(DEFINED FMA_NEVER_HARDWARE)

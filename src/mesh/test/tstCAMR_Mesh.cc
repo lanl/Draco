@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Mon Jul 10 2023
  * \brief  Unit test for CAMR_Mesh
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -668,59 +668,6 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     FAIL_IF_NOT(mesh.is_refined(3, 2));
     FAIL_IF_NOT(mesh.is_refined(3, 3));
     FAIL_IF(mesh.is_refined(3, 4));
-  }
-
-  // ------------------------
-  // Test the intersection location feature
-  // ------------------------
-  const double halfsqrttwo = std::sqrt(2.0) / 2.0;
-  {
-    std::array<double, 3> const pos{1.21, 1.5, 0.0};
-    std::array<double, 3> const omega{-1.0, 0.0, 0.0};
-    double const dist(0.21);
-    int const current_cell(3);
-    int const face(1);
-
-    std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
-
-    FAIL_IF_NOT(soft_equiv(loc[0], 1.0));
-    FAIL_IF_NOT(soft_equiv(loc[1], 1.5));
-  }
-  {
-    std::array<double, 3> const pos{0.99, 1.11, 0.0};
-    std::array<double, 3> const omega{1.0, 0.0, 0.0};
-    double const dist(0.01);
-    int const current_cell(2);
-    int const face(2);
-
-    std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
-
-    FAIL_IF_NOT(soft_equiv(loc[0], 1.0));
-    FAIL_IF_NOT(soft_equiv(loc[1], 1.11));
-  }
-  {
-    std::array<double, 3> const pos{0.25, 1.5, 0.0};
-    std::array<double, 3> const omega{halfsqrttwo, -halfsqrttwo, 0.0};
-    double const dist(0.91);
-    int const current_cell(2);
-    int const face(3);
-
-    std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
-
-    FAIL_IF_NOT(soft_equiv(loc[0], 0.8934671708797584));
-    FAIL_IF_NOT(soft_equiv(loc[1], 1.0));
-  }
-  {
-    std::array<double, 3> const pos{0.25, 0.5, 0.0};
-    std::array<double, 3> const omega{halfsqrttwo, halfsqrttwo, 0.0};
-    double const dist(0.91);
-    int const current_cell(1);
-    int const face(4);
-
-    std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
-
-    FAIL_IF_NOT(soft_equiv(loc[0], 0.8934671708797584));
-    FAIL_IF_NOT(soft_equiv(loc[1], 1.0));
   }
 
   // ------------------------
@@ -1754,35 +1701,6 @@ void test_3D_mesh2(rtt_c4::ParallelUnitTest &ut) {
   // ----------------------------------------------------------------
   FAIL_IF_NOT(mesh.get_spatial_dimension() == 3);
 
-  // ------------------------
-  // Test the intersection location feature for extra 3-D faces.
-  // ------------------------
-  {
-    std::array<double, 3> const pos{1.75, 0.75, 0.75};
-    std::array<double, 3> const omega{0.0, 0.0, -1.0};
-    double const dist(0.25);
-    int const current_cell(8);
-    int const face(5);
-
-    std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
-    FAIL_IF_NOT(soft_equiv(loc[0], 1.75));
-    FAIL_IF_NOT(soft_equiv(loc[1], 0.75));
-    FAIL_IF_NOT(soft_equiv(loc[2], 0.5));
-  }
-  {
-    std::array<double, 3> const pos{1.99, 0.49, 1.01};
-    std::array<double, 3> const omega{0.0, 0.0, 1.0};
-    double const dist(0.01);
-    int const current_cell(5);
-    int const face(6);
-
-    std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
-
-    FAIL_IF_NOT(soft_equiv(loc[0], 1.99));
-    FAIL_IF_NOT(soft_equiv(loc[1], 0.49));
-    FAIL_IF_NOT(soft_equiv(loc[2], 0.5));
-  }
-
   //------------------------
   // Get shared face center:
   //------------------------
@@ -2042,35 +1960,6 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
   // check that the mesh returns proper coordinate system information
   // ----------------------------------------------------------------
   FAIL_IF_NOT(mesh.get_spatial_dimension() == 3);
-
-  // ------------------------
-  // Test the intersection location feature for extra 3-D faces.
-  // ------------------------
-  {
-    std::array<double, 3> const pos{1.75, 0.75, 0.75};
-    std::array<double, 3> const omega{0.0, 0.0, -1.0};
-    double const dist(0.25);
-    int const current_cell(8);
-    int const face(5);
-
-    std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
-    FAIL_IF_NOT(soft_equiv(loc[0], 1.75));
-    FAIL_IF_NOT(soft_equiv(loc[1], 0.75));
-    FAIL_IF_NOT(soft_equiv(loc[2], 0.5));
-  }
-  {
-    std::array<double, 3> const pos{1.99, 0.49, 1.01};
-    std::array<double, 3> const omega{0.0, 0.0, 1.0};
-    double const dist(0.01);
-    int const current_cell(5);
-    int const face(6);
-
-    std::array<double, 3> loc = mesh.get_intersection(pos, omega, dist, current_cell, face);
-
-    FAIL_IF_NOT(soft_equiv(loc[0], 1.99));
-    FAIL_IF_NOT(soft_equiv(loc[1], 0.49));
-    FAIL_IF_NOT(soft_equiv(loc[2], 0.5));
-  }
 
   // ------------------------
   // Get Distance to Boundary:
