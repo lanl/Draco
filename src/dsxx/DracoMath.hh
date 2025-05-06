@@ -40,25 +40,39 @@ template <> inline std::complex<double> conj(const std::complex<double> &arg) {
 /*!
  * \brief Return the cube of a value.
  *
+ * \tparam Semigroup is a type representing an algebraic structure closed under multiplication such as
+ *    the integers or the reals.
+ *
  * \param[in] x Value to be cubed.
  * \return x^3
  *
- * \c Semigroup is a type representing an algebraic structure closed under multiplication such as
- *    the integers or the reals.
+ * \sa square
  */
-template <typename Semigroup> inline Semigroup cube(Semigroup const &x) { return x * x * x; }
+template <typename Semigroup> constexpr Semigroup cube(Semigroup const &x) noexcept {
+  return x * x * x;
+}
 
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Return the square of a value.
  *
- * \arg \a Semigroup A type representing an algebraic structure closed under multiplication, such as
- *      the integers or the reals.
+ * \tparam Semigroup A type representing an algebraic structure closed under multiplication, such as
+ *    the integers or the reals.
  *
  * \param[in] x Value to be squared.
  * \return x^2
+ *
+ * Notes:
+ * - Faster than pow(x,2) because there is only one instruction, no call overhead, and compile-time
+ *   evaluation.
+ * - It would be useful to check for overflow, but this would significantly reduce optimization
+ *   since the code would no longer be \c constexpr.
+ *
+ * \sa cube
  */
-template <typename Semigroup> inline Semigroup square(const Semigroup &x) { return x * x; }
+template <typename Semigroup> constexpr Semigroup square(const Semigroup &x) noexcept {
+  return x * x;
+}
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -67,14 +81,14 @@ template <typename Semigroup> inline Semigroup square(const Semigroup &x) { retu
  * This function evaluates the expression \f$\sqrt{a^2+b^2}\f$ in a way that is insensitive to
  * roundoff and preserves range.
  *
- * \arg \a Real A real number type
+ * \tparam Real A real number type
  * \param a First leg of triangle
  * \param b Second leg of triangle
  * \return Hypotenuse, \f$\sqrt{a^2+b^2}\f$
  */
 template <typename Real> inline double pythag(Real a, Real b) {
-  using std::abs;
-  Real absa = abs(a), absb = abs(b);
+  Real absa = std::abs(a);
+  Real absb = std::abs(b);
   // We must avoid (a/b)^2 > max.
   if (absa <= absb * std::sqrt(std::numeric_limits<Real>::min()))
     return absb;
@@ -94,21 +108,17 @@ template <typename Real> inline double pythag(Real a, Real b) {
  * This is a replacement for the FORTRAN SIGN function.  It is useful in numerical algorithms that
  * are roundoff or overflow insensitive and should not be deprecated.
  *
- * \arg \a Ordered_Group A type for which \c operator< and unary \c operator- are defined and which
- * can be compared to literal \c 0.
+ * \tparam Ordered_Group A type for which \c operator< and unary \c operator- are defined and which
+ *    can be compared to literal \c 0.
  *
  * \param a Argument supplying magnitude of result.
  * \param b Argument supplying sign of result.
  * \return Value |a| with the sign of b.
  */
 template <typename Ordered_Group> inline Ordered_Group sign(Ordered_Group a, Ordered_Group b) {
-  using std::abs; // just to be clear
-
-  if (b < 0)
-    return -abs(a);
-  else
-    return abs(a);
+  return (b < 0) ? -std::abs(a) : std::abs(a);
 }
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Fast ceiling of an integer division
@@ -120,8 +130,8 @@ template <typename Ordered_Group> inline Ordered_Group sign(Ordered_Group a, Ord
  * If concerned about overflow, consider 1 + ((n-1)/d).
  */
 template <typename T>
-constexpr inline typename std::enable_if_t<std::is_integral_v<T>, T> ceil_int_division(T const n,
-                                                                                       T const d) {
+constexpr typename std::enable_if_t<std::is_integral_v<T>, T> ceil_int_division(T const n,
+                                                                                T const d) {
   Require(d != 0);
   return (n + d - 1) / d;
 }

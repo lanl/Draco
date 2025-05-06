@@ -53,8 +53,8 @@ double lagrange_1d(const std::vector<double> &data, const std::vector<double> &x
  * \pre  x in (x1,x2), extrapolation is not allowed.
  * \post y in (y1,y2), extrapolation is not allowed.
  */
-constexpr inline double linear_1d(double const x1, double const x2, double const y1,
-                                  double const y2, double const x) {
+constexpr double linear_1d(double const x1, double const x2, double const y1, double const y2,
+                           double const x) {
   Require(ce_fabs(x2 - x1) > std::numeric_limits<double>::epsilon());
   Require(((x >= x1) && (x <= x2)) || ((x >= x2) && (x <= x1)));
 

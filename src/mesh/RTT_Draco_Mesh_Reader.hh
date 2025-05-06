@@ -59,12 +59,16 @@ public:
 
   /*!
   * \brief Get the number of nodes for a cell.
-  *
   * \param[in] cell index of cell (0-based)
-  *
   * \return number of nodes for cell
   */
   [[nodiscard]] unsigned get_celltype(size_t cell) const override;
+
+  /*!
+  * \brief Get the vector of node indices for a side.
+  * \param[in] side index of side (0-based)
+  * \return number of nodes for side
+  */
   [[nodiscard]] size_t get_sidetype(size_t side) const override;
   [[nodiscard]] std::vector<unsigned> get_cellnodes(size_t cell) const override;
   [[nodiscard]] std::vector<unsigned> get_cellfacenodes(size_t cell, size_t face) const;
