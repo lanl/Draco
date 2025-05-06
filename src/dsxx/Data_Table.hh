@@ -32,31 +32,31 @@ public:
 
 public:
   //! copy constructor
-  constexpr inline Data_Table(Data_Table const &rhs);
-  constexpr inline Data_Table(Data_Table const &&rhs) = delete;
+  constexpr Data_Table(Data_Table const &rhs);
+  constexpr Data_Table(Data_Table const &&rhs) = delete;
   //! assignment operator
   constexpr Data_Table &operator=(Data_Table const &rhs);
   constexpr Data_Table &operator=(Data_Table const &&rhs) noexcept = delete;
   //! Constructor
-  constexpr inline explicit Data_Table(std::vector<T> const &v);
+  constexpr explicit Data_Table(std::vector<T> const &v);
   //! Constructor
-  constexpr inline Data_Table(const_iterator const begin, const_iterator const end);
+  constexpr Data_Table(const_iterator const begin, const_iterator const end);
   //! Constructor
-  constexpr inline explicit Data_Table(T const &value);
+  constexpr explicit Data_Table(T const &value);
   //! Default constructor
-  constexpr inline Data_Table();
+  constexpr Data_Table();
   //! Destructor
   inline ~Data_Table() = default;
   //! Access operator
-  constexpr inline T const &operator[](const unsigned i) const;
+  constexpr T const &operator[](const unsigned i) const;
   //! begin iterator
-  [[nodiscard]] constexpr inline const_iterator begin() const { return d_begin; }
+  [[nodiscard]] constexpr const_iterator begin() const { return d_begin; }
   //! end iterator
-  [[nodiscard]] constexpr inline const_iterator end() const { return d_end - 1; }
-  [[nodiscard]] constexpr inline uint64_t size() const { return d_end - d_begin; }
-  [[nodiscard]] constexpr inline T const &front() const;
-  [[nodiscard]] constexpr inline T const &back() const;
-  constexpr inline T *access();
+  [[nodiscard]] constexpr const_iterator end() const { return d_end - 1; }
+  [[nodiscard]] constexpr uint64_t size() const { return d_end - d_begin; }
+  [[nodiscard]] constexpr T const &front() const;
+  [[nodiscard]] constexpr T const &back() const;
+  constexpr T *access();
 
 private:
   const_iterator const d_begin;
@@ -98,7 +98,7 @@ template <typename T> constexpr Data_Table<T> &Data_Table<T>::operator=(Data_Tab
 
 //------------------------------------------------------------------------------------------------//
 template <typename T>
-constexpr inline Data_Table<T>::Data_Table(const_iterator const begin, const_iterator const end)
+constexpr Data_Table<T>::Data_Table(const_iterator const begin, const_iterator const end)
     : d_begin(begin), d_end(end + 1), d_value() {
   Require(!(begin > end));
 }
@@ -106,33 +106,33 @@ constexpr inline Data_Table<T>::Data_Table(const_iterator const begin, const_ite
 //------------------------------------------------------------------------------------------------//
 //! Copy the scalar into a local variable, and set the pointers to that copy.
 template <typename T>
-constexpr inline Data_Table<T>::Data_Table(T const &value)
+constexpr Data_Table<T>::Data_Table(T const &value)
     : d_begin(&d_value), d_end(&d_value + 1), d_value(value) {}
 
 //------------------------------------------------------------------------------------------------//
 template <typename T>
-constexpr inline Data_Table<T>::Data_Table() : d_begin(nullptr), d_end(nullptr), d_value() {}
+constexpr Data_Table<T>::Data_Table() : d_begin(nullptr), d_end(nullptr), d_value() {}
 
 //------------------------------------------------------------------------------------------------//
-template <typename T> constexpr inline T const &Data_Table<T>::operator[](unsigned const i) const {
+template <typename T> constexpr T const &Data_Table<T>::operator[](unsigned const i) const {
   Require(i < size());
   return d_begin[i];
 }
 
 //------------------------------------------------------------------------------------------------//
-template <typename T> constexpr inline T const &Data_Table<T>::front() const {
+template <typename T> constexpr T const &Data_Table<T>::front() const {
   Require((d_end - d_begin) > 0);
   return *d_begin;
 }
 
 //------------------------------------------------------------------------------------------------//
-template <typename T> constexpr inline T const &Data_Table<T>::back() const {
+template <typename T> constexpr T const &Data_Table<T>::back() const {
   Require((d_end - d_begin) > 0);
   return *(d_end - 1);
 }
 
 //------------------------------------------------------------------------------------------------//
-template <typename T> constexpr inline T *Data_Table<T>::access() {
+template <typename T> constexpr T *Data_Table<T>::access() {
   Require((d_end - d_begin) > 0);
   return const_cast<T *>(d_begin);
 }

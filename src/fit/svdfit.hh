@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Mon Aug  9 13:17:31 2004
  * \brief  Calculate the singular value decomposition of a matrix.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef utils_svdfit_hh
@@ -28,24 +28,25 @@ namespace rtt_fit {
  * \tparam Functor A functor type taking a double value and a reference to a RandomContainer that
  *         stores the values of the basis functions for the double value in the RandomContainer.
  *
- * \param x Ordinates of data set. For multivariable fits, one can let the ordinates be an index
+ * \param[in] x Ordinates of data set. For multivariable fits, one can let the ordinates be an index
  *            into a table containing the full vector of independent variables for each data point.
- * \param y Abscissae of data set.
- * \param sig Uncertainty in the data. Where unknown or not applicable, one can set all values to 1.
+ * \param[in] y Abscissae of data set.
+ * \param[in] sig Uncertainty in the data. Where unknown or not applicable, one can set all values
+ *            to 1.
  * \param a On entry, must be sized to the number of basis functions. On exit, contains the
  *            coefficients of the fit.
  * \param u On exit, contains the upper matrix of the singular value decomposition of the fit.
  * \param v On exit, containts the diagonal matrix of the singular value decomposition of the fit,
  *            e.g., the singular values.
  * \param w On exit, containts the lower matrix of the singular value decomposition of the fit.
- * \param chisq On return, contains the chi square of the fit (meaasure of goodness of fit.)
+ * \param chisq On return, contains the chi square of the fit (measure of goodness of fit.)
  * \param funcs Functor to calculate the basis functions for a given argument.
  * \param[in] TOL reset denormalized w-values below TOL*max(w) to a hard-zero.
  */
 template <typename RandomContainer, typename Functor>
 void svdfit(RandomContainer const &x, RandomContainer const &y, RandomContainer const &sig,
             RandomContainer &a, RandomContainer &u, RandomContainer &v, RandomContainer &w,
-            double &chisq, Functor &funcs, double TOL = 1.0e-13) {
+            double &chisq, Functor &funcs, double const TOL = 1.0e-13) {
   Require(x.size() == y.size());
   Require(x.size() == sig.size());
   Require(a.size() > 0);
