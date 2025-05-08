@@ -184,6 +184,10 @@ post_rzadams_regress_results_to_cdash:
       artifacts: true
     - job: rzadams_rel_gnu_regress
       artifacts: true
+    - job: rzadams_deb_amdclang_regress
+      artifacts: true
+    - job: rzadams_rel_amdclang_regress
+      artifacts: true
 
 #--------------------------------------------------------------------------------------------------#
 # Use MR action to trigger restart of CI pipleline via webhook when MR title changes.
