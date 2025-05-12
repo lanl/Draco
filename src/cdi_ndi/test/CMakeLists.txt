@@ -10,7 +10,8 @@ project(cdi_ndi_test CXX)
 # ------------------------------------------------------------------------------------------------ #
 # Source files
 # ------------------------------------------------------------------------------------------------ #
-set(test_sources tstNDI_AtomicMass.cc tstNDI_TNReaction.cc tstNDI_CP_Eloss.cc)
+set(test_sources tstNDI_AtomicMass.cc tstNDI_TNReaction.cc tstNDI_CP_Eloss.cc
+                 tstNDI_MultigroupNeutron.cc)
 
 # ------------------------------------------------------------------------------------------------ #
 # Build Unit tests
