@@ -25,19 +25,23 @@ using namespace std;
 using rtt_cdi_cpeloss::Analytic_CP_Eloss;
 using rtt_cdi_cpeloss::Analytic_Eloss_Model;
 
+// Deuterium:
+int32_t constexpr deuterium_zaid{1002};
+double constexpr deuterium_mass{3.34358e-24};
+// Alpha particle:
+int32_t constexpr alpha_zaid{2004};
+double constexpr alpha_mass{6.64424e-24};
+// Electron:
+int32_t constexpr electron_zaid{-1};
+double constexpr electron_mass{9.10938291e-28};
+
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
 void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
 
-  // Deuterium:
-  int32_t const deuterium_zaid = 1002;
-  double const deuterium_mass = 3.34358e-24;
   rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
-  // Alpha particle:
-  int32_t const alpha_zaid = 2004;
-  double const alpha_mass = 6.64424e-24;
   rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
 
   std::shared_ptr<Analytic_Eloss_Model> const model_in(
@@ -115,13 +119,7 @@ void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void Spitzer_test(rtt_dsxx::UnitTest &ut) {
 
-  // Deuterium:
-  int32_t const deuterium_zaid = 1002;
-  double const deuterium_mass = 3.34358e-24;
   rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
-  // Alpha particle:
-  int32_t const alpha_zaid = 2004;
-  double const alpha_mass = 6.64424e-24;
   rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
 
   std::shared_ptr<Analytic_Eloss_Model> const model_in(
@@ -187,17 +185,8 @@ void Spitzer_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void TR_test(rtt_dsxx::UnitTest &ut) {
 
-  // Deuterium:
-  int32_t const deuterium_zaid = 1002;
-  double const deuterium_mass = 3.34358e-24;
   rtt_cdi::CParticle const target_ion(deuterium_zaid, deuterium_mass);
-  // Electron:
-  int32_t const electron_zaid = -1;
-  double const electron_mass = 9.10938291e-28;
   rtt_cdi::CParticle const target_electron(electron_zaid, electron_mass);
-  // Alpha particle:
-  int32_t const alpha_zaid = 2004;
-  double const alpha_mass = 6.64424e-24;
   rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
 
   std::shared_ptr<Analytic_Eloss_Model> const ion_model_in(
@@ -279,13 +268,7 @@ void TR_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void Constant_test(rtt_dsxx::UnitTest &ut) {
 
-  // Deuterium:
-  int32_t const deuterium_zaid = 1002;
-  double const deuterium_mass = 3.34358e-24;
   rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
-  // Alpha particle:
-  int32_t const alpha_zaid = 2004;
-  double const alpha_mass = 6.64424e-24;
   rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
 
   std::shared_ptr<Analytic_Eloss_Model> const zero_model_in(
