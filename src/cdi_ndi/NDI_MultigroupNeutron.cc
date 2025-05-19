@@ -11,6 +11,7 @@
 #include "dsxx/Assert.hh"
 #include "dsxx/dbc.hh"
 #include "cdi_ndi/NDI_Base.hh"
+#include "cdi_ndi/config.h"
 #include <array>
 #include <limits>
 #include <numeric>
@@ -22,6 +23,36 @@ namespace rtt_cdi_ndi {
 //------------------------------------------------------------------------------------------------//
 // CONSTRUCTORS
 //------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Constructor for NDI reader specific to ZAID data with CMake-set gendir file.
+ *
+ * \param[in] library_in name of requested NDI data library
+ * \param[in] target_zaid_in name of requested target ZAID
+ * \param[in] mg_e_bounds_in energy boundaries of multigroup bins (MeV)
+ */
+#ifdef NDI_CP2011_FOUND
+NDI_MultigroupNeutron::NDI_MultigroupNeutron(const std::string &library_in, int target_zaid_in,
+                                             const std::vector<double> &mg_e_bounds_in)
+    : NDI_Base(NDI_CP2011_GENDIR, "multigroup_neutron", library_in), target_zaid(target_zaid_in),
+      coarse_group_bounds(mg_e_bounds_in) {
+
+  Require(mg_e_bounds_in.size() > 0);
+
+  // Check that mg_e_bounds_in is monotonically decreasing (NDI requirement)
+  Insist(rtt_dsxx::is_strict_monotonic_decreasing(mg_e_bounds_in.begin(), mg_e_bounds_in.end()),
+         "Product multigroup bounds not strictly monotonic decreasing!");
+  Insist(mg_e_bounds_in.back() > 0, "Negative product multigroup bounds!");
+
+  load_ndi();
+}
+#else
+NDI_MultigroupNeutron::NDI_MultigroupNeutron(const std::string &library_in, int target_zaid_in,
+                                             const std::vector<double> &mg_e_bounds_in)
+    : NDI_Base("multigroup_neutron", library_in), target_zaid(target_zaid_in),
+      coarse_group_bounds(mg_e_bounds_in) {
+  Insist(false, "NDI_MultigroupNeutron objects require CP2011 data!");
+}
+#endif
 
 /*!
  * \brief Constructor for NDI reader specific to ZAID data with provided path to gendir file.
@@ -33,7 +64,7 @@ namespace rtt_cdi_ndi {
  */
 NDI_MultigroupNeutron::NDI_MultigroupNeutron(const std::string &gendir_in,
                                              const std::string &library_in, int target_zaid_in,
-                                             std::vector<double> mg_e_bounds_in)
+                                             const std::vector<double> &mg_e_bounds_in)
     : NDI_Base(gendir_in, "multigroup_neutron", library_in), target_zaid(target_zaid_in),
       coarse_group_bounds(mg_e_bounds_in) {
 

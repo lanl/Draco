@@ -13,6 +13,7 @@
 #include "dsxx/UnitTest.hh"
 #include "dsxx/path.hh"
 #include "cdi_ndi/NDI_MultigroupNeutron.hh"
+#include "cdi_ndi/config.h" // NOLINT(misc-include-cleaner)
 #include <fstream>
 #include <string>
 #include <tuple>
@@ -287,6 +288,38 @@ void gendir_test(rtt_dsxx::UnitTest &ut) {
   }
 }
 
+// This test just checks that we can open the actual CP2011 data on systems where it is installed.
+// It doesn't attempt to exercise the full class interface (that is done in the mocked-up
+// gendir_test above)
+void gendir_default_test(rtt_dsxx::UnitTest &ut) {
+#ifdef NDI_CP2011_FOUND
+  // Print the cmake-set data path:
+  std::cout << "Testing CP2011 neutron data at: " << NDI_CP2011_GENDIR << std::endl;
+
+  std::string const library_in = "cp2011";
+  const int target_in = 1002;
+
+  const std::vector<double> energy_grid{1.0e+1, 1.0e+0, 1.0e-1};
+  NDI_MultigroupNeutron const neutron(library_in, target_in, energy_grid);
+
+  // GENERAL DATA INFO
+  FAIL_IF_NOT(neutron.get_dataset() == "multigroup_neutron");
+  FAIL_IF_NOT(neutron.get_library() == "cp2011");
+  FAIL_IF_NOT(neutron.targetZAID() == 1002);
+
+  //--------------------------------------------------
+  // CHECK IF TEST PASSED
+  //--------------------------------------------------
+  if (ut.numFails == 0) {
+    PASSMSG("NDI_MultigroupNeutron default data test passes.");
+  } else {
+    FAILMSG("NDI_MultigroupNeutron default data test fails.");
+  }
+#else
+  PASSMSG("NDI_MultigroupNeutron default CP2011 data not installed on system.");
+#endif
+}
+
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
@@ -297,6 +330,7 @@ int main(int argc, char *argv[]) {
 
     if (def_gendir && rtt_dsxx::fileExists(gendir_default)) {
       gendir_test(ut);
+      gendir_default_test(ut);
     } else {
       PASSMSG("==> ENV{NDI_GENDIR_PATH} not set. Some tests were not run.");
     }
