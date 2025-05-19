@@ -2,7 +2,7 @@
 /*!
  * \file   cdi_ndi/config.h
  * \brief  CPP defines necessary for the cdi_ndi package.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 /*------------------------------------------------------------------------------------------------*/
 
 #ifndef rtt_cdi_ndi_config_h
@@ -12,7 +12,7 @@
 /* Draco/Cmake build system variables */
 /*------------------------------------------------------------------------------------------------*/
 
-/* NDI_ROOT_DIR location, for accessing NID libraries and headers */
+/* NDI_ROOT_DIR location, for accessing NDI libraries and headers */
 #cmakedefine NDI_ROOT_DIR "@NDI_ROOT_DIR@"
 
 /* Activate NDI calls found in cdi_ndi, otherwise, use code stubs. */
@@ -20,6 +20,10 @@
 #ifdef NDI_FOUND
  #include "ndi.h"
 #endif
+
+/* Determine if CP2011 special data was found. */
+#cmakedefine NDI_CP2011_FOUND
+#cmakedefine NDI_CP2011_GENDIR "@NDI_CP2011_GENDIR@"
 
 /* NDI version (if found) */
 #cmakedefine NDI_VERSION_STRING "@NDI_VERSION_STRING@"

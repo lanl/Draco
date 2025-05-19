@@ -35,8 +35,11 @@ class NDI_MultigroupNeutron : public NDI_Base {
 
 public:
   //! Constructor
+  NDI_MultigroupNeutron(const std::string &library_in, int target_zaid_in,
+                        const std::vector<double> &mg_e_bounds_in);
+  //! Constructor
   NDI_MultigroupNeutron(const std::string &gendir_in, const std::string &library_in,
-                        int target_zaid_in, std::vector<double> mg_e_bounds_in);
+                        int target_zaid_in, const std::vector<double> &mg_e_bounds_in);
 
   //! Default destructor
   ~NDI_MultigroupNeutron() = default;
