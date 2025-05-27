@@ -4,12 +4,11 @@
  * \author Kelly Thompson
  * \date   Thu Jun 22 16:22:07 2000
  * \brief  CDI class implementation file.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi/CDI.hh"
 #include "dsxx/Assert.hh"
-#include "dsxx/FMA.hh"
 #include "dsxx/Safe_Divide.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "cdi/CPCommon.hh"
@@ -539,7 +538,7 @@ double CDI::collapseMultigroupOpacitiesPlanck(std::vector<double> const &groupBo
   for (size_t g = 1; g < groupBounds.size(); ++g) {
     Check(planckSpectrum[g - 1] >= 0.0);
     Check(opacity[g - 1] >= 0.0);
-    sig_planck_sum = FMA(planckSpectrum[g - 1], opacity[g - 1], sig_planck_sum);
+    sig_planck_sum += planckSpectrum[g - 1] * opacity[g - 1];
     // Also collect some CDF data.
     emission_group_cdf[g - 1] = sig_planck_sum;
   }
@@ -603,7 +602,7 @@ double CDI::collapseMultigroupOpacitiesPlanck(std::vector<double> const &groupBo
   for (size_t g = 1; g < groupBounds.size(); ++g) {
     Check(planckSpectrum[g - 1] >= 0.0);
     Check(opacity[g - 1] >= 0.0);
-    sig_planck_sum = FMA(planckSpectrum[g - 1], opacity[g - 1], sig_planck_sum);
+    sig_planck_sum += planckSpectrum[g - 1] * opacity[g - 1];
   }
 
   //                         int_{\nu_0}^{\nu_G}{d\nu sigma(\nu,T) * B(\nu,T)}

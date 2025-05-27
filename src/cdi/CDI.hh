@@ -84,16 +84,16 @@ GPU_HOST_DEVICE inline double taylor_series_planck(double x) {
 
   double const xsqrd = x * x;
 
-  double taylor = FMA(xsqrd, coeff_21, coeff_19);
-  taylor = FMA(taylor, xsqrd, coeff_17);
-  taylor = FMA(taylor, xsqrd, coeff_15);
-  taylor = FMA(taylor, xsqrd, coeff_13);
-  taylor = FMA(taylor, xsqrd, coeff_11);
-  taylor = FMA(taylor, xsqrd, coeff_9);
-  taylor = FMA(taylor, xsqrd, coeff_7);
-  taylor = FMA(taylor, xsqrd, coeff_5);
-  taylor = FMA(taylor, x, coeff_4);
-  taylor = FMA(taylor, x, coeff_3);
+  double taylor = xsqrd * coeff_21 + coeff_19;
+  taylor = taylor * xsqrd + coeff_17;
+  taylor = taylor * xsqrd + coeff_15;
+  taylor = taylor * xsqrd + coeff_13;
+  taylor = taylor * xsqrd + coeff_11;
+  taylor = taylor * xsqrd + coeff_9;
+  taylor = taylor * xsqrd + coeff_7;
+  taylor = taylor * xsqrd + coeff_5;
+  taylor = taylor * x + coeff_4;
+  taylor = taylor * x + coeff_3;
   taylor *= x * xsqrd * coeff;
 
   Ensure(taylor >= 0.0);
