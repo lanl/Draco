@@ -4,7 +4,7 @@
  *  \brief  Provide a single place where physical constants (pi, speed of light, etc) are defined in
  *          SI units.
  *  \date   Fri Nov 07 10:04:52 2003
- *  \note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_units_PhysicalConstantsSI_hh
@@ -127,6 +127,9 @@ static double constexpr permittivityOfFreeSpaceSI =
 static double constexpr classicalElectronRadiusSI =
     electronChargeSI * electronChargeSI /
     (4 * PI * permittivityOfFreeSpaceSI * electronMassSI * cLightSI * cLightSI);
+
+//! [h_bar] Reduced Planck constant ( Energy seconds )
+static double constexpr h_barSI = planckSI / (2.0 * rtt_units::PI); // J s
 
 } // end namespace rtt_units
 
