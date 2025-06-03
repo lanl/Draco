@@ -16,10 +16,14 @@
 #include "cdi_CPEloss/Analytic_Constant_Eloss_Model.hh"
 #include "cdi_CPEloss/Analytic_Eloss_Model.hh"
 #include "cdi_CPEloss/Analytic_KP_Alpha_Eloss_Model.hh"
+#include "cdi_CPEloss/Analytic_LiPet_Eloss_Model.hh"
 #include "cdi_CPEloss/Analytic_Spitzer_Eloss_Model.hh"
 #include "cdi_CPEloss/Analytic_TR_Eloss_Model.hh"
+#include "units/PhysicalConstantsSI.hh"
+#include <cmath>
 #include <cstdint>
 #include <memory>
+#include <vector>
 
 using namespace std;
 using rtt_cdi_cpeloss::Analytic_CP_Eloss;
@@ -266,6 +270,129 @@ void TR_test(rtt_dsxx::UnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
+void LiPetrasso_test(rtt_dsxx::UnitTest &ut) {
+  // Particle masses in [kg]
+  double const mass_electron = 9.1093837139e-31;
+  double const mass_deuteron = 3.34449489528201e-27;
+  double const mass_triton = 5.007356050158e-27;
+  double const mass_alpha = 6.64647845996649e-27;
+
+  // Temperature in keV
+  double const temp_electron = 1.0;
+  double const temp_deuteron = 1.0;
+  double const temp_triton = 1.0;
+
+  // Plasma Density g/cm^3
+  double const dens_electron = 1.0;
+  double const dens_deuteron = 0.5;
+  double const dens_triton = 0.5;
+
+  // Number densities
+  double const number_dens_electron =
+      dens_electron / (0.5 * (2.013553214 + 3.01550071913)) * rtt_units::AVOGADRO;
+  double const number_dens_deuteron =
+      dens_deuteron / (0.5 * (2.013553214 + 3.01550071913)) * rtt_units::AVOGADRO;
+  double const number_dens_triton =
+      dens_triton / (0.5 * (2.013553214 + 3.01550071913)) * rtt_units::AVOGADRO;
+
+  // Build cpeloss model
+  rtt_cdi_cpeloss::Analytic_LiPet_Eloss_Model const eloss_mod(2004, mass_alpha);
+
+  // Build background
+  std::vector<int> const zaid_list{-1, 1002, 1003};
+  std::vector<double> const number_densities{number_dens_electron, number_dens_deuteron,
+                                             number_dens_triton};
+  std::vector<double> const temperatures{temp_electron, temp_deuteron, temp_triton};
+  std::vector<double> const masses{mass_electron, mass_deuteron, mass_triton};
+
+  // Check incident particle info
+  FAIL_IF_NOT(eloss_mod.incident_zaid() == 2004);
+
+  FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_mod.incident_mass(), mass_alpha, 1.0e-8));
+
+  FAIL_IF_NOT(eloss_mod.z_number() == 2);
+
+  // Get dedx for 3.5 MeV alpha-particle
+  {
+    double const incident_energy = 3.5 * rtt_units::electronChargeSI * 1.0e+6; // J
+    double const incident_speed =
+        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+
+    double const dedx =
+        eloss_mod.getEloss(incident_speed, zaid_list, number_densities, temperatures, masses);
+
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 2.56071981e+02, 1.0e-8));
+  }
+
+  // Get dedx for 1.0 MeV alpha-particle
+  {
+    double const incident_energy = 1.0 * rtt_units::electronChargeSI * 1.0e+6; // J
+    double const incident_speed =
+        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+
+    double const dedx =
+        eloss_mod.getEloss(incident_speed, zaid_list, number_densities, temperatures, masses);
+
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 1.61944659e+02, 1.0e-8));
+  }
+
+  // Get dedx for E = 2kT
+  {
+    double const incident_energy = 2.0e-3 * rtt_units::electronChargeSI * 1.0e+6; // J
+    double const incident_speed =
+        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+
+    double const dedx =
+        eloss_mod.getEloss(incident_speed, zaid_list, number_densities, temperatures, masses);
+
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 3.05252070e+02, 1.0e-8));
+  }
+
+  // Get modified dedx for 3.5 MeV alpha-particle
+  {
+    double const incident_energy = 3.5 * rtt_units::electronChargeSI * 1.0e+6;
+    double const incident_speed =
+        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+
+    double const dedx =
+        eloss_mod.getElossMod(incident_speed, zaid_list, number_densities, temperatures, masses);
+
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 3.41367698e+02, 1.0e-8));
+  }
+
+  // Get modified dedx for 1.0 MeV alpha-particle
+  {
+    double const incident_energy = 1.0 * rtt_units::electronChargeSI * 1.0e+6;
+    double const incident_speed =
+        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+
+    double const dedx =
+        eloss_mod.getElossMod(incident_speed, zaid_list, number_densities, temperatures, masses);
+
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 2.47943976e+02, 1.0e-8));
+  }
+
+  // Get modified dedx for E = 2kT
+  {
+    double const incident_energy = 2.0e-3 * rtt_units::electronChargeSI * 1.0e+6;
+    double const incident_speed =
+        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+
+    double const dedx =
+        eloss_mod.getElossMod(incident_speed, zaid_list, number_densities, temperatures, masses);
+
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 3.21441535e+02, 1.0e-8));
+  }
+
+  if (ut.numFails == 0)
+    PASSMSG("LiPetrasso CPEloss test passes.");
+  else
+    FAILMSG("LiPetrasso CPEloss test fails.");
+
+  return;
+}
+
+//------------------------------------------------------------------------------------------------//
 void Constant_test(rtt_dsxx::UnitTest &ut) {
 
   rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
@@ -302,6 +429,7 @@ int main(int argc, char *argv[]) {
     KP_alpha_test(ut);
     Spitzer_test(ut);
     TR_test(ut);
+    LiPetrasso_test(ut);
     Constant_test(ut);
   }
   UT_EPILOG(ut);
