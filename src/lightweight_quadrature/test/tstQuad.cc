@@ -36,10 +36,9 @@
 #include <gsl/gsl_sf_hyperg.h>
 
 #include "dsxx/Release.hh"
+#include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-#include "c4/C4_Functions.hh"
-#include "c4/ParallelUnitTest.hh"
 
 #include "lightweight_quadrature/quad_1D.hh"
 #include "lightweight_quadrature/quad_2D.hh"
@@ -47,16 +46,14 @@
 using namespace rtt_lightweight_quadrature;
 
 void print_1D_quad(std::vector<std::vector<double>> const &quad) {
-  if (rtt_c4::node() == 0) {
-    printf("\n 1D %19s %19s \n", "points ", "weights ");
-    double sumwt{0.0};
+  printf("\n 1D %19s %19s \n", "points ", "weights ");
+  double sumwt{0.0};
 
-    for (size_t i = 0; i < quad[0].size(); ++i) {
-      printf("%5ld %19.10e %19.10e\n", i, quad[0][i], quad[1][i]);
-      sumwt += quad[1][i];
-    }
-    printf("  normalization %19.10e\n\n", sumwt);
+  for (size_t i = 0; i < quad[0].size(); ++i) {
+    printf("%5ld %19.10e %19.10e\n", i, quad[0][i], quad[1][i]);
+    sumwt += quad[1][i];
   }
+  printf("  normalization %19.10e\n\n", sumwt);
 }
 
 //-------------------------------------------------------------------------------------------------//
@@ -528,7 +525,7 @@ void quad_test_2D(int const polar_order, int const azimuthal_order, rtt_dsxx::Un
 //-------------------------------------------------------------------------------------------------//
 
 int main(int argc, char *argv[]) {
-  rtt_c4::ParallelUnitTest ut(argc, argv, rtt_dsxx::release);
+  rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
 
   ut.passes("lightweight_quadrature");
 
