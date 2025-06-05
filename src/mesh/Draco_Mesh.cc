@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Thursday, Jun 07, 2018, 15:38 pm
  * \brief  Draco_Mesh class implementation file.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Draco_Mesh.hh"
@@ -139,7 +139,7 @@ const std::vector<unsigned> Draco_Mesh::get_cell_nodes(const unsigned cell) cons
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Return a flattened version of the cell-node tensor
+ * \brief Return a flattened (serialized) version of the cell-node tensor
  *
  * \return a flattened cell-node linkage vector
  */
@@ -164,6 +164,21 @@ const std::vector<unsigned> Draco_Mesh::get_flat_cell_node_linkage() const {
   Ensure(ret_flat_cell_node.size() >= 2 * m_cell_to_node_linkage.size());
   Ensure(!ret_flat_cell_node.empty());
   return ret_flat_cell_node;
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Return a flattened (serialized) version of the vector of node coordinates
+ *
+ * \return a flattened coordinate vector
+ */
+const std::vector<double> Draco_Mesh::get_flat_coordinates() const {
+  std::vector<double> ret_flat_coord;
+  ret_flat_coord.reserve(dimension * num_nodes);
+  for (auto node_vec : node_coord_vec)
+    ret_flat_coord.insert(ret_flat_coord.end(), node_vec.begin(), node_vec.end());
+  Ensure(ret_flat_coord.size() == static_cast<size_t>(dimension * num_nodes));
+  return ret_flat_coord;
 }
 
 //------------------------------------------------------------------------------------------------//
