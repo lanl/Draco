@@ -165,6 +165,7 @@ public:
   [[nodiscard]] std::vector<std::vector<double>> get_node_coord_vec() const {
     return node_coord_vec;
   }
+  [[nodiscard]] std::vector<unsigned> get_global_nodes() const { return global_node_number; }
   [[nodiscard]] std::vector<unsigned> get_num_faces_per_cell() const {
     return m_num_faces_per_cell;
   }
@@ -191,6 +192,7 @@ public:
 
   [[nodiscard]] const std::vector<unsigned> get_cell_nodes(const unsigned cell) const;
   [[nodiscard]] const std::vector<unsigned> get_flat_cell_node_linkage() const;
+  [[nodiscard]] const std::vector<double> get_flat_coordinates() const;
   [[nodiscard]] unsigned get_global_node_index(const unsigned local_node_index) const;
 
   //! Get face index of adjacent face in neighboring cell
