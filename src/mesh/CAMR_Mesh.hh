@@ -132,6 +132,10 @@ public:
   [[nodiscard]] inline sf_int next_cells(int const cell, int const coarse_face) const;
   [[nodiscard]] inline sf_int next_cells(size_t const cell, size_t const coarse_face) const;
 
+  [[nodiscard]] SP_Topology get_topology() const { return topology_; }
+
+  [[nodiscard]] SP_Comm_Patterns get_comm_patterns() const { return comm_patterns_; }
+
   [[nodiscard]] int64_t global_cell(size_t const cell) const {
     return topology_->global_cell(cell);
   }
@@ -261,6 +265,7 @@ private:
   sf_int full2active;
 
   SP_Topology topology_;
+  SP_Comm_Patterns comm_patterns_;
 };
 
 //------------------------------------------------------------------------------------------------//
@@ -294,6 +299,7 @@ void CAMR_Mesh<D>::constructor_body(I_IT level_data, D_IT vertex_data) {
   // Make the communications patterns
   comm_pat_ = std::make_shared<rtt_mesh::Comm_Patterns>();
   comm_pat_->calc_patterns(topo_);
+  comm_patterns_ = comm_pat_;
 
   // to identify ghost level and AMR configuration, we need to exchange level and vertex.
   std::shared_ptr<rtt_mesh::Parallel_Data_Operator> par_op_;
@@ -331,6 +337,7 @@ void CAMR_Mesh<D>::constructor_body(I_IT level_data, D_IT vertex_data, I_IT neig
   // Make the communications patterns
   comm_pat_ = std::make_shared<rtt_mesh::Comm_Patterns>();
   comm_pat_->calc_patterns(topo_);
+  comm_patterns_ = comm_pat_;
 
   // to identify ghost level and AMR configuration, we need to exchange level and vertex.
   std::shared_ptr<rtt_mesh::Parallel_Data_Operator> par_op_;
