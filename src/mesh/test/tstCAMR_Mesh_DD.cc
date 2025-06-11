@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Mon Jul 10 2023
  * \brief  Unit test for CAMR_Mesh
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -408,6 +408,9 @@ void test_2D_amr_host(rtt_c4::ParallelUnitTest &ut) {
     FAIL_IF_NOT(mesh.get_vertices().size() == 12);
     FAIL_IF_NOT(mesh.get_levels()[0] == 0);
   }
+
+  FAIL_IF(mesh.get_topology()->num_cells() != 7);
+  FAIL_IF(!mesh.get_comm_patterns());
 
   if (ut.numFails == 0) {
     if (rtt_c4::node() == 0)

@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Aug 1 2023
  * \brief  Topology test.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -12,9 +12,12 @@
 #include "dsxx/UnitTest.hh"
 #include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
+#include "mesh/Comm_Patterns.hh"
 #include "mesh/DD_Topology.hh"
+#include "mesh/Parallel_Data_Operator.hh"
 #include "mesh/Rep_Topology.hh"
 #include "mesh/Topology.hh"
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -241,6 +244,33 @@ void test_DD(rtt_dsxx::UnitTest &ut) {
     std::cout << test_oss.str() << '\n';
     std::cout << test2_oss.str() << '\n';
     ITFAILS;
+  }
+
+  std::shared_ptr<rtt_mesh::Comm_Patterns> comm_pat;
+  // Make the communications patterns
+  comm_pat = std::make_shared<rtt_mesh::Comm_Patterns>();
+  comm_pat->calc_patterns(top);
+
+  // to identify ghost level and AMR configuration, we need to exchange level and vertex.
+  std::shared_ptr<rtt_mesh::Parallel_Data_Operator> par_op;
+  par_op = std::make_shared<rtt_mesh::Parallel_Data_Operator>(top);
+  std::vector<int> ids(top->num_local_cells(), 0);
+  for (size_t i = 0; i < ids.size(); ++i)
+    ids[i] = int(i);
+
+  par_op->fill_ghost_cell_data(comm_pat, ids);
+  if (rtt_c4::node() == 0) {
+    FAIL_IF(ids.size() != 11);
+    FAIL_IF(ids[7] != 1);
+    FAIL_IF(ids[8] != 2);
+    FAIL_IF(ids[9] != 3);
+    FAIL_IF(ids[10] != 0);
+  } else if (rtt_c4::node() == 1) {
+    FAIL_IF(ids.size() != 13);
+    FAIL_IF(ids[9] != 4);
+    FAIL_IF(ids[10] != 5);
+    FAIL_IF(ids[11] != 6);
+    FAIL_IF(ids[12] != 3);
   }
 
   if (ut.numFails == 0) {

@@ -382,14 +382,12 @@ std::vector<double> NDI_MultigroupNeutron::pdf(const int product_zaid,
 
 #else
 
-std::vector<double>
-NDI_MultigroupNeutron::totalCrossSection(const double /*incident_energy*/) const {
+double NDI_MultigroupNeutron::totalCrossSection(const double /*incident_energy*/) const {
   Insist(0, "totalCrossSection() only available when NDI library is found");
 }
 
-std::vector<double>
-NDI_MultigroupNeutron::totalCrossSection(const int /*product_zaid*/,
-                                         const double /*incident_energy*/) const {
+double NDI_MultigroupNeutron::totalCrossSection(const int /*product_zaid*/,
+                                                const double /*incident_energy*/) const {
   Insist(0, "totalCrossSection() only available when NDI library is found");
 }
 
