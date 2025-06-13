@@ -771,8 +771,7 @@ void CDI::setCPEloss(const SP_CPEloss &spCPp) {
 
   // Store the particle / target pair
   CPEloss_map.emplace(std::make_pair<pt_zaid_pair, size_t>(
-      std::make_pair(spCPp->getProjectile().get_zaid(), spCPp->getTarget().get_zaid()),
-      CPElosses.size()));
+      std::make_pair(spCPp->proj_zaid(), spCPp->targ_zaid()), CPElosses.size()));
 
   // assign the smart pointer
   CPElosses.push_back(spCPp);

@@ -26,13 +26,16 @@ namespace rtt_cdi_cpeloss {
 class Analytic_Constant_Eloss_Model : public Analytic_Eloss_Model {
 public:
   //! Constructor
-  Analytic_Constant_Eloss_Model(const rtt_cdi::CParticle &target,
-                                const rtt_cdi::CParticle &projectile, const double eloss_value_in)
-      : Analytic_Eloss_Model(target, projectile), eloss_value(eloss_value_in) {}
+  Analytic_Constant_Eloss_Model(const int zaidt_, const double mt_, const int zaidp_,
+                                const double mp_, const double eloss_value_in) noexcept
+      : Analytic_Eloss_Model(zaidt_, mt_, zaidp_, mp_), eloss_value(eloss_value_in) {}
 
-  //! Calculate the eloss rate in units of shk^-1; T given in keV, ndens in a/cc, v0 in cm/shk
-  [[nodiscard]] double calculate_eloss(const double /*T*/, const double /*ndens*/,
-                                       const double /*v0*/) const override {
+  //! Calculate the eloss rate in units of shk^-1; T given in keV, ndens in a/cc, v0 in cm/shk,
+  //! debye in cm
+  [[nodiscard]] double
+  calculate_eloss([[maybe_unused]] const double T, [[maybe_unused]] const double ndens,
+                  [[maybe_unused]] const double v0,
+                  [[maybe_unused]] const double debye_length = 0.0) const override {
     return eloss_value;
   }
 

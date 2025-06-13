@@ -14,20 +14,20 @@
 #include "cdi/CPCommon.hh"
 #include "cdi_CPEloss/Analytic_CP_Eloss.hh"
 #include "cdi_CPEloss/Analytic_Constant_Eloss_Model.hh"
-#include "cdi_CPEloss/Analytic_Eloss_Model.hh"
 #include "cdi_CPEloss/Analytic_KP_Alpha_Eloss_Model.hh"
 #include "cdi_CPEloss/Analytic_LiPet_Eloss_Model.hh"
 #include "cdi_CPEloss/Analytic_Spitzer_Eloss_Model.hh"
 #include "cdi_CPEloss/Analytic_TR_Eloss_Model.hh"
+#include "cdi_CPEloss/config.h" // Defines GSL_FOUND
 #include "units/PhysicalConstantsSI.hh"
 #include <cmath>
 #include <cstdint>
+#include <iostream>
 #include <memory>
 #include <vector>
 
 using namespace std;
 using rtt_cdi_cpeloss::Analytic_CP_Eloss;
-using rtt_cdi_cpeloss::Analytic_Eloss_Model;
 
 // Deuterium:
 int32_t constexpr deuterium_zaid{1002};
@@ -45,14 +45,10 @@ double constexpr electron_mass{9.10938291e-28};
 
 void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
 
-  rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
-  rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
+  auto const model_in(std::make_shared<rtt_cdi_cpeloss::Analytic_KP_Alpha_Eloss_Model>(
+      deuterium_zaid, deuterium_mass, alpha_zaid, alpha_mass));
 
-  std::shared_ptr<Analytic_Eloss_Model> const model_in(
-      new rtt_cdi_cpeloss::Analytic_KP_Alpha_Eloss_Model(target_in, projectile_in));
-
-  Analytic_CP_Eloss const eloss_mod(model_in, target_in, projectile_in,
-                                    rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_mod(model_in, rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Check that basic accessors return correct result:
   // Analytic model should match that passed to constructor
@@ -72,17 +68,17 @@ void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(eloss_mod.getEnergyGrid().size() == eloss_mod.getNumEnergies());
 
   // Check that accessors return the correct target and projectile:
-  FAIL_IF_NOT(target_in.get_zaid() == eloss_mod.getTarget().get_zaid());
-  FAIL_IF_NOT(projectile_in.get_zaid() == eloss_mod.getProjectile().get_zaid());
+  FAIL_IF_NOT(deuterium_zaid == eloss_mod.targ_zaid());
+  FAIL_IF_NOT(alpha_zaid == eloss_mod.proj_zaid());
 
   // Check that accessor returns the correct model angle cutoff
   FAIL_IF_NOT(eloss_mod.getModelAngleCutoff() == rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Get eloss values for some sample data:
   {
-    double const T = 1.0;                             // keV
-    double const ndens = 10.0 / target_in.get_mass(); // a / cc
-    double const vel0 = 1.0;                          // cm / shk
+    double const T = 1.0;                       // keV
+    double const ndens = 10.0 / deuterium_mass; // a / cc
+    double const vel0 = 1.0;                    // cm / shk
 
     double const eloss_coeff = eloss_mod.getEloss(T, ndens, vel0);
 
@@ -91,9 +87,9 @@ void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
 
   // Point near the maximum on rho in [0, 20] g/cc, T in [0, 100] keV:
   {
-    double const T = 15.0;                            // keV
-    double const ndens = 20.0 / target_in.get_mass(); // a / cc
-    double const vel0 = 1.0;                          // cm / shk
+    double const T = 15.0;                      // keV
+    double const ndens = 20.0 / deuterium_mass; // a / cc
+    double const vel0 = 1.0;                    // cm / shk
 
     double const eloss_coeff = eloss_mod.getEloss(T, ndens, vel0);
 
@@ -103,9 +99,9 @@ void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
   // Point where the range fit goes negative -- eloss should return 1.0e25:
   // (equivalent to the particle range limiting to a very small number)
   {
-    double const T = 90.0;                            // keV
-    double const ndens = 17.5 / target_in.get_mass(); // a / cc
-    double const vel0 = 1.0;                          // cm / shk
+    double const T = 90.0;                      // keV
+    double const ndens = 17.5 / deuterium_mass; // a / cc
+    double const vel0 = 1.0;                    // cm / shk
 
     double const eloss_coeff = eloss_mod.getEloss(T, ndens, vel0);
 
@@ -123,14 +119,10 @@ void KP_alpha_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void Spitzer_test(rtt_dsxx::UnitTest &ut) {
 
-  rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
-  rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
+  auto const model_in(std::make_shared<rtt_cdi_cpeloss::Analytic_Spitzer_Eloss_Model>(
+      deuterium_zaid, deuterium_mass, alpha_zaid, alpha_mass));
 
-  std::shared_ptr<Analytic_Eloss_Model> const model_in(
-      new rtt_cdi_cpeloss::Analytic_Spitzer_Eloss_Model(target_in, projectile_in));
-
-  Analytic_CP_Eloss const eloss_mod(model_in, target_in, projectile_in,
-                                    rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_mod(model_in, rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Check that basic accessors return correct result:
   // Analytic model should match that passed to constructor
@@ -150,17 +142,17 @@ void Spitzer_test(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(eloss_mod.getEnergyGrid().size() == eloss_mod.getNumEnergies());
 
   // Check that accessors return the correct target and projectile:
-  FAIL_IF_NOT(target_in.get_zaid() == eloss_mod.getTarget().get_zaid());
-  FAIL_IF_NOT(projectile_in.get_zaid() == eloss_mod.getProjectile().get_zaid());
+  FAIL_IF_NOT(eloss_mod.targ_zaid() == model_in->targ_zaid());
+  FAIL_IF_NOT(eloss_mod.proj_zaid() == model_in->proj_zaid());
 
   // Check that accessor returns the correct model angle cutoff
   FAIL_IF_NOT(eloss_mod.getModelAngleCutoff() == rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Get eloss values for some sample data:
   {
-    double const T = 1.0;                             // keV
-    double const ndens = 10.0 / target_in.get_mass(); // a / cc
-    double const vel0 = 1.0;                          // cm / shk
+    double const T = 1.0;                       // keV
+    double const ndens = 10.0 / deuterium_mass; // a / cc
+    double const vel0 = 1.0;                    // cm / shk
 
     double const eloss_coeff = eloss_mod.getEloss(T, ndens, vel0);
 
@@ -169,9 +161,9 @@ void Spitzer_test(rtt_dsxx::UnitTest &ut) {
 
   // Check for large value when 2kT > E
   {
-    double const T = 1.e2;     // keV
-    double const ndens = 10.0; // g / cc
-    double const vel0 = 1.0;   // cm / shk
+    double const T = 1.e2;                      // keV
+    double const ndens = 10.0 / deuterium_mass; // a / cc
+    double const vel0 = 1.0;                    // cm / shk
 
     double const eloss_coeff = eloss_mod.getEloss(T, ndens, vel0);
 
@@ -189,19 +181,13 @@ void Spitzer_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void TR_test(rtt_dsxx::UnitTest &ut) {
 
-  rtt_cdi::CParticle const target_ion(deuterium_zaid, deuterium_mass);
-  rtt_cdi::CParticle const target_electron(electron_zaid, electron_mass);
-  rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
+  auto const ion_model_in(std::make_shared<rtt_cdi_cpeloss::Analytic_TR_Eloss_Model>(
+      deuterium_zaid, deuterium_mass, alpha_zaid, alpha_mass));
+  auto const electron_model_in(std::make_shared<rtt_cdi_cpeloss::Analytic_TR_Eloss_Model>(
+      electron_zaid, electron_mass, alpha_zaid, alpha_mass));
 
-  std::shared_ptr<Analytic_Eloss_Model> const ion_model_in(
-      new rtt_cdi_cpeloss::Analytic_TR_Eloss_Model(target_ion, projectile_in));
-  std::shared_ptr<Analytic_Eloss_Model> const electron_model_in(
-      new rtt_cdi_cpeloss::Analytic_TR_Eloss_Model(target_electron, projectile_in));
-
-  Analytic_CP_Eloss const eloss_ion_mod(ion_model_in, target_ion, projectile_in,
-                                        rtt_cdi::CPModelAngleCutoff::NONE);
-  Analytic_CP_Eloss const eloss_ele_mod(electron_model_in, target_electron, projectile_in,
-                                        rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_ion_mod(ion_model_in, rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_ele_mod(electron_model_in, rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Check that basic accessors return correct result:
   // Analytic model should match that passed to constructor
@@ -221,29 +207,29 @@ void TR_test(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(eloss_ion_mod.getEnergyGrid().size() == eloss_ion_mod.getNumEnergies());
 
   // Check that accessors return the correct target and projectile:
-  FAIL_IF_NOT(target_ion.get_zaid() == eloss_ion_mod.getTarget().get_zaid());
-  FAIL_IF_NOT(target_electron.get_zaid() == eloss_ele_mod.getTarget().get_zaid());
-  FAIL_IF_NOT(projectile_in.get_zaid() == eloss_ion_mod.getProjectile().get_zaid());
+
+  FAIL_IF_NOT(ion_model_in->targ_zaid() == eloss_ion_mod.targ_zaid());
+  FAIL_IF_NOT(electron_model_in->targ_zaid() == eloss_ele_mod.targ_zaid());
+  FAIL_IF_NOT(ion_model_in->proj_zaid() == eloss_ion_mod.proj_zaid());
 
   // Check that accessor returns the correct model angle cutoff
   FAIL_IF_NOT(eloss_ion_mod.getModelAngleCutoff() == rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Get eloss values for some sample ion data:
   {
-    double const T = 1.0;                              // keV
-    double const ndens = 10.0 / target_ion.get_mass(); // a / cc
-    double const vel0 = 1.0;                           // cm / shk
+    double const T = 1.0;                       // keV
+    double const ndens = 10.0 / deuterium_mass; // a / cc
+    double const vel0 = 1.0;                    // cm / shk
 
     double const eloss_coeff = eloss_ion_mod.getEloss(T, ndens, vel0);
-
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_coeff, 9.927570982586801983e+05, 1.0e-8));
   }
 
   // Get eloss values for some sample electron data:
   {
-    double const T = 1.0;                                    // keV
-    double const ndens = 1.e-2 / target_electron.get_mass(); // el / cc
-    double const vel0 = 1.0;                                 // cm / shk
+    double const T = 1.0;                       // keV
+    double const ndens = 1.e-2 / electron_mass; // el / cc
+    double const vel0 = 1.0;                    // cm / shk
 
     double const eloss_coeff = eloss_ele_mod.getEloss(T, ndens, vel0);
 
@@ -252,9 +238,9 @@ void TR_test(rtt_dsxx::UnitTest &ut) {
 
   // Check for large value when 2kT > E
   {
-    double const T = 1.e2;                             // keV
-    double const ndens = 10.0 / target_ion.get_mass(); // g / cc
-    double const vel0 = 1.0;                           // cm / shk
+    double const T = 1.e2;                      // keV
+    double const ndens = 10.0 / deuterium_mass; // g / cc
+    double const vel0 = 1.0;                    // cm / shk
 
     double const eloss_coeff = eloss_ion_mod.getEloss(T, ndens, vel0);
 
@@ -271,11 +257,11 @@ void TR_test(rtt_dsxx::UnitTest &ut) {
 
 //------------------------------------------------------------------------------------------------//
 void LiPetrasso_test(rtt_dsxx::UnitTest &ut) {
-  // Particle masses in [kg]
-  double const mass_electron = 9.1093837139e-31;
-  double const mass_deuteron = 3.34449489528201e-27;
-  double const mass_triton = 5.007356050158e-27;
-  double const mass_alpha = 6.64647845996649e-27;
+  // Particle masses in [g]
+  double const mass_electron = 9.1093837139e-28;
+  double const mass_deuteron = 3.34449489528201e-24;
+  double const mass_triton = 5.007356050158e-24;
+  double const mass_alpha = 6.64647845996649e-24;
 
   // Temperature in keV
   double const temp_electron = 1.0;
@@ -296,93 +282,142 @@ void LiPetrasso_test(rtt_dsxx::UnitTest &ut) {
       dens_triton / (0.5 * (2.013553214 + 3.01550071913)) * rtt_units::AVOGADRO;
 
   // Build cpeloss model
-  rtt_cdi_cpeloss::Analytic_LiPet_Eloss_Model const eloss_mod(2004, mass_alpha);
+  auto const elec_model(std::make_shared<rtt_cdi_cpeloss::Analytic_LiPet_Eloss_Model>(
+      -1, mass_electron, 2004, mass_alpha));
+  auto const deut_model(std::make_shared<rtt_cdi_cpeloss::Analytic_LiPet_Eloss_Model>(
+      1002, mass_deuteron, 2004, mass_alpha));
+  auto const trit_model(std::make_shared<rtt_cdi_cpeloss::Analytic_LiPet_Eloss_Model>(
+      1003, mass_triton, 2004, mass_alpha));
+  // Build CPEloss object using model:
+  rtt_cdi_cpeloss::Analytic_CP_Eloss const eloss_elec(elec_model,
+                                                      rtt_cdi::CPModelAngleCutoff::NONE);
+  rtt_cdi_cpeloss::Analytic_CP_Eloss const eloss_deut(deut_model,
+                                                      rtt_cdi::CPModelAngleCutoff::NONE);
+  rtt_cdi_cpeloss::Analytic_CP_Eloss const eloss_trit(trit_model,
+                                                      rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Build background
   std::vector<int> const zaid_list{-1, 1002, 1003};
   std::vector<double> const number_densities{number_dens_electron, number_dens_deuteron,
                                              number_dens_triton};
   std::vector<double> const temperatures{temp_electron, temp_deuteron, temp_triton};
-  std::vector<double> const masses{mass_electron, mass_deuteron, mass_triton};
+  const double debye_length(
+      rtt_cdi::calculate_debye_length(zaid_list, number_densities, temperatures));
 
   // Check incident particle info
-  FAIL_IF_NOT(eloss_mod.incident_zaid() == 2004);
+  FAIL_IF_NOT(eloss_elec.proj_zaid() == 2004);
+  FAIL_IF_NOT(eloss_deut.proj_zaid() == 2004);
+  FAIL_IF_NOT(eloss_trit.proj_zaid() == 2004);
+  FAIL_IF_NOT(eloss_elec.targ_zaid() == -1);
+  FAIL_IF_NOT(eloss_deut.targ_zaid() == 1002);
+  FAIL_IF_NOT(eloss_trit.targ_zaid() == 1003);
 
-  FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_mod.incident_mass(), mass_alpha, 1.0e-8));
+  FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_elec.proj_mass(), mass_alpha, 1.0e-8));
+  FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_deut.proj_mass(), mass_alpha, 1.0e-8));
+  FAIL_IF_NOT(rtt_dsxx::soft_equiv(eloss_trit.proj_mass(), mass_alpha, 1.0e-8));
 
-  FAIL_IF_NOT(eloss_mod.z_number() == 2);
+  FAIL_IF_NOT(rtt_cdi::get_z_number(eloss_elec.get_Analytic_Model()->proj_zaid()) == 2);
 
-  // Get dedx for 3.5 MeV alpha-particle
+  // Get dedt for 3.5 MeV alpha-particle
   {
     double const incident_energy = 3.5 * rtt_units::electronChargeSI * 1.0e+6; // J
     double const incident_speed =
-        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+        std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
-    double const dedx =
-        eloss_mod.getEloss(incident_speed, zaid_list, number_densities, temperatures, masses);
+    double dedt{0.0};
+    dedt += eloss_elec.getEloss(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt += eloss_deut.getEloss(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += eloss_trit.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
 
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 2.56071981e+02, 1.0e-8));
+    const double ref_dedt{2.56071981e+05 * incident_speed};
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
 
-  // Get dedx for 1.0 MeV alpha-particle
+  // Get dedt for 1.0 MeV alpha-particle
   {
     double const incident_energy = 1.0 * rtt_units::electronChargeSI * 1.0e+6; // J
     double const incident_speed =
-        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+        std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
-    double const dedx =
-        eloss_mod.getEloss(incident_speed, zaid_list, number_densities, temperatures, masses);
+    double dedt{0.0};
+    dedt += eloss_elec.getEloss(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt += eloss_deut.getEloss(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += eloss_trit.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
 
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 1.61944659e+02, 1.0e-8));
+    const double ref_dedt{1.61944659e+05 * incident_speed};
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
 
-  // Get dedx for E = 2kT
+  // Get dedt for E = 2kT
   {
     double const incident_energy = 2.0e-3 * rtt_units::electronChargeSI * 1.0e+6; // J
     double const incident_speed =
-        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+        std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
-    double const dedx =
-        eloss_mod.getEloss(incident_speed, zaid_list, number_densities, temperatures, masses);
+    double dedt{0.0};
+    dedt += eloss_elec.getEloss(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt += eloss_deut.getEloss(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += eloss_trit.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
 
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 3.05252070e+02, 1.0e-8));
+    const double ref_dedt{3.05252070e+05 * incident_speed};
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
 
-  // Get modified dedx for 3.5 MeV alpha-particle
+#ifdef GSL_FOUND // Modified dedt requires calls to GSL
+  std::cout << "[Running modified Li-Petrasso tests.]\n";
+  // Get modified dedt for 3.5 MeV alpha-particle
   {
     double const incident_energy = 3.5 * rtt_units::electronChargeSI * 1.0e+6;
     double const incident_speed =
-        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+        std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
-    double const dedx =
-        eloss_mod.getElossMod(incident_speed, zaid_list, number_densities, temperatures, masses);
+    double dedt{0.0};
+    dedt +=
+        elec_model->getElossMod(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt +=
+        deut_model->getElossMod(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += trit_model->getElossMod(temp_triton, number_dens_triton, incident_speed, debye_length);
 
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 3.41367698e+02, 1.0e-8));
+    const double ref_dedt{3.41367698e+05 * incident_speed};
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
 
-  // Get modified dedx for 1.0 MeV alpha-particle
+  // Get modified dedt for 1.0 MeV alpha-particle
   {
     double const incident_energy = 1.0 * rtt_units::electronChargeSI * 1.0e+6;
     double const incident_speed =
-        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+        std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
-    double const dedx =
-        eloss_mod.getElossMod(incident_speed, zaid_list, number_densities, temperatures, masses);
+    double dedt{0.0};
+    dedt +=
+        elec_model->getElossMod(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt +=
+        deut_model->getElossMod(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += trit_model->getElossMod(temp_triton, number_dens_triton, incident_speed, debye_length);
 
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 2.47943976e+02, 1.0e-8));
+    const double ref_dedt{2.47943976e+05 * incident_speed};
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
 
-  // Get modified dedx for E = 2kT
+  // Get modified dedt for E = 2kT
   {
     double const incident_energy = 2.0e-3 * rtt_units::electronChargeSI * 1.0e+6;
     double const incident_speed =
-        std::sqrt(2.0 * incident_energy / mass_alpha) * 1.0e-8 * 1.0e+2; // cm/shk
+        std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
-    double const dedx =
-        eloss_mod.getElossMod(incident_speed, zaid_list, number_densities, temperatures, masses);
+    double dedt{0.0};
+    dedt +=
+        elec_model->getElossMod(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt +=
+        deut_model->getElossMod(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += trit_model->getElossMod(temp_triton, number_dens_triton, incident_speed, debye_length);
 
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedx, 3.21441535e+02, 1.0e-8));
+    const double ref_dedt{3.21441535e+05 * incident_speed};
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
+#else
+  std::cout << "[Skipping modified Li-Petrasso tests - GSL not found.]\n";
+#endif
 
   if (ut.numFails == 0)
     PASSMSG("LiPetrasso CPEloss test passes.");
@@ -395,18 +430,13 @@ void LiPetrasso_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void Constant_test(rtt_dsxx::UnitTest &ut) {
 
-  rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
-  rtt_cdi::CParticle const projectile_in(alpha_zaid, alpha_mass);
+  auto const zero_model_in(std::make_shared<rtt_cdi_cpeloss::Analytic_Constant_Eloss_Model>(
+      deuterium_zaid, deuterium_mass, alpha_zaid, alpha_mass, 0.));
+  auto const one_model_in(std::make_shared<rtt_cdi_cpeloss::Analytic_Constant_Eloss_Model>(
+      deuterium_zaid, deuterium_mass, alpha_zaid, alpha_mass, 1.));
 
-  std::shared_ptr<Analytic_Eloss_Model> const zero_model_in(
-      new rtt_cdi_cpeloss::Analytic_Constant_Eloss_Model(target_in, projectile_in, 0.));
-  std::shared_ptr<Analytic_Eloss_Model> const one_model_in(
-      new rtt_cdi_cpeloss::Analytic_Constant_Eloss_Model(target_in, projectile_in, 1.));
-
-  Analytic_CP_Eloss const eloss_zero_mod(zero_model_in, target_in, projectile_in,
-                                         rtt_cdi::CPModelAngleCutoff::NONE);
-  Analytic_CP_Eloss const eloss_one_mod(one_model_in, target_in, projectile_in,
-                                        rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_zero_mod(zero_model_in, rtt_cdi::CPModelAngleCutoff::NONE);
+  Analytic_CP_Eloss const eloss_one_mod(one_model_in, rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Check that basic accessors return correct result:
   // Analytic model should match that passed to constructor

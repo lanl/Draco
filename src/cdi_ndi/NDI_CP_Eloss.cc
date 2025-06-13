@@ -33,14 +33,15 @@ namespace rtt_cdi_ndi {
  *
  * \param[in] gendir_in path to gendir file
  * \param[in] library_in name of requested NDI data library
- * \param[in] target_in Target CParticle object
- * \param[in] projectile_in Projectile CParticle object
+ * \param[in] zaidt_ target ZAID
+ * \param[in] mt_ target mass (g)
+ * \param[in] zaidp_ projectile ZAID
+ * \param[in] mp_ projectile mass (g)
  */
 NDI_CP_Eloss::NDI_CP_Eloss(const std::string &gendir_in, const std::string &library_in,
-                           rtt_cdi::CParticle target_in, rtt_cdi::CParticle projectile_in)
-    : rtt_cdi::CPEloss(target_in, projectile_in, rtt_cdi::CPModelType::TABULAR_ETYPE,
-                       rtt_cdi::CPModelAngleCutoff::NONE),
-      NDI_Base(gendir_in, "dedx", library_in) {
+                           const int zaidt_, const double mt_, const int zaidp_, const double mp_)
+    : rtt_cdi::CPEloss(rtt_cdi::CPModelType::TABULAR_ETYPE, rtt_cdi::CPModelAngleCutoff::NONE),
+      NDI_Base(gendir_in, "dedx", library_in), zaidt(zaidt_), mt(mt_), zaidp(zaidp_), mp(mp_) {
   // TODO BRR set angle cutoff by parsing library_in
 
   load_ndi();
@@ -49,14 +50,15 @@ NDI_CP_Eloss::NDI_CP_Eloss(const std::string &gendir_in, const std::string &libr
  * \brief Constructor for NDI reader specific to TN DEDX data using default gendir file.
  *
  * \param[in] library_in name of requested NDI data library
- * \param[in] target_in Target CParticle object
- * \param[in] projectile_in Projectile CParticle object
+ * \param[in] zaidt_ target ZAID
+ * \param[in] mt_ target mass (g)
+ * \param[in] zaidp_ projectile ZAID
+ * \param[in] mp_ projectile mass (g)
  */
-NDI_CP_Eloss::NDI_CP_Eloss(const std::string &library_in, rtt_cdi::CParticle target_in,
-                           rtt_cdi::CParticle projectile_in)
-    : rtt_cdi::CPEloss(target_in, projectile_in, rtt_cdi::CPModelType::TABULAR_ETYPE,
-                       rtt_cdi::CPModelAngleCutoff::NONE),
-      NDI_Base("dedx", library_in) {
+NDI_CP_Eloss::NDI_CP_Eloss(const std::string &library_in, const int zaidt_, const double mt_,
+                           const int zaidp_, const double mp_)
+    : rtt_cdi::CPEloss(rtt_cdi::CPModelType::TABULAR_ETYPE, rtt_cdi::CPModelAngleCutoff::NONE),
+      NDI_Base("dedx", library_in), zaidt(zaidt_), mt(mt_), zaidp(zaidp_), mp(mp_) {
   // TODO BRR set angle cutoff by parsing library_in
 
   load_ndi();
@@ -98,7 +100,7 @@ void NDI_CP_Eloss::load_ndi() {
   Insist(dataset_handle != -1, "dataset_handle still has default value!");
 
   //! Set projectile isotope
-  ndi_error = NDI2_set_isotope(dataset_handle, std::to_string(projectile.get_zaid()).c_str());
+  ndi_error = NDI2_set_isotope(dataset_handle, std::to_string(zaidp).c_str());
   Require(ndi_error == 0);
 
   int num_targets = 0;
@@ -144,13 +146,13 @@ void NDI_CP_Eloss::load_ndi() {
   d_log_temperature = temperatures[1] - temperatures[0];
 
   stopping_data_1d.resize(n_energy * n_density * n_temperature);
-  if (target.get_zaid() == -1) {
+  if (zaidt == -1) {
     ndi_error = NDI2_get_float64_vec(dataset_handle, NDI_DEDX, stopping_data_1d.data(),
                                      static_cast<int>(stopping_data_1d.size()));
   } else {
-    ndi_error = NDI2_get_float64_vec_x(
-        dataset_handle, NDI_TARGET_DEDX, std::to_string(target.get_zaid()).c_str(),
-        stopping_data_1d.data(), static_cast<int>(stopping_data_1d.size()));
+    ndi_error =
+        NDI2_get_float64_vec_x(dataset_handle, NDI_TARGET_DEDX, std::to_string(zaidt).c_str(),
+                               stopping_data_1d.data(), static_cast<int>(stopping_data_1d.size()));
   }
   Require(ndi_error == 0);
 
@@ -198,9 +200,11 @@ void NDI_CP_Eloss::load_ndi() {
  * \param[in] temperature Ion temperature [keV]
  * \param[in] density Target number density [atoms cm^-3]
  * \param[in] partSpeed Particle speed [cm shk^-1]
+ * \param[in] debye_length Plasma Debye length [cm], unused
  */
 double NDI_CP_Eloss::getEloss(const double temperature, const double density,
-                              const double partSpeed) const {
+                              const double partSpeed,
+                              [[maybe_unused]] const double debye_length) const {
 
   // temperature: keV -> keV
   const double log_temperature = std::log(temperature);
@@ -209,8 +213,8 @@ double NDI_CP_Eloss::getEloss(const double temperature, const double density,
   const double log_density = std::log(density);
 
   // energy: cm/shk -> MeV  (using projectile particle's mass)
-  const double log_energy = std::log(std::pow(partSpeed / 1.e-8, 2) * projectile.get_mass() /
-                                     (2.0 * 1.e6 * pc.electronVolt()));
+  const double log_energy =
+      std::log(std::pow(partSpeed / 1.e-8, 2) * mp / (2.0 * 1.e6 * pc.electronVolt()));
 
   if (log_temperature <= min_temperature || log_temperature >= max_temperature ||
       log_density <= min_density || log_density >= max_density || log_energy <= min_energy ||
@@ -267,25 +271,27 @@ double NDI_CP_Eloss::getEloss(const double temperature, const double density,
  *
  * \param[in] gendir_in path to gendir file
  * \param[in] library_in name of requested NDI data library
- * \param[in] target_in name of requested reaction
- * \param[in] projectile_in energy boundaries of multigroup bins (keV)
+ * \param[in] zaidt_ target ZAID
+ * \param[in] mt_ target mass (g)
+ * \param[in] zaidp_ projectile ZAID
+ * \param[in] mp_ projectile mass (g)
  */
 NDI_CP_Eloss::NDI_CP_Eloss(const std::string &gendir_in, const std::string &library_in,
-                           rtt_cdi::CParticle target_in, rtt_cdi::CParticle projectile_in)
-    : rtt_cdi::CPEloss(target_in, projectile_in, rtt_cdi::CPModelType::TABULAR_ETYPE,
-                       rtt_cdi::CPModelAngleCutoff::NONE),
+                           const int zaidt_, const double mt_, const int zaidp_, const double mp_)
+    : rtt_cdi::CPEloss(rtt_cdi::CPModelType::TABULAR_ETYPE, rtt_cdi::CPModelAngleCutoff::NONE),
       NDI_Base(gendir_in, "dedx", library_in) {}
 /*!
  * \brief Constructor for NDI reader specific to TN DEDX data using default gendir file.
  *
  * \param[in] library_in name of requested NDI data library
- * \param[in] target_in name of requested reaction
- * \param[in] projectile_in energy boundaries of multigroup bins (keV)
+ * \param[in] zaidt_ target ZAID
+ * \param[in] mt_ target mass (g)
+ * \param[in] zaidp_ projectile ZAID
+ * \param[in] mp_ projectile mass (g)
  */
-NDI_CP_Eloss::NDI_CP_Eloss(const std::string &library_in, rtt_cdi::CParticle target_in,
-                           rtt_cdi::CParticle projectile_in)
-    : rtt_cdi::CPEloss(target_in, projectile_in, rtt_cdi::CPModelType::TABULAR_ETYPE,
-                       rtt_cdi::CPModelAngleCutoff::NONE),
+NDI_CP_Eloss::NDI_CP_Eloss(const std::string &library_in, const int zaidt_, const double mt_,
+                           const int zaidp_, const double mp_)
+    : rtt_cdi::CPEloss(rtt_cdi::CPModelType::TABULAR_ETYPE, rtt_cdi::CPModelAngleCutoff::NONE),
       NDI_Base("dedx", library_in) {}
 
 //------------------------------------------------------------------------------------------------//
@@ -295,9 +301,12 @@ NDI_CP_Eloss::NDI_CP_Eloss(const std::string &library_in, rtt_cdi::CParticle tar
  * \param[in] temperature Material temperature [keV]
  * \param[in] density Material density [g cm^-3]
  * \param[in] partSpeed Particle speed [cm shk^-1]
+ * \param[in] debye_length Plasma Debye length [cm], unused
  */
-double NDI_CP_Eloss::getEloss(const double /*temperature*/, const double /*density*/,
-                              const double /*partSpeed*/) const {
+double NDI_CP_Eloss::getEloss([[maybe_unused]] const double temperature,
+                              [[maybe_unused]] const double density,
+                              [[maybe_unused]] const double partSpeed,
+                              [[maybe_unused]] const double debye_length) const {
   Insist(0, "getEloss only defined if NDI_FOUND!");
 }
 

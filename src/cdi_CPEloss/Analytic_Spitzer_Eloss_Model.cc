@@ -23,13 +23,18 @@ namespace rtt_cdi_cpeloss {
  * \param T material temperature in keV
  * \param ndens number density in a/cm^3
  * \param v incident particle speed in cm/shk
+ * \param debye_length_opt material Debye length in [cm], not yet used
  * \return eloss stopping power in keV shk^-1
  */
-double Analytic_Spitzer_Eloss_Model::calculate_eloss(const double T, const double ndens,
-                                                     const double v) const {
+double Analytic_Spitzer_Eloss_Model::calculate_eloss(
+    const double T, const double ndens, const double v,
+    [[maybe_unused]] const double debye_length_opt) const {
   Require(T >= 0.0);
   Require(ndens >= 0.0);
   Require(v >= 0.0);
+
+  const double qpabs{static_cast<double>(rtt_cdi::get_z_number(zaidp)) * pc.e()};
+  const double qtabs{static_cast<double>(rtt_cdi::get_z_number(zaidt)) * pc.e()};
 
   const double keV = 1e3 * pc.eV();
   const double eloss_unit_fac = 1.e-8 / keV;

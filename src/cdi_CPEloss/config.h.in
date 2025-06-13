@@ -1,0 +1,17 @@
+/*----------------------------------------------*-C-*---------------------------------------------*/
+/*!
+ * \file   config.h
+ * \brief  CPP defines necessary for the CDI_CPEloss package.
+ * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved. */
+/*------------------------------------------------------------------------------------------------*/
+
+#ifndef rtt_cdi_cpeloss_config_h
+#define rtt_cdi_cpeloss_config_h
+
+#cmakedefine GSL_FOUND
+#endif /* __cdi_cpeloss_config_h__ */
+
+/*------------------------------------------------------------------------------------------------*/
+/* end of config.h */
+/*------------------------------------------------------------------------------------------------*/
+

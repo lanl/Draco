@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2019 Nov 4
  * \brief  Tabular_CP_Eloss class definition.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef cdi_CPEloss_Tabular_CP_Eloss_hh
@@ -47,6 +47,11 @@ private:
 
   rtt_units::PhysicalConstexprs<rtt_units::CGS> pc; //!< Units
 
+  int zaidt{0};   //!< Target ZAID
+  double mt{0.0}; //!< Target mass (g)
+  int zaidp{0};   //!< Projectile ZAID
+  double mp{0.0}; //!< Projectile mass (g)
+
   uint32_t n_energy;          //!< Number of gridpoints in projectile energy
   uint32_t n_density;         //!< Number of gridpoints in target density
   uint32_t n_temperature;     //!< Number of gridpoints in target temperature
@@ -76,22 +81,41 @@ private:
   // Utility for skipping lines
   void skip_lines(uint32_t nlines);
 
-  // Utility for reading a line of an eloss file and as a vector of strings
+  // Utility for reading a line of an eloss file in as a vector of strings
   std::vector<std::string> const read_line();
 
 public:
   // Constructor
-  Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle target_in,
-                   rtt_cdi::CParticle projectile_in,
-                   rtt_cdi::CPModelAngleCutoff model_angle_cutoff_in);
+  Tabular_CP_Eloss(const int zaidt_, const double mt_, const int zaidp_, const double mp_,
+                   std::string filename_in, rtt_cdi::CPModelAngleCutoff model_angle_cutoff_in);
 
   // >>> ACCESSORS
 
   //! Get a stopping power.
-  double getEloss(const double temperature, const double density, const double v0) const override;
+  double getEloss(const double temperature, const double density, const double v0,
+                  const double debye_length = 0.0) const override;
 
   //! Query to see if data is in tabular or functional form (true).
   static constexpr bool is_data_in_tabular_form() { return true; }
+  /*!
+   * \brief Get target zaid
+   */
+  [[nodiscard]] int targ_zaid() const override { return zaidt; }
+
+  /*!
+   * \brief Get target mass
+   */
+  [[nodiscard]] double targ_mass() const override { return mt; }
+
+  /*!
+   * \brief Get projectile zaid
+   */
+  [[nodiscard]] int proj_zaid() const override { return zaidp; }
+
+  /*!
+   * \brief Get projectile mass
+   */
+  [[nodiscard]] double proj_mass() const override { return mp; }
 
   //! Get the name of the associated data file.
   inline std::string getDataFilename() const { return filename; }

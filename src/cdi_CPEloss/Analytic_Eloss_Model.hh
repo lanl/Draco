@@ -13,6 +13,7 @@
 #include "cdi/CPCommon.hh"
 #include "units/PhysicalConstexprs.hh"
 #include <cmath>
+#include <map>
 #include <vector>
 
 namespace rtt_cdi_cpeloss {
@@ -46,26 +47,40 @@ public:
   Analytic_Eloss_Model &operator=(Analytic_Eloss_Model &&rhs) noexcept = delete;
 
   //! Interface for derived analytic eloss models.
-  [[nodiscard]] virtual double calculate_eloss(const double T, const double ndens,
-                                               const double v0) const = 0;
+  [[nodiscard]] virtual double calculate_eloss(const double T, const double ndens, const double v0,
+                                               const double debye_length = 0.0) const = 0;
+
+  /*!
+   * \brief Get target zaid
+   */
+  [[nodiscard]] int targ_zaid() const { return zaidt; }
+
+  /*!
+   * \brief Get target mass
+   */
+  [[nodiscard]] double targ_mass() const { return mt; }
+
+  /*!
+   * \brief Get projectile zaid
+   */
+  [[nodiscard]] int proj_zaid() const { return zaidp; }
+
+  /*!
+   * \brief Get projectile mass
+   */
+  [[nodiscard]] double proj_mass() const { return mp; }
 
 protected:
-  //! Constructor initializes generically useful physical quantities.
-  Analytic_Eloss_Model(const rtt_cdi::CParticle &target, const rtt_cdi::CParticle &projectile)
-      : zaidt(target.get_zaid()), mt(target.get_mass()), qtabs(std::abs(target.get_z()) * pc.e()),
-        zaidp(target.get_zaid()), mp(projectile.get_mass()),
-        qpabs(std::abs(projectile.get_z()) * pc.e()) {}
+  Analytic_Eloss_Model(const int &zaidt_, const double &mt_, const int zaidp_, const double mp_)
+      : zaidt(zaidt_), mt(mt_), zaidp(zaidp_), mp(mp_) {}
 
-protected:
   //! Unit system (use cgs internally)
   rtt_units::PhysicalConstexprs<rtt_units::CGS> pc;
 
-  const int zaidt;    //!< Target ZAID
-  const double mt;    //!< Target mass
-  const double qtabs; //!< Absolute target electric charge
-  const int zaidp;    //!< Projectile ZAID
-  const double mp;    //!< Projectile mass
-  const double qpabs; //!< Absolute projectile electric charge
+  const int zaidt; //!< Target ZAID
+  const double mt; //!< Target mass
+  const int zaidp; //!< Projectile ZAID
+  const double mp; //!< Projectile mass
 };
 
 } // namespace rtt_cdi_cpeloss

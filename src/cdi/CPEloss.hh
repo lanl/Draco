@@ -32,10 +32,8 @@ namespace rtt_cdi {
 
 class CPEloss {
 public:
-  CPEloss(CParticle target_in, CParticle projectile_in, CPModelType model_type_in,
-          CPModelAngleCutoff model_angle_cutoff_in)
-      : projectile(projectile_in), target(target_in), model_type(model_type_in),
-        model_angle_cutoff(model_angle_cutoff_in) {}
+  CPEloss(CPModelType model_type_in, CPModelAngleCutoff model_angle_cutoff_in)
+      : model_type(model_type_in), model_angle_cutoff(model_angle_cutoff_in) {}
   // ---------- //
   // Destructor //
   // ---------- //
@@ -70,14 +68,36 @@ public:
    *
    * \param partSpeed The incident speed of the particle (cm/shk).
    *
+   * \param debyeLength The plasma Debye length (cm, not used by all models)
+   *
    * \return A single Eloss rate coefficient (shk^-1).
    */
   [[nodiscard]] virtual double getEloss(const double targetTemperature, const double targetDensity,
-                                        const double partSpeed) const = 0;
+                                        const double partSpeed, const double debyeLength) const = 0;
   /*!
    * \brief Query whether the data is in tables or functional form.
    */
   //virtual static constexpr bool is_data_in_tabular_form() = 0;
+
+  /*!
+   * \brief Get target zaid
+   */
+  [[nodiscard]] virtual int targ_zaid() const = 0;
+
+  /*!
+   * \brief Get target mass
+   */
+  [[nodiscard]] virtual double targ_mass() const = 0;
+
+  /*!
+   * \brief Get projectile zaid
+   */
+  [[nodiscard]] virtual int proj_zaid() const = 0;
+
+  /*!
+   * \brief Get projectile mass
+   */
+  [[nodiscard]] virtual double proj_mass() const = 0;
 
   /*!
    * \brief Returns a vector of temperatures that define the cached Eloss data table (keV).
@@ -110,16 +130,6 @@ public:
   [[nodiscard]] virtual size_t getNumEnergies() const = 0;
 
   /*!
-   * \brief Query to determine the transporting particle type.
-   */
-  [[nodiscard]] CParticle getProjectile() const { return projectile; }
-
-  /*!
-   * \brief Query to determine the target species type.
-   */
-  [[nodiscard]] CParticle getTarget() const { return target; }
-
-  /*!
    * \brief Query to determine the CP Model type.
    */
   [[nodiscard]] CPModelType getModelType() const { return model_type; }
@@ -130,12 +140,6 @@ public:
   [[nodiscard]] CPModelAngleCutoff getModelAngleCutoff() const { return model_angle_cutoff; }
 
 protected:
-  // Particle being transported i.e. subject to energy loss
-  const CParticle projectile;
-
-  // Target particle
-  const CParticle target;
-
   // CP Model type
   const CPModelType model_type;
 

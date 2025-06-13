@@ -9,175 +9,81 @@
 
 #include "cdi_CPEloss/Analytic_LiPet_Eloss_Model.hh"
 #include "dsxx/Assert.hh"
+#include "cdi/CPCommon.hh"
+#include "cdi_CPEloss/config.h" // Defines GSL_FOUND
 #include "units/MathConstants.hh"
 #include "units/PhysicalConstantsSI.hh"
 
 #include <cmath>
-#include <cstddef>
+#ifdef GSL_FOUND
 #include <gsl/gsl_sf_bessel.h>
 #include <gsl/gsl_sf_fermi_dirac.h>
-#include <vector>
+#endif
 
 namespace rtt_cdi_cpeloss {
-
 //------------------------------------------------------------------------------------------------//
-/*! \brief Calculate the total eloss in units of [MeV/cm] for some background composition
+/*! \brief Calculate the eloss in units of [keV/shk] for a specific target
+ * 
+ * This wraps calculate_eloss_modified() in a way that looks similar to the Analytic_CP_Eloss
+ * getEloss() call. It's currently implemented for comparison purposes.
  *
- * This stopping power model is taken from the original 1993 Li-Petrasso model plus the 2015 erratum. 
- * SI units are used to maintain consistency and comparability with Edward's implementation in the CPUtilities library.
- *
- * \param incident_speed incident speed of the ion in [cm/shk]
- * \param zaid_list list of ion ZAID's
- * \param number_densities list of ion number densities in [cm^-3]
- * \param temperatures list of ion temperatures in [keV]
- * \param masses list of masses in [kg]
- * \return stopping power in [MeV/cm]
+ * \param ndensity number density of target in [cm^-3]
+ * \param temperature temperature of target particle in [keV]
+ * \param v0 incident speed in [cm/shk]
+ * \param debye_length material Debye length in [cm]
+ * \return stopping power in [keV/shk]
  */
-double Analytic_LiPet_Eloss_Model::getEloss(const double incident_speed,
-                                            const std::vector<int> &zaid_list,
-                                            const std::vector<double> &number_densities,
-                                            const std::vector<double> &temperatures,
-                                            const std::vector<double> &masses) const {
+double Analytic_LiPet_Eloss_Model::getElossMod(const double temperature, const double ndensity,
+                                               const double v0, const double debye_length) const {
+  Require(v0 >= 0.0);
 
-  // Check that the correct number of entries are provided
-  Require(zaid_list.size() == number_densities.size());
-  Require(zaid_list.size() == temperatures.size());
-  Require(zaid_list.size() == masses.size());
+  // define return eloss
+  double const eloss = calculate_eloss_modified(temperature, ndensity, v0, debye_length);
 
-  // Convert units
-  double const incident_speed_mps = incident_speed * 1.0e+8 * 1.0e-2; // [cm/shk -> m/s]
-
-  // Get Debye length in [m]
-  double const debye_length = calculate_debye_length(zaid_list, number_densities, temperatures);
-
-  // Compute total stopping power
-  double dedx = 0.0;
-  for (size_t i = 0; i < zaid_list.size(); ++i) {
-    double const number_density = number_densities[i] * 1.0e+6;            // [cm^-3 -> m^-3]
-    double const temperature = temperatures[i] * rtt_units::EV2K * 1.0e+3; // [keV -> K]
-    double const target_mass = masses[i];
-
-    dedx +=
-        calculate_eloss(incident_speed_mps, number_density, temperature, target_mass, debye_length);
-  }
-
-  // Convert units J/m -> MeV/cm
-  dedx /= (rtt_units::electronChargeSI * 1.0e+6 * 1.0e+2);
-  return dedx;
+  Ensure(eloss >= 0.0);
+  return eloss;
 }
 
 //------------------------------------------------------------------------------------------------//
-/*! \brief Calculate the modified total eloss in units of [MeV/cm] for some background composition
- *
- * This stopping power model is taken from Zylstra et al. 2019, "Modified parameterization of the 
- * Li-Petrasso charged particle stopping power theory".
- *
- * \param incident_speed incident speed of the ion in [cm/shk]
- * \param zaid_list list of ion ZAID's
- * \param number_densities list of ion number densities in [cm^-3]
- * \param temperatures list of ion temperatures in [keV]
- * \param masses list of masses in [kg]
- * \return stopping power in [MeV/cm]
- */
-double Analytic_LiPet_Eloss_Model::getElossMod(const double incident_speed,
-                                               const std::vector<int> &zaid_list,
-                                               const std::vector<double> &number_densities,
-                                               const std::vector<double> &temperatures,
-                                               const std::vector<double> &masses) const {
-
-  // Check that the correct number of entries are provided
-  Require(zaid_list.size() == number_densities.size());
-  Require(zaid_list.size() == temperatures.size());
-  Require(zaid_list.size() == masses.size());
-
-  // Convert units
-  double const incident_speed_mps = incident_speed * 1.0e+8 * 1.0e-2; // [cm/shk -> m/s]
-
-  // Get Debye length in [m]
-  double const debye_length = calculate_debye_length(zaid_list, number_densities, temperatures);
-
-  // Compute total stopping power
-  double dedx = 0.0;
-  for (size_t i = 0; i < zaid_list.size(); ++i) {
-    double const number_density = number_densities[i] * 1.0e+6;            // [cm^-3 -> m^-3]
-    double const temperature = temperatures[i] * rtt_units::EV2K * 1.0e+3; // [keV -> K]
-    double const target_mass = masses[i];
-
-    dedx += calculate_eloss_modified(incident_speed_mps, number_density, temperature, target_mass,
-                                     debye_length);
-  }
-
-  // Convert units J/m -> MeV/cm
-  dedx /= (rtt_units::electronChargeSI * 1.0e+6 * 1.0e+2);
-  return dedx;
-}
-
-//------------------------------------------------------------------------------------------------//
-/*! \brief Calculate the Debye length in [m]
- *
- * lambda_D = sum( n * z^2 / kT )
- *
- * \param zaid_list list of ion ZAID's
- * \param number_densities list of ion number densities in [1/cm^3]
- * \param temperatures list of ion temperatures in [keV]
- * \return Debye length in [m]
- */
-double
-Analytic_LiPet_Eloss_Model::calculate_debye_length(const std::vector<int> &zaid_list,
-                                                   const std::vector<double> &number_densities,
-                                                   const std::vector<double> &temperatures) const {
-
-  double debye_length = 0.0;
-  for (size_t i = 0; i < zaid_list.size(); ++i) {
-    int z_number = 0;
-    if (zaid_list[i] == -1) {
-      z_number = 1;
-    } else {
-      z_number = (zaid_list[i] - zaid_list[i] % 1000) / 1000;
-    }
-
-    // Density [cm^-3 -> m^-3]
-    double const density = number_densities[i] * 1.0e+6;
-
-    // Temperature [keV -> Kelvin]
-    double const temperature = temperatures[i] * rtt_units::EV2K * 1.0e+3;
-
-    debye_length += density * rtt_units::electronChargeSI * rtt_units::electronChargeSI * z_number *
-                    z_number / temperature;
-  }
-  debye_length =
-      std::sqrt(rtt_units::permittivityOfFreeSpaceSI * rtt_units::boltzmannSI / debye_length);
-
-  return debye_length;
-}
-
-//------------------------------------------------------------------------------------------------//
-/*! \brief Calculate the eloss in units of [J/m] for a specific target
+/*! \brief Calculate the eloss in units of [keV/shk] for a specific target
  * 
  * This stopping power model is taken from the original 1993 Li-Petrasso model plus the 2015 erratum. 
- * SI units are used to maintain consistancy and comparability with Edward's implimentation in the CPUtilities library.
+ * SI units are used to internally maintain consistency and comparability with Edward's
+ * implementation in the CPUtilities library.
  *
- * \param incident_speed incident energy in [m/s]
- * \param number_density number density of target in [m^-3]
- * \param temperature temperature of target particle in [Kelvin]
- * \param target_mass mass of target particle in [kg]
- * \param debye_length material Debye length in [m]
- * \return stopping power in [J/m]
+ * \param temperature_in temperature of target particle in [keV]
+ * \param number_density_in number density of target in [cm^-3]
+ * \param incident_speed_in incident speed in [cm/shk]
+ * \param debye_length_in material Debye length in [cm]
+ * \return stopping power in [keV/shk]
  */
-double Analytic_LiPet_Eloss_Model::calculate_eloss(const double incident_speed,
-                                                   const double number_density,
-                                                   const double temperature,
-                                                   const double target_mass,
-                                                   const double debye_length) const {
+double Analytic_LiPet_Eloss_Model::calculate_eloss(const double temperature_in,
+                                                   const double number_density_in,
+                                                   const double incident_speed_in,
+                                                   const double debye_length_in) const {
+  // Convert number density, temperature, debye
+  double const number_density = number_density_in * 1.0e+6;             // [cm^-3 -> m^-3]
+  double const temperature = temperature_in * rtt_units::EV2K * 1.0e+3; // [keV -> K]
+  double const debye_length = debye_length_in * 1.0e-2;                 // [cm -> m]
+
+  // Get z number:
+  const double incident_z{static_cast<double>(rtt_cdi::get_z_number(zaidp))};
+
+  // Convert speed
+  double const incident_speed = incident_speed_in * 1.0e+8 * 1.0e-2; // [cm/shk -> m/s]
+
+  // Convert masses (g-> kg):
+  const double target_mass{mt * 1.0e-3};
+  const double incident_mass{mp * 1.0e-3};
 
   // Compute Coulomb log
-  double const mr = incident_mass_ * target_mass / (incident_mass_ + target_mass);
+  double const mr = incident_mass * target_mass / (incident_mass + target_mass);
   double const speed2 = std::pow(incident_speed, 2);
   double const u_rel =
       sqrt(speed2) + sqrt(2.0 * rtt_units::boltzmannSI * temperature / target_mass);
   double const t12 = std::pow(rtt_units::h_barSI / (2.0 * mr * u_rel), 2);
   double const p_perp = std::pow(
-      incident_z_ * rtt_units::electronChargeSI * rtt_units::electronChargeSI /
+      incident_z * rtt_units::electronChargeSI * rtt_units::electronChargeSI /
           (4.0 * rtt_units::PI * rtt_units::permittivityOfFreeSpaceSI * mr * u_rel * u_rel),
       2);
   double const p_min = std::sqrt(p_perp + t12);
@@ -195,39 +101,56 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss(const double incident_speed,
   double const maxwell_func = 2.0 / std::sqrt(rtt_units::PI) * std::exp(-x) * std::sqrt(x);
 
   double const corrector = 1.0 / coulomb_log * (maxwell_integral + maxwell_func);
-  double const G = maxwell_integral - target_mass / incident_mass_ * (maxwell_func - corrector);
+  double const G = maxwell_integral - target_mass / incident_mass * (maxwell_func - corrector);
 
   double theta = 0.0;
   if (xcol > 1.0) {
     theta = 1.0;
   }
 
-  double const dedx = incident_z_ * incident_z_ * rtt_units::electronChargeSI *
-                      rtt_units::electronChargeSI /
-                      (4.0 * rtt_units::PI * rtt_units::permittivityOfFreeSpaceSI) * omega2 /
-                      speed2 * (G * coulomb_log + theta * log(1.123 * sqrt(xcol)));
+  double dedx = incident_z * incident_z * rtt_units::electronChargeSI *
+                rtt_units::electronChargeSI /
+                (4.0 * rtt_units::PI * rtt_units::permittivityOfFreeSpaceSI) * omega2 / speed2 *
+                (G * coulomb_log + theta * log(1.123 * sqrt(xcol)));
 
-  return dedx;
+  // Convert units J/m -> keV/cm
+  dedx /= (rtt_units::electronChargeSI * 1.0e+3 * 1.0e+2);
+  // On return, convert from dedx [keV/cm] -> dedt [keV/shk]
+  return dedx * incident_speed_in;
 }
 
 //------------------------------------------------------------------------------------------------//
-/*! \brief Calculate the modified Li-Petrasso (Zylstra-Li-Petrasso) stopping power eloss in units of [J/m]
+/*! \brief Calculate the modified Li-Petrasso (Zylstra-Li-Petrasso) stopping power eloss in units 
+ *         of [keV/shk]
  * 
  * This stopping power model is taken from Zylstra et al. 2019, "Modified parameterization of the 
  * Li-Petrasso charged particle stopping power theory".
  *
- * \param incident_speed incident energy in [m/s]
- * \param number_density number density of target in [m^-3]
- * \param temperature temperature of target particle in [Kelvin]
- * \param target_mass mass of target particle in [kg]
- * \param debye_length material Debye length in [m]
- * \return stopping power in [J/m]
+ * \param temperature_in temperature of target particle in [keV]
+ * \param number_density_in number density of target in [cm^-3]
+ * \param incident_speed_in incident speed in [cm/shk]
+ * \param debye_length_in material Debye length in [cm]
+ * \return stopping power in [keV/shk]
  */
-double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(const double incident_speed,
-                                                            const double number_density,
-                                                            const double temperature,
-                                                            const double target_mass,
-                                                            const double debye_length) const {
+#ifdef GSL_FOUND
+double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(const double temperature_in,
+                                                            const double number_density_in,
+                                                            const double incident_speed_in,
+                                                            const double debye_length_in) const {
+  // Convert number density, temperature, debye
+  double const number_density = number_density_in * 1.0e+6;             // [cm^-3 -> m^-3]
+  double const temperature = temperature_in * rtt_units::EV2K * 1.0e+3; // [keV -> K]
+  double const debye_length = debye_length_in * 1.0e-2;                 // [cm -> m]
+
+  // Get z number:
+  const double incident_z{static_cast<double>(rtt_cdi::get_z_number(zaidp))};
+
+  // Convert speed
+  double const incident_speed = incident_speed_in * 1.0e+8 * 1.0e-2; // [cm/shk -> m/s]
+
+  // Get masses (convert from g -> kg):
+  const double target_mass{mt * 1.0e-3};
+  const double incident_mass{mp * 1.0e-3};
 
   // Modified temperature for quantum degeneracy
   double const theta =
@@ -243,12 +166,12 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(const double inciden
       temperature * gsl_sf_fermi_dirac_3half(param) / gsl_sf_fermi_dirac_half(param);
 
   // Compute Coulomb log
-  double const mr = incident_mass_ * target_mass / (incident_mass_ + target_mass);
+  double const mr = incident_mass * target_mass / (incident_mass + target_mass);
   double const speed2 = std::pow(incident_speed, 2);
   double const u_rel = sqrt(speed2) + sqrt(2.0 * rtt_units::boltzmannSI * T_eff / target_mass);
   double const t12 = std::pow(rtt_units::h_barSI / (2.0 * mr * u_rel), 2);
   double const p_perp = std::pow(
-      incident_z_ * rtt_units::electronChargeSI * rtt_units::electronChargeSI /
+      incident_z * rtt_units::electronChargeSI * rtt_units::electronChargeSI /
           (4.0 * rtt_units::PI * rtt_units::permittivityOfFreeSpaceSI * mr * u_rel * u_rel),
       2);
   double const p_min = std::sqrt(p_perp + t12);
@@ -265,18 +188,30 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(const double inciden
   double const maxwell_func = 2.0 / std::sqrt(rtt_units::PI) * std::exp(-x) * std::sqrt(x);
 
   double const corrector = 1.0 / coulomb_log * (maxwell_integral + maxwell_func);
-  double const G = maxwell_integral - target_mass / incident_mass_ * (maxwell_func - corrector);
+  double const G = maxwell_integral - target_mass / incident_mass * (maxwell_func - corrector);
 
   double const factor = std::sqrt(omega2 / speed2) * debye_length;
   double const parameterization = factor * gsl_sf_bessel_K0(factor) * gsl_sf_bessel_K1(factor);
 
-  double const dedx = incident_z_ * incident_z_ * rtt_units::electronChargeSI *
-                      rtt_units::electronChargeSI /
-                      (4.0 * rtt_units::PI * rtt_units::permittivityOfFreeSpaceSI) * omega2 /
-                      speed2 * (G * coulomb_log + parameterization);
+  double dedx = incident_z * incident_z * rtt_units::electronChargeSI *
+                rtt_units::electronChargeSI /
+                (4.0 * rtt_units::PI * rtt_units::permittivityOfFreeSpaceSI) * omega2 / speed2 *
+                (G * coulomb_log + parameterization);
 
-  return dedx;
+  // Convert units J/m -> keV/cm
+  dedx /= (rtt_units::electronChargeSI * 1.0e+3 * 1.0e+2);
+
+  // On return, convert from dedx [keV/cm] -> dedt [keV/shk]
+  return dedx * incident_speed_in;
 }
+#else
+double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
+    [[maybe_unused]] const double number_density_in, [[maybe_unused]] const double temperature_in,
+    [[maybe_unused]] const double incident_speed_in,
+    [[maybe_unused]] const double debye_length_in) const {
+  Insist(false, "Analytic_LiPet_Eloss_Model::calculate_eloss_modified requires GSL!");
+}
+#endif
 
 } // namespace rtt_cdi_cpeloss
 

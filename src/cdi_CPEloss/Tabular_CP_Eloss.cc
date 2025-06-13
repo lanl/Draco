@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2019 Nov 4
  * \brief  Tabular_CP_Eloss member definitions.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_CPEloss/Tabular_CP_Eloss.hh"
@@ -42,17 +42,18 @@ using std::experimental::layout_left;
  * file format is the usual LANL format for stopping powers.
  *
  * \param[in] filename_in path to eloss file
- * \param[in] target_in target particle zaid
- * \param[in] projectile_in transporting particle zaid
+ * \param[in] zaidt_ target ZAID
+ * \param[in] mt_ target mass (g)
+ * \param[in] zaidp_ projectile ZAID
+ * \param[in] mp_ projectile mass (g)
  * \param[in] model_angle_cutoff_in rtt_cdi::CPModelAngleCutoff the angle separating the stopping
  *                 power approximation from analog scattering
  */
-Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle target_in,
-                                   rtt_cdi::CParticle projectile_in,
+Tabular_CP_Eloss::Tabular_CP_Eloss(const int zaidt_, const double mt_, const int zaidp_,
+                                   const double mp_, std::string filename_in,
                                    rtt_cdi::CPModelAngleCutoff model_angle_cutoff_in)
-    : rtt_cdi::CPEloss(target_in, projectile_in, rtt_cdi::CPModelType::TABULAR_ETYPE,
-                       model_angle_cutoff_in),
-      filename(std::move(filename_in)) {
+    : rtt_cdi::CPEloss(rtt_cdi::CPModelType::TABULAR_ETYPE, model_angle_cutoff_in),
+      filename(std::move(filename_in)), zaidt(zaidt_), mt(mt_), zaidp(zaidp_), mp(mp_) {
   using std::stod;
   using std::stoi;
 
@@ -64,7 +65,7 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
 
   std::vector<std::string> line_entries = read_line(); // ZAID
   int32_t const projectile_zaid_file = stoi(line_entries[0]);
-  Insist(projectile.get_zaid() == projectile_zaid_file,
+  Insist(zaidp_ == projectile_zaid_file,
          "File projectile ZAID does not match constructor argument!");
 
   skip_lines(1); // Z, A, mass
@@ -122,7 +123,7 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
   bool target_found = false;
   nlines = (n_energy * n_density * n_temperature + max_entries - 1) /
            max_entries; // The number of lines taken up by stopping power data for one target
-  if (target.get_zaid() == -1) {
+  if (zaidt_ == -1) {
     // Target is free electrons
     target_found = true;
     uint32_t nentry = 0;
@@ -140,8 +141,8 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
     const uint32_t n_target_ions = stoi(read_line()[0]); // Number of target ions in file
     for (uint32_t n_target_ion = 0; n_target_ion < n_target_ions; n_target_ion++) {
       int const zaid_target_ion = stoi(read_line()[0]); // ZAID
-      read_line();                                // Z, A, mass
-      if (zaid_target_ion == target.get_zaid()) {
+      read_line();                                      // Z, A, mass
+      if (zaid_target_ion == zaidt) {
         // This is the requested target ion
         target_found = true;
         uint32_t nentry = 0;
@@ -161,7 +162,7 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
   }
   file.close();
 
-  Insist(target_found, "Error finding target ZAID \"" + std::to_string(target.get_zaid()) +
+  Insist(target_found, "Error finding target ZAID \"" + std::to_string(zaidt) +
                            "\" in DEDX file \"" + filename + "\"");
 
   // NOLINTBEGIN(misc-include-cleaner)
@@ -174,18 +175,18 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(std::string filename_in, rtt_cdi::CParticle t
   //
   // energy:      MeV -> cm/shk (using target particle mass)
   double const energy_cgs = exp(min_log_energy) * (1.e6 * pc.electronVolt());
-  min_log_energy = log(sqrt(2. * energy_cgs / target.get_mass()) * 1.e-8);
+  min_log_energy = log(sqrt(2. * energy_cgs / mt) * 1.e-8);
   d_log_energy = d_log_energy / 2.;
   // density:     cm^-3 -> g cm^-3
-  min_log_density = log(exp(min_log_density) * target.get_mass());
+  min_log_density = log(exp(min_log_density) * mt);
   // temperature: keV -> keV
   //
   // Note that d log x = dx / x is not affected by unit conversion factors
   for (auto &energy : energies) {
-    energy = sqrt(2. * (energy * 1.e6 * pc.electronVolt()) / target.get_mass()) * 1.e-8;
+    energy = sqrt(2. * (energy * 1.e6 * pc.electronVolt()) / mt) * 1.e-8;
   }
   for (auto &density : densities) {
-    density *= target.get_mass();
+    density *= mt;
   }
 
   // Initialize table bounds
@@ -226,9 +227,11 @@ std::vector<std::string> const Tabular_CP_Eloss::read_line() {
  * \param[in] temperature Material temperature [keV]
  * \param[in] density Material density [g cm^-3]
  * \param[in] partSpeed Particle speed [cm shk^-1]
+ * \param[in] debye_length Plasma Debye length [cm], unused
  */
 double Tabular_CP_Eloss::getEloss(const double temperature, const double density,
-                                  const double partSpeed) const {
+                                  const double partSpeed,
+                                  [[maybe_unused]] const double debye_length) const {
   if (temperature <= min_temperature || temperature >= max_temperature || density <= min_density ||
       density >= max_density || partSpeed <= min_energy || partSpeed >= max_energy) {
     // Outside of the table
@@ -263,7 +266,7 @@ double Tabular_CP_Eloss::getEloss(const double temperature, const double density
   const double dedx =
       exp(rtt_dsxx::interpolate::linear_3d(x0, x1, y0, y1, z0, z1, f000, f100, f001, f101, f010,
                                            f110, f011, f111, partSpeed, density, temperature));
-  const double number_density = density / target.get_mass();
+  const double number_density = density / mt;
   return dedx * 1000. * number_density * partSpeed; // MeV cm^2 -> keV shk^-1
 }
 
