@@ -13,7 +13,6 @@
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
 #include "dsxx/path.hh"
-#include "cdi/CPCommon.hh"
 #include "cdi_ndi/NDI_CP_Eloss.hh"
 #include <cmath>
 #include <fstream>
@@ -31,10 +30,8 @@ using rtt_cdi_ndi::NDI_CP_Eloss;
 void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
   int const proton_zaid = 1001;
   double const proton_mass = 1.6726219e-24;
-  rtt_cdi::CParticle const target(proton_zaid, proton_mass);
   int const alpha_zaid = 2004;
   double const alpha_mass = 6.64465723e-24;
-  rtt_cdi::CParticle const projectile(alpha_zaid, alpha_mass);
 
   // Write a custom gendir file to deal with NDI-required absolute path to data
   std::string const gendir_in = "gendir_tmp.dedx";
@@ -50,12 +47,13 @@ void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
 
   std::string const library_in = "rpa_cut";
 
-  NDI_CP_Eloss const eloss(gendir_path, library_in, target, projectile);
+  NDI_CP_Eloss const eloss(gendir_path, library_in, proton_zaid, proton_mass, alpha_zaid,
+                           alpha_mass);
 
   // Get eloss value for slightly above (E=1,rho=1,T=1) grid point.
   {
     double const speed = 0.0982085;
-    double const density = 0.00167264 / target.get_mass();
+    double const density = 0.00167264 / proton_mass;
     double const temperature = 0.0000100;
     // Exponentiate the table value (in log space) at (E=1,rho=1,T=1)
     double const base_val = exp(-4.857735E+01);
@@ -70,7 +68,7 @@ void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
   // Get eloss value for slightly above (E=2,rho=3,T=4) grid point
   {
     double const speed = 0.9820851;
-    double const density = 16.726301 / target.get_mass();
+    double const density = 16.726301 / proton_mass;
     double const temperature = 0.631000;
     // Exponentiate the table value (in log space) at (E=2,rho=3,T=4)
     double const base_val = exp(-5.549845e+01);
@@ -88,7 +86,7 @@ void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
     // Halfway between table points 1 and 2:
     double const speed = 0.5 * (0.0982085 + 0.982085);
     // Halfway between table points 2 and 3:
-    double const density = 0.5 * (0.167263 + 16.7263) / target.get_mass();
+    double const density = 0.5 * (0.167263 + 16.7263) / proton_mass;
     // Halfway between table points 3 and 4:
     double const temperature = 0.5 * (0.0158489 + 0.630957);
     // Exponentiate the interpolated table value

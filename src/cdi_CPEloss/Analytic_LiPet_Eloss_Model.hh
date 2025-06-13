@@ -10,63 +10,35 @@
 #ifndef rtt_cdi_CPEloss_Analytic_LiPet_Eloss_Model_hh
 #define rtt_cdi_CPEloss_Analytic_LiPet_Eloss_Model_hh
 
+#include "cdi_CPEloss/Analytic_Eloss_Model.hh"
 #include <cmath>
 #include <vector>
 
 namespace rtt_cdi_cpeloss {
 
-class Analytic_LiPet_Eloss_Model {
-  int incident_zaid_ = 0;
-  double incident_mass_ = 0.0; // kg
-  int incident_z_ = 0;
+class Analytic_LiPet_Eloss_Model : public Analytic_Eloss_Model {
 
 public:
   //! Constructor
-  Analytic_LiPet_Eloss_Model(const int zaid, const double mass)
-      : incident_zaid_(zaid), incident_mass_(mass) {
-    if (zaid == -1) {
-      incident_z_ = 1;
-    } else {
-      incident_z_ = (zaid - zaid % 1000) / 1000;
-    }
-  }
+  Analytic_LiPet_Eloss_Model(const int tzaid, const double tmass, const int pzaid,
+                             const double pmass) noexcept
+      : Analytic_Eloss_Model(tzaid, tmass, pzaid, pmass) {}
 
-  //! ZAID of incident particle
-  [[nodiscard]] int incident_zaid() const { return this->incident_zaid_; }
-
-  //! Mass of incident particle
-  [[nodiscard]] double incident_mass() const { return this->incident_mass_; }
-
-  //! z-number of incident particle
-  [[nodiscard]] int z_number() const { return this->incident_z_; }
-
-  //! Calculate the total eloss rate for some background composition
-  [[nodiscard]] double getEloss(const double incident_energy, const std::vector<int> &zaid_list,
-                                const std::vector<double> &number_densities,
-                                const std::vector<double> &temperatures,
-                                const std::vector<double> &masses) const;
-
-  //! Calculate the modified parameterization total eloss rate for some background composition
-  [[nodiscard]] double getElossMod(const double incident_energy, const std::vector<int> &zaid_list,
-                                   const std::vector<double> &number_densities,
-                                   const std::vector<double> &temperatures,
-                                   const std::vector<double> &masses) const;
+  //! This doesn't overload an Analytic_Eloss_Model function - it wraps an alternate version
+  //! of Li-Petrasso for comparison.
+  [[nodiscard]] double getElossMod(const double number_density, const double temperature,
+                                   const double incident_speed, const double debye_length) const;
 
 private:
-  //! Calculate the total debye length for some background composition
-  [[nodiscard]] double calculate_debye_length(const std::vector<int> &zaid_list,
-                                              const std::vector<double> &number_densities,
-                                              const std::vector<double> &temperatures) const;
-
   //! Calculate the stopping power for some target
-  [[nodiscard]] double calculate_eloss(const double incident_energy, const double number_density,
-                                       const double temperature, const double target_mass,
-                                       const double debye_length) const;
+  [[nodiscard]] double calculate_eloss(const double number_density, const double temperature,
+                                       const double incident_speed,
+                                       const double debye_length) const override;
 
   //! Calculate the modified Li-Petrasso stopping power
-  [[nodiscard]] double calculate_eloss_modified(const double incident_energy,
-                                                const double number_density,
-                                                const double temperature, const double target_mass,
+  [[nodiscard]] double calculate_eloss_modified(const double number_density,
+                                                const double temperature,
+                                                const double incident_speed,
                                                 const double debye_length) const;
 };
 
@@ -75,5 +47,5 @@ private:
 #endif // rtt_cdi_CPEloss_Analytic_LiPet_Eloss_Model_hh
 
 //------------------------------------------------------------------------------------------------//
-// End cdi_CPEloss/Analytic_Spitzer_Eloss_Model.hh
+// End cdi_CPEloss/Analytic_LiPet_Eloss_Model.hh
 //------------------------------------------------------------------------------------------------//

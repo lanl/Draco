@@ -32,7 +32,6 @@ public:
   using SP_Analytic_Model = std::shared_ptr<Analytic_Eloss_Model>;
   using sf_double = std::vector<double>;
   using std_string = std::string;
-  using CParticle = rtt_cdi::CParticle;
   using CPModelAngleCutoff = rtt_cdi::CPModelAngleCutoff;
 
 private:
@@ -44,8 +43,7 @@ private:
 
 public:
   // Constructor.
-  Analytic_CP_Eloss(SP_Analytic_Model model_in, CParticle target_in, CParticle projectile_in,
-                    CPModelAngleCutoff model_angle_cutoff_in);
+  Analytic_CP_Eloss(SP_Analytic_Model model_in, CPModelAngleCutoff model_angle_cutoff_in);
 
   // >>> ACCESSORS
   [[nodiscard]] const_SP_Model get_Analytic_Model() const { return analytic_model; }
@@ -53,9 +51,28 @@ public:
   // >>> INTERFACE SPECIFIED BY rtt_cdi::CPEloss
 
   // Get an eloss.
-  [[nodiscard]] double getEloss(const double temperature, const double ndensity,
-                                const double v0) const override;
+  [[nodiscard]] double getEloss(const double temperature, const double ndensity, const double v0,
+                                const double debye_length = 0.0) const override;
 
+  /*!
+   * \brief Get target zaid
+   */
+  [[nodiscard]] int targ_zaid() const override { return analytic_model->targ_zaid(); }
+
+  /*!
+   * \brief Get target mass
+   */
+  [[nodiscard]] double targ_mass() const override { return analytic_model->targ_mass(); }
+
+  /*!
+   * \brief Get projectile zaid
+   */
+  [[nodiscard]] int proj_zaid() const override { return analytic_model->proj_zaid(); }
+
+  /*!
+   * \brief Get projectile mass
+   */
+  [[nodiscard]] double proj_mass() const override { return analytic_model->proj_mass(); }
   //! Query to see if data is in tabular or functional form (false).
   constexpr static bool is_data_in_tabular_form() { return false; }
 

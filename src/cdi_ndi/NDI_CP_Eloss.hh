@@ -36,12 +36,12 @@ public:
 
 public:
   //! Constructor (default gendir path)
-  NDI_CP_Eloss(const std::string &library_in, rtt_cdi::CParticle target_in,
-               rtt_cdi::CParticle projectile_in);
+  NDI_CP_Eloss(const std::string &library_in, const int zaidt_, const double mt_, const int zaidp_,
+               const double mp_);
 
   //! Constructor (overridden gendir path)
-  NDI_CP_Eloss(const std::string &gendir_in, const std::string &library_in,
-               rtt_cdi::CParticle target_in, rtt_cdi::CParticle projectile_in);
+  NDI_CP_Eloss(const std::string &gendir_in, const std::string &library_in, const int zaidt_,
+               const double mt_, const int zaidp_, const double mp_);
 
   //! Default destructor
   ~NDI_CP_Eloss() override = default;
@@ -65,10 +65,30 @@ public:
 
   //! Get a stopping power.
   [[nodiscard]] double getEloss(const double temperature, const double density,
-                                const double partSpeed) const override;
+                                const double partSpeed,
+                                const double debye_length = 0.0) const override;
 
   //! Query to see if data is in tabular or functional form (true)
   static constexpr bool is_data_in_tabular_form() { return true; }
+  /*!
+   * \brief Get target zaid
+   */
+  [[nodiscard]] int targ_zaid() const override { return zaidt; }
+
+  /*!
+   * \brief Get target mass
+   */
+  [[nodiscard]] double targ_mass() const override { return mt; }
+
+  /*!
+   * \brief Get projectile zaid
+   */
+  [[nodiscard]] int proj_zaid() const override { return zaidp; }
+
+  /*!
+   * \brief Get projectile mass
+   */
+  [[nodiscard]] double proj_mass() const override { return mp; }
 
   //! Get the material temperature grid as log(T) with units [keV]
   [[nodiscard]] sf_double getTemperatureGrid() const override { return temperatures; }
@@ -103,20 +123,24 @@ private:
 #ifdef NDI_FOUND
   rtt_units::PhysicalConstexprs<rtt_units::CGS> pc; //!< Units
 #endif
+  int zaidt{0};
+  double mt{0.0};
+  int zaidp{0};
+  double mp{0.0};
 
   uint32_t n_energy{0};      //!< Number of gridpoints in projectile energy
   uint32_t n_density{0};     //!< Number of gridpoints in target density
   uint32_t n_temperature{0}; //!< Number of gridpoints in target temperature
 #ifdef NDI_FOUND
-  double d_log_energy{0.0};        //!< Log spacing of projectile energy gridpoints
-  double d_log_density{0.0};       //!< Log spacing of target density gridpoints
-  double d_log_temperature{0.0};   //!< Log spacing of target temperature gridpoints
-  double min_energy{0.0};          //!< Minimum target energy
-  double max_energy{0.0};          //!< Maximum target energy
-  double min_density{0.0};         //!< Minimum target density
-  double max_density{0.0};         //!< Maximum target density
-  double min_temperature{0.0};     //!< Minimum target temperature
-  double max_temperature{0.0};     //!< Maximum target temperature
+  double d_log_energy{0.0};      //!< Log spacing of projectile energy gridpoints
+  double d_log_density{0.0};     //!< Log spacing of target density gridpoints
+  double d_log_temperature{0.0}; //!< Log spacing of target temperature gridpoints
+  double min_energy{0.0};        //!< Minimum target energy
+  double max_energy{0.0};        //!< Maximum target energy
+  double min_density{0.0};       //!< Minimum target density
+  double max_density{0.0};       //!< Maximum target density
+  double min_temperature{0.0};   //!< Minimum target temperature
+  double max_temperature{0.0};   //!< Maximum target temperature
 #endif
   sf_double energies{};     //!< Vector of energy gridpoints
   sf_double densities{};    //!< Vector of density gridpoints

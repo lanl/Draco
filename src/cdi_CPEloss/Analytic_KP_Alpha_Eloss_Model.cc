@@ -24,11 +24,13 @@ namespace rtt_cdi_cpeloss {
  * \param T material temperature in keV
  * \param ndens number density in atoms/cm^3
  * \param v incident particle speed in cm/shk
+ * \param debye_length plasma Debye length (cm, unused) 
  * \return eloss stopping power in keV shk^-1
  *
  */
-double Analytic_KP_Alpha_Eloss_Model::calculate_eloss(const double T, const double ndens,
-                                                      const double v) const {
+double
+Analytic_KP_Alpha_Eloss_Model::calculate_eloss(const double T, const double ndens, const double v,
+                                               [[maybe_unused]] const double debye_length) const {
   Require(T >= 0.0);
   Require(ndens >= 0.0);
   Require(v >= 0.0);

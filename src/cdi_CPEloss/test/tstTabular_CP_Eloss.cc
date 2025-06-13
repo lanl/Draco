@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2019 Nov 18
  * \brief  Tabular_CP_Eloss test
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -28,14 +28,12 @@ void dedx_table_test(rtt_dsxx::UnitTest &ut) {
   // Deuterium target
   int const deuterium_zaid = 1002;
   double const deuterium_mass = 3.34447643e-24;
-  rtt_cdi::CParticle const target_in(deuterium_zaid, deuterium_mass);
   // Proton projectile
   int const proton_zaid = 1001;
   double const proton_mass = 1.6726219e-24;
-  rtt_cdi::CParticle const projectile_in(proton_zaid, proton_mass);
 
-  Tabular_CP_Eloss const eloss_mod(filename_in, target_in, projectile_in,
-                                   rtt_cdi::CPModelAngleCutoff::NONE);
+  Tabular_CP_Eloss const eloss_mod(deuterium_zaid, deuterium_mass, proton_zaid, proton_mass,
+                                   filename_in, rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Model type better be tabular:
   FAIL_IF_NOT(eloss_mod.getModelType() == rtt_cdi::CPModelType::TABULAR_ETYPE);

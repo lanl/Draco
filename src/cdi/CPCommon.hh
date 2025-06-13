@@ -11,9 +11,80 @@
 #define rtt_cdi_CPCommon_hh
 
 #include "dsxx/config.h" // defines [[nodiscard]]
+#include "units/MathConstants.hh"
+#include "units/PhysicalConstantsSI.hh"
 #include <cstdint>
+#include <vector>
 
 namespace rtt_cdi {
+
+//------------------------------------------------------------------------------------------------//
+/*! \brief Retrieve the charge for a given ZAID
+ *
+ * \param zaid ion ZAID
+ * \return absolute charge (aka "z number")
+ */
+static int get_z_number(int zaid) { return (zaid == -1) ? 1 : (zaid) / 1000; }
+//------------------------------------------------------------------------------------------------//
+/*! \brief Calculate the Debye length in [cm]
+ *
+ * lambda_D = sum( n * z^2 / kT )
+ *
+ * \param zaid_list list of ion ZAID's
+ * \param number_densities list of ion number densities in [1/cm^3]
+ * \param temperatures list of ion temperatures in [keV]
+ * \return Debye length in [cm]
+ */
+[[maybe_unused]] static double calculate_debye_length(const std::vector<int> &zaid_list,
+                                                      const std::vector<double> &number_densities,
+                                                      const std::vector<double> &temperatures) {
+
+  double debye_length = 0.0;
+  for (size_t i = 0; i < zaid_list.size(); ++i) {
+    // Skip isos with zero number density.
+    if (number_densities[i] > 0.0) {
+      int const z_number{get_z_number(zaid_list[i])};
+
+      // Density [cm^-3 -> m^-3]
+      double const density = number_densities[i] * 1.0e+6;
+
+      // Temperature [keV -> Kelvin]
+      double const temperature = temperatures[i] * rtt_units::EV2K * 1.0e+3;
+
+      debye_length += density * rtt_units::electronChargeSI * rtt_units::electronChargeSI *
+                      z_number * z_number / temperature;
+    }
+  }
+  // Includes m -> cm conversion
+  debye_length =
+      std::sqrt(rtt_units::permittivityOfFreeSpaceSI * rtt_units::boltzmannSI / debye_length) *
+      1.0e+2;
+
+  return debye_length;
+}
+//------------------------------------------------------------------------------------------------//
+/*! \brief Calculate the Debye length in [cm] for a single ion temperature
+ *         This version wraps the full species-specific-temperature call.
+ *
+ * lambda_D = sum( n * z^2 / kT )
+ *
+ * \param zaid_list list of ion ZAID's
+ * \param number_densities list of ion number densities in [1/cm^3]
+ * \param Ti ion temperature in [keV]
+ * \param Te electron temperature in [keV]
+ * \return Debye length in [cm]
+ */
+[[maybe_unused]] static double calculate_debye_length(const std::vector<int> &zaid_list,
+                                                      const std::vector<double> &number_densities,
+                                                      const double Ti, const double Te) {
+  // Set up temperature array:
+  std::vector<double> temperatures(zaid_list.size(), 0.0);
+  for (size_t z = 0; z < zaid_list.size(); z++) {
+    temperatures[z] = (zaid_list[z] == -1) ? Te : Ti;
+  }
+
+  return (calculate_debye_length(zaid_list, number_densities, temperatures));
+}
 
 namespace constants {
 //! Number of models contained in rtt_cdi::CPModel.
@@ -33,29 +104,6 @@ enum class CPModelType {
   UNASSIGNED_ETYPE = 0, /*!< unassigned type; used as a placeholder before deciding type */
   ANALYTIC_ETYPE = 1,   /*!< an Analytic eloss model */
   TABULAR_ETYPE = 2     /*!< a Tabular eloss model */
-};
-
-// Basic data required to describe a charged particle
-class CParticle {
-private:
-  int32_t zaid;
-  double mass;
-
-public:
-  [[nodiscard]] int32_t get_zaid() const { return zaid; }
-  [[nodiscard]] int32_t get_z() const {
-    if (zaid != -1) {
-      // Integer division to extract the ZZZ from ZAID format ZZZAAA
-      return zaid / 1000;
-    } else {
-      // Electrons have special ZAID = -1
-      return -1;
-    }
-  }
-  [[nodiscard]] int32_t get_a() const { return zaid % 1000; }
-  [[nodiscard]] double get_mass() const { return mass; }
-
-  CParticle(const int32_t zaid_in, const double mass_in) : zaid(zaid_in), mass(mass_in) {}
 };
 
 } // namespace rtt_cdi
