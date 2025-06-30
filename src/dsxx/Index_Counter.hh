@@ -69,8 +69,17 @@ public:
 
   // Accessors for the N-indices
   [[nodiscard]] int get_index(unsigned d) const {
+// gcc RWDI builds erroneously flag these lines as accessing array subscript 3.
+// We simply suppress the array-bounds warning here.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
     Check(dimension_okay(d));
     return indices[d];
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
   }
 
   [[nodiscard]] std::vector<int> get_indices() const {
