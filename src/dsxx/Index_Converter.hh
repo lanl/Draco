@@ -205,11 +205,18 @@ int Index_Converter<D, OFFSET>::get_single_index(int index, unsigned dimension) 
 
   Check(Base::index_in_range(index));
   Check(Base::dimension_okay(dimension));
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
 
   index -= OFFSET;
   index /= this->sub_sizes[dimension];
 
   return index % Base::get_size(dimension) + OFFSET;
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -249,6 +256,13 @@ int Index_Converter<D, OFFSET>::get_next_index(int index, int direction) const {
 template <unsigned D, int OFFSET>
 int Index_Converter<D, OFFSET>::get_next_index(
     const typename Index_Converter<D, OFFSET>::Counter &counter, int direction) const {
+
+  //suspect a compiler optimization bug that is tripping a warning in gcc13
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
   --direction;
 
   unsigned const dimension = direction / 2;
@@ -261,6 +275,10 @@ int Index_Converter<D, OFFSET>::get_next_index(
     return -1;
 
   return index + sign * sub_sizes[dimension];
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 }
 
 //------------------------------------------------------------------------------------------------//
