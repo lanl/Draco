@@ -96,6 +96,11 @@ query_have_sys_headers() #< sets HAVE_UNISTD_H, etc.
 query_fma_on_hardware()
 provide_ctest_resources_spec() # creates ctest_resource_spec.json in the build dir.
 
+# Set a CMake policy that pops up for cmake/3.30+: CMP0167: suppresses a warning about
+# find_package(Boost), used in vendor library avalanche. Modern CMake logic should replace
+# find_package(Boost) with find_package(Boost CONFIG).
+cmake_policy(SET CMP0167 OLD)
+
 # Find any globally required libraries
 include(FeatureSummary)
 include(vendor_libraries)
