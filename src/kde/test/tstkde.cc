@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Nov. 10th 2020
  * \brief  KDE function tests
- * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -29,6 +29,46 @@ using namespace rtt_kde;
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
+void test_epan_kernel(ParallelUnitTest &ut) {
+  kde const test_kde;
+
+  // Test inside the unit circle
+  {
+    double result = test_kde.epan_kernel(0.0);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(result, 0.75, 1.0e-12));
+
+    result = test_kde.epan_kernel(0.5);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(result, 0.5625, 1.0e-12));
+
+    result = test_kde.epan_kernel(-0.8);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(result, 0.27, 1.0e-12));
+  }
+
+  // Test at the boundary of the unit circle
+  {
+    double result = test_kde.epan_kernel(1.0);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(result, 0.0, 1.0e-12));
+
+    result = test_kde.epan_kernel(-1.0);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(result, 0.0, 1.0e-12));
+  }
+
+  // Test outside the unit circle
+  {
+    double result = test_kde.epan_kernel(1.5);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(result, 0.0, 1.0e-12));
+
+    result = test_kde.epan_kernel(-2.0);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(result, 0.0, 1.0e-12));
+  }
+
+  if (ut.numFails == 0) {
+    PASSMSG("epan_kernel test passed");
+  } else {
+    FAILMSG("epan_kernel test failed");
+  }
+}
+
 //
 void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
   kde const test_kde;
@@ -3038,6 +3078,7 @@ int main(int argc, char *argv[]) {
   ParallelUnitTest ut(argc, argv, release);
   try {
     // >>> UNIT TESTS
+    test_epan_kernel(ut);
     test_replication(ut);
     if (nodes() == 3)
       test_decomposition(ut);
