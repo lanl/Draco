@@ -4,16 +4,16 @@
  * \author Mathew Cleveland
  * \date   Feb. 16th 2022
  * \brief  Simple draco neural network class implementation
- * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "draco_nn.hh"
 #include "dsxx/Assert.hh"
-#include "dsxx/FMA.hh"
 #include <algorithm>
 #include <array>
 #include <cstddef>
 #include <fstream>
+#include <numeric>
 #include <string>
 #include <utility>
 #include <vector>
@@ -103,9 +103,8 @@ std::vector<float> draco_nn::predict(std::vector<float> &signal, const size_t Re
       for (auto &weight : weights[n]) {
         result[r] = bias[n][b];
         for (size_t j = 0; j < weight.size(); j++)
-          result[r] = FMAF(weight[j], input[si + j], result[r]);
-        //result[r] =
-        //    std::inner_product(weight.begin(), weight.end(), input.begin() + si, bias[n][b]);
+          result[r] =
+              std::inner_product(weight.begin(), weight.end(), input.begin() + si, bias[n][b]);
         b++;
         r++;
       }

@@ -216,19 +216,19 @@ targets are installed." FORCE)
   # Special FMA modes - roundoff controls
   # -------------------------------------------------------------------------------------------- #
   if(NOT DEFINED DRACO_ROUNDOFF_MODE)
-    set(DRACO_ROUNDOFF_MODE "NOFMA") # default value- no hardware FMA
+    set(DRACO_ROUNDOFF_MODE "NOFMA") # default value- force hardware FMA off
   endif()
   set(DRACO_ROUNDOFF_MODE
       "${DRACO_ROUNDOFF_MODE}"
-      CACHE STRING "Roundoff Mode { ACCURATE AUTOSELECT FAST NOFMA }")
-  set_property(CACHE DRACO_ROUNDOFF_MODE PROPERTY STRINGS "ACCURATE" "AUTOSELECT" "FAST" "NOFMA")
+      CACHE STRING "Roundoff Mode { FAST NOFMA }")
+  set_property(CACHE DRACO_ROUNDOFF_MODE PROPERTY STRINGS "FAST" "NOFMA")
   if("${DRACO_ROUNDOFF_MODE}" STREQUAL "FAST")
-    set(FMA_NEVER_SOFTWARE TRUE)
-  elseif("${DRACO_ROUNDOFF_MODE}" STREQUAL "ACCURATE")
-    set(FMA_ALWAYS_SOFTWARE TRUE)
+    # Is there something to do here? Maybe not.
   elseif("${DRACO_ROUNDOFF_MODE}" STREQUAL "NOFMA")
     # This mode disables use of hardware FMA entirely (compiler flag).
     set(FMA_NEVER_HARDWARE TRUE)
+  else() # Throw an error - FAST and NOFMA are the only valid options now.
+    message(FATAL_ERROR "DRACO_ROUNDOFF_MODE must be set to FAST or NOFMA.")
   endif()
 
 endmacro()
