@@ -16,7 +16,6 @@
 #include "GrayOpacity.hh"
 #include "MultigroupOpacity.hh"
 #include "dsxx/Constexpr_Functions.hh"
-#include "dsxx/FMA.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "device/config.h"
 #include <algorithm>
