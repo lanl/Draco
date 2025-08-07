@@ -211,8 +211,7 @@ case ${-} in
        alias salloc='salloc --x11' ;;
    esac
 
-   if test -n "${verbose}"; then echo "done with draco/environment/bashrc/bashrc_slurm"; fi
-
+   [[ "${verbose}" == "true" ]] && echo "in draco/environment/bashrc/bashrc_slurm ... done"
    ;; # end case 'interactive'
 
 ##------------------------------------------------------------------------------------------------##
