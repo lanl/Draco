@@ -3,7 +3,7 @@
 # author Ryan Wollaeger <wollaeger@lanl.gov>
 # date   Thursday, Jun 07, 2018, 15:44 pm
 # brief  Generate build project files for mesh/test.
-# note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2018-2025 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(mesh_test CXX)
 
@@ -30,7 +30,7 @@ set(one_pe_tests
 set(two_pe_tests
     ${PROJECT_SOURCE_DIR}/tstDraco_Mesh_DD.cc ${PROJECT_SOURCE_DIR}/tstTopology.cc
     ${PROJECT_SOURCE_DIR}/tstTopology_Builder.cc ${PROJECT_SOURCE_DIR}/tstComm_Patterns.cc
-    ${PROJECT_SOURCE_DIR}/tstParallel_Data_Op.cc)
+    ${PROJECT_SOURCE_DIR}/tstParallel_Data_Op.cc ${PROJECT_SOURCE_DIR}/tstDraco_Mesh_Splitter.cc)
 set(two_pe_only_tests ${PROJECT_SOURCE_DIR}/tstCAMR_Mesh_DD.cc)
 
 # ------------------------------------------------------------------------------------------------ #
