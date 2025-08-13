@@ -277,7 +277,8 @@ double NDI_CP_Eloss::getEloss(const double temperature, const double density,
  * \param[in] mp_ projectile mass (g)
  */
 NDI_CP_Eloss::NDI_CP_Eloss(const std::string &gendir_in, const std::string &library_in,
-                           const int zaidt_, const double mt_, const int zaidp_, const double mp_)
+                           const int /*zaidt_*/, const double /*mt_*/, const int /*zaidp_*/,
+                           const double /*mp_*/)
     : rtt_cdi::CPEloss(rtt_cdi::CPModelType::TABULAR_ETYPE, rtt_cdi::CPModelAngleCutoff::NONE),
       NDI_Base(gendir_in, "dedx", library_in) {}
 /*!
@@ -289,8 +290,8 @@ NDI_CP_Eloss::NDI_CP_Eloss(const std::string &gendir_in, const std::string &libr
  * \param[in] zaidp_ projectile ZAID
  * \param[in] mp_ projectile mass (g)
  */
-NDI_CP_Eloss::NDI_CP_Eloss(const std::string &library_in, const int zaidt_, const double mt_,
-                           const int zaidp_, const double mp_)
+NDI_CP_Eloss::NDI_CP_Eloss(const std::string &library_in, const int /*zaidt_*/,
+                           const double /*mt_*/, const int /*zaidp_*/, const double /*mp_*/)
     : rtt_cdi::CPEloss(rtt_cdi::CPModelType::TABULAR_ETYPE, rtt_cdi::CPModelAngleCutoff::NONE),
       NDI_Base("dedx", library_in) {}
 
