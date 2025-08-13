@@ -3,13 +3,42 @@
 # file  src/mesh/python/mesh_types.py
 # date  Monday, Jul 19, 2021, 12:14 pm
 # brief This script provides mesh classes that calculate and contain unstructred mesh data.
-# note  Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
+# note  Copyright (C) 2021-2025 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import numpy as np
+import math
+import copy
 
+
+def reorder_vertices_counter_clockwise(vertices):
+    """
+    Reorders a set of vertices that define an arbitrary polygon in a counter-clockwise rotation.
+
+    Args:
+        vertices (list): A list of (x, y) tuples representing the vertices of the polygon.
+
+    Returns:
+        list: The reordered list of vertices in a counter-clockwise rotation.
+        list: The index array that corresponds to the reordered vertices.
+    """
+    # Calculate the centroid of the polygon
+    x_sum = sum(x for x, y in vertices)
+    y_sum = sum(y for x, y in vertices)
+    centroid = (x_sum / len(vertices), y_sum / len(vertices))
+
+    # Sort the vertices by their angle relative to the centroid
+    sorted_vertices = sorted(enumerate(vertices), key=lambda v: math.atan2(
+        v[1][1] - centroid[1], v[1][0] - centroid[0]))
+
+    # Extract the reordered vertices and their indices
+    reordered_indices = [index for index, _ in sorted_vertices]
+
+    return centroid, reordered_indices
 
 # ------------------------------------------------------------------------------------------------ #
 # base class (to show required member data)
+
+
 class base_mesh:
     '''
     Base class with data required by mesh file generators.
@@ -132,7 +161,7 @@ class orth_2d_mesh(base_mesh):
         # -- set total number of cells and faces
         num_cells_original = nx * ny
         self.num_cells = num_cells_original + len(triangularize_list)
-        self.num_faces = 4 * num_cells_original + 2*len(triangularize_list)
+        self.num_faces = 4 * num_cells_original + 2 * len(triangularize_list)
 
         # -- constants for this mesh
         self.num_faces_per_cell = 4 * np.ones((self.num_cells), dtype=int)
@@ -144,7 +173,7 @@ class orth_2d_mesh(base_mesh):
                 self.num_faces_per_cell[cell] = 3
 
         # -- set nodes per face and faces per cell for original cell list
-        self.faces_per_cell = [[]]*self.num_cells
+        self.faces_per_cell = [[]] * self.num_cells
         self.nodes_per_face = np.zeros((self.num_faces, 2), dtype=int)
         face_count = 0
         for j in range(ny):
@@ -184,9 +213,9 @@ class orth_2d_mesh(base_mesh):
 
         # -- Complete triangularization
         for extra_tri_i, tri_cell in enumerate(triangularize_list):
-            j = int(np.floor(tri_cell/nx))
-            i = tri_cell - nx*j
-            cell = num_cells_original+extra_tri_i
+            j = int(np.floor(tri_cell / nx))
+            i = tri_cell - nx * j
+            cell = num_cells_original + extra_tri_i
             self.faces_per_cell[cell] = [0, 0, 0]
             self.faces_per_cell[cell][0] = face_count
             self.faces_per_cell[cell][1] = face_count + 1
@@ -954,26 +983,26 @@ class vor_2d_mesh(base_mesh):
             v1 = vertices[verts[0]]
             v2 = vertices[verts[1]]
             # -- bottom left
-            if (soft_equiv(v1[0], xmin) or soft_equiv(v2[0], xmin)) and \
-               (soft_equiv(v1[1], ymin) or soft_equiv(v2[1], ymin)):
+            if (soft_equiv(v1[0], xmin, 1e-6) or soft_equiv(v2[0], xmin, 1e-6)) and \
+               (soft_equiv(v1[1], ymin, 1e-6) or soft_equiv(v2[1], ymin, 1e-6)):
                 vertices.append([xmin, ymin])
                 ridge_vertices.append([verts[0], len(vertices) - 1])
                 ridge_vertices.append([verts[1], len(vertices) - 1])
             # -- top left
-            elif (soft_equiv(v1[0], xmin) or soft_equiv(v2[0], xmin)) and \
-                 (soft_equiv(v1[1], ymax) or soft_equiv(v2[1], ymax)):
+            elif (soft_equiv(v1[0], xmin, 1e-6) or soft_equiv(v2[0], xmin, 1e-6)) and \
+                 (soft_equiv(v1[1], ymax, 1e-6) or soft_equiv(v2[1], ymax, 1e-6)):
                 vertices.append([xmin, ymax])
                 ridge_vertices.append([verts[0], len(vertices) - 1])
                 ridge_vertices.append([verts[1], len(vertices) - 1])
             # -- bottom right
-            elif (soft_equiv(v1[0], xmax) or soft_equiv(v2[0], xmax)) and \
-                 (soft_equiv(v1[1], ymin) or soft_equiv(v2[1], ymin)):
+            elif (soft_equiv(v1[0], xmax, 1e-6) or soft_equiv(v2[0], xmax, 1e-6)) and \
+                 (soft_equiv(v1[1], ymin, 1e-6) or soft_equiv(v2[1], ymin, 1e-6)):
                 vertices.append([xmax, ymin])
                 ridge_vertices.append([verts[0], len(vertices) - 1])
                 ridge_vertices.append([verts[1], len(vertices) - 1])
             # -- top right
-            elif (soft_equiv(v1[0], xmax) or soft_equiv(v2[0], xmax)) and \
-                 (soft_equiv(v1[1], ymax) or soft_equiv(v2[1], ymax)):
+            elif (soft_equiv(v1[0], xmax, 1e-6) or soft_equiv(v2[0], xmax, 1e-6)) and \
+                 (soft_equiv(v1[1], ymax, 1e-6) or soft_equiv(v2[1], ymax, 1e-6)):
                 vertices.append([xmax, ymax])
                 ridge_vertices.append([verts[0], len(vertices) - 1])
                 ridge_vertices.append([verts[1], len(vertices) - 1])
@@ -1032,6 +1061,24 @@ class vor_2d_mesh(base_mesh):
         self.faces_per_cell = new_cells
         self.nodes_per_face = new_faces
 
+        # -- Sort face/node ordering to be counter-clockwise
+        sorted_nodes_per_face = copy.deepcopy(self.nodes_per_face)
+        for faces in self.faces_per_cell:
+            node_list = []
+            for face in faces:
+                for n in self.nodes_per_face[face]:
+                    node_list.append(n)
+            node_list = list(set(node_list))
+            verts = [vertices[n] for n in node_list]
+            centroid, order = reorder_vertices_counter_clockwise(verts)
+            sorted_node_list = [node_list[n] for n in order]
+            for n, face in enumerate(faces):
+                sorted_nodes_per_face[face] = [sorted_node_list[n],
+                                               sorted_node_list[n + 1
+                                                                if n < len(sorted_node_list) - 1
+                                                                else 0]]
+        self.nodes_per_face = sorted_nodes_per_face
+
         # -- write boundaries for new faces
         boundary_edges = {}
         boundary_edges['xl'] = []
@@ -1049,17 +1096,17 @@ class vor_2d_mesh(base_mesh):
             distances = np.sort(distances)
             if not soft_equiv(distances[0], distances[1]):
                 # -- a boundary
-                if (soft_equiv(vertices[v_indices[0]][0], xmin) and
-                        soft_equiv(vertices[v_indices[1]][0], xmin)):
+                if (soft_equiv(vertices[v_indices[0]][0], xmin, 1e-6) and
+                        soft_equiv(vertices[v_indices[1]][0], xmin, 1e-6)):
                     boundary_edges['xl'].append(face_idx)
-                elif (soft_equiv(vertices[v_indices[0]][0], xmax) and
-                      soft_equiv(vertices[v_indices[1]][0], xmax)):
+                elif (soft_equiv(vertices[v_indices[0]][0], xmax, 1e-6) and
+                      soft_equiv(vertices[v_indices[1]][0], xmax, 1e-6)):
                     boundary_edges['xr'].append(face_idx)
-                elif (soft_equiv(vertices[v_indices[0]][1], ymin) and
-                      soft_equiv(vertices[v_indices[1]][1], ymin)):
+                elif (soft_equiv(vertices[v_indices[0]][1], ymin, 1e-6) and
+                      soft_equiv(vertices[v_indices[1]][1], ymin, 1e-6)):
                     boundary_edges['yl'].append(face_idx)
-                elif (soft_equiv(vertices[v_indices[0]][1], ymax) and
-                      soft_equiv(vertices[v_indices[1]][1], ymax)):
+                elif (soft_equiv(vertices[v_indices[0]][1], ymax, 1e-6) and
+                      soft_equiv(vertices[v_indices[1]][1], ymax, 1e-6)):
                     boundary_edges['yr'].append(face_idx)
                 else:
                     assert (False), 'Boundary edge not identified'
