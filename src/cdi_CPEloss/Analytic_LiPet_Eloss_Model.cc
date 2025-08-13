@@ -27,18 +27,24 @@ namespace rtt_cdi_cpeloss {
  * This wraps calculate_eloss_modified() in a way that looks similar to the Analytic_CP_Eloss
  * getEloss() call. It's currently implemented for comparison purposes.
  *
- * \param ndensity number density of target in [cm^-3]
- * \param temperature temperature of target particle in [keV]
- * \param v0 incident speed in [cm/shk]
- * \param debye_length material Debye length in [cm]
+ * \param temperature_in temperature of target particle in [keV]
+ * \param number_density_in number density of target in [cm^-3]
+ * \param incident_speed_in incident speed in [cm/shk]
+ * \param debye_length_in material Debye length in [cm]
+ * \param edward_relative_velocity for more information, see Li-Petrasso write-up by E. Norris
  * \return stopping power in [keV/shk]
  */
-double Analytic_LiPet_Eloss_Model::getElossMod(const double temperature, const double ndensity,
-                                               const double v0, const double debye_length) const {
-  Require(v0 >= 0.0);
+double Analytic_LiPet_Eloss_Model::getElossMod(const double temperature_in,
+                                               const double number_density_in,
+                                               const double incident_speed_in,
+                                               const double debye_length_in,
+                                               const bool edward_relative_velocity) const {
+  Require(incident_speed_in >= 0.0);
 
   // define return eloss
-  double const eloss = calculate_eloss_modified(temperature, ndensity, v0, debye_length);
+  double const eloss =
+      calculate_eloss_modified(temperature_in, number_density_in, incident_speed_in,
+                               debye_length_in, edward_relative_velocity);
 
   Ensure(eloss >= 0.0);
   return eloss;
@@ -68,6 +74,7 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss(const double temperature_in,
 
   // Get z number:
   const double incident_z{static_cast<double>(rtt_cdi::get_z_number(zaidp))};
+  const double target_z{static_cast<double>(rtt_cdi::get_z_number(zaidt))};
 
   // Convert speed
   double const incident_speed = incident_speed_in * 1.0e+8 * 1.0e-2; // [cm/shk -> m/s]
@@ -79,18 +86,21 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss(const double temperature_in,
   // Compute Coulomb log
   double const mr = incident_mass * target_mass / (incident_mass + target_mass);
   double const speed2 = std::pow(incident_speed, 2);
+
   double const u_rel =
       sqrt(speed2) + sqrt(2.0 * rtt_units::boltzmannSI * temperature / target_mass);
+
   double const t12 = std::pow(rtt_units::h_barSI / (2.0 * mr * u_rel), 2);
   double const p_perp = std::pow(
-      incident_z * rtt_units::electronChargeSI * rtt_units::electronChargeSI /
+      incident_z * target_z * rtt_units::electronChargeSI * rtt_units::electronChargeSI /
           (4.0 * rtt_units::PI * rtt_units::permittivityOfFreeSpaceSI * mr * u_rel * u_rel),
       2);
   double const p_min = std::sqrt(p_perp + t12);
   double const lambda_D = debye_length / p_min;
   double const coulomb_log = 0.5 * std::log(1.0 + lambda_D * lambda_D);
 
-  double const omega2 = number_density * rtt_units::electronChargeSI * rtt_units::electronChargeSI /
+  double const omega2 = number_density * std::pow(target_z, 2) *
+                        std::pow(rtt_units::electronChargeSI, 2) /
                         (target_mass * rtt_units::permittivityOfFreeSpaceSI);
 
   double const x = speed2 * target_mass / (2.0 * rtt_units::boltzmannSI * temperature);
@@ -130,13 +140,13 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss(const double temperature_in,
  * \param number_density_in number density of target in [cm^-3]
  * \param incident_speed_in incident speed in [cm/shk]
  * \param debye_length_in material Debye length in [cm]
+ * \param edward_relative_velocity for more information, see Li-Petrasso write-up by E. Norris
  * \return stopping power in [keV/shk]
  */
 #ifdef GSL_FOUND
-double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(const double temperature_in,
-                                                            const double number_density_in,
-                                                            const double incident_speed_in,
-                                                            const double debye_length_in) const {
+double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
+    const double temperature_in, const double number_density_in, const double incident_speed_in,
+    const double debye_length_in, const bool edward_relative_velocity) const {
   // Convert number density, temperature, debye
   double const number_density = number_density_in * 1.0e+6;             // [cm^-3 -> m^-3]
   double const temperature = temperature_in * rtt_units::EV2K * 1.0e+3; // [keV -> K]
@@ -144,6 +154,7 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(const double tempera
 
   // Get z number:
   const double incident_z{static_cast<double>(rtt_cdi::get_z_number(zaidp))};
+  const double target_z{static_cast<double>(rtt_cdi::get_z_number(zaidt))};
 
   // Convert speed
   double const incident_speed = incident_speed_in * 1.0e+8 * 1.0e-2; // [cm/shk -> m/s]
@@ -168,7 +179,17 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(const double tempera
   // Compute Coulomb log
   double const mr = incident_mass * target_mass / (incident_mass + target_mass);
   double const speed2 = std::pow(incident_speed, 2);
-  double const u_rel = sqrt(speed2) + sqrt(2.0 * rtt_units::boltzmannSI * T_eff / target_mass);
+
+  // Compute relative velocity
+  double u_rel = 0.0;
+  if (edward_relative_velocity) {
+    u_rel = sqrt(speed2) + sqrt(2.0 * rtt_units::boltzmannSI * temperature / target_mass);
+  } else {
+    u_rel = std::sqrt(
+        speed2 +
+        std::pow(8.0 * rtt_units::boltzmannSI * temperature / (rtt_units::PI * target_mass), 2));
+  }
+
   double const t12 = std::pow(rtt_units::h_barSI / (2.0 * mr * u_rel), 2);
   double const p_perp = std::pow(
       incident_z * rtt_units::electronChargeSI * rtt_units::electronChargeSI /
@@ -178,7 +199,8 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(const double tempera
   double const lambda_D = debye_length / p_min;
   double const coulomb_log = 0.5 * std::log(1.0 + lambda_D * lambda_D);
 
-  double const omega2 = number_density * rtt_units::electronChargeSI * rtt_units::electronChargeSI /
+  double const omega2 = number_density * std::pow(rtt_units::electronChargeSI, 2) *
+                        std::pow(target_z, 2) /
                         (target_mass * rtt_units::permittivityOfFreeSpaceSI);
 
   double const x = speed2 * target_mass / (2.0 * rtt_units::boltzmannSI * T_eff);
@@ -206,7 +228,7 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(const double tempera
 }
 #else
 double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
-    [[maybe_unused]] const double number_density_in, [[maybe_unused]] const double temperature_in,
+    [[maybe_unused]] const double temperature_in, [[maybe_unused]] const double number_density_in,
     [[maybe_unused]] const double incident_speed_in,
     [[maybe_unused]] const double debye_length_in) const {
   Insist(false, "Analytic_LiPet_Eloss_Model::calculate_eloss_modified requires GSL!");

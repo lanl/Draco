@@ -15,6 +15,7 @@ set(test_sources tstCPT_Collision_Source.cc)
 # ------------------------------------------------------------------------------------------------ #
 # Build Unit tests
 # ------------------------------------------------------------------------------------------------ #
+
 if(TARGET shacl::physics)
   add_scalar_tests(SOURCES "${test_sources}" DEPS "Lib_cdi_cpt;avalanche::avalanche_test_resources")
 endif()
