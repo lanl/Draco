@@ -263,6 +263,18 @@ void test_2D_amr_host(rtt_c4::ParallelUnitTest &ut) {
 --   * // ------------------
 --   * ////////////////////
 --   *
+--   * global active id.
+--   * // ------------------
+--   * // |       | 3  | 1 |
+--   * // |       |--------|
+--   * // | 6     | 7  | 2 |
+--   * // ------------------
+--   * // |       |        |
+--   * // |       |        |
+--   * // | 4     | 5      |
+--   * // ------------------
+--   * ////////////////////
+
 -- mesh sizes
 --NOTE about cell_across_face indexing
 --We assume (in 2D ordering of  mesh.next_cells() to be (lower, upper)
@@ -307,10 +319,12 @@ void test_2D_amr_host(rtt_c4::ParallelUnitTest &ut) {
   std::vector<int> bnd_procs;
 
   if (rtt_c4::node() == 0) {
-    full2active.resize(3);
+    full2active.resize(4);
     full2active[0] = 1;
     full2active[1] = 2;
     full2active[2] = 3;
+    full2active[3] = -1;
+
     active2full.resize(3);
     active2full[0] = 1;
     active2full[1] = 2;
@@ -411,6 +425,21 @@ void test_2D_amr_host(rtt_c4::ParallelUnitTest &ut) {
 
   FAIL_IF(mesh.get_topology()->num_cells() != 7);
   FAIL_IF(!mesh.get_comm_patterns());
+
+  // check active global id list
+  std::vector<int> global_active_id = mesh.get_global_active_id();
+
+  if (rtt_c4::node() == 0) {
+    FAIL_IF_NOT(global_active_id.size() == 6);
+    FAIL_IF_NOT(global_active_id[0] == 1);
+    FAIL_IF_NOT(global_active_id[3] == 7);
+    FAIL_IF_NOT(global_active_id[5] == 6);
+  } else {
+    FAIL_IF_NOT(global_active_id.size() == 6);
+    FAIL_IF_NOT(global_active_id[0] == 4);
+    FAIL_IF_NOT(global_active_id[3] == 7);
+    FAIL_IF_NOT(global_active_id[5] == 3);
+  }
 
   if (ut.numFails == 0) {
     if (rtt_c4::node() == 0)

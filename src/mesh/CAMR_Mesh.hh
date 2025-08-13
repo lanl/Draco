@@ -21,8 +21,8 @@
 #include <array>
 #include <cfloat>
 #include <cmath>
+#include <numeric>
 #include <sstream>
-
 // cSpell:ignore topo, nfine, LCOV
 
 namespace rtt_mesh {
@@ -125,6 +125,8 @@ public:
   [[nodiscard]] sf_int get_bnd_procs() const { return bnd_procs; }
   [[nodiscard]] sf_int get_active2full() const { return active2full; }
   [[nodiscard]] sf_int get_full2active() const { return full2active; }
+
+  [[nodiscard]] sf_int get_global_active_id() const { return global_active_id; }
 
   [[nodiscard]] inline bool is_refined(int const cell, uint32_t const face) const;
   [[nodiscard]] inline int is_coarse(int const cell, uint32_t const face) const;
@@ -264,6 +266,8 @@ private:
   sf_int active2full;
   sf_int full2active;
 
+  sf_int global_active_id;
+
   SP_Topology topology_;
   SP_Comm_Patterns comm_patterns_;
 };
@@ -273,42 +277,6 @@ private:
 //------------------------------------------------------------------------------------------------//
 //replacing rtt_tracking::U3.
 using U3 = std::array<double, 3>;
-
-//------------------------------------------------------------------------------------------------//
-//! Private function which handles the operations common to all constructors.
-template <int D>
-template <typename I_IT, typename D_IT>
-void CAMR_Mesh<D>::constructor_body(I_IT level_data, D_IT vertex_data) {
-
-  // Copy the argument data into member data:
-  levels.assign(level_data, level_data + active_size);
-  vertices.assign(vertex_data, vertex_data + vertices_size);
-
-  build_widths();
-
-  compute_total_volume();
-
-  // this create MPI communication pattern.
-  Topology_Builder topo_builder(decomposition, num_global_cells, bnd_cells.size(), bnd_cells.data(),
-                                bnd_procs.data(), full_size, active_size, full2active.data());
-
-  SP_Topology const topo_ = topo_builder.build_Topology();
-  topology_ = topo_;
-
-  SP_Comm_Patterns comm_pat_;
-  // Make the communications patterns
-  comm_pat_ = std::make_shared<rtt_mesh::Comm_Patterns>();
-  comm_pat_->calc_patterns(topo_);
-  comm_patterns_ = comm_pat_;
-
-  // to identify ghost level and AMR configuration, we need to exchange level and vertex.
-  std::shared_ptr<rtt_mesh::Parallel_Data_Operator> par_op_;
-  par_op_ = std::make_shared<rtt_mesh::Parallel_Data_Operator>(topo_);
-  par_op_->fill_ghost_cell_data(comm_pat_, levels);
-
-  par_op_->fill_ghost_cell_data(comm_pat_, vertices, D);
-}
-
 //------------------------------------------------------------------------------------------------//
 //! Private function which handles the operations common to all constructors.
 template <int D>
@@ -346,6 +314,16 @@ void CAMR_Mesh<D>::constructor_body(I_IT level_data, D_IT vertex_data, I_IT neig
   par_op_->fill_ghost_cell_data(comm_pat_, vertices, D);
 
   par_op_->fill_ghost_cell_data(comm_pat_, neighbor_count, 2 * D);
+
+  // fill out active global_id for ghost cells.
+  // create active global id array.
+  size_t active_offset = 0;
+  if (topology_->get_parallel_scheme() == "DD")
+    active_offset = topology_->get_global_offset(rtt_c4::node());
+  global_active_id.resize(active_size);
+  std::iota(global_active_id.begin(), global_active_id.end(), int(active_offset) + 1);
+
+  par_op_->fill_ghost_cell_data(comm_pat_, global_active_id);
 }
 //------------------------------------------------------------------------------------------------//
 /**
