@@ -113,8 +113,6 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
   // get the number of nodes
   size_t const num_nodes = reader->get_numnodes();
 
-  Check(num_nodes >= num_cells);
-
   // generate the global node number serialized vector of coordinates
   global_node_number.resize(num_nodes);
   coordinates.resize(dimension * num_nodes);

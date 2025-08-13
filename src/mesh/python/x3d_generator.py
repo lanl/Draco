@@ -3,7 +3,7 @@
 # file  src/mesh/python/x3d_generator.py
 # date  Monday, Jul 19, 2021, 12:14 pm
 # brief This script generates X3D mesh files from a mesh object (assumed to have certain data).
-# note  Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
+# note  Copyright (C) 2021-2025 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 import mesh_types
 import numpy as np
@@ -215,10 +215,11 @@ for cell in range(mesh.num_cells):
         # -- get the number of nodes for this face
         nnpf = mesh.num_nodes_per_face[face]
         # -- build face string
-        face_str = '{0:10d}{1:10d}'.format(face + 1, nnpf)
+        face_str = '{0:10d}{1:10d}'.format(face+1, nnpf)
         # -- append node indices to face string
         for node in mesh.nodes_per_face[face]:
             face_str += '{0:10d}'.format(node + 1)
+
         # -- write face line
         fo.write(face_str + '\n')
 fo.write('end_faces\n')
