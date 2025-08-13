@@ -31,10 +31,11 @@ public:
                                const double mp_) noexcept
       : Analytic_Eloss_Model(zaidt_, mt_, zaidp_, mp_) {}
 
-  //! Calculate the eloss rate in units of shk^-1; T given in keV, ndens in a/cc, v0 in cm/shk,
+  //! Calculate the eloss rate in units of shk^-1; T given in keV, ndens in a/cc, v in cm/shk,
   //! debye_length in cm
-  [[nodiscard]] double calculate_eloss(const double T, const double ndens, const double v0,
-                                       [[maybe_unused]] const double debye_length) const override;
+  [[nodiscard]] double
+  calculate_eloss(const double T, const double ndens, const double v,
+                  [[maybe_unused]] const double debye_length_opt) const override;
 };
 
 } // namespace rtt_cdi_cpeloss

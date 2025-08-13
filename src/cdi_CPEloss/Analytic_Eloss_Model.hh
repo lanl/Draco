@@ -71,6 +71,7 @@ public:
   [[nodiscard]] double proj_mass() const { return mp; }
 
 protected:
+  //! Constructor: particle masses in grams
   Analytic_Eloss_Model(const int &zaidt_, const double &mt_, const int zaidp_, const double mp_)
       : zaidt(zaidt_), mt(mt_), zaidp(zaidp_), mp(mp_) {}
 
@@ -78,9 +79,9 @@ protected:
   rtt_units::PhysicalConstexprs<rtt_units::CGS> pc;
 
   const int zaidt; //!< Target ZAID
-  const double mt; //!< Target mass
+  const double mt; //!< Target mass in grams
   const int zaidp; //!< Projectile ZAID
-  const double mp; //!< Projectile mass
+  const double mp; //!< Projectile mass in grams
 };
 
 } // namespace rtt_cdi_cpeloss

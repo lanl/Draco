@@ -26,20 +26,22 @@ public:
 
   //! This doesn't overload an Analytic_Eloss_Model function - it wraps an alternate version
   //! of Li-Petrasso for comparison.
-  [[nodiscard]] double getElossMod(const double number_density, const double temperature,
-                                   const double incident_speed, const double debye_length) const;
+  [[nodiscard]] double
+  getElossMod(const double temperature_in, const double number_density_in,
+              const double incident_speed_in, const double debye_length_in,
+              [[maybe_unused]] const bool edward_relative_velocity = true) const;
 
 private:
   //! Calculate the stopping power for some target
-  [[nodiscard]] double calculate_eloss(const double number_density, const double temperature,
-                                       const double incident_speed,
-                                       const double debye_length) const override;
+  [[nodiscard]] double calculate_eloss(const double temperature_in, const double number_density_in,
+                                       const double incident_speed_in,
+                                       const double debye_length_in) const override;
 
   //! Calculate the modified Li-Petrasso stopping power
-  [[nodiscard]] double calculate_eloss_modified(const double number_density,
-                                                const double temperature,
-                                                const double incident_speed,
-                                                const double debye_length) const;
+  [[nodiscard]] double
+  calculate_eloss_modified(const double temperature_in, const double number_density_in,
+                           const double incident_speed_in, const double debye_length_in,
+                           [[maybe_unused]] const bool edward_relative_velocity = true) const;
 };
 
 } // namespace rtt_cdi_cpeloss
