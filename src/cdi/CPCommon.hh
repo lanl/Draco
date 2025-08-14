@@ -14,6 +14,7 @@
 #include "units/MathConstants.hh"
 #include "units/PhysicalConstantsSI.hh"
 #include <cstdint>
+#include <map>
 #include <vector>
 
 namespace rtt_cdi {
@@ -30,30 +31,30 @@ static int get_z_number(int zaid) { return (zaid == -1) ? 1 : (zaid) / 1000; }
  *
  * lambda_D = sum( n * z^2 / kT )
  *
- * \param zaid_list list of ion ZAID's
- * \param number_densities list of ion number densities in [1/cm^3]
+ * \param zaid_num_dens map of ion ZAIDs / number densities [1/cm^3]
  * \param temperatures list of ion temperatures in [keV]
  * \return Debye length in [cm]
  */
-[[maybe_unused]] static double calculate_debye_length(const std::vector<int> &zaid_list,
-                                                      const std::vector<double> &number_densities,
+[[maybe_unused]] static double calculate_debye_length(const std::map<int, double> &zaid_num_dens,
                                                       const std::vector<double> &temperatures) {
-
+  Check(zaid_num_dens.size() == temperatures.size());
   double debye_length = 0.0;
-  for (size_t i = 0; i < zaid_list.size(); ++i) {
+  size_t idx{0};
+  for (auto &zd : zaid_num_dens) {
     // Skip isos with zero number density.
-    if (number_densities[i] > 0.0) {
-      int const z_number{get_z_number(zaid_list[i])};
+    if (zd.second > 0.0) {
+      int const z_number{get_z_number(zd.first)};
 
       // Density [cm^-3 -> m^-3]
-      double const density = number_densities[i] * 1.0e+6;
+      double const density = zd.second * 1.0e+6;
 
       // Temperature [keV -> Kelvin]
-      double const temperature = temperatures[i] * rtt_units::EV2K * 1.0e+3;
+      double const temperature = temperatures[idx] * rtt_units::EV2K * 1.0e+3;
 
       debye_length += density * rtt_units::electronChargeSI * rtt_units::electronChargeSI *
                       z_number * z_number / temperature;
     }
+    idx++;
   }
   // Includes m -> cm conversion
   debye_length =
@@ -68,22 +69,22 @@ static int get_z_number(int zaid) { return (zaid == -1) ? 1 : (zaid) / 1000; }
  *
  * lambda_D = sum( n * z^2 / kT )
  *
- * \param zaid_list list of ion ZAID's
- * \param number_densities list of ion number densities in [1/cm^3]
+ * \param zaid_num_dens map of ion ZAIDs / number densities [1/cm^3]
  * \param Ti ion temperature in [keV]
  * \param Te electron temperature in [keV]
  * \return Debye length in [cm]
  */
-[[maybe_unused]] static double calculate_debye_length(const std::vector<int> &zaid_list,
-                                                      const std::vector<double> &number_densities,
+[[maybe_unused]] static double calculate_debye_length(const std::map<int, double> &zaid_num_dens,
                                                       const double Ti, const double Te) {
   // Set up temperature array:
-  std::vector<double> temperatures(zaid_list.size(), 0.0);
-  for (size_t z = 0; z < zaid_list.size(); z++) {
-    temperatures[z] = (zaid_list[z] == -1) ? Te : Ti;
+  std::vector<double> temperatures(zaid_num_dens.size(), 0.0);
+  size_t idx{0};
+  for (auto zd : zaid_num_dens) {
+    temperatures[idx] = (zd.first == -1) ? Te : Ti;
+    idx++;
   }
 
-  return (calculate_debye_length(zaid_list, number_densities, temperatures));
+  return (calculate_debye_length(zaid_num_dens, temperatures));
 }
 
 namespace constants {
