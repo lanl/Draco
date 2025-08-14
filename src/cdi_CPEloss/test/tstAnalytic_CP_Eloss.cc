@@ -23,6 +23,7 @@
 #include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -340,12 +341,10 @@ void LiPetrasso_test(rtt_dsxx::UnitTest &ut) {
                                                       rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Build background
-  std::vector<int> const zaid_list{-1, 1002, 1003};
-  std::vector<double> const number_densities{number_dens_electron, number_dens_deuteron,
-                                             number_dens_triton};
+  const std::map<int, double> zaid_num_dens = {
+      {-1, number_dens_electron}, {1002, number_dens_deuteron}, {1003, number_dens_triton}};
   std::vector<double> const temperatures{temp_electron, temp_deuteron, temp_triton};
-  const double debye_length(
-      rtt_cdi::calculate_debye_length(zaid_list, number_densities, temperatures));
+  const double debye_length(rtt_cdi::calculate_debye_length(zaid_num_dens, temperatures));
 
   // Check incident particle info
   FAIL_IF_NOT(eloss_elec.proj_zaid() == 2004);
