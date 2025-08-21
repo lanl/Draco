@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------------------------ #
 # file   : platform_checks.cmake
 # brief  : Platform Checks for Draco Build System
-# note   : Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved.
+# note   : Copyright (C) 2011-2025 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -21,6 +21,7 @@ function(dbs_set_sitename)
     endif()
   endif()
 
+  # Call CMake built-in "site_name" - generally returns ENV(HOSTNAME) on UNIX systems.
   site_name(SITENAME)
   string(REGEX REPLACE "([A-z0-9]+).*" "\\1" SITENAME ${SITENAME})
   set(SITENAME_FAMILY "unknown")
@@ -35,17 +36,23 @@ function(dbs_set_sitename)
   elseif(${SITENAME} MATCHES "nid")
     if("$ENV{SLURM_CLUSTER_NAME}" MATCHES "rocinante")
       set(SITENAME "Rocinante")
-      set(SITENAME_FAMILY "ATS-3") # or CTS-2?!
+      set(SITENAME_FAMILY "ATS-3")
     elseif("$ENV{SLURM_CLUSTER_NAME}" MATCHES "tycho")
       set(SITENAME "Tycho")
-      set(SITENAME_FAMILY "ATS-3") # or CTS-2?!
-    elseif("$ENV{SLURM_CLUSTER_NAME}" MATCHES "xroads")
+      set(SITENAME_FAMILY "ATS-3")
+    elseif("$ENV{SLURM_CLUSTER_NAME}" MATCHES "crossroads")
       set(SITENAME "Crossroads")
       set(SITENAME_FAMILY "ATS-3")
     endif()
   elseif(${SITENAME} MATCHES "ro")
     set(SITENAME "Rocinante")
-    set(SITENAME_FAMILY "ATS-3") # or CTS-2?!
+    set(SITENAME_FAMILY "ATS-3")
+  elseif(${SITENAME} MATCHES "ty")
+    set(SITENAME "Tycho")
+    set(SITENAME_FAMILY "ATS-3")
+  elseif(${SITENAME} MATCHES "xr")
+    set(SITENAME "Crossroads")
+    set(SITENAME_FAMILY "ATS-3")
   elseif(${SITENAME} MATCHES "fg")
     set(SITENAME "Fog")
     set(SITENAME_FAMILY "CTS-1")
