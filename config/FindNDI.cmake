@@ -213,7 +213,7 @@ if(NDI_FOUND AND NOT TARGET NDI::ndi)
     set(NDI_CP2011_GENDIR "NOT-FOUND")
     if(${SITENAME_FAMILY} MATCHES "ATS-3") # roci, tycho, xroads
       set(NDI_CP2011_FOUND "TRUE")
-      set(NDI_CP2011_GENDIR "/usr/projects/data/nuclear/ndi/special/gendir.cp2011")
+      set(NDI_CP2011_GENDIR "/usr/projects/data/nuclear/ndi/special/cp2011/gendir")
     elseif(${SITENAME_FAMILY} MATCHES "CCS-NET")
       set(NDI_CP2011_FOUND "TRUE")
       set(NDI_CP2011_GENDIR "/ccs/opt/vendors-ec/ndi/special/cp2011/gendir")
