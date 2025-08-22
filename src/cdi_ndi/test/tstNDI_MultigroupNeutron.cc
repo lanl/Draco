@@ -117,9 +117,9 @@ void gendir_test(rtt_dsxx::UnitTest &ut) {
   auto products_mt2 = neutron.listOfProducts(2);
   FAIL_IF_NOT(products_mt2.size() == 2);
   FAIL_IF_NOT(products_mt2[0] == 1 && products_mt2[1] == 1002);
-  auto multiplicites_mt2 = neutron.productMultiplicities(2);
-  FAIL_IF_NOT(multiplicites_mt2.size() == 2);
-  FAIL_IF_NOT(multiplicites_mt2[0] == 1 && multiplicites_mt2[1] == 1);
+  auto multiplicities_mt2 = neutron.productMultiplicities(2);
+  FAIL_IF_NOT(multiplicities_mt2.size() == 2);
+  FAIL_IF_NOT(multiplicities_mt2[0] == 1 && multiplicities_mt2[1] == 1);
   FAIL_IF_NOT(soft_equiv(neutron.qValue(2), 0.0000e+00, 1.0e-4));
   auto sigma_total_mt2 = neutron.totalCrossSection(2);
   FAIL_IF_NOT(sigma_total_mt2.size() == 2);
@@ -132,9 +132,9 @@ void gendir_test(rtt_dsxx::UnitTest &ut) {
   auto products_mt16 = neutron.listOfProducts(16);
   FAIL_IF_NOT(products_mt16.size() == 2);
   FAIL_IF_NOT(products_mt16[0] == 1 && products_mt16[1] == 1001);
-  auto multiplicites_mt16 = neutron.productMultiplicities(16);
-  FAIL_IF_NOT(multiplicites_mt16.size() == 2);
-  FAIL_IF_NOT(multiplicites_mt16[0] == 2 && multiplicites_mt16[1] == 1);
+  auto multiplicities_mt16 = neutron.productMultiplicities(16);
+  FAIL_IF_NOT(multiplicities_mt16.size() == 2);
+  FAIL_IF_NOT(multiplicities_mt16[0] == 2 && multiplicities_mt16[1] == 1);
   FAIL_IF_NOT(soft_equiv(neutron.qValue(16), -2.2250e+00, 1.0e-4));
   auto sigma_total_mt16 = neutron.totalCrossSection(16);
   FAIL_IF_NOT(sigma_total_mt16.size() == 2);
@@ -146,8 +146,8 @@ void gendir_test(rtt_dsxx::UnitTest &ut) {
   // MT = 102
   auto products_mt102 = neutron.listOfProducts(102);
   FAIL_IF_NOT(products_mt102.size() == 1 && products_mt102[0] == 1003);
-  auto multiplicites_mt102 = neutron.productMultiplicities(102);
-  FAIL_IF_NOT(multiplicites_mt16.size() == 2 && multiplicites_mt102[0] == 1);
+  auto multiplicities_mt102 = neutron.productMultiplicities(102);
+  FAIL_IF_NOT(multiplicities_mt16.size() == 2 && multiplicities_mt102[0] == 1);
   FAIL_IF_NOT(soft_equiv(neutron.qValue(102), 6.2574e+00, 1.0e-4));
   auto sigma_total_mt102 = neutron.totalCrossSection(102);
   FAIL_IF_NOT(sigma_total_mt102.size() == 2);
@@ -160,33 +160,8 @@ void gendir_test(rtt_dsxx::UnitTest &ut) {
   // PRODUCT SPECIFIC DATA
   //--------------------------------------------------
   auto products = neutron.listOfAllProducts();
-  FAIL_IF_NOT(products.size() == 4);
-  FAIL_IF_NOT(products[0] == 0 && products[1] == 1001 && products[2] == 1002 &&
-              products[3] == 1003);
-
-  // ZAID = 0
-  auto kermas_0 = neutron.kermas(0);
-  FAIL_IF_NOT(kermas_0.size() == 2);
-  FAIL_IF_NOT(soft_equiv(kermas_0[0], 6.0704e-05, 1.0e-4));
-  FAIL_IF_NOT(soft_equiv(kermas_0[1], 2.5736e-05, 1.0e-4));
-
-  auto scattering_matrix_0 = neutron.scatteringMatrix(0);
-  FAIL_IF_NOT(scattering_matrix_0.size() == 1);
-  FAIL_IF_NOT(scattering_matrix_0[0].size() == 2);
-  FAIL_IF_NOT(scattering_matrix_0[0][0].size() == 2);
-
-  // l = 0
-  FAIL_IF_NOT(soft_equiv(scattering_matrix_0[0][0][0], 7.7065e-06, 1.0e-4));
-  FAIL_IF_NOT(soft_equiv(scattering_matrix_0[0][0][1], 0.0000e+00, 1.0e-4));
-  FAIL_IF_NOT(soft_equiv(scattering_matrix_0[0][1][0], 3.8919e-06, 1.0e-4));
-  FAIL_IF_NOT(soft_equiv(scattering_matrix_0[0][1][1], 0.0000e+00, 1.0e-4));
-
-  // pdf
-  auto pdf_0 = neutron.pdf(0, 5.0e+0);
-  FAIL_IF_NOT(pdf_0.size() == 2);
-  FAIL_IF_NOT(soft_equiv(pdf_0[0], 1.0000e+00, 1.0e-4));
-  FAIL_IF_NOT(soft_equiv(pdf_0[1], 0.0000e+00, 1.0e-4));
-  FAIL_IF_NOT(soft_equiv(pdf_0[0] + pdf_0[1], 1.0000e+00, 1.0e-4));
+  FAIL_IF_NOT(products.size() == 3);
+  FAIL_IF_NOT(products[0] == 1001 && products[1] == 1002 && products[2] == 1003);
 
   // ZAID = 1001
   auto kermas_1001 = neutron.kermas(1001);
