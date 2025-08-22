@@ -236,27 +236,40 @@ void NDI_MultigroupNeutron::load_ndi() {
     ndi_throw_rt_error(ndi_error);
   }
 
-  //! Get number of reaction products
-  int num_products = 0;
-  ndi_error = NDI2_get_int_val(dataset_handle, NDI_NUM_SEC_PARTS, &num_products);
+  //! Get number of total reaction products in the library
+  int num_lib_products = 0;
+  ndi_error = NDI2_get_int_val(dataset_handle, NDI_NUM_SEC_PARTS, &num_lib_products);
   ndi_throw_rt_error(ndi_error);
 
-  product_list.resize(num_products);
-  product_kermas.resize(num_products);
-  product_scattering_matrix.resize(num_products);
+  //! filter out products that aren't of interest
+  std::vector<std::string> string_product_list;
+  product_list.reserve(num_lib_products);
+  string_product_list.reserve(num_lib_products);
 
-  //! Loop over reaction products
-  // =========================================================================================== //
-  for (int n = 0; n < num_products; n++) {
+  for (int n = 0; n < num_lib_products; n++) {
     //! Get ZAID of reaction product
     ndi_error =
         NDI2_get_string_val_n(dataset_handle, NDI_SEC_PART_TYPES, n, c_str_buf.data(), c_str_len);
     ndi_throw_rt_error(ndi_error);
     const std::string product_zaid = std::string(c_str_buf.data());
-    product_list[n] = std::stoi(product_zaid);
+    const int integer_zaid = std::stoi(product_zaid);
+    if (integer_zaid > 1000) {
+      string_product_list.push_back(product_zaid);
+      product_list.push_back(integer_zaid);
+    }
+  }
+
+  const size_t num_products{product_list.size()};
+  product_kermas.resize(num_products);
+  product_scattering_matrix.resize(num_products);
+
+  //! Loop over reaction products
+  // =========================================================================================== //
+  size_t n = 0; // Running index for products
+  for (auto &prod : string_product_list) {
 
     //! Set NDI to reaction product
-    ndi_error = NDI2_set_option(dataset_handle, NDI_CURR_PART, product_zaid.c_str());
+    ndi_error = NDI2_set_option(dataset_handle, NDI_CURR_PART, prod.c_str());
     ndi_throw_rt_error(ndi_error);
 
     //! Get energy grid for reaction product
@@ -307,7 +320,8 @@ void NDI_MultigroupNeutron::load_ndi() {
       product_scattering_matrix[n][l] =
           vectorToSquareMatrix(temp_data, new_group_bounds.size() - 1);
     }
-  }
+    n++; // Increment index for next product
+  }      // End loop over products
 
   //! Close datafile
   // =========================================================================================== //
