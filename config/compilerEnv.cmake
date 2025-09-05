@@ -111,7 +111,7 @@ function(force_compiler_flags_to_cache lang_list)
     endforeach()
   endforeach()
   set(DRACO_LINK_OPTIONS
-      "${DRACO_LINK_OPTIONS}"
+      ${DRACO_LINK_OPTIONS}
       CACHE STRING "link flags" FORCE)
 endfunction()
 
@@ -845,7 +845,7 @@ macro(dbsSetupCuda)
   # Save the results
   set(HAVE_GPU
       ${HAVE_GPU}
-      CACHE BOOL "Should we build GPU Accelerated (CUDA|HIP) portions of this project?" FORCE)
+      CACHE BOOL "Can we build GPU Accelerated (CUDA|HIP) portions of this project?" FORCE)
   if(HAVE_GPU AND USE_GPU)
     # Use this string in 'project(foo ${GPU_DBS_STRING})' commands to enable cuda per project.
     if(_LANGUAGES_ MATCHES CUDA)
