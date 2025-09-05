@@ -37,7 +37,7 @@ include(FeatureSummary)
 # ------------------------------------------------------------------------------------------------ #
 function(setMPIflavorVer)
 
-  # First attempt to determine MPI flavor -- scape flavor from full path (this ususally works for
+  # First attempt to determine MPI flavor -- scrape flavor from full path (this usually works for
   # HPC or systems with modules)
   if(CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv OR "$ENV{LOADEDMODULES}" MATCHES "cray-mpich")
     set(MPI_FLAVOR "cray")
@@ -62,6 +62,10 @@ function(setMPIflavorVer)
   if(CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
     if(DEFINED ENV{CRAY_MPICH2_VER})
       set(MPI_VERSION $ENV{CRAY_MPICH2_VER})
+    elseif(DEFINED ENV{CRAY_MPICH_VERSION})
+      set(MPI_VERSION $ENV{CRAY_MPICH_VER})
+    elseif(DEFINED ENV{LMOD_FAMILY_MPI_VERSION})
+      set(MPI_VERSION $ENV{LMOD_FAMILY_MPI_VERSION})
     endif()
   elseif(DEFINED ENV{LMOD_MPI_VERSION})
     # Toss3 with srun
@@ -378,6 +382,31 @@ macro(setupCrayMPI)
   # * --overlap Allow steps to overlap each other on the CPUs. By default steps do not share CPUs
   #   with other parallel steps.
   # * --hint=nomultithread Disable use of hyperthreads (use only physical cores)
+
+  # Does the dev env enable GPU-aware MPICH? If so we have to jump through a flaming hoop or two to
+  # be sure the right libraries are passed at the link step. This is based on the "ADD_FOR_LINK"
+  # logic used in the cray magic wrappers.
+  if("${MPI_FLAVOR}" MATCHES "cray")
+    if(DEFINED ENV{MPICH_GPU_SUPPORT_ENABLED})
+      if("$ENV{MPICH_GPU_SUPPORT_ENABLED}" MATCHES "1")
+        message(STATUS "    Using GPU-enabled MPICH:")
+        set(GTL_LIB_DIR "/opt/cray/pe/mpich/${MPI_VERSION}/gtl/lib")
+        if(EXISTS "${GTL_LIB_DIR}")
+          message(STATUS "      Successfully set GTL link lib for GPU-enabled MPICH.")
+          # cmake-format: off
+          # cmake-format wants this on one line, but that leads to unwanted double quotes on the
+          # link line - so disable format check.
+          set(DRACO_LINK_OPTIONS -L${GTL_LIB_DIR}
+                                 -lmpi_gtl_hsa
+                                 -Wl,-rpath,${GTL_LIB_DIR})
+          # cmake-format: on
+        else()
+          message(STATUS "      Failed to auto-set GTL link lib for GPU-enabled MPICH.")
+          message(STATUS "      Try using LD_PRELOAD at runtime.")
+        endif()
+      endif()
+    endif()
+  endif()
 
   set(preflags " ") # -N 1 --cpu_bind=verbose,cores
   if(NOT MPIEXEC_EXECUTABLE MATCHES "flux")
