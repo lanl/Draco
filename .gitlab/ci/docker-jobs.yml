@@ -3,7 +3,7 @@
 # Author:  Kelly Thompson <kgt@lanl.gov>
 # Date:    Wednesday, Jan 13, 2021, 20:57 pm
 # Purpose: CI jobs that run in a docker container (superlinter, coverageCheck, post-cdash-results)
-# Note:    Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
+# Note:    Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved.
 #
 # See also:
 # * https://github.com/github/super-linter
@@ -123,9 +123,10 @@ checkCoverage_MR:
 .post_rz_regress_results_to_cdash:
   # https://docs.gitlab.com/ee/api/job_artifacts.html
   tags:
-    - container
-    - shell
+    - charm
   stage: test
+  image:
+    name: docker.io/library/alpine:3.18
   allow_failure: true
   variables:
     CTEST_MODE: Nightly
