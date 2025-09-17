@@ -127,6 +127,8 @@ checkCoverage_MR:
   stage: test
   image:
     name: docker.io/library/alpine:3.18
+  before_script:
+    - apk add --quiet --update --no-cache curl cmake
   allow_failure: true
   variables:
     CTEST_MODE: Nightly
@@ -134,6 +136,8 @@ checkCoverage_MR:
     - mkdir -p ${DRACO_BINARY_DIR} && cd ${DRACO_BINARY_DIR}
     # The artifacts from the jobs listed under the 'needs:' section should already be here.
     - ls *.tar
+    - which cmake
+    - which ctest
     - >
       for tf in $(\ls -1 *.tar); do
           cd ${DRACO_BINARY_DIR};
