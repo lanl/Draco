@@ -136,19 +136,21 @@ checkCoverage_MR:
     - mkdir -p ${DRACO_BINARY_DIR} && cd ${DRACO_BINARY_DIR}
     # The artifacts from the jobs listed under the 'needs:' section should already be here.
     - ls *.tar
-    - which cmake
-    - which ctest
     - >
       for tf in $(\ls -1 *.tar); do
           cd ${DRACO_BINARY_DIR};
           build_dir=${tf//.tar/};
           CTEST_SITE=$(echo ${tf} | sed -e 's/-.*//');
           CMAKE_BUILD_TYPE=${tf//*-/};
+          CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE//.tar/}
           echo -e "\n============================================================";
           echo "Examining ${build_dir} (${CTEST_SITE})";
           echo -e "============================================================\n";
           mkdir -p ${build_dir} && cd ${build_dir};
           tar -xvf ../${tf};
+          echo "==> cat Update.xml"
+          cat Testing/*/Update.xml
+          echo "---(end)---"
           cp DartConfiguration.tcl DartConfiguration.tcl.bak;
           sed -i "s%SourceDirectory.*%SourceDirectory: ${DRACO_SOURCE_DIR}%" DartConfiguration.tcl;
           sed -i "s%BuildDirectory.*%BuildDirectory: ${DRACO_BINARY_DIR}/${build_dir}%" \
@@ -164,9 +166,10 @@ checkCoverage_MR:
           export CTEST_BUILD_NAME CTEST_SITE CMAKE_BUILD_TYPE;
           cp DartConfiguration.tcl ${DRACO_BINARY_DIR};
           cp -r Testing ${DRACO_BINARY_DIR};
-          ctest -V -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,Submit;
+          ctest -VV -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,Submit;
           rm ${DRACO_BINARY_DIR}/DartConfiguration.tcl
           rm -rf ${DRACO_BINARY_DIR}/Testing
+          sleep 5
       done;
     - echo "==> PASS -- RZ test results submitted to CDash."
   rules:
