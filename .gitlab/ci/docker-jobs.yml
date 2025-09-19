@@ -128,11 +128,13 @@ checkCoverage_MR:
   image:
     name: docker.io/library/alpine:3.18
   before_script:
-    - apk add --quiet --update --no-cache curl cmake
+    - wget https://github.com/Kitware/CMake/releases/download/v3.31.8/cmake-3.31.8-linux-x86_64.tar.gz
+    - tar -zxvf cmake-3.31.8-linux-x86_64.tar.gz
   allow_failure: true
   variables:
     CTEST_MODE: Nightly
   script:
+    - export PATH=$(pwd)/cmake-3.31.8-linux-x86_64/bin:${PATH}
     - mkdir -p ${DRACO_BINARY_DIR} && cd ${DRACO_BINARY_DIR}
     # The artifacts from the jobs listed under the 'needs:' section should already be here.
     - ls *.tar
