@@ -135,6 +135,9 @@ checkCoverage_MR:
     CTEST_MODE: Nightly
   script:
     - export PATH=$(pwd)/cmake-3.31.8-linux-x86_64/bin:${PATH}
+    - ls $(pwd)/cmake-3.31.8-linux-x86_64/bin
+    - which ctest
+    - ctest --version
     - mkdir -p ${DRACO_BINARY_DIR} && cd ${DRACO_BINARY_DIR}
     # The artifacts from the jobs listed under the 'needs:' section should already be here.
     - ls *.tar
@@ -168,9 +171,10 @@ checkCoverage_MR:
           export CTEST_BUILD_NAME CTEST_SITE CMAKE_BUILD_TYPE;
           cp DartConfiguration.tcl ${DRACO_BINARY_DIR};
           cp -r Testing ${DRACO_BINARY_DIR};
+          echo "==> test -VV -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,Submit";
           ctest -VV -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,Submit;
-          rm ${DRACO_BINARY_DIR}/DartConfiguration.tcl
-          rm -rf ${DRACO_BINARY_DIR}/Testing
+          rm ${DRACO_BINARY_DIR}/DartConfiguration.tcl;
+          rm -rf ${DRACO_BINARY_DIR}/Testing;
           sleep 5
       done;
     - echo "==> PASS -- RZ test results submitted to CDash."
