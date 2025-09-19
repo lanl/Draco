@@ -188,10 +188,6 @@ post_rzansel_regress_results_to_cdash:
 post_rzadams_regress_results_to_cdash:
   extends: .post_rz_regress_results_to_cdash
   needs:
-    - job: rzadams_deb_gnu_regress
-      artifacts: true
-    - job: rzadams_rel_gnu_regress
-      artifacts: true
     - job: rzadams_deb_amdclang_regress
       artifacts: true
     - job: rzadams_rel_amdclang_regress
