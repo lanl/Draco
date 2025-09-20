@@ -127,13 +127,15 @@ checkCoverage_MR:
   stage: test
   image:
     name: docker.io/library/alpine:3.18
-  before_script:
-    - wget https://github.com/Kitware/CMake/releases/download/v3.31.8/cmake-3.31.8-linux-x86_64.tar.gz
-    - tar -zxvf cmake-3.31.8-linux-x86_64.tar.gz
+  #before_script:
+  #  - wget https://github.com/Kitware/CMake/releases/download/v3.31.8/cmake-3.31.8-linux-x86_64.tar.gz
+  #  - tar -zxvf cmake-3.31.8-linux-x86_64.tar.gz
   allow_failure: true
   variables:
     CTEST_MODE: Nightly
   script:
+    - wget https://github.com/Kitware/CMake/releases/download/v3.31.8/cmake-3.31.8-linux-x86_64.tar.gz
+    - tar -zxvf cmake-3.31.8-linux-x86_64.tar.gz
     - export PATH=$(pwd)/cmake-3.31.8-linux-x86_64/bin:${PATH}
     - ls -aFl $(pwd)/cmake-3.31.8-linux-x86_64/bin
     - which ctest
