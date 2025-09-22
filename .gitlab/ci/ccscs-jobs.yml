@@ -451,6 +451,7 @@ downstream-deploy-jayenne:
     - ls *.tar
     - module use /ccs/codes/radtran/Modules
     - module load draco/gcc1330
+    - export CTEST=$(which ctest)
     - >
       for tf in $(\ls -1 *.tar); do
           cd ${DRACO_BINARY_DIR};
