@@ -192,7 +192,7 @@ ccs_rel_gcc_1330_deploy_release:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
 
-# FAST TEST
+# ---------- regular TEST --------------------------------------------- #
 
 ccs_deb_gcc_1330:
   stage: fasttest
@@ -293,11 +293,11 @@ ccs_deb_gcc_1330_cxx20:
 #     CMAKE_BUILD_TYPE: Debug
 #     DRACO_ENV: gcc1330
 #     EXTRA_CMAKE_ARGS: -GNinja -DENABLE_MEMORYCHECK=ON
+#       -DCMAKE_C_FLAGS="-march=broadwell"
+#       -DCMAKE_Fortran_FLAGS="-march=broadwell"
 #       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
 #     EXTRA_CTEST_ARGS: -L memcheck -LE nomemcheck
 #     CTEST_NPROC: 40
-
-# ---------- Optional ---------- #
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
