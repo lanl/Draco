@@ -264,21 +264,26 @@ macro(dbsSetupCompilers)
 
         if(CMAKE_BUILD_TYPE STREQUAL Debug OR CMAKE_BUILD_TYPE STREQUAL DEBUG)
           # Add required flags (GCC & LLVM/Clang)
-          target_compile_options(coverage_config INTERFACE --coverage)
+          target_compile_options(coverage_config INTERFACE --coverage -Wno-missing-profile)
           target_link_options(coverage_config INTERFACE --coverage)
 
           # If env variable is set use it, otherwise search for default name.
           find_program(LCOV NAMES "$ENV{LCOV}" lcov)
           find_program(GCOV NAMES "$ENV{GCOV}" gcov)
           if(EXISTS "${LCOV}" AND EXISTS "${GCOV}")
-            # Add a custom target that prints the coverage report
+            # Add a custom target that prints the coverage report. --rc options documented at
+            # https://man.archlinux.org/man/lcovrc.5.en
             set(lcovopts1
                 -j
                 --keep-going
                 --ignore-errors
+                mismatch,mismatch
+                --ignore-errors
                 gcov,gcov,unused,unused
                 --rc
                 geninfo_unexecuted_blocks=1
+                --rc
+                branch_coverage=1
                 --gcov-tool
                 ${GCOV}
                 --quiet)
