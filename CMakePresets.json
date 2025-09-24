@@ -73,6 +73,16 @@
       }
     },
     {
+      "name": "linux-debug-coverage",
+      "displayName": "Linux Debug with coverage reporting",
+      "description": "Target Linux for Debug build.",
+      "inherits": "linux-ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CODE_COVERAGE": "ON"
+      }
+    },
+    {
       "name": "linux-debug-cxx20",
       "displayName": "Linux Debug with c++20 enabled",
       "description": "Target Linux for Debug build.",
@@ -288,6 +298,10 @@
     {
       "name": "linux-debug-valgrind",
       "configurePreset": "linux-debug-valgrind"
+    },
+    {
+      "name": "linux-debug-coverage",
+      "configurePreset": "linux-debug-coverage"
     },
     {
       "name": "linux-debug-cxx20",
