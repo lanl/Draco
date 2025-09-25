@@ -2606,7 +2606,7 @@
 # ------------------------------------------------------------------------------------------------ #
 
 {
-   openmpi5/e001
+   openmpi5/LD001
    Memcheck:Leak
    match-leak-kinds: definite
    fun:calloc
@@ -2614,6 +2614,129 @@
    ...
    fun:PMPI_Init_thread
    ...
+}
+{
+   openmpi5/LD002
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:prte_iof_base_write_output
+   ...
+   fun:event_base_loop
+   ...
+}
+{
+   openmpi5/LD003
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:pmix_pointer_array_init
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LD004
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:PMIx_Info_create
+   fun:PMIx_Info_list_convert
+   ...
+}
+{
+   openmpi5/LD005
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:PMIx_Info_create
+   fun:PMIx_Spawn_nb
+   ...
+}
+{
+   openmpi5/LD006
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:rte_init
+   ...
+}
+
+# --- Leak: Reachable ---
+
+{
+   openmpi5/LR001
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:populate_vendor
+   fun:find_device_name
+   fun:pci_get_strings
+   ...
+   fun:rte_init
+   ...
+}
+{
+   openmpi5/LR002
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:populate_vendor
+   ...
+   fun:rte_init
+   ...
+}
+{
+   openmpi5/LR003
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:PMIx_Argv_append_nosize
+   ...
+}
+{
+   openmpi5/LR004
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:get_print_name_buffer
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR005
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:evsig_set_handler_
+   ...
+   fun:event_add
+   ...
+}
+{
+   openmpi5/LR006
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:PMIx_Argv_append_nosize
+   ...
+}
+
+# --- Memcheck: Param ---
+
+{
+   openmpi5/P001
+   Memcheck:Param
+   writev(vector[1])
+   fun:writev
+   fun:pmix_ptl_base_send_handler
+   ...
+   fun:progress_engine
+   fun:start_thread
+   fun:clone
 }
 
 # ------------------------------------------------------------------------------------------------ #
