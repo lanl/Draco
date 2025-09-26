@@ -1822,205 +1822,205 @@
 # Python 2.7
 # ------------------------------------------------------------------------------------------------ #
 
-{
-   python/e001
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:calloc
-   fun:dictresize
-   ...
-}
-{
-   python/e002
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   fun:_PyObject_GC_Malloc
-   ...
-}
-{
-   python/e002b
-   Memcheck:Leak
-   match-leak-kinds: possible
-   fun:malloc
-   fun:_PyObject_GC_Malloc
-   ...
-}
-{
-   python/e003
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:calloc
-   ...
-   fun:dlopen@@GLIBC_2.2.5
-   ...
-}
-{
-   python/e004
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   ...
-   fun:Py_Main
-   ...
-}
-{
-   python/e004a
-   Memcheck:Leak
-   match-leak-kinds: possible
-   fun:malloc
-   ...
-   fun:Py_Main
-   ...
-}
-{
-   python/e004b
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:realloc
-   ...
-   fun:Py_Main
-   ...
-}
-{
-   python/e005
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   ...
-   fun:import_submodule
-   ...
-}
-{
-   python/e006
-   Memcheck:Leak
-   match-leak-kinds: possible
-   fun:malloc
-   ...
-   fun:PyObject_Call
-   ...
-}
-{
-   python/e007
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:realloc
-   ...
-   fun:PyObject_Call
-   ...
-}
-{
-   python/e008
-   Memcheck:Addr4
-   fun:PyObject_Free
-   ...
-}
-{
-   python/e009
-   Memcheck:Addr4
-   ...
-   fun:PyObject_Realloc
-   ...
-}
-{
-   python/e010
-   Memcheck:Value8
-   fun:PyObject_Free
-   ...
-}
-{
-   python/e010a
-   Memcheck:Value8
-   fun:PyObject_Realloc
-   ...
-}
-{
-   python/e011
-   Memcheck:Cond
-   fun:PyObject_Free
-   ...
-}
-{
-   python/e011
-   Memcheck:Cond
-   fun:PyObject_Realloc
-   ...
-}
-{
-   python/e012
-   Memcheck:Leak
-   match-leak-kinds: possible
-   fun:malloc
-   obj:/usr/lib64/libpython2.7.so.1.0
-   ...
-}
-{
-   python/e013
-   Memcheck:Leak
-   match-leak-kinds: possible
-   fun:malloc
-   fun:PyObject_Malloc
-   ...
-   obj:/usr/lib64/libpython2.7.so.1.0
-   ...
-}
-{
-   python3/e014
-   Memcheck:Value8
-   fun:address_in_range
-   fun:PyObject_Realloc
-   ...
-}
-{
-   python/e015
-   Memcheck:Leak
-   match-leak-kinds: possible
-   fun:malloc
-   fun:_PyObject_Alloc
-   ...
-}
-{
-   python3/e019
-   Memcheck:Value8
-   fun:address_in_range
-   fun:_PyObject_Free
-   ...
-}
-{
-   python3/e020
-   Memcheck:Cond
-   fun:address_in_range
-   fun:_PyObject_Free
-   ...
-}
-{
-   python3/e021
-   Memcheck:Addr4
-   fun:address_in_range
-   fun:_PyObject_Free
-   ...
-}
-{
-   python3/e022
-   Memcheck:Addr4
-   fun:address_in_range
-   fun:_PyObject_Realloc
-   ...
-}
-{
-   python3/e023
-   Memcheck:Cond
-   fun:address_in_range
-   fun:_PyObject_Realloc
-   ...
-}
-{
-   python3/e024
-   Memcheck:Value8
-   fun:address_in_range
-   fun:_PyObject_Realloc
-   ...
-}
+# {
+#    python/e001
+#    Memcheck:Leak
+#    match-leak-kinds: reachable
+#    fun:calloc
+#    fun:dictresize
+#    ...
+# }
+# {
+#    python/e002
+#    Memcheck:Leak
+#    match-leak-kinds: reachable
+#    fun:malloc
+#    fun:_PyObject_GC_Malloc
+#    ...
+# }
+# {
+#    python/e002b
+#    Memcheck:Leak
+#    match-leak-kinds: possible
+#    fun:malloc
+#    fun:_PyObject_GC_Malloc
+#    ...
+# }
+# {
+#    python/e003
+#    Memcheck:Leak
+#    match-leak-kinds: reachable
+#    fun:calloc
+#    ...
+#    fun:dlopen@@GLIBC_2.2.5
+#    ...
+# }
+# {
+#    python/e004
+#    Memcheck:Leak
+#    match-leak-kinds: reachable
+#    fun:malloc
+#    ...
+#    fun:Py_Main
+#    ...
+# }
+# {
+#    python/e004a
+#    Memcheck:Leak
+#    match-leak-kinds: possible
+#    fun:malloc
+#    ...
+#    fun:Py_Main
+#    ...
+# }
+# {
+#    python/e004b
+#    Memcheck:Leak
+#    match-leak-kinds: reachable
+#    fun:realloc
+#    ...
+#    fun:Py_Main
+#    ...
+# }
+# {
+#    python/e005
+#    Memcheck:Leak
+#    match-leak-kinds: reachable
+#    fun:malloc
+#    ...
+#    fun:import_submodule
+#    ...
+# }
+# {
+#    python/e006
+#    Memcheck:Leak
+#    match-leak-kinds: possible
+#    fun:malloc
+#    ...
+#    fun:PyObject_Call
+#    ...
+# }
+# {
+#    python/e007
+#    Memcheck:Leak
+#    match-leak-kinds: reachable
+#    fun:realloc
+#    ...
+#    fun:PyObject_Call
+#    ...
+# }
+# {
+#    python/e008
+#    Memcheck:Addr4
+#    fun:PyObject_Free
+#    ...
+# }
+# {
+#    python/e009
+#    Memcheck:Addr4
+#    ...
+#    fun:PyObject_Realloc
+#    ...
+# }
+# {
+#    python/e010
+#    Memcheck:Value8
+#    fun:PyObject_Free
+#    ...
+# }
+# {
+#    python/e010a
+#    Memcheck:Value8
+#    fun:PyObject_Realloc
+#    ...
+# }
+# {
+#    python/e011
+#    Memcheck:Cond
+#    fun:PyObject_Free
+#    ...
+# }
+# {
+#    python/e011
+#    Memcheck:Cond
+#    fun:PyObject_Realloc
+#    ...
+# }
+# {
+#    python/e012
+#    Memcheck:Leak
+#    match-leak-kinds: possible
+#    fun:malloc
+#    obj:/usr/lib64/libpython2.7.so.1.0
+#    ...
+# }
+# {
+#    python/e013
+#    Memcheck:Leak
+#    match-leak-kinds: possible
+#    fun:malloc
+#    fun:PyObject_Malloc
+#    ...
+#    obj:/usr/lib64/libpython2.7.so.1.0
+#    ...
+# }
+# {
+#    python3/e014
+#    Memcheck:Value8
+#    fun:address_in_range
+#    fun:PyObject_Realloc
+#    ...
+# }
+# {
+#    python/e015
+#    Memcheck:Leak
+#    match-leak-kinds: possible
+#    fun:malloc
+#    fun:_PyObject_Alloc
+#    ...
+# }
+# {
+#    python3/e019
+#    Memcheck:Value8
+#    fun:address_in_range
+#    fun:_PyObject_Free
+#    ...
+# }
+# {
+#    python3/e020
+#    Memcheck:Cond
+#    fun:address_in_range
+#    fun:_PyObject_Free
+#    ...
+# }
+# {
+#    python3/e021
+#    Memcheck:Addr4
+#    fun:address_in_range
+#    fun:_PyObject_Free
+#    ...
+# }
+# {
+#    python3/e022
+#    Memcheck:Addr4
+#    fun:address_in_range
+#    fun:_PyObject_Realloc
+#    ...
+# }
+# {
+#    python3/e023
+#    Memcheck:Cond
+#    fun:address_in_range
+#    fun:_PyObject_Realloc
+#    ...
+# }
+# {
+#    python3/e024
+#    Memcheck:Value8
+#    fun:address_in_range
+#    fun:_PyObject_Realloc
+#    ...
+# }
 
 # ------------------------------------------------------------------------------------------------ #
 # python/3.7.4
@@ -2724,6 +2724,35 @@
    fun:PMIx_Argv_append_nosize
    ...
 }
+{
+   openmpi5/LR007
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:check_store
+   ...
+}
+{
+   openmpi5/LR008
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:prte_register_params
+   ...
+}
+{
+   openmpi5/LR009
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:PMIx_server_init
+   ...
+   fun:prte_init
+   ...
+}
 
 # --- Memcheck: Param ---
 
@@ -2737,6 +2766,18 @@
    fun:progress_engine
    fun:start_thread
    fun:clone
+}
+
+# --- Memcheck: Cond ---
+
+{
+   openmpi5/C001
+   Memcheck:Cond
+   fun:flex128_encode_int
+   fun:pmix41_bfrops_base_pack_general_int
+   ...
+   fun:event_base_loop
+   ...
 }
 
 # ------------------------------------------------------------------------------------------------ #
