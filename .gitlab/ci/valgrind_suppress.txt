@@ -2884,6 +2884,79 @@
    fun:prte_init
    ...
 }
+{
+   openmpi5/LR016
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:pmix_output_init
+   ...
+   fun:prte_finalize
+   ...
+}
+{
+   openmpi5/LR017
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:pmix_bfrops_base_tma_argv_split_inter.constprop.0
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR018
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:pmix_hwloc_setup_topology
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR019
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:strdup
+   fun:rte_init
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR020
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:strdup
+   fun:PMIx_Argv_append_unique_nosize
+   ...
+   fun:event_base_loop
+   ...
+}
+{
+   openmpi5/LR021
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:pmix_basename
+   ...
+}
+{
+   openmpi5/LR022
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:evmap_signal_add_
+   ...
+   fun:event_add
+   ...
+}
 
 # --- Memcheck: Param ---
 
