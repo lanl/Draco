@@ -2721,6 +2721,16 @@
    fun:event_base_loop
    ...
 }
+{
+   openmpi5/LD013
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:prte_rmaps_base_setup_proc
+   ...
+   fun:event_base_loop
+   ...
+}
 
 # --- Leak: Reachable ---
 
@@ -2809,6 +2819,67 @@
    fun:malloc
    fun:strdup
    fun:PMIx_server_init
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR010
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:insert
+   fun:find_device_name
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR011
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:pmix_net_get_hostname
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR012
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:prte_hwloc_get_print_buffer
+   ...
+   fun:event_base_loop
+   ...
+}
+{
+   openmpi5/LR013
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:prte_rmaps_base_print_mapping
+   ...
+   fun:event_base_loop
+   ...
+}
+{
+   openmpi5/LR014
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:event_base_new_with_config
+   ...
+   fun:prte_event_base_open
+   ...
+}
+{
+   openmpi5/LR015
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:prte_rmaps_base_select
    ...
    fun:prte_init
    ...
