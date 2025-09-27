@@ -2935,8 +2935,6 @@
    fun:strdup
    fun:PMIx_Argv_append_unique_nosize
    ...
-   fun:event_base_loop
-   ...
 }
 {
    openmpi5/LR021
@@ -2954,7 +2952,35 @@
    fun:calloc
    fun:evmap_signal_add_
    ...
-   fun:event_add
+}
+{
+   openmpi5/LR023
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:PMIx_Argv_append_nosize
+   ...
+   fun:parse_cli
+   ...
+}
+{
+   openmpi5/LR024
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:PMIx_Setenv
+   ...
+   fun:prte_parse_locals
+   ...
+}
+{
+   openmpi5/LR023
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:pmix_bfrops_base_tma_argv_split_inter.constprop.0
+   ...
+   fun:prte_init
    ...
 }
 
