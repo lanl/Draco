@@ -3031,6 +3031,96 @@
    fun:prte_parse_locals
    ...
 }
+{
+   openmpi5/LR029
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:prte_odls_base_start_threads
+   ...
+   fun:event_base_loop
+   ...
+}
+{
+   openmpi5/LR030
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:event_base_priority_init
+   ...
+   fun:prte_event_base_open
+   ...
+}
+{
+   openmpi5/LR031
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:evmap_io_add_
+   ...
+   fun:prte_event_base_open
+   ...
+}
+{
+   openmpi5/LR032
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:evmap_io_add_
+   ...
+   fun:event_add
+   ...
+}
+{
+   openmpi5/LR033
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:PMIx_Argv_copy
+   ...
+}
+{
+   openmpi5/LR034
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:evmap_io_add_
+   ...
+   fun:event_base_loop
+   ...
+}
+{
+   openmpi5/LR035
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:evmap_io_add_
+   ...
+   fun:event_base_loop
+   ...
+}
+
+# --- Memcheck: Indirect ---
+
+{
+   openmpi5/LI001
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:calloc
+   fun:pmix_pointer_array_init
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LI002
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:strdup
+   fun:pmix_bfrops_base_tma_value_xfer.constprop.0
+   ...
+}
 
 # --- Memcheck: Param ---
 
