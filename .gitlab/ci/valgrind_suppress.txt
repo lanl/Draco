@@ -2661,6 +2661,66 @@
    fun:rte_init
    ...
 }
+{
+   openmpi5/LD007
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:pmix_os_path
+   ...
+   fun:prte_finalize
+   ...
+}
+{
+   openmpi5/LD008
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:pmix_bfrops_base_unpack_string
+   ...
+   fun:event_base_loop
+   ...
+}
+{
+   openmpi5/LD009
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:pmix_os_path
+   ...
+   fun:prte_job_destruct
+   ...
+}
+{
+   openmpi5/LD010
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:strdup
+   fun:prte_odls_base_default_construct_child_list
+   ...
+   fun:event_base_loop
+   ...
+}
+{
+   openmpi5/LD011
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:PMIx_App_create
+   fun:PMIx_Spawn_nb
+   ...
+}
+{
+   openmpi5/LD012   
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:prte_job_unpack
+   ...
+   fun:event_base_loop
+   ...
+}
 
 # --- Leak: Reachable ---
 
