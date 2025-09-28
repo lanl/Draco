@@ -3168,6 +3168,37 @@
    fun:prte_finalize
    ...
 }
+{
+   openmpi5/LR043
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:do_open
+   ...
+   fun:prte_finalize
+   ...
+}
+{
+   openmpi5/LR044
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:evthread_posix_lock_alloc
+   ...
+   fun:prte_event_base_open
+   ...
+}
+{
+   
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:vasprintf
+   ...
+   fun:prte_init
+   ...
+}
 
 # --- Memcheck: Indirect ---
 
@@ -3205,6 +3236,24 @@
    match-leak-kinds: indirect
    fun:realloc
    fun:PMIx_Argv_copy
+   ...
+}
+{
+   openmpi5/LI005
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:hwloc_bitmap_alloc
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LI006
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:realloc
+   fun:PMIx_Argv_append_unique_nosize
    ...
 }
 
