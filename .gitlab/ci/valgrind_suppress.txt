@@ -3190,13 +3190,62 @@
    ...
 }
 {
-   
+   openmpi5/LR045
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
    fun:vasprintf
    ...
    fun:prte_init
+   ...
+}
+{
+   openmpi5/LR046
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:evthread_posix_cond_alloc
+   ...
+   fun:prte_event_base_open
+   ...
+}
+{
+   openmpi5/LR047
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:PMIx_App_create
+   ...
+}
+{
+   openmpi5/LR048
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:create_app.constprop.0
+   fun:prte_parse_locals
+   ...
+}
+{
+   openmpi5/LR049
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:create_app.constprop.0
+   fun:prte_parse_locals
+   ...
+}
+{
+   openmpi5/LR050
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:prte_install_dirs_expand_internal
+   ...
+   fun:prte_init_minimum
    ...
 }
 
@@ -3254,6 +3303,25 @@
    match-leak-kinds: indirect
    fun:realloc
    fun:PMIx_Argv_append_unique_nosize
+   ...
+}
+{
+   openmpi5/LI007
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:realloc
+   fun:vasprintf
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LI008
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:strdup
+   fun:PMIx_Spawn_nb
    ...
 }
 
