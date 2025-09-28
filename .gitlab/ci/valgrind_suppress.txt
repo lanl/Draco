@@ -92,7 +92,7 @@
    ...
    fun:init_mpa
    fun:init_mpa_support
-   fun:main
+   ...
 }
 {
    numdiff/e002
@@ -101,7 +101,7 @@
    fun:__gmpf_set_str
    fun:init_mpa
    fun:init_mpa_support
-   fun:main
+   ...
 }
 {
    numdiff/e003
@@ -152,7 +152,7 @@
    fun:cmp_fields
    fun:cmp_lines
    fun:cmp_files
-   fun:main
+   ...
 }
 {
    numdiff/lost/05
@@ -165,7 +165,7 @@
    fun:cmp_fields
    fun:cmp_lines
    fun:cmp_files
-   fun:main
+   ...
 }
 {
    numdiff/lost/06
@@ -178,7 +178,7 @@
    fun:cmp_fields
    fun:cmp_lines
    fun:cmp_files
-   fun:main
+   ...
 }
 {
    numdiff/text1
@@ -187,7 +187,7 @@
    fun:cmp_fields
    fun:cmp_lines
    fun:cmp_files
-   fun:main
+   ...
 }
 {
    numdiff/text/2
@@ -196,7 +196,7 @@
    fun:cmp_fields
    fun:cmp_lines
    fun:cmp_files
-   fun:main
+   ...
 }
 {
    numdiff/text/3
@@ -221,7 +221,7 @@
    fun:bc_init_numbers
    fun:init_mpa
    fun:init_mpa_support
-   fun:main
+   ...
 }
 {
    numdiff/lost/04
@@ -774,7 +774,7 @@
    match-leak-kinds: definite
    fun:malloc
    fun:orte_daemon
-   fun:main
+   ...
 }
 {
    openmpi211/e0017
@@ -2561,7 +2561,6 @@
    fun:ndi_init_iso_state
    fun:ndi_c_set_zaid_h
    ...
-   fun:main
 }
 
 # ------------------------------------------------------------------------------------------------ #
@@ -3099,6 +3098,76 @@
    fun:event_base_loop
    ...
 }
+{
+   openmpi5/LR036
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:PMIx_Setenv
+   ...
+   fun:prte_parse_locals
+   ...
+}
+{
+   openmpi5/LR037
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:PMIx_Argv_copy
+   ...
+}
+{
+   openmpi5/LR038
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:epoll_init
+   ...
+   fun:prte_event_base_open
+   ...
+}
+{
+   openmpi5/LR039
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:pmix_bfrops_base_tma_argv_split_inter.constprop.0
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR040
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:pmix_bfrops_base_tma_argv_split_inter.constprop.0
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR041
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:hwloc_bitmap_alloc
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR042
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:vasprintf
+   ...
+   fun:prte_finalize
+   ...
+}
 
 # --- Memcheck: Indirect ---
 
@@ -3119,6 +3188,23 @@
    fun:malloc
    fun:strdup
    fun:pmix_bfrops_base_tma_value_xfer.constprop.0
+   ...
+}
+{
+   openmpi5/LI003
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:strdup
+   fun:PMIx_Argv_copy
+   ...
+}
+{
+   openmpi5/LI004
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:realloc
+   fun:PMIx_Argv_copy
    ...
 }
 
