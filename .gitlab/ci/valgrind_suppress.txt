@@ -3248,6 +3248,160 @@
    fun:prte_init_minimum
    ...
 }
+{
+   openmpi5/LR051
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:vasprintf
+   ...
+   fun:prte_init_minimum
+   ...
+}
+{
+   openmpi5/LR052
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:iof_write_event_construct
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR053
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:pmix_mca_base_component_find
+   ...
+   fun:prte_init_util
+   ...
+}
+{
+   openmpi5/LR054
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:check_store
+   ...
+   fun:parse_cli
+   ...
+}
+{
+   openmpi5/LR055
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:create_app.constprop.0
+   fun:prte_parse_locals
+   ...
+}
+{
+   openmpi5/LR056
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:evmap_make_space.constprop.0
+   ...
+   fun:prte_event_base_open
+   ...
+}
+{
+   openmpi5/LR057
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:evmap_make_space.constprop.0
+   ...
+   fun:event_add
+   ...
+}
+{
+   openmpi5/LR058
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:evsig_set_handler_
+   ...
+   fun:event_add
+   ...
+}
+{
+   openmpi5/LR059
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:PMIx_Proc_create
+   ...
+}
+{
+   openmpi5/LR060
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:PMIx_Info_list_start
+   ...
+   fun:prte_parse_locals
+   ...
+}
+{
+   openmpi5/LR061
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:pmix_mca_base_component_find
+   ...
+   fun:prte_init_minimum
+   ...
+}
+{
+   openmpi5/LR062
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:pmix_mca_base_component_find
+   ...
+   fun:pmix_mca_base_framework_open
+   ...
+}
+{
+   openmpi5/LR063
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:prte_schizo_base_select
+   ...
+}
+{
+   openmpi5/LR064
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:pmix_mca_base_component_find
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR065
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:pmix_pmdl_base_select
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LR066
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:PMIx_Info_create
+   fun:PMIx_IOF_push
+   ...
+}
 
 # --- Memcheck: Indirect ---
 
