@@ -2730,6 +2730,16 @@
    fun:event_base_loop
    ...
 }
+{
+   openmpi5/LD014
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:pmix_pointer_array_init
+   ...
+   fun:mpi_init
+   ...
+}
 
 # --- Leak: Reachable ---
 
@@ -3402,6 +3412,34 @@
    fun:PMIx_IOF_push
    ...
 }
+{
+   openmpi5/LR067
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:PMIx_IOF_push
+   ...
+}
+{
+   openmpi5/LR068
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:event_base_new_with_config
+   ...
+   fun:mpi_init
+   ...
+}
+{
+   openmpi5/LR069
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:opal_hash_table_init2
+   ...
+   fun:mpi_init
+   ...
+}
 
 # --- Memcheck: Indirect ---
 
@@ -3476,6 +3514,45 @@
    fun:malloc
    fun:strdup
    fun:PMIx_Spawn_nb
+   ...
+}
+{
+   openmpi5/LI009
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:prte_node_construct
+   ...
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LI010
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:prte_job_unpack
+   ...
+   fun:event_base_loop
+   ...
+}
+{
+   openmpi5/LI011  
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:rte_init
+   fun:prte_init
+   ...
+}
+{
+   openmpi5/LI012
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:prte_rmaps_base_setup_proc
+   ...
+   fun:event_base_loop
    ...
 }
 
