@@ -3520,6 +3520,23 @@
    fun:mpi_init
    ...
 }
+{
+   openmpi5/LR077
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   obj:*/prte
+   fun:malloc
+   fun:strdup
+   fun:main
+}
+{
+   openmpi5/LR078
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   obj:*/prte
+   fun:malloc
+   fun:main
+}
 
 # --- Memcheck: Indirect ---
 
