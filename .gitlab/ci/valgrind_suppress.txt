@@ -3440,6 +3440,86 @@
    fun:mpi_init
    ...
 }
+{
+   openmpi5/LR070
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:hwloc__add_info
+   ...
+   fun:ompi_mpi_init
+}
+{
+   openmpi5/LR071  
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:opal_pointer_array_init
+   ...
+   fun:mpi_init
+   ...
+}
+{
+   openmpi5/LR072
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:evmap_io_add_
+   ...
+   fun:mpi_init
+   ...
+}
+{
+   openmpi5/LR073
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:epoll_init
+   ...
+   fun:mpi_init
+   ...
+}
+{
+   openmpi5/LR074
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:hwloc_components_init
+   ...
+   fun:mpi_init
+   ...
+}
+{
+   openmip5/LR075
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:opal_datatype_create_desc
+   ...
+   fun:mpi_init
+   ...
+}
+{
+   openmip5/LR075
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:event_base_priority_init
+   ...
+   fun:mpi_init
+   ...
+}
+{
+   openmpi5/LR076
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:epoll_init
+   ...
+   fun:mpi_init
+   ...
+}
 
 # --- Memcheck: Indirect ---
 
