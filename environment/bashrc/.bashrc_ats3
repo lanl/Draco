@@ -30,6 +30,8 @@ if [[ ! ${modcmd} ]]; then
   echo "ERROR: The module command was not found. No modules will be loaded (ats-3 e02)."
 else
   module use --append /usr/projects/draco/Modules/ats3
+  #module load PrgEnv-gnu
+  #module load lapse/2.6.0-gnu
   module load lapse/2.6.0-intel
 fi
 

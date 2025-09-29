@@ -234,13 +234,14 @@ Draco_Mesh_Splitter::split_mesh(const std::shared_ptr<Draco_Mesh> &global_mesh) 
   side_set_flag.reserve(num_sides);
   side_node_count.reserve(num_sides);
   side_to_node_linkage.reserve(nvert_per_side);
-
+  auto global_side_set_flag = global_mesh->get_side_set_flag();
   for (size_t lcell = 0; lcell < num_lcells; ++lcell) {
     const auto &gcell = my_gcells[lcell];
     if (gcgs_linkage.count(static_cast<unsigned>(gcell)) > 0) {
       const auto &bcs = gcgs_linkage.at(static_cast<unsigned>(gcell));
       for (const auto &bc : bcs) {
-        side_set_flag.push_back(bc.first);
+        Check(bc.first < global_side_set_flag.size());
+        side_set_flag.push_back(global_side_set_flag[bc.first]);
         side_node_count.push_back(static_cast<unsigned>(bc.second.size()));
         // converge global node indices to local node indices
         for (auto gnode : bc.second) {

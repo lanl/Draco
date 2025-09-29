@@ -112,20 +112,30 @@ public:
   //! Gather boundary cell data for all processors with per-ghost-cell variable vector lengths
   //! assume local_data and bc_data are vectors.
   template <typename T>
-  void gather_ghost_cell_data(SP_Comm_Patterns const &pattern,
-                              const std::vector<std::vector<T>> &local_data,
-                              std::vector<std::vector<T>> &ghost_data,
-                              const std::vector<size_t> &local_vector_size,
-                              const std::vector<size_t> &ghost_vector_size) const;
+  std::vector<std::vector<T>>
+  gather_ghost_cell_data(SP_Comm_Patterns const &pattern,
+                         const std::vector<std::vector<T>> &local_data,
+                         const std::vector<size_t> &local_vector_size,
+                         const std::vector<size_t> &ghost_vector_size) const;
+
+  //! Gather boundary cell data for all processors, where the data can be sparse (some cell data not
+  //! populated), with per-ghost-cell variable vector lengths assume local_data and bc_data are
+  //! vectors.
+  template <typename T>
+  std::vector<std::vector<T>>
+  gather_sparse_ghost_cell_data(SP_Comm_Patterns const &pattern,
+                                const std::vector<std::vector<T>> &local_data,
+                                const std::vector<size_t> &local_vector_size,
+                                const std::vector<size_t> &ghost_vector_size) const;
 
   //! Gather boundary cell vector data for all processors with per-ghost-cell variable lengths
   //! assume local_data and bc_data are vectors.
   template <typename T>
-  void gather_ghost_cell_data(SP_Comm_Patterns const &pattern,
-                              const std::vector<std::vector<std::vector<T>>> &local_data,
-                              std::vector<std::vector<std::vector<T>>> &ghost_data,
-                              const std::vector<size_t> &local_vector_size,
-                              const std::vector<size_t> &ghost_vector_size, const int Nv) const;
+  std::vector<std::vector<std::vector<T>>>
+  gather_ghost_cell_data(SP_Comm_Patterns const &pattern,
+                         const std::vector<std::vector<std::vector<T>>> &local_data,
+                         const std::vector<size_t> &local_vector_size,
+                         const std::vector<size_t> &ghost_vector_size, const int Nv) const;
 
   //! Ghost cell data exchange
   template <typename T>
