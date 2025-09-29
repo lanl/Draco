@@ -1044,11 +1044,6 @@ Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &pattern,
   size_t num_incoming = 0;
   for (auto itor = recv_begin; itor != recv_end; ++itor) {
     // Processor ordering of comm_patterns map must match provided ghost_vector_size.
-    size_t data_size = 0;
-    for (auto ghost_cell : itor->second) {
-      data_size += ghost_vector_size[ghost_cell - 1];
-    }
-    Check(data_size > 0);
     num_incoming++;
   }
 
@@ -1121,11 +1116,13 @@ Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &pattern,
 
     data_request = incoming_data.begin();
     for (auto itor = recv_begin; itor != recv_end; ++itor) {
+#ifdef CHECK_ON
       size_t data_size = 0;
       for (auto ghost_cell : itor->second) {
         data_size += ghost_vector_size[ghost_cell - 1];
       }
       Check(data_size > 0);
+#endif
 
       // If the message is complete...
       if (data_request->complete()) {
