@@ -198,6 +198,10 @@ public:
   //! Get face index of adjacent face in neighboring cell
   [[nodiscard]] int32_t next_face(const int32_t cell, const int32_t face) const;
 
+  //! Extend the ghost cell data to include corners
+  [[nodiscard]] std::pair<std::vector<int>, std::vector<int>>
+  extend_ghost_to_corner_cells(const int cell_index_base = 0) const;
+
 private:
   // >>> SUPPORT FUNCTIONS
 

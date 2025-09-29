@@ -103,6 +103,7 @@ Draco_Mesh::Draco_Mesh(
   }
 
   // set face index of the adjacent face of off-rank cell across rank boundary
+  // Requires the nearest neighbor ghost cell rank area (excluding corner cells)
   if (ghost_cell_type_.size() > 0)
     set_ghost_next_faces();
 }
@@ -824,6 +825,68 @@ void Draco_Mesh::compute_node_to_cell_linkage(
   // since this mesh was constructed with ghost data, the resulting map must have non-zero size
   Ensure(node_to_ghost_cell_linkage.size() > 0);
   Ensure(node_to_ghost_coord_linkage.size() > 0);
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief extend ghost data to include ghost corner cells 
+ *
+ * We intentionally append to the existing array here because the mesh is passed with some assumed
+ * ghost cell connectivity. Removing duplicates would break this assumption.
+ *
+ * \param[in] cell_index_base [0 or 1] specify the starting index for the cell indexing.
+ *
+ * return {std::vector<int> extended_ghost_cell_rank, std::vector<int>
+ * extended_ghost_cell_number}
+ */
+std::pair<std::vector<int>, std::vector<int>>
+Draco_Mesh::extend_ghost_to_corner_cells(const int cell_index_base) const {
+  Require(cell_index_base == 0 || cell_index_base == 1);
+  Require(ghost_cell_number.size() == ghost_cell_rank.size());
+  std::map<int, std::set<int>> ghost_map;
+  // first add the face based ghost to the map
+  for (size_t g = 0; g < ghost_cell_number.size(); g++)
+    ghost_map[ghost_cell_rank[g]].insert(ghost_cell_number[g]);
+  // store a copy so we don't duplicate ghost data that already existis
+  const auto original_ghost_map = ghost_map;
+  // Now extend ghost to include corner data using node_to_ghost_cell_linkage
+  for (auto &gnode : node_to_ghost_cell_linkage) {
+    for (auto &gcell : gnode.second)
+      ghost_map[gcell.second].insert(gcell.first.first + cell_index_base);
+  }
+  // Now check the difference between the full ghost map and the original ghost map to get a list of
+  // new ghost cells
+  std::map<int, std::set<int>> new_ghost_map;
+  for (auto &[ghost_rank, ghost_cells] : ghost_map) {
+    if (original_ghost_map.find(ghost_rank) == original_ghost_map.end()) {
+      new_ghost_map[ghost_rank] = ghost_cells;
+    } else {
+      std::set_difference(
+          ghost_cells.begin(), ghost_cells.end(), original_ghost_map.at(ghost_rank).begin(),
+          original_ghost_map.at(ghost_rank).end(),
+          std::inserter(new_ghost_map[ghost_rank], new_ghost_map[ghost_rank].begin()));
+    }
+  }
+  // Now resize and repopulate the simple ghost vector data
+  size_t new_ghost_size = 0;
+  for (auto &[ghost_rank, ghost_cells] : new_ghost_map) {
+    new_ghost_size += ghost_cells.size();
+  }
+  // This is not always true because the original data contains duplicates of ghost cells
+  const size_t ghost_size = ghost_cell_number.size() + new_ghost_size;
+  auto extended_ghost_cell_number = ghost_cell_number;
+  auto extended_ghost_cell_rank = ghost_cell_rank;
+  extended_ghost_cell_number.resize(ghost_size);
+  extended_ghost_cell_rank.resize(ghost_size);
+  size_t g = ghost_cell_number.size();
+  for (auto &[ghost_rank, ghost_cells] : new_ghost_map) {
+    for (auto &ghost_cell : ghost_cells) {
+      extended_ghost_cell_rank[g] = ghost_rank;
+      extended_ghost_cell_number[g] = ghost_cell;
+      g++;
+    }
+  }
+  return {extended_ghost_cell_rank, extended_ghost_cell_number};
 }
 
 //------------------------------------------------------------------------------------------------//
