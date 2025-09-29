@@ -384,6 +384,29 @@
       "configurePreset": "linux-debug-cxx20"
     },
     {
+      "name": "linux-debug-valgrind",
+      "inherits": "linux-ctest",
+      "description": "Run all tests under valgrind",
+      "displayName": "Ctest with valgrind dynamic analysis",
+      "configurePreset": "linux-debug-valgrind",
+      "filter": {
+        "include": {
+          "name": "memcheck_",
+          "label": "memcheck"
+        },
+        "exclude": {
+          "name": "lightweight"
+        }
+      }
+    },
+    {
+      "name": "linux-debug-coverage",
+      "inherits": "linux-ctest",
+      "description": "Collect coverage (gcov) data when running tests",
+      "displayName": "CTest when gcov enabled.",
+      "configurePreset": "linux-debug-coverage"
+    },
+    {
       "name": "linux-debug-clang-tidy",
       "inherits": "linux-ctest",
       "description": "Run all tests",
