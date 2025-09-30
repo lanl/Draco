@@ -3524,7 +3524,16 @@
    openmpi5/LR077
    Memcheck:Leak
    match-leak-kinds: reachable
-   obj:/ccs/opt/vendors/devops-2025.05.22/dracose/spack/opt/spack/linux-rhel8-broadwell/gcc-13.3.0/openmpi-5.0.5-6pn4yn4/bin/prte
+   fun:malloc
+   fun:strdup
+   fun:main
+}
+{
+   openmpi5/LR078
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:main
 }
 
 # --- Memcheck: Indirect ---
