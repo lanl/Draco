@@ -83,6 +83,29 @@
 }
 
 ## ---------------------------------------------------------------------- ##
+## Random123
+## ---------------------------------------------------------------------- ##
+
+{
+   r123/e001
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_Z7ntcsdupPKc
+   fun:_Z16register_unknownPKc
+   fun:_ZL8readtestPKcP12kat_instance
+   fun:main
+}
+{
+   r123/e002
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:__fopen_internal
+   fun:main
+}
+
+## ---------------------------------------------------------------------- ##
 ## Numdiff
 ## ---------------------------------------------------------------------- ##
 
@@ -2738,6 +2761,16 @@
    fun:pmix_pointer_array_init
    ...
    fun:mpi_init
+   ...
+}
+{
+   openmpi5/LD015
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:prte_node_construct
+   ...
+   fun:prte_init
    ...
 }
 
