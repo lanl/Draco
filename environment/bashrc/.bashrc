@@ -146,8 +146,8 @@ if [[ ${INTERACTIVE} == true ]]; then
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_darwin_fe" ;;
 
-    # Cyclone | Fog
-    cy* | fg*)
+    # Cyclone
+    cy*)
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_cts1" ;;
 
@@ -170,11 +170,6 @@ if [[ ${INTERACTIVE} == true ]]; then
     ro-rfe* | ty-fe*)
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats3" ;;
-
-    # LLNL ATS-2
-    rzansel* | sierra*)
-      # shellcheck source=/dev/null
-      source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats2" ;;
 
     # LLNL ATS-4
     rznevada* | rzvernal* | rzadams*)

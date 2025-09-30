@@ -494,14 +494,6 @@ downstream-deploy-jayenne:
       when: never
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-post_rzansel_regress_results_to_cdash:
-  extends: .post_rz_regress_results_to_cdash
-  needs:
-    - job: rzansel_deb_gcc1021_regress
-      artifacts: true
-    - job: rzansel_rel_gcc1021_regress
-      artifacts: true
-
 post_rzadams_regress_results_to_cdash:
   extends: .post_rz_regress_results_to_cdash
   needs:

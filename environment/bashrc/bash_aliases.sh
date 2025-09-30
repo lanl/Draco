@@ -45,7 +45,6 @@ alias msh='module show'
 
 # machines
 # alias sierra='ssh -t redcap ssh sierra.llnl.gov'
-alias rzansel='ssh -t ihpc-gate.lanl.gov ssh rzansel.llnl.gov'
 alias rznevada='ssh -t ihpc-gate.lanl.gov ssh rznevada.llnl.gov'
 alias rzvernal='ssh -t ihpc-gate.lanl.gov ssh rzvernal.llnl.gov'
 
@@ -116,16 +115,10 @@ unset color_prompt
 
 # Aliases -----------------------------------------------------------------------------------------#
 
-# alias cmakedebug='unset MPI_ROOT;C_FLAGS=-Werror CXX_FLAGS=-Werror cmake -Wdeprecated -Wdev'
-# alias cmakedebugfast='cmake -GNinja -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=OFF'
-# alias cmakerel='cmake -DCMAKE_BUILD_TYPE=RELEASE'
-# alias ehco='echo'
-# alias emacs='/bin/emacs -fn 6x13 &> /dev/null'
 # alias functions='declare -f | grep \^[a-zA-Z]'
 # alias gitk='gitk --all'
 # alias moduel='module'
 # alias reportinvalidsymlink='find . -xtype l'
-# alias rzansel='ssh -t ihpc-gate1.lanl.gov ssh rzansel.llnl.gov'
 # alias vi='emacs -nw'
 
 # Kerberos

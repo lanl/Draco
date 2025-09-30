@@ -198,7 +198,7 @@ if [[ "${cdash_upload_auth_token}x" == "x" ]]; then
 fi
 
 case $SITE_ID in
-rzansel|rzvernal|rzadams)
+rzvernal|rzadams)
   if [[ ${modes} == "Submit" ]]; then
     # We can't do the regular ctest Submit from LLNL RZ systems yet because we can't access
     # https://rtt.lanl.gov/cdash3. Instead tar the results and register them as artifacts. Another

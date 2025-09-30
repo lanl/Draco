@@ -40,7 +40,7 @@ function dracohelp()
   echo "selectscratchdir - find a scratch drive"
   echo "version_gt    - compare versions"
   echo "whichall      - Find all matchs."
-  echo "xfstatus      - print status 'transfered' files."
+  echo "xfstatus      - print status 'transferred' files."
   echo -e "\nUse 'type <function>' to print the full content of any function.\n"
 }
 
@@ -76,13 +76,6 @@ function machineName
     sysName=$(/usr/projects/hpcsoft/utilities/bin/sys_name)
   elif [[ -d /projects/darwin ]]; then
     sysName=darwin
-  elif [[ -d /usr/gapps/jayenne ]]; then
-    case $(uname -n) in
-      sq* | sequoia*) sysName=sq ;;
-      rzansel*) sysName=rzansel ;;
-      rzmanta*) sysName=rzmanta ;;
-      sierra*) sysName=sierra ;;
-    esac
   else
     sysName=$(uname -n | sed -e 's/[.].*//')
   fi
@@ -199,13 +192,6 @@ function flavor
           LMPIVER='unknown'
         fi
         mpiflavor="openmpi-$LMPIVER"
-      elif [[ $(which mpirun) =~ smpi ]]; then
-        if [[ $MPIRUN ]]; then
-          LMPIVER=$(echo "${MPIRUN}" | sed -r 's%.*-([0-9]+)[.]([0-9]+)[.]([0-9]+)[.]([0-9]+).*%\1.\2.\3.\4%')
-        else
-          LMPIVER='unknown'
-        fi
-        mpiflavor="spectrum-mpi-$LMPIVER"
       else
         mpiflavor="unknown"
       fi
@@ -348,8 +334,7 @@ function lookupppn()
   target=$(uname -n | sed -e 's/[.].*//')
   ppn=1
   case "${target}" in
-    fi* | ic* | sn* | cy* | fg* )   ppn=36 ;;
-    rzansel* | rzmanta* | sierra* ) ppn=40 ;;
+    cy*)   ppn=36 ;;
     *) ppn=$(grep -c processor /proc/cpuinfo) ;;
   esac
   echo "$ppn"
@@ -386,12 +371,7 @@ function npes_test
   local target
   target=$(uname -n | sed -e 's/[.].*//')
   case "${target}" in
-
-    # current LSF only allows one executable to run under 'jsrun' at a time.
-    # rzansel* | rzmanta* | sierra*) ppn=1 ;;
-
     *)
-
       # use lscpu if it is available.
       if ! [[ $(which lscpu 2>/dev/null) == 0 ]]; then
         local cps

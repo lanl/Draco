@@ -13,7 +13,7 @@
 # * DRACO_C4   MPI|SCALAR
 # * C4_SCALAR  BOOL
 # * C4_MPI     BOOL
-# * MPI_FLAVOR openmpi|mpih|intel|mvapich2|spectrum|msmpi
+# * MPI_FLAVOR openmpi|mpih|intel|mvapich2|msmpi
 # * MPI_VERSION NN.NN.NN
 #
 # ------------------------------------------------------------------------------------------------ #
@@ -32,7 +32,7 @@ include(FeatureSummary)
 # Returns (as cache variables)
 #
 # * MPI_VERSION
-# * MPI_FLAVOR = {openmpi, mpich, cray, spectrum, mvapich2, intel}
+# * MPI_FLAVOR = {openmpi, mpich, cray, mvapich2, intel}
 #
 # ------------------------------------------------------------------------------------------------ #
 function(setMPIflavorVer)
@@ -52,11 +52,6 @@ function(setMPIflavorVer)
     set(MPI_FLAVOR "intel")
   elseif("${MPIEXEC_EXECUTABLE}" MATCHES "mvapich2")
     set(MPI_FLAVOR "mvapich2")
-  elseif(
-    "${MPIEXEC_EXECUTABLE}" MATCHES "spectrum-mpi"
-    OR "${MPIEXEC_EXECUTABLE}" MATCHES "lrun"
-    OR "${MPIEXEC_EXECUTABLE}" MATCHES "jsrun")
-    set(MPI_FLAVOR "spectrum")
   endif()
 
   if(CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
@@ -84,8 +79,7 @@ function(setMPIflavorVer)
       # extract the version...
       if(${line} MATCHES "Version"
          OR ${line} MATCHES "OpenRTE"
-         OR ${line} MATCHES "Open MPI"
-         OR ${line} MATCHES "Spectrum MPI")
+         OR ${line} MATCHES "Open MPI")
         set(DBS_MPI_VER "${line}")
         if("${DBS_MPI_VER}" MATCHES "[0-9]+[.][0-9]+[.][0-9]+")
           string(REGEX REPLACE ".*([0-9]+)[.]([0-9]+)[.]([0-9]+).*" "\\1" DBS_MPI_VER_MAJOR
@@ -304,19 +298,6 @@ macro(setupOpenMPI)
       set(MPIEXEC_OMP_PREFLAGS
           "${MPIEXEC_PREFLAGS} --map-by ppr:${MPI_CORES_PER_CPU}:socket --report-bindings")
     endif()
-
-    # Spectrum-MPI on darwin
-    #
-    # Limit communication to on-node via '-intra sm' or 'intra vader'
-    # https://www.ibm.com/support/knowledgecenter/SSZTET_EOS/eos/guide_101.pdf
-    if("${MPIEXEC_EXECUTABLE}" MATCHES "smpi" AND NOT MPIEXEC_PREFLAGS MATCHES "-intra sm")
-      string(REPLACE "-bind-to none" "-bind-to core" MPIEXEC_PREFLAGS ${MPIEXEC_PREFLAGS})
-      # string(REPLACE "-bind-to none" "-bind-to core" MPIEXEC_OMP_PREFLAGS ${MPIEXEC_OMP_PREFLAGS})
-      set(smpi-sm-only "-intra sm -aff off --report-bindings")
-      string(APPEND MPIEXEC_PREFLAGS " ${smpi-sm-only}")
-      string(APPEND MPIEXEC_OMP_PREFLAGS " ${smpi-sm-only}")
-      unset(smpi-sm-only)
-    endif()
   endif()
 
   # Cache the result
@@ -431,69 +412,6 @@ macro(setupCrayMPI)
 endmacro()
 
 # ------------------------------------------------------------------------------------------------ #
-# Setup Spectrum MPI wrappers (Sierra, Rzansel) *
-# https://www.ibm.com/support/knowledgecenter/SSZTET_EOS/eos/guide_101.pdf
-# ------------------------------------------------------------------------------------------------ #
-macro(setupSpectrumMPI)
-
-  # Find cores/cpu, cpu/node, hyper-threading
-  query_topology()
-
-  # jsrun options
-  #
-  # Ref: https://hpc.llnl.gov/training/tutorials/using-lcs-sierra-system#jsrun
-  #
-  # Basic: -n Total number of cores
-  #
-  # Using resource sets: -a Number of tasks per resource set -n Total number of resource sets for
-  # the job -c Number of CPUs (cores) per resource set -g Number of GPUs per resource set -r Number
-  # of resource sets per node.
-  #
-  # Examples: - jsrun -a4 -c1 -g1  => 4 tasks on 4 cores that share 1 gpu. - jsrun -r4 -n8      => 2
-  # nodes, 4 resource sets per node, 8 resource sets total - jsrun -a4 -c16 -g2 => 4 tasks, 16
-  # cores, 2 gpus
-
-  if(MPIEXEC_EXECUTABLE MATCHES jsrun)
-    # 1 resource set; 1 thread; no gpu; no binding --nrs 1
-    set(MPIEXEC_PREFLAGS "-c 1 -g 0 --bind none")
-  elseif(MPIEXEC_EXECUTABLE MATCHES lrun)
-    set(MPIEXEC_PREFLAGS "--pack --threads=1 -v") # --bind=off
-  else()
-    message(FATAL_ERROR "Unexpected mpirun: ${MPIEXEC_EXECUTABLE}")
-  endif()
-  # --pack ==> -c 1 -g 0.  This is actually bad for us. Disable lrun -n 2 -c 10 --threads=10
-  # --bind=off ==> jsrun --np 1 --nrs 1 -c ALL_CPUS -g ALL_GPUS -d plane:1 -b rs -X 1 consider:
-  # jsrun --np 2 --nrs 1 -c 10 -g 0 -bind none
-
-  #
-  # Setup for OMP plus MPI
-  #
-
-  if(DEFINED ENV{OMP_NUM_THREADS})
-    set(ont $ENV{OMP_NUM_THREADS})
-  else()
-    set(ont 4)
-  endif()
-  if(MPIEXEC_EXECUTABLE MATCHES jsrun)
-    # 1 resource set; OMP_NUM_THREADS tasks; no gpu; no binding
-    set(MPIEXEC_OMP_PREFLAGS "--nrs 1 -c ${ont} -g 0 --bind none")
-  elseif(MPIEXEC_EXECUTABLE MATCHES lrun)
-    set(MPIEXEC_OMP_PREFLAGS "--threads=${ont} -c${ont} --bind=none -v")
-    # --pack ? --smt=4 ?
-  else()
-    message(FATAL_ERROR "Unexpected mpirun: ${MPIEXEC_EXECUTABLE}")
-  endif()
-
-  set(MPIEXEC_OMP_PREFLAGS
-      ${MPIEXEC_OMP_PREFLAGS}
-      CACHE STRING "extra mpirun flags (list)." FORCE)
-
-  mark_as_advanced(MPI_CPUS_PER_NODE MPI_CORES_PER_CPU MPI_PHYSICAL_CORES MPI_MAX_NUMPROCS_PHYSICAL
-                   MPI_HYPERTHREADING)
-
-endmacro()
-
-# ------------------------------------------------------------------------------------------------ #
 # Setup MPI (generic) on Linux
 # ------------------------------------------------------------------------------------------------ #
 macro(setupGenericMPILibrariesUnix)
@@ -592,8 +510,6 @@ macro(setupMPILibrariesUnix)
       setupmpichmpi()
     elseif("${MPI_FLAVOR}" MATCHES "intel")
       setupintelmpi()
-    elseif("${MPI_FLAVOR}" MATCHES "spectrum")
-      setupspectrummpi()
     elseif("${MPI_FLAVOR}" MATCHES "cray")
       setupcraympi()
     else()
