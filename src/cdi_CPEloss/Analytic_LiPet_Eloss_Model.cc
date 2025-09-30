@@ -229,8 +229,8 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
 #else
 double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
     [[maybe_unused]] const double temperature_in, [[maybe_unused]] const double number_density_in,
-    [[maybe_unused]] const double incident_speed_in,
-    [[maybe_unused]] const double debye_length_in) const {
+    [[maybe_unused]] const double incident_speed_in, [[maybe_unused]] const double debye_length_in,
+    [[maybe_unused]] const bool edward_relative_velocity) const {
   Insist(false, "Analytic_LiPet_Eloss_Model::calculate_eloss_modified requires GSL!");
 }
 #endif
