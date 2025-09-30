@@ -35,7 +35,6 @@ include:
   - local: /.gitlab/ci/docker-jobs.yml
   - local: /.gitlab/ci/ro-jobs.yml
   - local: /.gitlab/ci/rzadams-jobs.yml
-  - local: /.gitlab/ci/rzansel-jobs.yml
 
 #--------------------------------------------------------------------------------------------------#
 # End .gitlab-ci.yml

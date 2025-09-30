@@ -12,7 +12,7 @@ echo "    SITE_ID = ${SITE_ID}"
 [[ -n "${SCHEDULER_PARAMETERS}" ]] && echo "    Using: salloc ${SCHEDULER_PARAMETERS}"
 
 case ${SITE_ID} in
-  ccs* | darwin | fog* | roci* | rz* | venado*) ;;
+  ccs* | darwin | roci* | rz* | venado*) ;;
   *) die ".gitlab/ci/environments.sh :: SITE_ID not recognized, SITE_ID = ${SITE_ID}" ;;
 esac
 
@@ -56,24 +56,11 @@ elif [[ "${SITE_ID}" =~ "ccscs" ]] || [[ "${SITE_ID}" =~ "ccsnet" ]] ; then
 #------------------------------------------------------------------------------#
 # RZ systems (LLNL)
 #------------------------------------------------------------------------------#
-elif [[ "${SITE_ID}" =~ "rzvernal" ]] || [[ "${SITE_ID}" =~ "rzansel" ]] || \
-  [[ "${SITE_ID}" =~ "rzadams" ]]; then
+elif [[ "${SITE_ID}" =~ "rzvernal" ]] || [[ "${SITE_ID}" =~ "rzadams" ]]; then
   run "module use --append /usr/gapps/jayenne/Modules/${SITE_ID}"
   for sm in draco lapse; do
     [[ $(module list 2>&1 | grep -c $sm) -gt 0 ]] && module unload $sm
   done
-  case ${DRACO_ENV} in
-    lapse* | draco* ) ;;
-    *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
-  esac
-  run "module load ${DRACO_ENV}"
-
-#------------------------------------------------------------------------------#
-# Fog
-#------------------------------------------------------------------------------#
-elif [[ "${SITE_ID}" =~ "fog" ]]; then
-  run "module use --append /usr/projects/draco/Modules/cts1"
-  # export PATH=/scratch/vendors/bin:$PATH # clang-format
   case ${DRACO_ENV} in
     lapse* | draco* ) ;;
     *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
