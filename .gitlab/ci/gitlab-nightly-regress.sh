@@ -131,18 +131,14 @@ printenv >& environment.log
 for i in C CXX Fortran CUDA; do
 
   # Turn build warnings into fatal errors
-  if [[ "${DRACO_ENV}" =~ "xl16" ]] || [[ "${DRACO_ENV}" =~ "power9-xl" ]]; then
-    eval export ${i}_FLAGS+=\" -qhalt=w\"
+  if [[ "${i}" == "Fortran" ]] && [[ "${FC}" =~ "ifort" ]]; then
+    # do not add the flag
+    echo "Skip adding -Werror to ${i}_FLAGS (FC = ${FC})"
+  elif [[ "${i}" == "CUDA" ]]; then
+    eval export ${i}_FLAGS+=\" -Werror all-warnings\"
   else
-    if [[ "${i}" == "Fortran" ]] && [[ "${FC}" =~ "ifort" ]]; then
-      # do not add the flag
-      echo "Skip adding -Werror to ${i}_FLAGS (FC = ${FC})"
-    elif [[ "${i}" == "CUDA" ]]; then
-      eval export ${i}_FLAGS+=\" -Werror all-warnings\"
-    else
-      # Works for gcc, llvm, and icpc (not ifort).
-      eval export ${i}_FLAGS+=\" -Werror\"
-    fi
+    # Works for gcc, llvm, and icpc (not ifort).
+    eval export ${i}_FLAGS+=\" -Werror\"
   fi
 
   # Enable coverage for Debug builds

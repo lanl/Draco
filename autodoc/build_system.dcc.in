@@ -376,7 +376,7 @@ This will build Draco using two processors. Now assume that we wish to test the 
 
 \par Example 2
 
-A client wishes to use the \c cdi_ndi package on CTS-1.  We will compile an optimized version of
+A client wishes to use the \c cdi_ndi package.  We will compile an optimized version of
 Draco for this exercise using the Intel compiler.  Draco has been checked out into \c
 /scratch/$USER/draco.  The following packages sit under \c /scratch/$USER/draco/src:
 

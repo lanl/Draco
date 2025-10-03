@@ -124,18 +124,6 @@ function machineFamily
   machfam=$(uname -p)
   case $(osName) in
     darwin*) machfam=$(osName) ;;
-    cle*)
-      case $(uname -n | sed -e 's/[.].*//') in
-        tt* | tr* ) machfam="ats1" ;;
-        cp* | th* ) machfam="cray" ;;
-      esac
-      ;;
-    toss3) machfam="cts1" ;;
-    ppc64le)
-      case $(uname -n | sed -e 's/[.].*//') in
-        rzans* | sierra* ) machfam="ats2" ;;
-      esac
-      ;;
   esac
   echo "${machfam}"
 }
@@ -147,42 +135,6 @@ function flavor
   platform=$(machineName)
   os=$(osName)
   case $os in
-    toss*)
-      if [[ $LMPI ]]; then
-        mpiflavor="$LMPI-$LMPIVER"
-      else
-        mpiflavor="unknown"
-      fi
-      if [[ $LCOMPILER ]]; then
-        compilerflavor="$LCOMPILER-$LCOMPILERVER"
-      else
-        compilerflavor="unknown"
-      fi
-      ;;
-    cle*)
-      if [[ $CRAY_MPICH2_VER ]]; then
-        mpiflavor=mpt-$CRAY_MPICH2_VER
-      else
-        mpiflavor="unknown"
-      fi
-      # Try to determine the loaded compiler
-      loadedmodules="${LOADEDMODULES:-notset}"
-      # select modules that look like compilers
-      unset compilermodules
-      for module in ${loadedmodules//:/ }; do
-        case $module in
-          PrgEnv*)
-          # Ingore PrgEnv matches.
-          ;;
-          cce/* | cray/* | gcc/* | gnu/* | intel/* | pgi/* )
-            tmp="${module////-}"
-            compilermodules="$tmp $compilermodules"
-            ;;
-        esac
-      done
-      # pick the first compiler in the list
-      compilerflavor=$(echo "${compilermodules}" | awk '{print $1;}')
-      ;;
     darwin*)
       platform=$os # e.g.: darwin-power9
       if [[ $(which mpirun) =~ openmpi ]]; then
@@ -195,40 +147,17 @@ function flavor
       else
         mpiflavor="unknown"
       fi
-      # Strip compiler options if they are defined in the module files. e.g. CC="xlc -F/full/path/file"
+      # Strip compiler options if they are defined in the module files.
       comp=$(echo "$CC" | awk '{print $1;}')
       if [[ ${comp} ]]; then
         if [[ ${comp} =~ "gcc" ]]; then
           compilerflavor=gnu-$("${comp}" --version | head -n 1 | sed -r 's%.* %%')
         elif [[ $comp =~ "icc" ]]; then
           compilerflavor=intel-$("${comp}" --version | head -n 1 | awk '{ print $3 }' | sed -r 's%([0-9]+).([0-9]+).([0-9]+).*%\1.\2.\3%')
-        elif [[ $comp =~ "IBM" ]] || [[ $comp =~ "xlc" ]]; then
-          compilerflavor=xl-$("${comp}" --version | grep Version | sed -r 's%.* %%' | sed -r 's%0+([1-9])%\1%g')
         fi
       else
         compilerflavor="unknown"
       fi
-      ;;
-    ppc64)
-      # more /bgsys/drivers/V1R2M3/ppc64/comm/include/mpi.h
-      # | grep MPI_VERSION    ==> 2 ==> (mpich2)
-      # | grep MPICH2_VERSION ==> 1.5
-      mpiflavor="mpich2-1.5"
-
-      case $CC in
-        *gcc*)
-          LCOMPILER=gnu
-          LCOMPILERVER=$("${CC}" --version | head -n 1 | sed -e 's/.*\([0-9][.][0-9][.][0-9]\)/\1/')
-          compilerflavor="$LCOMPILER-$LCOMPILERVER"
-          ;;
-        *xlc*)
-          LCOMPILER=ibm
-          LCOMPILERVER=$("$CC" -V | head -n 1 | sed -e 's/.*[/]\([0-9]\+\.[0-9]\).*/\1/')
-          compilerflavor="$LCOMPILER-$LCOMPILERVER"
-          ;;
-        *)
-          compilerflavor=unknown-unknown ;;
-      esac
       ;;
 
     ppc64le)
@@ -244,11 +173,6 @@ function flavor
         *gcc*)
           LCOMPILER=gnu
           LCOMPILERVER=$("$CC" --version | head -n 1 | sed -e 's/.*\([0-9][.][0-9][.][0-9]\).*/\1/')
-          compilerflavor="$LCOMPILER-$LCOMPILERVER"
-          ;;
-        *xlc*)
-          LCOMPILER=ibm
-          LCOMPILERVER=$("$CC" --version | head -n 1 | sed -e 's/.*V\([0-9][0-9][.][0-9][.][0-9]\) .*/\1/')
           compilerflavor="$LCOMPILER-$LCOMPILERVER"
           ;;
         *) compilerflavor=unknown-unknown ;;
@@ -329,14 +253,8 @@ function selectscratchdir ()
 function lookupppn()
 {
   # https://hpc.lanl.gov/index.php?q=summary_table
-  local target
   local ppn
-  target=$(uname -n | sed -e 's/[.].*//')
-  ppn=1
-  case "${target}" in
-    cy*)   ppn=36 ;;
-    *) ppn=$(grep -c processor /proc/cpuinfo) ;;
-  esac
+  ppn=$(grep -c processor /proc/cpuinfo)
   echo "$ppn"
 }
 

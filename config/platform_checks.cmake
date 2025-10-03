@@ -65,7 +65,7 @@ function(dbs_set_sitename)
       CACHE "STRING" "Name of the current machine" FORCE)
   set(SITENAME_FAMILY
       ${SITENAME_FAMILY}
-      CACHE "STRING" "Name of the current machine family (ATS-2/3/4, CTS-1, etc.)" FORCE)
+      CACHE "STRING" "Name of the current machine family (ATS-3/4, etc.)" FORCE)
 
 endfunction()
 
