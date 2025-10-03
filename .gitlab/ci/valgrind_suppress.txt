@@ -2600,6 +2600,26 @@
    fun:GOMP_parallel
    ...
 }
+{
+   openmp/e0002
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:gomp_malloc
+   fun:gomp_init_num_threads
+   fun:initialize_env
+   ...
+}
+{
+   openmp/e0003
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:gomp_malloc_cleared
+   fun:add_initial_icv_to_list
+   fun:initialize_env
+   ...
+}
 
 # ------------------------------------------------------------------------------------------------ #
 # GNU Scientific Library - don't track issues with vendor libraries.
@@ -3567,6 +3587,26 @@
    match-leak-kinds: reachable
    fun:malloc
    fun:main
+}
+{
+   openmpi5/LR079
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:hwloc_backend_distances_add_create
+   ...
+   fun:mpi_init
+   ...
+}
+{
+   openmpi5/LR080
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:hwloc_tma_malloc
+   ...
+   fun:mpi_init
+   ...
 }
 
 # --- Memcheck: Indirect ---
