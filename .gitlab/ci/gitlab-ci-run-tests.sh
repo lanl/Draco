@@ -88,26 +88,22 @@ if [[ "${DEPLOY_RELEASE}" != "TRUE" ]]; then
   for i in C CXX Fortran CUDA; do
 
     # Turn build warnings into fatal errors for non-release-deploys
-    if [[ "${DRACO_ENV}" =~ "xl16" ]] || [[ "${DRACO_ENV}" =~ "power9-xl" ]]; then
-      eval export ${i}_FLAGS+=\" -qhalt=w\"
-    else
-      if [[ "${i}" == "Fortran" ]]; then
-        if [[ "${FC}" =~ "ifort" ]] || [[ "${FC}" =~ "ifx" ]] || \
-             [[ "${INTEL_COMPILER_TYPE}" == "ONEAPI" ]] || \
-             [[ "${PE_ENV}" == "INTEL" ]] ; then
-          # do not add the flag
-          echo "Skip adding -Werror to ${i}_FLAGS (FC = ${FC})"
-        elif [[ "${FC}" =~ "crayftn" ]]; then
-          eval export ${i}_FLAGS+=\" -h error_on_warning\"
-        else
-          eval export ${i}_FLAGS+=\" -Werror\"
-        fi
-      elif [[ "${i}" == "CUDA" ]]; then
-        eval export ${i}_FLAGS+=\" -Werror all-warnings\"
+    if [[ "${i}" == "Fortran" ]]; then
+      if [[ "${FC}" =~ "ifort" ]] || [[ "${FC}" =~ "ifx" ]] || \
+            [[ "${INTEL_COMPILER_TYPE}" == "ONEAPI" ]] || \
+            [[ "${PE_ENV}" == "INTEL" ]] ; then
+        # do not add the flag
+        echo "Skip adding -Werror to ${i}_FLAGS (FC = ${FC})"
+      elif [[ "${FC}" =~ "crayftn" ]]; then
+        eval export ${i}_FLAGS+=\" -h error_on_warning\"
       else
-        # Works for gcc, llvm, and icpc (not ifort or ifx).
         eval export ${i}_FLAGS+=\" -Werror\"
       fi
+    elif [[ "${i}" == "CUDA" ]]; then
+      eval export ${i}_FLAGS+=\" -Werror all-warnings\"
+    else
+      # Works for gcc, llvm, and icpc (not ifort or ifx).
+      eval export ${i}_FLAGS+=\" -Werror\"
     fi
 
     # Enable coverage for Debug builds

@@ -484,17 +484,6 @@ macro(setupMPILibrariesUnix)
       set(MPIEXEC_EXECUTABLE
           ${MPIEXEC_EXECUTABLE}
           CACHE STRING "Program to execute MPI parallel programs." FORCE)
-
-    elseif(DEFINED ENV{SYS_TYPE} AND "$ENV{SYS_TYPE}" MATCHES "ppc64le_ib") # ATS-2
-      if(NOT EXISTS ${MPIEXEC_EXECUTABLE})
-        find_program(MPIEXEC_EXECUTABLE lrun)
-      endif()
-      set(MPIEXEC_EXECUTABLE
-          ${MPIEXEC_EXECUTABLE}
-          CACHE STRING "Program to execute MPI parallel programs." FORCE)
-      set(MPIEXEC_NUMPROC_FLAG
-          "--np"
-          CACHE STRING "mpirun flag used to specify the number of processors to use" FORCE)
     endif()
     # Call the standard CMake FindMPI macro.
     find_package(MPI QUIET)
