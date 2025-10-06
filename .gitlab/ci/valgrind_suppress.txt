@@ -2620,6 +2620,26 @@
    fun:initialize_env
    ...
 }
+{
+   openmp/e0004
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:gomp_malloc
+   fun:gomp_new_team
+   fun:GOMP_parallel
+   ...
+}
+{
+   openmp/e0005
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:gomp_malloc
+   fun:gomp_new_icv
+   fun:omp_set_num_threads
+   ...
+}
 
 # ------------------------------------------------------------------------------------------------ #
 # GNU Scientific Library - don't track issues with vendor libraries.
