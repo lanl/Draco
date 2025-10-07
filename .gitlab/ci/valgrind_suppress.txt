@@ -2640,6 +2640,29 @@
    fun:omp_set_num_threads
    ...
 }
+{
+   openmp/e0006
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:gomp_realloc
+   fun:gomp_team_start
+   fun:GOMP_parallel
+   ...
+}
+{
+   openmp/e0007
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:calloc
+   fun:UnknownInlinedFun
+   fun:allocate_dtv
+   fun:_dl_allocate_tls
+   fun:pthread_create@@GLIBC_2.2.5
+   fun:gomp_team_start
+   fun:GOMP_parallel
+   ...
+}
 
 # ------------------------------------------------------------------------------------------------ #
 # GNU Scientific Library - don't track issues with vendor libraries.
