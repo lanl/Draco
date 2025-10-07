@@ -2603,6 +2603,54 @@
    fun:QUO_create_with_flags
    ...
 }
+{
+   quo/e029
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:look_sysfsnode.isra.0   
+   fun:hwloc_linuxfs_look_cpu
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e030
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:vasprintf
+   fun:asprintf
+   fun:get_barrier_segment_name
+   fun:quo_mpi_xchange_uniq_path
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e031
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:vasprintf
+   fun:asprintf
+   fun:quo_sm_segment_create
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e032
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:hwloc_x86_component_instantiate
+   fun:hwloc_disc_component_try_enable.isra.0
+   fun:quo_internal_hwloc_disc_components_instantiate_others
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
 
 # ------------------------------------------------------------------------------------------------ #
 # NDI-2.2.0alpha-2
