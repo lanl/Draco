@@ -2409,6 +2409,66 @@
    fun:QUO_create_with_flags
    ...
 }
+{
+   quo/e010
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:quo_internal_hwloc_internal_cpukinds_register
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e011
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:quo_mpi_construct
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e012
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:quo_internal_hwloc__move_infos
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e013
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:quo_internal_hwloc_tma_malloc
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e014
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:hwloc_get_sysfs_node_meminfo
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e015
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:quo_internal_hwloc_internal_memattrs_prepare
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
 
 # ------------------------------------------------------------------------------------------------ #
 # NDI-2.2.0alpha-2
