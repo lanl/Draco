@@ -2469,6 +2469,140 @@
    fun:QUO_create_with_flags
    ...
 }
+{
+   quo/e016
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:quo_internal_hwloc_backend_alloc
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e017
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:quo_internal_hwloc_backend_distances_add_create
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e018
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:hwloc_xml_component_instantiate
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e019
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:hwloc__xml_import_pagetype.isra.0
+   ...
+   fun:quo_internal_hwloc_topology_load
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e020
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:vasprintf
+   fun:asprintf
+   fun:quo_sm_segment_attach
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e021
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:quo_internal_hwloc_bitmap_alloc
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e022
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:construct_quoc
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e023
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:pid_smprank_xchange
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e024
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:quo_internal_hwloc_components_init
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e025
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:quo_mpi_xchange_uniq_path
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e026
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:quo_sm_construct
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e027
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   ...
+   fun:hwloc_xml_component_instantiate
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
+{
+   quo/e028
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:node_rank_xchange
+   ...
+   fun:QUO_create_with_flags
+   ...
+}
 
 # ------------------------------------------------------------------------------------------------ #
 # NDI-2.2.0alpha-2
