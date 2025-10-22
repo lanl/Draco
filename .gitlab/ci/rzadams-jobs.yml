@@ -124,10 +124,7 @@ rzadams_deb_amdclang_mr:
     paths:
       - build/${SITE_ID}-${PROJECT}-${CTEST_MODE}-${CTEST_BUILD_NAME}.tar
   script:
-    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m
-      "Configure,Build,Test"
-  after_script:
-    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh" -m "Submit"
+    - /bin/bash -l "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-nightly-regress.sh"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 

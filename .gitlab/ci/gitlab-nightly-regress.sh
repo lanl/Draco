@@ -197,23 +197,7 @@ if [[ "${cdash_upload_auth_token}x" == "x" ]]; then
   die "environment variable cdash_upload_auth_token was not set. Aborting"
 fi
 
-case $SITE_ID in
-rzvernal|rzadams)
-  if [[ ${modes} == "Submit" ]]; then
-    # We can't do the regular ctest Submit from LLNL RZ systems yet because we can't access
-    # https://rtt.lanl.gov/cdash3. Instead tar the results and register them as artifacts. Another
-    # gitlab runner job unpacks these artifacts in a container run at LANL and pushes them to cdash.
-    run "cd ${DRACO_BINARY_DIR}"
-    tarfile=${SITE_ID}-${PROJECT}-${CTEST_MODE}-${CTEST_BUILD_NAME}.tar
-    run "tar cvf ${tarfile} DartConfiguration.tcl Testing"
-  else
-    run "ctest ${VERBOSITY} -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
-  fi
-  ;;
-*)
-  run "ctest ${VERBOSITY} -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
-  ;;
-esac
+run "ctest ${VERBOSITY} -S ${DRACO_SOURCE_DIR}/.gitlab/ci/draco-nightly.cmake,${modes}"
 
 [[ "${AUTODOC}" == "ON" ]] && cp "${DRACO_SOURCE_DIR}/.gitlab/ci/index.html" "${AUTODOCDIR}/."
 
