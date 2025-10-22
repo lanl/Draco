@@ -22,19 +22,24 @@ int main(int argc, char *argv[]) {
   std::string const hostname = rtt_dsxx::draco_gethostname();
   unsigned const num_cpus = omp_get_num_procs(); // NOLINT(misc-include-cleaner)
 
-// KPL: See https://gcc.gnu.org/gcc-9/porting_to.html#ompdatasharing for info on the following
-// version-specific gcc macro.
+// - KPL: See https://gcc.gnu.org/gcc-9/porting_to.html#ompdatasharing for info on the following
+//   version-specific gcc macro.
+// - KGT: Suppress "error: unknown pragma ignored" for clang-tidy builds.
+#if !defined(__clang_analyzer__)
+
 #if defined(__GNUC__) && !defined(__clang__) && __GNUC__ < 9
 #pragma omp parallel default(none) shared(std::cout)
-
 #else // gcc version >= 9
+
 #pragma omp parallel default(none) shared(num_cpus, hostname, rank, std::cout)
-#endif
+#endif // older gcc
+#endif // __clang_analyzer__
   {
     int const thread = omp_get_thread_num(); // NOLINT(misc-include-cleaner)
     std::string const cpuset = rtt_c4::cpuset_to_string(num_cpus);
-
+#if !defined(__clang_analyzer__)
 #pragma omp critical
+#endif
     {
       std::cout << hostname << " :: Rank " << std::setfill('0') << std::setw(5) << rank
                 << ", Thread " << std::setfill('0') << std::setw(3) << thread

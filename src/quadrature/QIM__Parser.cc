@@ -3,7 +3,7 @@
  * \file   quadrature/QIM__Parser.cc
  * \author Kent Budge
  * \brief  Define a parse routine for quadrature interpolation model specifications.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -56,7 +56,7 @@ std::string quadrature_interpolation_model_as_text(QIM const q) {
     return "GQF";
   default:
     Insist(false, "bad case");
-    return nullptr; // to kill warnings; never reached
+    return "nullptr"; // to kill warnings; never reached
   }
 }
 

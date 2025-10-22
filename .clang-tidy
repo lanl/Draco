@@ -5,16 +5,21 @@
 # Purpose: Configurations settings for clang-tidy
 # Note:    Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
 #
-# Recommneded settings are borrowed from
+# Recommended settings are borrowed from
 # https://github.com/cpp-best-practices/cpp_starter_project/blob/main/.clang-tidy which recommends
 # that we enable this list of checks (but our code isn't ready):
 #
-# hicpp-*
 # readability-*
 # cppcoreguidelines-*
 # cert-*
 # bugprone-*
 # concurrency-*
+#
+# Additional notes:
+#
+# | Rule                                | Reason                    |
+# | ---                                 | ---                       |
+# | -modernize-use-trailing-return-type | We don't like this style. |
 #
 # How checks are set:
 #
@@ -22,8 +27,6 @@
 # * next lines: -check-* disables whole groups of checks
 # * next lines: -check-full-name disables more specific checks from group previously enabled.
 # * next lines: check-full-name enables specific checks for groups that are disabled.
-#
-# Trying to add hicpp-*
 # ------------------------------------------------------------------------------------------------ #
 
 ---

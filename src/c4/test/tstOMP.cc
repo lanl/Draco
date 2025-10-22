@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Jun  6 15:03:08 2006
  * \brief  Demonstrate basic OMP threads under MPI.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -118,8 +118,10 @@ void topo_report(rtt_dsxx::UnitTest &ut, bool &one_mpi_rank_per_node) {
   if (maxthreads > 16)
     omp_set_num_threads(16);
 
+#if !defined(__clang_analyzer__) // - KGT: Suppress "error: unknown pragma ignored" for clang-tidy.
 #pragma omp parallel default(none) private(tid)                                                    \
     shared(nthreads, std::cout, maxthreads, procname, num_dynamic_threads, ut)
+#endif
   {
     nthreads = omp_get_num_threads();
     tid = omp_get_thread_num();
@@ -207,7 +209,10 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
     t1_omp_build.start();
 
     int nthreads(-1);
+
+#if !defined(__clang_analyzer__)
 #pragma omp parallel default(none) shared(nthreads, std::cout, N, result, foo)
+#endif
     {
       if (node() == 0 && omp_get_thread_num() == 0) {
         nthreads = omp_get_num_threads();
@@ -215,7 +220,9 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
       }
     }
 
+#if !defined(__clang_analyzer__)
 #pragma omp parallel for shared(foo, bar, N, result) default(none)
+#endif
     for (int i = 0; i < N; ++i) {
       foo[i] = 99.00 + i;
       bar[i] = 0.99 * i;
@@ -230,7 +237,9 @@ void sample_sum(rtt_dsxx::UnitTest &ut, bool const omrpn) {
 
 // clang-format adds spaces around this colon.
 // clang-format off
+#if !defined(__clang_analyzer__)
 #pragma omp parallel for reduction(+: omp_sum) default(none) shared(N, foo, nthreads, std::cout)
+#endif
     // clang-format on
     for (int i = 0; i < N; ++i)
       omp_sum += foo[i];
@@ -304,7 +313,9 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
   if (maxthreads > 16)
     omp_set_num_threads(16);
 
+#if !defined(__clang_analyzer__)
 #pragma omp parallel default(none) shared(nthreads, std::cout)
+#endif
   {
     if (node() == 0 && omp_get_thread_num() == 0) {
       nthreads = omp_get_num_threads();
@@ -317,9 +328,11 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
 #if defined(__GNUC__) && !defined(__clang__) && __GNUC__ < 9
 #pragma omp parallel for ordered schedule(dynamic) default(none) shared(image1)
 #else
+#if !defined(__clang_analyzer__)
 #pragma omp parallel for ordered schedule(dynamic) default(none)                                   \
     shared(num_pixels, begin, span, image1)
-#endif
+#endif // __clang_analyzer__
+#endif // old gcc
   for (int pix = 0; pix < num_pixels; ++pix) {
     const int x = pix % width;
     const int y = pix / width;
@@ -331,7 +344,9 @@ void MandelbrotDriver(rtt_dsxx::UnitTest &ut) {
     if (n == maxiter)
       n = 0;
 
+#if !defined(__clang_analyzer__)
 #pragma omp ordered
+#endif
     {
       char cc = ' ';
       if (n > 0) {
@@ -415,7 +430,9 @@ void tstUnsignedOmpLoop(rtt_dsxx::UnitTest &ut) {
     std::cout << "\nTesting an OpenMP loop with unsigned index.\n";
   unsigned sum(0), count(5);
   {
+#if !defined(__clang_analyzer__)
 #pragma omp parallel for reduction(+ : sum) default(none) shared(count)
+#endif
     for (unsigned i = 0; i < count; i++) {
       sum += i;
     }
