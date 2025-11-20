@@ -16,6 +16,7 @@
 #include "c4/scatterv.hh"
 #include <algorithm> // std::equal
 #include <cstddef>   // size_t
+#include <cstdint>   // int64
 #include <iostream>
 #include <numeric>
 #include <string>
