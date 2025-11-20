@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 14:44:54 2002
  * \brief  C4 MPI determinate and indeterminate gatherv instantiations.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "gatherv.t.hh" // NOLINT(misc-include-cleaner)
@@ -14,6 +14,13 @@ namespace rtt_c4 {
 //------------------------------------------------------------------------------------------------//
 // EXPLICIT INSTANTIATIONS OF NON-BLOCKING SEND/RECEIVE
 //------------------------------------------------------------------------------------------------//
+template void indeterminate_gatherv<uint64_t>(std::vector<uint64_t> &outgoing_data,
+                                              std::vector<std::vector<uint64_t>> &incoming_data,
+                                              bool is_allgatherv);
+
+template void indeterminate_gatherv<int64_t>(std::vector<int64_t> &outgoing_data,
+                                             std::vector<std::vector<int64_t>> &incoming_data,
+                                             bool is_allgatherv);
 
 template void indeterminate_gatherv<unsigned>(std::vector<unsigned> &outgoing_data,
                                               std::vector<std::vector<unsigned>> &incoming_data,
@@ -32,6 +39,14 @@ template void indeterminate_gatherv<char>(std::vector<char> &outgoing_data,
                                           bool is_allgatherv);
 
 //------------------------------------------------------------------------------------------------//
+template void determinate_gatherv<uint64_t>(std::vector<uint64_t> &outgoing_data,
+                                            std::vector<std::vector<uint64_t>> &incoming_data,
+                                            bool is_allgatherv);
+
+template void determinate_gatherv<int64_t>(std::vector<int64_t> &outgoing_data,
+                                           std::vector<std::vector<int64_t>> &incoming_data,
+                                           bool is_allgatherv);
+
 template void determinate_gatherv<unsigned>(std::vector<unsigned> &outgoing_data,
                                             std::vector<std::vector<unsigned>> &incoming_data,
                                             bool is_allgatherv);
@@ -49,9 +64,17 @@ template void determinate_gatherv<char>(std::vector<char> &outgoing_data,
                                         bool is_allgatherv);
 
 //------------------------------------------------------------------------------------------------//
+template void indeterminate_allgatherv<uint64_t>(std::vector<uint64_t> &outgoing_data,
+                                                 std::vector<std::vector<uint64_t>> &incoming_data);
+template void indeterminate_allgatherv<int64_t>(std::vector<int64_t> &outgoing_data,
+                                                std::vector<std::vector<int64_t>> &incoming_data);
 template void indeterminate_allgatherv<unsigned>(std::vector<unsigned> &outgoing_data,
                                                  std::vector<std::vector<unsigned>> &incoming_data);
 
+template void determinate_allgatherv<uint64_t>(std::vector<uint64_t> &outgoing_data,
+                                               std::vector<std::vector<uint64_t>> &incoming_data);
+template void determinate_allgatherv<int64_t>(std::vector<int64_t> &outgoing_data,
+                                              std::vector<std::vector<int64_t>> &incoming_data);
 template void determinate_allgatherv<unsigned>(std::vector<unsigned> &outgoing_data,
                                                std::vector<std::vector<unsigned>> &incoming_data);
 template void determinate_allgatherv<double>(std::vector<double> &outgoing_data,

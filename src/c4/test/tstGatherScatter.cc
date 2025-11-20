@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Wed Apr 28 09:31:51 2010
  * \brief  Test c4::gather and c4::scatter functions
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -473,6 +473,48 @@ void topology_report(UnitTest &ut) {
 void tstDeterminateAllGatherv(UnitTest &ut) {
   unsigned const pid = node();
   unsigned const number_of_processors = nodes();
+
+  { // T=uint64_t
+    vector<uint64_t> send(pid, pid);
+
+    // determinate_allgatherv already has the data sizes from the other MPI/C4 ranks/nodes
+    vector<vector<uint64_t>> receive(number_of_processors);
+    for (uint64_t p = 0; p < number_of_processors; ++p)
+      receive[p].resize(p);
+
+    // gather data from all nodes to all nodes at rank index in receive vector
+    determinate_allgatherv(send, receive);
+    PASSMSG("No exception thrown");
+
+    // check values gathered from each rank (and check on each rank of course)
+    for (uint64_t p = 0; p < number_of_processors; ++p) {
+      for (uint64_t i = 0; i < p; ++i) {
+        if (receive[p][i] != p)
+          FAILMSG("NOT correct values in allgatherv");
+      }
+    }
+  }
+
+  { // T=int64_t
+    vector<int64_t> send(pid, pid);
+
+    // determinate_allgatherv already has the data sizes from the other MPI/C4 ranks/nodes
+    vector<vector<int64_t>> receive(number_of_processors);
+    for (int64_t p = 0; p < number_of_processors; ++p)
+      receive[p].resize(p);
+
+    // gather data from all nodes to all nodes at rank index in receive vector
+    determinate_allgatherv(send, receive);
+    PASSMSG("No exception thrown");
+
+    // check values gathered from each rank (and check on each rank of course)
+    for (int64_t p = 0; p < number_of_processors; ++p) {
+      for (int64_t i = 0; i < p; ++i) {
+        if (receive[p][i] != p)
+          FAILMSG("NOT correct values in allgatherv");
+      }
+    }
+  }
 
   { // T=unsigned
     vector<unsigned> send(pid, pid);
