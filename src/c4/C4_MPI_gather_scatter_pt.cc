@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 14:44:54 2002
  * \brief  C4 MPI non-blocking send/recv instantiations.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/config.h"
@@ -20,6 +20,9 @@ namespace rtt_c4 {
 //------------------------------------------------------------------------------------------------//
 // EXPLICIT INSTANTIATIONS OF GATHER/SCATTER
 //------------------------------------------------------------------------------------------------//
+template int gather<uint64_t>(uint64_t *send_buffer, uint64_t *receive_buffer, int size);
+
+template int gather<int64_t>(int64_t *send_buffer, int64_t *receive_buffer, int size);
 
 template int gather<unsigned>(unsigned *send_buffer, unsigned *receive_buffer, int size);
 
@@ -28,9 +31,17 @@ template int gather<int>(int *send_buffer, int *receive_buffer, int size);
 template int gather<char>(char *send_buffer, char *receive_buffer, int size);
 
 //------------------------------------------------------------------------------------------------//
+template int allgather<uint64_t>(uint64_t *send_buffer, uint64_t *receive_buffer, int size);
+template int allgather<int64_t>(int64_t *send_buffer, int64_t *receive_buffer, int size);
 template int allgather<int>(int *send_buffer, int *receive_buffer, int size);
 
 //------------------------------------------------------------------------------------------------//
+template int gatherv<uint64_t>(uint64_t *send_buffer, int send_size, uint64_t *receive_buffer,
+                               int *receive_sizes, int *receive_displs);
+
+template int gatherv<int64_t>(int64_t *send_buffer, int send_size, int64_t *receive_buffer,
+                              int *receive_sizes, int *receive_displs);
+
 template int gatherv<unsigned>(unsigned *send_buffer, int send_size, unsigned *receive_buffer,
                                int *receive_sizes, int *receive_displs);
 
@@ -43,6 +54,12 @@ template int gatherv<char>(char *send_buffer, int send_size, char *receive_buffe
                            int *receive_sizes, int *receive_displs);
 
 //------------------------------------------------------------------------------------------------//
+template int allgatherv<uint64_t>(uint64_t *send_buffer, int send_size, uint64_t *receive_buffer,
+                                  int *receive_sizes, int *receive_displs);
+
+template int allgatherv<int64_t>(int64_t *send_buffer, int send_size, int64_t *receive_buffer,
+                                 int *receive_sizes, int *receive_displs);
+
 template int allgatherv<unsigned>(unsigned *send_buffer, int send_size, unsigned *receive_buffer,
                                   int *receive_sizes, int *receive_displs);
 
@@ -56,6 +73,10 @@ template int allgatherv<char>(char *send_buffer, int send_size, char *receive_bu
                               int *receive_sizes, int *receive_displs);
 
 //------------------------------------------------------------------------------------------------//
+template int scatter<uint64_t>(uint64_t *send_buffer, uint64_t *receive_buffer, int size);
+
+template int scatter<int64_t>(int64_t *send_buffer, int64_t *receive_buffer, int size);
+
 template int scatter<unsigned>(unsigned *send_buffer, unsigned *receive_buffer, int size);
 
 template int scatter<int>(int *send_buffer, int *receive_buffer, int size);
