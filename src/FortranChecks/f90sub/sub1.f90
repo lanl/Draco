@@ -3,8 +3,7 @@
 ! Author:   Kelly Thompson
 ! Date:     Tue June 12 2012
 ! Brief:    Fortran subroutine for cross language link checks.
-! Note:     Copyright (C) 2016-2020 Triad National Security, LLC.
-!           All rights reserved.
+! Note:     Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved.
 !--------------------------------------------------------------------------------------------------!
 
 ! http://gcc.gnu.org/onlinedocs/gfortran/Interoperable-Subroutines-and-Functions.html
@@ -28,15 +27,17 @@ subroutine sub1(alpha, np, nf) bind(c)
 
   write (*, '(a,f5.1,2i3)') "Hello, world.", alpha, np, nf
 
-  if (alpha .gt. 1.0 - small.and.alpha .lt. 1.0 + small) then
-     print '(a)', "Test: passed"
-     print '(a)', "     alpha == 1.0"
-     np = np + 1
+  if (alpha > 1.0 - small.and.alpha < 1.0 + small) then
+    print '(a)', "Test: passed"
+    print '(a)', "     alpha == 1.0"
+    np = np + 1
   else
-     print '(a)', "Test: failed"
-     print '(a)', "     alpha != 1.0"
-     nf = nf + 1
-  endif
+    ! LCOV_EXCL_START
+    print '(a)', "Test: failed"
+    print '(a)', "     alpha != 1.0"
+    nf = nf + 1
+    ! LCOV_EXCL_STOP
+  end if
 
 end subroutine sub1
 

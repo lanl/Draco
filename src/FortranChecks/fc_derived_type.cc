@@ -4,7 +4,7 @@
  * \author Allan Wollaber
  * \date   Tue Jul 10 12:48:13 MDT 2012
  * \brief  Test Fortran main calling C with a derived type
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include <cmath>
@@ -23,7 +23,7 @@ struct my_informative_type {
 
 //! A simple function to test for valid values in a Fortran derived type
 extern "C" void rtt_test_derived_type(const my_informative_type &mit, int &error_code) {
-  std::cout << "In the C-interface, derived type has double = " << mit.some_double
+  std::cout << "\nIn the C-interface, derived type has double = " << mit.some_double
             << "\nint = " << mit.some_int << "\nlarge_int = " << mit.some_large_int
             << "\n*some_pointer[1] = " << *(mit.some_pointer)
             << "\n*some_pointer[2] = " << *(mit.some_pointer + 1)

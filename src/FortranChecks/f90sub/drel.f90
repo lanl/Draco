@@ -4,7 +4,7 @@
 ! author Kelly Thompson
 ! date   Tuesday, Jun 12, 2012, 16:03 pm
 ! brief  Test F90 main linking against C++ library and calling a C++ function.
-! note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved.
+! note   Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved.
 !-------------------------------------------------------------------------------------------------!
 
 ! Ref: http://gcc.gnu.org/onlinedocs/gfortran/Interoperable-Subroutines-and-Functions.html
@@ -79,9 +79,11 @@ subroutine drelf90(nf) bind(c, name="drelf90")
     print '(a)', "Test: passed"
     print '(a)', "     Found 'Draco-' in release string."
   else
+    ! LCOV_EXCL_START
     print '(a)', "Test: failed"
     print '(a)', "     Did not find 'Draco-' in the release string."
     nf = nf + 1
+    ! LCOV_EXCL_STOP
   end if
 
   !----------------------------------------------------------------------
@@ -89,31 +91,39 @@ subroutine drelf90(nf) bind(c, name="drelf90")
 
   is_big_endian = dsxx_is_big_endian()
   if (is_big_endian > 1.or.is_big_endian < 0) then
+    ! LCOV_EXCL_START
     print '(a)', "Test: failed"
     print '(a)', "     dsxx_is_big_endian returned an unexpected value."
     nf = nf + 1
+    ! LCOV_EXCL_STOP
   end if
   ! note: integers must be signed in F90 (i.e.: we cannot use Z'DEADBEEF')
   idata = 1122867 ! 1122867 = z'00112233'
   call dsxx_byte_swap(idata)
   if (idata /= 857870592) then ! 857870592 = z'33221100'
+    ! LCOV_EXCL_START
     print '(a)', "Test: failed"
     print '(a)', "     dsxx_byte_swap(int) returned an unexpected value."
     nf = nf + 1
+    ! LCOV_EXCL_STOP
   end if
   ddata = 42.0
   ! Call swap 2x to get initial value
   call dsxx_byte_swap(ddata)
   call dsxx_byte_swap(ddata)
   if (ddata /= 42.0) then
+    ! LCOV_EXCL_START
     print '(a)', "Test: failed"
     print '(a)', "     dsxx_byte_swap(double) returned an unexpected value."
     nf = nf + 1
+    ! LCOV_EXCL_STOP
   end if
 
   if (nf > 0) then
+    ! LCOV_EXCL_START
     print '(a)', "Test: failed"
     print '(a)', "     Endianess checks had some failures."
+    ! LCOV_EXCL_STOP
   else
     print '(a)', "Test: passed"
     print '(a)', "     Endianess checks all pass."
@@ -125,7 +135,7 @@ subroutine drelf90(nf) bind(c, name="drelf90")
   print '(a)', " "
   print '(a)', "*********************************************"
   if (nf > 0) then
-    print '(a)', "**** cppmain Test: FAILED."
+    print '(a)', "**** cppmain Test: FAILED." ! LCOV_EXCL_LINE
   else
     print '(a)', "**** cppmain Test: PASSED."
   end if
