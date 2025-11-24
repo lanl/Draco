@@ -303,6 +303,7 @@ public:
                         case '7':
                             return Key::HOME;
                         case '8':
+                        default:
                             return Key::END;
                         }
                     } else if (seq[2] == ';') {
@@ -318,7 +319,9 @@ public:
                                     case 'A': return Key::CTRL_UP;
                                     case 'B': return Key::CTRL_DOWN;
                                     case 'C': return Key::CTRL_RIGHT;
-                                    case 'D': return Key::CTRL_LEFT;
+                                    case 'D':
+                                    default:
+                                        return Key::CTRL_LEFT;
                                 }
                             }
                             return -12;
@@ -338,6 +341,7 @@ public:
                                     case '8':
                                         return Key::F7;
                                     case '9':
+                                    default:
                                         return Key::F8;
                                     }
                                 } else if (seq[1] == '2') {
@@ -349,6 +353,7 @@ public:
                                     case '3':
                                         return Key::F11;
                                     case '4':
+                                    default:
                                         return Key::F12;
                                     }
                                 }
@@ -370,6 +375,7 @@ public:
                     case 'H':
                         return Key::HOME;
                     case 'F':
+                    default:
                         return Key::END;
                     }
                 }
@@ -386,6 +392,7 @@ public:
                 case 'R':
                     return Key::F3;
                 case 'S':
+                default:
                     return Key::F4;
                 }
             }
@@ -397,6 +404,7 @@ public:
             case '\x0d':
                 return Key::ENTER;
             case '\x7f':
+            default:
                 return Key::BACKSPACE;
             }
             if (c == '\xc3') {

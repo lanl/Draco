@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Dec 21 14:20:03 2004
  * \brief  Declaration file for the class rtt_quadrature::Ordinate.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Ordinate_Set.hh"
@@ -138,6 +138,14 @@ Ordinate_Set::Ordinate_Set(unsigned const dimension, rtt_mesh_element::Geometry 
     norm_ += ordinates[i].wt();
   }
 
+#if defined(__clang__)
+#if defined(__clang_major__) && __clang_major__ > 17
+// llvm warns about the missing 'default:' label, but it also warns if this label is present but
+// can never be reached.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wswitch-default"
+#endif
+#endif
   switch (ordering) {
   case LEVEL_ORDERED:
     sort(ordinates_.begin(), ordinates_.end(), level_compare);
@@ -147,6 +155,11 @@ Ordinate_Set::Ordinate_Set(unsigned const dimension, rtt_mesh_element::Geometry 
     sort(ordinates_.begin(), ordinates_.end(), octant_compare);
     break;
   }
+#if defined(__clang__)
+#if defined(__clang_major__) && __clang_major__ > 17
+#pragma clang diagnostic pop
+#endif
+#endif
 
   Ensure(check_class_invariants());
   Ensure(this->has_starting_directions() == has_starting_directions);

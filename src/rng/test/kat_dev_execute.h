@@ -33,6 +33,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef KAT_METAL_BUFFER0
 #define KAT_METAL_BUFFER0 /* non-empty only when compiling Metal kernel */
 #endif
+
+#if defined(__clang__) && !defined(__ibmxl__)
+#pragma clang diagnostic push
+#if defined(__clang_major__) && __clang_major__ > 17
+#pragma clang diagnostic ignored "-Wswitch-default"
+#endif
+#endif
+
 KAT_KERNEL void dev_execute_tests(KAT_GLOBAL kat_instance *tests KAT_METAL_BUFFER0) {
   size_t i;
   int done = 0;
@@ -54,3 +62,7 @@ KAT_KERNEL void dev_execute_tests(KAT_GLOBAL kat_instance *tests KAT_METAL_BUFFE
     }
   }
 }
+
+#if defined(__clang__) && !defined(__ibmxl__)
+#pragma clang diagnostic pop
+#endif
