@@ -39,6 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wexpansion-to-defined"
+#pragma clang diagnostic ignored "-Wswitch-default"
 #endif
 
 /*

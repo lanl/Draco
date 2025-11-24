@@ -12,7 +12,7 @@ echo "    SITE_ID = ${SITE_ID}"
 [[ -n "${SCHEDULER_PARAMETERS}" ]] && echo "    Using: salloc ${SCHEDULER_PARAMETERS}"
 
 case ${SITE_ID} in
-  ccs* | darwin | roci* | rz* | venado*) ;;
+  ccs* | darwin | roci* | rz* ) ;;
   *) die ".gitlab/ci/environments.sh :: SITE_ID not recognized, SITE_ID = ${SITE_ID}" ;;
 esac
 
@@ -31,12 +31,6 @@ if [[ "${SITE_ID}" == "darwin" ]]; then
     if ! [[ -f "/projects/draco/Modules/${DRACO_ENV}" ]]; then
       die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}"
     fi
-    # if [[ "${MPIARCH:-notset}" == "openmpi" ]]; then
-    #   disable_openib=$(sinfo -N -n "${HOSTNAME}" -o %all | grep -c ib:none)
-    #   if [[ ${disable_openib} != 0 ]]; then
-    #     export MPI_PREFLAGS="--mca btl ^openib"
-    #   fi
-    # fi
   fi
   run "module load ${DRACO_ENV}"
   if [[ "${SLURM_JOB_PARTITION}" =~ "volta" || "${SLURM_JOB_PARTITION}" =~ "gpu" ]]; then
@@ -86,27 +80,6 @@ elif [[ "${SITE_ID}" =~ "rocinante" ]]; then
   ;;
   esac
   run "module load ${DRACO_ENV}"
-
-#------------------------------------------------------------------------------#
-# Venado
-#------------------------------------------------------------------------------#
-elif [[ "${SITE_ID}" =~ "venado" ]]; then
-  run "module use --append /usr/projects/draco/Modules/venado"
-  case ${DRACO_ENV} in
-    lapse* | draco* ) ;;
-    *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
-  esac
-  # Load correct Cray PrgEnv env first.  The default is PrgEnv-intel, so only do this for other
-  # PrgEnv's
-  case ${DRACO_ENV} in
-  lapse/*-gnu | draco/gcc*)
-    # If a PrgEnv is loaded, then unload it first.
-    [[ -n "${LMOD_FAMILY_PRGENV}" ]] && module unload "${LMOD_FAMILY_PRGENV}"
-    module load PrgEnv-gnu
-  ;;
-  esac
-  run "module load ${DRACO_ENV}"
-
 fi
 
 #--------------------------------------------------------------------------------------------------#

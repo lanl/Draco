@@ -60,6 +60,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(__clang_major__) && __clang_major__ > 12
 #pragma clang diagnostic ignored "-Wreserved-identifier"
 #pragma clang diagnostic ignored "-Wunused-but-set-variable"
+#if defined(__clang_major__) && __clang_major__ > 17
+#pragma clang diagnostic ignored "-Wswitch-default"
+#endif
 #endif
 #endif
 

@@ -12,7 +12,7 @@ try:
 
   #------------------------------------------------------------------------------------------------#
   # Boilerplate code to get the location of the application_unit_test.py in draco/config
-  re_draco_config_dir = re.compile("DRACO_CONFIG_DIR=([^\s]*)")
+  re_draco_config_dir = re.compile(r"DRACO_CONFIG_DIR=([^\s]*)")
   draco_config_dir = ""
   for arg in sys.argv:
     if (re_draco_config_dir.search(arg)):

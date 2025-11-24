@@ -18,10 +18,7 @@ if ! [[ "${SLURM_NODELINST:-notset}" == "notset" ]]; then
   echo "SLURM_NODELIST = ${SLURM_NODELIST}"
 fi
 echo "HOSTNAME       = ${HOSTNAME}"
-# printenv
-# run "module avail"
 printenv | grep "CI_"
-printenv | grep -i proxy
 echo " "
 
 #--------------------------------------------------------------------------------------------------#

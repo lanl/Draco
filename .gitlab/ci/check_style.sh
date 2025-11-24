@@ -5,7 +5,7 @@
 # File  : .gitlab/ci/check_style.sh
 # Date  : Thursday, May 20, 2021, 16:31 pm
 # Author: Kelly Thompson <kgt@lanl.gov>
-# Note  : Copyright (C) 2020-2023, Triad National Security, LLC., All rights are reserved.
+# Note  : Copyright (C) 2020-2025, Triad National Security, LLC., All rights are reserved.
 #
 # Runs various lint programs in the current directory and list locally modified files that are not
 # compliant with the current coding standard (see .clang_format in the top level source directory.)
@@ -436,6 +436,7 @@ FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .txt"
 #FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
 FILE_ENDINGS_EXCLUDE="ChangeLog Release.cc Release.hh check_style.sh imc_info.cc .in kat_main.h"
 FILE_ENDINGS_EXCLUDE+=" rngNxW.h util.h terminal.h util_cpu.h fpe_trap.hh kat_c.cc"
+FILE_ENDINGS_EXCLUDE+=" util_expandtpl.h time_initkeyctr.h kat_dev_execute.h"
 export FILE_EXTS FILE_ENDINGS_EXCLUDE
 
 # Loop over all modified files.  Create one patch containing all changes to these files
