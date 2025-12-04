@@ -77,7 +77,7 @@ ro_deb_fulldiag_deploy:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.6.0-intel"
+    DRACO_ENV: "lapse/2.7.0-oneapi"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     FLAVOR: intel-fulldiag-static
 
@@ -251,7 +251,7 @@ ro_deb_fulldiag_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.6.0-intel"
+    DRACO_ENV: "lapse/2.7.0-oneapi"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
 
 #--------------------------------------------------------------------------------------------------#
@@ -302,7 +302,7 @@ ro_deb_fulldiag_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.6.0-intel"
+    DRACO_ENV: "lapse/2.7.0-oneapi"
     FLAVOR: intel-fulldiag-static
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     CTEST_BUILD_NAME: intel-fulldiag-static
