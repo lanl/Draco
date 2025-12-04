@@ -15,6 +15,7 @@
 superlinter:
   tags:
     - charm
+    - x86_64
   stage: lint
   image:
       name: docker.io/github/super-linter:slim-latest
@@ -70,6 +71,7 @@ checkCoverage_MR:
   # TARGET_COVERAGE_PERCENT is set in the gitlab CI variables section of the GUI.
   tags:
     - charm
+    - x86_64
   stage: metrics
   dependencies:
     - ccs_gcov
@@ -128,6 +130,7 @@ checkCoverage_MR:
 titlechange:
   tags:
     - charm
+    - x86_64
   stage: test
   image:
     name: docker.io/library/alpine:3.18
