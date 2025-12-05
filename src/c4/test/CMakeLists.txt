@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for c4/test.
-# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(c4_test CXX)
 
@@ -88,7 +88,7 @@ if(NOT ${DRACO_C4} STREQUAL "SCALAR")
 endif()
 
 # Tests that expect exactly 4 PE (omit for DRACO_C4=SCALAR builds):
-set(four_pe_tests ${PROJECT_SOURCE_DIR}/tstQuoWrapper.cc)
+set(four_pe_tests ${PROJECT_SOURCE_DIR}/tstQuoWrapper.cc ${PROJECT_SOURCE_DIR}/tstAltComm.cc)
 list(REMOVE_ITEM test_sources ${four_pe_tests})
 
 if(NOT ${DRACO_C4} STREQUAL "SCALAR")
