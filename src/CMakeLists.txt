@@ -20,12 +20,6 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif()
 force_compiler_flags_to_cache("C;CXX")
 
-# <experimental/mdspan> doesn't work with some tool chains...
-option(USE_MDSPAN "Use experimental/mdspan" ON)
-if(MSVC AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set(USE_MDSPAN OFF)
-endif()
-
 # Level 1
 message(" ")
 message(STATUS "Configuring Level 1 packages --")
@@ -49,10 +43,7 @@ add_subdirectory(units) #< needs dsxx
 # Level 3
 message(" ")
 message(STATUS "Configuring Level 3 packages --")
-if(USE_MDSPAN)
-  add_subdirectory(experimental) #< only the tests need dsxx
-  add_subdirectory(cdi_CPEloss) #< needs cdi, units, experimental
-endif()
+add_subdirectory(cdi_CPEloss) #< needs cdi, units, experimental
 add_subdirectory(cdi_eospac) #< needs parser, ode, cdi
 add_subdirectory(cdi_ipcress) #< needs cdi
 add_subdirectory(diagnostics) #< needs c4

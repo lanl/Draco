@@ -13,21 +13,13 @@
 #include "dsxx/Interpolate.hh"
 #include "cdi/CPCommon.hh"
 #include "cdi/CPEloss.hh"
-#include "experimental/mdspan" // NOLINT(misc-include-cleaner)
-#include <cmath>               // exp, log, floor, sqrt
-#include <cstdint>             // uint32_t
-#include <string>              // getline, to_string
+#include <cmath>   // exp, log, floor, sqrt
+#include <cstdint> // uint32_t
+#include <string>  // getline, to_string
 #include <utility>
 #include <vector>
 
 namespace rtt_cdi_cpeloss {
-
-// NOLINTBEGIN(misc-include-cleaner)
-using std::experimental::basic_mdspan;
-using std::experimental::dynamic_extent;
-using std::experimental::extents;
-using std::experimental::layout_left;
-// NOLINTEND(misc-include-cleaner)
 
 //------------------------------------------------------------------------------------------------//
 // CONSTRUCTORS
@@ -165,12 +157,6 @@ Tabular_CP_Eloss::Tabular_CP_Eloss(const int zaidt_, const double mt_, const int
   Insist(target_found, "Error finding target ZAID \"" + std::to_string(zaidt) +
                            "\" in DEDX file \"" + filename + "\"");
 
-  // NOLINTBEGIN(misc-include-cleaner)
-  stopping_data =
-      basic_mdspan<double, extents<dynamic_extent, dynamic_extent, dynamic_extent>, layout_left>(
-          stopping_data_1d.data(), n_energy, n_density, n_temperature);
-  // NOLINTEND(misc-include-cleaner)
-
   // Convert units on table to match those of getEloss:
   //
   // energy:      MeV -> cm/shk (using target particle mass)
@@ -255,14 +241,14 @@ double Tabular_CP_Eloss::getEloss(const double temperature, const double density
   const double z0 = exp(min_log_temperature + pt0_temperature * d_log_temperature);
   const double z1 = exp(min_log_temperature + pt1_temperature * d_log_temperature);
 
-  const double f000 = stopping_data(pt0_energy, pt0_density, pt0_temperature);
-  const double f100 = stopping_data(pt1_energy, pt0_density, pt0_temperature);
-  const double f001 = stopping_data(pt0_energy, pt0_density, pt1_temperature);
-  const double f101 = stopping_data(pt1_energy, pt0_density, pt1_temperature);
-  const double f010 = stopping_data(pt0_energy, pt1_density, pt0_temperature);
-  const double f110 = stopping_data(pt1_energy, pt1_density, pt0_temperature);
-  const double f011 = stopping_data(pt0_energy, pt1_density, pt1_temperature);
-  const double f111 = stopping_data(pt1_energy, pt1_density, pt1_temperature);
+  const double f000 = get_stopping_data(pt0_temperature, pt0_density, pt0_energy);
+  const double f100 = get_stopping_data(pt0_temperature, pt0_density, pt1_energy);
+  const double f001 = get_stopping_data(pt1_temperature, pt0_density, pt0_energy);
+  const double f101 = get_stopping_data(pt1_temperature, pt0_density, pt1_energy);
+  const double f010 = get_stopping_data(pt0_temperature, pt1_density, pt0_energy);
+  const double f110 = get_stopping_data(pt0_temperature, pt1_density, pt1_energy);
+  const double f011 = get_stopping_data(pt1_temperature, pt1_density, pt0_energy);
+  const double f111 = get_stopping_data(pt1_temperature, pt1_density, pt1_energy);
   const double dedx =
       exp(rtt_dsxx::interpolate::linear_3d(x0, x1, y0, y1, z0, z1, f000, f100, f001, f101, f010,
                                            f110, f011, f111, partSpeed, density, temperature));
