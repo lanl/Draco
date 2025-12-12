@@ -14,15 +14,13 @@
 #include "dsxx/DracoMath.hh"
 #include "cdi/CPCommon.hh"
 #include "cdi/CPEloss.hh"
-#include "experimental/mdspan"
+//#include "experimental/mdspan"
 #include "units/PhysicalConstexprs.hh"
 #include <cmath>
 #include <fstream>
 #include <string>
 
 namespace rtt_cdi_cpeloss {
-
-namespace stdex = std::experimental;
 
 //================================================================================================//
 /*!
@@ -37,9 +35,6 @@ namespace stdex = std::experimental;
 class Tabular_CP_Eloss : public rtt_cdi::CPEloss {
 public:
   using sf_double = std::vector<double>;
-  using dynamic_extents_3 =
-      typename stdex::extents<stdex::dynamic_extent, std::experimental::dynamic_extent,
-                              std::experimental::dynamic_extent>;
 
 private:
   const std::string filename; //!< Path to tabulated stopping power data file
@@ -72,11 +67,13 @@ private:
   sf_double temperatures;     //!< Vector of temperature gridpoints
   // Note that after unit conversions, *_energy is really *_speed
 
-  // Multidimensional view of stored tabulated data
-  stdex::basic_mdspan<double, dynamic_extents_3, std::experimental::layout_left> stopping_data;
-
   // Storage for tabulated data
-  std::vector<double> stopping_data_1d;
+  std::vector<double> stopping_data_1d{};
+
+  //! 3D indexing of 1D stopping power data
+  [[nodiscard]] inline double get_stopping_data(int i_t, int i_d, int i_e) const {
+    return stopping_data_1d[i_e + n_energy * (i_d + n_density * i_t)];
+  }
 
   // Utility for skipping lines
   void skip_lines(uint32_t nlines);
