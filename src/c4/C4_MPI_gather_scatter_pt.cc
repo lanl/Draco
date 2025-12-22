@@ -48,6 +48,9 @@ template int gatherv<unsigned>(unsigned *send_buffer, int send_size, unsigned *r
 template int gatherv<int>(int *send_buffer, int send_size, int *receive_buffer, int *receive_sizes,
                           int *receive_displs);
 
+template int gatherv<long long>(long long *send_buffer, int send_size, long long *receive_buffer,
+                                int *receive_sizes, int *receive_displs);
+
 template int gatherv<double>(double *send_buffer, int send_size, double *receive_buffer,
                              int *receive_sizes, int *receive_displs);
 template int gatherv<char>(char *send_buffer, int send_size, char *receive_buffer,
@@ -69,6 +72,9 @@ template int allgatherv<double>(double *send_buffer, int send_size, double *rece
 template int allgatherv<int>(int *send_buffer, int send_size, int *receive_buffer,
                              int *receive_sizes, int *receive_displs);
 
+template int allgatherv<long long>(long long *send_buffer, int send_size, long long *receive_buffer,
+                                   int *receive_sizes, int *receive_displs);
+
 template int allgatherv<char>(char *send_buffer, int send_size, char *receive_buffer,
                               int *receive_sizes, int *receive_displs);
 
@@ -86,6 +92,9 @@ template int scatterv<unsigned>(unsigned *send_buffer, int *send_sizes, int *sen
 
 template int scatterv<int>(int *send_buffer, int *send_sizes, int *send_displs, int *receive_buffer,
                            int receive_size);
+
+template int scatterv<long long>(long long *send_buffer, int *send_sizes, int *send_displs,
+                                 long long *receive_buffer, int receive_size);
 
 template int scatterv<double>(double *send_buffer, int *send_sizes, int *send_displs,
                               double *receive_buffer, int receive_size);
