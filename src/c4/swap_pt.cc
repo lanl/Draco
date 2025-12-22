@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 14:44:54 2002
  * \brief  C4 MPI determinate and indeterminate swap instantiations.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/swap.t.hh" // NOLINT(misc-include-cleaner)
@@ -39,6 +39,21 @@ template void determinate_swap(std::vector<unsigned> const &outgoing_pid,
                                std::vector<std::vector<double>> const &outgoing_data,
                                std::vector<unsigned> const &incoming_pid,
                                std::vector<std::vector<double>> &incoming_data, int tag);
+
+// long long
+
+template void determinate_swap(std::vector<unsigned> const &outgoing_pid,
+                               std::vector<std::vector<long long>> const &outgoing_data,
+                               std::vector<unsigned> const &incoming_pid,
+                               std::vector<std::vector<long long>> &incoming_data, int tag);
+
+template void semideterminate_swap(std::vector<unsigned> const &outgoing_pid,
+                                   std::vector<std::vector<long long>> const &outgoing_data,
+                                   std::vector<unsigned> const &incoming_pid,
+                                   std::vector<std::vector<long long>> &incoming_data, int tag);
+
+template void determinate_swap(std::vector<std::vector<long long>> const &outgoing_data,
+                               std::vector<std::vector<long long>> &incoming_data, int tag);
 
 } // end namespace rtt_c4
 

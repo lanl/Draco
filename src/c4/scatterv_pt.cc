@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Mon Mar 25 14:44:54 2002
  * \brief  C4 MPI determinate and indeterminate scatterv instantiations.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "scatterv.t.hh" // NOLINT(misc-include-cleaner)
@@ -19,6 +19,8 @@ template void indeterminate_scatterv(std::vector<std::vector<unsigned>> &outgoin
                                      std::vector<unsigned> &incoming_data);
 template void indeterminate_scatterv(std::vector<std::vector<int>> &outgoing_data,
                                      std::vector<int> &incoming_data);
+template void indeterminate_scatterv(std::vector<std::vector<long long>> &outgoing_data,
+                                     std::vector<long long> &incoming_data);
 template void indeterminate_scatterv(std::vector<std::vector<double>> &outgoing_data,
                                      std::vector<double> &incoming_data);
 
@@ -27,6 +29,8 @@ template void determinate_scatterv(std::vector<std::vector<unsigned>> &outgoing_
                                    std::vector<unsigned> &incoming_data);
 template void determinate_scatterv(std::vector<std::vector<int>> &outgoing_data,
                                    std::vector<int> &incoming_data);
+template void determinate_scatterv(std::vector<std::vector<long long>> &outgoing_data,
+                                   std::vector<long long> &incoming_data);
 template void determinate_scatterv(std::vector<std::vector<double>> &outgoing_data,
                                    std::vector<double> &incoming_data);
 

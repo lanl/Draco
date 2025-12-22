@@ -30,6 +30,10 @@ template void indeterminate_gatherv<int>(std::vector<int> &outgoing_data,
                                          std::vector<std::vector<int>> &incoming_data,
                                          bool is_allgatherv);
 
+template void indeterminate_gatherv<long long>(std::vector<long long> &outgoing_data,
+                                               std::vector<std::vector<long long>> &incoming_data,
+                                               bool is_allgatherv);
+
 template void indeterminate_gatherv<double>(std::vector<double> &outgoing_data,
                                             std::vector<std::vector<double>> &incoming_data,
                                             bool is_allgatherv);
@@ -54,6 +58,10 @@ template void determinate_gatherv<unsigned>(std::vector<unsigned> &outgoing_data
 template void determinate_gatherv<int>(std::vector<int> &outgoing_data,
                                        std::vector<std::vector<int>> &incoming_data,
                                        bool is_allgatherv);
+
+template void determinate_gatherv<long long>(std::vector<long long> &outgoing_data,
+                                             std::vector<std::vector<long long>> &incoming_data,
+                                             bool is_allgatherv);
 
 template void determinate_gatherv<double>(std::vector<double> &outgoing_data,
                                           std::vector<std::vector<double>> &incoming_data,
