@@ -4,11 +4,10 @@
  * \author Mathew Cleveland
  * \date   Feb. 2020
  * \brief  ifpstream class to read processor decomposed data in parallel.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved.
  *
- * This is reader is designed to read parallel decomposed data written by the ofpstream object. It
- * uses similar logic by reading all data with rank==0 and broadcasting requested buffers to the
- * remaining processors.
+ * This is reader is designed to read parallel decomposed data written by the ofpstream object.
+ * All ranks open the file and we use global communication to skip through the file in parallel.
  */
 //------------------------------------------------------------------------------------------------//
 
@@ -30,8 +29,8 @@ namespace rtt_c4 {
  *
  * \brief Input stream for serializing input to all MPI ranks.
  *
- * This offloads all file IO to a single processor. The master processor reads all data from the
- * file and broadcasts it to the MPI processors.
+ * This allows all ranks to read, but uses parallel communication to ensure that ranks read in order
+ * based on their individual buffer sizes. 
  *
  * \example c4/test/tstifpstream.cc
  */
