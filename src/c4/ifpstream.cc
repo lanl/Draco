@@ -4,20 +4,20 @@
  * \author Mathew Cleveland
  * \date   Feb. 2020
  * \brief  ifpstream class to read processor decomposed data in parallel.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved.
  *
- * This is reader is designed to read parallel decomposed data written by the ofpstream object. It
- * uses similar logic by reading all data with rank==0 and broadcasting requested buffers to the
- * remaining processors.
+ * This reader is designed to read parallel decomposed data written by the ofpstream object. 
+ * All ranks read from the file. We use parallel communication to read set buffer sizes from the
+ * file in the order of the processor id 0->N.
  */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/ifpstream.hh"
 #include "dsxx/Assert.hh"
 #include "c4/C4_Functions.hh"
+#include <cstdint>
 #include <ios> // ios_base::openmode
 #include <string>
-#include <vector>
 
 namespace rtt_c4 {
 using namespace std;
@@ -31,42 +31,39 @@ using namespace std;
  * \param[in] mode File read mode (ascii/binary)-- defaults to ascii
  */
 ifpstream::ifpstream(std::string const &filename, ios_base::openmode const mode) : mode_(mode) {
-  if (rtt_c4::node() == 0) {
-    in_.open(filename, mode_);
-    Insist(in_, filename + " does not exist");
-  }
+  in_.open(filename, mode_);
+  Insist(in_, filename + " does not exist");
 }
 
 //------------------------------------------------------------------------------------------------//
-/*! \brief Fill parallel buffers with data from the input file
+/*! \brief Fill parallel buffers with data from the input file.
  *
- * \param[in] buffer_size local process buffer size
+ *  Use buffer sizes to sync up the file read for each rank (must be called globally)
+ *
+ *  \param[in] buffer_size  local process buffer size (already known on each rank)
  */
 void ifpstream::fill_buffers(unsigned const buffer_size) {
-  // initialize N process vector of buffer sizes
-  std::vector<unsigned> buffer_sizes(rtt_c4::nodes(), 0);
-  // fill in local buffer size
-  buffer_sizes[rtt_c4::node()] = buffer_size;
-  // reduce buffer_size to all ranks
-  rtt_c4::global_sum(&buffer_sizes[0], rtt_c4::nodes());
+  using rtt_c4::global_sum;
+  using rtt_c4::node;
+  using rtt_c4::nodes;
+  using rtt_c4::receive;
+  using rtt_c4::send;
 
-  if (rtt_c4::node() == 0) {
-    // populate node zero buffer
-    std::string local_string(buffer_size, '\0');
-    in_.read(&local_string[0], buffer_size);
-    str(local_string);
-    // loop over and broadcast remaining buffers
-    for (int node = 1; node < rtt_c4::nodes(); node++) {
-      std::string broadcast_string(buffer_sizes[node], '\0');
-      in_.read(&broadcast_string[0], buffer_sizes[node]);
-      rtt_c4::send(&broadcast_string[0], buffer_sizes[node], node);
-    }
-  } else {
-    // populate local buffer
-    std::string local_string(buffer_size, '\0');
-    rtt_c4::receive(&local_string[0], buffer_size, 0);
-    str(local_string);
-  }
+  // Store the starting position (should be the same on all ranks)
+  auto start = in_.tellg();
+
+  // Calculate offset and total read size over all ranks
+  const auto bsi64 = static_cast<uint64_t>(buffer_size);
+  auto offset = rtt_c4::prefix_sum(bsi64) - bsi64;
+  auto total_buffer_size = bsi64;
+  rtt_c4::global_sum(total_buffer_size);
+  // Move to this ranks read position, read the data, and pass it to the stream
+  std::string local_string(buffer_size, '\0');
+  in_.seekg(offset, std::ios::cur);
+  in_.read(&local_string[0], buffer_size);
+  str(local_string);
+  // Advance the current read pointer so all ranks match for the next read
+  in_.seekg(start + std::streamoff(total_buffer_size), std::ios::beg);
 }
 
 } // end namespace rtt_c4
