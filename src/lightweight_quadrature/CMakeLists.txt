@@ -3,7 +3,7 @@
 # author Jim Warsa <warsa@lanl.gov>
 # date   2025 Apr 1
 # brief  Generate build project files for lightweight_quadrature
-# note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 cmake_minimum_required(VERSION 3.21.0)

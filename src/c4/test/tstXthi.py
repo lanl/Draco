@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Saturday, Sep 09, 2017, 14:17 pm
 # brief  This is a Python script that is used to test c4/bin/xthi
-# note   Copyright (C) 2017-2025 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2017-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 import sys
 import re

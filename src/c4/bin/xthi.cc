@@ -4,7 +4,7 @@
  * \author Mike Berry <mrberry@lanl.gov>, Kelly Thompson <kgt@lanl.gov>
  * \date   Wednesday, Aug 09, 2017, 11:45 am
  * \brief  Print MPI rank, thread number and core affinity bindings.
- * \note   Copyright (C) 2017-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2017-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/SystemCall.hh"

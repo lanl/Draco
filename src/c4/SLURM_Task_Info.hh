@@ -4,7 +4,7 @@
  * \author Tim Kelley
  * \date   Fri Jun 7 08:06:53 2019
  * \brief  Functions for working with your environment
- * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef SLURM_Task_Info_hh

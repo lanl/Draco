@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Dec 21 14:20:03 2004
  * \brief  Declaration file for the class rtt_quadrature::Ordinate.
- * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_OrdinateSet_hh

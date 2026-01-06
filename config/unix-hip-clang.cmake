@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-hip-clang.cmake
 # brief  Establish flags for Unix/Linux - HIP
-# note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)

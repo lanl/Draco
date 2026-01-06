@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 April 28
 # brief  Instructions for building root level Makefile.
-# note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
 #
 # Build notes:
 #

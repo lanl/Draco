@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   May 10 2023
  * \brief  CAMR_Mesh class definition.
- * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_CAMR_Mesh_hh

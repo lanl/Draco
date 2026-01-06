@@ -4,7 +4,7 @@
  * \author Edward Norris and Kyle S. Beling
  * \date   May 21, 2025
  * \brief  Analytic_LiPet_Eloss_Model class definition.
- * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPEloss_Analytic_LiPet_Eloss_Model_hh

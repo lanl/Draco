@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 17:10:54 2000
  * \brief  Viz_Traits header file.
- * \note   Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_viz_Viz_Traits_hh

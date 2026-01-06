@@ -3,7 +3,7 @@
  * \file  dsxx/SystemCall.cc
  * \brief Implementation for the Draco wrapper for system calls. This routine attempts to hide
  *        differences between Unix/Windows system calls.
- * \note  Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
+ * \note  Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "SystemCall.hh"

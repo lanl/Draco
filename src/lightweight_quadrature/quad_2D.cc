@@ -4,7 +4,7 @@
  * \brief  two-dimensional quadratures for integration over the unit sphere combining various 
  * polar and azimuthal quadratures into product or triangular arrangements, as well as good ol'
  * level-symmetric quadrature.
- * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

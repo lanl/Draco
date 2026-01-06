@@ -3,7 +3,7 @@
 # Author:  Kelly Thompson <kgt@lanl.gov>
 # Date:    Wednesday, Jan 13, 2021, 20:57 pm
 # Purpose: CI jobs that run in a docker container (superlinter, coverageCheck, post-cdash-results)
-# Note:    Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved.
+# Note:    Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 #
 # See also:
 # * https://github.com/github/super-linter

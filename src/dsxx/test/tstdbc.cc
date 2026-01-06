@@ -3,7 +3,7 @@
  * \file   dsxx/test/tstdbc.cc
  * \author Kent G. Budge
  * \date   Feb 18 2003
- * \brief  Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
+ * \brief  Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"

@@ -3,7 +3,7 @@
 # author Ben. R. Ryan <brryan@lanl.gov>
 # date   2019 Nov 4
 # brief  Instructions for building cdi_CPEloss Makefiles.
-# note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(cdi_CPEloss CXX)

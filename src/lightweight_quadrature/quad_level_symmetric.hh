@@ -2,7 +2,7 @@
 /*!
  * \file   lightweight_quadrature/quad_level_symmetric.hh
  * \brief  tabulated level-symmetric quadrature
- * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef QUAD_LEVEL_SYMMETRIC_HH

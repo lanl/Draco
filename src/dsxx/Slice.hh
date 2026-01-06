@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Thu Jul  8 08:06:53 2004
  * \brief  Definition of Slice template
- * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef container_Slice_hh

@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Friday, Nov 30, 2012, 08:28 am
  * \brief  A class to encapsulate a 3D Level Symmetric quadrature set.
- * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef quadrature_Octant_Quadrature_hh

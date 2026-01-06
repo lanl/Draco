@@ -4,7 +4,7 @@
  *  \brief  Provide a single place where mathematical and physical constants are defined in an
  *          entirely constexpr fashion.
  *  \date   2019 Nov 25
- *  \note   Copyright (C) 2019-2025 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_units_PhysicalConstexprs_hh

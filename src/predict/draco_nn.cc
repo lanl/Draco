@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Feb. 16th 2022
  * \brief  Simple draco neural network class implementation
- * \note   Copyright (C) 2022-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "draco_nn.hh"

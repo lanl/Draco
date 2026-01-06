@@ -3,7 +3,7 @@
  * \file   parser/File_Token_Stream.hh
  * \author Kent G. Budge
  * \brief  Definition of class File_Token_Stream.
- * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

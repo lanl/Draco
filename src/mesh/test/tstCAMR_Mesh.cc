@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Mon Jul 10 2023
  * \brief  Unit test for CAMR_Mesh
- * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"

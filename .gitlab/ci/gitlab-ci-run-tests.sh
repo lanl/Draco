@@ -3,7 +3,7 @@
 # File  : ./.gitlab/ci/gitlab-ci-run-tests.sh
 # Date  : Tuesday, Jun 02, 2020, 12:28 pm
 # Author: Kelly Thompson <kgt@lanl.gov>
-# Note  : Copyright (C) 2021-2025 Triad National Security, LLC., All rights reserved.
+# Note  : Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 # Staging directory should be protected. Deployed artifacts will be set with chmod at the end of

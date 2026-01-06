@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Mon Mar 25 17:35:07 2002
  * \brief  Define class Global_Timer, a POSIX standard timer.
- * \note   Copyright (C) 2013-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_Global_Timer_hh

@@ -4,7 +4,7 @@
  * \author H.Park
  * \date   Aug 1 2023
  * \brief  Parallel_Data_Operator header file.
- * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_Parallel_Data_Operator_hh

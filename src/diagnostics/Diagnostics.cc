@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Dec  9 10:52:38 2005
  * \brief  Member definitions for Diagnostics class.
- * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Diagnostics.hh"

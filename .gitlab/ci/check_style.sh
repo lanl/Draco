@@ -5,7 +5,7 @@
 # File  : .gitlab/ci/check_style.sh
 # Date  : Thursday, May 20, 2021, 16:31 pm
 # Author: Kelly Thompson <kgt@lanl.gov>
-# Note  : Copyright (C) 2020-2025, Triad National Security, LLC., All rights are reserved.
+# Note  : Copyright (C) 2020-2026, Triad National Security, LLC., All rights are reserved.
 #
 # Runs various lint programs in the current directory and list locally modified files that are not
 # compliant with the current coding standard (see .clang_format in the top level source directory.)

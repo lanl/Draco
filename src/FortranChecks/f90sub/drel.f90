@@ -4,7 +4,7 @@
 ! author Kelly Thompson
 ! date   Tuesday, Jun 12, 2012, 16:03 pm
 ! brief  Test F90 main linking against C++ library and calling a C++ function.
-! note   Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved.
+! note   Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved.
 !-------------------------------------------------------------------------------------------------!
 
 ! Ref: http://gcc.gnu.org/onlinedocs/gfortran/Interoperable-Subroutines-and-Functions.html

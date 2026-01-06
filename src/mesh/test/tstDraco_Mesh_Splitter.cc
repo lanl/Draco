@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Thursday, Jul 31, 2025, 11:30 am
  * \brief  Draco_Mesh_Splitter class unit test.
- * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"

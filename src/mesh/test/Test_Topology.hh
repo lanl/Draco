@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Nov. 2023
  * \brief  Build a DD Topology for testing.
- * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_test_Test_Topology_hh

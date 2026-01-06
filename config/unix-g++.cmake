@@ -1,7 +1,7 @@
 # --------------------------------------------*-cmake-*------------------------------------------- #
 # file   config/unix-g++.cmake
 # brief  Establish flags for Unix/Linux - Gnu C++
-# note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
