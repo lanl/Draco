@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-clang.cmake
 # brief  Establish flags for Unix clang
-# note   Copyright (C) 2015-2025 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2015-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)

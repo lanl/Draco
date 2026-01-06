@@ -4,7 +4,7 @@
 ! author Kelly Thompson, Allan Wollaber
 ! date   Tuesday, Jun 12, 2012, 16:03 pm
 ! brief  Test F90 derived types passed into a C++ function
-! note   Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved.
+! note   Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved.
 !-------------------------------------------------------------------------------------------------!
 
 !-------------------------------------------------------------------------------------------------!

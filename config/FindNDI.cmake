@@ -2,7 +2,7 @@
 # file   config/FindNDI.cmake
 # date   2017 February 28
 # brief  Instructions for discovering the NDI vendor libraries.
-# note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 # .rst: FindNDI

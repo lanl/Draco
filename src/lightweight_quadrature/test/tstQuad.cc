@@ -1,7 +1,7 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \brief  Test 1D and 2D quadratures
- * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

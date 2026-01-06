@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Wednesday, May 26, 2021, 13:44 pm
 # brief  Establish flags for Linux64 - Intel C++ (LLVM)
-# note   Copyright (C) 2021-2025 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 # cmake-lint: disable=C0301

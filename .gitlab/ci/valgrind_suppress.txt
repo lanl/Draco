@@ -4,7 +4,7 @@
 # Date  : Friday, May 19, 2017, 10:26 am
 # Author: Kelly Thompson <kgt@lanl.gov>
 # Breif : Valgrind Suppression Instructions
-# Note  : Copyright (C) 2021-2025 Triad National Security, LLC., All rights reserved.
+# Note  : Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 #
 # Example valgrind use:

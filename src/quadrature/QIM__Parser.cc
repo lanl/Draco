@@ -3,7 +3,7 @@
  * \file   quadrature/QIM__Parser.cc
  * \author Kent Budge
  * \brief  Define a parse routine for quadrature interpolation model specifications.
- * \note   Copyright (C) 2012-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"

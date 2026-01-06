@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Thursday, Jun 07, 2018, 15:38 pm
  * \brief  Draco_Mesh class implementation file.
- * \note   Copyright (C) 2018-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Draco_Mesh.hh"

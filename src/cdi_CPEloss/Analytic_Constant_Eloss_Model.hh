@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   Feb 21 2020
  * \brief  Analytic_Constant_Eloss_Model class definition.
- * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_CPEloss_Analytic_Constant_Eloss_Model_hh

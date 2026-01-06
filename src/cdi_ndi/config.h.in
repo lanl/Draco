@@ -2,7 +2,7 @@
 /*!
  * \file   cdi_ndi/config.h
  * \brief  CPP defines necessary for the cdi_ndi package.
- * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 /*------------------------------------------------------------------------------------------------*/
 
 #ifndef rtt_cdi_ndi_config_h

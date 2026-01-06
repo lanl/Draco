@@ -4,7 +4,7 @@
  * \author Kendra P. Long, Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Interpolation functions.
- * \note   Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 #ifndef rtt_compton_tools_Interpolate_hh
 #define rtt_compton_tools_Interpolate_hh

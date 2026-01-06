@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Tue Apr  2 15:57:11 2002
  * \brief  c4 Broadcast communication test.
- * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"

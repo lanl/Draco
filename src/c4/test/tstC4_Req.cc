@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Nov  1 15:49:44 2005
  * \brief  Unit test for C4_Req class.
- * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"

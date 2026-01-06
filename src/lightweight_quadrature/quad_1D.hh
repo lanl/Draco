@@ -2,7 +2,7 @@
 /*!
  * \file   lightweight_quadrature/quad_1D.hh
  * \brief  one-dimensional quadratures, including both classical and non-classical quadruple range
- * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

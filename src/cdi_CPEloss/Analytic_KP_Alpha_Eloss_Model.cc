@@ -4,7 +4,7 @@
  * \author Kendra P. Long, Ben R. Ryan
  * \date   Feb 21 2020
  * \brief  Analytic_KP_Alpha_Eloss_Model implementation file.
- * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_CPEloss/Analytic_KP_Alpha_Eloss_Model.hh"

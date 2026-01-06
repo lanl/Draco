@@ -181,7 +181,7 @@ const std::string copyright() {
 
   msg << author_list() << "\n"
       << Term::ccolor(Term::fg::green)
-      << "Copyright (C) 2025 Triad National Security, LLC. "
+      << "Copyright (C) 2025-2026 Triad National Security, LLC. "
          "(C19028, LA-CC-16-016),\n     Released under a 3-Clause BSD License."
       << Term::ccolor(Term::fg::reset) << '\n';
 

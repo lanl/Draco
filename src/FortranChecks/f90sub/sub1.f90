@@ -3,7 +3,7 @@
 ! Author:   Kelly Thompson
 ! Date:     Tue June 12 2012
 ! Brief:    Fortran subroutine for cross language link checks.
-! Note:     Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved.
+! Note:     Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved.
 !--------------------------------------------------------------------------------------------------!
 
 ! http://gcc.gnu.org/onlinedocs/gfortran/Interoperable-Subroutines-and-Functions.html

@@ -3,7 +3,7 @@
 # author Kelly Thompson
 # date   2010 Nov 1
 # brief  Establish flags for Linux64 - Intel C++
-# note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 # Compiler Flags

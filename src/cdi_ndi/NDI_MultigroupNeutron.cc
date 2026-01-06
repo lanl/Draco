@@ -4,7 +4,7 @@
  * \author Kyle S. Beling
  * \date   2025 March 18
  * \brief  NDI_MultigroupNeutron member definitions.
- * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ndi/NDI_MultigroupNeutron.hh"

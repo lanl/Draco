@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Tue Nov  9 14:34:11 2010
  * \brief  Test the Abstract_Class_Parser template
- * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"

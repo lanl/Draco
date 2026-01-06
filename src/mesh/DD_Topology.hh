@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   Aug. 1 2023
  * \brief  DD_Topology class definition.
- * \note   Copyright (C) 2023-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef mesh_DD_Topology_hh

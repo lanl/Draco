@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Tue Jun  6 15:03:08 2006
  * \brief  Demonstrate basic OMP threads under MPI.
- * \note   Copyright (C) 2011-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"

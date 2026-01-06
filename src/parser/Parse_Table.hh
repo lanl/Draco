@@ -3,7 +3,7 @@
  * \file   parser/Parse_Table.hh
  * \author Kent G. Budge
  * \brief  Definition of Keyword and Parse_Table.
- * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Parse_Table_HH

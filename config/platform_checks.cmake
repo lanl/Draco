@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------------------------ #
 # file   : platform_checks.cmake
 # brief  : Platform Checks for Draco Build System
-# note   : Copyright (C) 2011-2025 Triad National Security, LLC., All rights reserved.
+# note   : Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)

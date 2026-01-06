@@ -3,7 +3,7 @@
  * \file    Data_Table.hh
  * \author  Paul Henning
  * \brief   Declaration of class Data_Table
- * \note    Copyright (C) 2024-2025 Triad National Security, LLC., All rights reserved. */
+ * \note    Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 #ifndef dsxx_Data_Table_hh
 #define dsxx_Data_Table_hh

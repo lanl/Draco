@@ -3,7 +3,7 @@
  * \file   rng/Subrandom_Generator.hh
  * \author Kent Budge
  * \brief  Definition of class Subrandom_Generator
- * \note   Copyright (C) 2010-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rng_Subrandom_Generator_hh
@@ -62,7 +62,7 @@ protected:
 
   // DATA
 
-  unsigned count_;   // Current vector of the sequence
+  unsigned count_;      // Current vector of the sequence
   unsigned element_{0}; // Current element of the current vector
 };
 

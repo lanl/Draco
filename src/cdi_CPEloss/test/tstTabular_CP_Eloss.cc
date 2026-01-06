@@ -4,7 +4,7 @@
  * \author Ben R. Ryan
  * \date   2019 Nov 18
  * \brief  Tabular_CP_Eloss test
- * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"

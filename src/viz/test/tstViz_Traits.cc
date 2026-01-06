@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 17:51:52 2000
  * \brief  Viz_Traits test.
- * \note   Copyright (C) 2014-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"

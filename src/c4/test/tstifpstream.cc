@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Feb. 2020
  * \brief  Tests ifpstream class for parallel read
- * \note   Copyright (C) 2020-2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"

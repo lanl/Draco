@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
  * \date   Thursday, Jul 31, 2025, 16:13 pm
  * \brief  Draco_Mesh class header file.
- * \note   Copyright (C) 2025 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Draco_Mesh_Splitter.hh"
