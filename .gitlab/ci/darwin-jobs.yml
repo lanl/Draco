@@ -44,8 +44,15 @@ darwin_clangtidy:
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
     EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
     EXTRA_CTEST_ARGS: -R dsxx_tstRelease
+  # This logic pipes stdout/err to a file. The job fails if the grep for "warning: " succeeds
   script:
-    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh" &> clang-tidy-out.txt
+    - '! grep "/projects/jacamar-ci/.*warning: " clang-tidy-out.txt'
+  # The posted file contains all the build output, including warnings/errors
+  artifacts:
+    paths:
+      - clang-tidy-out.txt
+    when: always
   rules:
     - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
       when: never
