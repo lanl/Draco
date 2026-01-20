@@ -141,7 +141,8 @@
         "string": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
         "list": [
           "darwin-general",
-          "darwin-sid-spr"
+          "darwin-sid-spr",
+          "darwin-volta-x86"
         ]
       }
     },
@@ -344,8 +345,7 @@
       },
       "execution": {
         "noTestsAction": "error",
-        "stopOnFailure": true,
-        "jobs": 24
+        "stopOnFailure": true
       }
     },
     {
@@ -457,7 +457,8 @@
         "string": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
         "list": [
           "darwin-general",
-          "darwin-sid-spr"
+          "darwin-sid-spr",
+          "darwin-volta-x86"
         ]
       },
       "output": {
@@ -497,8 +498,7 @@
       },
       "execution": {
         "noTestsAction": "error",
-        "stopOnFailure": true,
-        "jobs": 24
+        "stopOnFailure": true
       }
     },
     {

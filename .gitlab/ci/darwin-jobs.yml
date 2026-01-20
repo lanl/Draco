@@ -204,6 +204,15 @@ darwin_debug_llvm_mr:
     ARCH: x86_64
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
+darwin_debug_gcc_gpu_mr:
+  stage: slowtest
+  extends: .darwin_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-gcc1120
+    ARCH: volta_x86
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
 #--------------------------------------------------------------------------------------------------#
@@ -235,6 +244,15 @@ darwin_release_llvm:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: draco/haswell-llvm1706-c
     ARCH: x86_64
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+
+darwin_debug_gcc_gpu:
+  stage: test
+  extends: .darwin_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-gcc1120
+    ARCH: volta_x86
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 darwin_clangtidy_llvm:
