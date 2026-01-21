@@ -122,12 +122,13 @@ darwin_deploy_release_llvm:
     DRACO_ENV: draco/haswell-llvm1706-c
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
-darwin_deploy_debug_gcc_gpu:
+darwin_deploy_debug_gcc_volta_x86:
   extends: .darwin_deploy
   variables:
+    ARCH: volta_x86
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-gcc1120
-    ARCH: volta_x86
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-${ARCH}
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 #--------------------------------------------------------------------------------------------------#
@@ -175,12 +176,13 @@ darwin_dvr_release_llvm:
     DRACO_ENV: draco/haswell-llvm1706-c
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
-darwin_dvr_debug_gcc_gpu:
+darwin_dvr_debug_gcc_volta_x86:
   extends: .darwin_dvr
   variables:
+    ARCH: volta_x86
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-gcc1120
-    ARCH: volta_x86
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-${ARCH}
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 #--------------------------------------------------------------------------------------------------#
@@ -217,13 +219,13 @@ darwin_debug_llvm_mr:
     ARCH: x86_64
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
-darwin_debug_gcc_gpu_mr:
+darwin_debug_gcc_volta_x86_mr:
   stage: slowtest
   extends: .darwin_merge
   variables:
+    ARCH: volta_x86
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-gcc1120
-    ARCH: volta_x86
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 #--------------------------------------------------------------------------------------------------#
@@ -259,13 +261,13 @@ darwin_release_llvm:
     ARCH: x86_64
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
-darwin_debug_gcc_gpu:
+darwin_debug_gcc_volta_x86:
   stage: test
   extends: .darwin_nightly
   variables:
+    ARCH: volta_x86
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-gcc1120
-    ARCH: volta_x86
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 darwin_clangtidy_llvm:
