@@ -83,6 +83,7 @@ darwin_style_cxx:
 .darwin_deploy:
   extends: .darwin
   stage: deploy
+  allow_failure: true
   variables:
     DEPLOY: 'TRUE'
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
@@ -98,9 +99,8 @@ darwin_style_cxx:
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-darwin_clangtidy_deploy:
+darwin_deploy_clangtidy:
   extends: .darwin_deploy
-  allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-llvm1706-c
@@ -108,29 +108,36 @@ darwin_clangtidy_deploy:
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
 
-darwin_debug_llvm_deploy:
+darwin_deploy_debug_llvm:
   extends: .darwin_deploy
-  allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-llvm1706-c
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
-darwin_release_llvm_deploy:
+darwin_deploy_release_llvm:
   extends: .darwin_deploy
-  allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: draco/haswell-llvm1706-c
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
+darwin_deploy_debug_gcc_gpu:
+  extends: .darwin_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-gcc1120
+    ARCH: volta_x86
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+
 #--------------------------------------------------------------------------------------------------#
-# Deploy a Release
+# Deploy a versioned release (dvr)
 #--------------------------------------------------------------------------------------------------#
 
-.darwin_deploy_release:
+.darwin_dvr:
   extends: .darwin
   stage: deploy
+  allow_failure: true
   variables:
     DEPLOY: 'TRUE'
     DEPLOY_RELEASE: 'TRUE'
@@ -154,20 +161,26 @@ darwin_release_llvm_deploy:
     - if: '$CI_COMMIT_TAG =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-darwin_debug_llvm_deploy_release:
-  extends: .darwin_deploy_release
-  allow_failure: true
+darwin_dvr_debug_llvm:
+  extends: .darwin_dvr
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-llvm1706-c
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
-darwin_release_llvm_deploy_release:
-  extends: .darwin_deploy_release
-  allow_failure: true
+darwin_dvr_release_llvm:
+  extends: .darwin_dvr
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: draco/haswell-llvm1706-c
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+
+darwin_dvr_debug_gcc_gpu:
+  extends: .darwin_dvr
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-gcc1120
+    ARCH: volta_x86
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 #--------------------------------------------------------------------------------------------------#
