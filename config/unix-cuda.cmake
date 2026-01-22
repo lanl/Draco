@@ -1,7 +1,7 @@
 # -------------------------------------------*-cmake-*-------------------------------------------- #
 # file   config/unix-cuda.cmake
 # brief  Establish flags for Unix/Linux - Cuda
-# note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -54,8 +54,8 @@ if(NOT CUDA_FLAGS_INITIALIZED)
       "yes"
       CACHE INTERNAL "using draco settings.")
 
-  string(APPEND CMAKE_CUDA_FLAGS
-         " -g --expt-relaxed-constexpr --expt-extended-lambda -Xcompiler -Wno-psabi")
+  string(APPEND CMAKE_CUDA_FLAGS " -g --expt-relaxed-constexpr --expt-extended-lambda -Xcompiler"
+         " -Wno-psabi -Wno-deprecated-gpu-targets")
   if(CMAKE_CXX_COMPILER_ID MATCHES "XL")
     string(APPEND CMAKE_CUDA_FLAGS " -DCUB_IGNORE_DEPRECATED_CPP_DIALECT"
            " -DTHRUST_IGNORE_DEPRECATED_CPP_DIALECT")
