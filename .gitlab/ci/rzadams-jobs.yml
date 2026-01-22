@@ -58,13 +58,13 @@
 rzadams_deploy_rel_amdclang:
   extends: .rzadams_deploy
   variables:
-    DRACO_ENV: "lapse/2.7.0-mi300-amdclang"
+    DRACO_ENV: "lapse/3.0.1-amdclang"
     CMAKE_BUILD_TYPE: Release
 
 rzadams_deploy_deb_amdclang:
   extends: .rzadams_deploy
   variables:
-    DRACO_ENV: "lapse/2.7.0-mi300-amdclang"
+    DRACO_ENV: "lapse/3.0.1-amdclang"
     CMAKE_BUILD_TYPE: Debug
 
 #--------------------------------------------------------------------------------------------------#
@@ -97,7 +97,7 @@ rzadams_rel_amdclang_mr:
   extends: .rzadams_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.7.0-mi300-amdclang"
+    DRACO_ENV: "lapse/3.0.1-amdclang"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
 
 rzadams_deb_amdclang_mr:
@@ -105,7 +105,7 @@ rzadams_deb_amdclang_mr:
   extends: .rzadams_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.7.0-mi300-amdclang"
+    DRACO_ENV: "lapse/3.0.1-amdclang"
     EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
 
 #--------------------------------------------------------------------------------------------------#
@@ -132,16 +132,16 @@ rzadams_rel_amdclang_regress:
   stage: test
   extends: .rzadams_nightly
   variables:
-    CTEST_BUILD_NAME: "lapse270-amdclang-${CMAKE_BUILD_TYPE}"
-    DRACO_ENV: "lapse/2.7.0-mi300-amdclang"
+    CTEST_BUILD_NAME: "lapse301-amdclang-${CMAKE_BUILD_TYPE}"
+    DRACO_ENV: "lapse/3.0.1-amdclang"
     CMAKE_BUILD_TYPE: Release
 
 rzadams_deb_amdclang_regress:
   stage: test
   extends: .rzadams_nightly
   variables:
-    CTEST_BUILD_NAME: "lapse270-amdclang-${CMAKE_BUILD_TYPE}"
-    DRACO_ENV: "lapse/2.7.0-mi300-amdclang"
+    CTEST_BUILD_NAME: "lapse301-amdclang-${CMAKE_BUILD_TYPE}"
+    DRACO_ENV: "lapse/3.0.1-amdclang"
     CMAKE_BUILD_TYPE: Debug
 
 #--------------------------------------------------------------------------------------------------#
