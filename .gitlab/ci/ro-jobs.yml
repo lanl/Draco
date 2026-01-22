@@ -48,36 +48,24 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-ro_deploy_rel_intel_classic:
-  extends: .ro_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.6.0-intel"
-
-ro_deploy_deb_intel_classic:
-  extends: .ro_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.6.0-intel"
-
 ro_deploy_rel_oneapi:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
     EXTRA_CMAKE_ARGS: -G Ninja -DUSE_IPO=OFF
 
 ro_deploy_deb_oneapi:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
 
 ro_deploy_deb_fulldiag:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     FLAVOR: intel-fulldiag-static
 
@@ -85,13 +73,13 @@ ro_deploy_rel_gnu:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.6.0-gnu"
+    DRACO_ENV: "lapse/3.0.1-gnu"
 
 ro_deploy_deb_gnu:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.6.0-gnu"
+    DRACO_ENV: "lapse/3.0.1-gnu"
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a versioned release (dvr)
@@ -122,64 +110,44 @@ ro_deploy_deb_gnu:
     - if: '$CI_COMMIT_TAG =~ /^draco-[0-9]+(?:_[0-9]+)+$/'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-ro_dvr_rel_intel_classic:
-  extends: .ro_dvr
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.6.0-intel"
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
-
-ro_dvr_deb_intel_classic:
-  extends: .ro_dvr
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.6.0-intel"
-
-ro_dvr_rwdi_intel_classic:
-  extends: .ro_dvr
-  variables:
-    CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/2.6.0-intel"
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
-
 ro_dvr_rel_oneapi:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST -DUSE_IPO=OFF
 
 ro_dvr_deb_oneapi:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
 
 ro_dvr_rwdi_oneapi:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
 ro_dvr_rel_gnu:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.6.0-gnu"
+    DRACO_ENV: "lapse/3.0.1-gnu"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
 
 ro_dvr_deb_gnu:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.6.0-gnu"
+    DRACO_ENV: "lapse/3.0.1-gnu"
 
 ro_dvr_rwdi_gnu:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/2.6.0-gnu"
+    DRACO_ENV: "lapse/3.0.1-gnu"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
 #--------------------------------------------------------------------------------------------------#
@@ -204,28 +172,15 @@ ro_dvr_rwdi_gnu:
 
 # ----- fast -----
 
-ro_deb_intel_classic_mr:
-  stage: test
-  extends: .ro_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.6.0-intel"
-
-# ----- regular test -----
-
-ro_rel_intel_classic_mr:
-  stage: test
-  extends: .ro_merge
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.6.0-intel"
-
 ro_deb_gnu_mr:
   stage: test
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.6.0-gnu"
+    DRACO_ENV: "lapse/3.0.1-gnu"
+
+# ----- regular test -----
+
 
 # ----- slow -----
 
@@ -234,14 +189,14 @@ ro_deb_oneapi_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
 
 ro_rel_oneapi_mr:
   stage: slowtest
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
     EXTRA_CMAKE_ARGS: -G Ninja -DUSE_IPO=OFF
 
 ro_deb_fulldiag_mr:
@@ -249,7 +204,7 @@ ro_deb_fulldiag_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
 
 #--------------------------------------------------------------------------------------------------#
@@ -271,36 +226,24 @@ ro_deb_fulldiag_mr:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
-ro_rel_intel_classic_regress:
-  extends: .ro_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.6.0-intel"
-
-ro_deb_intel_classic_regress:
-  extends: .ro_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.6.0-intel"
-
 ro_rel_oneapi_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
     EXTRA_CMAKE_ARGS: -G Ninja -DUSE_IPO=OFF
 
 ro_deb_oneapi_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
 
 ro_deb_fulldiag_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.7.0-oneapi"
+    DRACO_ENV: "lapse/3.0.1-oneapi"
     FLAVOR: intel-fulldiag-static
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     CTEST_BUILD_NAME: intel-fulldiag-static
@@ -309,7 +252,7 @@ ro_deb_gnu_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/2.6.0-gnu"
+    DRACO_ENV: "lapse/3.0.1-gnu"
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/ro-jobs.yml
