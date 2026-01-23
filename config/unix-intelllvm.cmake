@@ -49,10 +49,10 @@ if(NOT CXX_FLAGS_INITIALIZED)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}") # -std=c99
 
   # Disable FMA at the compile level if desired. This technically conflicts with the FMA setting in
-  # -ffp-model=precise, so we do not error on the compiler warning for this specific case.
+  # -ffp-model=precise, suppress the warning/error for this specific case.
   if(DEFINED FMA_NEVER_HARDWARE)
-    string(APPEND CMAKE_C_FLAGS " -Wno-error=overriding-option -ffp-contract=off")
-    string(APPEND CMAKE_CXX_FLAGS " -Wno-error=overriding-option -ffp-contract=off")
+    string(APPEND CMAKE_C_FLAGS " -Wno-overriding-option -ffp-contract=off")
+    string(APPEND CMAKE_CXX_FLAGS " -Wno-overriding-option -ffp-contract=off")
   endif()
 
 endif()
