@@ -113,7 +113,7 @@ ccs_deploy_gcov:
     EXTRA_CMAKE_ARGS: -DCODE_COVERAGE=ON -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
 
-ccs_valgdeploy_rind:
+ccs_deploy_valgrind:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug

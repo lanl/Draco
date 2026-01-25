@@ -4,7 +4,7 @@
 # File  : .gitlab/ci/environments.sh
 # Date  : Monday, Jun 01, 2020, 15:43 pm
 # Author: Kelly Thompson
-# Note  : Copyright (C) 2021-2023 Triad National Security, LLC., All rights reserved.
+# Note  : Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 echo "==> Setting up CI environment..."
@@ -33,9 +33,6 @@ if [[ "${SITE_ID}" == "darwin" ]]; then
     fi
   fi
   run "module load ${DRACO_ENV}"
-  if [[ "${SLURM_JOB_PARTITION}" =~ "volta" || "${SLURM_JOB_PARTITION}" =~ "gpu" ]]; then
-    module load cuda
-  fi
 
 #------------------------------------------------------------------------------#
 # CCS-NET
