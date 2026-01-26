@@ -3,7 +3,7 @@
 # author Kelly Thompson
 # date   Sunday, Apr 29, 2018, 19:56 pm
 # brief  Establish flags for Unix/Linux - Gnu Fortran
-# note   Copyright (C) 2018-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 if(NOT Fortran_FLAGS_INITIALIZED)
@@ -18,10 +18,10 @@ if(NOT Fortran_FLAGS_INITIALIZED)
       CACHE INTERNAL "using draco settings.")
 
   string(APPEND CMAKE_Fortran_FLAGS " -g -cpp")
-  set(CMAKE_Fortran_FLAGS_DEBUG "-gdwarf-3 -DDEBUG")
+  set(CMAKE_Fortran_FLAGS_DEBUG "-DDEBUG") # -gdwarf-3
   set(CMAKE_Fortran_FLAGS_RELEASE "-O3 -DNDEBUG")
   set(CMAKE_Fortran_FLAGS_MINSIZEREL "${CMAKE_Fortran_FLAGS_RELEASE}")
-  set(CMAKE_Fortran_FLAGS_RELWITHDEBINFO "-gdwarf-3 ${CMAKE_Fortran_FLAGS_RELEASE}")
+  set(CMAKE_Fortran_FLAGS_RELWITHDEBINFO "${CMAKE_Fortran_FLAGS_RELEASE}")
 
 endif()
 
