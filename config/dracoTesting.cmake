@@ -82,15 +82,11 @@ function(slurm_extract_gpu_info out_gpu_count out_gpu_mem_gb)
   # scontrol often prints key=val pairs across multiple lines; normalize to a single line
   string(REPLACE "\n" " " _out_one_line "${_out}")
 
-  # Extract the Gres=... value (up to next whitespace) Example: Gres=gpu:4(S:0-3),gpu_mem:32G
-  string(REGEX MATCH "([ \t]|^)Gres=([^ \t]+)" _m "${_out_one_line}")
-  if(_m STREQUAL "")
-    return()
-  endif()
-  set(_gres "${CMAKE_MATCH_2}")
-
   # Extract the AvailableFeatures=... value (up to next whitespace) Example:
-  # AvailableFeatures=...,gpu1_model:Tesla_V100S-PCIE-32GB,gpu1_memory:32GB,gpu_count:1...
+  # AvailableFeatures=...,gpu1_model:Tesla_V100S-PCIE-32GB,gpu1_memory:32GB,gpu_count:1... Note: If
+  # SLURM Gres is configured properly, that output can also be used to get GPU information (See
+  # original logic in Draco PR !620). However, Darwin Gres config is broken as of 1/2026 so we have
+  # removed the Gres-specific logic.
   string(REGEX MATCH "([ \t]|^)AvailableFeatures=([^ \t]+)" _m "${_out_one_line}")
   if(_m STREQUAL "")
     return()
@@ -98,39 +94,19 @@ function(slurm_extract_gpu_info out_gpu_count out_gpu_mem_gb)
   set(_availablefeatures "${CMAKE_MATCH_2}")
 
   # ---- GPU COUNT ----
-  # Match either: - gpu:4 - gpu:tesla:4 - gpu:a100:2(S:0-1)
-  string(REGEX MATCH "(^|,)(gpu(:[^,:]+)?:)([0-9]+)" _mgpu "${_gres}")
+  # Match: - gpu_count:4
+  string(REGEX MATCH "(^|,)(gpu_count(:[^,:]+)?:)([0-9]+)" _mgpu "${_availablefeatures}")
   if(_mgpu STREQUAL "")
-    message(STATUS "Could not parse GPU count from Gres='${_gres}'."
-                   "Expected something like gpu:4 or gpu:type:4")
+    message(STATUS "No GPU info found in AvailableFeatures='${_availablefeatures}'."
+                   "Expected something like gpu_count:4.")
     return()
   endif()
   set(_gpu_count "${CMAKE_MATCH_4}")
 
   # ---- GPU MEM PER GPU (GB) ----
-  # Common site-specific encodings inside Gres include (examples): - gpu_mem:32G - gpu_mem:32768M -
-  # gpu_mem_gb:32 We support: - gpu_mem(:...optional...):<num><unit> -
-  # gpu_mem_gb(:...optional...):<num>
   set(_gpu_mem_gb "")
 
-  # Case A (_gres): gpu_mem_gb:<N>
-  string(REGEX MATCH "(^|,)(gpu_mem_gb(:[^,:]+)?:)([0-9]+)" _mmemgb "${_gres}")
-  if(NOT _mmemgb STREQUAL "")
-    set(_gpu_mem_gb "${CMAKE_MATCH_4}")
-  endif()
-
-  # Case B (_gres): gpu_mem:<num><unit>
-  if(_gpu_mem_gb STREQUAL "")
-    # unit is one of K/M/G/T (case-insensitive)
-    string(REGEX MATCH "(^|,)(gpu_mem(:[^,:]+)?:)([0-9]+)([KkMmGgTt])" _mmem "${_gres}")
-    if(NOT _mmem STREQUAL "")
-      set(_mem_val "${CMAKE_MATCH_4}")
-      set(_mem_unit "${CMAKE_MATCH_5}")
-      mem_to_gb(_gpu_mem_gb "${_mem_val}" "${_mem_unit}")
-    endif()
-  endif()
-
-  # Case C (_availablefeatures): gpu1_memory::<num><unit>
+  # Get memory from (_availablefeatures): gpu1_memory::<num><unit>
   if(_gpu_mem_gb STREQUAL "")
     # unit is one of K/M/G/T (case-insensitive)
     string(REGEX MATCH "(^|,)(gpu1_memory(:[^,:]+)?:)([0-9]+)([KkMmGgTt])" _mmem
@@ -154,7 +130,7 @@ function(slurm_extract_gpu_info out_gpu_count out_gpu_mem_gb)
       "${_gpu_mem_gb}"
       PARENT_SCOPE)
 
-  message(STATUS "Parsed SLURM Gres='${_gres}': GPUs=${_gpu_count}, GPU_MEM_GB=${_gpu_mem_gb}")
+  message(STATUS "Parsed SLURM node info: GPUs=${_gpu_count}, GPU_MEM_GB=${_gpu_mem_gb}")
 endfunction()
 
 # ------------------------------------------------------------------------------------------------ #
