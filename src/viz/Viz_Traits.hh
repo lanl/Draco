@@ -62,12 +62,8 @@ public:
   }
 
   //! Overloaded operator() with 3 args used on 2D data
-#if defined(__cplusplus) && __cplusplus > 201703L // C++20
   template <typename U = elementType>
     requires std::is_standard_layout_v<U> && std::is_trivial_v<U>
-#else
-  template <typename U = elementType, typename std::enable_if_t<std::is_pod<U>::value, bool> = true>
-#endif
   auto operator()(size_t i, size_t j, size_t /*k*/) const {
     return this->operator()(i, j);
   }
@@ -77,13 +73,8 @@ public:
    * \bug If the innermost container is \c std::set, then the [k] operator is invalid.  You cannot
    *      access the elements of a \c std::set with an index.
    */
-#if defined(__cplusplus) && __cplusplus > 201703L // C++20
   template <typename U = elementType>
     requires(!(std::is_standard_layout_v<U> && std::is_trivial_v<U>))
-#else
-  template <typename U = elementType,
-            typename std::enable_if_t<!std::is_pod<U>::value, bool> = true>
-#endif
   auto operator()(size_t i, size_t j, size_t k) const {
     Require(i < field.size());
     Require(j < field[i].size());
@@ -101,24 +92,15 @@ public:
   }
 
   //! Depth size accessor for 2D fields
-#if defined(__cplusplus) && __cplusplus > 201703L // C++20
   template <typename U = elementType>
     requires std::is_standard_layout_v<U> && std::is_trivial_v<U>
-#else
-  template <typename U = elementType, typename std::enable_if_t<std::is_pod<U>::value, bool> = true>
-#endif
   [[nodiscard]] size_t ndpth(size_t /*row*/, size_t /*col*/) const {
     return 0;
   }
 
   //! Depth size accessor for 3D fields
-#if defined(__cplusplus) && __cplusplus > 201703L // C++20
   template <typename U = elementType>
     requires(!(std::is_standard_layout_v<U> && std::is_trivial_v<U>))
-#else
-  template <typename U = elementType,
-            typename std::enable_if_t<!std::is_pod<U>::value, bool> = true>
-#endif
   [[nodiscard]] size_t ndpth(size_t row, size_t col) const {
     Require(row < field.size());
     Require(col < field[row].size());

@@ -44,14 +44,14 @@
     - if: '$CI_COMMIT_BRANCH == "develop"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-ccs_deploy_deb_gcc_cxx20:
+ccs_deb_gcc_cxx23_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1330
-    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=20 -DCMAKE_C_FLAGS="-march=broadwell"
+    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=23 -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
-    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-cxx20
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-cxx23
     # With intel-classic on Roci, we need to add -gcc-name=/opt/cray/pe/gcc/10.3.0/snos/bin/g++
 
 ccs_deploy_rwdi_gcc_1330:
@@ -139,6 +139,8 @@ ccs_deploy_valgrind:
     EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
   script:
+    - echo "branch = $CI_COMMIT_BRANCH, tag = $CI_COMMIT_TAG"
+    - echo "Starting ccscs_deploy_release..."
     - if [[ -z ${CI_COMMIT_BRANCH} ]]; then
         VERSION_PATCH=${CI_COMMIT_TAG//*_/};
       else
@@ -276,13 +278,13 @@ ccs_gcov:
     EXTRA_CMAKE_ARGS: -G Ninja -DCODE_COVERAGE=ON
     CTEST_NPROC: 20
 
-ccs_deb_gcc_1330_cxx20:
+ccs_deb_gcc_1330_cxx23:
   stage: slowtest
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1330
-    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=20
+    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=23
     CTEST_NPROC: 32
 
 # ccs_valgrind:
@@ -327,12 +329,12 @@ deb_gcc_12.2.0_regress:
     DRACO_ENV: gcc1330
     CTEST_NPROC: 40
 
-deb_gcc_12.2.0_cxx20_regress:
+deb_gcc_12.2.0_cxx23_regress:
   extends: .ccscs_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1330
-    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=20
+    EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=23
     CTEST_NPROC: 40
 
 deb_gcc_scalar_regress:

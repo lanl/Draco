@@ -83,13 +83,13 @@
       }
     },
     {
-      "name": "linux-debug-cxx20",
-      "displayName": "Linux Debug with c++20 enabled",
+      "name": "linux-debug-cxx23",
+      "displayName": "Linux Debug with C++23 enabled",
       "description": "Target Linux for Debug build.",
       "inherits": "linux-ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "Draco_CXX_LANGUAGE_STANDARD": "20"
+        "Draco_CXX_LANGUAGE_STANDARD": "23"
       }
     },
     {
@@ -251,23 +251,23 @@
       }
     },
     {
-      "name": "win-x64-cxx20-debug",
-      "displayName": "Windows x64 Debug with C++20 (Ninja)",
-      "description": "Target Windows (64-bit) with Ninja (Debug) and C++20",
+      "name": "win-x64-cxx23-debug",
+      "displayName": "Windows x64 Debug with C++23 (Ninja)",
+      "description": "Target Windows (64-bit) with Ninja (Debug) and C++23",
       "inherits": "windows-ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "Draco_CXX_LANGUAGE_STANDARD": "20"
+        "Draco_CXX_LANGUAGE_STANDARD": "23"
       }
     },
     {
-      "name": "win-x64-cxx20-release",
-      "displayName": "Windows x64 Release with C++20 (Ninja)",
-      "description": "Target Windows (64-bit) with Ninja (Release) and C++20",
+      "name": "win-x64-cxx23-release",
+      "displayName": "Windows x64 Release with C++23 (Ninja)",
+      "description": "Target Windows (64-bit) with Ninja (Release) and C++23",
       "inherits": "windows-ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
-        "Draco_CXX_LANGUAGE_STANDARD": "20"
+        "Draco_CXX_LANGUAGE_STANDARD": "23"
       }
     }
   ],
@@ -305,8 +305,8 @@
       "configurePreset": "linux-debug-coverage"
     },
     {
-      "name": "linux-debug-cxx20",
-      "configurePreset": "linux-debug-cxx20"
+      "name": "linux-debug-cxx23",
+      "configurePreset": "linux-debug-cxx23"
     },
     {
       "name": "linux-debug-clang-tidy",
@@ -377,11 +377,11 @@
       "configurePreset": "linux-debug-fd-static"
     },
     {
-      "name": "linux-debug-cxx20",
+      "name": "linux-debug-cxx23",
       "inherits": "linux-ctest",
       "description": "Run all tests",
       "displayName": "Ctest",
-      "configurePreset": "linux-debug-cxx20"
+      "configurePreset": "linux-debug-cxx23"
     },
     {
       "name": "linux-debug-valgrind",

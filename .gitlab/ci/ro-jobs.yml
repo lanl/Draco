@@ -67,7 +67,7 @@ ro_deploy_deb_fulldiag:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/3.0.1-oneapi"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
-    FLAVOR: intel-fulldiag-static
+    FLAVOR: gnu-fulldiag-static
 
 ro_deploy_rel_gnu:
   extends: .ro_deploy
@@ -95,6 +95,8 @@ ro_deploy_deb_gnu:
     DRACO_INSTALL_DIR: "/usr/projects/draco/${CI_COMMIT_TAG}${CI_COMMIT_BRANCH}/${SITE_ID}/${FLAVOR}"
     SCHEDULER_PARAMETERS: -N 1 -t 30:00 -A xd -L none@slurmdb
   script:
+    - echo "branch = $CI_COMMIT_BRANCH, tag = $CI_COMMIT_TAG"
+    - echo "Starting ro_deploy_release..."
     - if [[ -z ${CI_COMMIT_BRANCH} ]]; then
         VERSION_PATCH=${CI_COMMIT_TAG//*_/};
       else
@@ -252,6 +254,12 @@ ro_deb_gnu_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: "lapse/3.0.1-gnu"
+
+ro_rel_gnu_regress:
+  extends: .ro_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/3.0.1-gnu"
 
 #--------------------------------------------------------------------------------------------------#
