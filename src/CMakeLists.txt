@@ -39,6 +39,7 @@ add_subdirectory(memory) #< needs dsxx
 add_subdirectory(mesh_element) #< needs dsxx
 add_subdirectory(ode) #< needs dsxx
 add_subdirectory(units) #< needs dsxx
+add_subdirectory(cpt_data) #< needs dsxx
 
 # Level 3
 message(" ")
