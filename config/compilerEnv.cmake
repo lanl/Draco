@@ -1031,7 +1031,7 @@ function(dbssetupstdtargetprops)
 
   # Apply these properties to all targets (libraries, executables)
   # cmake-format: off
-  set(Draco_CXX_LANGUAGE_STANDARD 17 CACHE STRING "Target language standard")
+  set(Draco_CXX_LANGUAGE_STANDARD 20 CACHE STRING "Target language standard")
   set_property(CACHE Draco_CXX_LANGUAGE_STANDARD PROPERTY STRINGS 98 11 14 17 20 23 26)
   # Intel only supports C11 (not C17).
   set(Draco_C_LANGUAGE_STANDARD 11 CACHE STRING "Target language standard")
@@ -1041,21 +1041,16 @@ function(dbssetupstdtargetprops)
   set(Draco_std_target_props_C
       C_STANDARD ${Draco_C_LANGUAGE_STANDARD} C_EXTENSIONS OFF C_STANDARD_REQUIRED ON
       CACHE INTERNAL "Standard target properties for C code.")
-  # Force strict C++ 14 standard
+  # Force strict C++ standard
   set(Draco_std_target_props_CXX
       CXX_STANDARD ${Draco_CXX_LANGUAGE_STANDARD} CXX_EXTENSIONS OFF CXX_STANDARD_REQUIRED ON
       CACHE INTERNAL "Standard target properties for C++ code.")
   set(Draco_std_target_props_CUDA
-      CUDA_STANDARD;${Draco_CXX_LANGUAGE_STANDARD} # Force strict C++ 14 standard
+      CUDA_STANDARD;${Draco_CXX_LANGUAGE_STANDARD} # Force strict C++ standard
       CUDA_EXTENSIONS;OFF CUDA_STANDARD_REQUIRED;ON CUDA_ARCHITECTURES;${CUDA_ARCHITECTURES}
       CACHE INTERNAL "Standard target properties for Cuda code.")
-  # ~~~
-  # Do we need to add additional CUDA properties like:
-  # CUDA_SEPARABLE_COMPILATION ON)
-  # CUDA_RESOLVE_DEVICE_SYMBOLS ON)
-  # ~~~
   set(Draco_std_target_props_HIP
-      HIP_STANDARD;${Draco_CXX_LANGUAGE_STANDARD} # Force strict C++ 14 standard
+      HIP_STANDARD;${Draco_CXX_LANGUAGE_STANDARD} # Force strict C++ standard
       HIP_EXTENSIONS;OFF HIP_STANDARD_REQUIRED;ON HIP_ARCHITECTURES;${HIP_ARCHITECTURES}
       CACHE INTERNAL "Standard target properties for HIP code.")
   set(Draco_std_target_props
@@ -1064,6 +1059,11 @@ function(dbssetupstdtargetprops)
 
   option(ENABLE_CCACHE "If available, use ccache compiler launcher" FALSE)
   option(ENABLE_F90CACHE "If available, use f90cache compiler launcher" FALSE)
+
+  if(Draco_CXX_LANGUAGE_STANDARD LESS "20")
+    message(FATAL_ERROR "Draco requires C++20 or newer.  Please change the value of "
+                        "Draco_CXX_LANGUAGE_STANDARD")
+  endif()
 
 endfunction(dbssetupstdtargetprops)
 
