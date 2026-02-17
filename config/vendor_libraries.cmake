@@ -51,6 +51,21 @@ function(setupRandom123)
   endif()
 endfunction()
 
+# ------------------------------------------------------------------------------------------------ #
+# Helper functions for nlohmann::json
+# ------------------------------------------------------------------------------------------------ #
+function(setupJSON)
+
+  message(STATUS "Looking for JSON...")
+  find_package(JSON QUIET)
+  mark_as_advanced(JSON_FOUND)
+  if(JSON_FOUND)
+    message(STATUS "Looking for JSON.found ${JSON_INCLUDE_DIR}")
+  else()
+    message(STATUS "Looking for JSON.not found")
+  endif()
+endfunction()
+
 # --------------------------------------------------------------------------------------------------
 # Setup GSL (any)
 # --------------------------------------------------------------------------------------------------
@@ -308,6 +323,7 @@ macro(setupVendorLibraries)
   setupgsl()
   setupparmetis()
   setuprandom123()
+  setupjson()
   setupeospac()
   setupndi()
   setupshaclphysics()

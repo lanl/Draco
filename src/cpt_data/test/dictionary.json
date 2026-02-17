@@ -1,0 +1,20 @@
+{
+  "Data Sets" : {
+    "Example" : {
+      "Location" : "example_data",
+      "Description" : "An example data set for testing"
+    }
+  },
+  
+  "Reaction Networks" : {
+    "File" : "example_dictionary/reaction-networks.json"
+  },
+
+  "Elastic Scattering" : {
+    "File" : "example_dictionary/elastic-scattering.json"
+  },
+
+  "TN Reactions" : {
+    "File" : "example_dictionary/tn-reactions.json"
+  }
+}

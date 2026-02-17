@@ -1,0 +1,26 @@
+/*----------------------------------------------*-C-*---------------------------------------------*/
+/*!
+ * \file   config.h
+ * \brief  CPP defines necessary for the cpt_data package.
+ * \note   Copyright (C) 2026 Triad National Security, LLC., All rights reserved. */
+/*------------------------------------------------------------------------------------------------*/
+
+#ifndef rtt_cpt_data_config_h
+#define rtt_cpt_data_config_h
+
+/*------------------------------------------------------------------------------------------------*/
+/* Draco/Cmake build system variables */
+/*------------------------------------------------------------------------------------------------*/
+
+/* Activate JSON calls found in cpt_data, otherwise, use code stubs. */
+#cmakedefine JSON_FOUND
+#ifdef JSON_FOUND
+  #include <nlohmann/json.hpp>
+#endif
+
+#endif /* __rtt_cpt_data_config_h__ */
+
+/*------------------------------------------------------------------------------------------------*/
+/* end of config.h */
+/*------------------------------------------------------------------------------------------------*/
+
