@@ -22,6 +22,7 @@ TAGS
 !.vscode/launch.json
 !.vscode/settings.json
 !.vscode/tasks.json
+.continue/
 .idea
 .idea/
 .vs/
