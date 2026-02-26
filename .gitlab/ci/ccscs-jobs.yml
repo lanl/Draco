@@ -32,7 +32,7 @@
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: "/ccs/codes/radtran/regress/deploy/draco/${FLAVOR}"
     EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
-      -DCMAKE_Fortran_FLAGS="-march=broadwell"
+      -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=True
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:

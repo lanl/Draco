@@ -48,9 +48,9 @@ void tstifpstream(UnitTest &ut, const std::ios_base::openmode mode) {
 
   int const pid = rtt_c4::node();
 
-  std::string filename = "tstifpstream.txt";
+  std::string filename = "tstifpstream" + std::to_string(rtt_c4::nodes()) + ".txt";
   if (mode == std::ofstream::binary)
-    filename = "tstifpstream.bin";
+    filename = "tstifpstream" + std::to_string(rtt_c4::nodes()) + ".bin";
 
   write_stream(filename, mode);
   // Read file on head rank, check for correct conversion and ordering

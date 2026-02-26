@@ -292,8 +292,11 @@ endfunction()
 # Setup shacl-physics
 # ------------------------------------------------------------------------------
 function(setupShaclPhysics)
-
-  if(NOT TARGET shacl::physics)
+  # KPL: shacl-physics brings in a number of its own dependencies, at least one of which is not
+  # C++20 compliant in some spack buildouts. Make shacl-physics an "opt-in" dependency via
+  # "USE_SHACL_PHYSICS"
+  option(USE_SHACL_PHYSICS "Do we opt-in to shacl-physics dependency if found?" FALSE)
+  if(NOT TARGET shacl::physics AND USE_SHACL_PHYSICS)
     message(STATUS "Looking for SHACL physics...")
     list(APPEND CMAKE_PREFIX_PATH "${SHACL_PHYSICS_ROOT_DIR}")
     find_package(shacl-physics QUIET)
@@ -302,13 +305,19 @@ function(setupShaclPhysics)
     else()
       message(STATUS "Looking for SHACL physics....not found")
     endif()
+  else()
+    message(STATUS "Looking for SHACL physics... skipped (pass -DUSE_SHACL_PHYSICS=TRUE to opt in)")
+    set(shacl-physics_FOUND "0")
   endif()
+  set(USE_SHACL_PHYSICS
+      "${USE_SHACL_PHYSICS}"
+      CACHE STRING "Did we opt-in to the SHACL physics dependency?" FORCE)
   set(SHACL_PHYSICS_FOUND
       "${shacl-physics_FOUND}"
-      CACHE STRING "Did we find the SHACL physics library?")
+      CACHE STRING "Did we find the SHACL physics library?" FORCE)
   set(SHACL_PHYSICS_VERSION_STRING
       "${shacl-physics_VERSION}"
-      CACHE STRING ".")
+      CACHE STRING "." FORCE)
 
 endfunction()
 
