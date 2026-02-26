@@ -3,7 +3,7 @@
 # author Kelly G. Thompson, kgt@lanl.gov
 # date   2010 Dec 1
 # brief  Provide extra macros to simplify CMakeLists.txt for component directories.
-# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 include_guard(GLOBAL)
@@ -663,6 +663,7 @@ endmacro(register_parallel_test)
 #    [ PASS_REGEX    "regex" ]
 #    [ FAIL_REGEX    "regex" ]
 #    [ RESOURCE_LOCK "lockname" ]
+#    [ LABEL         "label1;label2" ]
 #    [ RUN_AFTER     "test_name" ]
 #    [ APPLICATION_UNIT_TEST ]
 #    [ EXTRA_RESOURCES "gpus:1,mem_gb:2" ] <-- These must match content of ctest_resource_spec.json
@@ -683,8 +684,8 @@ macro(add_scalar_tests test_sources)
   # These become variables of the form ${addscalartests_SOURCES}, etc.
   cmake_parse_arguments(
     addscalartest "APPLICATION_UNIT_TEST;LINK_WITH_FORTRAN;RUN_SERIAL;NONE"
-    "LABEL;LANGUAGE;LINK_LANGUAGE;EXTRA_RESOURCES"
-    "DEPS;ENV;FAIL_REGEX;PASS_REGEX;RESOURCE_LOCK;RUN_AFTER;SOURCES;TEST_ARGS" ${ARGV})
+    "LANGUAGE;LINK_LANGUAGE;EXTRA_RESOURCES"
+    "DEPS;ENV;FAIL_REGEX;LABEL;PASS_REGEX;RESOURCE_LOCK;RUN_AFTER;SOURCES;TEST_ARGS" ${ARGV})
 
   # Sanity Checks
   # ------------------------------------------------------------
@@ -873,13 +874,15 @@ endmacro(add_scalar_tests)
 #
 # Optional parameters that require a single argument
 #
-# * LABEL           - Label that can be used to select tests via ctest's -R or -E options.
+# * NA
 #
 # Optional parameters that require a list of arguments.
 #
 # * DEPS            - CMake target dependencies.
 # * ENV             - Environment variables that will be set for the context of the running test.
 # * FAIL_REGEX      - If this regex exists in the output, the test will 'fail.'
+# * LABEL           - Label that can be used to select tests via ctest's -R or -E options. One or
+#   more labels can be specified, separated by semicolons (e.g. "nomemcheck;slow").
 # * MPIFLAGS        - Extra options to pass to mpirun.
 # * PASS_REGEX      - This regex must exist in the output to produce a 'pass.'
 # * PE_LIST         - semi-colon delimited list of integers (number of MPI ranks).
@@ -898,6 +901,7 @@ macro(add_parallel_tests)
       ENV
       EXTRA_RESOURCES
       FAIL_REGEX
+      LABEL
       MPIFLAGS
       PASS_REGEX
       PE_LIST
@@ -905,7 +909,7 @@ macro(add_parallel_tests)
       RUN_AFTER
       SOURCES
       TEST_ARGS)
-  cmake_parse_arguments(addparalleltest "MPI_PLUS_OMP;LINK_WITH_FORTRAN" "LABEL"
+  cmake_parse_arguments(addparalleltest "MPI_PLUS_OMP;LINK_WITH_FORTRAN" ""
                         "${apt_multivaluekeywords}" ${ARGV})
   unset(apt_multivaluekeywords)
 
