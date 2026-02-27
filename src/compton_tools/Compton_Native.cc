@@ -4,7 +4,7 @@
  * \author Andrew Till
  * \date   11 May 2020
  * \brief  Implementation file for native Compton binary-read and temperature interpolation
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "compton_tools/Compton_Native.hh"
@@ -462,6 +462,185 @@ void Compton_Native::interp_linear_outscat(vec_d &outscat, double Te_keV) const 
 
 //------------------------------------------------------------------------------------------------//
 /*!
+ * \brief Interpolate csk data in temperature and return linear outscattering matrix
+ *
+ * \param[in,out] outscat_matrix The 1D net outscattering matrix ngroups*ngroups -> slow index
+ * [incident group, outbound group] fast index. Units [cm^2/mol-electrons]
+ * \param[in] Te_keV The electron temperature in keV at which the interpolation is desired
+ *
+ * This is the full incident to outbound group scattering opacity matrix (Eq. 5 in CSK manual). 
+ */
+void Compton_Native::interp_linear_outscat_matrix(vec_d &outscat_matrix, double Te_keV) const {
+  // Finds index and nudges Teff st
+  // * Ts_[index] <= Teff <= Ts_[index+1] and 0 <= index <= Ts_.size()-2;
+  double Teff = Te_keV; // NOLINT(misc-const-correctness)
+  size_t const iT = rtt_compton_tools::find_index(Ts_, Teff);
+
+  // Fill Hermite function
+  std::array<double, 4> hermite = rtt_compton_tools::hermite<double>(Teff, Ts_[iT], Ts_[iT + 1U]);
+
+  // Precompute some sparse indexes
+  const size_t sz = indexes_[indexes_.size() - 1];
+  const size_t eval_offset = sz * num_leg_moments_; // out_lin
+
+  // Resize and fill with zeros
+  outscat_matrix.resize(num_groups_ * num_groups_);
+  std::fill(outscat_matrix.begin(), outscat_matrix.end(), 0.0);
+
+  // Apply Hermite function
+  for (size_t gfrom = 0; gfrom < num_groups_; ++gfrom) {
+    // Get contributions from both Ts_[iT] and Ts_[iT+1U]
+    for (size_t n = 0; n < 2U; ++n) {
+      const size_t i = gfrom + num_groups_ * (iT + n);
+      const size_t first_gto = first_groups_[i];
+      const size_t num_entries = indexes_[i + 1U] - indexes_[i];
+      const size_t offset = indexes_[i] + eval_offset;
+      for (size_t dg = 0; dg < num_entries; ++dg) {
+        const size_t gto = dg + first_gto;
+        const size_t ii = dg + offset;
+        const size_t jj = gfrom * num_groups_ + gto;
+        outscat_matrix[jj] += hermite[0U + n] * data_[ii] + hermite[2U + n] * derivs_[ii];
+      }
+    }
+  }
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Interpolate csk data to get the Compton amplification matrix (nu_prime/nu) from an
+ * incident group g to an outbound group g_prime
+ *
+ * \param[in,out] amp_matrix is the unitless frequency amplification matrix from an incident group to an
+ * outbound group. slow index [incident group, outbound group] fast index.
+ * \param[in] Te_keV The electron temperature in keV at which the interpolation is desired
+ *
+ * Evaluated using the ratio of the linear inscattering opacity (Eq. 4 in the CSK manual) divided by
+ * the linear outscattering opacity (Eq. 5 in the CSK manual). 
+ */
+void Compton_Native::interp_linear_compton_amplification(vec_d &amp_matrix, double Te_keV) const {
+  // Finds index and nudges Teff st
+  // * Ts_[index] <= Teff <= Ts_[index+1] and 0 <= index <= Ts_.size()-2;
+  double Teff = Te_keV; // NOLINT(misc-const-correctness)
+  size_t const iT = rtt_compton_tools::find_index(Ts_, Teff);
+
+  // Fill Hermite function
+  std::array<double, 4> hermite = rtt_compton_tools::hermite<double>(Teff, Ts_[iT], Ts_[iT + 1U]);
+
+  // Precompute some sparse indexes
+  const size_t sz = indexes_[indexes_.size() - 1];
+  const size_t eval_offset_out = sz * num_leg_moments_; // out_lin
+  const size_t eval_offset_in = 0;                      // in_lin
+
+  // Resize and fill with zeros
+  amp_matrix.resize(num_groups_ * num_groups_);
+  std::vector<double> outscat(num_groups_, 0.0);
+  std::vector<double> inscat(num_groups_, 0.0);
+
+  // Apply Hermite function
+  for (size_t gfrom = 0; gfrom < num_groups_; ++gfrom) {
+    // Get contributions from both Ts_[iT] and Ts_[iT+1U]
+    std::fill(outscat.begin(), outscat.end(), 0.0);
+    std::fill(inscat.begin(), inscat.end(), 0.0);
+    for (size_t n = 0; n < 2U; ++n) {
+      const size_t i = gfrom + num_groups_ * (iT + n);
+      const size_t first_gto = first_groups_[i];
+      const size_t num_entries = indexes_[i + 1U] - indexes_[i];
+      const size_t offset_out = indexes_[i] + eval_offset_out;
+      const size_t offset_in = indexes_[i] + eval_offset_in;
+      for (size_t dg = 0; dg < num_entries; ++dg) {
+        const size_t gto = dg + first_gto;
+        const size_t ii_out = dg + offset_out;
+        const size_t ii_in = dg + offset_in;
+        // Eq. 4 in the CSK manual
+        inscat[gto] += hermite[0U + n] * data_[ii_in] + hermite[2U + n] * derivs_[ii_in];
+        // Eq. 5 in the CSK manual
+        outscat[gto] += hermite[0U + n] * data_[ii_out] + hermite[2U + n] * derivs_[ii_out];
+      }
+    }
+    // Now divided the interpolated scattering opacities to get the amplification.
+    for (size_t gto = 0; gto < num_groups_; ++gto) {
+      const size_t jj = gfrom * num_groups_ + gto;
+      amp_matrix[jj] = outscat[gto] > 0.0 ? inscat[gto] / outscat[gto] : 0.0;
+    }
+  }
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Interpolate csk data to get the Compton amplification matrix (nu_prime/nu) from an
+ * incident group g to an outbound group g_prime with the add nonlinear induced effects
+ *
+ * \param[in,out] amp_matrix is the unitless frequency amplification matrix from an incident group to an
+ * outbound group. slow index [incident group, outbound group] fast index.
+ * \param[in] Te_keV The electron temperature in keV at which the interpolation is desired
+ * \param[in] phi The multigroup radiation field of size number of groups
+ * \param[in] scale The scale for phi. when the radiation is in equilibrium, sum_g phi_g = scale
+ *
+ * Evaluated using the ratio of the linear inscattering opacity (Eq. 4 in the CSK manual) divided by
+ * the linear outscattering opacity (Eq. 5 in the CSK manual with the nonlinear correction from Eq.
+ * 31 added on). 
+ */
+void Compton_Native::interp_linear_compton_amplification_nonlinear(vec_d &amp_matrix, double Te_keV,
+                                                                   const vec_d &phi,
+                                                                   const double scale) const {
+  // Finds index and nudges Teff st
+  // * Ts_[index] <= Teff <= Ts_[index+1] and 0 <= index <= Ts_.size()-2;
+  double Teff = Te_keV; // NOLINT(misc-const-correctness)
+  size_t const iT = rtt_compton_tools::find_index(Ts_, Teff);
+
+  // Fill Hermite function
+  std::array<double, 4> hermite = rtt_compton_tools::hermite<double>(Teff, Ts_[iT], Ts_[iT + 1U]);
+
+  // Precompute some sparse indexes
+  const size_t sz = indexes_[indexes_.size() - 1];
+  const size_t eval_offset_out = sz * num_leg_moments_;       // out_lin
+  const size_t eval_offset_in = 0;                            // in_lin
+  const size_t eval_offset_nl = sz * (num_leg_moments_ + 1U); // nl_diff
+
+  // Precompute constants
+  const double invscale = scale > 0.0 ? 1.0 / scale : 0.0;
+
+  // Resize and fill with zeros
+  amp_matrix.resize(num_groups_ * num_groups_);
+  std::vector<double> outscat(num_groups_, 0.0);
+  std::vector<double> inscat(num_groups_, 0.0);
+
+  // Apply Hermite function
+  for (size_t gfrom = 0; gfrom < num_groups_; ++gfrom) {
+    // Get contributions from both Ts_[iT] and Ts_[iT+1U]
+    std::fill(outscat.begin(), outscat.end(), 0.0);
+    std::fill(inscat.begin(), inscat.end(), 0.0);
+    for (size_t n = 0; n < 2U; ++n) {
+      const size_t i = gfrom + num_groups_ * (iT + n);
+      const size_t first_gto = first_groups_[i];
+      const size_t num_entries = indexes_[i + 1U] - indexes_[i];
+      const size_t offset_out = indexes_[i] + eval_offset_out;
+      const size_t offset_in = indexes_[i] + eval_offset_in;
+      const size_t offset_nl = indexes_[i] + eval_offset_nl;
+      for (size_t dg = 0; dg < num_entries; ++dg) {
+        const size_t gto = dg + first_gto;
+        const size_t ii_out = dg + offset_out;
+        const size_t ii_in = dg + offset_in;
+        const double mag = invscale * phi[gto];
+        const size_t ii_nl = dg + offset_nl;
+        const double val = hermite[0U + n] * data_[ii_nl] + hermite[2U + n] * derivs_[ii_nl];
+        // Eq. 4 in the CSK manual
+        inscat[gto] += hermite[0U + n] * data_[ii_in] + hermite[2U + n] * derivs_[ii_in];
+        // Eq. 5 in the CSK manual plus nonlinear correction in Eq. 31
+        outscat[gto] +=
+            hermite[0U + n] * data_[ii_out] + hermite[2U + n] * derivs_[ii_out] + mag * val;
+      }
+    }
+    // Now divided the interpolated scattering opacities to get the amplification.
+    for (size_t gto = 0; gto < num_groups_; ++gto) {
+      const size_t jj = gfrom * num_groups_ + gto;
+      amp_matrix[jj] = outscat[gto] > 0.0 ? inscat[gto] / outscat[gto] : 0.0;
+    }
+  }
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
  * \brief Interpolate csk data in temperature and add nonlinear difference to outscattering
  *
  * \param[in,out] outscat The 1D net outscattering array at the desired temperature
@@ -510,6 +689,64 @@ void Compton_Native::interp_nonlin_diff_and_add(vec_d &outscat, double Te_keV, c
         const size_t ii = dg + offset;
         const double val = hermite[0U + n] * data_[ii] + hermite[2U + n] * derivs_[ii];
         outscat[gfrom] += mag * val;
+      }
+    }
+  }
+}
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Interpolate csk data in temperature and add nonlinear difference to outscattering matrix
+ * 
+ * \param[in,out] outscat_matrix The 1D net outscattering array ngroups*ngroups -> slow index
+ * [incident group, outbound group] fast index. Units [cm^2/mol-electrons]
+ * \param[in] Te_keV The electron temperature in keV at which the interpolation is desired
+ * \param[in] phi The multigroup radiation field of size number of groups (will be normalized by
+ * scale)
+ * \param[in] scale The scale for phi. when the radiation is in equilibrium, sum_g phi_g = scale
+ *
+ * Adds difference (nonlinear outscattering minus nonlinear inscattering, eq. 31 from CSK manual) to
+ * the outscattering matrix (pre-calculated in interp_linear_outscat_matrix, eq. 5 from CSK manual).
+ * The contribution is nonlinear because it depends on phi, the radiation field.  The use of scale
+ * allows phi to be passed in with arbitrary normalization (4pi, c, a, etc.).
+ */
+void Compton_Native::interp_nonlin_diff_for_outscat_matrix(vec_d &outscat_matrix,
+                                                           const double Te_keV, const vec_d &phi,
+                                                           const double scale) const {
+  // Adds to existing outscat vector
+  Require(outscat_matrix.size() == num_groups_ * num_groups_);
+  Require(phi.size() == num_groups_);
+
+  // Finds index and nudges Teff st Ts_[index] <= Teff <= Ts_[index+1]
+  // and 0 <= index <= Ts_.size()-2;
+  double Teff = Te_keV;
+  size_t const iT = rtt_compton_tools::find_index(Ts_, Teff);
+
+  // Fill Hermite function
+  std::array<double, 4> hermite = rtt_compton_tools::hermite<double>(Teff, Ts_[iT], Ts_[iT + 1U]);
+
+  // Precompute some sparse indexes
+  const size_t sz = indexes_[indexes_.size() - 1];
+  const size_t eval_offset = sz * (num_leg_moments_ + 1U); // nl_diff
+
+  // Precompute constants
+  const double invscale = scale > 0.0 ? 1.0 / scale : 0.0;
+
+  // Apply Hermite function
+  for (size_t gfrom = 0; gfrom < num_groups_; ++gfrom) {
+    // Get contributions from both Ts_[iT] and Ts_[iT+1U]
+    for (size_t n = 0; n < 2U; ++n) {
+      const size_t i = gfrom + num_groups_ * (iT + n);
+      const size_t first_gto = first_groups_[i];
+      const size_t num_entries = indexes_[i + 1U] - indexes_[i];
+      const size_t offset = indexes_[i] + eval_offset;
+      for (size_t dg = 0; dg < num_entries; ++dg) {
+        const size_t gto = dg + first_gto;
+        const size_t ii = dg + offset;
+        const size_t jj = gfrom * num_groups_ + gto;
+        const double mag = invscale * phi[gto];
+        const double val = hermite[0U + n] * data_[ii] + hermite[2U + n] * derivs_[ii];
+        outscat_matrix[jj] += mag * val;
       }
     }
   }

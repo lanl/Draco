@@ -63,11 +63,33 @@ public:
   // return a vector with index [group from]. \c outscat must be pre-sized to the number of groups.
   void interp_linear_outscat(std::vector<double> &outscat, double Te_keV) const;
 
+  // Get the linear outscatter matrix (eq. 5 from the CSK manual) (neglecting the induced scattering term)
+  // slow index [ incident_group, outbound_group ] fast index. Units are [cm^2/mol-electrons]
+  void interp_linear_outscat_matrix(std::vector<double> &outscat_matrix, double Te_keV) const;
+
+  // Get the group to group Compton amplification factor (nu_out/nu) (Eq. 4 divided by Eq. 5 from
+  // CSK manual)
+  void interp_linear_compton_amplification(std::vector<double> &amp_matrix, double Te_keV) const;
+
+  // Get the group to group Compton amplification factor (nu_out/nu) including induced effects (Eq.
+  // 4 divided by Eq. 5 from CSK manual, where Eq. 5 is modified to include the nonlinear corrections
+  // in Eq. 31).
+  void interp_linear_compton_amplification_nonlinear(std::vector<double> &amp_matrix, double Te_keV,
+                                                     const std::vector<double> &phi,
+                                                     double scale) const;
+
   // Adds the nonlinear difference to the \c outscat vector phi is a group-sized vector for the
   // scalar radiation intensity when the radiation is in equilibrium, sum_g phi_g = scale \c outscat
   // must be pre-sized and pre-filled with the \c outscat data by calling interp_linear_outscat
   void interp_nonlin_diff_and_add(std::vector<double> &outscat, double Te_keV,
                                   const std::vector<double> &phi, double scale) const;
+
+  // Add the nonlinear difference (eq. 31 from CSK manual) to the outscattering matrix (eq. 5 from
+  // the CSK manual). Scale = sum_g phi_g. The outscattering matrix is pre-calculated by
+  // interp_linear_ouscat_matrix. slow index [ incident_group, outbound_group ] fast index. Units
+  // are [cm^2/mol-electrons]
+  void interp_nonlin_diff_for_outscat_matrix(std::vector<double> &outscat_matrix, double Te_keV,
+                                             const std::vector<double> &phi, double scale) const;
 
   //----------------------------------------------------------------------------------------------//
   // UNIMPLEMENTED, POTENTIAL FUTURE FUNCTIONS
