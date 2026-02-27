@@ -62,6 +62,8 @@ option(HAVE_GPU "Should we build GPU (HIP or CUDA) parts of the project?" @HAVE_
 set(USE_GPU "@USE_GPU@")
 set(GPU_DBS_STRING "@GPU_DBS_STRING@")
 
+# Tell downstream projects to use shacl-physics (or not)
+set(USE_SHACL_PHYSICS "@USE_SHACL_PHYSICS@")
 
 if((${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "Ninja") AND NOT MSVC)
   # For non-MSVC builds, always look for Fortran.  If $ENV{FC} or ${CMAKE_Fortran_COMPILER} are
