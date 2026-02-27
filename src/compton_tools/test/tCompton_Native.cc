@@ -4,7 +4,7 @@
  * \author Andrew Till
  * \date   14 Oct 2020
  * \brief  Implementation file for tCompton_Native
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -136,12 +136,22 @@ void test(rtt_dsxx::UnitTest &ut) {
     std::vector<double> inscat(G * G * L, -1.0);
     std::vector<double> outscat(G, -1.0);
     std::vector<double> nl_diff(G, 0.0);
+    std::vector<double> outscat_matrix(G * G, -1.0);
+    std::vector<double> outscat_matrix_diff(G * G, 0.0);
+    std::vector<double> amp_matrix(G * G, -1.0);
+    std::vector<double> nl_amp_matrix(G * G, -1.0);
 
     // Returns flattened 3D inscat array with order [moment, group_to, group_from]
     compton_test->interp_dense_inscat(inscat, interp_T_keV, G);
 
     // Returns 1D outscat array [group_from]
     compton_test->interp_linear_outscat(outscat, interp_T_keV);
+
+    // Returns the flattened 2D outscattering matrix [incident_group, outbound_group]
+    compton_test->interp_linear_outscat_matrix(outscat_matrix, interp_T_keV);
+
+    // Returns the flattened 2D Compton amplification (nu_prime/nu) [incident_group, outbound_group]
+    compton_test->interp_linear_compton_amplification(amp_matrix, interp_T_keV);
 
     // Use dummy flux for nonlinear component
     const double phival = 1.732984; // random
@@ -150,11 +160,24 @@ void test(rtt_dsxx::UnitTest &ut) {
     // Returns 1D nonlinear difference array [group_from] (performs matrix multiplication with phi)
     compton_test->interp_nonlin_diff_and_add(nl_diff, interp_T_keV, phi, phiscale);
 
+    // Update the linear outscattering matrix to include induced effects
+    // (e.g. if a matrix of zeroes is passed in, on return it will be equal to the induced contribution)
+    compton_test->interp_nonlin_diff_for_outscat_matrix(outscat_matrix_diff, interp_T_keV, phi,
+                                                        phiscale);
+
+    // Calculate the non-linear form of the Compton amplification factor
+    compton_test->interp_linear_compton_amplification_nonlinear(nl_amp_matrix, interp_T_keV, phi,
+                                                                phiscale);
+
     // Print result (useful if golds need updating)
     if (do_print) {
       print_lambda(inscat, "inscat");
       print_lambda(outscat, "outscat");
       print_lambda(nl_diff, "nl_diff");
+      print_lambda(outscat_matrix, "outscat_matrix");
+      print_lambda(outscat_matrix_diff, "outscat_matrix_diff");
+      print_lambda(amp_matrix, "amp_matrix");
+      print_lambda(nl_amp_matrix, "nl_amp_matrix");
     }
 
     // in_lin last temperature
@@ -196,17 +219,98 @@ void test(rtt_dsxx::UnitTest &ut) {
 
     std::vector<double> const nl_diff_gold = {0.017286371393823, 0.0087938222181754,
                                               0.0011691552185996, 0.00012086891440242};
+    std::vector<double> const outscat_matrix_gold = {0.076895615348207,
+                                                     0.010580654813084,
+                                                     2.8570204118996e-10,
+                                                     0,
+                                                     0.0010281421965568,
+                                                     0.064450811855277,
+                                                     0.0086424664123312,
+                                                     8.2722735959847e-08,
+                                                     1.0034858631934e-11,
+                                                     0.002266205448414,
+                                                     0.055552618936782,
+                                                     0.0066033300537106,
+                                                     0,
+                                                     9.1038258953769e-09,
+                                                     0.0020737244638516,
+                                                     0.053741086382746};
+
+    std::vector<double> const outscat_matrix_diff_gold = {0.023851451092196,
+                                                          -0.0065650795529254,
+                                                          -1.4544764008884e-10,
+                                                          0,
+                                                          0.0083242188042929,
+                                                          0.0013414766097549,
+                                                          -0.00087186671535155,
+                                                          -6.4805208357506e-09,
+                                                          3.8184464112549e-10,
+                                                          0.001103724452621,
+                                                          0.00015302427784575,
+                                                          -8.7593893711727e-05,
+                                                          0,
+                                                          1.4153487374215e-08,
+                                                          0.00011066101344709,
+                                                          1.0193747467961e-05};
+
+    std::vector<double> const amp_matrix_gold = {1.0057265506424,
+                                                 1.1945583903626,
+                                                 2.6511361177178,
+                                                 0,
+                                                 0.84437262368994,
+                                                 1.0041096193111,
+                                                 1.1915520468236,
+                                                 2.1603584152337,
+                                                 0.37458966030913,
+                                                 0.84398336720346,
+                                                 1.0022546490882,
+                                                 1.1875224862621,
+                                                 0,
+                                                 0.46442455138961,
+                                                 0.84429672767933,
+                                                 1.0005625196344};
+
+    std::vector<double> const nl_amp_matrix_gold = {0.76762495143641,
+                                                    3.147546531602,
+                                                    5.4004365949151,
+                                                    0,
+                                                    0.092825236745471,
+                                                    0.98363625382467,
+                                                    1.3252450190196,
+                                                    2.3439869693074,
+                                                    0.0095921177007557,
+                                                    0.56756067968651,
+                                                    0.99950143980737,
+                                                    1.2034868709283,
+                                                    0,
+                                                    0.18179401070018,
+                                                    0.80152463799734,
+                                                    1.00037276635};
 
     // Print diff (useful if golds need updating)
     if (do_print) {
       print_diff_lambda(inscat, inscat_gold, "inscat", "inscat_gold", tol);
       print_diff_lambda(outscat, outscat_gold, "outscat", "outscat_gold", tol);
       print_diff_lambda(nl_diff, nl_diff_gold, "nl_diff", "nl_diff_gold", tol);
+      print_diff_lambda(outscat_matrix, outscat_matrix_gold, "outscat_matrix",
+                        "outscat_matrix_gold", tol);
+      print_diff_lambda(outscat_matrix_diff, outscat_matrix_diff_gold, "outscat_matrix_diff",
+                        "outscat_matrix_diff_gold", tol);
+      print_diff_lambda(amp_matrix, amp_matrix_gold, "amp_matrix", "amp_matrix_gold", tol);
+      print_diff_lambda(nl_amp_matrix, nl_amp_matrix_gold, "nl_amp_matrix", "nl_amp_matrix_gold",
+                        tol);
     }
 
     ut.check(soft_equiv(inscat, inscat_gold, tol), "checked data retrieval for inscat");
     ut.check(soft_equiv(outscat, outscat_gold, tol), "checked data retrieval for outscat");
     ut.check(soft_equiv(nl_diff, nl_diff_gold, tol), "checked data retrieval for nl_diff");
+    ut.check(soft_equiv(outscat_matrix, outscat_matrix_gold, tol), "checked data retrieval for "
+                                                                   "outscat_matrix");
+    ut.check(soft_equiv(outscat_matrix_diff, outscat_matrix_diff_gold, tol),
+             "checked data retrieval for outscat_matrix_diff");
+    ut.check(soft_equiv(amp_matrix, amp_matrix_gold, tol), "checked data retrieval for amp_matrix");
+    ut.check(soft_equiv(nl_amp_matrix, nl_amp_matrix_gold, tol),
+             "checked data retrieval for nl_amp_matrix");
   }
   // Test interpolation
   {
@@ -219,12 +323,22 @@ void test(rtt_dsxx::UnitTest &ut) {
     std::vector<double> inscat(G * G * L, -1.0);
     std::vector<double> outscat(G, -1.0);
     std::vector<double> nl_diff(G, 0.0);
+    std::vector<double> outscat_matrix(G * G, -1.0);
+    std::vector<double> outscat_matrix_diff(G * G, 0.0);
+    std::vector<double> amp_matrix(G * G, -1.0);
+    std::vector<double> nl_amp_matrix(G * G, -1.0);
 
     // Returns flattened 3D inscat array with order [moment, group_to, group_from]
     compton_test->interp_dense_inscat(inscat, interp_T_keV, G);
 
     // Returns 1D outscat array [group_from]
     compton_test->interp_linear_outscat(outscat, interp_T_keV);
+
+    // Returns the flattend 2D outscattering matrix [incident_group, outbound_group]
+    compton_test->interp_linear_outscat_matrix(outscat_matrix, interp_T_keV);
+
+    // Returns the flattend 2D Compton amplification (nu_prim/nu) [incident_group, outbound_group]
+    compton_test->interp_linear_compton_amplification(amp_matrix, interp_T_keV);
 
     // Use dummy flux for nonlinear component
     const double phival = 2.394559; // random
@@ -233,11 +347,25 @@ void test(rtt_dsxx::UnitTest &ut) {
     // Returns 1D nonlinear difference array [group_from] (performs matrix multiplication with phi)
     compton_test->interp_nonlin_diff_and_add(nl_diff, interp_T_keV, phi, phiscale);
 
+    // Updates the outscattering matrix to include induced effects (accumulate to a zero array to
+    // see just the induced contrubution, typically we would pass in the linear outscat_matrix and
+    // this would append the difference to that).
+    compton_test->interp_nonlin_diff_for_outscat_matrix(outscat_matrix_diff, interp_T_keV, phi,
+                                                        phiscale);
+
+    // Calculate the non-linear form of the Compton amplification factor
+    compton_test->interp_linear_compton_amplification_nonlinear(nl_amp_matrix, interp_T_keV, phi,
+                                                                phiscale);
+
     // Print result (useful if golds need updating)
     if (do_print) {
       print_lambda(inscat, "inscat");
       print_lambda(outscat, "outscat");
       print_lambda(nl_diff, "nl_diff");
+      print_lambda(outscat_matrix, "outscat_matrix");
+      print_lambda(outscat_matrix_diff, "outscat_matrix_diff");
+      print_lambda(amp_matrix, "amp_matrix");
+      print_lambda(nl_amp_matrix, "nl_amp_matrix");
     }
 
     std::vector<double> const inscat_gold = {0.11237635504081,
@@ -279,16 +407,54 @@ void test(rtt_dsxx::UnitTest &ut) {
     std::vector<double> const nl_diff_gold = {3.7130057760837e-05, 3.0320968944752e-05,
                                               4.7840481582021e-06, 4.108948064536e-07};
 
+    std::vector<double> const outscat_matrix_gold = {
+        0.11232257652334,  0.0030139180042694,  0, 0, 0.0040602444028484,
+        0.085612046787231, 0.0012226025054832,  0, 0, 0.0042451435441658,
+        0.071857006651994, 0.00033579563278701, 0, 0, 0.0087471769906374,
+        0.05285740565570};
+
+    std::vector<double> const outscat_matrix_diff_gold = {
+        6.3095694580059e-05, -2.5965636819222e-05, 0, 0, 2.9066470259542e-05,
+        4.6825132824432e-06, -3.428014597233e-06,  0, 0, 3.8895862938046e-06,
+        1.1360439980447e-06, -2.415821336472e-07,  0, 0, 2.7283569671083e-07,
+        1.3805910974278e-07};
+
+    std::vector<double> const amp_matrix_gold = {
+        1.0004787863592,  1.0774798785873, 0, 0, 0.95863446777599,
+        0.99947559690179, 1.0778433221669, 0, 0, 0.92300239089228,
+        0.99580955767251, 1.0618812278444, 0, 0, 0.91990231831319,
+        0.96042716780069};
+
+    std::vector<double> const nl_amp_matrix_gold = {
+        0.99991709639734, 1.0868432980019, 0, 0, 0.951820576362,
+        0.99942093401293, 1.0808739487668, 0, 0, 0.92215746986236,
+        0.99579381438402, 1.0626457292182, 0, 0, 0.9198736262721,
+        0.96042465925205};
+
     // Print diff (useful if golds need updating)
     if (do_print) {
       print_diff_lambda(inscat, inscat_gold, "inscat", "inscat_gold", tol);
       print_diff_lambda(outscat, outscat_gold, "outscat", "outscat_gold", tol);
       print_diff_lambda(nl_diff, nl_diff_gold, "nl_diff", "nl_diff_gold", tol);
+      print_diff_lambda(outscat_matrix, outscat_matrix_gold, "outscat_matrix",
+                        "outscat_matrix_gold", tol);
+      print_diff_lambda(outscat_matrix_diff, outscat_matrix_diff_gold, "outscat_matrix_diff",
+                        "outscat_matrix_diff_gold", tol);
+      print_diff_lambda(amp_matrix, amp_matrix_gold, "amp_matrix", "amp_matrix_gold", tol);
+      print_diff_lambda(nl_amp_matrix, nl_amp_matrix_gold, "nl_amp_matrix", "nl_amp_matrix_gold",
+                        tol);
     }
 
     ut.check(soft_equiv(inscat, inscat_gold, tol), "checked data retrieval for inscat");
     ut.check(soft_equiv(outscat, outscat_gold, tol), "checked data retrieval for outscat");
     ut.check(soft_equiv(nl_diff, nl_diff_gold, tol), "checked data retrieval for nl_diff");
+    ut.check(soft_equiv(outscat_matrix, outscat_matrix_gold, tol),
+             "checked data retrieval for outscat_matrix");
+    ut.check(soft_equiv(outscat_matrix_diff, outscat_matrix_diff_gold, tol),
+             "checked data retrieval for outscat_matrix_diff");
+    ut.check(soft_equiv(amp_matrix, amp_matrix_gold, tol), "checked data retrieval for amp_matrix");
+    ut.check(soft_equiv(nl_amp_matrix, nl_amp_matrix_gold, tol),
+             "checked data retrieval for nl_amp_matrix");
   }
 }
 
