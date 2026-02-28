@@ -13,9 +13,19 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "installDir": "${sourceDir}/install/${presetName}",
       "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
-        "rhs": "Linux-"
+        "type": "anyOf",
+        "conditions": [
+          {
+            "type": "equals",
+            "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
+            "rhs": "Linux-"
+          },
+          {
+            "type": "equals",
+            "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
+            "rhs": "Linux-rocinante"
+          }
+        ]
       }
     },
     {

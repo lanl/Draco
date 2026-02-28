@@ -67,7 +67,7 @@ ro_deploy_deb_fulldiag:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/3.0.1-oneapi"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
-    FLAVOR: gnu-fulldiag-static
+    FLAVOR: intel-fulldiag-static
 
 ro_deploy_rel_gnu:
   extends: .ro_deploy
