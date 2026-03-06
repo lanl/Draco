@@ -9,9 +9,9 @@
 
 #include "cdi_ndi/NDI_AtomicMass.hh"
 #include "dsxx/Assert.hh"
-#include "dsxx/path.hh"
 #include "cdi_ndi/NDI_Base.hh"
 #include <array>
+#include <filesystem>
 #include <string>
 #include <utility>
 
@@ -28,7 +28,7 @@ namespace rtt_cdi_ndi {
  */
 NDI_AtomicMass::NDI_AtomicMass(std::string gendir_path_in)
     : gendir_path(std::move(gendir_path_in)), pc() {
-  Insist(rtt_dsxx::fileExists(gendir_path),
+  Insist(std::filesystem::exists(gendir_path),
          "Specified NDI library is not available. gendir_path = " + gendir_path);
   NDI_Base::warn_ndi_version_mismatch(gendir_path);
 }
@@ -88,7 +88,7 @@ double NDI_AtomicMass::get_amw(const int zaid) const {
 
 #else
   // NDI gendir not available.
-  Insist(rtt_dsxx::fileExists(gendir_path),
+  Insist(std::filesystem::exists(gendir_path),
          "Specified NDI library is not available. gendir_path = " + gendir_path);
   return 0.0;
 #endif

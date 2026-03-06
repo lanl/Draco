@@ -12,9 +12,9 @@
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-#include "dsxx/path.hh"
 #include "cdi_ndi/NDI_CP_Eloss.hh"
 #include <cmath>
+#include <filesystem>
 #include <fstream>
 #include <string>
 #include <tuple>
@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
     bool def_gendir{false};
     std::tie(def_gendir, gendir_default) = rtt_dsxx::get_env_val<std::string>("NDI_GENDIR_PATH");
 
-    if (def_gendir && rtt_dsxx::fileExists(gendir_default)) {
+    if (def_gendir && std::filesystem::exists(gendir_default)) {
       ndi_dedx_test(ut);
     } else {
       PASSMSG("==> ENV{NDI_GENDIR_PATH} not set. Some tests were not run.");

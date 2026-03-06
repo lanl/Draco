@@ -142,7 +142,7 @@ void CPT_EnergeticTNReaction::load_json() {
         fileName;
 
     // Ensure file exists
-    Require(rtt_dsxx::fileExists(file_path));
+    Require(std::filesystem::exists(file_path));
 
     // Open and read individual reaction file
     std::ifstream reactionFile(file_path);
@@ -197,7 +197,7 @@ void CPT_EnergeticTNReaction::load_json(const std::vector<std::string> &reaction
         fileName;
 
     // Ensure file exists
-    Require(rtt_dsxx::fileExists(file_path));
+    Require(std::filesystem::exists(file_path));
 
     // Open and read individual reaction file
     std::ifstream reactionFile(file_path);

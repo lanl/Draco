@@ -10,11 +10,11 @@
 #include "cdi_ipcress/IpcressFile.hh"
 #include "dsxx/Assert.hh"
 #include "dsxx/Endian.hh"
-#include "dsxx/path.hh"
 #include "cdi_ipcress/IpcressFile.t.hh" // NOLINT(misc-include-cleaner)
 #include <algorithm>                    // find
 #include <cstddef>                      // size_t
 #include <cstdlib>                      // atoi
+#include <filesystem>
 #include <fstream>
 #include <ios>
 #include <string>
@@ -47,7 +47,7 @@ IpcressFile::IpcressFile(const std::string &ipcressDataFilename)
       matIDs(), dfo(), ds(), materialData() {
 
   Require(rtt_dsxx::has_ieee_float_representation());
-  Require(rtt_dsxx::fileExists(dataFilename));
+  Require(std::filesystem::exists(dataFilename));
 
   // Attempt to open the ipcress file.  Open at end of file (ate) so that we can know the size of
   // the binary file.
@@ -150,7 +150,7 @@ std::string IpcressFile::locateIpcressFile(std::string const &ipcressFile) {
   // ensure a name is provided
   Insist(ipcressFile.size() > 0,
          std::string("You must provide a filename when constructing an") + " IpcressFile object.");
-  Insist(rtt_dsxx::fileExists(ipcressFile), "Could not located requested ipcress file.");
+  Insist(std::filesystem::exists(ipcressFile), "Could not located requested ipcress file.");
 
   // if the provided filename looks okay then use it.
   return ipcressFile;

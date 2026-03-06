@@ -31,11 +31,6 @@ enum FilenameComponent {
 std::string getFilenameComponent(std::string const &fqName, FilenameComponent fc);
 
 //------------------------------------------------------------------------------------------------//
-//! Does the file exist?
-bool fileExists(std::string const &filename);
-bool isDirectory(std::string const &path);
-
-//------------------------------------------------------------------------------------------------//
 //! Functor for printing all items in a directory tree
 class wdtOpPrint {
 public:
@@ -98,9 +93,17 @@ void draco_walk_directory_tree(std::string const &dirname, T const &myOperator) 
 
 //------------------------------------------------------------------------------------------------//
 //! Recursively remove a directory.
-void draco_remove_dir(std::string const &path);
+inline void draco_remove_dir(std::string const &path) {
+  draco_walk_directory_tree(path, wdtOpRemove());
+  return;
+}
+
+//------------------------------------------------------------------------------------------------//
 //! Recursively print a directory tree.
-void draco_dir_print(std::string const &path);
+inline void draco_dir_print(std::string const &path) {
+  draco_walk_directory_tree(path, wdtOpPrint());
+  return;
+}
 
 } // end namespace rtt_dsxx
 
