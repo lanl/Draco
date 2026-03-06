@@ -3,16 +3,16 @@
  * \file   parser/Text_Token_Stream.cc
  * \author Kent G. Budge
  * \brief  Contains definitions of all Text_Token_Stream member functions.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "parser/Text_Token_Stream.hh"
 #include "dsxx/Assert.hh"
-#include "dsxx/path.hh"
 #include "parser/Token.hh"
 #include "parser/Token_Stream.hh"
 #include <cctype>
 #include <cstdlib> // getenv
+#include <filesystem>
 #include <set>
 #include <string>
 
@@ -577,7 +577,7 @@ void Text_Token_Stream::push_include(std::string &file_name) {
 
   // Now find the absolute path of the file name.
 
-  if (!rtt_dsxx::fileExists(file_name)) {
+  if (!std::filesystem::exists(file_name)) {
     // File name as given does not resolve to an existing file. Assume this is a relative path and
     // look for the file in DRACO_INCLUDE_PATH.
 

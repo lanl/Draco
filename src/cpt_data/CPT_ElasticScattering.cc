@@ -140,7 +140,7 @@ void CPT_ElasticScattering::load_json() {
         fileName;
 
     // Ensure file exists
-    Require(rtt_dsxx::fileExists(file_path));
+    Require(std::filesystem::exists(file_path));
 
     // Open and read individual collision file
     std::ifstream collisionFile(file_path);
@@ -196,7 +196,7 @@ void CPT_ElasticScattering::load_json(const std::vector<std::string> &listOfColl
         this->dictionaryPath_ + "/" +
         static_cast<std::string>(this->dictionary_["Data Sets"][this->dataset_]["Location"]) + "/" +
         fileName;
-    Require(rtt_dsxx::fileExists(file_path));
+    Require(std::filesystem::exists(file_path));
 
     // Open and read individual collision file
     std::ifstream collisionFile(file_path);

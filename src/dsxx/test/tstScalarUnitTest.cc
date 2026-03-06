@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Thu May 18 17:17:24 2006
  * \brief  Unit test for the dsxx classes UnitTest and ScalarUnitTest.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <cstring>
 #include <exception>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -292,7 +293,7 @@ void tstPaths(UnitTest &unitTest, char *test) {
       rtt_dsxx::getFilenameComponent(string(test), rtt_dsxx::FC_NATIVE), rtt_dsxx::FC_REALPATH);
   FAIL_IF_NOT(stest == testBinaryDir + testName);
   FAIL_IF_NOT(testName == string("tstScalarUnitTest") + rtt_dsxx::exeExtension);
-  if (rtt_dsxx::fileExists(thisFile)) {
+  if (std::filesystem::exists(thisFile)) {
     // For some generators (ninja), the logic of this test fails because the __FILE__ CPP macro is
     // relative to the top level source directory.
     if (thisFile != testSourceDir + testName_wo_suffix + ".cc") {
@@ -304,7 +305,7 @@ void tstPaths(UnitTest &unitTest, char *test) {
   }
 
   // CMake should provide cmake_install.cmake at testBinaryInputDir.
-  FAIL_IF_NOT(rtt_dsxx::fileExists(testBinaryInputDir + "cmake_install.cmake"));
+  FAIL_IF_NOT(std::filesystem::exists(testBinaryInputDir + "cmake_install.cmake"));
 
   // If this is a multi-config build tool, examine the value of buildType.
   string buildType = rtt_dsxx::getFilenameComponent(testBinaryDir, rtt_dsxx::FC_NAME);

@@ -8,7 +8,6 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "cpt_data/CPT_Base.hh"
-
 #include "dsxx/Assert.hh"
 #include <string>
 #include <utility>
@@ -32,7 +31,7 @@ CPT_Base::CPT_Base(std::string dictionaryPathIn, std::string datasetIn, std::str
       library_(std::move(libraryIn)) {
 
 #ifdef JSON_FOUND
-  Require(rtt_dsxx::fileExists(dictionaryPath_));
+  Require(std::filesystem::exists(dictionaryPath_));
 
   Require(dictionaryPath_.length() > 0);
   Require(dataset_.length() > 0);
@@ -64,7 +63,7 @@ CPT_Base::CPT_Base(std::string dictionaryPathIn, std::string libraryIn)
     : dictionaryPath_(std::move(dictionaryPathIn)), dataset_("Default"),
       library_(std::move(libraryIn)) {
 #ifdef JSON_FOUND
-  Require(rtt_dsxx::fileExists(dictionaryPath_));
+  Require(std::filesystem::exists(dictionaryPath_));
 
   Require(dictionaryPath_.length() > 0);
   Require(dataset_.length() > 0);
@@ -115,18 +114,19 @@ void CPT_Base::check_dictionary_data() {
   this->reactionNetworkFileName_ =
       this->dictionaryPath_ + "/" +
       static_cast<std::string>(this->dictionary_["Reaction Networks"]["File"]);
-  Insist(rtt_dsxx::fileExists(this->reactionNetworkFileName_), "Reaction Networks file not found.");
+  Insist(std::filesystem::exists(this->reactionNetworkFileName_),
+         "Reaction Networks file not found.");
 
   // Check TN reaction info file exists
   this->tnReactionFileName_ = this->dictionaryPath_ + "/" +
                               static_cast<std::string>(this->dictionary_["TN Reactions"]["File"]);
-  Insist(rtt_dsxx::fileExists(this->tnReactionFileName_), "TN Reactions file not found.");
+  Insist(std::filesystem::exists(this->tnReactionFileName_), "TN Reactions file not found.");
 
   // Check elastic scattering info file exists
   this->elasticScatteringFileName_ =
       this->dictionaryPath_ + "/" +
       static_cast<std::string>(this->dictionary_["Elastic Scattering"]["File"]);
-  Insist(rtt_dsxx::fileExists(this->elasticScatteringFileName_),
+  Insist(std::filesystem::exists(this->elasticScatteringFileName_),
          "Elastic Scattering file not found.");
 }
 //------------------------------------------------------------------------------------------------//

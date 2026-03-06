@@ -3,7 +3,7 @@
  * \file   cdi_ipcress/test/tIpcressOpacity.cc
  * \author Thomas M. Evans
  * \date   Fri Oct 26 10:50:44 2001
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ipcress_test.hh"
@@ -12,7 +12,6 @@
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-#include "dsxx/path.hh"
 #include "cdi/GrayOpacity.hh"
 #include "cdi/MultigroupOpacity.hh"
 #include "cdi/OpacityCommon.hh"
@@ -21,6 +20,7 @@
 #include "cdi_ipcress/IpcressMultigroupOpacity.hh"
 #include <cmath>
 #include <cstddef>
+#include <filesystem>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -45,7 +45,7 @@ using rtt_dsxx::soft_equiv;
 void file_check_two_mats(rtt_dsxx::ScalarUnitTest &ut) {
   // Ipcress data filename (IPCRESS format required)
   string const op_data_file = ut.getTestSourcePath() + "two-mats.ipcress";
-  FAIL_IF_NOT(rtt_dsxx::fileExists(op_data_file));
+  FAIL_IF_NOT(std::filesystem::exists(op_data_file));
 
   cout << "Starting test \"file_check_two_mats\"...\nExamining the ipcress file \"" << op_data_file
        << "\"...\n\n";
@@ -238,7 +238,7 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
 
   // Ipcress data filename (IPCRESS format required)
   string const op_data_file = ut.getTestSourcePath() + "analyticOpacities.ipcress";
-  FAIL_IF_NOT(rtt_dsxx::fileExists(op_data_file));
+  FAIL_IF_NOT(std::filesystem::exists(op_data_file));
 
   // ------------------------- //
   // Create IpcressFile object //
@@ -943,7 +943,7 @@ void gray_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
 
   // Ipcress data filename (IPCRESS format required)
   string const op_data_file = ut.getTestSourcePath() + "analyticOpacities.ipcress";
-  FAIL_IF_NOT(rtt_dsxx::fileExists(op_data_file));
+  FAIL_IF_NOT(std::filesystem::exists(op_data_file));
 
   // ------------------------- //
   // Create IpcressFile object //
@@ -1028,7 +1028,7 @@ void mg_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
 
   // Ipcress data filename (IPCRESS format required)
   string const op_data_file = ut.getTestSourcePath() + "analyticOpacities.ipcress";
-  FAIL_IF_NOT(rtt_dsxx::fileExists(op_data_file));
+  FAIL_IF_NOT(std::filesystem::exists(op_data_file));
 
   // ------------------------- //
   // Create IpcressFile object //

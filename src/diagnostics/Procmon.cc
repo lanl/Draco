@@ -4,14 +4,14 @@
  * \author Kelly Thompson
  * \date   Monday, Apr 22, 2013, 10:10 am
  * \brief  Procmon class for printing runtime system diagnostics (free memory per node, etc).
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Procmon.hh"
 #include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.hh" // tokenize()
-#include "dsxx/path.hh"
-#include <cstdlib> // atof (XLC)
+#include <cstdlib>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <ios> // std::fixed
@@ -101,7 +101,7 @@ void procmon_resource_print(std::string const &identifier, int const &mynode, st
 #else
 
   std::string const file_meminfo("/proc/meminfo");
-  Insist(rtt_dsxx::fileExists(file_meminfo), "Could not open /proc/meminfo!  Is this Linux?");
+  Insist(std::filesystem::exists(file_meminfo), "Could not open /proc/meminfo!  Is this Linux?");
 
   std::ifstream fs;
   fs.open(file_meminfo.c_str(), std::fstream::in);
@@ -132,7 +132,7 @@ void procmon_resource_print(std::string const &identifier, int const &mynode, st
   std::string const file_status_pid(std::string("/proc/") + proc_pid_string +
                                     std::string("/status"));
 #ifdef USE_PROCMON
-  Insist(rtt_dsxx::fileExists(file_status_pid),
+  Insist(std::filesystem::exists(file_status_pid),
          std::string("Could not open") + file_status_pid + std::string("!  Is this Linux?"));
 
   fs.open(file_status_pid.c_str(), std::fstream::in);

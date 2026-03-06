@@ -12,7 +12,7 @@
 #include "dsxx/DracoStrings.cc"
 #include "dsxx/DracoTerminal.hh"
 #include "dsxx/Query_Env.hh"
-#include "dsxx/path.hh"
+#include <filesystem>
 #include <iostream>
 #include <string>
 #include <utility>
@@ -93,7 +93,7 @@ NDI_Base::NDI_Base(std::string dataset_in, std::string library_in)
     : gendir(rtt_dsxx::get_env_val<std::string>("NDI_GENDIR_PATH").second),
       dataset(std::move(dataset_in)), library(std::move(library_in)) {
 
-  Require(rtt_dsxx::fileExists(gendir));
+  Require(std::filesystem::exists(gendir));
 
   Require(gendir.length() > 0);
   Require(dataset.length() > 0);
@@ -122,7 +122,7 @@ NDI_Base::NDI_Base(std::string gendir_in, std::string dataset_in, std::string li
     : gendir(std::move(gendir_in)), dataset(std::move(dataset_in)), library(std::move(library_in)) {
 
 #ifdef NDI_FOUND
-  Require(rtt_dsxx::fileExists(gendir));
+  Require(std::filesystem::exists(gendir));
 
   Require(gendir.length() > 0);
   Require(dataset.length() > 0);

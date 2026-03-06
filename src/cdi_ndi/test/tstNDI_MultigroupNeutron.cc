@@ -11,9 +11,9 @@
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/UnitTest.hh"
-#include "dsxx/path.hh"
 #include "cdi_ndi/NDI_MultigroupNeutron.hh"
 #include "cdi_ndi/config.h" // NOLINT(misc-include-cleaner)
+#include <filesystem>
 #include <fstream>
 #include <string>
 #include <tuple>
@@ -303,7 +303,7 @@ int main(int argc, char *argv[]) {
     bool def_gendir{false};
     std::tie(def_gendir, gendir_default) = rtt_dsxx::get_env_val<std::string>("NDI_GENDIR_PATH");
 
-    if (def_gendir && rtt_dsxx::fileExists(gendir_default)) {
+    if (def_gendir && std::filesystem::exists(gendir_default)) {
       gendir_test(ut);
       gendir_default_test(ut);
     } else {
