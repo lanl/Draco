@@ -2,6 +2,21 @@
 # file   config/unix-g++.cmake
 # brief  Establish flags for Unix/Linux - Gnu C++
 # note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
+#
+# Best Practices for C++:
+#
+# 1. Turn on modern C++ and strict diagnostics:
+#    * -std=c++20 -Wall -Wextra -Wpedantic -Werror
+# 2. Add high-value C++ warnings (low noise, good catches)
+#    * Using:
+#      * -Wconversion -Wshadow -Wold-style-cast -Wuseless-cast -Woverloaded-virtual
+#        -Wsuggest-override -Wformat=2 -Wcast-align=strict -Wduplicated-branches -Wnon-virtual-dtor
+#        -Wduplicated-cond
+#    * Consider adding (#1508):
+#      * -Wdelete-non-virtual-dtor -Wzero-as-null-pointer-constant -Wcast-qual -Wlogical-op
+#        -Wnull-dereference
+# 3. Enable GCC’s static analyzer
+#    * -fanalyzer -Wanalyzer-too-complex
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -44,7 +59,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
       "yes"
       CACHE INTERNAL "using draco settings.")
   string(APPEND CMAKE_C_FLAGS
-         " -g -Wall -Wextra -pedantic -Wcast-align -Wconversion -Wpointer-arith -Wfloat-equal"
+         " -g -Wall -Wextra -Wpedantic -Wcast-align -Wconversion -Wpointer-arith -Wfloat-equal"
          " -Wunused-macros -Wshadow -Wformat=2")
   # Pragmas in rng and Random123 don't seem to disable this check.
   string(APPEND CMAKE_C_FLAGS " -Wno-expansion-to-defined")
@@ -102,7 +117,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
 
   string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wold-style-cast -Wnon-virtual-dtor -Wuseless-cast")
   string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fdiagnostics-show-template-tree -Wnoexcept")
-  string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wsuggest-attribute=const")
+  string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wsuggest-attribute=const -Wduplicated-cond")
 
 endif()
 
