@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 10,
   "cmakeMinimumRequired": {
     "major": 3,
     "minor": 26,
@@ -13,19 +13,9 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "installDir": "${sourceDir}/install/${presetName}",
       "condition": {
-        "type": "anyOf",
-        "conditions": [
-          {
-            "type": "equals",
-            "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
-            "rhs": "Linux-"
-          },
-          {
-            "type": "equals",
-            "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
-            "rhs": "Linux-rocinante"
-          }
-        ]
+        "type": "equals",
+        "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
+        "rhs": "Linux-"
       }
     },
     {
@@ -120,28 +110,7 @@
       }
     },
     {
-      "name": "venado-ninja",
-      "hidden": true,
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}",
-      "installDir": "${sourceDir}/install/${presetName}",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}-$env{SLURM_CLUSTER_NAME}",
-        "rhs": "Linux-venado"
-      }
-    },
-    {
-      "name": "venado-debug",
-      "displayName": "Venado Debug",
-      "description": "Target Venado for Debug build.",
-      "inherits": "venado-ninja",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
-      "name": "darwin-haswell",
+      "name": "slurm-cn",
       "hidden": true,
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}-$env{SLURM_JOB_PARTITION}",
@@ -152,37 +121,91 @@
         "list": [
           "darwin-general",
           "darwin-sid-spr",
-          "darwin-volta-x86"
+          "darwin-volta-x86",
+          "rocinante-standard"
         ]
       }
     },
     {
-      "name": "darwin-haswell-debug",
-      "displayName": "Darwin Debug",
-      "description": "Target Linux for Debug build.",
-      "inherits": "darwin-haswell",
+      "name": "slurm-cn-debug",
+      "displayName": "SLURM compute node Debug",
+      "description": "Target Linux (slurm compute node) for Debug build.",
+      "inherits": "slurm-cn",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
-      "name": "darwin-haswell-release",
-      "displayName": "Darwin Release",
-      "description": "Target Linux for Debug build.",
-      "inherits": "darwin-haswell",
+      "name": "slurm-cn-release",
+      "displayName": "SLURM compute node Release",
+      "description": "Target Linux (slurm compute node) for Debug build.",
+      "inherits": "slurm-cn",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
     },
     {
-      "name": "darwin-haswell-clang-tidy",
-      "displayName": "Darwin Debug (Clang Tidy)",
-      "description": "Target Linux for Debug build.",
-      "inherits": "darwin-haswell",
+      "name": "slurm-cn-debug-scalar",
+      "displayName": "SLURM compute node Debug (No MPI)",
+      "description": "Target Linux (slurm compute node) for Debug build.",
+      "inherits": "slurm-cn",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DRACO_C4": "SCALAR",
+        "DRACO_DIAGNOSTICS": "2"
+      }
+    },
+    {
+      "name": "slurm-cn-debug-fd-static",
+      "displayName": "SLURM compute node Debug (Full Diagnostics, static libraries)",
+      "description": "Target Linux (slurm compute node) for Debug build.",
+      "inherits": "slurm-cn",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DRACO_DIAGNOSTICS": "7",
+        "DRACO_TIMING": "1",
+        "DRACO_LIBRARY_TYPE": "STATIC"
+      }
+    },
+    {
+      "name": "slurm-cn-debug-cxx23",
+      "displayName": "SLURM  compute node Debug with C++23 enabled",
+      "description": "Target Linux (slurm compute node) for Debug build.",
+      "inherits": "slurm-cn",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "Draco_CXX_LANGUAGE_STANDARD": "23"
+      }
+    },
+    {
+      "name": "slurm-cn-clang-tidy",
+      "displayName": "SLURM compute node Debug (Clang Tidy)",
+      "description": "Target Linux (slurm compute node) for Debug build.",
+      "inherits": "slurm-cn",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "DRACO_STATIC_ANALYZER": "clang-tidy"
-      }
+      },
+      "condition": {
+      "type": "allOf",
+      "conditions": [
+        {
+          "type": "matches",
+          "string": "$env{CC}",
+          "regex": "clang"
+        },
+        {
+          "type": "inList",
+          "string": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
+          "list": [
+            "darwin-general",
+            "darwin-sid-spr",
+            "darwin-volta-x86",
+            "rocinante-standard"
+          ]
+        }
+      ]
+    }
     },
     {
       "name": "macos-debug",
@@ -323,20 +346,28 @@
       "configurePreset": "linux-debug-clang-tidy"
     },
     {
-      "name": "venado-debug",
-      "configurePreset": "venado-debug"
+      "name": "slurm-cn-debug",
+      "configurePreset": "slurm-cn-debug"
     },
     {
-      "name": "darwin-haswell-debug",
-      "configurePreset": "darwin-haswell-debug"
+      "name": "slurm-cn-release",
+      "configurePreset": "slurm-cn-release"
     },
     {
-      "name": "darwin-haswell-release",
-      "configurePreset": "darwin-haswell-release"
+      "name": "slurm-cn-debug-scalar",
+      "configurePreset": "slurm-cn-debug-scalar"
     },
     {
-      "name": "darwin-haswell-clang-tidy",
-      "configurePreset": "darwin-haswell-clang-tidy"
+      "name": "slurm-cn-debug-cxx23",
+      "configurePreset": "slurm-cn-debug-cxx23"
+    },
+    {
+      "name": "slurm-cn-debug-fd-static",
+      "configurePreset": "slurm-cn-debug-fd-static"
+    },
+    {
+      "name": "slurm-cn-clang-tidy",
+      "configurePreset": "slurm-cn-clang-tidy"
     }
   ],
   "testPresets": [
@@ -430,35 +461,7 @@
       }
     },
     {
-      "name": "venado-ctest",
-      "displayName": "Run all tests",
-      "description": "Run all tests in parallel with ctest",
-      "hidden": true,
-      "condition": {
-        "type": "inList",
-        "string": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
-        "list": [
-          "venado-standard",
-          "venado-gpu"
-        ]
-      },
-      "output": {
-        "outputOnFailure": true
-      },
-      "execution": {
-        "noTestsAction": "error",
-        "stopOnFailure": true
-      }
-    },
-    {
-      "name": "venado-debug",
-      "inherits": "venado-ctest",
-      "description": "Run all tests",
-      "displayName": "Ctest",
-      "configurePreset": "venado-debug"
-    },
-    {
-      "name": "darwin-haswell-ctest",
+      "name": "slurm-cn-ctest",
       "displayName": "Run all tests",
       "description": "Run all tests in parallel with ctest",
       "hidden": true,
@@ -468,7 +471,8 @@
         "list": [
           "darwin-general",
           "darwin-sid-spr",
-          "darwin-volta-x86"
+          "darwin-volta-x86",
+          "rocinante-standard"
         ]
       },
       "output": {
@@ -480,18 +484,39 @@
       }
     },
     {
-      "name": "darwin-haswell-release",
-      "inherits": "darwin-haswell-ctest",
+      "name": "slurm-cn-release",
+      "inherits": "slurm-cn-ctest",
       "description": "Run all tests",
       "displayName": "Ctest",
-      "configurePreset": "darwin-haswell-release"
+      "configurePreset": "slurm-cn-release"
     },
     {
-      "name": "darwin-haswell-debug",
-      "inherits": "darwin-haswell-ctest",
+      "name": "slurm-cn-debug",
+      "inherits": "slurm-cn-ctest",
       "description": "Run all tests",
       "displayName": "Ctest",
-      "configurePreset": "darwin-haswell-debug"
+      "configurePreset": "slurm-cn-debug"
+    },
+    {
+      "name": "slurm-cn-debug-scalar",
+      "inherits": "slurm-cn-ctest",
+      "description": "Run all tests",
+      "displayName": "Ctest",
+      "configurePreset": "slurm-cn-debug-scalar"
+    },
+    {
+      "name": "slurm-cn-debug-fd-static",
+      "inherits": "slurm-cn-ctest",
+      "description": "Run all tests",
+      "displayName": "Ctest",
+      "configurePreset": "slurm-cn-debug-fd-static"
+    },
+    {
+      "name": "slurm-cn-debug-cxx23",
+      "inherits": "slurm-cn-ctest",
+      "description": "Run all tests",
+      "displayName": "Ctest",
+      "configurePreset": "slurm-cn-debug-cxx23"
     },
     {
       "name": "windows-ctest",
