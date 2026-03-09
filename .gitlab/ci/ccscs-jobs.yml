@@ -193,7 +193,7 @@ ccs_dvr_rel_gcc_1330:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
 
-# ---------- regular TEST --------------------------------------------- #
+# ---------- fast TEST --------------------------------------------- #
 
 ccs_deb_gcc_1330:
   stage: fasttest
@@ -201,15 +201,6 @@ ccs_deb_gcc_1330:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1330
-
-ccs_deb_gcc_1330:
-  stage: fasttest
-  extends: .ccscs_merge
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=2
-    CTEST_NPROC: 32
 
 ccs_c4_scalar:
   stage: fasttest
@@ -219,12 +210,31 @@ ccs_c4_scalar:
     DRACO_ENV: gcc1330
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
     CTEST_NPROC: 40
-    #TEST_EXCLUSIONS: mcgrid_cylindrical_mg_mgrztp04
 
-# ---------- regular TEST (only starts if all FASTTEST pass) ---------- #
+# ---------- lint TEST (only starts if all FASTTEST pass) ---------- #
+
+ccs_deb_no_tpl:
+  stage: lint
+  extends: .ccscs_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1330
+  script:
+    - module use --append /ccs/codes/radtran/Modules
+    - module use /ccs/opt/modulefiles
+    - module load cmake gcc/13.3.0 ninja numdiff
+    - module use /ccs/opt/vendors/devops-2025.05.22/dracose/spack/share/spack/lmod/linux-rhel8-x86_64/gcc/13.3.0
+    - module load openmpi
+    - mkdir build && touch ci-env.log
+    - set &> build/ci-env.log
+    - module avail 2>&1 | tee -a build/ci-env.log
+    - cmake --fresh --preset linux-debug
+    - cmake --build --preset linux-debug
+    - NP=$(getconf _NPROCESSORS_ONLN)
+    - ctest --preset linux-debug -j ${NP}
 
 ccs_autodoc:
-  stage: fasttest
+  stage: lint
   extends: .ccscs_merge
   allow_failure: true
   variables:
