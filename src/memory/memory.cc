@@ -3,7 +3,7 @@
  * \file   memory/memory.cc
  * \author Kent G. Budge
  * \brief  memory diagnostic utilities
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "memory.hh"
@@ -93,9 +93,26 @@ struct Unsigned {
  *
  * We put the following in a wrapper so we can control destruction. We want to be sure is_active is
  * forced to be false once alloc_map is destroyed.
+ *
+ * \bug You're building what looks like a global allocation tracker. A raw global like this can
+ *      cause:
+ *      * Static initialization order problems
+ *      * Destruction order problems at shutdown
+ *      * Undefined behavior during program teardown
+ *      A safer pattern is a function-local static:
+ * <code>
+ * memory_diagnostics& diagnostics() {
+ *   static memory_diagnostics instance;
+ *   return instance;
+ * }
+ * </code>
+ *      Then use
+ * <code>
+ * diagnostics().alloc_map[ptr] = ...;
+ * </code>
  */
 //================================================================================================//
-struct memory_diagnostics {
+static struct memory_diagnostics {
   map<void *, alloc_t> alloc_map;
   map<size_t, Unsigned> alloc_count;
 
@@ -186,7 +203,7 @@ void *operator new(std::size_t n) _GLIBCXX_THROW(std::bad_alloc) {
   void *Result = malloc(n);
 
   // if malloc failed, then we need to deal with it.
-  if (Result == 0) {
+  if (Result == nullptr) {
     // Store the global new handler
     // http://codereview.stackexchange.com/questions/7216/custom-operator-new-and-operator-delete
     bool failwithstacktrace(true);
@@ -194,7 +211,7 @@ void *operator new(std::size_t n) _GLIBCXX_THROW(std::bad_alloc) {
       std::set_new_handler(rtt_memory::out_of_memory_handler);
       rtt_memory::out_of_memory_handler();
     }
-    new_handler global_handler = set_new_handler(0);
+    new_handler global_handler = set_new_handler(nullptr);
     set_new_handler(global_handler);
     if (global_handler)
       global_handler();
@@ -272,7 +289,7 @@ void *operator new(std::size_t n) _GLIBCXX_THROW(std::bad_alloc) {
  *
  * This is the operator delete override to go with the operator new override above.
  */
-void operator delete(void *ptr) throw() {
+void operator delete(void *ptr) noexcept {
   free(ptr);
   if (is_active) {
     map<void *, alloc_t>::iterator i = st.alloc_map.find(ptr);
@@ -306,7 +323,7 @@ void operator delete(void *ptr) throw() {
  * Since C++14 does not mandate when the compiler calls this version, it is not possible to
  * guarantee coverage on all platforms.
  */
-void operator delete(void *ptr, size_t) throw() { operator delete(ptr); }
+void operator delete(void *ptr, size_t) noexcept { operator delete(ptr); }
 #endif
 
 //------------------------------------------------------------------------------------------------//
