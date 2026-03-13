@@ -257,64 +257,12 @@ macro(dbsConfigInfo)
   set(DBS_OPERATING_SYSTEM "${CMAKE_SYSTEM_NAME}")
   set(DBS_OPERATING_SYSTEM_VER "${CMAKE_SYSTEM}")
 
-  # Supplement with system commands as needed:
-  if(UNIX)
-
-    # Get some extra version information if this is RedHat.
-    if(EXISTS "/etc/redhat-release")
-      file(READ "/etc/redhat-release" redhat_version)
-      string(STRIP "${redhat_version}" redhat_version)
-      set(DBS_OPERATING_SYSTEM_VER "${redhat_version} (${CMAKE_SYSTEM})")
-    endif(EXISTS "/etc/redhat-release")
-
-  elseif() # WIN32
-
-    # OS version information Windows
-    get_filename_component(
-      win_prod_name
-      "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion;ProductName]" NAME)
-    get_filename_component(
-      win_sp "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion;CSDVersion]"
-      NAME)
-    get_filename_component(
-      win_ver
-      "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion;CurrentVersion]" NAME)
-    get_filename_component(
-      win_build
-      "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion;CurrentBuildNumber]"
-      NAME)
-    get_filename_component(
-      win_buildlab "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion;BuildLab]"
-      NAME)
-
-    set(DBS_OPERATING_SYSTEM "${win_prod_name}")
-    set(DBS_OPERATING_SYSTEM_VER "${win_ver}.${win_build} (${win_buildlab})")
-    if(EXISTS "C:/Program Files (x86)")
-      set(windows_bits "x64")
-      set(DBS_OPERATING_SYSTEM "${win_prod_name} (${windows_bits}) ${win_sp}")
-    else()
-      set(DBS_OPERATING_SYSTEM "${win_prod_name} ${win_sp}")
-    endif()
-
-    # Did we build 32-bit or 64-bit code?
-    execute_process(
-      COMMAND ${CMAKE_CXX_COMPILER}
-      ERROR_VARIABLE tmp
-      OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_QUIET)
-    string(REGEX REPLACE ".*for ([0-9x]+)" "\\1" tmp "${CMAKE_CXX_COMPILER_VER}")
-    if(${tmp} MATCHES "80x86")
-      set(DBS_ISA_MODE "32-bit")
-    elseif(${tmp} MATCHES "x64")
-      set(DBS_ISA_MODE "64-bit")
-    endif(${tmp} MATCHES "80x86")
-
-    # Try to get the build machine name
-    execute_process(COMMAND "c:/windows/system32/ipconfig.exe" "/all"
-                    OUTPUT_VARIABLE windows_ip_configuration)
-    string(REGEX REPLACE ".*Host Name[.: ]+([A-z]+).*Primary.*" "\\1" DBS_TARGET
-                         "${windows_ip_configuration}")
-
-  endif()
+  # Get some extra version information if this is RedHat.
+  if(EXISTS "/etc/redhat-release")
+    file(READ "/etc/redhat-release" redhat_version)
+    string(STRIP "${redhat_version}" redhat_version)
+    set(DBS_OPERATING_SYSTEM_VER "${redhat_version} (${CMAKE_SYSTEM})")
+  endif(EXISTS "/etc/redhat-release")
 
 endmacro()
 
