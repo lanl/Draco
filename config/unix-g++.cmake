@@ -13,8 +13,7 @@
 #        -Wsuggest-override -Wformat=2 -Wcast-align=strict -Wduplicated-branches -Wnon-virtual-dtor
 #        -Wduplicated-cond
 #    * Consider adding (#1508):
-#      * -Wdelete-non-virtual-dtor -Wzero-as-null-pointer-constant -Wcast-qual -Wlogical-op
-#        -Wnull-dereference
+#      * -Wdelete-non-virtual-dtor -Wzero-as-null-pointer-constant -Wcast-qual -Wnull-dereference
 # 3. Enable GCC’s static analyzer
 #    * -fanalyzer -Wanalyzer-too-complex
 # ------------------------------------------------------------------------------------------------ #
@@ -117,7 +116,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
 
   string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wold-style-cast -Wnon-virtual-dtor -Wuseless-cast")
   string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fdiagnostics-show-template-tree -Wnoexcept")
-  string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wsuggest-attribute=const -Wduplicated-cond")
+  string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wsuggest-attribute=const -Wduplicated-cond -Wlogical-op")
 
 endif()
 
