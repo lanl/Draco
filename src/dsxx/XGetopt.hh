@@ -102,7 +102,7 @@ public:
    * \param[in] shortopts A string of letters that represent known command line arguments.  Any
    *            letter followed by a colon represents an option that requires that an argument be
    *            provided.
-   * \param[in] helpstrings_ A map of strings whose keys must match values proivded in shortopts and
+   * \param[in] helpstrings_ A map of strings whose keys must match values provided in shortopts and
    *            whose values are messages related to each option that will be printed by the member
    *            function display_help.
    */
@@ -134,7 +134,7 @@ public:
    *            Associated values are strings that provide identical functionality.  These string
    *            values may be followed by a colon represents an option that requires that an
    *            additional argument be provided.
-   * \param[in] helpstrings_ A map of strings whose keys must match values proivded in shortopts and
+   * \param[in] helpstrings_ A map of strings whose keys must match values provided in shortopts and
    *            whose values are messages related to each option that will be printed by the member
    *            function display_help.
    */

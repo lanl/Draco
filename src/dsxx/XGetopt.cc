@@ -4,7 +4,7 @@
  * \author Kelly Thompson, Katherine Wang
  * \date   Tuesday, Oct 27, 2016, 15:17 pm
  * \brief  Command line argument handling similar to getopt.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "XGetopt.hh"
@@ -198,7 +198,7 @@ void XGetopt::match_args_to_options() {
  * \param[in] appName A string that will be printed as the name of the program.
  * \return A string that prings the program name and all registered options.
  *
- * \todo When we move to C++11, occurances of map.find(it.first)->seconds should be replaced with
+ * \todo When we move to C++11, occurrences of map.find(it.first)->seconds should be replaced with
  * map.at(it.first).
  */
 std::string XGetopt::display_help(std::string const &appName) const {

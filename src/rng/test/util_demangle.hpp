@@ -54,6 +54,11 @@ char *__cxa_demangle(const char *__mangled_name, char *__output_buffer, size_t *
 #endif
 #include <typeinfo>
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
+
 template <typename T> std::string demangle(const T &ignored) {
 #ifdef __GNUC__
   int status;
@@ -69,5 +74,9 @@ template <typename T> std::string demangle(const T &ignored) {
   return typeid(ignored).name();
 #endif
 }
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 #endif

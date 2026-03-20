@@ -3,8 +3,12 @@
  * \file   dsxx/DracoMath.hh
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
- * \brief  New or overloaded cmath or cmath-like functions.
- * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
+ * \brief  New or overloaded constexpr-friendly cmath or cmath-like functions.
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved.
+ *
+ * A header that adds lightweight, constexpr‑friendly math utilities to Draco: overloads for conj,
+ * cube, square (with optional overflow checks), pythag, sign, and ceil_int_division, plus related
+ * helper includes. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_DracoMath_hh
@@ -18,6 +22,10 @@
 #include <functional>
 
 namespace rtt_dsxx {
+
+// Helper Concept Type is only defined if multiplication of type T is valid.
+template <typename T>
+concept Multipliable = requires(T x) { x *x; };
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -40,15 +48,16 @@ template <> inline std::complex<double> conj(const std::complex<double> &arg) {
 /*!
  * \brief Return the cube of a value.
  *
- * \tparam Semigroup is a type representing an algebraic structure closed under multiplication such as
- *    the integers or the reals.
+ * \tparam Semigroup is a type representing an algebraic structure closed under multiplication such
+ *    as the integers or the reals.
  *
  * \param[in] x Value to be cubed.
  * \return x^3
  *
  * \sa square
  */
-template <typename Semigroup> constexpr Semigroup cube(Semigroup const &x) noexcept {
+template <Multipliable Semigroup>
+constexpr auto cube(Semigroup const &x) noexcept(noexcept(x * x * x)) {
   return x * x * x;
 }
 
@@ -67,11 +76,38 @@ template <typename Semigroup> constexpr Semigroup cube(Semigroup const &x) noexc
  *   evaluation.
  * - It would be useful to check for overflow, but this would significantly reduce optimization
  *   since the code would no longer be \c constexpr.
+ * - Overflow checks are performed when DRACO_DIAGNOSTICS_LEVEL_2 is defined.
  *
  * \sa cube
  */
-template <typename Semigroup> constexpr Semigroup square(const Semigroup &x) noexcept {
+template <Multipliable Semigroup>
+constexpr auto square(const Semigroup &x) noexcept(noexcept(x * x)) {
+#ifdef DRACO_DIAGNOSTICS_LEVEL_2
+  if constexpr (std::integral<Semigroup>) {
+#if defined(__clang__) || defined(__GNUC__)
+    Semigroup r;
+    Check(!(__builtin_mul_overflow(x, x, &r))); // Overflow
+    return r;
+#else
+    if constexpr (std::signed_integral<Semigroup>) {
+      Check(!(x > 0 && x > std::numeric_limits<Semigroup>::max() / x)); // Integer Overflow
+      Check(!(x < 0 && x < std::numeric_limits<Semigroup>::max() / x)); // Integer Overflow
+    } else {
+      Check(!(x != 0 && x > std::numeric_limits<Semigroup>::max() / x)); // FP Overflow
+    }
+    return x * x;
+#endif
+  } else if constexpr (std::floating_point<Semigroup>) {
+    Semigroup r = x * x;
+    Check(std::isfinite(r));
+    return r;
+  } else {
+    static_assert(std::is_arithmetic_v<Semigroup>,
+                  "square<Semigroup>: T must be an integral or floating-point type");
+  }
+#else
   return x * x;
+#endif
 }
 
 //------------------------------------------------------------------------------------------------//
