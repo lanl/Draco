@@ -8,14 +8,25 @@
 # 1. Turn on modern C++ and strict diagnostics:
 #    * -std=c++20 -Wall -Wextra -Wpedantic -Werror
 # 2. Add high-value C++ warnings (low noise, good catches)
-#    * Using:
-#      * -Wconversion -Wshadow -Wold-style-cast -Wuseless-cast -Woverloaded-virtual
-#        -Wsuggest-override -Wformat=2 -Wcast-align=strict -Wduplicated-branches -Wnon-virtual-dtor
-#        -Wduplicated-cond
-#    * Consider adding (#1508):
-#      * -Wdelete-non-virtual-dtor -Wzero-as-null-pointer-constant -Wcast-qual -Wnull-dereference
+#    *  -Wcast-align=strict -Wcast-qual -Wconversion -Wdelete-non-virtual-dtor -Wduplicated-branches
+#       -Wduplicated-cond -Wformat=2 -Wnon-virtual-dtor -Wnull-dereference -Wold-style-cast
+#       -Woverloaded-virtual -Wshadow -Wsuggest-override -Wuseless-cast
+#       -Wzero-as-null-pointer-constant
 # 3. Enable GCC’s static analyzer
 #    * -fanalyzer -Wanalyzer-too-complex
+# 4. Refactor compiler flags using 'modern cmake'.  See #1510.
+#
+# Notes:
+#
+# 1. In config/compilerEnv.cmake, the build system sets flags for
+#
+# * the language standard (C++14, C99, etc)
+# * interprocedural optimization.
+#
+# 2. Reference for GNU flags
+# * http://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
+# * https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#compilers
+#
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
@@ -25,18 +36,6 @@ if(DEFINED CMAKE_CXX_COMPILER_VERSION
    AND NOT (MSVC OR MINGW))
   message(FATAL_ERROR "Draco requires GNU gcc/g++ version >= 9.0.")
 endif()
-
-# Note: In config/compilerEnv.cmake, the build system sets flags for
-#
-# * the language standard (C++14, C99, etc)
-# * interprocedural optimization.
-
-# Notes:
-# ----------------------------------------
-# Useful options that could be added to aid debugging
-#
-# * http://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
-# * https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md#compilers
 
 #
 # Compiler flag checks
@@ -74,7 +73,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
 
   # Enable additional sanitizer flags for non-Cray (i.e. ccs-net) gcc builds. These can cause
   # link-time issues for Cray mixed builds (i.e. El Cap).
-  if(NOT DEFINED ENV{TRAVIS} AND NOT CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
+  if(NOT CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
     # Some options (including these) seem to confuse Travis. See
     # https://stackoverflow.com/questions/50024731/ld-unrecognized-option-push-state-no-as-needed
     string(APPEND CMAKE_C_FLAGS_DEBUG " -fsanitize=bounds-strict")
@@ -88,7 +87,7 @@ if(NOT CXX_FLAGS_INITIALIZED)
   site_name(sitename)
   string(REGEX REPLACE "([A-z0-9]+).*" "\\1" sitename ${sitename})
   # Only add '-march=native' if -march and -mtune are not already requested. Spack will add -march=
-  # options if spacific target is requested (ie. target Haswell CPU when building on Skylake).
+  # options if specific target is requested (ie. target Haswell CPU when building on Skylake).
   if(NOT
      ("${CC}" MATCHES "-mtune"
       OR "${CC}" MATCHES "-march"
@@ -109,15 +108,16 @@ if(NOT CXX_FLAGS_INITIALIZED)
   endif()
 
   string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_C_FLAGS} -Wno-psabi")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Woverloaded-virtual -Wsuggest-override")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE}")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
-
-  string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wold-style-cast -Wnon-virtual-dtor -Wuseless-cast")
-  string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fdiagnostics-show-template-tree -Wnoexcept")
-  string(APPEND CMAKE_CXX_FLAGS_DEBUG " -Wsuggest-attribute=const -Wduplicated-cond -Wlogical-op")
-
+  string(
+    APPEND
+    CMAKE_CXX_FLAGS_DEBUG
+    " -fdiagnostics-show-template-tree -Wcast-qual -Wdelete-non-virtual-dtor -Wduplicated-cond"
+    " -Wlogical-op -Wnoexcept -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
+    " -Wsuggest-attribute=const -Wsuggest-override -Wuseless-cast -Wzero-as-null-pointer-constant")
 endif()
 
 # ------------------------------------------------------------------------------------------------ #

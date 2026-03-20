@@ -14,17 +14,35 @@
 #include "dsxx/dll_declspec.h"
 #include "linear/svbksb.hh"
 #include "linear/svdcmp.hh"
+#include <concepts>
+#include <cstddef>
+#include <numeric>
+#include <ranges>
+#include <type_traits>
 
 namespace rtt_fit {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Compute a generalized least squares fit.
+ * \brief Floating‑point random‑access container
+ *
+ *  – The type must model std::random_access_range (so we can use operator[] and know the size).
+ *  – The elements stored in the container must be a floating‑point type (float, double, long
+ *    double, or any user‑defined type that satisfies std::floating_point). */
+//------------------------------------------------------------------------------------------------//
+template <typename C>
+concept FloatingPointRandomContainer =
+    std::ranges::random_access_range<C> &&              // random‑access
+    std::floating_point<std::ranges::range_value_t<C>>; // floating-point type
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Compute a generalized least squares fit using singular value decomposition (SVD).
  *
  * Given a set of data, find the best linear combination of arbitrary basis functions to fit the
  * data.
  *
- * \tparam RandomContainer A random access container type
+ * \tparam RandomContainer A random access container type, must be of type std::random_access_range
  * \tparam Functor A functor type taking a double value and a reference to a RandomContainer that
  *         stores the values of the basis functions for the double value in the RandomContainer.
  *
@@ -39,62 +57,58 @@ namespace rtt_fit {
  * \param v On exit, containts the diagonal matrix of the singular value decomposition of the fit,
  *            e.g., the singular values.
  * \param w On exit, containts the lower matrix of the singular value decomposition of the fit.
- * \param chisq On return, contains the chi square of the fit (measure of goodness of fit.)
+ * \param chi_squared On return, contains the chi‑square statistic of the fit (measure of goodness
+ *            of fit.)
  * \param funcs Functor to calculate the basis functions for a given argument.
  * \param[in] TOL reset denormalized w-values below TOL*max(w) to a hard-zero.
+ *
+ * \pre `x.size() == y.size() == sig.size()` and `a.size() > 0`.
+ * \pre `sig[i] != 0` for all i (division by zero would be undefined).
+ * \pre `funcs` must fill a container of size `a.size()` for each call.
+ * \post `a` holds the least‑squares coefficients for the supplied basis functions.
+ * \post `u`, `v`, and `w` contain the SVD of the weighted design matrix.
+ * \post `chi_squared` equals \f$\sum_i ((y_i - \sum_j a_j f_j(x_i))/sig_i)^2\f$.
+ * \post Singular values smaller than `TOL * max(w)` are set to zero, improving numerical stability.
  */
-template <typename RandomContainer, typename Functor>
+template <FloatingPointRandomContainer RandomContainer, typename Functor>
 void svdfit(RandomContainer const &x, RandomContainer const &y, RandomContainer const &sig,
             RandomContainer &a, RandomContainer &u, RandomContainer &v, RandomContainer &w,
-            double &chisq, Functor &funcs, double const TOL = 1.0e-13) {
+            double &chi_squared, Functor const &funcs, double const TOL = 1.0e-13) {
   Require(x.size() == y.size());
   Require(x.size() == sig.size());
   Require(a.size() > 0);
+  Require(std::ranges::all_of(sig, [](auto const &s) { // Require sig[i] != 0
+    return !rtt_dsxx::soft_equiv(s, 0.0, 1.0e-14);
+  }));
 
-  using rtt_dsxx::square;
-  using rtt_linear::svbksb;
-  using rtt_linear::svdcmp;
-
-  Check(x.size() < UINT_MAX);
-  Check(a.size() < UINT_MAX);
-  auto const ndata = static_cast<unsigned>(x.size());
-  auto const ma = static_cast<unsigned>(a.size());
+  auto const ndata = x.size();
+  auto const ma = a.size();
 
   std::vector<double> b(ndata);
   std::vector<double> afunc(ma);
-
   u.resize(ndata * ma);
 
-  for (unsigned i = 0; i < ndata; ++i) {
+  for (size_t i = 0; i < ndata; ++i) {
     funcs(x[i], afunc);
     double const tmp = 1.0 / sig[i];
-    for (unsigned j = 0; j < ma; ++j) {
+    for (size_t j = 0; j < ma; ++j) {
       u[i + ndata * j] = afunc[j] * tmp;
     }
     b[i] = y[i] * tmp;
   }
-  svdcmp(u, ndata, ma, w, v);
-  double wmax = 0.0;
-  for (unsigned j = 0; j < ma; ++j) {
-    if (w[j] > wmax) {
-      wmax = w[j];
-    }
-  }
+  rtt_linear::svdcmp(u, static_cast<unsigned>(ndata), static_cast<unsigned>(ma), w, v);
+  double const wmax = std::ranges::max(w | std::views::take(ma)); // max element in range.
   double const thresh = TOL * wmax;
-  for (unsigned j = 0; j < ma; ++j) {
-    if (w[j] < thresh) {
-      w[j] = 0.0;
-    }
+  for (double &w_i : w | std::views::take(ma)) { // set epsilon values -> 0.0
+    if (w_i < thresh)
+      w_i = 0.0;
   }
-  svbksb(u, w, v, ndata, ma, b, a);
-  chisq = 0.0;
-  for (unsigned i = 0; i < ndata; ++i) {
+  rtt_linear::svbksb(u, w, v, static_cast<unsigned>(ndata), static_cast<unsigned>(ma), b, a);
+  chi_squared = 0.0;
+  for (size_t i = 0; i < ndata; ++i) {
     funcs(x[i], afunc);
-    double sum = 0.0;
-    for (unsigned j = 0; j < ma; ++j) {
-      sum += a[j] * afunc[j];
-    }
-    chisq += square((y[i] - sum) / sig[i]);
+    double const sum = std::inner_product(a.begin(), a.begin() + ma, afunc.begin(), 0.0);
+    chi_squared += rtt_dsxx::square((y[i] - sum) / sig[i]);
   }
 }
 

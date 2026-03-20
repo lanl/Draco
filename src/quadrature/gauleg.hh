@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Sep 14 13:16:09 2004
  * \brief  Gauss-Legendre quadrature
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_quadrature_gauleg_hh
@@ -28,7 +28,7 @@ namespace rtt_quadrature {
  * We will use Newton's method of root finding to determine the abscissas. This algorithm is a
  * modified form of that found in "Numerical Recipes in C."
  *
- * The abcissas are the roots of this recurrence relation:
+ * The abscissas are the roots of this recurrence relation:
  * \f[
  * (j+1)P_{j+1} = (2j-1)xP_j - jP_{j-1}
  * \f]
