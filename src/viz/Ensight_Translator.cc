@@ -4,26 +4,30 @@
  * \author Thomas M. Evans
  * \date   Fri Jan 21 16:36:10 2000
  * \brief  Ensight_Translator implementation file (non-templated code).
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Ensight_Translator.hh"
 #include "dsxx/Assert.hh"
-#include "dsxx/Check_Strings.hh"
 #include "dsxx/SystemCall.hh"
 #include "dsxx/path.hh"
 #include "c4/C4_Functions.hh"
 #include "viz/Ensight_Stream.hh"
+#include <algorithm>
 #include <cerrno>
 #include <cstddef>
 #include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <iterator>
 #include <memory>
+#include <numeric>
 #include <sstream>
 #include <string>
-#include <vector>
+#include <string_view>
+#include <unordered_set>
+#include <utility>
 
 namespace rtt_viz {
 
@@ -32,6 +36,14 @@ using std::ofstream;
 using std::setiosflags;
 using std::setw;
 using std::string;
+
+//------------------------------------------------------------------------------------------------//
+// Local Helper Functions
+//------------------------------------------------------------------------------------------------//
+constexpr std::string_view forbidden_chars = R"()[]+-@!#*^$/ )";
+inline bool name_allowed(const std::string &input) noexcept {
+  return std::ranges::find_first_of(input, forbidden_chars) == input.end();
+}
 
 //------------------------------------------------------------------------------------------------//
 // PUBLIC FUNCTIONS
@@ -46,7 +58,7 @@ using std::string;
  *
  * \param[in] icycle Cycle number for this dump.
  * \param[in] time   Time value for this dump.
- * \param[in] dt     Timestep at this dump.  This parameter is only used for diagnotics and is not
+ * \param[in] dt     Timestep at this dump.  This parameter is only used for diagnostic and is not
  *                   placed in the Ensight dump.
  */
 void Ensight_Translator::open(const int icycle, const double time, const double dt) {
@@ -283,52 +295,32 @@ void Ensight_Translator::initialize(const bool graphics_continue) {
   size_t const nvdata = d_vdata_names.size();
   size_t const ncdata = d_cdata_names.size();
 
-  using SFS_iter_vec = std::vector<sf_string::iterator>;
   // Create a name list for testing.
   sf_string name_tmp(nvdata + ncdata);
   for (size_t i = 0; i < nvdata; i++)
     name_tmp[i] = d_vdata_names[i];
   for (size_t i = 0; i < ncdata; i++)
     name_tmp[i + nvdata] = d_cdata_names[i];
-  // Check for name lengths out of limits
-  {
-    int const low = 1;
-    int const high = 19;
-    SFS_iter_vec const result =
-        rtt_dsxx::check_string_lengths(name_tmp.begin(), name_tmp.end(), low, high);
-    if (result.size() != 0) {
-      cerr << "*** Error in variable name(s) -\n";
-      for (auto &res : result)
-        cerr << "Size of name is not in allowable range: \"" << *res << "\"\n";
-      cerr << "Name lengths must be greater than " << low << " and less than " << high << ".\n";
-      Insist(0, "Ensight variable name length out of limits!");
-    }
+  // Check for name lengths out of limits:
+  for (std::string const &iname : name_tmp) {
+    Insist(!iname.empty() && iname.size() < 20,
+           std::string("Error: Size of name is not in allowable range (1-20 chars), name = \"") +
+               iname + "\".");
   }
   // Check for bad characters.
-  {
-    std::string const bad_chars = "()[]+-@!#*^$/ ";
-    SFS_iter_vec const result =
-        rtt_dsxx::check_string_chars(name_tmp.begin(), name_tmp.end(), bad_chars);
-    if (result.size() != 0) {
-      cerr << "*** Error in variable name(s) -\n";
-      for (auto &res : result)
-        cerr << "Found disallowed character(s) in name: \"" << *res << "\"\n";
-      cerr << "The following characters are forbidden:\n \"" << bad_chars
-           << "\", as well as any white-space characters.\n";
-      Insist(0, "Found illegal character in ensight variable names!");
-    }
+  for (std::string const &iname : name_tmp) {
+    Insist(name_allowed(iname), std::string("Error: Found disallowed character(s) in name \"") +
+                                    iname + "\"." + "Forbidden characters: \"" +
+                                    std::string(forbidden_chars) + std::string("\""));
   }
-  // Check for non-unique names
-  {
-    SFS_iter_vec const result = rtt_dsxx::check_strings_unique(name_tmp.begin(), name_tmp.end());
-    if (result.size() != 0) {
-      cerr << "*** Error in variable name(s) -\n";
-      for (auto &res : result)
-        cerr << "Duplicate name found: \"" << *res << "\"\n";
-      cerr << "All variable names must be unique!\n";
-      Insist(0, "Duplicate ensight variable names found!");
-    }
-  }
+  // Check for non-unique names (generating the message is a bit messy.)
+  Insist(std::unordered_set<std::string>(name_tmp.begin(), name_tmp.end()).size() ==
+             name_tmp.size(),
+         std::string("Error: Duplicate name found, names = {") +
+             std::accumulate(
+                 std::next(name_tmp.begin()), name_tmp.end(), name_tmp[0],
+                 [](std::string a, std::string const &b) { return std::move(a) + "," + b; }) +
+             "}.");
 
   // calculate and make the geometry directory if this is not a continuation
   d_geo_dir = d_prefix + "/geo";

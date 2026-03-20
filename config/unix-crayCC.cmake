@@ -9,22 +9,8 @@
 include_guard(GLOBAL)
 
 #
-# Compiler flag checks
-#
-if(CMAKE_CXX_COMPILER_VERSION LESS "8.4")
-  message(FATAL_ERROR "Cray C++ prior to 8.4 does not support C++11.")
-endif()
-
-#
 # Compiler Flags
 #
-
-# As of cmake-3.12.1, the cray flags for C++14 were not available in cmake.
-if(NOT DEFINED CMAKE_CXX14_STANDARD_COMPILE_OPTION)
-  set(CMAKE_CXX14_STANDARD_COMPILE_OPTION
-      "-hstd=c++14"
-      CACHE STRING "internal" FORCE)
-endif()
 
 if(NOT CXX_FLAGS_INITIALIZED)
   set(CXX_FLAGS_INITIALIZED
