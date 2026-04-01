@@ -188,6 +188,10 @@ echo " "
 echo "modes       = ${modes}"
 echo " "
 
+# For autodoc pipelines, remove the autodoc directory before using it.
+[[ -n "${AUTODOCDIR:-}" && -d "$AUTODOCDIR" && "$AUTODOCDIR" == /scratch/jacamar-ci/* ]] && \
+  echo "Deleting $AUTODOCDIR" && rm -rf -- "$AUTODOCDIR"
+
 if [[ "${cdash_upload_auth_token}x" == "x" ]]; then
   # shellcheck disable=2154
   die "environment variable cdash_upload_auth_token was not set. Aborting"

@@ -4,7 +4,7 @@
 # Date:    Monday, Jun 01, 2020, 15:00 pm
 # Purpose: gitlab suid runner commands for LANL ccs-net machines. This script will be run to test
 #          pull requests.
-# Note:    Copyright (C) 2020-2024 Triad National Security, LLC.,  All rights reserved.
+# Note:    Copyright (C) 2020-2026 Triad National Security, LLC.,  All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------#

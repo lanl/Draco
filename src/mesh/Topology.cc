@@ -4,7 +4,7 @@
  * \author H.Park
  * \date   Aug. 1 2023
  * \brief  Topology class implementation file.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Topology.hh"
@@ -25,7 +25,7 @@ namespace rtt_mesh {
  * This constructor leaves the number of global cells data member unset; thus, it must be manually
  * set by the derived class.
  *
- * \param scheme string stating the parallel scheme, must be "replication", "DD", or
+ * \param[in] scheme string stating the parallel scheme, must be "replication", "DD", or
  *        "DD/replication"
  */
 Topology::Topology(std::string scheme)
@@ -38,8 +38,8 @@ Topology::Topology(std::string scheme)
 /*!
  * \brief Topology abstract base class constructor.
  *
- * \param num_global_cells the number of global cells in the problem.
- * \param scheme string stating the parallel scheme, must be "replication", "DD", or
+ * \param[in] num_global_cells the number of global cells in the problem.
+ * \param[in] scheme string stating the parallel scheme, must be "replication", "DD", or
  *        "DD/replication"
  */
 Topology::Topology(const int64_t num_global_cells, std::string scheme)
@@ -53,8 +53,13 @@ Topology::Topology(const int64_t num_global_cells, std::string scheme)
 // OVERLOADED OPERATORS
 //------------------------------------------------------------------------------------------------//
 
-std::ostream &operator<<(std::ostream &out, const Topology &object) {
-  object.print(out);
+/*!
+ * \brief Enable operator<< overload for Topology objects.
+ * \param[out] out The object's state will be printed to this output stream.
+ * \param[in] topo The object whose data state will be printed.
+ */
+std::ostream &operator<<(std::ostream &out, const Topology &topo) {
+  topo.print(out);
   return out;
 }
 
