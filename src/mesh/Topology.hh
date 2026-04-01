@@ -10,7 +10,7 @@
 #ifndef rtt_mesh_Topology_hh
 #define rtt_mesh_Topology_hh
 
-#include "dsxx/config.h" // defines [[nodiscard]]
+#include "dsxx/config.h"
 #include <iosfwd>
 #include <string>
 #include <vector>
