@@ -3,7 +3,7 @@
  * \file  dsxx/Assert.hh
  * \brief Header file for Draco specific exception class definition (rtt_dsxx::assertion). Also
  *        define Design-by-Contract macros.
- * \note  Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note  Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef RTT_dsxx_Assert_HH
@@ -13,15 +13,6 @@
 #include "dsxx/config.h"
 #include <stdexcept>
 #include <string>
-
-// This warning is issued because we chose to derive from std::logic_error (IS-A) instead of
-// creating a class that 'HAS-A' std::logic_error.object.
-#if defined(MSVC)
-#pragma warning(push)
-// non dll-interface class 'std::logic_error' used as base for dll-interface class
-// 'rtt_dsxx::assertion'
-#pragma warning(disable : 4275)
-#endif
 
 // DBC should be defined in dsxx/config.h and can be set via cmake as DRACO_DBC_LEVEL=[0-31]
 #if !defined(DBC)
@@ -82,23 +73,23 @@ namespace rtt_dsxx {
  * Major changes for class rtt_dsxx::assertion:
  *
  * Let rtt_dsxx::assertion derive from std::runtime_error.  G. Furnish intended for the design to
- * follow this model but the C++ compilers at time did not have full support for \c "stdexcept".
- * API is unchanged but the guts of the class are significantly different (i.e.: use copy and
- * assignment operators from base class, use string instead of \c const \c char \c *, etc.).
+ * follow this model but the C++ compilers at time did not have full support for `"stdexcept"`. API
+ * is unchanged but the guts of the class are significantly different (i.e.: use copy and assignment
+ * operators from base class, use string instead of `const char *`, etc.).
  *
  * \subsection date28July1997 28 July 1997
  *
  * Total rewrite of the dsxx Assertion facility.  In the old formulation, Assert and Insist expanded
  * into inline if statements, for which the body were blocks which both contained output to cerr,
- * and which threw an exception.  This has proven problematic because it meant that \c Assert.hh
- * included \c iostream.h, and also because throw was inlined (not a problem for Assert per se,
- * since Assert was generally shut off for optimized codes, but still a problem for Insist).  These
+ * and which threw an exception.  This has proven problematic because it meant that `Assert.hh`
+ * included `iostream.h, and also because throw was inlined (not a problem for Assert per se, since
+ * Assert was generally shut off for optimized codes, but still a problem for Insist).  These
  * effects combined to present problems both at compile time and, possibly, at run time.
  *
  * The new formulation, motivated by suggestions from Arch Robison and Dave Nystrom, uses a call to
  * an out-of-line function to do the actual logging and throwing of exceptions.  This permits
- * removing \c iostream.h from the inclusion graph for translation units including \c Assert.hh, and
- * avoids inlining of exception throwing code.  Moreover, it also allows us to get \c __FILE__ into
+ * removing `iostream.h from the inclusion graph for translation units including `Assert.hh`, and
+ * avoids inlining of exception throwing code.  Moreover, it also allows us to get `__FILE__` into
  * play, which we couldn't do before because there was no way to do string concatenation with it,
  * and you couldn't do free store management effectively in an inlined macro.  By going out to a
  * global function, we pick up the ability to formulate a more complete picture of the error, and
@@ -139,7 +130,7 @@ public:
    * \param file The source code file name that contains the DbC test.
    * \param line The source code line number that contains the DbC test.
    *
-   * \sa \c --with-dbc[=level], Require, Ensure, Check, Insist (\ref Draco_DBC)
+   * \sa `--with-dbc[=level]`, Require, Ensure, Check, Insist (\ref Draco_DBC)
    */
   assertion(std::string const &cond, std::string const &file, int const line)
       : std::logic_error(build_message(cond, file, line)) { /* empty */
@@ -230,20 +221,20 @@ std::string verbose_error(std::string const &message);
  4      (deferred exception throwing versions of above macros)
  \endverbatim
  *
- * So for instance, \c -DDBC=7 turns them all on, \c -DDBC=0 turns them all off, and \c -DDBC=1
- * turns on \c Require but turns off \c Check and \c Ensure.  The default is to have them all
+ * So for instance, `-DDBC=7` turns them all on, `-DDBC=0` turns them all off, and `-DDBC=1`
+ * turns on `Require` but turns off `Check` and `Ensure`.  The default is to have them all
  * enabled.  The fourth bit (3) can be toggled on to disable the C++ thrown exception while keeping
  * all of the DBC checks and messages active.
  *
- * The \c Insist macro is akin to the \c Assert macro, but it provides the opportunity to specify an
+ * The `Insist macro is akin to the `Assert` macro, but it provides the opportunity to specify an
  * instructive message.  The idea here is that you should use Insist for checking things which are
  * more or less under user control.  If the user makes a poor choice, we "insist" that it be
  * corrected, providing a corrective hint.
  *
- * \note We provide a way to eliminate assertions, but not insists.  The idea is that \c Assert is
+ * \note We provide a way to eliminate assertions, but not insists.  The idea is that `Assert` is
  * used to perform sanity checks during program development, which you might want to eliminate
  * during production runs for performance sake.  Insist is used for things which really must be
- * true, such as "the file must've been opened", etc.  So, use \c Assert for things which you want
+ * true, such as "the file must've been opened", etc.  So, use `Assert` for things which you want
  * taken out of production codes (like, the check might inhibit inlining or something like that),
  * but use Insist for those things you want checked even in a production code.
  *
@@ -449,8 +440,15 @@ std::string verbose_error(std::string const &message);
  *           or on a function declarator that is the top-level (until C++17) declarator of a
  *           function, variable, or non-static data member, whose type is a function type, a pointer
  *           to function type, a reference to function type, a pointer to member function type. It
- *           may appear on the declarator of a parameter or on the declarator of a return type.  \sa
- *           http://en.cppreference.com/w/cpp/language/except_spec */
+ *           may appear on the declarator of a parameter or on the declarator of a return type. \sa
+ *           http://en.cppreference.com/w/cpp/language/except_spec
+ *
+ * - Consider replacing this capability with CppCoreGuidelines Assertions,
+ *   https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#ss-assertions. These standardized
+ *   pre/post contract checks are very similar to `dsxx/Assert.hh` and provides macros `Expects` and
+ *   `Ensures` that can be fully disabled at compile time.
+ * - Similarly, use `&lt;cassert&gt;`'s `assert(cond && "message")` instead of `Insist(c,m)`.
+ * - `assert`, `Expects`, and `Ensures` are all disabled if `NDEBUG` is defined. */
 //------------------------------------------------------------------------------------------------//
 
 #if DBC
@@ -489,11 +487,6 @@ std::string verbose_error(std::string const &message);
 #endif
 #ifndef Remember
 #define Remember(c)
-#endif
-
-//------------------------------------------------------------------------------------------------//
-#if defined(MSVC)
-#pragma warning(pop)
 #endif
 
 // clang-format on

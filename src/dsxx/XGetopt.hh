@@ -14,6 +14,8 @@
 #include "dsxx/config.h"
 #include <map>
 #include <string>
+#include <string_view>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -35,7 +37,7 @@ namespace rtt_dsxx {
  * information.
  *
  * \todo Option letters may be combined, e.g., "-ab" is equivalent to "-a -b".  Option letters are
- * case sensitive. (This features is not yet available as of 2016 October).
+ *       case sensitive. (This features is not yet available as of 2016 October).
  *
  * If the special option "--" is encountered, all futher processing of command line arguments
  * ceases.
@@ -82,9 +84,8 @@ namespace rtt_dsxx {
  *       }
  * \endcode
  *
- * \todo Future: Consider replacing this class with Boost::program_options.
- * \todo Future: Consider using a constructor that takes a
- *       map<char,pair<string,string>> in place of longopts+helpstrings.
+ * \todo Future: Consider using a constructor that takes a map<char,pair<string,string>> in place of
+ *       longopts+helpstrings.
  *
  * \example dsxx/test/tstXGetopt.cc
  */
@@ -95,7 +96,7 @@ public:
   using csmap = std::map<char, std::string>;
 
   /*!
-   * \brief Xgetopt constructor that only supports single character command line arguments.
+   * \brief XGetopt constructor that only supports single character command line arguments.
    *
    * \param[in] argc The number of command line arguments
    * \param[in] argv An array of C-style strings that represent the command line.
@@ -156,17 +157,21 @@ public:
     match_args_to_options();
   }
 
-  /*! \brief This operator should be called from within a loop that iterates through command line
-   * arguments (see class documentation).  It will return the char value that matches registered
-   * options. */
+  /*!
+   * \brief This operator should be called from within a loop that iterates through command line
+   *        arguments (see class documentation).  It will return the char value that matches
+   *        registered options.
+   */
   int operator()() {
     if (optind >= matched_arguments.size())
-      return -1;
-    if (matched_arguments_values.count(matched_arguments[optind]) > 0)
-      optarg = matched_arguments_values[matched_arguments[optind]];
+      return -1;                                 // nothing left to process
+    const auto &key = matched_arguments[optind]; // current option identifier
+    if (matched_arguments_values.contains(key))
+      optarg = matched_arguments_values.at(key);
     else
       optarg.clear();
-    return matched_arguments[++optind - 1];
+    ++optind; // advance to the next argument
+    return key;
   }
 
   /*! \brief fetch the value associated with current option. E.g.: for the option '-v foobar',
@@ -183,7 +188,7 @@ public:
   // void reset(void) { optind=0; optarg=std::string(""); return; }
 
   //! Print a help/usage message.
-  [[nodiscard]] std::string display_help(std::string const &appName) const;
+  [[nodiscard]] std::string display_help(std::string_view appName) const;
 
 private:
   // >>> DATA
@@ -223,7 +228,7 @@ private:
   // >>> IMPLEMENTATION
 
   //! Convert a string into easy-to-parse vectors and strip colons.
-  std::vector<char> decompose_shortopts(std::string const &shortopts);
+  std::vector<char> decompose_shortopts(std::string_view shortopts);
 
   //! Convert a map<char,string> into easy-to-parse vectors and strip colons.
   std::vector<char> decompose_longopts(csmap const &longopts);
@@ -231,9 +236,16 @@ private:
   //! Cleanup and save the user-provided longoptions map. Colons are stripped.
   csmap store_longopts(csmap const &longopts_);
 
-  /*! \brief Match provided command line arguments to registered options and
-   *         record the results to class data. */
+  //! Match the command‑line arguments against the registered short and long options.
   void match_args_to_options();
+
+  //! Process a short option of the form “‑x”.
+  void mato_process_short(std::string_view arg, std::unordered_set<char> const &short_set,
+                          std::size_t &i);
+  //! Process a long option of the form “--name”.
+  void mato_process_long(std::string_view arg, std::size_t &i);
+  //! Store the argument value that follows an option which requires one.
+  void mato_handle_value(char opt, std::size_t &i);
 };
 
 } // end namespace rtt_dsxx

@@ -4,7 +4,7 @@
  * \author Kelly Thompson <kgt@lanl.gov>
  * \date   Wed Nov 10 09:35:09 2010
  * \brief  Test functions defined in dsxx/XGetopt.cc
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -291,7 +291,7 @@ void tst_shortopts_args_doubledash(rtt_dsxx::UnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
-// Test 8: shorotps, missing argument
+// Test 8: shortopts, missing argument
 void tst_shortopts_args_missingarg(rtt_dsxx::UnitTest &ut) {
   std::cout << "\n>>> Begin test 8...\n";
 
@@ -700,7 +700,7 @@ void tst_lopts_args_doubledash(rtt_dsxx::UnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
-// Test 18: shorotps, missing argument
+// Test 18: shortopts, missing argument
 void tst_lopts_args_missingarg(rtt_dsxx::UnitTest &ut) {
   std::cout << "\n>>> Begin test 18...\n";
 
