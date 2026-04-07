@@ -52,6 +52,10 @@ Checks: "*,
         -portability-simd-intrinsics,
         bugprone-argument-comment,
         bugprone-assert-side-effect,
+        bugprone-sizeof-expression,
+        bugprone-suspicious-memcpy,
+        bugprone-suspicious-memset,
+        bugprone-use-after-move,
 "
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*[.]hh'
