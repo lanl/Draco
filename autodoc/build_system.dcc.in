@@ -1,9 +1,9 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*! \file build_system.dcc
- *  \brief The Draco Build System Documenation
- * \note Copyright (C) 2018-2021 Triad National Security, LLC., All rights reserved.
+ *  \brief The Draco Build System Documentation
+ *  \note Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved.
  *
- * This file is prepared by doxygen so that it can be part of the CCS-2 development web site as well
+ * This file is prepared by doxygen so that it can be part of the CAI-2 development web site as well
  * as a written report. */
 //------------------------------------------------------------------------------------------------//
 
@@ -13,16 +13,16 @@
 \tableofcontents
 
 <a href="https://github.com/lanl/draco">Draco</a> is a C++ radiation transport component library
-developed by CCS-2, <a href="https://www.lanl.gov">Los Alamos National Laboratory</a>. In addition
-to providing infrastructure for radiation transport code developmfent, Draco serves as a "model
-Development Environment (DE)" for code development activities within CCS-2.  Most CCS-2 code
+developed by CAI-2, <a href="https://www.lanl.gov">Los Alamos National Laboratory</a>. In addition
+to providing infrastructure for radiation transport code development, Draco serves as a "model
+Development Environment (DE)" for code development activities within CAI-2.  Most CAI-2 code
 projects are based on the coding standards, idioms, style, organization, and architecture of Draco.
 In this vein, an important service that Draco provides is its configure/make system, forwith
 referred to as the Draco Build System (DBS).
 
 Utilization of a common build system provides two primary benefits:
 
-- code infrastructure maintainence is leveraged
+- code infrastructure maintenance is leveraged
 - porting to new systems is leveraged.
 
 The Draco build system has the following highlighted features:
@@ -41,11 +41,11 @@ The Draco build system has the following highlighted features:
   href="https://github.com/lanl/libquo">libquo</a>, and <a
   href="http://www-users.cs.umn.edu/~karypis/metis/parmetis/"
   target="external">Metis/ParMetis</a>. All of Draco's vendors can be installed by using the <a
-  href="https://github.com/spack/spack">Spack</a> pcakage manager.
+  href="https://github.com/spack/spack">Spack</a> package manager.
 - parallel builds
 - target-source architecture that protects source integrity and allows multiple configurations
   from the same source
-- automated unit-testing framework that builds on ctest.
+- automated unit-testing framework that builds on CTest.
 - DBS is exportable and extensible
 - integrated with a set of elisp macros (for emacs, xemacs) that allows automated package
   inclusion and promotes the use of a common coding style
@@ -250,7 +250,7 @@ wishing to utilize services in the \c quadrature package must include the follow
   -lrtt_mesh_element -lrtt_parser -lrtt_special_functions -lrtt_roots -lrtt_units -lgsl ...
 \endcode
 
-Notice that \c quadrature depends on \c roots through its association with the \c spaecial_functions
+Notice that \c quadrature depends on \c roots through its association with the \c special_functions
 package.  Likewise, a Draco package utilizing \c quadrature will have these additional packages as
 dependencies, whether it utilizes them directly or not.
 
@@ -331,7 +331,7 @@ The general pattern for most vendor options is appending their PREFIX location t
 CMAKE_PREFIX_PATH.
 
 Of course not all vendors have include or library locations.  Additionally, specifying an include or
-library path will override any default search paths or locations specfied by \c LD_LIBRARY_PATH.
+library path will override any default search paths or locations specified by \c LD_LIBRARY_PATH.
 
 The following tables summarize the vendor options supported by Draco:
 
@@ -346,7 +346,7 @@ loaded.
 
 \par Example 1
 
-Configure and build all of Draco on the CCS-2 LINUX network. We have set the following:
+Configure and build all of Draco on the CAI-2 LINUX network. We have set the following:
 
 \verbatim
 module load gcc openmpi gsl python cmake
@@ -414,7 +414,7 @@ assume we wished to manually run the \c tstNDI_CP_Eloss unit test:
 //------------------------------------------------------------------------------------------------//
 /*!
 .
-\section faq Frequenty Asked Questions
+\section faq Frequently Asked Questions
 
 */
 //------------------------------------------------------------------------------------------------//

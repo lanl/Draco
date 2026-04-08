@@ -239,37 +239,36 @@ void XGetopt::mato_process_long(std::string_view arg, std::size_t &i) {
 /**
  * \brief Match the command‑line arguments against the registered short and long options.
  *
- * The function walks the vector <tt>cmd_line_args</tt> (typically populated from <tt>argv</tt>) and
+ * The function walks the vector `cmd_line_args` (typically populated from `argv`) and
  * classifies each token into one of three categories:
  *
  * - **Matched short options** – tokens of the form “‑x”.  The character *x* is verified against
- *   <tt>vshortopts</tt>.  If the option requires a value (according to <tt>vshortopts_hasarg</tt>)
- *   the next token is taken as that value.
+ *   `vshortopts`.  If the option requires a value (according to `vshortopts_hasarg`) the next token
+ *   is taken as that value.
  *
  * - **Matched long options** – tokens that start with “--”.  The text after the two dashes is
- *   looked up in the map <tt>longopts</tt> (which maps a short character to its long name).  The
+ *   looked up in the map `longopts` (which maps a short character to its long name).  The
  *   corresponding short key is stored, and any required argument is consumed exactly as for short
  *   options.
  *
  * - **Unmatched arguments** – any token that does not fit the two categories above, or that fails
  *   the validation (unknown short option or unknown long name) is copied into
- *   <tt>unmatched_arguments</tt>.
+ *   `unmatched_arguments`.
  *
  * The special token “--” marks the end of option parsing; all tokens that appear after it are
  * ignored by this routine.
  *
  * \details
  * - The function updates the following members of the class:
- *   - <tt>matched_arguments</tt> – list of short keys that were successfully matched.
- *   - <tt>matched_arguments_values</tt> – map from short key to the associated value (if any).
- *   - <tt>unmatched_arguments</tt> – list of tokens that could not be interpreted as a known
- *     option.
+ *   - `matched_arguments` – list of short keys that were successfully matched.
+ *   - `matched_arguments_values` – map from short key to the associated value (if any).
+ *   - `unmatched_arguments` – list of tokens that could not be interpreted as a known option.
  *
- * - If an option that requires a value is encountered at the end of the argument
- *   list, an <tt>option_error</tt> exception is thrown with a descriptive message.
+ * - If an option that requires a value is encountered at the end of the argument list, an
+ *   `option_error` exception is thrown with a descriptive message.
  *
- * - The routine runs in O(N) where N is the number of command‑line arguments;
- *   short‑option look‑ups use an <tt>unordered_set</tt> for O(1) access.
+ * - The routine runs in O(N) where N is the number of command‑line arguments; short‑option look‑ups
+ *   use an `unordered_set` for O(1) access.
  */
 void XGetopt::match_args_to_options() {
 
