@@ -92,12 +92,21 @@ function(slurm_extract_gpu_info out_gpu_count out_gpu_mem_gb)
     return()
   endif()
   set(_availablefeatures "${CMAKE_MATCH_2}")
+  string(REGEX MATCH "([ \t]|^)Gres=([^ \t]+)" _g "${_out_one_line}")
+  if(_g STREQUAL "")
+    return()
+  endif()
+  set(_gres "${CMAKE_MATCH_2}")
 
   # ---- GPU COUNT ----
-  # Match: - gpu_count:4
+  # Match: - gpu_count:4 in AvailableFeatures line
   string(REGEX MATCH "(^|,)(gpu_count(:[^,:]+)?:)([0-9]+)" _mgpu "${_availablefeatures}")
   if(_mgpu STREQUAL "")
-    message(STATUS "No GPU info found in AvailableFeatures='${_availablefeatures}'."
+    # OR Match: - gpu:<descriptor>:4 in Gres line
+    string(REGEX MATCH "(^|,)(gpu(:[^,:]+)?:)([0-9]+)" _mgpu "${_gres}")
+  endif()
+  if(_mgpu STREQUAL "")
+    message(STATUS "No GPU info found in AvailableFeatures='${_availablefeatures}' or Gres."
                    "Expected something like gpu_count:4.")
     return()
   endif()
@@ -115,6 +124,11 @@ function(slurm_extract_gpu_info out_gpu_count out_gpu_mem_gb)
       set(_mem_val "${CMAKE_MATCH_4}")
       set(_mem_unit "${CMAKE_MATCH_5}")
       mem_to_gb(_gpu_mem_gb "${_mem_val}" "${_mem_unit}")
+    endif()
+    # OR get memory from Gres line (currently assumes gb)
+    string(REGEX MATCH "([0-9]+)gb" _mmem "${_gres}")
+    if(NOT _mmem STREQUAL "")
+      set(_gpu_mem_gb "${CMAKE_MATCH_1}")
     endif()
   endif()
 
