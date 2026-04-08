@@ -59,6 +59,9 @@ function(dbs_set_sitename)
   elseif(${SITENAME} MATCHES "elcap")
     set(SITENAME "ElCapitan")
     set(SITENAME_FAMILY "ATS-4")
+  elseif(${SITENAME} MATCHES "vt")
+    set(SITENAME "Venadito")
+    set(SITENAME_FAMILY "ATS-5")
   endif()
   set(SITENAME
       ${SITENAME}
