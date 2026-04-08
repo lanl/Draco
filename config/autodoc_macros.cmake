@@ -3,7 +3,7 @@
 # author Kelly G. Thompson, kgt@lanl.gov
 # date   Wednesday, Nov 14, 2018, 19:01 pm
 # brief  Provide extra macros to simplify CMakeLists.txt for autodoc directories.
-# note   Copyright (C) 2018-2023 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
