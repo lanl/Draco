@@ -3857,6 +3857,18 @@
    ...
 }
 
+# --- Memcheck:  ---
+{
+   openmpi5/LP001
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   fun:prte_iof_base_write_output
+   ...
+   fun:event_base_loop
+   ...
+}
+
 # --- Memcheck: Param ---
 
 {
