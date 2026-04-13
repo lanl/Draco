@@ -4,7 +4,7 @@
 #--------------------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------------------#
-# CCS-2 standard setup
+# CAI-2 standard setup
 #
 # - If this is an interactive shell then the environment variable $- should
 #   contain an "i":

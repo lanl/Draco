@@ -4,9 +4,9 @@
 >>> All rights reserved.
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-The XEmacs elisp files associated with this package make up a development enviornment used by
-CCS-2. To use these files add the elisp directory to your Emacs load path and then load the
-draco-setup package..
+The XEmacs elisp files associated with this package make up a development environment used by CAI-2.
+To use these files add the elisp directory to your Emacs load path and then load the draco-setup
+package..
 
 Follow the example provided by sample.emacs in your own $HOME/.emacs add the following elisp.  You
 should replace the path to the Draco environment (~/draco/environment) directory with the real path
@@ -22,7 +22,8 @@ It is recommended that you compile the .el files located at draco/environment/el
 performance.  Simply run 'make' from the draco/environment/elisp directory.  If you have a lot of
 elisp commands in your ~/.emacs.d directory, you may want to compile those files too.
 
-There are several packages that are recommended for instalation via Melpa (M-x package-list-packages):
+There are several packages that are recommended for installation via Melpa
+(M-x package-list-packages):
 - cmake-mode
 - fill-column-indicator
 - highlight-doxygen

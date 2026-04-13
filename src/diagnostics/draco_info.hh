@@ -26,7 +26,7 @@ namespace rtt_diagnostics {
  * \verbatim
 Draco-7_11_20210915, build date 2021 Sep 15, build type: Debug, DBC: 7, DRACO_DIAGNOSTICS: 0
 
-CCS-2 Draco Team: Kelly G. Thompson, Kent G. Budge, Matt A. Cleveland, Ryan T. Wollaeger,
+CAI-2 Draco Team: Kelly G. Thompson, Kent G. Budge, Matt A. Cleveland, Ryan T. Wollaeger,
      Ben R. Ryan, Alex R. Long, Kendra P. Long, James S. Warsa, Jae H. Chang, Andrew T. Till,
      and David A. Dixon.
 

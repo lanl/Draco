@@ -17,7 +17,7 @@ opacities library.
 \b History:
 
 - Created in 2011 by Kelly Thompson
-- Software is based on code found in xRage to meet platform requirements for CCS-2 TRT software
+- Software is based on code found in xRage to meet platform requirements for CAI-2 TRT software
   (i.e.: non-LANL HPC machines like Mac, Windows, and Linux desktops; or alternate compilers like
   clang; and to support special nodes on Darwin like Power9).  Fontes is under the impression that
   he gave the source code to me, but I don’t think I have ever had access to <a

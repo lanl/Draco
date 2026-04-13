@@ -147,7 +147,7 @@ const std::string author_list(bool const use_doxygen_formatting) {
   prior_developers.insert(fomdev(1, "Seth D. Cook"));
 
   size_t maxlinelen(100);
-  std::string line_name("CCS-2 Draco Team: ");
+  std::string line_name("CAI-2 Draco Team: ");
 
   if (use_doxygen_formatting) {
     maxlinelen = 400;

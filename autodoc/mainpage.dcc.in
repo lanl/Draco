@@ -10,11 +10,11 @@
 
 \par Executive Summary
 
-Draco is a C++ radiation transport component library developed by CCS-2, Los Alamos National
-Laboratory. In addition to providing infrastructure for radiation transport code development, Draco
-serves as a "model Development Environment (DE)" for code development activities within CCS-2.  Most
-CCS-2 code projects are based on the coding standards, idioms, style, organization, and architecture
-of Draco.
+Draco is a C++ radiation transport component library developed by CAI-2, [Los Alamos National
+Laboratory](https://www.lanl.gov). In addition to providing infrastructure for radiation transport
+code development, Draco serves as a "model Development Environment (DE)" for code development
+activities within CAI-2.  Most CAI-2 code projects are based on the coding standards, idioms, style,
+organization, and architecture of Draco.
 
 \par Authors:
 
@@ -28,30 +28,30 @@ Package overviews can be found in the <a href="pages.html">Related Pages</a>
 section of the documentation. Also see:
 
 - <a href=https://github.com/lanl/Draco>Draco on GitHub</a>.
-- <a href=http://re-git.lanl.gov/draco/draco>Draco project management (Redmine) </a>.
-- <a href=http://rtt.lanl.gov/cdash3>Draco regression reporting on CDash</a>.
+- <a href=http://re-git.lanl.gov/draco/draco>Draco project management</a>.
+- <a href=https://re-cdash.lanl.gov/index.php?project=Draco>Draco regression reporting on CDash</a>.
 - Draco mailing list, draco@lanl.gov
 
 \par Versions and Platforms
 
 \msc
 
-
    # The entities
-   ML, SN, TT, Sierra, ElCap, xrds, CTS2, Venado;
+   ML, SN, TT, Sierra, ElCap, xrds, CTS2, Venado, ATS5;
 
    # Small gap before the boxes
    |||;
 
    # Next items on same line due to ','
    ML rbox ML [label="Moonlight", textbgcolour="#ff7f7f"],
-   SN rbox SN [label="CTS-1/Snow/Fog", textbgcolour="#ffff00"],
+   SN rbox SN [label="CTS-1", textbgcolour="#ff7f7f"],
    TT rbox TT [label="Trinitite", textbgcolour="#ff7f7f"],
-   Sierra rbox Sierra [label="Sierra", textbgcolour="#ffff00"],
+   Sierra rbox Sierra [label="Sierra", textbgcolour="#ff7f7f"],
    ElCap rbox ElCap [label="El Capitan", textbgcolour="#00CC33"],
    xrds rbox xrds [label="Crossroads", textbgcolour="#00CC33"],
-   CTS2 rbox CTS2 [label="CTS-2/Roci", textbgcolour="#00CC33"];
-   Venado rbox Venado [label="Venado", textbgcolour="#00CC33"];
+   CTS2 rbox CTS2 [label="CTS-2/Roci", textbgcolour="#00CC33"],
+   Venado rbox Venado [label="Venado", textbgcolour="#ffff9f"],
+   ATS5 rbox ATS5 [label="ATS-5", textbgcolour="#ffff9f"];
 
    # Version support (one per line, semicolon)
    ML abox TT [label="Draco-6_24_0", textbgcolor="#ff7f7f"];
@@ -65,6 +65,8 @@ section of the documentation. Also see:
    Sierra abox CTS2 [label="Draco-7_18_0", textbgcolor="#ffff9f"];
    SN abox SN [label="Draco-7_19_0", textbgcolor="#ffff9f"],
    Sierra abox CTS2 [label="Draco-7_19_0", textbgcolor="#ffff9f"];
+   ElCap rbox CTS2 [label="Draco-7_21_0", textbgcolor="#00CC33"];
+   ElCap rbox CTS2 [label="Draco-7_22_0", textbgcolor="#00CC33"];
 
 \endmsc
 
