@@ -3,13 +3,16 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Tuesday, Jun 02, 2020, 11:44 am
 # brief  CTest regression script for DRACO
-# note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 # Ref: http://www.cmake.org/Wiki/CMake_Scripting_Of_CTest
 #
-# * CDash server hosted by CCS-2
-#   * Report to https://rtt.lanl.gov/cdash3
-#   * No auth required to upload
+# * CDash server hosted by CAI-2
+#   * Report to https://re-cdash.lanl.gov/index.php?project=Draco
+#   * Report to https://re-cdash.lanl.gov
+#   * Requires authentication token to upload.
+#   * Token saved to re-git CI variables, https://re-git.lanl.gov/draco/draco/-/settings/ci_cd.
+#   * Set token at https://re-cdash.lanl.gov/user.php
 # * CDash server hosted by asc-services (FY24)
 #   * Report to https://asc-cdash-poc
 #   * Requires authentication token to upload.

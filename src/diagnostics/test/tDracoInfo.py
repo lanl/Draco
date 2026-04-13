@@ -1,17 +1,16 @@
-#-----------------------------*-python-*---------------------------------------#
+#---*-python-*-------------------------------------------------------------------------------------#
 # file   diagnostics/test/tDracoInfo.py
 # author Alex Long <along@lanl.gov>
 # date   Wednesday, September 14, 2016, 14:16 pm
 # brief  This is a CTest script that is used to test bin/draco_info.
-# note   Copyright (C) 2016-2019, Triad National Security, LLC.
-#        All rights reserved.
+# note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 
 import sys
 import re
 
 try:
-  #----------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------------------#
   # Boilerplate code to get the location of the application_unit_test.py in
   # draco/config
   re_draco_config_dir = re.compile("DRACO_CONFIG_DIR=([^\s]*)")
@@ -25,15 +24,15 @@ try:
   # import unit test functions
   sys.path.append(draco_config_dir)
   from application_unit_test import UnitTest
-  #----------------------------------------------------------------------------#
+  #------------------------------------------------------------------------------------------------#
 
   # Setup test using sys.argv and run:
   tDracoInfo = UnitTest()
   tDracoInfo.aut_runTests()
 
-  ##--------------------------------------------------------------------------##
-  ## Examine the output to determine if the test passed
-  ##--------------------------------------------------------------------------##
+  #------------------------------------------------------------------------------------------------#
+  # Examine the output to determine if the test passed
+  #------------------------------------------------------------------------------------------------#
 
   # Scan output for various strings
   found_copyright = \
@@ -80,9 +79,9 @@ try:
   # author command
   elif tDracoInfo.check_arg_value("ARGVALUE", "--author"):
       if(found_draco_team):
-        tDracoInfo.passmsg( "Found CCS-2 Draco Team")
+        tDracoInfo.passmsg( "Found CAI-2 Draco Team")
       else:
-        tDracoInfo.failmsg( "Did not find CCS-2 Draco Team")
+        tDracoInfo.failmsg( "Did not find CAI-2 Draco Team")
 
   # author command
   elif tDracoInfo.check_arg_value("ARGVALUE", "--help") or \
@@ -110,14 +109,14 @@ try:
     else:
       tDracoInfo.failmsg( "Did not find expected help output")
 
-  ##--------------------------------------------------------------------------##
-  ## Final report
-  ##--------------------------------------------------------------------------##
+  #------------------------------------------------------------------------------------------------#
+  # Final report
+  #------------------------------------------------------------------------------------------------#
   tDracoInfo.aut_report()
 
-##----------------------------------------------------------------------------##
-## Handle outstanding exceptions
-##----------------------------------------------------------------------------##
+#--------------------------------------------------------------------------------------------------#
+# Handle outstanding exceptions
+#--------------------------------------------------------------------------------------------------#
 except Exception:
   print("Caught exception: {0}  {1}".format( sys.exc_info()[0], \
     sys.exc_info()[1]))
@@ -125,7 +124,6 @@ except Exception:
   print("**** TEST FAILED.")
   print("*****************************************************************")
 
-
-##---------------------------------------------------------------------------##
-## End
-##---------------------------------------------------------------------------##
+#--------------------------------------------------------------------------------------------------#
+# End
+#--------------------------------------------------------------------------------------------------#

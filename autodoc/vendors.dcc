@@ -8,19 +8,20 @@
 
 \par Executive Summary
 
-Some Draco packages use third party libraries.  This page provides some
-information about these third parties and how to obtian or build them.
+Some Draco packages use third party libraries. This page provides some information about these third
+parties and how to obtain or build them.
 
 \par Introduction
 
-The vendors used by Draco and associated projects are maintained by the Draco
-core team.  Vendor software is typically built per platform (Roadrunner, CCS-2
-Linux64, etc.) and stored in either the \c /ccs/codes/radtran/vendors or \c
-/usr/projects/draco/vendors directory.
+The vendors used by Draco and associated projects are maintained by the Draco core team and are
+typically build using the spack package manager (https://github.com/spack/spack). Vendor software is
+typically built per platform (CCSNET, ATS-3, ATS-4, etc.) and stored in either the
+`/ccs/codes/radtran/vendors` or `/usr/projects/draco/vendors` directories.  On LANL HPC systems,
+Draco uses a modified version of the LAP SE installation.  Access to pre-installed vendor tools is
+accessed through the module system through a command similar to `module load lapse/3.01-gnu`.
 
-Draco uses the compilers and MPI files provided by the systems team for each
-platform.  Each MPI installation requires a custom installation to correctly
-use the high speed interconnect hardware.
+Draco uses the compilers and MPI files provided by the systems team for each platform. Each MPI
+installation requires a custom installation to correctly use the high speed interconnect hardware.
 
 --------------------------------------------------------------------------------
 
@@ -28,25 +29,35 @@ use the high speed interconnect hardware.
 
 \msc
 # Draco versions
-d521, d600, d610, d620;
+d521, d600, d610, d620, d720;
 
-# Gap befor boxes
+# Gap before boxes
 |||;
 
 # Versions of draco on the same line
-d521 rbox d521 [label="Draco-5_21_0"],
-d600 rbox d600 [label="Draco-6_0_0"],
-d610 rbox d610 [label="Draco-6_1_0"],
-d620 rbox d620 [label="Draco-6_2_0"];
+d521 rbox d521 [label="Draco-5_21_0", textbgcolour="#ff7f7f"],
+d600 rbox d600 [label="Draco-6_0_0", textbgcolour="#ff7f7f"],
+d610 rbox d610 [label="Draco-6_1_0", textbgcolour="#ff7f7f"],
+d620 rbox d620 [label="Draco-6_2_0", textbgcolour="#ff7f7f"],
+d720 rbox d720 [label="Draco-7_20_0", textbgcolour="#7fff7f"];
 
 # Vendor association with version
 
 # OpenMPI
-d521 abox d521 [label="OpenMPI-1.3.3", textbgcolour="#ff7f7f"],
+d521 abox d521 [label="OpenMPI-1.3.3", textbgcolour="#ff7f7f"];
 d600 abox d620 [label="OpenMPI-1.4.3", textbgcolour="#ff7f7f"];
+d720 abox d720 [label="openmpi@5:", textbgcolour="#7fff7f"];
 
-# GSL
-d521 abox d620 [label="GSL-1.14", textbgcolour="#7fff7f"];
+# GNU Scientific Library (GSL)
+d521 abox d620 [label="gsl@1.14:", textbgcolour="#ff7f7f"];
+d720 abox d720 [label="gsl@2.8:", textbgcolour="#7fff7f"];
+
+# Others
+d720 abox d720 [label="cmake@3.30:", textbgcolour="#7fff7f"];
+d720 abox d720 [label="random123@1.14::", textbgcolour="#7fff7f"];
+d720 abox d720 [label="eospac@6.5:", textbgcolour="#7fff7f"];
+d720 abox d720 [label="metis@5.1:", textbgcolour="#7fff7f"];
+d720 abox d720 [label="openblas@0.3.30:", textbgcolour="#7fff7f"];
 
 \endmsc
 

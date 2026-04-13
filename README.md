@@ -8,16 +8,14 @@ semi-independent packages and a robust build system.  The packages in draco prov
 components that can be used by multiple clients to build transport codes.  The build system can also
 be extracted for use in clients.
 
-To clone draco:
+To clone draco: `git clone https://github.com/lanl/Draco.git`
 
-    git clone https://github.com/lanl/Draco.git
-
-To get started, please see
-[Development - Quick Start Guide](https://github.com/lanl/Draco/wiki/Development---Quick-Start)
-in the wiki. Pull requests must satisfy the requirements listed in the
-[Style Guide](https://github.com/lanl/Draco/wiki/Style-Guide).
-
-Spack - Draco can be installed via the [spack package manager](https:://github.com/spack/spack)
+To get started, please see:
+* [Development - Quick Start Guide](https://github.com/lanl/Draco/wiki/Development---Quick-Start)
+  in the wiki. Pull requests must satisfy the requirements listed in the
+* [Style Guide](https://github.com/lanl/Draco/wiki/Style-Guide).
+* [Doxygen documentation (limited access)](https://draco.re-pages.lanl.gov/draco/draco)
+* Spack - Draco can be installed via the [spack package manager](https:://github.com/spack/spack)
 
 ## Synopsis of Active Draco Packages
 
@@ -29,6 +27,7 @@ Spack - Draco can be installed via the [spack package manager](https:://github.c
   equation-of-state data, etc.)
 * cdi_analytic - Analytic models for physical data
 * cdi_CPEloss - Stopping power models for charged particles.
+* cdi_cpt
 * cdi_eospac - Equation-of-State data
   * These classes wrap the [EOSPAC6 libraries](https://laws.lanl.gov/projects/data/eos.html) that
     read sesame files; Commonly used to access gray opacity data and heat capacities.
@@ -38,9 +37,8 @@ Spack - Draco can be installed via the [spack package manager](https:://github.c
     TOPS.
 * cdi_ndi - Wrapper around LANL's Nuclear Data Interface (NDI) library for accessing [nuclear data
   tables](https://xweb.lanl.gov/projects/data/nuclear/ndi/ndi.html).
-* compton_interface - Provides access to Compton scattering models and data as provided by the [CSK
-  library](https://gitlab.lanl.gov/CSK/CSK)..
 * compton_tools - Provides performant converter, reader, and interpolation tools for Compton data
+* cpt_data
 * device - Wrapper for heterogeneous device communication
   * The classes in this component provide access to DaCS (deprecated) and CUDA calls for use on
     heterogeneous architecture platforms (GPU machines).
@@ -49,12 +47,7 @@ Spack - Draco can be installed via the [spack package manager](https:://github.c
 * dsxx - Basic services and data structures library.
   * Array containers, assertion and Design-by-Contract, access to low level OS functions, file and
     path manipulation, unit test system, etc.
-* experimental - Implementations of C++ features that are not yet available to all compilers that
-    are used when installing Draco libraries.  Currently, this component provides
-    [mdspan](https://github.com/kokkos/mdspan).
-* fc4 - Fortran wrapper around portions of c4
 * fit - Least squares fitting routines.
-* fpe_trap - Catch IEEE floating point exceptions
 * FortranCheck - Test Fortran compatibility and interoperability
   * The examples in this component will demonstrate if the Fortran compiler is working; if Fortran/C
     inter-language linking/running is working and sample `ISO_C_BINDING` calls.
@@ -62,6 +55,7 @@ Spack - Draco can be installed via the [spack package manager](https:://github.c
   sampled field based on a specified Kernel shape. This populates the initial KDE infrastructure and
   some simple 1D reconstructions.
 * linear - direct solvers for small linear systems of equations.
+* memory -
 * mesh - Encapsulate mesh definition and accessors.
 * mesh_element - defines fundamental mesh element types used by mesh, meshReaders and
   RTT_Format_Reader.
@@ -87,6 +81,11 @@ Spack - Draco can be installed via the [spack package manager](https:://github.c
 
 ## Deprecated packages
 
+* compton_interface - Provides access to Compton scattering models and data as provided by the [CSK
+  library](https://gitlab.lanl.gov/CSK/CSK)..
+* experimental - Implementations of C++ features that are not yet available to all compilers that
+    are used when installing Draco libraries.  Currently, this component provides
+    [mdspan](https://github.com/kokkos/mdspan).
 * lapack_wrap - C++ wrapper for BLAS and LAPACK (removed 2022 July 12).
 * plot2d - C++ interface to XMGrace 2-dimensional plotting (removed 2020 Dec 3).
 * shared_lib - Dynamically load/unload shared object libraries via dl load (removed 2020 Sep 7).
@@ -96,16 +95,16 @@ Spack - Draco can be installed via the [spack package manager](https:://github.c
 
 Many thanks go to Draco's [contributors](https://github.com/lanl/Draco/graphs/contributors).
 
-Draco was originally written by staff from Los Alamos's [CCS-2 Computational Physics and Methods
-Group](http://www.lanl.gov/org/padste/adtsc/computer-computational-statistical-sciences/computational-physics-methods/index.php):
+Draco was originally written by staff from Los Alamos's [CAI-2 Computational Physics and Methods
+Group](https://www.lanl.gov/engage/organizations/aldsct/computing-and-artificial-intelligence/computational-physics-and-methods):
 
-> *CCS-2 Draco Team:* Kelly G. Thompson, Matt A. Cleveland, HyeongKae Park, Ryan T. Wollaeger,
-> Ben R. Ryan, Kendra P. Long, Alex R. Long, James S. Warsa, Jae H. Chang, and Jeff R. Haack.
+> *CAI-2 Draco Team:* Kelly G. Thompson, Matt A. Cleveland, Ryan T. Wollaeger, HyeongKae Park,
+> Kendra P. Long, James S. Warsa, Alex R. Long, Kyle S. Beling, Jae H. Chang, and Jeff R. Haack.
 >
-> *Prior Contributors:* Kent G. Budge, Gabriel M. Rockefeller, Allan B. Wollaber, Tim Kelley,
-> Rob B. Lowrie, Paul W. Talbot, Katherine J. Wang, Andrew T. Till, Ondrej Certik, Peter Ahrens,
-> Massimiliano Rosa, David A. Dixon, Daniel Holladay, Todd J. Urbatsch, Howard Pritchard, Jeff D.
-> Densmore, Jeff Furnish, John McGhee, Kris C. Garrett, Mike Buksas, Nick Myers, Paul Henning,
+> *Prior Contributors:* Kent G. Budge, Ben R. Ryan, Gabriel M. Rockefeller, Allan B. Wollaber, Tim
+> Kelley, Rob B. Lowrie, Paul W. Talbot, Katherine J. Wang, Andrew T. Till, Ondrej Certik, Peter
+> Ahrens, Massimiliano Rosa, Joseph Coale, David A. Dixon, Daniel Holladay, Todd J. Urbatsch, Jeff
+> D. Densmore, Jeff Furnish, John McGhee, Kris C. Garrett, Mike Buksas, Nick Myers, Paul Henning,
 > Randy Roberts, Seth Johnson, Todd Adams, Tom Evans, Lori Pritchett-Sheats, and Seth D. Cook.
 
 ## Release
