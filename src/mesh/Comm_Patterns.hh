@@ -53,8 +53,8 @@ namespace rtt_mesh {
  * ordering) with cells 1 and 2 on processor 0; cells 3 and 4 on processor 1; cells 5 and 6 on
  * processor 2; and cells 7, 8, and 9 on processor 4.
  *
- * \image html src/mesh/autodoc/DD_Comm_Patterns.png "2 proc/8 cell decomposed test mesh."
- * \image html src/mesh/autodoc/DD_Mesh.png "4 proc/9 cell decomposed test mesh"
+ * \image html DD_Comm_Patterns.png "2 proc/8 cell decomposed test mesh."
+ * \image html DD_Mesh.png "4 proc/9 cell decomposed test mesh"
  */
 //================================================================================================//
 
