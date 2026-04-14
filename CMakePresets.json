@@ -555,18 +555,17 @@
     {
       "name": "linux-debug",
       "steps": [
-        {
-          "type": "configure",
-          "name": "linux-debug"
-        },
-        {
-          "type": "build",
-          "name": "linux-debug"
-        },
-        {
-          "type": "test",
-          "name": "linux-debug"
-        }
+        { "type": "configure", "name": "linux-debug" },
+        { "type": "build", "name": "linux-debug" },
+        { "type": "test", "name": "linux-debug" }
+      ]
+    },
+    {
+      "name": "linux-release",
+      "steps": [
+        { "type": "configure", "name": "linux-release" },
+        { "type": "build", "name": "linux-release" },
+        { "type": "test", "name": "linux-release" }
       ]
     }
   ]
