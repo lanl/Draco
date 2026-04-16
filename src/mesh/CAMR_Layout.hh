@@ -76,10 +76,12 @@ private:
   sf_int num_cells_across_face;
 
 public:
-  // Constructor given the dimension of the mesh
-  // CAMR_Layout(size_t num_cells, uint32_t faces, uint32_t amr_faces, size_t nghosts = 0);
-
-  CAMR_Layout(size_t num_owned_cells, size_t nghosts, uint32_t ndim, int *neighbor_count);
+  /*! \brief Constructor
+   * \param[in] num_active_cells number of active cells
+   * \param[in] nghosts number of ghost cells, zero as default.
+   * \param[in] ndim dimensionality?
+   * \param[in] neighbor_count pointer to neighbor cell mapping data? */
+  CAMR_Layout(size_t num_active_cells, size_t nghosts, uint32_t ndim, int *neighbor_count);
 
   // >>> ACCESSORS
 

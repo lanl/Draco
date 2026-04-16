@@ -10,8 +10,8 @@
 #ifndef rtt_mesh_Rep_Topology_hh
 #define rtt_mesh_Rep_Topology_hh
 
-#include "Topology.hh"
 #include "dsxx/Assert.hh"
+#include "mesh/Topology.hh"
 #include <limits>
 
 namespace rtt_mesh {

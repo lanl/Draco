@@ -23,7 +23,7 @@
 
 namespace rtt_min {
 
-// A C++20 concept for a callable f(x) -> something convertible to double
+//! A C++20 concept for a callable f(x) -> something convertible to double
 template <typename F>
 concept UnaryDoubleFunction = requires(F f, double x) {
   { std::invoke(f, x) } -> std::convertible_to<double>;

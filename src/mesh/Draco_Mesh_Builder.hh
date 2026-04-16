@@ -61,7 +61,9 @@ public:
 
   std::shared_ptr<Draco_Mesh> build_mesh(rtt_mesh_element::Geometry geometry);
 
-  //! Rebuild mesh after resetting some of the mesh data (see reset functions below)
+  /*! \brief Rebuild mesh after resetting some of the mesh data (see reset functions below)
+   * \param[in] geometry enumeration of mesh geometry
+   * \return shared pointer to the Draco_Mesh object */
   std::shared_ptr<Draco_Mesh> rebuild_mesh(rtt_mesh_element::Geometry geometry);
 
   // >>> ACCESSORS

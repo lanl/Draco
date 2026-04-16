@@ -7,7 +7,7 @@
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "Topology.hh"
+#include "mesh/Topology.hh"
 #include "dsxx/Assert.hh"
 #include <cstdint> // int64_t
 #include <iostream>

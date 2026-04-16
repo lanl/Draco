@@ -45,6 +45,12 @@ public:
   [[nodiscard]] virtual unsigned get_sideflag(size_t side) const = 0;
   [[nodiscard]] virtual std::vector<unsigned> get_sidenodes(size_t side) const = 0;
   [[nodiscard]] virtual unsigned get_celltype(size_t cell) const = 0;
+
+  /*!
+   * \brief Get the vector of node indices for a side.
+   * \param[in] side index of side (0-based)
+   * \return number of nodes for side
+   */
   [[nodiscard]] virtual size_t get_sidetype(size_t side) const = 0;
 
   // >>> SERVICES

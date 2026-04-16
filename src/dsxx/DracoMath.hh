@@ -23,7 +23,7 @@
 
 namespace rtt_dsxx {
 
-// Helper Concept Type is only defined if multiplication of type T is valid.
+//! Concept Type is only defined if multiplication of type T is valid.
 template <typename T>
 concept Multipliable = requires(T x) { x *x; };
 
