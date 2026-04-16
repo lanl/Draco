@@ -4,7 +4,7 @@
  * \author H Park
  * \date   Aug. 1 2023
  * \brief  DD_Topology member definitions.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "mesh/DD_Topology.hh"
@@ -24,15 +24,8 @@ namespace rtt_mesh {
 //------------------------------------------------------------------------------------------------//
 // CONSTRUCTORS
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Constructor.
- *
- * \param[in] local_cell_num the number of local cells per MPI rank; has range [0,Np)
- * \param[in] ghost_cells vector of boundary cells such that \c bnd_cells[bnd_cell-1] =
- *               \c remote_local_cell
- * \param[in] ghost_procs vector of boundary cells such that \c bnd_procs[bnd_cell-1] =
- *               \c processor_id where remote_local_cell lives.
- */
+
+//! Constructor
 DD_Topology::DD_Topology(const Vec_Int &local_cell_num, Vec_Int ghost_cells, Vec_Int ghost_procs)
     : Topology(std::string("DD")), global_offset_d(rtt_c4::nodes() + 1, 0),
       ghost_cells_d(std::move(ghost_cells)), ghost_procs_d(std::move(ghost_procs)), num_local_d(0) {

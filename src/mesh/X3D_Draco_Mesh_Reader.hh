@@ -1,6 +1,6 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
- * \file   mesh/X3D_Draco_Mesh_Reader.cc
+ * \file   mesh/X3D_Draco_Mesh_Reader.hh
  * \author Ryan Wollaeger <wollaeger@lanl.gov>, Kendra Long
  * \date   Wednesday, Jul 11, 2018, 14:24 pm
  * \brief  X3D_Draco_Mesh_Reader header file.
@@ -168,7 +168,7 @@ template <> std::string X3D_Draco_Mesh_Reader::convert_key<std::string>(const st
 } // end namespace rtt_mesh
 
 // implementation header file
-#include "X3D_Draco_Mesh_Reader.i.hh"
+#include "mesh/X3D_Draco_Mesh_Reader.i.hh"
 
 #endif // rtt_mesh_X3D_Draco_Mesh_Reader_hh
 

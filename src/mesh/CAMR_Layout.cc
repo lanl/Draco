@@ -4,7 +4,7 @@
  * \author H. Park
  * \date   May 10 2023
  * \brief  AMR_Layout member definitions.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "mesh/CAMR_Layout.hh"
@@ -51,30 +51,19 @@ CAMR_Layout::CAMR_Layout(size_t num_cells, uint32_t faces, uint32_t amr_faces, s
 }
 #endif
 
-/*!
- * \brief Constructor when ...
- *
- * This constructor ...
- *
- * \param[in] num_active_cells number of active cells
- * \param[in] nghosts number of ghost cells, zero as default.
- * \param[in] ndim dimensionality?
- * \param[in] neighbor_counts pointer to neighbor cell mapping data?
- *
- * \bug Need better autodoc information for this constructor.
- */
+//! Constructor
 CAMR_Layout::CAMR_Layout(size_t num_active_cells, size_t nghosts, uint32_t ndim,
                          int *neighbor_counts)
     : n_coarse_faces(2 * ndim), n_fine_faces(static_cast<uint32_t>(std::pow(2, ndim - 1))),
       n_faces_per_cell(n_coarse_faces * n_fine_faces), num_owned_cells(num_active_cells),
       num_ghost_cells(nghosts), cell_face(sf_int((num_active_cells + nghosts) * n_faces_per_cell)) {
 
-  size_t const tot_ncaf = n_coarse_faces * (num_owned_cells + nghosts);
+  size_t const tot_ncaf = n_coarse_faces * (num_active_cells + nghosts);
 
   num_cells_across_face.assign(neighbor_counts, neighbor_counts + tot_ncaf);
 
   Ensure(ndim > 0);
-  Ensure(cell_face.size() == (num_owned_cells + nghosts) * n_faces_per_cell);
+  Ensure(cell_face.size() == (num_active_cells + nghosts) * n_faces_per_cell);
   Ensure(num_cells_across_face.size() == tot_ncaf);
 }
 

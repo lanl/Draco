@@ -84,7 +84,15 @@ private:
   size_t num_local_d;
 
 public:
-  // Constructor.
+  /*!
+   * \brief Constructor.
+   *
+   * \param[in] local_cell_num the number of local cells per MPI rank; has range [0,Np)
+   * \param[in] ghost_cells vector of boundary cells such that `bnd_cells[bnd_cell-1] =
+   *               remote_local_cell`
+   * \param[in] ghost_procs vector of boundary cells such that `bnd_procs[bnd_cell-1] =
+   *               processor_id` where remote_local_cell lives.
+   */
   DD_Topology(const Vec_Int &local_cell_num, Vec_Int ghost_cells, Vec_Int ghost_procs);
 
   // Unpacking constructor.
