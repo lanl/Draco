@@ -2,7 +2,7 @@
 /*!
  * \file   dsxx/path_getFilenameComponent.cc
  * \brief  Encapsulate path information (path separator, etc.)
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -132,7 +132,7 @@ std::string getFilenameComponent(std::string const &fqName, FilenameComponent fc
 #ifdef _MSC_VER
   std::replace(retVal.begin(), retVal.end(), UnixDirSep, dirSep);
 #else
-  std::replace(retVal.begin(), retVal.end(), WinDirSep, dirSep);
+  std::ranges::replace(retVal, WinDirSep, dirSep);
 #endif
   return retVal;
 }

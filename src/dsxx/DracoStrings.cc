@@ -4,12 +4,11 @@
  * \author Kelly G. Thompson <kgt@lanl.gov>
  * \date   Wednesday, Aug 23, 2017, 12:48 pm
  * \brief  Encapsulates common string manipulations (implementation).
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "DracoStrings.hh"
 #include "Assert.hh"
-#include <algorithm> // remove
 #include <cctype>    // tolower
 #include <cstddef>   // size_t
 #include <cstdint>   // int64_t
@@ -104,10 +103,10 @@ std::string trim(std::string const &str, std::string const &whitespace) {
 //------------------------------------------------------------------------------------------------//
 //! Removes all specified characters from a string.
 std::string prune(std::string const &orig_str, std::string const &chars_to_remove) {
-  std::string str(orig_str);
-  for (char const c : chars_to_remove)
-    str.erase(std::remove(str.begin(), str.end(), c), str.end());
-  return str;
+  std::string result(orig_str);
+  std::erase_if(result,
+                [&](char c) noexcept { return chars_to_remove.find(c) != std::string::npos; });
+  return result;
 }
 
 //------------------------------------------------------------------------------------------------//

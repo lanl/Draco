@@ -377,10 +377,8 @@ macro(dbsSetupCxx)
   endif()
 
   # setup flags based on COMPILER_ID...
-  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "PGI" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "PGI")
-    include(unix-pgi)
-  elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "IntelLLVM" OR "${CMAKE_C_COMPILER_ID}" STREQUAL
-                                                            "IntelLLVM")
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "IntelLLVM" OR "${CMAKE_C_COMPILER_ID}" STREQUAL
+                                                        "IntelLLVM")
     include(unix-intelllvm)
   elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "Intel")
     include(unix-intel)
@@ -409,9 +407,7 @@ macro(dbsSetupCxx)
     include(Linux-NVHPC) # ${CMAKE_HOST_SYSTEM_NAME}-${CMAKE_C_COMPILER_ID}
   else()
     # missing CMAKE_CXX_COMPILER_ID? - try to match the compiler path+name to a string.
-    if("${my_cxx_compiler}" MATCHES "pgCC" OR "${my_cxx_compiler}" MATCHES "pgc[+][+]")
-      include(unix-pgi)
-    elseif("${my_cxx_compiler}" MATCHES "CC")
+    if("${my_cxx_compiler}" MATCHES "CC")
       message(
         FATAL_ERROR "I think the C++ compiler is a Cray compiler wrapper, but I don't know what "
                     "compiler is wrapped.  CMAKE_CXX_COMPILER_ID = ${CMAKE_CXX_COMPILER_ID}")
@@ -735,9 +731,7 @@ macro(dbsSetupFortran)
     endif()
 
     # setup flags
-    if("${CMAKE_Fortran_COMPILER_ID}" MATCHES "PGI")
-      include(unix-pgf90)
-    elseif("${CMAKE_Fortran_COMPILER_ID}" MATCHES "Intel")
+    if("${CMAKE_Fortran_COMPILER_ID}" MATCHES "Intel")
       if("${CMAKE_Fortran_COMPILER}" MATCHES "ifx")
         include(unix-ifx)
       else()
@@ -753,9 +747,7 @@ macro(dbsSetupFortran)
       include(Linux-NVHPC-Fortran)
     else()
       # missing CMAKE_Fortran_COMPILER_ID? - try to match the compiler path+name to a string.
-      if(${my_fc_compiler} MATCHES "pgf9[05]" OR ${my_fc_compiler} MATCHES "pgfortran")
-        include(unix-pgf90)
-      elseif(${my_fc_compiler} MATCHES "ftn")
+      if(${my_fc_compiler} MATCHES "ftn")
         message(
           FATAL_ERROR
             "I think the C++ compiler is a Cray compiler wrapper, but I don't know what compiler"
