@@ -289,7 +289,7 @@ void XGetopt::match_args_to_options() {
     }
 
     // 3) Long option (starts with “--”).
-    if (arg.size() > 2 && arg.substr(0, 2) == "--") {
+    if (arg.size() > 2 && arg.starts_with("--")) {
       mato_process_long(arg, i);
       continue;
     }
@@ -300,11 +300,11 @@ void XGetopt::match_args_to_options() {
   return;
 }
 
+namespace { // anonymous namespace for helper functions used by display_help()
+
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Helper: indent every line after the first with a “hanging indent”.
- */
-inline std::string indent_multiline(std::string_view txt, std::size_t hangingIndent) {
+//! Helper: indent every line after the first with a “hanging indent”.
+std::string indent_multiline(std::string_view txt, std::size_t hangingIndent) {
   if (txt.empty())
     return {};
 
@@ -327,6 +327,8 @@ inline std::string indent_multiline(std::string_view txt, std::size_t hangingInd
   }
   return result;
 }
+
+} // end anonymous namespace
 
 //------------------------------------------------------------------------------------------------//
 /*!

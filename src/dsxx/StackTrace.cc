@@ -4,10 +4,10 @@
  * \author Kelly Thompson
  * \date   Friday, Dec 20, 2013, 10:15 am
  * \brief  Linux/X86 implementation of stack trace functions.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#include "StackTrace.hh"
+#include "dsxx/StackTrace.hh"
 #include <array>
 #include <cstdint>
 #include <iostream>
@@ -19,23 +19,13 @@
 //------------------------------------------------------------------------------------------------//
 #ifdef UNIX
 
-#ifndef draco_isPGI
-#include <cxxabi.h> // abi::__cxa_demangle
-#endif
 #include <cstdio> // snprintf
 #include <cstdlib>
 #include <cstring>
-#include <execinfo.h> // backtrace
+#include <cxxabi.h>    // abi::__cxa_demangle
+#include <execinfo.h>  // backtrace
 #include <sys/types.h> // NOLINT(misc-include-cleaner)
-#include <unistd.h> // readlink
-
-//------------------------------------------------------------------------------------------------//
-// Helper functions
-inline std::string st_to_string(int const i) {
-  std::ostringstream msg;
-  msg << i;
-  return msg.str();
-}
+#include <unistd.h>    // readlink
 
 //------------------------------------------------------------------------------------------------//
 // Print a demangled stack backtrace of the caller function.
@@ -53,7 +43,7 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
   int ret = -1; // This scheme won't work on OSX: no /proc fs
 #else
   // Build linkname
-  std::string const linkname = std::string("/proc/") + st_to_string(pid) + std::string("/exe");
+  std::string const linkname = "/proc/" + std::to_string(pid) + "/exe";
 
   auto ret = readlink(linkname.c_str(), buf.data(), buf_size);
 #endif
@@ -84,7 +74,7 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
   char **symbollist = backtrace_symbols(addrlist.data(), stack_depth);
 
   // allocate string which will be filled with the demangled function name
-  size_t funcnamesize = 256;
+  size_t funcnamesize = 256; // cannot be const|constexpr because of API of abi::__cxa_demangle
   auto *funcname = static_cast<char *>(malloc(funcnamesize)); // NOLINT [hicpp-no-malloc]
 
   // iterate over the returned symbol lines. skip first two, (addresses of this function and
@@ -115,12 +105,9 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
 
       // mangled name is now in [begin_name, begin_offset) and caller offset in [begin_offset,
       // end_offset). now apply __cxa_demangle():
-
       int status(1); // assume failure
       char *ret01 = nullptr;
-#ifndef draco_isPGI
-      { ret01 = abi::__cxa_demangle(begin_name, funcname, &funcnamesize, &status); }
-#endif
+      ret01 = abi::__cxa_demangle(begin_name, funcname, &funcnamesize, &status);
       if (status == 0) {
         funcname = ret01; // use possibly realloc()-ed string
         msg << "  " << symbollist[i] << " : " << funcname << "()+" << begin_offset << location
@@ -138,14 +125,9 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
   free(funcname);   // NOLINT [hicpp-no-malloc]
   free(symbollist); // NOLINT [hicpp-no-malloc]
 
-#ifdef draco_isPGI
-  msg << "\n==> Draco's StackTrace feature is not currently implemented for PGI."
-      << "\n    The StackTrace is known to work under Intel or GCC compilers." << std::endl;
-#else
   msg << "\n==> Try to run 'addr2line -e " << process_name << " 0x99999' "
       << "\n    to find where each part of the stack relates to your source code."
       << "\n    Replace the 0x99999 with the actual address from the stack trace above.\n";
-#endif
   return msg.str();
 }
 
