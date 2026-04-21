@@ -162,6 +162,9 @@ ro_dvr_rwdi_gnu:
   variables:
     SCHEDULER_PARAMETERS: -N 1 -L none@slurmdb -t 12:00 -A asc-ci --partition=ci --qos=ci
       --reservation=ci
+    # 2026 April - Roci is having NFS issues. Turn off these 6 disk-heavy checks for MRs.
+    #            - Continue running all tests for nightly regression to track machine stability.
+    EXTRA_CTEST_ARGS: -E viz_tstEnsight_Translator
   script:
     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh"
   rules:
@@ -174,15 +177,16 @@ ro_dvr_rwdi_gnu:
 
 # ----- fast -----
 
+# none
+
+# ----- regular test -----
+
 ro_deb_gnu_mr:
   stage: test
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/3.0.1-gnu"
-
-# ----- regular test -----
-
 
 # ----- slow -----
 
