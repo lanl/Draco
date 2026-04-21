@@ -2,16 +2,14 @@
 /*!
  * \file   src/units/test/tstPhysicalConstants.cc
  * \author Kelly Thompson
- * \date   Mon Nov  3 22:35:14 2003
  * \brief  test the PhysicalConstants class
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-#include "units/MathConstants.hh"
 #include "units/PhysicalConstants.hh"
 #include "units/PhysicalConstantsSI.hh"
 #include "units/UnitSystem.hh"
@@ -19,6 +17,7 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
+#include <numbers>
 #include <sstream>
 #include <string>
 
@@ -29,26 +28,13 @@
 void test_static_access(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::EV2K;
-  using rtt_units::PI;
   using std::cout;
   using std::ostringstream;
   using std::string;
 
-  // PI
-
-  double dev(3.14159265358979324);
-  if (soft_equiv(dev, PI)) {
-    PASSMSG("Found expected value for PI (static).\n");
-  } else {
-    ostringstream msg;
-    msg << "Did not find expected value for PI (static).\n\tThe value returned was "
-        << std::setprecision(16) << PI << " != " << std::setprecision(16) << dev << ".\n";
-    FAILMSG(msg.str());
-  }
-
   // eV2K
 
-  dev = 11604.51930280894;
+  double constexpr dev = 11604.51930280894;
   if (soft_equiv(dev, EV2K)) {
     PASSMSG("Found expected value for eV2K (static).\n");
   } else {
@@ -66,7 +52,6 @@ void test_static_access(rtt_dsxx::UnitTest &ut) {
 void test_ctor(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::PhysicalConstants;
-  using rtt_units::PI;
   using rtt_units::UnitSystem;
   using rtt_units::UnitSystemType;
   using std::ostringstream;
@@ -205,7 +190,6 @@ void test_ctor(rtt_dsxx::UnitTest &ut) {
 void test_scaled_values(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
   using rtt_units::PhysicalConstants;
-  using rtt_units::PI;
   using rtt_units::UnitSystem;
   using rtt_units::UnitSystemType;
   using std::ostringstream;
@@ -219,7 +203,7 @@ void test_scaled_values(rtt_dsxx::UnitTest &ut) {
 
   double dev;
 
-  // Avagadro
+  // Avogadro
 
   dev = 6.02214129e+23;
   if (soft_equiv(dev, pc.avogadro()) && soft_equiv(dev, pc.Na())) {
@@ -318,7 +302,7 @@ void test_scaled_values(rtt_dsxx::UnitTest &ut) {
     PASSMSG("Scaled Gravitational constant looks correct.\n");
   } else {
     ostringstream msg;
-    msg << "Scaled Gravitaitonal constant is not correct.\n"
+    msg << "Scaled Gravitational constant is not correct.\n"
         << "\tvalue =  " << std::setprecision(16) << pc.gravitationalConstant()
         << " != " << std::setprecision(16) << dev << ".\n";
     FAILMSG(msg.str());
@@ -351,7 +335,7 @@ void test_scaled_values(rtt_dsxx::UnitTest &ut) {
 
   // Permeability of vacuum (free space)
 
-  dev = 4.0 * PI * 1.0e-7; // H / m
+  dev = 4.0 * std::numbers::pi * 1.0e-7; // H / m
   dev = dev * si.L() / us.L();
   if (soft_equiv(pc.permeabilityOfVacuum(), dev)) {
     PASSMSG("Scaled Permeability of vacuum (free space) looks correct.\n");

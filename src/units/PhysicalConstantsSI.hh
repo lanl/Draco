@@ -129,7 +129,7 @@ static double constexpr classicalElectronRadiusSI =
     (4 * PI * permittivityOfFreeSpaceSI * electronMassSI * cLightSI * cLightSI);
 
 //! [h_bar] Reduced Planck constant ( Energy seconds )
-static double constexpr h_barSI = planckSI / (2.0 * rtt_units::PI); // J s
+static double constexpr h_barSI = planckSI / (2.0 * std::numbers::pi); // J s
 
 } // end namespace rtt_units
 

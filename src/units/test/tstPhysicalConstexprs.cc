@@ -2,16 +2,14 @@
 /*!
  * \file   units/test/tstPhysicalConstexprs.cc
  * \author Ben R. Ryan <brryan@lanl.gov>
- * \date   2017 Feb 10
  * \brief  Implementation file for PhysicalConstexprs class test
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-#include "units/MathConstants.hh"
 #include "units/PhysicalConstexprs.hh"
 #include <iomanip>
 #include <iostream>
@@ -46,7 +44,6 @@ void compare_constant(std::string const &name, double expected, double value_a, 
 //! Tests the SI unit system
 void test_si(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
-  using rtt_units::PI;
   using std::ostringstream;
 
   constexpr rtt_units::PhysicalConstexprs<rtt_units::SI> pc;
@@ -79,7 +76,6 @@ void test_si(rtt_dsxx::UnitTest &ut) {
 //! Tests the cgs unit system
 void test_cgs(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
-  using rtt_units::PI;
   using std::ostringstream;
 
   constexpr rtt_units::PhysicalConstexprs<rtt_units::CGS> pc;
@@ -112,7 +108,6 @@ void test_cgs(rtt_dsxx::UnitTest &ut) {
 //! Tests the cgsh unit system
 void test_cgsh(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
-  using rtt_units::PI;
   using std::ostringstream;
 
   constexpr rtt_units::PhysicalConstexprs<rtt_units::CGSH> pc;

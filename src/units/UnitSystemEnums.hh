@@ -3,7 +3,7 @@
  *  \author Kelly Thompson
  *  \brief  This file contains enums, conversion factors and labels that help define a UnitSystem.
  *  \date   Fri Oct 24 15:57:09 2003
- *  \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_units_UnitSystemEnums_hh
@@ -11,6 +11,7 @@
 
 #include "dsxx/config.h"
 #include <array>
+#include <cstdint>
 #include <string>
 
 namespace rtt_units {
@@ -19,7 +20,7 @@ namespace rtt_units {
 // ENUMERATED LENGTH TYPES
 //========================================//
 
-enum Ltype {
+enum Ltype : std::uint8_t {
   L_null = 0, //!< no length type
   L_m = 1,    //!< meters (m)
   L_cm = 2    //!< centimeters (1 m = 100 cm)
@@ -34,7 +35,7 @@ constexpr char const *L_long_labels = "no length unit specified,meter,centimeter
 // ENUMERATED MASS TYPES
 //========================================//
 
-enum Mtype {
+enum Mtype : std::uint8_t {
   M_null = 0, //!< no mass type
   M_kg = 1,   //!< kilogram (kg)
   M_g = 2     //!< gram (1 g = 1e-3 kg)
@@ -49,7 +50,7 @@ constexpr char const *M_long_labels = "no mass unit specified,kilogram,gram";
 // ENUMERATED TIME TYPES
 //========================================//
 
-enum ttype {
+enum ttype : std::uint8_t {
   t_null, //!< no time type
   t_s,    //!< seconds (s)
   t_ms,   //!< milliseconds (1 ms = 1e-3 s)
@@ -68,7 +69,7 @@ constexpr char const *t_long_labels =
 // ENUMERATED TEMPERATURE TYPES
 //========================================//
 
-enum Ttype {
+enum Ttype : std::uint8_t {
   T_null, //!< no temperature type
   T_K,    //!< Kelvin
   T_keV,  //!< keV (1 K=8.61733238496e-8 keV or 1 keV=1.1604519302808940e7 K). This conversion
@@ -85,7 +86,7 @@ constexpr char const *T_labels = "NA,K,keV,eV";
 // ENUMERATED CURRENT TYPES
 //========================================//
 
-enum Itype {
+enum Itype : std::uint8_t {
   I_null, //!< no current type0.001
   I_amp   //!< Amp (SI)
 };
@@ -98,7 +99,7 @@ constexpr char const *I_labels = "NA,Amp";
 // ENUMERATED ANGLE TYPES
 //========================================//
 
-enum Atype {
+enum Atype : std::uint8_t {
   A_null, //!< no angle type
   A_rad,  //!< Radian (SI)
   A_deg   //!< degrees (PI rad = 180 deg)
@@ -112,7 +113,7 @@ constexpr char const *A_labels = "NA,rad,deg";
 // ENUMERATED QUANTITY TYPES
 //========================================//
 
-enum Qtype {
+enum Qtype : std::uint8_t {
   Q_null, //!< no quantity type
   Q_mol   //!< mole (SI)
 };
