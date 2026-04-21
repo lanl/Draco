@@ -3,18 +3,18 @@
  * \file   kde/quick_index.cc
  * \author Mathew Cleveland
  * \brief  Explicitly defined quick_index functions.
- * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quick_index.hh"
 #include "dsxx/Assert.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "c4/C4_Functions.hh"
-#include "units/MathConstants.hh"
 #include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstddef>
+#include <numbers>
 #include <numeric>
 #include <string>
 #include <tuple>
@@ -44,7 +44,8 @@ transform_spherical(const size_t dim, const std::array<double, 3> &sphere_center
     const double mag = sqrt(v[0] * v[0] + v[1] * v[1]);
     double const cos_theta = mag > 0.0 ? std::max(std::min(v[1] / mag, 1.0), -1.0) : 0.0;
     location = std::array<double, 3>{
-        r, location[0] < sphere_center[0] ? 2.0 * rtt_units::PI - acos(cos_theta) : acos(cos_theta),
+        r,
+        location[0] < sphere_center[0] ? 2.0 * std::numbers::pi - acos(cos_theta) : acos(cos_theta),
         0.0};
   }
   return r_theta_locations;
@@ -154,7 +155,7 @@ void quick_index::initialize_data() {
       if (spherical && d == 1) {
         // * Transform to dtheta via arch_lenght=r*dtheta
         // * enforce a 90 degree maximum angle
-        wsize = std::min(rtt_units::PI / 2,
+        wsize = std::min(std::numbers::pi / 2,
                          0.5 * (max_window_size + coarse_bin_size) / local_bounding_box_max[0]);
       }
       local_bounding_box_min[d] -= wsize;
@@ -174,10 +175,10 @@ void quick_index::initialize_data() {
         local_bounding_box_max[d] = std::min(local_bounding_box_max[d], bounding_box_max[d]);
       }
     } else if (spherical && local_bounding_box_min[1] < 0.0 &&
-               local_bounding_box_max[1] > 2.0 * rtt_units::PI) {
+               local_bounding_box_max[1] > 2.0 * std::numbers::pi) {
       // if the domain contains the full sphere hard code the bounds
       local_bounding_box_min[1] = 0.0;
-      local_bounding_box_max[1] = 2.0 * rtt_units::PI;
+      local_bounding_box_max[1] = 2.0 * std::numbers::pi;
     }
   }
 
@@ -310,13 +311,16 @@ void quick_index::initialize_data() {
 }
 
 #ifdef C4_MPI
+
+namespace {
+
 //------------------------------------------------------------------------------------------------//
 // call MPI_put using a chunk style write to avoid error in MPI_put with large local buffers.
 auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win,
                      MPI_Datatype mpi_data_type) // NOLINT(misc-include-cleaner)
 {
-  // temporary work around until RMA is available in c4
-  // loop over all ranks we need to send this buffer too.
+  // * temporary work around until RMA is available in c4
+  // * loop over all ranks we need to send this buffer too.
   for (auto &putv : put.second) {
     const int put_rank = putv[0];
     const int put_offset = putv[1];
@@ -335,6 +339,9 @@ auto put_lambda = [](auto &put, auto &put_buffer, auto &put_size, auto &win,
     }
   }
 };
+
+} // namespace
+
 #endif
 
 //------------------------------------------------------------------------------------------------//
@@ -360,7 +367,7 @@ void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &l
 #ifdef C4_MPI // temporary work around until RMA is available in c4
   // Use one sided MPI Put commands to fill up the ghost cell location data
 
-  // Don't warin about including mpi.h
+  // Don't warn about including mpi.h
   // NOLINTBEGIN(misc-include-cleaner)
   std::vector<double> local_ghost_buffer(local_ghost_buffer_size, 0.0);
   std::vector<double> put_buffer(max_put_buffer_size, 0.0);
@@ -409,7 +416,7 @@ void quick_index::collect_ghost_data(const std::vector<std::array<double, 3>> &l
  * ranks.
  *
  * \param[in] local_data the local multi-dimensional data that is required to be available as ghost
- * cell data on other processors.
+ *     cell data on other processors.
  * \param[in,out] local_ghost_data the resulting multi-dimensional ghost data
  */
 void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &local_data,
@@ -429,7 +436,7 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
 #ifdef C4_MPI // temporary work around until RMA is available in c4
   // Use one sided MPI Put commands to fill up the ghost cell location data
 
-  // Don't warin about including mpi.h
+  // Don't warn about including mpi.h
   // NOLINTBEGIN(misc-include-cleaner)
   std::vector<double> local_ghost_buffer(local_ghost_buffer_size, 0.0);
   std::vector<double> put_buffer(max_put_buffer_size, 0.0);
@@ -472,14 +479,14 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Collect ghost data for a vector<vector<double>> where the first vector is of length ghost
- * cells and the second vector is a fixed data_size per ghost cell
+ *     cells and the second vector is a fixed data_size per ghost cell
  *
  * Collect ghost data for vector<vector<double>> arrays. This function uses RMA and the local
  * put_window_map to allow each rank to independently fill in its data to ghost cells of other
  * ranks.
  *
  * \param[in] local_data the local multi-dimensional data that is required to be available as ghost
- * cell data on other processors.
+ *     cell data on other processors.
  * \param[in,out] local_ghost_data the resulting multi-dimensional ghost data
  * \param[in] data_size is the size of each data set in each ghost cell
  */
@@ -500,7 +507,7 @@ void quick_index::collect_ghost_data(const std::vector<std::vector<double>> &loc
 #ifdef C4_MPI // temporary work around until RMA is available in c4
   // Use one sided MPI Put commands to fill up the ghost cell location data
 
-  // Don't warin about including mpi.h
+  // Don't warn about including mpi.h
   // NOLINTBEGIN(misc-include-cleaner)
   std::vector<double> local_ghost_buffer(local_ghost_buffer_size, 0.0);
   std::vector<double> put_buffer(max_put_buffer_size, 0.0);
@@ -556,7 +563,7 @@ void quick_index::collect_ghost_data(const std::vector<double> &local_data,
   Insist(local_ghost_data.size() == local_ghost_buffer_size,
          "ghost_data input must be sized via quick_index.local_ghost_buffer_size");
 #ifdef C4_MPI // temporary work around until RMA is available in c4
-  // Don't warin about including mpi.h
+  // Don't warn about including mpi.h
   // NOLINTBEGIN(misc-include-cleaner)
   std::vector<double> const local_ghost_buffer(local_ghost_buffer_size, 0.0);
   std::vector<double> put_buffer(max_put_buffer_size, 0.0);
@@ -606,7 +613,7 @@ void quick_index::collect_ghost_data(const std::vector<int> &local_data,
   Insist(local_ghost_data.size() == local_ghost_buffer_size,
          "ghost_data input must be sized via quick_index.local_ghost_buffer_size");
 #ifdef C4_MPI // temporary work around until RMA is available in c4
-  // Don't warin about including mpi.h
+  // Don't warn about including mpi.h
   // NOLINTBEGIN(misc-include-cleaner)
   std::vector<int> const local_ghost_buffer(local_ghost_buffer_size, 0);
   std::vector<int> put_buffer(max_put_buffer_size, 0);
@@ -705,9 +712,9 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
   }
   Check(bin_list.size() > 0);
   // Fill in the overflow around theta=0.0
-  if (spherical && (window_min[1] < 0.0 || window_max[1] > 2.0 * rtt_units::PI)) {
+  if (spherical && (window_min[1] < 0.0 || window_max[1] > 2.0 * std::numbers::pi)) {
     // Only one bound of the window should every overshoot zero
-    Check(!(window_min[1] < 0.0 && window_max[1] > 2.0 * rtt_units::PI));
+    Check(!(window_min[1] < 0.0 && window_max[1] > 2.0 * std::numbers::pi));
     // size_t overlap_nbins = 1;
     for (size_t d = 0; d < dim; d++) {
       // because local bounds can extend beyond the mesh we need to force a
@@ -716,13 +723,13 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
       double wmax = window_max[d];
       if (spherical && d == 1 && window_min[d] < 0.0) {
         // Capture the overshoot theta space
-        wmin = std::min(2.0 * rtt_units::PI + window_min[d], bounding_box_max[d]);
-        wmax = 2.0 * rtt_units::PI;
+        wmin = std::min(2.0 * std::numbers::pi + window_min[d], bounding_box_max[d]);
+        wmax = 2.0 * std::numbers::pi;
       }
-      if (spherical && d == 1 && window_max[d] > 2.0 * rtt_units::PI) {
+      if (spherical && d == 1 && window_max[d] > 2.0 * std::numbers::pi) {
         // Capture the overshoot theta space
         wmin = 0.0;
-        wmax = std::max(window_max[d] - 2.0 * rtt_units::PI, bounding_box_min[d]);
+        wmax = std::max(window_max[d] - 2.0 * std::numbers::pi, bounding_box_min[d]);
       }
       // Truncate based on global space
       if (spherical && d == 1 && wmin < bounding_box_min[d])
@@ -749,7 +756,7 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
           size_t const bin_index =
               i + j * coarse_bin_resolution + k * coarse_bin_resolution * coarse_bin_resolution;
           // make sure we don't duplicate a bin here
-          if (std::find(bin_list.begin(), bin_list.end(), bin_index) == bin_list.end()) {
+          if (std::ranges::find(bin_list, bin_index) == bin_list.end()) {
             bin_list.push_back(bin_index);
           }
         }
@@ -759,6 +766,8 @@ quick_index::window_coarse_index_list(const std::array<double, 3> &window_min,
 
   return bin_list;
 }
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 //  Lambda for exact window mapping
@@ -785,13 +794,13 @@ auto exact_window_mapping = [](auto spherical, const auto dim, const auto &grid_
       Check((window_max[d] - window_min[d]) > 0.0);
       double loc = location[d];
       // transform location for zero theta overshoot
-      if (spherical && d == 1 && window_max[d] > 2.0 * rtt_units::PI &&
-          location[d] < (window_max[d] - 2.0 * rtt_units::PI))
-        loc += 2.0 * rtt_units::PI;
+      if (spherical && d == 1 && window_max[d] > 2.0 * std::numbers::pi &&
+          location[d] < (window_max[d] - 2.0 * std::numbers::pi))
+        loc += 2.0 * std::numbers::pi;
       // transform location for zero theta overshoot
       if (spherical && d == 1 && window_min[d] < 0 &&
-          location[d] > (2.0 * rtt_units::PI + window_min[d]))
-        loc -= 2.0 * rtt_units::PI;
+          location[d] > (2.0 * std::numbers::pi + window_min[d]))
+        loc -= 2.0 * std::numbers::pi;
       distance_to_bin_center[d] = (bin_center - loc);
     }
     if (fabs(distance_to_bin_center[0]) <= delta[0] * 0.5 &&
@@ -827,13 +836,13 @@ auto exact_window_vector_mapping = [](auto spherical, const auto dim, const auto
                               window_delta;
       double loc = location[d];
       // transform location for zero theta overshoot
-      if (spherical && d == 1 && window_max[d] > 2.0 * rtt_units::PI &&
-          location[d] < (window_max[d] - 2.0 * rtt_units::PI))
-        loc += 2.0 * rtt_units::PI;
+      if (spherical && d == 1 && window_max[d] > 2.0 * std::numbers::pi &&
+          location[d] < (window_max[d] - 2.0 * std::numbers::pi))
+        loc += 2.0 * std::numbers::pi;
       // transform location for zero theta overshoot
       if (spherical && d == 1 && window_min[d] < 0 &&
-          location[d] > (2.0 * rtt_units::PI + window_min[d]))
-        loc -= 2.0 * rtt_units::PI;
+          location[d] > (2.0 * std::numbers::pi + window_min[d]))
+        loc -= 2.0 * std::numbers::pi;
       distance_to_bin_center[d] = (bin_center - loc);
     }
     if (fabs(distance_to_bin_center[0]) <= delta[0] * 0.5 &&
@@ -864,13 +873,13 @@ auto get_window_bin = [](auto spherical, const auto dim, const auto &grid_bins,
     Check((window_max[d] - window_min[d]) > 0.0);
     double loc = location[d];
     // transform location for zero theta overshoot
-    if (spherical && d == 1 && window_max[d] > 2.0 * rtt_units::PI &&
-        location[d] < (window_max[d] - 2.0 * rtt_units::PI))
-      loc += 2.0 * rtt_units::PI;
+    if (spherical && d == 1 && window_max[d] > 2.0 * std::numbers::pi &&
+        location[d] < (window_max[d] - 2.0 * std::numbers::pi))
+      loc += 2.0 * std::numbers::pi;
     // transform location for zero theta overshoot
     if (spherical && d == 1 && window_min[d] < 0 &&
-        location[d] > (2.0 * rtt_units::PI + window_min[d]))
-      loc -= 2.0 * rtt_units::PI;
+        location[d] > (2.0 * std::numbers::pi + window_min[d]))
+      loc -= 2.0 * std::numbers::pi;
     const double bin_value =
         static_cast<double>(grid_bins[d]) * (loc - window_min[d]) / (window_max[d] - window_min[d]);
     if (bin_value < 0.0 || bin_value > static_cast<double>(grid_bins[d])) {
@@ -934,6 +943,8 @@ auto map_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data, aut
   }
 };
 
+} // namespace
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Map data to a grid window for vector<double> data
@@ -965,9 +976,9 @@ void quick_index::map_data_to_grid_window(
   Require(domain_decomposed
               ? (fabs(window_max[0] - window_min[0]) - max_window_size) / max_window_size < 1e-6
               : true);
-  Remember(double const ymax = spherical
-                                   ? std::min(rtt_units::PI / 2.0, max_window_size / window_max[0])
-                                   : max_window_size);
+  Remember(double const ymax =
+               spherical ? std::min(std::numbers::pi / 2.0, max_window_size / window_max[0])
+                         : max_window_size);
   Require(domain_decomposed ? (fabs(window_max[1] - window_min[1]) - ymax) / ymax < 1e-6 : true);
   Require(domain_decomposed
               ? (fabs(window_max[2] - window_min[2]) - max_window_size) / max_window_size < 1e-6
@@ -1023,7 +1034,7 @@ void quick_index::map_data_to_grid_window(
          "grid_data must match the flatten grid_bin size for the active dimensions (in 3d "
          "grid_data.size()==grib_bins[0]*grid_bins[1]*grid_bins[2])");
 
-  std::fill(grid_data.begin(), grid_data.end(), 0.0);
+  std::ranges::fill(grid_data, 0.0);
 
   // Grab the global bins that lie in this window
   std::vector<size_t> const global_bins = window_coarse_index_list(window_min, window_max);
@@ -1048,7 +1059,7 @@ void quick_index::map_data_to_grid_window(
           std::tie(valid, local_window_bin, distance_to_bin_center) = get_window_bin(
               spherical, dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
 
-          // If the bin is outside the window continue to the next poin
+          // If the bin is outside the window continue to the next point
           if (!valid)
             continue;
 
@@ -1077,7 +1088,7 @@ void quick_index::map_data_to_grid_window(
                 get_window_bin(spherical, dim, grid_bins, local_ghost_locations[g], window_min,
                                window_max, n_map_bins);
 
-            // If the bin is outside the window continue to the next poin
+            // If the bin is outside the window continue to the next point
             if (!valid)
               continue;
 
@@ -1123,8 +1134,7 @@ void quick_index::map_data_to_grid_window(
 
   if (bias && normalize) {
     // return a positive normalized distribution
-    const double bias_value =
-        fabs(std::min(0.0, *std::min_element(grid_data.begin(), grid_data.end())));
+    const double bias_value = fabs(std::min(0.0, *std::ranges::min_element(grid_data)));
     const double sum =
         std::accumulate(grid_data.begin(), grid_data.end(), 0.0) + bias_value * bias_cell_count;
     // catch zero instance
@@ -1133,8 +1143,7 @@ void quick_index::map_data_to_grid_window(
       grid_data[i] = (grid_data[i] + bias_value) * scale;
   } else if (bias) {
     // return a positive distribution
-    const double bias_value =
-        fabs(std::min(0.0, *std::min_element(grid_data.begin(), grid_data.end())));
+    const double bias_value = fabs(std::min(0.0, *std::ranges::min_element(grid_data)));
     for (size_t i = 0; i < n_map_bins; i++)
       grid_data[i] += bias_value;
   } else if (normalize) {
@@ -1225,7 +1234,7 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
               ? (fabs(window_max[0] - window_min[0]) - max_window_size) / max_window_size < 1e-6
               : true);
   /*
-  Remember(double ymax = spherical ? std::min(rtt_units::PI / 2.0, max_window_size / window_max[0])
+  Remember(double ymax = spherical ? std::min(std::numbers::pi / 2.0, max_window_size / window_max[0])
                                    : max_window_size;)
       Require(domain_decomposed ? (fabs(window_max[1] - window_min[1]) - ymax) / ymax < 1e-6
                                 : true);
@@ -1314,7 +1323,7 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
           double distance_to_bin_center;
           std::tie(valid, local_window_bin, distance_to_bin_center) = get_window_bin(
               spherical, dim, grid_bins, locations[l], window_min, window_max, n_map_bins);
-          // If the bin is outside the window continue to the next poin
+          // If the bin is outside the window continue to the next point
           if (!valid)
             continue;
           Check(local_window_bin < n_map_bins);
@@ -1342,7 +1351,7 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
                 get_window_bin(spherical, dim, grid_bins, local_ghost_locations[g], window_min,
                                window_max, n_map_bins);
 
-            // If the bin is outside the window continue to the next poin
+            // If the bin is outside the window continue to the next point
             if (!valid)
               continue;
             map_vector_data(bias_cell_count, data_count, grid_data, min_distance, map_type,
@@ -1434,7 +1443,7 @@ void quick_index::map_data_to_grid_window(const std::vector<std::vector<double>>
  *
  * \param[in] r0 initial position
  * \param[in] r final position
- * \return orthognal distance between the initial and final point in each direction
+ * \return orthogonal distance between the initial and final point in each direction
  */
 std::array<double, 3> quick_index::calc_orthogonal_distance(const std::array<double, 3> &r0,
                                                             const std::array<double, 3> &r) const {

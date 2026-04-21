@@ -14,7 +14,7 @@
  *         typically used in KDE applications to account for the kernel extending beyond the bounds
  *         of the spatial domain. Other approaches that could be considered are quadrature based
  *         approaches that fully sample the Kernel space reducing the need for the normalization.
- * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "kde.hh"
@@ -834,8 +834,8 @@ kde::log_reconstruction(const std::vector<double> &distribution,
   // used for the zero accumulation conservation
   std::vector<double> result(local_size, 0.0);
   std::vector<double> normal(local_size, 0.0);
-  double min_value = *std::min_element(distribution.begin(), distribution.end());
-  double max_value = *std::max_element(distribution.begin(), distribution.end());
+  double min_value = *std::ranges::min_element(distribution);
+  double max_value = *std::ranges::max_element(distribution);
   double log_bias = fabs(min_value) + (max_value - min_value);
   if (qindex.domain_decomposed) {
 

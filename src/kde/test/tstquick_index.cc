@@ -4,7 +4,7 @@
  * \author Mathew Cleveland
  * \date   Aug. 10th 2021
  * \brief  quick_index testing function
- * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,13 +13,15 @@
 #include "kde/quick_index.hh"
 #include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
-#include "units/MathConstants.hh"
 #include <array>
 #include <cmath>
 #include <cstddef>
 #include <map>
+#include <numbers>
 #include <string>
 #include <vector>
+
+namespace {
 
 using namespace rtt_dsxx;
 using namespace rtt_c4;
@@ -58,17 +60,10 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     FAIL_IF(!soft_equiv(qindex.bounding_box_max[2], 0.0));
     // Check local coarse_index map
     // * build up a global gold to check the map
-    std::map<size_t, std::vector<size_t>> gold_map;
-    gold_map[0] = {0};
-    gold_map[1] = {5};
-    gold_map[2] = {1};
-    gold_map[3] = {6};
-    gold_map[4] = {2};
-    gold_map[5] = {7};
-    gold_map[6] = {3};
-    gold_map[7] = {8};
-    gold_map[8] = {4};
-    gold_map[9] = {9};
+    std::map<std::size_t, std::vector<size_t>> gold_map{
+        {0, {0}}, {1, {5}}, {2, {1}}, {3, {6}}, {4, {2}},
+        {5, {7}}, {6, {3}}, {7, {8}}, {8, {4}}, {9, {9}},
+    };
     FAIL_IF(gold_map.size() != qindex.coarse_index_map.size());
     for (auto &map : qindex.coarse_index_map)
       for (size_t i = 0; i < map.second.size(); i++)
@@ -117,17 +112,10 @@ void test_replication_sphere(ParallelUnitTest &ut) {
     FAIL_IF(!soft_equiv(qindex.bounding_box_max[2], 0.0));
     // Check local coarse_index map
     // * build up a global gold to check the map
-    std::map<size_t, std::vector<size_t>> gold_map;
-    gold_map[0] = {2};
-    gold_map[23] = {3};
-    gold_map[27] = {4};
-    gold_map[35] = {8};
-    gold_map[39] = {9};
-    gold_map[41] = {7};
-    gold_map[71] = {6};
-    gold_map[85] = {5};
-    gold_map[93] = {1};
-    gold_map[97] = {0};
+    std::map<size_t, std::vector<size_t>> gold_map{
+        {0, {2}},  {23, {3}}, {27, {4}}, {35, {8}}, {39, {9}},
+        {41, {7}}, {71, {6}}, {85, {5}}, {93, {1}}, {97, {0}},
+    };
     FAIL_IF(gold_map.size() != qindex.coarse_index_map.size());
     for (auto &map : qindex.coarse_index_map)
       for (size_t i = 0; i < map.second.size(); i++)
@@ -687,17 +675,19 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
         gold_window_data = {0.0, 0.0, 3.0, 0.0, 8.0};
         gold_window_3x_data[0] = {0.0, 0.0, 3.0, 0.0, 8.0};
         gold_window_3x_data[1] = {0.0, 0.0, 4.0, 0.0, 9.0};
-        gold_window_3x_data[2] = {0.0, 0.0, 8.0 - 3.0, 0.0, 8.0 - 8.0};
+        gold_window_3x_data[2] = {0.0, 0.0, 5.0, 0.0, 0.0}; // {0.0, 0.0, 8.0-3.0, 0.0, 8.0-8.0};
       } else if (rtt_c4::node() == 1) {
         gold_window_data = {10.0, 0.0, 6.0, 0.0, 11.0};
         gold_window_3x_data[0] = {10.0, 0.0, 6.0, 0.0, 11.0};
         gold_window_3x_data[1] = {11.0, 0.0, 7.0, 0.0, 12.0};
-        gold_window_3x_data[2] = {11.0 - 10.0, 0.0, 11.0 - 6.0, 0.0, 11.0 - 11.0};
+        // gold_window_3x_data[2] = {11.0 - 10.0, 0.0, 11.0 - 6.0, 0.0, 11.0 - 11.0};
+        gold_window_3x_data[2] = {1.0, 0.0, 5.0, 0.0, 0.0};
       } else {
         gold_window_data = {4.0, 0.0, 9.0, 0.0, 5.0};
         gold_window_3x_data[0] = {4.0, 0.0, 9.0, 0.0, 5.0};
         gold_window_3x_data[1] = {5.0, 0.0, 10.0, 0.0, 6.0};
-        gold_window_3x_data[2] = {9.0 - 4.0, 0.0, 9.0 - 9.0, 0.0, 9.0 - 5.0};
+        // gold_window_3x_data[2] = {9.0 - 4.0, 0.0, 9.0 - 9.0, 0.0, 9.0 - 5.0};
+        gold_window_3x_data[2] = {5.0, 0.0, 0.0, 0.0, 4.0};
       }
 
       for (size_t v = 0; v < 3; v++) {
@@ -1001,8 +991,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
         gold_window_data = {0.0, 1.0};
         gold_window_3x_data[0] = {0.0, 1.0};
         gold_window_3x_data[1] = {0.0, 1.0};
-        // this one is a bit tricky the bias causes the negative value to go to
-        // zero so there is nothing to rescale to one.
+        // this one is a bit tricky the bias causes the negative value to go to zero so there is
+        // nothing to rescale to one.
         gold_window_3x_data[2] = {0.0, 0.0};
       } else if (rtt_c4::node() == 1) {
         gold_window_data = {10.0 / 21.0, 11.0 / 21.0};
@@ -1369,7 +1359,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
           FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
-    // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all domain space
+    // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all
+    // domain space
     if (rtt_c4::node() == 1) {
       // build a length=1.0 window around the first point on each node
       const std::array<double, 3> min{0.5, -0.5, 0.0};
@@ -1398,7 +1389,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
           FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
-    // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all domain space
+    // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all
+    // domain space
     if (rtt_c4::node() == 1) {
       // build a length=1.0 window around the first point on each node
       const std::array<double, 3> min{0.5, -0.5, 0.0};
@@ -1427,7 +1419,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
           FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
-    // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all domain space
+    // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all
+    // domain space
     if (rtt_c4::node() == 1) {
       // build a length=1.0 window around the first point on each node
       const std::array<double, 3> min{0.45, -0.5, 0.0};
@@ -1457,7 +1450,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
           FAIL_IF_NOT(rtt_dsxx::soft_equiv(window_3x_data[v][i], gold_window_3x_data[v][i]));
     }
 
-    // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all domain space
+    // check y dim mapping only on rank 1 because the ghost data extends far enough to touch all
+    // domain space
     if (rtt_c4::node() == 1) {
       // build a length=1.0 window around the first point on each node
       const std::array<double, 3> min{0.5, -0.5, 0.0};
@@ -1755,7 +1749,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     FAIL_IF(!soft_equiv(qindex.bounding_box_min[1], 0.0));
     FAIL_IF(!soft_equiv(qindex.bounding_box_min[2], 0.0));
     FAIL_IF(!soft_equiv(qindex.bounding_box_max[0], 1.0));
-    FAIL_IF(!soft_equiv(qindex.bounding_box_max[1], rtt_units::PI, 1e-6));
+    FAIL_IF(!soft_equiv(qindex.bounding_box_max[1], std::numbers::pi, 1e-6));
     FAIL_IF(!soft_equiv(qindex.bounding_box_max[2], 0.0));
     // Check local coarse_index map
     // local indexing will not match the domain replicated case (different
@@ -1954,6 +1948,10 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       }
     }
 
+    // The value 3.14159 used below does not need to be std::numbers::pi.
+    // Define it here to make it easier to suppress lint warnings.
+    constexpr double pi6dig = 3.14159;
+
     // Check the local ghost locations (this tangentially checks the private put_window_map which is
     // used to build this local data).
     std::vector<std::array<double, 3>> gold_ghost_locations;
@@ -1964,7 +1962,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
           {0.25, 1.0472, 0.0},  {0.1, 1.31812, 0.0},   {0.25, 1.31812, 0.0}, {0.1, 1.82348, 0.0},
           {0.1, 1.5708, 0.0},   {0.25, 1.82348, 0.0},  {0.25, 1.5708, 0.0},  {0.1, 2.0944, 0.0},
           {0.25, 2.0944, 0.0},  {0.5, 2.0944, 0.0},    {0.1, 2.41886, 0.0},  {0.25, 2.41886, 0.0},
-          {0.5, 2.41886, 0.0},  {0.1, 3.14159, 0.0},   {0.25, 3.14159, 0.0}, {0.5, 3.14159, 0.0},
+          {0.5, 2.41886, 0.0},  {0.1, pi6dig, 0.0},    {0.25, pi6dig, 0.0},  {0.5, pi6dig, 0.0},
           {0.5, 0, 0.0},        {0.5, 0.722734, 0.0},  {0.5, 1.0472, 0.0},   {0.5, 1.31812, 0.0},
           {0.5, 1.82348, 0.0},  {0.5, 1.5708, 0.0}};
     } else if (rtt_c4::node() == 1) {
@@ -1975,7 +1973,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
                               {0.05, 1.5708, 0.0},   {0.075, 1.82348, 0.0}, {0.075, 1.5708, 0.0},
                               {0.025, 2.0944, 0.0},  {0.05, 2.0944, 0.0},   {0.075, 2.0944, 0.0},
                               {0.025, 2.41886, 0.0}, {0.05, 2.41886, 0.0},  {0.075, 2.41886, 0.0},
-                              {0.025, 3.14159, 0.0}, {0.05, 3.14159, 0.0},  {0.075, 3.14159, 0.0},
+                              {0.025, pi6dig, 0.0},  {0.05, pi6dig, 0.0},   {0.075, pi6dig, 0.0},
                               {0.5, 0, 0.0},         {0.75, 0, 0.0},        {1, 0, 0.0},
                               {0.5, 0.722734, 0.0},  {0.75, 0.722734, 0.0}, {1, 0.722734, 0.0},
                               {0.5, 1.0472, 0.0},    {0.75, 1.0472, 0.0},   {1, 1.0472, 0.0},
@@ -1983,7 +1981,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
                               {0.5, 1.82348, 0.0},   {0.5, 1.5708, 0.0},    {0.75, 1.82348, 0.0},
                               {0.75, 1.5708, 0.0},   {1, 1.82348, 0.0},     {1, 1.5708, 0.0},
                               {0.75, 2.0944, 0.0},   {1, 2.0944, 0.0},      {0.75, 2.41886, 0.0},
-                              {1, 2.41886, 0.0},     {0.75, 3.14159, 0.0},  {1, 3.14159, 0.0}};
+                              {1, 2.41886, 0.0},     {0.75, pi6dig, 0.0},   {1, pi6dig, 0.0}};
     } else {
       gold_ghost_locations = {{0.025, 0, 0.0},        {0.05, 0, 0.0},        {0.025, 0.722734, 0.0},
                               {0.05, 0.722734, 0.0},  {0.025, 1.0472, 0.0},  {0.05, 1.0472, 0.0},
@@ -1992,7 +1990,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
                               {0.05, 1.5708, 0.0},    {0.075, 1.82348, 0.0}, {0.075, 1.5708, 0.0},
                               {0.025, 2.0944, 0.0},   {0.05, 2.0944, 0.0},   {0.075, 2.0944, 0.0},
                               {0.025, 2.41886, 0.0},  {0.05, 2.41886, 0.0},  {0.075, 2.41886, 0.0},
-                              {0.025, 3.14159, 0.0},  {0.05, 3.14159, 0.0},  {0.075, 3.14159, 0.0},
+                              {0.025, pi6dig, 0.0},   {0.05, pi6dig, 0.0},   {0.075, pi6dig, 0.0},
                               {0.075, 0, 0.0},        {0.1, 0, 0.0},         {0.25, 0, 0.0},
                               {0.075, 0.722734, 0.0}, {0.1, 0.722734, 0.0},  {0.25, 0.722734, 0.0},
                               {0.075, 1.0472, 0.0},   {0.1, 1.0472, 0.0},    {0.25, 1.0472, 0.0},
@@ -2000,7 +1998,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
                               {0.1, 1.5708, 0.0},     {0.25, 1.82348, 0.0},  {0.25, 1.5708, 0.0},
                               {0.1, 2.0944, 0.0},     {0.25, 2.0944, 0.0},   {0.5, 2.0944, 0.0},
                               {0.1, 2.41886, 0.0},    {0.25, 2.41886, 0.0},  {0.5, 2.41886, 0.0},
-                              {0.1, 3.14159, 0.0},    {0.25, 3.14159, 0.0},  {0.5, 3.14159, 0.0}};
+                              {0.1, pi6dig, 0.0},     {0.25, pi6dig, 0.0},   {0.5, pi6dig, 0.0}};
     }
     FAIL_IF(gold_ghost_locations.size() != qindex.local_ghost_locations.size());
     for (size_t i = 0; i < qindex.local_ghost_locations.size(); i++) {
@@ -2097,7 +2095,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     // check nearest sphere r window mapping (spoke shape more bins then data) functions
     {
       // wedge location +- 30 degree theta and 0.4 radius
-      const std::array<double, 3> dr_dtheta{0.4, rtt_units::PI / 6.0, 0.0};
+      const std::array<double, 3> dr_dtheta{0.4, std::numbers::pi / 6.0, 0.0};
       // build a length=1.0 window around the first point on each node
       const std::array<double, 3> center{qindex.locations[0]};
       const std::array<double, 3> win_min{center[0] - dr_dtheta[0], center[1] - dr_dtheta[1], 0.0};
@@ -2139,7 +2137,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     // check max sphere r window mapping (shell shape more bins then data) functions
     {
       // wedge location +- 45 degree theta and 0.001 radius
-      const std::array<double, 3> dr_dtheta{0.001, rtt_units::PI / 4.0, 0.0};
+      const std::array<double, 3> dr_dtheta{0.001, std::numbers::pi / 4.0, 0.0};
       // build a length=1.0 window around the first point on each node
       const std::array<double, 3> center{qindex.locations[0]};
       const std::array<double, 3> win_min{center[0] - dr_dtheta[0], center[1] - dr_dtheta[1], 0.0};
@@ -2181,7 +2179,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     // check max sphere r window mapping (shell shape more bins then data) functions with fill
     {
       // wedge location +- 22.5 degree theta and 0.001 radius
-      const std::array<double, 3> dr_dtheta{0.001, rtt_units::PI / 4.0, 0.0};
+      const std::array<double, 3> dr_dtheta{0.001, std::numbers::pi / 4.0, 0.0};
       // build a length=1.0 window around the first point on each node
       const std::array<double, 3> center{qindex.locations[0]};
       const std::array<double, 3> win_min{center[0] - dr_dtheta[0], center[1] - dr_dtheta[1], 0.0};
@@ -2223,7 +2221,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     // check min sphere r window mapping (shell shape more bins then data) functions with fill
     {
       // wedge location +- 22.5 degree theta and 0.001 radius
-      const std::array<double, 3> dr_dtheta{0.001, rtt_units::PI / 4.0, 0.0};
+      const std::array<double, 3> dr_dtheta{0.001, std::numbers::pi / 4.0, 0.0};
       // build a length=1.0 window around the first point on each node
       const std::array<double, 3> center{qindex.locations[0]};
       const std::array<double, 3> win_min{center[0] - dr_dtheta[0], center[1] - dr_dtheta[1], 0.0};
@@ -2265,7 +2263,7 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     // check nearest sphere r window mapping (shell shape more bins then data) functions with fill
     {
       // wedge location +- 45 degree theta and 0.001 radius
-      const std::array<double, 3> dr_dtheta{0.001, rtt_units::PI / 4.0, 0.0};
+      const std::array<double, 3> dr_dtheta{0.001, std::numbers::pi / 4.0, 0.0};
       // build a length=1.0 window around the first point on each node
       const std::array<double, 3> center{qindex.locations[0]};
       const std::array<double, 3> win_min{center[0] - dr_dtheta[0], center[1] - dr_dtheta[1], 0.0};
@@ -2311,6 +2309,8 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
     FAILMSG("quick_index sphere DD checks failed");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
