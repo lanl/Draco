@@ -23,8 +23,7 @@ namespace rtt_RTT_Format_Reader {
 /*!
  * \class Flags
  * \brief Controls parsing, storing, and accessing the data contained in the node, side, and cell
- *        flag blocks of the mesh file.
- */
+ *        flag blocks of the mesh file. */
 //================================================================================================//
 class Flags {
 
@@ -56,7 +55,7 @@ public:
    * \return The existence of the flag.
    */
   [[nodiscard]] bool allowed_flag(size_t flag) const {
-    return flag_nums.end() != std::find(flag_nums.begin(), flag_nums.end(), static_cast<int>(flag));
+    return flag_nums.end() != std::ranges::find(flag_nums, static_cast<int>(flag));
   }
 
   /*!
