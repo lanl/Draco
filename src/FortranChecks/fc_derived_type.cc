@@ -10,6 +10,7 @@
 #include <cmath>
 #include <cstdint> // int64_t
 #include <iostream>
+#include <numbers>
 
 //! Define the derived type as a C structure
 struct my_informative_type {
@@ -17,7 +18,7 @@ struct my_informative_type {
   int some_int;
   int64_t some_large_int;
   int *some_pointer;
-  enum MG_Select { GREY = 0, MULTIGROUP = 1, ODF = 2 };
+  enum MG_Select { GREY = 0, MULTIGROUP = 1, ODF = 2 }; // NOLINT(performance-enum-size)
   MG_Select some_enum;
 };
 
@@ -31,7 +32,7 @@ extern "C" void rtt_test_derived_type(const my_informative_type &mit, int &error
 
   error_code = 0;
 
-  if (std::abs(mit.some_double - 3.141592654) > 1e-9) {
+  if (std::abs(mit.some_double - std::numbers::pi) > 1e-9) {
     error_code = 1;
     return;
   } else if (mit.some_int != 137) {

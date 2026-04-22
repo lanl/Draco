@@ -4,7 +4,7 @@
  * \author B.T. Adams
  * \date   Wed Jun 7 10:33:26 2000
  * \brief  Implementation file for RTT_Format_Reader/CellDefs class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "RTT_Format_Reader/CellDefs.hh"
@@ -414,8 +414,8 @@ void CellDef::redefineCellDef(vector_uint const &new_side_types,
           old_node = c;
       }
       node_map[old_node] = new_node;
-      std::fill(new_node_count.begin(), new_node_count.end(), 0);
-      std::fill(old_node_count.begin(), old_node_count.end(), 0);
+      std::ranges::fill(new_node_count, 0);
+      std::ranges::fill(old_node_count, 0);
     }
   } else {
     if (ndim == 2) // POLYGON

@@ -217,8 +217,7 @@ public:
    * \return The existence of the side type.
    */
   [[nodiscard]] bool allowed_side_type(size_t sidetype) const {
-    return side_types.end() !=
-           std::find(side_types.begin(), side_types.end(), static_cast<int>(sidetype));
+    return side_types.end() != std::ranges::find(side_types, static_cast<int>(sidetype));
   }
   /*!
    * \brief Validates the specified cell type.
@@ -226,8 +225,7 @@ public:
    * \return The existence of the cell type.
    */
   [[nodiscard]] bool allowed_cell_type(size_t celltype) const {
-    return cell_types.end() !=
-           std::find(cell_types.begin(), cell_types.end(), static_cast<int>(celltype));
+    return cell_types.end() != std::ranges::find(cell_types, static_cast<int>(celltype));
   }
 
 private:

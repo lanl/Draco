@@ -4,7 +4,7 @@
  * \author B.T. Adams
  * \date   Wed Jun 7 10:33:26 2000
  * \brief  Implementation file for RTT_Mesh_Reader library.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "RTT_Format_Reader/RTT_Mesh_Reader.hh"
@@ -107,7 +107,7 @@ void RTT_Mesh_Reader::transform2CGNS() {
       for (unsigned s = 0; s < cell_definition->get_nsides(); ++s) {
         int const side_type(cell_definition->get_side_types(s));
 
-        auto sit(std::find(check_types.begin(), check_types.end(), side_type));
+        auto sit(std::ranges::find(check_types, side_type));
         if (sit == check_types.end()) {
           Element_Definition const elem_def(*cell_definitions[side_type]);
           if (elem_def.get_type() == Element_Definition::QUAD_4)
@@ -130,7 +130,7 @@ void RTT_Mesh_Reader::transform2CGNS() {
         int const side_type(cell_definition->get_side_types(s));
 
         // check to see if this side type has already been added to the elem_defs list of sides
-        auto sit(std::find(unique_side_types.begin(), unique_side_types.end(), side_type));
+        auto sit(std::ranges::find(unique_side_types, side_type));
         if (sit == unique_side_types.end()) {
           // not yet added for this polyhedron, so create a new element of this type push it onto
           // the list
@@ -144,7 +144,7 @@ void RTT_Mesh_Reader::transform2CGNS() {
       std::vector<unsigned> side_types;
       for (unsigned s = 0; s < cell_definition->get_nsides(); ++s) {
         int const side_type(cell_definition->get_side_types(s));
-        auto sit(std::find(unique_side_types.begin(), unique_side_types.end(), side_type));
+        auto sit(std::ranges::find(unique_side_types, side_type));
         Check(std::distance(unique_side_types.begin(), sit) < UINT_MAX);
         side_types.push_back(static_cast<unsigned>(std::distance(unique_side_types.begin(), sit)));
       }
@@ -161,10 +161,9 @@ void RTT_Mesh_Reader::transform2CGNS() {
     new_side_types.resize(cell->get_number_of_sides());
     new_ordered_sides.resize(cell->get_number_of_sides());
     for (unsigned s = 0; s < cell->get_number_of_sides(); s++) {
-      auto const nst = std::find(unique_element_types.begin(), unique_element_types.end(),
-                                 cell->get_side_type(s).get_type()) -
+      auto const nst = std::ranges::find(unique_element_types, cell->get_side_type(s).get_type()) -
                        unique_element_types.begin();
-      Check(nst < UINT_MAX);
+      Check(std::cmp_less(nst, UINT_MAX));
       new_side_types[s] = static_cast<unsigned>(nst);
       new_ordered_sides[s] = cell->get_side_nodes(s);
     }
