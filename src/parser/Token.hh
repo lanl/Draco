@@ -10,6 +10,7 @@
 #define rtt_Token_HH
 
 #include "dsxx/Assert.hh"
+#include <cstdint>
 
 #if defined(MSVC)
 #undef ERROR
@@ -19,9 +20,9 @@ namespace rtt_parser {
 
 //------------------------------------------------------------------------------------------------//
 //! Token types recognized by a Token_Stream.
-enum Token_Type {
-  END,     /*!< The identifier <CODE>end</CODE>, denoting that the Parse_Table should return control
-            *   to its client.  Can be used to implement nested parse tables.*/
+enum Token_Type : std::uint8_t {
+  END,     /*!< The identifier `end`, denoting that the Parse_Table should return control to its
+            *   client.  Can be used to implement nested parse tables.*/
   EXIT,    /*!< Denotes that the end of the Token_Stream has been reached.  The Token_Stream will
             *   continue to return EXIT indefinitely once its end has been reached. */
   KEYWORD, /*!< A sequence of one or more C++ identifiers separated by whitespace. */

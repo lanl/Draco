@@ -11,6 +11,7 @@
 #define dsxx_Homogeneous_New_hh
 
 #include "dsxx/config.h"
+#include <cstddef>
 
 namespace rtt_dsxx {
 
@@ -23,7 +24,7 @@ namespace rtt_dsxx {
  *
  * - Memory is allocated or deallocated for one object at a time.
  * - The objects are all identical in size.
- * - Large numbers of these objects will be allocated and deallocated in an inpredictable manner
+ * - Large numbers of these objects will be allocated and deallocated in an unpredictable manner
  * .
  *
  * This class does not support memory requests of any size other than the object size specified at
@@ -32,8 +33,8 @@ namespace rtt_dsxx {
  * arbitrary size.
  *
  * Note that this class is \em not suitable for implementing STL allocator classes, which is why we
- * call it \c Homogeneous_New rather than \c Homogeneous_Allocator.  STL allocators generally must
- * be able to support memory requests of varying size and have other requirements that cannot be
+ * call it Homogeneous_New rather than `Homogeneous_Allocator`.  STL allocators generally must be
+ * able to support memory requests of varying size and have other requirements that cannot be
  * supported well by this class.
  *
  * The implementation of this class is a linked list of blocks of memory whose size should be tuned
@@ -51,20 +52,19 @@ namespace rtt_dsxx {
  * the allocator itself.
  *
  * Unlike the memory segments, the memory blocks from which the segments are drawn need not be
- * identical in size (though this is the default behavior.)  A user may at any time call the \c
- * reserve function to indicate that a number of objects are about to be allocated.  If the required
- * number of segments are not available to fill the anticipated requests, a new memory block will be
- * allocated that is at least large enough to accomodate all the anticipated requests.  If the user
- * anticipates that the maximum number of allocations will never exceed \c N, he should call <code>
- * reserve(N) </code> immediately after constructing the allocator.
+ * identical in size (though this is the default behavior.)  A user may at any time call the
+ * `reserve` function to indicate that a number of objects are about to be allocated.  If the
+ * required number of segments are not available to fill the anticipated requests, a new memory
+ * block will be allocated that is at least large enough to accommodate all the anticipated
+ * requests.  If the user anticipates that the maximum number of allocations will never exceed `N`,
+ * he should call `reserve(N)` immediately after constructing the allocator.
  *
  * Example: A finite element code allocates cell objects one at a time off the heap, because each
  * cell type is represented by its own class (descended from a common type.)  There will likely be
  * large numbers of each cell type. The initial number of cells of each type is known, and the user
  * anticipates that mesh refinement and load balancing will not change these numbers by more than
- * about 20%. \c Homogeneous_New should then be ideal for implementing an <code> operator new
- * </code> for each cell type.  The allocators should initially \c reserve 1.2 times the number of
- * cells of each type.
+ * about 20%. Homogeneous_New should then be ideal for implementing an `operator new` for each cell
+ * type. The allocators should initially `reserve` 1.2 times the number of cells of each type.
  *
  * The concepts underlying this class are from a paper by Andy Koenig presented at a USENIX meeting
  * in the early 1990s.
@@ -73,9 +73,7 @@ namespace rtt_dsxx {
 
 class Homogeneous_New {
 public:
-  // NESTED CLASSES AND TYPEDEFS
-
-  enum { DEFAULT_BLOCK_SIZE = 4096 };
+  static constexpr std::size_t DEFAULT_BLOCK_SIZE = 4096;
 
   // CREATORS
 
@@ -111,8 +109,6 @@ public:
   [[nodiscard]] bool check_class_invariants() const;
 
 private:
-  // NESTED CLASSES AND TYPEDEFS
-
   // IMPLEMENTATION
 
   void allocate_block_(unsigned const block_size);

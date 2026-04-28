@@ -33,11 +33,10 @@ struct Keyword {
   /*! \brief The keyword moniker.
    *
    * The moniker should be a sequence of valid C++ identifiers separated by a single space.  For
-   * example, \c "WORD", <tt>"First_Word Second_Word"</tt>, and <tt>"B1 T2 T3"</tt> are all valid
-   * Keyword monikers.  Identifiers beginning with an underscore are permitted but may be reserved
-   * for internal use by frameworks that uses the Parse_Table services. A Parse_Table attempts to
-   * match input to the monikers in its Keyword table according to a set of rules stored in the
-   * Parse_Table (q.v.)
+   * example, `"WORD"`, `"First_Word Second_Word"`, and `"B1 T2 T3"` are all valid Keyword monikers.
+   * Identifiers beginning with an underscore are permitted but may be reserved for internal use by
+   * frameworks that uses the Parse_Table services. A Parse_Table attempts to match input to the
+   * monikers in its Keyword table according to a set of rules stored in the Parse_Table (q.v.)
    */
   char const *moniker = {nullptr};
 
@@ -71,10 +70,10 @@ struct Keyword {
    *
    * This member is significant only if certain options are set in the Parse_Table.  It is used to
    * support parsing in frameworks that support self-registering modules.  Such modules often need
-   * to add keywords to existing Parse_Tables, and the \c parse_table_module member is useful for identifying
-   * the module from which a particular keyword in a table originated.  This is particularly
-   * important for diagnosing keyword clashes, where two modules have registered keywords with the
-   * same moniker in the same Parse_Table.
+   * to add keywords to existing Parse_Tables, and the `parse_table_module` member is useful for
+   * identifying the module from which a particular keyword in a table originated.  This is
+   * particularly important for diagnosing keyword clashes, where two modules have registered
+   * keywords with the same moniker in the same Parse_Table.
    */
   char const *parse_table_module = nullptr;
 
@@ -111,11 +110,11 @@ struct Keyword {
  * the Set_Flags member function and the Keyword_Compare member functions.
  *
  * When the Parse_Table fails to match an input keyword to its keyword table, or when the input
- * token is not a keyword, END, EXIT, or ERROR, the parse table reports an error, then attempts
- * recovery by reading additional tokens until it encounters either a keyword it recognizes or an
- * END, EXIT, or ERROR. During this recovery, no additional errors are reported, to avoid swamping
- * the user with additional messages that are unlikely to be helpful.  If recovery is successful (a
- * keyword is recognized in the token stream) parsing resumes as normal.
+ * token is not a keyword, `END`, `EXIT`, or `ERROR`, the parse table reports an error, then
+ * attempts recovery by reading additional tokens until it encounters either a keyword it recognizes
+ * or an `END`, `EXIT`, or `ERROR`. During this recovery, no additional errors are reported, to
+ * avoid swamping the user with additional messages that are unlikely to be helpful.  If recovery is
+ * successful (a keyword is recognized in the token stream) parsing resumes as normal.
  *
  * User parse routines may also encounter errors.  These may be reported to the Token_Stream through
  * either the Report_Syntax_Error or Report_Semantic_Error functions.  The former is used when there
@@ -137,7 +136,7 @@ public:
   // TYPEDEFS AND ENUMERATIONS
 
   //! Parser settings, which can be bitwise OR-ed together.
-  enum {
+  enum : uint8_t {
     CASE_INSENSITIVE = 1U,         //!< Keyword match is case-insensitive
     PARTIAL_IDENTIFIER_MATCH = 2U, //!< Match incomplete identifiers
     ONCE = 4U                      //!< Parse single keyword, not a block
@@ -146,7 +145,7 @@ public:
   // CREATORS
 
   //! Create an empty Parse_Table.
-  Parse_Table() : vec(0), flags_(0) {} // NOLINT
+  Parse_Table() = default;
 
   //! Construct a parse table with the specified keywords.
   Parse_Table(Keyword const *table, size_t count, unsigned flags = 0);
@@ -232,7 +231,7 @@ private:
 
   // DATA
 
-  std::vector<Keyword> vec;
+  std::vector<Keyword> vec{};
   unsigned char flags_{0}; //!< Option flags for this parse table.
 };
 

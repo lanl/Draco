@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Definitions of member functions of class Parse_Table
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "parser/Parse_Table.hh"
@@ -26,13 +26,12 @@ using namespace std;
 /*!
  * \param table Pointer to an array of keywords.
  *
- * \param count Length of the array of keywords pointed to by \c table.
+ * \param count Length of the array of keywords pointed to by `table`.
  * \param flags Initial value for parser flags.
  *
  * \throw invalid_argument If the keyword table is ill-formed or ambiguous.
  *
- * \note See documentation for \c Parse_Table::add for an explanation of the low-level argument
- *       list.
+ * \note See documentation for `Parse_Table::add` for an explanation of the low-level argument list.
  */
 Parse_Table::Parse_Table(Keyword const *const table, size_t const count, unsigned const flags)
     : vec(), flags_(static_cast<unsigned char>(flags)) {
@@ -53,7 +52,7 @@ Parse_Table::Parse_Table(Keyword const *const table, size_t const count, unsigne
  * \throw invalid_argument If the keyword table is ill-formed or ambiguous.
  *
  * \note The argument list reflects the convenience of defining raw keyword tables as static C
- * arrays.  This justifies a low-level interface in place of, say, vector<Keyword>.
+ *     arrays. This justifies a low-level interface in place of, say, vector<Keyword>.
  */
 void Parse_Table::add(Keyword const *const table, size_t const count) noexcept(false) {
   Require(count == 0 || table != nullptr);
@@ -123,7 +122,7 @@ void Parse_Table::sort_table_() noexcept(false) // apparently std::sort can thro
   // Sort the parse table, using a comparator predicate appropriate for the selected parser flags.
 
   Keyword_Compare_ const comp(flags_);
-  std::sort(vec.begin(), vec.end(), comp);
+  std::ranges::sort(vec, comp);
 
   // Look for ambiguous keywords, and resolve the ambiguity, if possible.
 
@@ -146,8 +145,8 @@ void Parse_Table::sort_table_() noexcept(false) // apparently std::sort can thro
         // keyword.
         using std::ostringstream;
         ostringstream err;
-        err << "An ambiguous keyword was detected in a "
-            << "Parse_Table:  " << i->moniker << "\nModules: ";
+        err << "An ambiguous keyword was detected in a Parse_Table:  " << i->moniker
+            << "\nModules: ";
         if (i->parse_table_module)
           err << i->parse_table_module;
         else
@@ -218,7 +217,7 @@ Token Parse_Table::parse(Token_Stream &tokens) const {
       // pointing to the first keyword in the table whose lexical ordering is greater than or equal
       // to the keyword token.  The lexical ordering is supplied by the comp object.
 
-      auto match = lower_bound(vec.begin(), vec.end(), token, comp);
+      auto match = lower_bound(vec.begin(), vec.end(), token, comp); // NOLINT(modernize-use-ranges)
 
       if (match == vec.end() || comp.kt_comparison(match->moniker, token.text().c_str()) != 0) {
         // The token was not lexically equal to anything in the keyword table.  In other words, the

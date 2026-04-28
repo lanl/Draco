@@ -11,14 +11,14 @@
 #define c4_C4_MPI_i_hh
 
 #include "C4_Req.hh"
+#include <concepts>
 
 #ifdef C4_MPI
 
 namespace rtt_c4 {
 
 //------------------------------------------------------------------------------------------------//
-template <typename T, typename L, typename std::enable_if_t<std::is_integral_v<L>, bool>>
-void global_sum(T *x, L n) {
+template <typename T, std::integral L> void global_sum(T *x, L n) {
   Require(x != nullptr);
   Require(n > 0);
   Require(n < INT32_MAX);

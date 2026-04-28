@@ -3,13 +3,14 @@
  * \file   c4/Termination_Detector.hh
  * \author Kent Budge
  * \brief  Definition of class Termination_Detector
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_Termination_Detector_hh
 #define c4_Termination_Detector_hh
 
 #include "dsxx/config.h"
+#include <cstdint>
 
 namespace rtt_c4 {
 
@@ -61,7 +62,7 @@ public:
 
   // MANIPULATORS
 
-  //! Indicate that an indetermine algorithm is starting.
+  //! Indicate that an indeterminate algorithm is starting.
   void init();
 
   //! Indicate that a certain number of units of work have been performed.
@@ -82,13 +83,13 @@ private:
   // NESTED CLASSES AND TYPEDEFS
 
   //! What is the state of this processor?
-  enum State { DOWN, UP, TERMINATED };
+  enum State : std::uint8_t { DOWN, UP, TERMINATED };
 
   //! What action is the parent of this processor requesting?
-  enum Parent_Action_Request { SEND_DATA, TERMINATE };
+  enum Parent_Action_Request : std::uint8_t { SEND_DATA, TERMINATE };
 
   //! What sort of processor is this?
-  enum Processor_Type { ROOT, LEAF, INTERNAL };
+  enum Processor_Type : std::uint8_t { ROOT, LEAF, INTERNAL };
 
   // DATA
 

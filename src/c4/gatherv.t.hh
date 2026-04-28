@@ -4,7 +4,7 @@
  * \author Thomas M. Evans, Kent Budge
  * \date   Thu Mar 21 16:56:17 2002
  * \brief  C4 MPI template implementation.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_gatherv_t_hh
@@ -16,6 +16,7 @@
 #include "c4/config.h"
 #include <algorithm>
 #include <limits>
+#include <utility>
 
 // Helper macro to prevent "unused paramater" warnings when compiled w/o MPI.
 #ifdef C4_MPI
@@ -33,18 +34,18 @@ namespace rtt_c4 {
 void indeterminate_gatherv(std::string &outgoing_data, std::vector<std::string> &incoming_data) {
   // convert from string to vector<char>
   std::vector<char> outgoing_data_vc(outgoing_data.size());
-  std::copy(outgoing_data.begin(), outgoing_data.end(), outgoing_data_vc.begin());
+  std::ranges::copy(outgoing_data, outgoing_data_vc.begin());
 
   // create container for return value
   std::vector<std::vector<char>> incoming_data_vvc(nodes());
 
-  // Call intederminate_gatherv(...) for vector<char>.
+  // Call indeterminate_gatherv(...) for vector<char>.
   indeterminate_gatherv(outgoing_data_vc, incoming_data_vvc);
 
   if (node() == 0) {
     // Move data from vector<vector<char> > back to vector<string> format
     incoming_data.resize(nodes());
-    for (size_t i = 0; i < static_cast<size_t>(nodes()); ++i) {
+    for (size_t i = 0; i < nranks(); ++i) {
       size_t const len = incoming_data_vvc[i].size();
       incoming_data[i].resize(len);
       std::copy(incoming_data_vvc[i].begin(), incoming_data_vvc[i].end(), incoming_data[i].begin());

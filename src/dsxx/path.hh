@@ -8,14 +8,15 @@
 #ifndef rtt_dsxx_path_hh
 #define rtt_dsxx_path_hh
 
-#include "Assert.hh"
-#include "SystemCall.hh"
+#include "dsxx/Assert.hh"
+#include "dsxx/SystemCall.hh"
+#include <cstdint>
 #include <filesystem>
 #include <iostream>
 
 namespace rtt_dsxx {
 
-enum FilenameComponent {
+enum FilenameComponent : std::uint8_t {
   FC_PATH, //!< Extract path portion of fully qualified filename
   FC_ABSOLUTE,
   FC_NAME, //!< Extract filename portion (w/o path).
