@@ -7,10 +7,9 @@
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
  *
  * This file contains the declarations for communication functions provided by C4. This file allows
- * the client to include the message passing services provided by C4.  The function declarations and
+ * the client to include the message passing services provided by C4. The function declarations and
  * class definitions are contained in the rtt_c4 namespace.  For backwards compatibility, the
- * old-style C4 functions and classes are declared in the C4 namespace.
- */
+ * old-style C4 functions and classes are declared in the C4 namespace. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_C4_Functions_hh
@@ -20,6 +19,7 @@
 #include "C4_Status.hh"
 #include "C4_Traits.hh"
 #include "C4_sys_times.h"
+#include <concepts>
 
 namespace rtt_c4 {
 
@@ -335,14 +335,8 @@ template <typename T> void global_max(T &x);
 template <typename T> void global_and(T &x);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Do an element-wise, global sum of an array.
- *
- * Only instantiate this function for types L that are integral. Details of this pattern are at
- * https://en.cppreference.com/w/cpp/types/enable_if.
- */
-template <typename T, typename L, typename std::enable_if_t<std::is_integral_v<L>, bool> = true>
-void global_sum(T *x, L n);
+//! Do an element-wise, global sum of an array.
+template <typename T, std::integral L> void global_sum(T *x, L n);
 
 //------------------------------------------------------------------------------------------------//
 //! Do an element-wise, global product of an array.
@@ -359,16 +353,12 @@ template <typename T> void global_max(T *x, int n);
 //------------------------------------------------------------------------------------------------//
 // TIMING FUNCTIONS
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Return the wall-clock time in seconds.
- */
+//! Return the wall-clock time in seconds.
 double wall_clock_time();
 double wall_clock_time(DRACO_TIME_TYPE &now);
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Return the resolution of wall_clock_time.
- */
+//! Return the resolution of wall_clock_time.
 double wall_clock_resolution();
 
 //------------------------------------------------------------------------------------------------//
@@ -377,14 +367,11 @@ double wall_clock_resolution();
 /*!
  * \brief See if a message is pending.
  *
- * \param source
- * Processor from which a message may be pending.
- * \param tag
- * Tag for pending message.
- * \param message_size
- * On return, size of the pending message in bytes.
- * \return \c true if a message from the specified processor with the specified tag is pending; \c
- * false otherwise.
+ * \param source Processor from which a message may be pending.
+ * \param tag Tag for pending message.
+ * \param message_size On return, size of the pending message in bytes.
+ * \return `true` if a message from the specified processor with the specified tag is pending;
+ *     `false` otherwise.
  */
 bool probe(int source, int tag, int &message_size);
 
@@ -392,12 +379,9 @@ bool probe(int source, int tag, int &message_size);
 /*!
  * \brief Wait until a message (of unknown size) is pending.
  *
- * \param source
- * Processor from which a message of unknown size is expected.
- * \param tag
- * Tag for pending message.
- * \param message_size
- * On return, size of the pending message in bytes.
+ * \param source Processor from which a message of unknown size is expected.
+ * \param tag Tag for pending message.
+ * \param message_size On return, size of the pending message in bytes.
  */
 void blocking_probe(int source, int tag, int &message_size);
 
@@ -407,10 +391,8 @@ void blocking_probe(int source, int tag, int &message_size);
  *
  * This version returns no status information.
  *
- * \param count
- * Size of the set of requests to wait on.
- * \param requests
- * Set of requests to wait on.
+ * \param count Size of the set of requests to wait on.
+ * \param requests Set of requests to wait on.
  */
 void wait_all(const unsigned count, C4_Req *const requests);
 
@@ -424,10 +406,8 @@ void wait_all(const unsigned count, C4_Req *const requests);
  *
  * \pre All requests passed to this function must be receive requests
  *
- * \param count
- * Size of the set of requests to wait on.
- * \param requests
- * Set of requests to wait on.
+ * \param count Size of the set of requests to wait on.
+ * \param requests Set of requests to wait on.
  * \return A vector containing the source rank IDs for received messages.
  */
 std::vector<int> wait_all_with_source(const unsigned count, C4_Req *const requests);
@@ -436,10 +416,8 @@ std::vector<int> wait_all_with_source(const unsigned count, C4_Req *const reques
 /*!
  * \brief Wait until one of a set of posted sends/receives is complete.
  *
- * \param count
- * Size of the set of requests to wait on.
- * \param requests
- * Set of requests to wait on.
+ * \param count  Size of the set of requests to wait on.
+ * \param requests  Set of requests to wait on.
  * \return The request that completed.
  */
 unsigned wait_any(unsigned count, C4_Req *requests);

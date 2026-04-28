@@ -13,6 +13,7 @@
 #include "dsxx/Assert.hh"
 #include "c4/config.h"
 #include <algorithm>
+#include <concepts>
 
 #if !defined(rtt_c4_global_hh) && !defined(rtt_c4_C4_Functions_hh)
 #error "Include c4/C4_Functions.hh instead of this c4/C4_Serial.hh"
@@ -42,10 +43,7 @@ int create_vector_type(unsigned /*count*/, unsigned /*blocklength*/, unsigned /*
 // Global_<Op> functions
 //------------------------------------------------------------------------------------------------//
 
-template <typename T, typename L, typename std::enable_if_t<std::is_integral_v<L>, bool>>
-void global_sum(T * /*x*/, L /*n*/) {
-  return;
-}
+template <typename T, std::integral L> void global_sum(T * /*x*/, L /*n*/) { return; }
 
 //------------------------------------------------------------------------------------------------//
 // BLOCKING SEND/RECEIVE OPERATIONS

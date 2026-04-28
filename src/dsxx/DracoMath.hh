@@ -18,29 +18,39 @@
 #include "Soft_Equivalence.hh"
 #include <algorithm>
 #include <complex>
+#include <concepts>
 #include <cstdlib>
 #include <functional>
 
 namespace rtt_dsxx {
 
-//! Concept Type is only defined if multiplication of type T is valid.
+//! A concept type is only defined if multiplication of type T is valid.
 template <typename T>
 concept Multipliable = requires(T x) { x *x; };
+
+/*! Ordered_Group A concept type for which `operator<` and unary `operator-` are defined and which
+ *  can be compared to literal `0`. */
+template <typename T>
+concept OrderedGroup = requires(T a) {
+  { a < T{0} } -> std::convertible_to<bool>;
+  { -a } -> std::same_as<T>;
+  { std::abs(a) } -> std::same_as<T>;
+};
 
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Return the conjugate of a quantity.
  *
- * The default implementation assumes a field type that is self-conjugate, such as \c double.  An
- * example of a field type that is \em not self-conjugate is \c complex.
+ * The default implementation assumes a field type that is self-conjugate, such as `double`.  An
+ * example of a field type that is \em not self-conjugate is `complex`.
  *
  * \tparam Field type
  * \param arg Field type
  */
-template <typename Field> inline Field conj(const Field &arg) { return arg; }
+template <typename Field> constexpr Field conj(const Field &arg) { return arg; }
 
 // Specializations for non-self-conjugate types
-template <> inline std::complex<double> conj(const std::complex<double> &arg) {
+template <> constexpr std::complex<double> conj(const std::complex<double> &arg) {
   return std::conj(arg);
 }
 
@@ -75,8 +85,8 @@ constexpr auto cube(Semigroup const &x) noexcept(noexcept(x * x * x)) {
  * - Faster than pow(x,2) because there is only one instruction, no call overhead, and compile-time
  *   evaluation.
  * - It would be useful to check for overflow, but this would significantly reduce optimization
- *   since the code would no longer be \c constexpr.
- * - Overflow checks are performed when DRACO_DIAGNOSTICS_LEVEL_2 is defined.
+ *   since the code would no longer be `constexpr`.
+ * - Overflow checks are performed when `DRACO_DIAGNOSTICS_LEVEL_2` is defined.
  *
  * \sa cube
  */
@@ -122,7 +132,7 @@ constexpr auto square(const Semigroup &x) noexcept(noexcept(x * x)) {
  * \param b Second leg of triangle
  * \return Hypotenuse, \f$\sqrt{a^2+b^2}\f$
  */
-template <typename Real> inline double pythag(Real a, Real b) {
+template <std::floating_point Real> constexpr double pythag(Real a, Real b) {
   Real absa = std::abs(a);
   Real absb = std::abs(b);
   // We must avoid (a/b)^2 > max.
@@ -144,32 +154,27 @@ template <typename Real> inline double pythag(Real a, Real b) {
  * This is a replacement for the FORTRAN SIGN function.  It is useful in numerical algorithms that
  * are roundoff or overflow insensitive and should not be deprecated.
  *
- * \tparam Ordered_Group A type for which \c operator< and unary \c operator- are defined and which
- *    can be compared to literal \c 0.
- *
  * \param a Argument supplying magnitude of result.
  * \param b Argument supplying sign of result.
  * \return Value |a| with the sign of b.
  */
-template <typename Ordered_Group> inline Ordered_Group sign(Ordered_Group a, Ordered_Group b) {
+template <OrderedGroup T> constexpr T sign(T a, T b) {
   return (b < 0) ? -std::abs(a) : std::abs(a);
 }
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Fast ceiling of an integer division
+ * \brief Fast ceiling of an integer division; works for negative and positive integers.
  *
  * \param[in] n numerator
  * \param[in] d denominator
  * \return ceil(n/d)
- *
- * If concerned about overflow, consider 1 + ((n-1)/d).
  */
-template <typename T>
-constexpr typename std::enable_if_t<std::is_integral_v<T>, T> ceil_int_division(T const n,
-                                                                                T const d) {
+template <std::integral T> constexpr T ceil_int_division(T n, T d) {
   Require(d != 0);
-  return (n + d - 1) / d;
+  T q = n / d;
+  T r = n % d;
+  return q + (r != 0 && ((r > 0) == (d > 0)));
 }
 
 } // namespace rtt_dsxx
