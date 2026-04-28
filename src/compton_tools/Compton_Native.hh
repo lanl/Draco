@@ -17,7 +17,7 @@
 
 namespace rtt_compton_tools {
 
-enum class Eval : size_t { in_lin = 0, out_nonlin = 1, nl_diff = 2 };
+enum class Eval : uint8_t { in_lin = 0, out_nonlin = 1, nl_diff = 2 };
 
 //================================================================================================//
 /*!
@@ -63,8 +63,8 @@ public:
   // return a vector with index [group from]. \c outscat must be pre-sized to the number of groups.
   void interp_linear_outscat(std::vector<double> &outscat, double Te_keV) const;
 
-  // Get the linear outscatter matrix (eq. 5 from the CSK manual) (neglecting the induced scattering term)
-  // slow index [ incident_group, outbound_group ] fast index. Units are [cm^2/mol-electrons]
+  // Get the linear outscatter matrix (eq. 5 from the CSK manual) (neglecting the induced scattering
+  // term) slow index [ incident_group, outbound_group ] fast index. Units are [cm^2/mol-electrons]
   void interp_linear_outscat_matrix(std::vector<double> &outscat_matrix, double Te_keV) const;
 
   // Get the group to group Compton amplification factor (nu_out/nu) (Eq. 4 divided by Eq. 5 from
@@ -72,8 +72,8 @@ public:
   void interp_linear_compton_amplification(std::vector<double> &amp_matrix, double Te_keV) const;
 
   // Get the group to group Compton amplification factor (nu_out/nu) including induced effects (Eq.
-  // 4 divided by Eq. 5 from CSK manual, where Eq. 5 is modified to include the nonlinear corrections
-  // in Eq. 31).
+  // 4 divided by Eq. 5 from CSK manual, where Eq. 5 is modified to include the nonlinear
+  // corrections in Eq. 31).
   void interp_linear_compton_amplification_nonlinear(std::vector<double> &amp_matrix, double Te_keV,
                                                      const std::vector<double> &phi,
                                                      double scale) const;

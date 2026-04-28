@@ -2,9 +2,8 @@
 /*!
  * \file   compton_tools/Compton_Edep.cc
  * \author Kendra Long
- * \date   10 October 2022
  * \brief  Implementation file for native Compton binary-read and temperature interpolation
- * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Compton_Edep.hh"
@@ -13,7 +12,7 @@
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/config.h"
 #include "units/PhysicalConstexprs.hh"
-#include <algorithm>
+#include <algorithm> // NOLINT(misc-include-cleaner) // needed by llvm@17
 #include <cstddef>
 #include <fstream>
 #include <limits>
@@ -25,7 +24,7 @@
 // Empty namespace contains local helper functions
 namespace {
 
-// Define a small nudge to keep frequencies off of exact interp points:
+//! Define a small nudge to keep frequencies off of exact interp points:
 constexpr double fuzz = std::numeric_limits<double>::epsilon();
 
 //------------------------------------------------------------------------------------------------//
@@ -182,11 +181,11 @@ Edep_Container read_edep_file(const std::string &infile) {
 std::pair<double, double> interpolate_sigc_erec(const size_t cell, const double freq,
                                                 const Preinterp_Container &data) {
   Ensure(cell > 0 && cell <= data.erec_coeffs.size());
-  rtt_units::PhysicalConstexprs<rtt_units::CGSH> const consts;
+  rtt_units::PhysicalConstexprs<rtt_units::CGSH> constexpr consts;
 
   // Calculate electron rest-mass in keV:
   // units: me (g) * c^2 (cm^2 / shk^2) * (shk^2 / s^2) * (m^2 / cm^2) * (kg / g) * (keV / J)
-  const double e_mocsq =
+  constexpr double e_mocsq =
       consts.me() * consts.c() * consts.c() * (1e8) * (1e8) * (1e-3) * (1e-2) * (1e-2) * 6.2415e15;
   // Scale frequency by electron rest-mass
   double mygamma = freq / e_mocsq;
@@ -206,12 +205,13 @@ std::pair<double, double> interpolate_sigc_erec(const size_t cell, const double 
     }
   }
   // compute the index of the frequency interpolation region:
+  // NOLINTBEGIN(misc-include-cleaner) // needed by llvm@17
   const auto f_index =
-      std::lower_bound(data.freq_break_pts.begin(), data.freq_break_pts.end(), mygamma) -
-      data.freq_break_pts.begin() - 1;
+      std::ranges::lower_bound(data.freq_break_pts, mygamma) - data.freq_break_pts.begin() - 1;
+  // NOLINTEND(misc-include-cleaner)
 
   // Collect all necessary data for this interpolation region.
-  // TODO: Pass iterators directly?
+  // * TODO: Pass iterators directly?
   const auto ffirst = data.freq_eval_pts.begin() + f_index * data.f_ppr;
   const auto flast = ffirst + data.f_ppr;
   const std::vector<double> local_gamma(ffirst, flast);
@@ -236,9 +236,9 @@ std::pair<double, double> interpolate_sigc_erec(const size_t cell, const double 
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Pre-interpolate raw data in temperature and scale sigma_c by density /
- *        opacity normalization factor. This method belongs to the Preinterp_Container struct,
- *        and operates directly on members of that struct.
+ * \brief Pre-interpolate raw data in temperature and scale sigma_c by density / opacity
+ *        normalization factor. This method belongs to the Preinterp_Container struct, and operates
+ *        directly on members of that struct.
  *
  * \param[in] Tms     Cell-wise electron temperatures
  * \param[in] density Cell-wise densities
@@ -275,9 +275,11 @@ void Preinterp_Container::preinterp_sigc_erec(const std::vector<double> &Tms,
         myetemp = data.T_break_pts.back() * (1.0 - fuzz);
       }
     }
+    // NOLINTBEGIN(misc-include-cleaner) // needed by llvm@17
     const auto T_index =
-        std::lower_bound(data.T_break_pts.begin(), data.T_break_pts.end(), myetemp) -
-        data.T_break_pts.begin() - 1;
+        std::ranges::lower_bound(data.T_break_pts, myetemp) - data.T_break_pts.begin() - 1;
+    // NOLINTEND(misc-include-cleaner)
+
     // Get Lagrange multipliers for this temperature breakpoint region
     const auto Tmfirst = data.lag_T_mults.begin() + T_index * data.T_ppr;
     const auto Tmlast = Tmfirst + data.T_ppr;
@@ -290,8 +292,8 @@ void Preinterp_Container::preinterp_sigc_erec(const std::vector<double> &Tms,
 
     // get the data for this "stripe" in etemp
     for (size_t a = 0; a < data.nfe; a++) {
-      const auto f_index = std::lower_bound(data.freq_break_pts.begin(), data.freq_break_pts.end(),
-                                            data.freq_eval_pts[a]) -
+      // NOLINTNEXTLINE(misc-include-cleaner) // needed by llvm@17
+      const auto f_index = std::ranges::lower_bound(data.freq_break_pts, data.freq_eval_pts[a]) -
                            data.freq_break_pts.begin() - 1;
       const size_t region_index = f_index * (data.ntbp - 1) + T_index;
       // Get a start iterator into the data:

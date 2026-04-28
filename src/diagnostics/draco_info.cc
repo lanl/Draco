@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Wednesday, Nov 07, 2012, 18:49 pm
  * \brief  Small executable that prints the version and copyright strings.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "draco_info.hh"
@@ -12,7 +12,6 @@
 #include "dsxx/Release.hh"
 #include "dsxx/config.h"
 #include "c4/config.h"
-// #include "diagnostics/config.h"
 #include <algorithm> // tolower
 #include <cstddef>   // size_t
 #include <iostream>
@@ -100,6 +99,8 @@ DracoInfo::DracoInfo()
 }
 
 //------------------------------------------------------------------------------------------------//
+namespace { // anonymous namespace to limit definition to file scope.
+
 void print_text_with_word_wrap(std::string const &longstring, size_t const indent_column,
                                size_t const max_width, std::ostringstream &msg,
                                std::string const &delimiters = " ") {
@@ -120,6 +121,8 @@ void print_text_with_word_wrap(std::string const &longstring, size_t const inden
     i += rtt_dsxx::remove_color(item).length() + 1;
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 std::string DracoInfo::fullReport() const {
