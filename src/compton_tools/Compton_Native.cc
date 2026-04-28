@@ -18,17 +18,20 @@
 #include <ios>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
-using UINT64 = uint64_t;
+namespace rtt_compton_tools {
+
+// Aliases
 using FP = double;
 using vec_d = std::vector<double>;
-
-namespace rtt_compton_tools {
 
 //------------------------------------------------------------------------------------------------//
 // FREE-FLOATING HELPER FUNCTIONS
 //------------------------------------------------------------------------------------------------//
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -45,7 +48,7 @@ size_t find_index(const vec_d &xs, double &x) {
   Require(xs.size() >= 2);
 
   // Do binary search for index
-  auto loc = std::upper_bound(xs.begin(), xs.end(), x);
+  auto loc = std::ranges::upper_bound(xs, x); // NOLINT(misc-include-cleaner) // needed by llvm@17
   // loc - begin guaranteed to be in [0,len]
   size_t index = (loc - xs.cbegin());
 
@@ -89,6 +92,8 @@ template <typename T_FP> std::array<T_FP, 4> hermite(T_FP x, T_FP xL, T_FP xR) {
                                    -dx * bL * bL * (bL - 1), dx * bR * bR * (bR - 1)};
   return hermite_eval;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 // SETUP FUNCTIONS
@@ -157,29 +162,29 @@ void Compton_Native::broadcast_MPI(int errcode) {
   Insist(data_size < (1U << 31U), "Unrepresentable with int needed in the broadcast");
 
   // Broadcast grids
-  if (rank != bcast_rank)
+  if (std::cmp_not_equal(rank, bcast_rank))
     Ts_.resize(num_temperatures_);
   rtt_c4::broadcast(Ts_.begin(), Ts_.end(), Ts_.begin());
 
-  if (rank != bcast_rank)
+  if (std::cmp_not_equal(rank, bcast_rank))
     Egs_.resize(num_groups_ + 1U);
   rtt_c4::broadcast(Egs_.begin(), Egs_.end(), Egs_.begin());
 
   // Broadcast sparse data structures
-  if (rank != bcast_rank)
+  if (std::cmp_not_equal(rank, bcast_rank))
     first_groups_.resize(num_temperatures_ * num_groups_);
   rtt_c4::broadcast(first_groups_.begin(), first_groups_.end(), first_groups_.begin());
 
-  if (rank != bcast_rank)
+  if (std::cmp_not_equal(rank, bcast_rank))
     indexes_.resize(num_temperatures_ * num_groups_ + 1U);
   rtt_c4::broadcast(indexes_.begin(), indexes_.end(), indexes_.begin());
 
   // Broadcast data itself
-  if (rank != bcast_rank)
+  if (std::cmp_not_equal(rank, bcast_rank))
     data_.resize(data_size);
   rtt_c4::broadcast(data_.begin(), data_.end(), data_.begin());
 
-  if (rank != bcast_rank)
+  if (std::cmp_not_equal(rank, bcast_rank))
     derivs_.resize(data_size);
   rtt_c4::broadcast(derivs_.begin(), derivs_.end(), derivs_.begin());
 
@@ -225,12 +230,12 @@ int Compton_Native::read_binary(const std::string &filename) {
     return 2;
   }
 
-  UINT64 binary_ordering;
-  UINT64 version_major;
-  UINT64 version_minor;
-  fin.read(reinterpret_cast<char *>(&version_major), sizeof(UINT64));
-  fin.read(reinterpret_cast<char *>(&version_minor), sizeof(UINT64));
-  fin.read(reinterpret_cast<char *>(&binary_ordering), sizeof(UINT64));
+  uint64_t binary_ordering;
+  uint64_t version_major;
+  uint64_t version_minor;
+  fin.read(reinterpret_cast<char *>(&version_major), sizeof(uint64_t));
+  fin.read(reinterpret_cast<char *>(&version_minor), sizeof(uint64_t));
+  fin.read(reinterpret_cast<char *>(&binary_ordering), sizeof(uint64_t));
   if (version_major != 1U || binary_ordering > 1U) {
     std::cerr << "Expecting a CSK binary file (version 1) with ordering 0 or 1 but got "
               << version_major << " with ordering " << binary_ordering << '\n';
@@ -238,7 +243,7 @@ int Compton_Native::read_binary(const std::string &filename) {
   }
 
   constexpr size_t n = 7U;
-  std::array<UINT64, n> szs{0};
+  std::array<uint64_t, n> szs{0};
   for (size_t i = 0; i < n; ++i)
     fin.read(reinterpret_cast<char *>(&szs[i]), sizeof(szs[i]));
   size_t j = 0;
@@ -288,15 +293,15 @@ int Compton_Native::read_binary(const std::string &filename) {
   first_groups_.resize(fgsz);
   for (size_t i = 0; i < fgsz; ++i) {
     // Convert from UINT (type in binary file) to size_t
-    UINT64 tmp;
-    fin.read(reinterpret_cast<char *>(&tmp), sizeof(UINT64));
+    uint64_t tmp;
+    fin.read(reinterpret_cast<char *>(&tmp), sizeof(uint64_t));
     first_groups_[i] = tmp;
   }
 
   indexes_.resize(isz);
   for (size_t i = 0; i < isz; ++i) {
-    UINT64 tmp;
-    fin.read(reinterpret_cast<char *>(&tmp), sizeof(UINT64));
+    uint64_t tmp;
+    fin.read(reinterpret_cast<char *>(&tmp), sizeof(uint64_t));
     indexes_[i] = tmp;
   }
 
@@ -382,7 +387,7 @@ int Compton_Native::read_binary(const std::string &filename) {
 void Compton_Native::interp_dense_inscat(vec_d &inscat, double Te_keV,
                                          size_t num_moments_truncate) const {
   // Finds index and nudges Teff such that
-  // Ts_[index] <= Teff <= Ts_[index+1] and 0 <= index <= Ts_.size()-2;
+  // * `Ts_[index] <= Teff <= Ts_[index+1]` and `0 <= index <= Ts_.size()-2`;
   double Teff = Te_keV;
   size_t const iT = rtt_compton_tools::find_index(Ts_, Teff);
 
@@ -396,7 +401,7 @@ void Compton_Native::interp_dense_inscat(vec_d &inscat, double Te_keV,
 
   // Resize and fill with zeros
   inscat.resize(end_leg * num_groups_ * num_groups_);
-  std::fill(inscat.begin(), inscat.end(), 0.0);
+  std::ranges::fill(inscat, 0.0);
 
   // Apply Hermite function
   for (size_t k = 0; k < end_leg; ++k) {
@@ -443,7 +448,7 @@ void Compton_Native::interp_linear_outscat(vec_d &outscat, double Te_keV) const 
 
   // Resize and fill with zeros
   outscat.resize(num_groups_);
-  std::fill(outscat.begin(), outscat.end(), 0.0);
+  std::ranges::fill(outscat, 0.0);
 
   // Apply Hermite function
   for (size_t gfrom = 0; gfrom < num_groups_; ++gfrom) {
@@ -465,7 +470,7 @@ void Compton_Native::interp_linear_outscat(vec_d &outscat, double Te_keV) const 
  * \brief Interpolate csk data in temperature and return linear outscattering matrix
  *
  * \param[in,out] outscat_matrix The 1D net outscattering matrix ngroups*ngroups -> slow index
- * [incident group, outbound group] fast index. Units [cm^2/mol-electrons]
+ *     [incident group, outbound group] fast index. Units [cm^2/mol-electrons]
  * \param[in] Te_keV The electron temperature in keV at which the interpolation is desired
  *
  * This is the full incident to outbound group scattering opacity matrix (Eq. 5 in CSK manual). 
@@ -485,7 +490,7 @@ void Compton_Native::interp_linear_outscat_matrix(vec_d &outscat_matrix, double 
 
   // Resize and fill with zeros
   outscat_matrix.resize(num_groups_ * num_groups_);
-  std::fill(outscat_matrix.begin(), outscat_matrix.end(), 0.0);
+  std::ranges::fill(outscat_matrix, 0.0);
 
   // Apply Hermite function
   for (size_t gfrom = 0; gfrom < num_groups_; ++gfrom) {
@@ -508,10 +513,10 @@ void Compton_Native::interp_linear_outscat_matrix(vec_d &outscat_matrix, double 
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Interpolate csk data to get the Compton amplification matrix (nu_prime/nu) from an
- * incident group g to an outbound group g_prime
+ *     incident group `g` to an outbound group `g_prime`
  *
- * \param[in,out] amp_matrix is the unitless frequency amplification matrix from an incident group to an
- * outbound group. slow index [incident group, outbound group] fast index.
+ * \param[in,out] amp_matrix is the unitless frequency amplification matrix from an incident group
+ *     to an outbound group. slow index [incident group, outbound group] fast index.
  * \param[in] Te_keV The electron temperature in keV at which the interpolation is desired
  *
  * Evaluated using the ratio of the linear inscattering opacity (Eq. 4 in the CSK manual) divided by
@@ -539,8 +544,8 @@ void Compton_Native::interp_linear_compton_amplification(vec_d &amp_matrix, doub
   // Apply Hermite function
   for (size_t gfrom = 0; gfrom < num_groups_; ++gfrom) {
     // Get contributions from both Ts_[iT] and Ts_[iT+1U]
-    std::fill(outscat.begin(), outscat.end(), 0.0);
-    std::fill(inscat.begin(), inscat.end(), 0.0);
+    std::ranges::fill(outscat, 0.0);
+    std::ranges::fill(inscat, 0.0);
     for (size_t n = 0; n < 2U; ++n) {
       const size_t i = gfrom + num_groups_ * (iT + n);
       const size_t first_gto = first_groups_[i];
@@ -568,10 +573,10 @@ void Compton_Native::interp_linear_compton_amplification(vec_d &amp_matrix, doub
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Interpolate csk data to get the Compton amplification matrix (nu_prime/nu) from an
- * incident group g to an outbound group g_prime with the add nonlinear induced effects
+ *     incident group g to an outbound group g_prime with the add nonlinear induced effects
  *
- * \param[in,out] amp_matrix is the unitless frequency amplification matrix from an incident group to an
- * outbound group. slow index [incident group, outbound group] fast index.
+ * \param[in,out] amp_matrix is the unitless frequency amplification matrix from an incident group
+ *     to an outbound group. slow index [incident group, outbound group] fast index.
  * \param[in] Te_keV The electron temperature in keV at which the interpolation is desired
  * \param[in] phi The multigroup radiation field of size number of groups
  * \param[in] scale The scale for phi. when the radiation is in equilibrium, sum_g phi_g = scale
@@ -608,8 +613,8 @@ void Compton_Native::interp_linear_compton_amplification_nonlinear(vec_d &amp_ma
   // Apply Hermite function
   for (size_t gfrom = 0; gfrom < num_groups_; ++gfrom) {
     // Get contributions from both Ts_[iT] and Ts_[iT+1U]
-    std::fill(outscat.begin(), outscat.end(), 0.0);
-    std::fill(inscat.begin(), inscat.end(), 0.0);
+    std::ranges::fill(outscat, 0.0);
+    std::ranges::fill(inscat, 0.0);
     for (size_t n = 0; n < 2U; ++n) {
       const size_t i = gfrom + num_groups_ * (iT + n);
       const size_t first_gto = first_groups_[i];
@@ -643,16 +648,16 @@ void Compton_Native::interp_linear_compton_amplification_nonlinear(vec_d &amp_ma
 /*!
  * \brief Interpolate csk data in temperature and add nonlinear difference to outscattering
  *
- * \param[in,out] outscat The 1D net outscattering array at the desired temperature
- *               Has been summed over outgoing group so only index is [group-from]
- *               MUST be the right size (# groups) and initialized with data prior to calling
+ * \param[in,out] outscat The 1D net outscattering array at the desired temperature Has been summed
+ *               over outgoing group so only index is [group-from] MUST be the right size (# groups)
+ *               and initialized with data prior to calling
  * \param[in] Te_keV The electron temperature in keV at which the interpolation is desired
  * \param[in] phi The multigroup radiation field of size number of groups
  * \param[in] scale The scale for phi. when the radiation is in equilibrium, sum_g phi_g = scale
  *
  * Adds difference (nonlinear outscattering minus nonlinear inscattering) to the outscattering
- * vector. The contribution is nonlinear because it depends on phi, the radiation field.
- * The use of scale allows phi to be passed in with arbitrary normalization (4pi, c, a, etc.).
+ * vector. The contribution is nonlinear because it depends on phi, the radiation field. The use of
+ * scale allows phi to be passed in with arbitrary normalization (4pi, c, a, etc.).
  */
 void Compton_Native::interp_nonlin_diff_and_add(vec_d &outscat, double Te_keV, const vec_d &phi,
                                                 double scale) const {
@@ -660,8 +665,8 @@ void Compton_Native::interp_nonlin_diff_and_add(vec_d &outscat, double Te_keV, c
   Require(outscat.size() == num_groups_);
   Require(phi.size() == num_groups_);
 
-  // Finds index and nudges Teff st Ts_[index] <= Teff <= Ts_[index+1]
-  // and 0 <= index <= Ts_.size()-2;
+  // Finds index and nudges Teff st
+  // * `Ts_[index] <= Teff <= Ts_[index+1]` and `0 <= index <= Ts_.size()-2`
   double Teff = Te_keV;
   size_t const iT = rtt_compton_tools::find_index(Ts_, Teff);
 

@@ -4,7 +4,7 @@
  * \author Andrew Till
  * \date   11 May 2020
  * \brief  Converter of ASCII to binary CSK Compton files. Intended for internal use.
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -12,7 +12,6 @@
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/XGetopt.hh"
 #include "cdi/CDI.hh"
-#include "units/MathConstants.hh"
 #include "units/PhysicalConstantsSI.hh"
 #include <algorithm>
 #include <array>
@@ -23,6 +22,7 @@
 #include <iostream>
 #include <limits>
 #include <map>
+#include <numbers>
 #include <string>
 #include <vector>
 
@@ -137,7 +137,7 @@ void Dense_Compton_Data::read_from_file(UINT64 eval, std::string const &filename
   // opacity to micro xs: 1/avogadrosnumber
   //
   // convert from CSK data to opacity (cm^2/mole)
-  const FP csk_opac_norm = 0.25 * 2 * rtt_units::PI * classical_electron_radius *
+  const FP csk_opac_norm = 0.25 * 2 * std::numbers::pi * classical_electron_radius *
                            classical_electron_radius * rtt_units::AVOGADRO;
   Ensure(soft_equiv(csk_opac_norm, 2 * 0.037558, 1e-4));
   //
