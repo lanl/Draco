@@ -100,11 +100,6 @@ public:
  * \return EXIT_SUCCESS or EXIT_FAILURE as appropriate.
  */
 template <typename... Lambda, typename Release>
-int do_parallel_unit_test(int argc, char **argv, Release release, Lambda const &...lambda);
-
-} // end namespace rtt_c4
-
-template <typename... Lambda, typename Release>
 int do_parallel_unit_test(int argc, char **argv, Release release, Lambda const &...lambda) {
   rtt_c4::ParallelUnitTest ut(argc, argv, release);
   try {
@@ -112,6 +107,8 @@ int do_parallel_unit_test(int argc, char **argv, Release release, Lambda const &
   }
   UT_EPILOG(ut);
 }
+
+} // end namespace rtt_c4
 
 #endif // c4_ParallelUnitTest_hh
 
