@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Wed Apr 28 09:31:51 2010
  * \brief  Test c4::determinate_swap and c4::indeterminate_swap functions
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -15,6 +15,8 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -130,6 +132,8 @@ void tstofpstream_bin(UnitTest &ut) {
 
   PASSMSG("completed serialized binary write without hanging or segfaulting");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

@@ -2,9 +2,8 @@
 /*!
  * \file   c4/test/tstParallelUnitTest.cc
  * \author Kelly Thompson
- * \date   Thu Jul 7 2011
  * \brief  Test the functionality of the class ParallelUnitTest
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -18,6 +17,8 @@
 #include <sstream>
 #include <string>
 
+namespace {
+
 using namespace std;
 using namespace rtt_dsxx;
 using namespace rtt_c4;
@@ -26,9 +27,7 @@ using namespace rtt_c4;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
-/*
- * Demonstrate that the normal access functions work as indended.
- */
+// Demonstrate that the normal access functions work as indended.
 void tstMemberFunctions(ParallelUnitTest &ut, stringstream &output) {
   // test check_all function for failing case. We put this first so we can flush output afterwards.
   {
@@ -103,11 +102,13 @@ void tstMemberFunctions(ParallelUnitTest &ut, stringstream &output) {
   return;
 }
 
+} // namespace
+
 //------------------------------------------------------------------------------------------------//
 
 int main(int argc, char *argv[]) {
   int retVal(0);
-  stringstream output; // capture output here.
+  std::stringstream output; // capture output here.
 
   try {
     {
@@ -117,24 +118,22 @@ int main(int argc, char *argv[]) {
 
     // Since we are capturing the output in a stringstream, we must echo the output to stdout so
     // that ctest can pick up the 'passed' message.
-    cout << output.str() << '\n';
+    std::cout << output.str() << '\n';
   } catch (rtt_dsxx::assertion &err) {
-    if (err.what() == string("Success")) // expected value for --verion
-                                         // cmd line option
+    if (err.what() == std::string("Success")) // expected value for --verion cmd line option
     {
       // Since we are capturing the output in a stringstream, we must echo the output to stdout so
       // that ctest can pick up the 'passed' message.
-      cout << output.str() << '\n';
+      std::cout << output.str() << '\n';
     } else {
-      cout << "ERROR: While testing " << argv[0] << ", " << err.what() << '\n';
+      std::cout << "ERROR: While testing " << argv[0] << ", " << err.what() << '\n';
       retVal++;
     }
   } catch (exception &err) {
-    cout << "ERROR: While testing " << argv[0] << ", " << err.what() << '\n';
+    std::cout << "ERROR: While testing " << argv[0] << ", " << err.what() << '\n';
     retVal++;
   } catch (...) {
-    cout << "ERROR: While testing " << argv[0] << ", "
-         << "An unknown exception was thrown.\n";
+    std::cout << "ERROR: While testing " << argv[0] << ", An unknown exception was thrown.\n";
     retVal++;
   }
 

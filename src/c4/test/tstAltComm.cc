@@ -2,10 +2,8 @@
 /*!
   * \file   c4/test/tstAltComm.cc
   * \author Mathew Cleveland 
-  * \date   Tue Dec 2nd, 2025
   * \brief  Test alternative (non MPI_COMM_WORLD) communictor
-  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved.
- */
+  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -17,6 +15,8 @@
 #include <iostream>
 #include <mpi.h>
 #include <sstream>
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -104,6 +104,9 @@ void test_world_comm(rtt_dsxx::UnitTest &ut) {
   rtt_c4::global_barrier();
   return;
 }
+
+} // namespace
+
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, rtt_dsxx::release);

@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstOMP.cc
  * \author Kelly Thompson
- * \date   Tue Jun  6 15:03:08 2006
  * \brief  Demonstrate basic OMP threads under MPI.
  * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -27,6 +26,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
+namespace {
 
 using namespace rtt_c4;
 
@@ -442,6 +443,8 @@ void tstUnsignedOmpLoop(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(sum == 10);
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Thu Jun  1 17:15:05 2006
  * \brief  Declaration file for encapsulation of Draco parallel unit tests.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
  *
  * This file provides a definition for ParallelUnitTest.  The purpose of this class is to
  * encapsulate the keywords and behavior of DBS parallel unit tests. */
@@ -104,7 +104,14 @@ int do_parallel_unit_test(int argc, char **argv, Release release, Lambda const &
 
 } // end namespace rtt_c4
 
-#include "ParallelUnitTest.i.hh"
+template <typename... Lambda, typename Release>
+int do_parallel_unit_test(int argc, char **argv, Release release, Lambda const &...lambda) {
+  rtt_c4::ParallelUnitTest ut(argc, argv, release);
+  try {
+    rtt_dsxx::implement_do_unit_test(ut, lambda...);
+  }
+  UT_EPILOG(ut);
+}
 
 #endif // c4_ParallelUnitTest_hh
 

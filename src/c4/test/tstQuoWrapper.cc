@@ -2,9 +2,8 @@
 /*!
  * \file   c4/test/tstQuoWrapper.cc
  * \author Kelly Thompson
- * \date   Friday, Nov 29, 2019, 19:48 pm
  * \brief  C4 QuoWrapper test.
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoMath.hh"
@@ -20,9 +19,13 @@
 #include <iostream>
 #include <thread>
 
+namespace {
+
 //------------------------------------------------------------------------------------------------//
 // Helper functions
 //------------------------------------------------------------------------------------------------//
+
+#if defined(C4_MPI) && defined(HAVE_LIBQUO)
 
 // Add barriers and sleep_for in an attempt to keep the output synchronized between ranks and
 // threads.
@@ -37,6 +40,8 @@ void sync_output() {
   std::this_thread::sleep_for(std::chrono::seconds(1));
   return;
 }
+
+#endif
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -246,6 +251,8 @@ void quo_new_bindings(rtt_dsxx::UnitTest &ut) {
     PASSMSG("Done with tests that modify MPI and thread layout..");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

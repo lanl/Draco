@@ -2,9 +2,8 @@
 /*!
  * \file   FortranChecks/test/cppmain.cc
  * \author Kelly Thompson
- * \date   Tuesday, Jun 12, 2012, 16:03 pm
  * \brief  Test C++ main linking a Fortran library.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -16,6 +15,8 @@
 //------------------------------------------------------------------------------------------------//
 // forward declaration of f90 functions
 extern "C" void sub1(double alpha, size_t *numPass, size_t *numFail);
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 void test_isocbinding_sub1(rtt_dsxx::UnitTest &ut) {
@@ -29,6 +30,8 @@ void test_isocbinding_sub1(rtt_dsxx::UnitTest &ut) {
   std::cout << ut.numPasses << " " << ut.numFails << '\n';
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

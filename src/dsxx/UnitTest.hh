@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/UnitTest.hh
  * \author Kelly Thompson
- * \date   Thu May 18 15:46:19 2006
  * \brief  Provide some common functions for unit testing within Draco
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -211,6 +210,41 @@ protected:
   /* Report successful tests? */
   bool verbose;
 };
+
+//------------------------------------------------------------------------------------------------//
+/*!
+ * \brief Run any provided function and print the associated message if it passes.
+ *
+ * \tparam F Any type that can be called like a function (invocable) with the argument being
+ *     `UnitTest&`. These can be regular functions, lambdas, or function objects.
+ * \param ut A reference to a UnitTest object.
+ * \param f A callable object (function, lambda, or function object) that takes a UnitTest&
+ *     parameter. Because `F` is a template parameter, `F&&` is the forwarding reference.  It can
+ *     bind to lvalues, rvalues, lambdas, temporary functions, or named function objects.
+ * \param msg The message to print if the check is successful.
+ *
+ * Sample use can be found at c4/test/tstOMP_API_off.cc
+ *
+ * \code
+ * int main(int argc, char **argv) {
+ *   rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
+ *   try {
+ *     run_a_test(ut, check_set_get, "Check getting/setting OpenMP number threads, API available");
+ *   }
+ *   UT_EPILOG(ut);
+ *   }
+ * }
+ * \endcode
+ */
+template <std::invocable<UnitTest &> F>
+void run_a_test(UnitTest &ut, F &&f, std::string const &msg) {
+  std::forward<F>(f)(ut); // execute function f with parameter u. This form allows f to be an lvalue
+                          // or an rvalue.
+  if (ut.numFails == 0) {
+    ut.passes(msg);
+  }
+  return;
+}
 
 } // end namespace rtt_dsxx
 

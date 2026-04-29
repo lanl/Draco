@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstTime.cc
  * \author Thomas M. Evans
- * \date   Mon Mar 25 17:19:16 2002
  * \brief  Test timing functions in C4.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -17,9 +16,12 @@
 #include <cmath>   // fabs
 #include <cstddef> // size_t
 #include <iostream>
+#include <set>
 #include <sstream>
 #include <string>
 #include <vector>
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -41,7 +43,7 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
   Global_Timer const do_not_timer("do_not_timer");
 
   if (do_timer.is_active()) {
-    ut.failure("do_timer should NOT be active");
+    FAILMSG("do_timer should NOT be active");
   }
 
   set<string> active_timers;
@@ -50,20 +52,20 @@ void wall_clock_test(rtt_dsxx::UnitTest &ut) {
   Global_Timer::set_selected_activity(active_timers, true);
 
   if (rtt_c4::nodes() == 1 && !do_timer.is_active()) {
-    ut.failure("do_timer SHOULD be active");
+    FAILMSG("do_timer SHOULD be active");
   }
 
   do_timer.start();
 
-  double const wcr(rtt_c4::wall_clock_resolution());
-  if (wcr > 0.0 && wcr <= 1000.0) {
+  double const wall_clock_res(rtt_c4::wall_clock_resolution());
+  if (wall_clock_res > 0.0 && wall_clock_res <= 1000.0) {
     ostringstream msg;
-    msg << "The timer has a wall clock resoution of " << wcr << " ticks.\n";
+    msg << "The timer has a wall clock resoution of " << wall_clock_res << " ticks.\n";
     PASSMSG(msg.str());
   } else {
     ostringstream msg;
     msg << "The timer does not appear to have a reasonable resolution."
-        << " rtt_c4::wall_clock_resolution() = " << wcr << " ticks.\n";
+        << " rtt_c4::wall_clock_resolution() = " << wall_clock_res << " ticks.\n";
     FAILMSG(msg.str());
   }
 
@@ -247,6 +249,8 @@ void test_pause(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

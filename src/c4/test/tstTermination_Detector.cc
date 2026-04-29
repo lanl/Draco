@@ -2,14 +2,15 @@
 /*!
  * \file   c4/test/tstTermination_Detector.cc
  * \author Kent Budge
- * \date   Tue Sep 21 11:45:44 2004
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/UnitTest.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/Termination_Detector.hh"
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -43,6 +44,8 @@ void tstTermDet(UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

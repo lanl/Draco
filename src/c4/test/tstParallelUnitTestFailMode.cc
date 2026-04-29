@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstParallelUnitTestFailMode.cc
  * \author Kelly Thompson
- * \date   Thu Jun 1 17:42:58 2006
  * \brief  Test the functionality of the class ParallelUnitTest
  * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -26,6 +25,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -135,8 +136,9 @@ void tstTwo(UnitTest &ut) {
   return;
 }
 
-//------------------------------------------------------------------------------------------------//
+} // namespace
 
+//------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   stringstream output;
   bool node_is_0(false);
@@ -173,8 +175,7 @@ int main(int argc, char *argv[]) {
     cout << "ERROR: While testing " << argv[0] << ", " << err.what() << '\n';
     return 1;
   } catch (...) {
-    cout << "ERROR: While testing " << argv[0] << ", "
-         << "An unknown exception was thrown\n";
+    cout << "ERROR: While testing " << argv[0] << ", An unknown exception was thrown\n";
     return 1;
   }
 
@@ -194,17 +195,14 @@ int main(int argc, char *argv[]) {
       tstTwoPass = false;
   }
 
+  std::string const stars(46, '*');
   // Overall test status:
   if (node_is_0) {
     if (tstOnePass && tstTwoPass) {
-      cout << "*********************************************\n"
-           << "**** tstParallelUnitTestFailMode Test: PASSED.\n"
-           << "*********************************************\n\n";
+      cout << stars << "\n**** tstParallelUnitTestFailMode Test: PASSED.\n" << stars << "\n\n";
       retval = 0;
     } else {
-      cout << "*********************************************\n"
-           << "**** tstParallelUnitTestFailMode Test: FAILED.\n"
-           << "*********************************************\n\n";
+      cout << stars << "\n**** tstParallelUnitTestFailMode Test: FAILED.\n" << stars << "\n\n";
       retval = 1;
     }
   }

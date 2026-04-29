@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstPingPong.cc
  * \author Thomas M. Evans
- * \date   Tue Apr  2 15:57:11 2002
  * \brief  Ping Pong communication test.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -13,10 +12,13 @@
 #include "dsxx/UnitTest.hh"
 #include "c4/C4_Functions.hh"
 #include "c4/C4_Status.hh"
+#include "c4/C4_Traits.hh"
 #include "c4/ParallelUnitTest.hh"
 #include <cmath>
 #include <iostream>
 #include <sstream>
+
+namespace {
 
 using namespace std;
 
@@ -491,6 +493,8 @@ void send_receive_ping_pong(rtt_dsxx::UnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

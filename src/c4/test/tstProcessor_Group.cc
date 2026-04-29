@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstProcessor_Group.cc
  * \author Kent Budge
- * \date   Tue Sep 21 11:45:44 2004
  * \brief  Unit tests for the Processor_Group class and member functions.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -18,6 +17,8 @@
 #include <cstdint> // UINT32_MAX
 #include <string>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -57,13 +58,13 @@ void tstProcessor_Group(rtt_dsxx::UnitTest &ut) {
   {
     vector<double> myvec;
     size_t const vlen(5);
+    myvec.reserve(vlen);
     for (size_t i = 0; i < vlen; ++i)
       myvec.push_back(static_cast<double>(pid * 1000 + i));
     vector<double> globalvec;
     comm.assemble_vector(myvec, globalvec);
 
-    if (globalvec.size() != group_pids * vlen)
-      ITFAILS;
+    FAIL_IF_NOT(globalvec.size() == group_pids * vlen);
 
     // Check the the first 5 elements
     vector<double> goldglobalvec;
@@ -79,6 +80,7 @@ void tstProcessor_Group(rtt_dsxx::UnitTest &ut) {
   {
     vector<double> myvec;
     size_t const vlen(5);
+    myvec.reserve(vlen);
     for (size_t i = 0; i < vlen; ++i)
       myvec.push_back(static_cast<double>(pid * 1000 + i));
     vector<double> globalvec(group_pids * vlen);
@@ -99,6 +101,8 @@ void tstProcessor_Group(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

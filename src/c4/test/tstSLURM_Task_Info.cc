@@ -2,8 +2,7 @@
 /*!
  * \file   c4/test/tstSLURM_Task_Info.cc
  * \author Tim Kelley
- * \date   Fri Jun 7 08:06:53 2019
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Query_Env.hh"
@@ -14,7 +13,7 @@
 #include "c4/SLURM_Task_Info.hh"
 #include <array>
 #include <cerrno>     // errno
-#include <functional> // std::function
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
@@ -25,6 +24,8 @@ using rtt_dsxx::UnitTest;
 
 using env_store_value = std::pair<bool, std::string>;
 using env_store_t = std::map<std::string, env_store_value>;
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 /* Helper function: Record SLURM keys and values, if any, then remove them from environment. Return
@@ -46,7 +47,7 @@ env_store_t clean_env() {
       store.insert({k, {true, storestr.str()}});
       int const unset_ok = draco_unsetenv(k.c_str());
       if (0 != unset_ok) {
-        std::cout << __FUNCTION__ // NOLINT
+        std::cout << __FUNCTION__ // NOLINT(hicpp-no-array-decay)
                   << ":" << __LINE__ << "Failed to unset environment variable " << k
                   << "! errno = " << errno << '\n';
       }
@@ -70,14 +71,13 @@ void restore_env(env_store_t const &store) {
       std::string const &val_str{val.second};
       int const set_ok = draco_setenv(key.c_str(), val_str.c_str());
       if (0 != set_ok) {
-        std::cout << __FUNCTION__ // NOLINT
-                  << ":" << __LINE__ << "Failed to set environment variable! errno = " << errno
-                  << '\n';
+        std::cout << __FUNCTION__ << ":" << __LINE__ // NOLINT(hicpp-no-array-decay)
+                  << "Failed to set environment variable! errno = " << errno << '\n';
       }
     } else {
       int const unset_ok = draco_unsetenv(key.c_str());
       if (0 != unset_ok) {
-        std::cout << __FUNCTION__ // NOLINT
+        std::cout << __FUNCTION__ // NOLINT(hicpp-no-array-decay)
                   << ":" << __LINE__ << "Failed to unset environment variable! errno = " << errno
                   << '\n';
       }
@@ -145,20 +145,12 @@ void test_SLURM_Info_partial(UnitTest &ut) {
   return;
 }
 
-using t_func = std::function<void(UnitTest &)>;
-
-//------------------------------------------------------------------------------------------------//
-void run_a_test(UnitTest &u, t_func const &f, std::string const &msg) {
-  f(u);
-  if (u.numFails == 0) {
-    u.passes(msg);
-  }
-  return;
-}
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
-  rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
+  using namespace rtt_dsxx;
+  ScalarUnitTest ut(argc, argv, release);
   try {
     run_a_test(ut, test_instantiate_SLURM_Info, "SLURM_Info (clean env) ok.");
     run_a_test(ut, test_SLURM_Info, "SLURM_Info (SLURM vars set) ok.");

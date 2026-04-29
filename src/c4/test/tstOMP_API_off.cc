@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstOMP_API_off.cc
  * \author Timothy Kelley
- * \date   Tue Jun  9 15:03:08 2020
  * \brief  Demonstrate basic OMP API.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -11,7 +10,6 @@
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/UnitTest.hh"
 #include "dsxx/config.h" // OPENMP_FOUND will be set here
-#include <functional>    // std::function
 #include <string>
 
 #ifdef OPENMP_FOUND
@@ -20,6 +18,8 @@
 #endif
 
 #include "c4/c4_omp.h"
+
+namespace {
 
 using namespace rtt_c4;
 using rtt_dsxx::UnitTest;
@@ -77,23 +77,12 @@ void check_set_get(UnitTest &ut) {
   return;
 }
 
-//------------------------------------------------------------------------------------------------//
-// TESTS
-//------------------------------------------------------------------------------------------------//
-
-using t_func = std::function<void(UnitTest &)>;
-
-void run_a_test(UnitTest &u, t_func const &f, std::string const &msg) {
-  f(u);
-  if (u.numFails == 0) {
-    u.passes(msg);
-  }
-  return;
-}
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char **argv) {
-  rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
+  using namespace rtt_dsxx;
+  ScalarUnitTest ut(argc, argv, release);
   try {
     run_a_test(ut, check_set_get, "Check getting/setting OpenMP number threads, API unavailable");
   } // try--catches in the epilog:

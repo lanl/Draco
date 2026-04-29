@@ -3,7 +3,7 @@
  * \file   c4/Timer.cc
  * \author Thomas M. Evans
  * \date   Mon Mar 25 17:56:11 2002
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/Timer.hh"
@@ -143,7 +143,7 @@ void Timer::printline_mean(std::ostream &out, unsigned const p, unsigned const w
   double ww2 = ww * ww;
 
   std::array<double, 8> buffer = {ni, ni2, u, u2, s, s2, ww, ww2};
-  rtt_c4::global_sum(buffer.data(), 8);
+  rtt_c4::global_sum(buffer.data(), 8); // NOLINT(misc-include-cleaner)
 
   ni = buffer[0];
   ni2 = buffer[1];

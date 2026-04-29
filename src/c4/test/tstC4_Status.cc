@@ -2,9 +2,8 @@
 /*!
  * \file   c4/test/tstC4_Status.cc
  * \author Robert B. Lowrie
- * \date   Friday May 26 19:58:19 2017
  * \brief  Unit test for C4_Status class.
- * \note   Copyright (C) 2017-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2017-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,7 +12,10 @@
 #include "c4/C4_Status.hh"
 #include "c4/ParallelUnitTest.hh"
 #include <cstdint>
+#include <utility>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using rtt_c4::C4_Req;
@@ -32,7 +34,7 @@ void tst2Procs(rtt_dsxx::UnitTest &ut) {
   {
     const uint32_t my_nranks = rtt_c4::nranks();
     const int my_nodes = rtt_c4::nodes();
-    FAIL_IF_NOT(static_cast<uint32_t>(my_nodes) == my_nranks);
+    FAIL_IF_NOT(std::cmp_equal(my_nodes, my_nranks));
     FAIL_IF_NOT(rtt_c4::isMpiInit());
   }
 
@@ -86,6 +88,8 @@ void tst2Procs(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

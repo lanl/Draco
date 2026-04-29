@@ -2,9 +2,8 @@
 /*!
  * \file   c4/test/tstSwap.cc
  * \author Kent Budge
- * \date   Wed Apr 28 09:31:51 2010
  * \brief  Test c4::determinate_swap and c4::indeterminate_swap functions
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -13,8 +12,10 @@
 #include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include "c4/swap.hh"
-#include <cstddef> // size_t
+#include <utility>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -172,24 +173,26 @@ void tstSemideterminateSwap(UnitTest &ut) {
   rtt_c4::semideterminate_swap(outgoing_pid, outgoing_data, incoming_pid, incoming_data);
 
   if (incoming_data.size() != incoming_pid.size()) {
-    ut.failure("Incoming data is NOT correct count");
+    FAILMSG("Incoming data is NOT correct count");
   } else {
-    ut.passes("Incoming data is correct count");
+    PASSMSG("Incoming data is correct count");
   }
   for (unsigned i = 0; i < incoming_pid.size(); ++i) {
     unsigned const pid = incoming_pid[i];
     if (incoming_data[i].size() != 2) {
-      ut.failure("Incoming data is NOT correct size");
+      FAILMSG("Incoming data is NOT correct size");
     } else {
-      ut.passes("Incoming data is correct size");
+      PASSMSG("Incoming data is correct size");
     }
-    if (incoming_data[i][0] != pid || incoming_data[i][1] != static_cast<size_t>(rtt_c4::node())) {
-      ut.failure("Incoming data is NOT correct");
+    if (incoming_data[i][0] != pid || std::cmp_not_equal(incoming_data[i][1], rtt_c4::node())) {
+      FAILMSG("Incoming data is NOT correct");
     } else {
-      ut.passes("Incoming data is correct");
+      PASSMSG("Incoming data is correct");
     }
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

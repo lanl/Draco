@@ -19,6 +19,8 @@
 #include <limits>
 #include <vector>
 
+namespace {
+
 using namespace std;
 
 using rtt_c4::C4_Req;
@@ -73,22 +75,22 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
   int64_t const ten_billion(10000000000L); // 1e10 > MAX_INT
   int32_t const one_billion(1000000000L);  // 1e9 < MAX_INT
 
-  long xlong = rtt_c4::node() + (max_long > ten_billion ? ten_billion : one_billion);
-  global_sum(xlong);
+  long x_long = rtt_c4::node() + (max_long > ten_billion ? ten_billion : one_billion);
+  global_sum(x_long);
 
-  long xlong_send = rtt_c4::node() + (max_long > ten_billion ? ten_billion : one_billion);
-  long xlong_recv = 0;
+  long x_long_send = rtt_c4::node() + (max_long > ten_billion ? ten_billion : one_billion);
+  long x_long_recv = 0;
   C4_Req long_request;
-  global_isum(xlong_send, xlong_recv, long_request);
+  global_isum(x_long_send, x_long_recv, long_request);
   long_request.wait();
 
   long long_answer = 0;
   for (int i = 0; i < rtt_c4::nodes(); i++)
     long_answer += i + (max_long > ten_billion ? ten_billion : one_billion);
 
-  FAIL_IF(xlong != long_answer);
+  FAIL_IF(x_long != long_answer);
 
-  FAIL_IF(xlong_recv != long_answer);
+  FAIL_IF(x_long_recv != long_answer);
 
   // test doubles for blocking and non-blocking sums
   double xdbl = static_cast<double>(rtt_c4::node()) + 0.1;
@@ -108,18 +110,18 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
   FAIL_IF(!soft_equiv(xdouble_recv, dbl_answer));
 
   // test product
-  xlong = rtt_c4::node() + 1;
-  global_prod(xlong);
+  x_long = rtt_c4::node() + 1;
+  global_prod(x_long);
 
   long_answer = 1;
   for (int i = 0; i < rtt_c4::nodes(); i++)
     long_answer *= (i + 1);
-  FAIL_IF_NOT(xlong == long_answer);
+  FAIL_IF_NOT(x_long == long_answer);
 
   // Test with deprecated form of global_prod
-  xlong = rtt_c4::node() + 1;
-  global_prod(xlong);
-  FAIL_IF_NOT(xlong == long_answer);
+  x_long = rtt_c4::node() + 1;
+  global_prod(x_long);
+  FAIL_IF_NOT(x_long == long_answer);
 
   // test min
   xdbl = 0.5 + rtt_c4::node();
@@ -146,10 +148,10 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
     float xflt = static_cast<float>(rtt_c4::node()) + 0.1F;
     global_sum(xflt);
 
-    float xfloat_send = static_cast<float>(rtt_c4::node()) + 0.1F;
-    float xfloat_recv = 0;
+    float x_float_send = static_cast<float>(rtt_c4::node()) + 0.1F;
+    float x_float_recv = 0;
     C4_Req float_request;
-    global_isum(xfloat_send, xfloat_recv, float_request);
+    global_isum(x_float_send, x_float_recv, float_request);
     float_request.wait();
 
     float flt_answer = 0.0;
@@ -157,7 +159,7 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
       flt_answer += static_cast<float>(i) + 0.1F;
 
     FAIL_IF_NOT(soft_equiv(xflt, flt_answer));
-    FAIL_IF_NOT(soft_equiv(xfloat_recv, flt_answer));
+    FAIL_IF_NOT(soft_equiv(x_float_recv, flt_answer));
 
     // test product
     xflt = static_cast<float>(rtt_c4::node()) + 0.1F;
@@ -184,10 +186,10 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
     double xflt = static_cast<double>(rtt_c4::node()) + 0.1;
     global_sum(xflt);
 
-    double xfloat_send = static_cast<double>(rtt_c4::node()) + 0.1;
-    double xfloat_recv = 0;
+    double x_float_send = static_cast<double>(rtt_c4::node()) + 0.1;
+    double x_float_recv = 0;
     C4_Req float_request;
-    global_isum(xfloat_send, xfloat_recv, float_request);
+    global_isum(x_float_send, x_float_recv, float_request);
     float_request.wait();
 
     double flt_answer = 0.0;
@@ -195,7 +197,7 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
       flt_answer += static_cast<double>(i) + 0.1;
 
     FAIL_IF_NOT(soft_equiv(xflt, flt_answer));
-    FAIL_IF_NOT(soft_equiv(xfloat_recv, flt_answer));
+    FAIL_IF_NOT(soft_equiv(x_float_recv, flt_answer));
 
     // test product
     xflt = static_cast<double>(rtt_c4::node()) + 0.1;
@@ -317,44 +319,44 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
 
   { // T = long
 
-    xlong = rtt_c4::node() + 1;
-    global_sum(xlong);
+    x_long = rtt_c4::node() + 1;
+    global_sum(x_long);
 
-    xlong_send = rtt_c4::node() + 1;
-    xlong_recv = 0;
+    x_long_send = rtt_c4::node() + 1;
+    x_long_recv = 0;
     // C4_Req long_request;
-    global_isum(xlong_send, xlong_recv, long_request);
+    global_isum(x_long_send, x_long_recv, long_request);
     long_request.wait();
 
     long_answer = 0;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       long_answer += i + 1;
-    FAIL_IF_NOT(xlong == long_answer);
-    FAIL_IF_NOT(xlong_recv == long_answer);
+    FAIL_IF_NOT(x_long == long_answer);
+    FAIL_IF_NOT(x_long_recv == long_answer);
 
     // test product
-    xlong = rtt_c4::node() + 1;
-    global_prod(xlong);
+    x_long = rtt_c4::node() + 1;
+    global_prod(x_long);
 
     long_answer = 1;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       long_answer *= (i + 1);
-    FAIL_IF_NOT(xlong == long_answer);
+    FAIL_IF_NOT(x_long == long_answer);
 
     // Test with deprecated form of global_prod
-    xlong = rtt_c4::node() + 1;
-    global_prod(xlong);
-    FAIL_IF_NOT(xlong == long_answer);
+    x_long = rtt_c4::node() + 1;
+    global_prod(x_long);
+    FAIL_IF_NOT(x_long == long_answer);
 
     // test min
-    xlong = rtt_c4::node() + 1;
-    global_min(xlong);
-    FAIL_IF_NOT(xlong == 1);
+    x_long = rtt_c4::node() + 1;
+    global_min(x_long);
+    FAIL_IF_NOT(x_long == 1);
 
     // test max
-    xlong = rtt_c4::node() + 1;
-    global_max(xlong);
-    FAIL_IF_NOT(xlong == rtt_c4::nodes());
+    x_long = rtt_c4::node() + 1;
+    global_max(x_long);
+    FAIL_IF_NOT(x_long == rtt_c4::nodes());
   }
 
   { // T = short
@@ -363,44 +365,44 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
 #pragma GCC diagnostic ignored "-Wconversion"
 #endif
 
-    auto xshort = static_cast<short>(rtt_c4::node() + 1);
-    global_sum(xshort);
+    auto x_short = static_cast<short>(rtt_c4::node() + 1);
+    global_sum(x_short);
 
-    auto xshort_send = static_cast<short>(rtt_c4::node() + 1);
-    short xshort_recv = 0;
+    auto x_short_send = static_cast<short>(rtt_c4::node() + 1);
+    short x_short_recv = 0;
     C4_Req short_request;
-    global_isum(xshort_send, xshort_recv, short_request);
+    global_isum(x_short_send, x_short_recv, short_request);
     short_request.wait();
 
     short short_answer = 0;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       short_answer += static_cast<short int>(i + 1);
-    FAIL_IF_NOT(xshort == short_answer);
-    FAIL_IF_NOT(xshort_recv == short_answer);
+    FAIL_IF_NOT(x_short == short_answer);
+    FAIL_IF_NOT(x_short_recv == short_answer);
 
     // test product
-    xshort = static_cast<short>(rtt_c4::node() + 1);
-    global_prod(xshort);
+    x_short = static_cast<short>(rtt_c4::node() + 1);
+    global_prod(x_short);
 
     short_answer = 1;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       short_answer *= static_cast<short>(i + 1);
-    FAIL_IF_NOT(xshort == short_answer);
+    FAIL_IF_NOT(x_short == short_answer);
 
     // Test with deprecated form of global_prod
-    xshort = static_cast<short>(rtt_c4::node() + 1);
-    global_prod(xshort);
-    FAIL_IF_NOT(xshort == short_answer);
+    x_short = static_cast<short>(rtt_c4::node() + 1);
+    global_prod(x_short);
+    FAIL_IF_NOT(x_short == short_answer);
 
     // test min
-    xshort = static_cast<short>(rtt_c4::node() + 1);
-    global_min(xshort);
-    FAIL_IF_NOT(xshort == 1);
+    x_short = static_cast<short>(rtt_c4::node() + 1);
+    global_min(x_short);
+    FAIL_IF_NOT(x_short == 1);
 
     // test max
-    xshort = static_cast<short>(rtt_c4::node() + 1);
-    global_max(xshort);
-    FAIL_IF_NOT(xshort == rtt_c4::nodes());
+    x_short = static_cast<short>(rtt_c4::node() + 1);
+    global_max(x_short);
+    FAIL_IF_NOT(x_short == rtt_c4::nodes());
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
@@ -409,170 +411,170 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
 
   { // T = unsigned
 
-    auto xunsigned = static_cast<unsigned>(rtt_c4::node() + 1);
-    global_sum(xunsigned);
+    auto x_unsigned = static_cast<unsigned>(rtt_c4::node() + 1);
+    global_sum(x_unsigned);
 
-    auto xunsigned_send = static_cast<unsigned>(rtt_c4::node() + 1);
-    unsigned xunsigned_recv = 0;
+    auto x_unsigned_send = static_cast<unsigned>(rtt_c4::node() + 1);
+    unsigned x_unsigned_recv = 0;
     C4_Req unsigned_request;
-    global_isum(xunsigned_send, xunsigned_recv, unsigned_request);
+    global_isum(x_unsigned_send, x_unsigned_recv, unsigned_request);
     unsigned_request.wait();
 
     unsigned unsigned_answer = 0;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       unsigned_answer += static_cast<unsigned int>(i + 1);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
-    FAIL_IF_NOT(xunsigned_recv == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned_recv == unsigned_answer);
 
     // test product
-    xunsigned = static_cast<unsigned>(rtt_c4::node() + 1);
-    global_prod(xunsigned);
+    x_unsigned = static_cast<unsigned>(rtt_c4::node() + 1);
+    global_prod(x_unsigned);
 
     unsigned_answer = 1;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       unsigned_answer *= static_cast<unsigned>(i + 1);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
 
     // Test with deprecated form of global_prod
-    xunsigned = static_cast<unsigned>(rtt_c4::node() + 1);
-    global_prod(xunsigned);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
+    x_unsigned = static_cast<unsigned>(rtt_c4::node() + 1);
+    global_prod(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
 
     // test min
-    xunsigned = static_cast<unsigned>(rtt_c4::node() + 1);
-    global_min(xunsigned);
-    FAIL_IF_NOT(xunsigned == 1);
+    x_unsigned = static_cast<unsigned>(rtt_c4::node() + 1);
+    global_min(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == 1);
 
     // test max
-    xunsigned = static_cast<unsigned>(rtt_c4::node() + 1);
-    global_max(xunsigned);
-    FAIL_IF_NOT(xunsigned == rtt_c4::nranks());
+    x_unsigned = static_cast<unsigned>(rtt_c4::node() + 1);
+    global_max(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == rtt_c4::nranks());
   }
 
   { // T = unsigned long
 
-    auto xunsigned = static_cast<unsigned long>(rtt_c4::node() + 1);
-    global_sum(xunsigned);
+    auto x_unsigned = static_cast<unsigned long>(rtt_c4::node() + 1);
+    global_sum(x_unsigned);
 
-    auto xunsigned_send = static_cast<unsigned long>(rtt_c4::node() + 1);
-    unsigned long xunsigned_recv = 0;
+    auto x_unsigned_send = static_cast<unsigned long>(rtt_c4::node() + 1);
+    unsigned long x_unsigned_recv = 0;
     C4_Req unsigned_request;
-    global_isum(xunsigned_send, xunsigned_recv, unsigned_request);
+    global_isum(x_unsigned_send, x_unsigned_recv, unsigned_request);
     unsigned_request.wait();
 
     unsigned long unsigned_answer = 0;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       unsigned_answer += static_cast<unsigned long>(i + 1);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
-    FAIL_IF_NOT(xunsigned_recv == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned_recv == unsigned_answer);
 
     // test product
-    xunsigned = static_cast<unsigned long>(rtt_c4::node() + 1);
-    global_prod(xunsigned);
+    x_unsigned = static_cast<unsigned long>(rtt_c4::node() + 1);
+    global_prod(x_unsigned);
 
     unsigned_answer = 1;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       unsigned_answer *= static_cast<unsigned long>(i + 1);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
 
     // Test with deprecated form of global_prod
-    xunsigned = static_cast<unsigned long>(rtt_c4::node() + 1);
-    global_prod(xunsigned);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
+    x_unsigned = static_cast<unsigned long>(rtt_c4::node() + 1);
+    global_prod(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
 
     // test min
-    xunsigned = static_cast<unsigned long>(rtt_c4::node() + 1);
-    global_min(xunsigned);
-    FAIL_IF_NOT(xunsigned == 1);
+    x_unsigned = static_cast<unsigned long>(rtt_c4::node() + 1);
+    global_min(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == 1);
 
     // test max
-    xunsigned = static_cast<unsigned long>(rtt_c4::node() + 1);
-    global_max(xunsigned);
-    FAIL_IF_NOT(xunsigned == rtt_c4::nranks());
+    x_unsigned = static_cast<unsigned long>(rtt_c4::node() + 1);
+    global_max(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == rtt_c4::nranks());
   }
 
   { // T = long long
 
-    auto xunsigned = static_cast<long long>(rtt_c4::node() + 1);
-    global_sum(xunsigned);
+    auto x_unsigned = static_cast<long long>(rtt_c4::node() + 1);
+    global_sum(x_unsigned);
 
-    auto xunsigned_send = static_cast<long long>(rtt_c4::node() + 1);
-    long long xunsigned_recv = 0;
+    auto x_unsigned_send = static_cast<long long>(rtt_c4::node() + 1);
+    long long x_unsigned_recv = 0;
     C4_Req unsigned_request;
-    global_isum(xunsigned_send, xunsigned_recv, unsigned_request);
+    global_isum(x_unsigned_send, x_unsigned_recv, unsigned_request);
     unsigned_request.wait();
 
     long long unsigned_answer = 0;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       unsigned_answer += static_cast<long long>(i + 1);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
-    FAIL_IF_NOT(xunsigned_recv == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned_recv == unsigned_answer);
 
     // test product
-    xunsigned = static_cast<long long>(rtt_c4::node() + 1);
-    global_prod(xunsigned);
+    x_unsigned = static_cast<long long>(rtt_c4::node() + 1);
+    global_prod(x_unsigned);
 
     unsigned_answer = 1;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       unsigned_answer *= static_cast<long long>(i + 1);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
 
     // Test with deprecated form of global_prod
-    xunsigned = static_cast<long long>(rtt_c4::node() + 1);
-    global_prod(xunsigned);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
+    x_unsigned = static_cast<long long>(rtt_c4::node() + 1);
+    global_prod(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
 
     // test min
-    xunsigned = static_cast<long long>(rtt_c4::node() + 1);
-    global_min(xunsigned);
-    FAIL_IF_NOT(xunsigned == 1);
+    x_unsigned = static_cast<long long>(rtt_c4::node() + 1);
+    global_min(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == 1);
 
     // test max
-    xunsigned = static_cast<long long>(rtt_c4::node() + 1);
-    global_max(xunsigned);
-    FAIL_IF_NOT(xunsigned == rtt_c4::nodes());
+    x_unsigned = static_cast<long long>(rtt_c4::node() + 1);
+    global_max(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == rtt_c4::nodes());
   }
 
   { // T = unsigned long long
 
-    auto xunsigned = static_cast<unsigned long long>(rtt_c4::node() + 1);
-    global_sum(xunsigned);
+    auto x_unsigned = static_cast<unsigned long long>(rtt_c4::node() + 1);
+    global_sum(x_unsigned);
 
-    auto xunsigned_send = static_cast<unsigned long long>(rtt_c4::node() + 1);
-    unsigned long long xunsigned_recv = 0;
+    auto x_unsigned_send = static_cast<unsigned long long>(rtt_c4::node() + 1);
+    unsigned long long x_unsigned_recv = 0;
     C4_Req unsigned_request;
-    global_isum(xunsigned_send, xunsigned_recv, unsigned_request);
+    global_isum(x_unsigned_send, x_unsigned_recv, unsigned_request);
     unsigned_request.wait();
 
     unsigned long long unsigned_answer = 0;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       unsigned_answer += static_cast<unsigned long long>(i + 1);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
-    FAIL_IF_NOT(xunsigned_recv == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned_recv == unsigned_answer);
 
     // test product
-    xunsigned = static_cast<unsigned long long>(rtt_c4::node() + 1);
-    global_prod(xunsigned);
+    x_unsigned = static_cast<unsigned long long>(rtt_c4::node() + 1);
+    global_prod(x_unsigned);
 
     unsigned_answer = 1;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       unsigned_answer *= static_cast<unsigned long long>(i + 1);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
 
     // Test with deprecated form of global_prod
-    xunsigned = static_cast<unsigned long long>(rtt_c4::node() + 1);
-    global_prod(xunsigned);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
+    x_unsigned = static_cast<unsigned long long>(rtt_c4::node() + 1);
+    global_prod(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
 
     // test min
-    xunsigned = static_cast<unsigned long long>(rtt_c4::node() + 1);
-    global_min(xunsigned);
-    FAIL_IF_NOT(xunsigned == 1);
+    x_unsigned = static_cast<unsigned long long>(rtt_c4::node() + 1);
+    global_min(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == 1);
 
     // test max
-    xunsigned = static_cast<unsigned long long>(rtt_c4::node() + 1);
-    global_max(xunsigned);
-    FAIL_IF_NOT(xunsigned == rtt_c4::nranks());
+    x_unsigned = static_cast<unsigned long long>(rtt_c4::node() + 1);
+    global_max(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == rtt_c4::nranks());
   }
 
   { // T = unsigned short
@@ -581,44 +583,44 @@ void elemental_reduction(rtt_dsxx::UnitTest &ut) {
 #pragma GCC diagnostic ignored "-Wconversion"
 #endif
 
-    auto xunsigned = static_cast<unsigned short>(rtt_c4::node() + 1);
-    global_sum(xunsigned);
+    auto x_unsigned = static_cast<unsigned short>(rtt_c4::node() + 1);
+    global_sum(x_unsigned);
 
-    auto xunsigned_send = static_cast<unsigned short>(rtt_c4::node() + 1);
-    unsigned short xunsigned_recv = 0;
+    auto x_unsigned_send = static_cast<unsigned short>(rtt_c4::node() + 1);
+    unsigned short x_unsigned_recv = 0;
     C4_Req unsigned_request;
-    global_isum(xunsigned_send, xunsigned_recv, unsigned_request);
+    global_isum(x_unsigned_send, x_unsigned_recv, unsigned_request);
     unsigned_request.wait();
 
     unsigned short unsigned_answer = 0;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       unsigned_answer += static_cast<unsigned short>(i + 1);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
-    FAIL_IF_NOT(xunsigned_recv == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned_recv == unsigned_answer);
 
     // test product
-    xunsigned = static_cast<unsigned short>(rtt_c4::node() + 1);
-    global_prod(xunsigned);
+    x_unsigned = static_cast<unsigned short>(rtt_c4::node() + 1);
+    global_prod(x_unsigned);
 
     unsigned_answer = 1;
     for (int i = 0; i < rtt_c4::nodes(); i++)
       unsigned_answer *= static_cast<unsigned short>(i + 1);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
 
     // Test with deprecated form of global_prod
-    xunsigned = static_cast<unsigned short>(rtt_c4::node() + 1);
-    global_prod(xunsigned);
-    FAIL_IF_NOT(xunsigned == unsigned_answer);
+    x_unsigned = static_cast<unsigned short>(rtt_c4::node() + 1);
+    global_prod(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == unsigned_answer);
 
     // test min
-    xunsigned = static_cast<unsigned short>(rtt_c4::node() + 1);
-    global_min(xunsigned);
-    FAIL_IF_NOT(xunsigned == 1);
+    x_unsigned = static_cast<unsigned short>(rtt_c4::node() + 1);
+    global_min(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == 1);
 
     // test max
-    xunsigned = static_cast<unsigned short>(rtt_c4::node() + 1);
-    global_max(xunsigned);
-    FAIL_IF_NOT(xunsigned == rtt_c4::nranks());
+    x_unsigned = static_cast<unsigned short>(rtt_c4::node() + 1);
+    global_max(x_unsigned);
+    FAIL_IF_NOT(x_unsigned == rtt_c4::nranks());
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
@@ -792,23 +794,23 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
     {
       c = x;
       global_sum(&c[0], 100);
-      FAIL_IF_NOT(equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_sum(&c[0], static_cast<size_t>(100));
-      FAIL_IF_NOT(equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_prod(&c[0], 100);
-      FAIL_IF_NOT(equal(c.begin(), c.end(), prod.begin(), prod.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, prod));
 
       c = x;
       global_min(&c[0], 100);
-      FAIL_IF_NOT(equal(c.begin(), c.end(), lmin.begin(), lmin.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmin));
 
       c = x;
       global_max(&c[0], 100);
-      FAIL_IF_NOT(equal(c.begin(), c.end(), lmax.begin(), lmax.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmax));
     }
   }
   { // T = unsigned int
@@ -836,23 +838,23 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
     {
       c = x;
       global_sum(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_sum(&c[0], static_cast<size_t>(100));
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_prod(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), prod.begin(), prod.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, prod));
 
       c = x;
       global_min(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmin.begin(), lmin.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmin));
 
       c = x;
       global_max(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmax.begin(), lmax.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmax));
     }
   }
   { // T = unsigned long
@@ -880,23 +882,23 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
     {
       c = x;
       global_sum(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_sum(&c[0], static_cast<size_t>(100));
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_prod(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), prod.begin(), prod.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, prod));
 
       c = x;
       global_min(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmin.begin(), lmin.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmin));
 
       c = x;
       global_max(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmax.begin(), lmax.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmax));
     }
   }
   { // T = unsigned short
@@ -929,23 +931,23 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
     {
       c = x;
       global_sum(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_sum(&c[0], static_cast<size_t>(100));
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_prod(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), prod.begin(), prod.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, prod));
 
       c = x;
       global_min(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmin.begin(), lmin.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmin));
 
       c = x;
       global_max(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmax.begin(), lmax.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmax));
     }
 
 #if defined(__GNUC__) && !defined(__clang__)
@@ -977,23 +979,23 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
     {
       c = x;
       global_sum(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_sum(&c[0], static_cast<size_t>(100));
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_prod(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), prod.begin(), prod.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, prod));
 
       c = x;
       global_min(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmin.begin(), lmin.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmin));
 
       c = x;
       global_max(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmax.begin(), lmax.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmax));
     }
   }
   { // T = long long
@@ -1021,23 +1023,23 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
     {
       c = x;
       global_sum(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_sum(&c[0], static_cast<size_t>(100));
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_prod(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), prod.begin(), prod.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, prod));
 
       c = x;
       global_min(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmin.begin(), lmin.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmin));
 
       c = x;
       global_max(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmax.begin(), lmax.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmax));
     }
   }
   { // T = long
@@ -1065,23 +1067,23 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
     {
       c = x;
       global_sum(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_sum(&c[0], static_cast<size_t>(100));
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_prod(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), prod.begin(), prod.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, prod));
 
       c = x;
       global_min(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmin.begin(), lmin.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmin));
 
       c = x;
       global_max(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmax.begin(), lmax.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmax));
     }
   }
   { // T = short
@@ -1114,23 +1116,23 @@ void array_reduction(rtt_dsxx::UnitTest &ut) {
     {
       c = x;
       global_sum(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_sum(&c[0], static_cast<size_t>(100));
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), sum.begin(), sum.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, sum));
 
       c = x;
       global_prod(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), prod.begin(), prod.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, prod));
 
       c = x;
       global_min(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmin.begin(), lmin.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmin));
 
       c = x;
       global_max(&c[0], 100);
-      FAIL_IF_NOT(std::equal(c.begin(), c.end(), lmax.begin(), lmax.end()));
+      FAIL_IF_NOT(std::ranges::equal(c, lmax));
     }
 
 #if defined(__GNUC__) && !defined(__clang__)
@@ -1182,8 +1184,8 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(xuint_prefix_sum == uint_answer);
 
   // test longs
-  long const xlong = rtt_c4::node() + 1000;
-  long const xlong_prefix_sum = prefix_sum(xlong);
+  long const x_long = rtt_c4::node() + 1000;
+  long const x_long_prefix_sum = prefix_sum(x_long);
 
   long long_answer = 0;
   for (int i = 0; i < rtt_c4::nodes(); i++) {
@@ -1191,14 +1193,14 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
       long_answer += i + 1000;
   }
 
-  std::cout << "long: Prefix sum on this node: " << xlong_prefix_sum << " Answer: " << long_answer
+  std::cout << "long: Prefix sum on this node: " << x_long_prefix_sum << " Answer: " << long_answer
             << '\n';
 
-  FAIL_IF_NOT(xlong_prefix_sum == long_answer);
+  FAIL_IF_NOT(x_long_prefix_sum == long_answer);
 
   // test long long
-  long long const xllong = rtt_c4::node() + 1000L;
-  long long const xllong_prefix_sum = prefix_sum(xllong);
+  long long const xl_long = rtt_c4::node() + 1000L;
+  long long const xl_long_prefix_sum = prefix_sum(xl_long);
 
   long long llong_answer = 0;
   for (auto i = 0; i < rtt_c4::nodes(); i++) {
@@ -1206,16 +1208,16 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
       llong_answer += i + 1000L;
   }
 
-  std::cout << "long long: Prefix sum on this node: " << xllong_prefix_sum
+  std::cout << "long long: Prefix sum on this node: " << xl_long_prefix_sum
             << " Answer: " << llong_answer << '\n';
 
-  FAIL_IF_NOT(xllong_prefix_sum == llong_answer);
+  FAIL_IF_NOT(xl_long_prefix_sum == llong_answer);
 
   // test unsigned longs (start at max of unsigned int)
-  uint64_t xulong = rtt_c4::node();
+  uint64_t xu_long = rtt_c4::node();
   if (rtt_c4::node() == 0)
-    xulong = std::numeric_limits<uint32_t>::max();
-  uint64_t const xulong_prefix_sum = prefix_sum(xulong);
+    xu_long = std::numeric_limits<uint32_t>::max();
+  uint64_t const xu_long_prefix_sum = prefix_sum(xu_long);
 
   uint64_t ulong_answer = std::numeric_limits<uint32_t>::max();
   for (int i = 0; i < rtt_c4::nodes(); i++) {
@@ -1223,14 +1225,14 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
       ulong_answer += i + 1;
   }
 
-  std::cout << "uint64_t: Prefix sum on this node: " << xulong_prefix_sum
+  std::cout << "uint64_t: Prefix sum on this node: " << xu_long_prefix_sum
             << " Answer: " << ulong_answer << '\n';
 
-  FAIL_IF_NOT(xulong_prefix_sum == ulong_answer);
+  FAIL_IF_NOT(xu_long_prefix_sum == ulong_answer);
 
   // test floats
-  auto xfloat = static_cast<float>(rtt_c4::node() + 0.01);
-  float const xfloat_prefix_sum = prefix_sum(xfloat);
+  auto x_float = static_cast<float>(rtt_c4::node() + 0.01);
+  float const x_float_prefix_sum = prefix_sum(x_float);
 
   float float_answer = 0.0;
   for (int i = 0; i < rtt_c4::nodes(); i++) {
@@ -1238,10 +1240,10 @@ void test_prefix_sum(rtt_dsxx::UnitTest &ut) {
       float_answer += static_cast<float>(i + 0.01);
   }
 
-  std::cout << "float: Prefix sum on this node: " << xfloat_prefix_sum
+  std::cout << "float: Prefix sum on this node: " << x_float_prefix_sum
             << " Answer: " << float_answer << '\n';
 
-  FAIL_IF_NOT(soft_equiv(xfloat_prefix_sum, float_answer));
+  FAIL_IF_NOT(soft_equiv(x_float_prefix_sum, float_answer));
 
   // test doubles
   double const xdbl = static_cast<double>(rtt_c4::node()) + 1.0e-9;
@@ -1317,11 +1319,11 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
 
   // test long ints (use the maximum uint32_t value to make sure all types are handled correctly in
   // the calls)
-  vector<int64_t> xlong(array_size, 0);
+  vector<int64_t> x_long(array_size, 0);
   for (int32_t i = 0; i < array_size; ++i)
-    xlong[i] = std::numeric_limits<uint32_t>::max() + rtt_c4::node() * 10 + i;
+    x_long[i] = std::numeric_limits<uint32_t>::max() + rtt_c4::node() * 10 + i;
 
-  prefix_sum(&xlong[0], array_size);
+  prefix_sum(&x_long[0], array_size);
 
   vector<int64_t> long_answer(array_size, 0);
   for (int32_t i = 0; i < array_size; ++i) {
@@ -1331,20 +1333,20 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
     }
   }
 
-  for (uint32_t i = 0; i < xlong.size(); ++i) {
-    std::cout << "int64_t: Prefix sum on this node: " << xlong[i] << " Answer: " << long_answer[i]
+  for (uint32_t i = 0; i < x_long.size(); ++i) {
+    std::cout << "int64_t: Prefix sum on this node: " << x_long[i] << " Answer: " << long_answer[i]
               << '\n';
-    FAIL_IF_NOT(xlong[i] == long_answer[i]);
+    FAIL_IF_NOT(x_long[i] == long_answer[i]);
   }
 
   // test unsigned long ints (use the maximum int64_t value to make sure all types are handled
   // correctly in the calls)
-  vector<uint64_t> xulong(array_size, 0);
+  vector<uint64_t> xu_long(array_size, 0);
   for (int32_t i = 0; i < array_size; ++i)
-    xulong[i] =
+    xu_long[i] =
         static_cast<uint64_t>(std::numeric_limits<int64_t>::max()) + rtt_c4::node() * 10 + i;
 
-  prefix_sum(&xulong[0], array_size);
+  prefix_sum(&xu_long[0], array_size);
 
   vector<uint64_t> ulong_answer(array_size, 0);
   for (int32_t i = 0; i < array_size; ++i) {
@@ -1354,18 +1356,18 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
     }
   }
 
-  for (uint32_t i = 0; i < xulong.size(); ++i) {
-    std::cout << "uint64_t: Prefix sum on this node: " << xulong[i]
+  for (uint32_t i = 0; i < xu_long.size(); ++i) {
+    std::cout << "uint64_t: Prefix sum on this node: " << xu_long[i]
               << " Answer: " << ulong_answer[i] << '\n';
-    FAIL_IF_NOT(xulong[i] == ulong_answer[i]);
+    FAIL_IF_NOT(xu_long[i] == ulong_answer[i]);
   }
 
   // test floats
-  vector<float> xfloat(array_size, 0);
+  vector<float> x_float(array_size, 0);
   for (int32_t i = 0; i < array_size; ++i)
-    xfloat[i] = static_cast<float>(rtt_c4::node() * 9.99 + i);
+    x_float[i] = static_cast<float>(rtt_c4::node() * 9.99 + i);
 
-  prefix_sum(&xfloat[0], array_size);
+  prefix_sum(&x_float[0], array_size);
 
   vector<float> float_answer(array_size, 0);
   for (int32_t i = 0; i < array_size; ++i) {
@@ -1376,10 +1378,10 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
   }
 
   // comparison between floats after operations needs soft_equiv with a loose tolerance
-  for (uint32_t i = 0; i < xfloat.size(); ++i) {
-    std::cout << "float: Prefix sum on this node: " << xfloat[i];
+  for (uint32_t i = 0; i < x_float.size(); ++i) {
+    std::cout << "float: Prefix sum on this node: " << x_float[i];
     std::cout << " Answer: " << float_answer[i] << '\n';
-    FAIL_IF_NOT(soft_equiv(xfloat[i], float_answer[i], float(1.0e-6)));
+    FAIL_IF_NOT(soft_equiv(x_float[i], float_answer[i], float(1.0e-6)));
   }
 
   // test doubles, try to express precision beyond float to test type handling in function calls
@@ -1407,6 +1409,8 @@ void test_array_prefix_sum(rtt_dsxx::UnitTest &ut) {
     PASSMSG("Array prefix sum ok.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
