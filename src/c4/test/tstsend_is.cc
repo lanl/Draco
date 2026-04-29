@@ -22,13 +22,15 @@
 #include <sstream>
 #include <vector>
 
-using rtt_dsxx::soft_equiv;
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
 // This is a simple class that has a static MPI type and a method to commit that type
+
+// NOLINTBEGIN(clang-diagnostic-unused-member-function)
 class Custom {
 
 public:
@@ -39,7 +41,7 @@ public:
   //~Custom() = default;
 
 public:
-  static const int mpi_tag = 512;
+  static const int mpi_tag = 512; // NOLINT(clang-diagnostic-unused-const-variable)
 #ifdef C4_SCALAR
   static void commit_mpi_type() {}
   static int MPI_Type;
@@ -94,6 +96,8 @@ public:
   [[nodiscard]] double get_double2() const { return my_doubles[1]; }
   [[nodiscard]] long get_long1() const { return my_longs[0]; }
   [[nodiscard]] long get_long2() const { return my_longs[1]; }
+
+  // NOLINTEND(clang-diagnostic-unused-member-function)
 
 private:
   std::array<int, 3> my_ints;
@@ -292,7 +296,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = static_cast<double>(1000 * left + i);
       }
 
-      if (soft_equiv(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (rtt_dsxx::soft_equiv(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
         ostringstream msg;
         msg << "Expected double data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -343,7 +347,8 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
 
       float const eps = 1.0e-6F;
-      if (soft_equiv(expected.begin(), expected.end(), buffer2.begin(), buffer2.end(), eps)) {
+      if (rtt_dsxx::soft_equiv(expected.begin(), expected.end(), buffer2.begin(), buffer2.end(),
+                               eps)) {
         ostringstream msg;
         msg << "Expected float data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -394,7 +399,8 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
       }
 
       auto const eps = static_cast<long double>(1.0e-6F);
-      if (soft_equiv(expected.begin(), expected.end(), buffer2.begin(), buffer2.end(), eps)) {
+      if (rtt_dsxx::soft_equiv(expected.begin(), expected.end(), buffer2.begin(), buffer2.end(),
+                               eps)) {
         ostringstream msg;
         msg << "Expected long double data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -444,7 +450,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = static_cast<unsigned int>(1000 * left + i);
       }
 
-      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (std::ranges::equal(expected, buffer2)) {
         ostringstream msg;
         msg << "Expected unsigned int data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -501,7 +507,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 #pragma GCC diagnostic pop
 #endif
 
-      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (std::ranges::equal(expected, buffer2)) {
         ostringstream msg;
         msg << "Expected unsigned long data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -551,7 +557,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = static_cast<unsigned short>(1000 * left + i);
       }
 
-      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (std::ranges::equal(expected, buffer2)) {
         ostringstream msg;
         msg << "Expected unsigned short data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -601,7 +607,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = 1000 * static_cast<unsigned long long>(left) + i;
       }
 
-      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (std::ranges::equal(expected, buffer2)) {
         ostringstream msg;
         msg << "Expected unsigned long long data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -651,7 +657,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = static_cast<long>(1000 * left + i);
       }
 
-      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (std::ranges::equal(expected, buffer2)) {
         ostringstream msg;
         msg << "Expected long data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -700,7 +706,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = static_cast<short>(1000 * left + i);
       }
 
-      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (std::ranges::equal(expected, buffer2)) {
         ostringstream msg;
         msg << "Expected short data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -750,7 +756,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = 1000 * static_cast<long long>(left) + i;
       }
 
-      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (std::ranges::equal(expected, buffer2)) {
         ostringstream msg;
         msg << "Expected long long data found after send_is() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -800,7 +806,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = i > 5;
       }
 
-      if (equal(begin(expected), end(expected), begin(buffer2), end(buffer2))) {
+      if (std::ranges::equal(expected, buffer2)) {
         ostringstream msg;
         msg << "Expected bool data found after send_is<bool>() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -853,7 +859,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = alphabet[left + i];
       }
 
-      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (std::ranges::equal(expected, buffer2)) {
         ostringstream msg;
         msg << "Expected char data found after send_is<char>() on node " << pid << ".";
         PASSMSG(msg.str());
@@ -906,7 +912,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
         expected[i] = alphabet[left + i];
       }
 
-      if (equal(expected.begin(), expected.end(), buffer2.begin(), buffer2.end())) {
+      if (std::ranges::equal(expected, buffer2)) {
         ostringstream msg;
         msg << "Expected unsigned char data found after send_is<unsigned char>() on node " << pid
             << ".";
@@ -1008,8 +1014,10 @@ void test_send_custom(rtt_dsxx::UnitTest &ut) {
     cout << "Expected double 1: " << expected_custom.get_double1() << " ";
     cout << "Received double 1: " << recv_custom_object.get_double1() << '\n';
 
-    FAIL_IF_NOT(soft_equiv(expected_custom.get_double1(), recv_custom_object.get_double1()));
-    FAIL_IF_NOT(soft_equiv(expected_custom.get_double2(), recv_custom_object.get_double2()));
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(expected_custom.get_double1(), recv_custom_object.get_double1()));
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(expected_custom.get_double2(), recv_custom_object.get_double2()));
     FAIL_IF_NOT(expected_custom.get_long1() == recv_custom_object.get_long1());
     FAIL_IF_NOT(expected_custom.get_long2() == recv_custom_object.get_long2());
   } catch (rtt_dsxx::assertion const & /*error*/) {
@@ -1071,8 +1079,10 @@ void test_send_custom(rtt_dsxx::UnitTest &ut) {
     cout << "Expected double 1: " << expected_custom.get_double1() << " "
          << "Received double 1: " << recv_custom_object_block.get_double1() << '\n';
 
-    FAIL_IF_NOT(soft_equiv(expected_custom.get_double1(), recv_custom_object_block.get_double1()));
-    FAIL_IF_NOT(soft_equiv(expected_custom.get_double2(), recv_custom_object_block.get_double2()));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(expected_custom.get_double1(),
+                                     recv_custom_object_block.get_double1()));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(expected_custom.get_double2(),
+                                     recv_custom_object_block.get_double2()));
     FAIL_IF_NOT(expected_custom.get_long1() == recv_custom_object_block.get_long1());
     FAIL_IF_NOT(expected_custom.get_long2() == recv_custom_object_block.get_long2());
   }
@@ -1081,6 +1091,8 @@ void test_send_custom(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

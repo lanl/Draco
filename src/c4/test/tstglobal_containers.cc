@@ -2,8 +2,7 @@
 /*!
  * \file   c4/test/tstglobal_containers.cc
  * \author Kent Budge
- * \date   Mon Mar 24 09:41:04 2008
- * \note   Copyright (C) 2008-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2008-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -15,6 +14,9 @@
 #include <cstddef>
 #include <map>
 #include <set>
+#include <utility>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -86,8 +88,8 @@ void tstglobal_containers(UnitTest &ut) {
       if (local_map.count(p) != 1 || local_map.count(number_of_processors + p) != 1) {
         FAILMSG("WRONG element in map");
       }
-      if (local_map[p] != static_cast<int>(p) ||
-          local_map[number_of_processors + p] != static_cast<int>(2 * p)) {
+      if (std::cmp_not_equal(local_map[p], p) ||
+          std::cmp_not_equal(local_map[number_of_processors + p], 2 * p)) {
         FAILMSG("WRONG element value in map");
       }
     }
@@ -138,6 +140,8 @@ void tstglobal_containers(UnitTest &ut) {
   }
 }
 #endif // C4_MPI
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

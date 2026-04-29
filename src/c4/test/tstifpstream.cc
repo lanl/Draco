@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstifpstream.cc
  * \author Mathew Cleveland
- * \date   Feb. 2020
  * \brief  Tests ifpstream class for parallel read
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -16,6 +15,8 @@
 #include <fstream>
 #include <ios>
 #include <string>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -88,6 +89,8 @@ void tstifpstream(UnitTest &ut, const std::ios_base::openmode mode) {
     PASSMSG("completed serialized read of " + filename + " without hanging or segfaulting");
 }
 
+} // namespace
+
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, release);
@@ -99,5 +102,5 @@ int main(int argc, char *argv[]) {
 }
 
 //------------------------------------------------------------------------------------------------//
-// end of tstofpstream.cc
+// end of c4/test/tstifpstream.cc
 //------------------------------------------------------------------------------------------------//

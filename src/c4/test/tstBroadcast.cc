@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstBroadcast.cc
  * \author Thomas M. Evans
- * \date   Tue Apr  2 15:57:11 2002
  * \brief  c4 Broadcast communication test.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -14,9 +13,12 @@
 #include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include <exception>
+#include <numbers>
 #include <sstream>
 #include <string>
 #include <vector>
+
+namespace {
 
 using namespace std;
 
@@ -41,7 +43,7 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
   float f = 0;
   double d = 0;
   long double ld = 0;
-  vector<double> vref(10, 3.1415);
+  vector<double> vref(10, std::numbers::pi);
   vector<double> v(10, 0.0);
   vector<float> vempty_ref;
   vector<float> vempty;
@@ -143,13 +145,14 @@ void test_loop(rtt_dsxx::UnitTest &ut) {
   // save state
   unsigned const nf(ut.numFails);
 
-  // kmax controls how much data is broadcast.  If kmax is too big (like 10000000), shmem will fail.
-  int const kmax = 10;
+  // k_max controls how much data is broadcast.  If k_max is too big (like 10000000), shmem will
+  // fail.
+  int constexpr k_max = 10;
 
   if (rtt_c4::node() == 0) // host proc
   {
     // send out the values on host
-    for (int k = 0; k < kmax; ++k) {
+    for (int k = 0; k < k_max; ++k) {
       Insist(!broadcast(&k, 1, 0), "MPI Error");
       double foo = k + 0.5;
       Insist(!broadcast(&foo, 1, 0), "MPI Error");
@@ -163,7 +166,7 @@ void test_loop(rtt_dsxx::UnitTest &ut) {
 
     int kk = 0;
     double foofoo = 0.0;
-    for (int k = 0; k < kmax; ++k) {
+    for (int k = 0; k < k_max; ++k) {
       kk = -1;
       foofoo = -2.0;
       Insist(!broadcast(&kk, 1, 0), "MPI Error");
@@ -180,6 +183,8 @@ void test_loop(rtt_dsxx::UnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

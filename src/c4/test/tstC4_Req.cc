@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstC4_Req.cc
  * \author Kelly Thompson
- * \date   Tue Nov  1 15:49:44 2005
  * \brief  Unit test for C4_Req class.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -11,9 +10,12 @@
 #include "dsxx/Release.hh"
 #include "dsxx/UnitTest.hh"
 #include "c4/C4_Functions.hh"
+#include "c4/C4_Traits.hh"
 #include "c4/ParallelUnitTest.hh"
 #include <array>
 #include <iostream>
+
+namespace {
 
 using namespace std;
 
@@ -112,6 +114,8 @@ void tstWait(rtt_dsxx::UnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

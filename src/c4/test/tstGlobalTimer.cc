@@ -2,9 +2,8 @@
 /*!
  * \file   c4/test/tstGlobalTimer.cc
  * \author Kelly G. Thompson <kgt@lanl.gov>
- * \date   Thursday, Sep 13, 2018, 10:34 am
  * \brief  Test global timing functions in C4.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -14,6 +13,8 @@
 #include <chrono> // NOLINT(misc-include-cleaner)
 #include <iostream>
 #include <thread>
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -47,6 +48,8 @@ void test_Global_Timer(rtt_dsxx::UnitTest &ut) {
   PASSMSG("done");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

@@ -2,9 +2,8 @@
 /*!
  * \file   c4/test/tstComm_Dup.cc
  * \author Thomas M. Evans
- * \date   Thu Jul 18 11:10:10 2002
  * \brief  test Communicator Duplication
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -13,6 +12,8 @@
 #include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
 #include <sstream>
+
+namespace {
 
 using namespace std;
 
@@ -174,6 +175,8 @@ void test_comm_dup(rtt_dsxx::UnitTest &ut) {
 #endif
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

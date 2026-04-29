@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstScalar.cc
  * \author Kelly Thompson
- * \date   Tue Nov  1 13:24:19 2005
  * \brief  Test functions provided by C4_Serial.cc/.hh
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -11,6 +10,8 @@
 #include "dsxx/UnitTest.hh"
 #include "c4/C4_Functions.hh"
 #include "c4/ParallelUnitTest.hh"
+
+namespace {
 
 using namespace std;
 
@@ -110,6 +111,8 @@ void tstScalar(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

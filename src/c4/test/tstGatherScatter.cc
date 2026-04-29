@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstGatherScatter.cc
  * \author Kent Budge
- * \date   Wed Apr 28 09:31:51 2010
  * \brief  Test c4::gather and c4::scatter functions
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -20,7 +19,10 @@
 #include <iostream>
 #include <numeric>
 #include <string>
+#include <utility>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -80,7 +82,7 @@ void tstDeterminateGatherScatter(UnitTest &ut) {
     gather(&c, &vc[0], 1);
 
     if (pid == 0)
-      FAIL_IF_NOT(std::equal(vc.begin(), vc.end(), alphabet.begin(), alphabet.end()));
+      FAIL_IF_NOT(std::ranges::equal(vc, alphabet));
   }
 
   return;
@@ -186,7 +188,7 @@ void tstIndeterminateGatherScatterv(UnitTest &ut) {
           FAILMSG("NOT correct number of elements in gatherv");
         } else {
           for (unsigned i = 0; i < p; ++i) {
-            if (receive[p][i] != static_cast<int>(p))
+            if (std::cmp_not_equal(receive[p][i], p))
               FAILMSG("NOT correct values in gatherv");
           }
         }
@@ -203,7 +205,7 @@ void tstIndeterminateGatherScatterv(UnitTest &ut) {
     else
       FAILMSG("NOT correct number of processors in scatterv");
     for (unsigned i = 0; i < 2 * pid; ++i) {
-      if (send[i] != static_cast<int>(3 * pid))
+      if (std::cmp_not_equal(send[i], 3 * pid))
         FAILMSG("NOT correct values in scatterv");
     }
   }
@@ -343,7 +345,7 @@ void tstDeterminateGatherScatterv(UnitTest &ut) {
           FAILMSG("NOT correct number of elements in gatherv");
         } else {
           for (unsigned i = 0; i < p; ++i) {
-            if (receive[p][i] != static_cast<int>(p))
+            if (std::cmp_not_equal(receive[p][i], p))
               FAILMSG("NOT correct values in gatherv");
           }
         }
@@ -362,7 +364,7 @@ void tstDeterminateGatherScatterv(UnitTest &ut) {
     else
       FAILMSG("NOT correct number of processors in scatterv");
     for (unsigned i = 0; i < 2 * pid; ++i) {
-      if (send[i] != static_cast<int>(3 * pid))
+      if (std::cmp_not_equal(send[i], 3 * pid))
         FAILMSG("NOT correct values in scatterv");
     }
   }
@@ -501,7 +503,7 @@ void tstDeterminateAllGatherv(UnitTest &ut) {
 
     // determinate_allgatherv already has the data sizes from the other MPI/C4 ranks/nodes
     vector<vector<int64_t>> receive(number_of_processors);
-    for (int64_t p = 0; p < number_of_processors; ++p)
+    for (size_t p = 0; p < number_of_processors; ++p)
       receive[p].resize(p);
 
     // gather data from all nodes to all nodes at rank index in receive vector
@@ -509,9 +511,9 @@ void tstDeterminateAllGatherv(UnitTest &ut) {
     PASSMSG("No exception thrown");
 
     // check values gathered from each rank (and check on each rank of course)
-    for (int64_t p = 0; p < number_of_processors; ++p) {
-      for (int64_t i = 0; i < p; ++i) {
-        if (receive[p][i] != p)
+    for (size_t p = 0; p < number_of_processors; ++p) {
+      for (size_t i = 0; i < p; ++i) {
+        if (std::cmp_not_equal(receive[p][i], p))
           FAILMSG("NOT correct values in allgatherv");
       }
     }
@@ -602,6 +604,8 @@ void tstIndeterminateAllGatherv(UnitTest &ut) {
     PASSMSG("tstIndeterminateAllGatherv tests ok.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

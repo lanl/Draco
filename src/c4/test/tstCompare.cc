@@ -2,8 +2,7 @@
 /*!
  * \file   c4/test/tstCompare.cc
  * \author Mike Buksas
- * \date   Thu May  1 14:47:00 2008
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -12,6 +11,8 @@
 #include "c4/Compare.hh"
 #include "c4/ParallelUnitTest.hh"
 #include <sstream>
+
+namespace {
 
 using namespace std;
 using namespace rtt_c4;
@@ -90,6 +91,8 @@ void test_equivalence(rtt_dsxx::UnitTest &ut, const T value, const T alt_value) 
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

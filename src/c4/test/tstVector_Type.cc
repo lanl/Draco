@@ -2,9 +2,8 @@
 /*!
  * \file   c4/test/tstVector_Type.cc
  * \author Thomas M. Evans
- * \date   Tue Apr  2 15:57:11 2002
  * \brief  Demonstrate send/receive of user defined type.
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -16,6 +15,8 @@
 #include "c4/ParallelUnitTest.hh"
 #include <array>
 #include <cstddef> // size_t
+
+namespace {
 
 using namespace std;
 using namespace rtt_c4;
@@ -74,6 +75,8 @@ void test_simple(rtt_dsxx::UnitTest &ut) {
 
   type_free(data_type);
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

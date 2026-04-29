@@ -2,9 +2,8 @@
 /*!
  * \file   c4/test/tstopstream.cc
  * \author Kent Budge
- * \date   Wed Apr 28 09:31:51 2010
  * \brief  Test c4::determinate_swap and c4::indeterminate_swap functions
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,6 +12,8 @@
 #include "c4/ParallelUnitTest.hh"
 #include "c4/opstream.hh"
 #include <iostream>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -32,11 +33,8 @@ void tstopstream(UnitTest &ut) {
   pout << "MPI rank " << pid << " reporting ...\n";
 
   pout.send();
-
   pout.shrink_to_fit();
-
   pout << "MPI rank " << pid << " reporting a second time ...\n";
-
   pout.shrink_to_fit();
   pout.send();
 
@@ -51,6 +49,8 @@ void tstopstream(UnitTest &ut) {
 
   PASSMSG("completed serialized write without hanging or segfaulting");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

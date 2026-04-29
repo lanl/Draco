@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Thu Mar 21 16:56:16 2002
  * \brief  C4 MPI function declarations.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_C4_MPI_hh
@@ -107,6 +107,17 @@ void broadcast(ForwardIterator first, ForwardIterator last, OutputIterator resul
          "Destination must be same size as source data.");
   broadcast(first, last, result);
   return;
+}
+
+//------------------------------------------------------------------------------------------------//
+template <typename T, std::integral L> void global_sum(T *x, L n) {
+  Require(x != nullptr);
+  Require(n > 0);
+  Require(n < INT32_MAX);
+
+  // do a element-wise global reduction (result is on all processors) into x
+  MPI_Allreduce(MPI_IN_PLACE, x, static_cast<int>(n), MPI_Traits<T>::element_type(), MPI_SUM,
+                communicator);
 }
 
 } // end namespace rtt_c4

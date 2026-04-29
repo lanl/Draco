@@ -4,7 +4,7 @@
  * \author Rob Lowrie
  * \date   Mon Nov 19 10:09:11 2007
  * \brief  Implementation of Invert_Comm_Map
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/Invert_Comm_Map.hh"
@@ -80,8 +80,7 @@ namespace rtt_c4 {
 
 #ifdef C4_MPI
 int get_num_recv(const Invert_Comm_Map_t &to_map) {
-  // number of procs we will receive data from
-  // MPI all reduce version of get_num_recv function
+  // number of procs we will receive data from MPI all reduce version of get_num_recv function
   const int num_procs = rtt_c4::nodes();
   const int my_proc = rtt_c4::node();
 
@@ -98,7 +97,7 @@ int get_num_recv(const Invert_Comm_Map_t &to_map) {
     }
   }
 
-  global_sum(num_recv_global.data(), num_recv_global.size());
+  global_sum(num_recv_global.data(), num_recv_global.size()); // NOLINT(misc-include-cleaner)
 
   Ensure(num_recv_global[my_proc] >= 0 && num_recv_global[my_proc] < num_procs);
   return num_recv_global[my_proc];
