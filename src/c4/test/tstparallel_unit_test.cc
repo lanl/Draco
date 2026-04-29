@@ -12,8 +12,8 @@
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
-  return do_parallel_unit_test(argc, argv, rtt_dsxx::release,
-                               [](rtt_dsxx::UnitTest &ut) { ut.passes("basic run"); });
+  return rtt_c4::do_parallel_unit_test(argc, argv, rtt_dsxx::release,
+                                       [](rtt_dsxx::UnitTest &ut) { ut.passes("basic run"); });
 }
 
 //------------------------------------------------------------------------------------------------//
