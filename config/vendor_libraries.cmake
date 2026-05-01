@@ -66,6 +66,25 @@ function(setupJSON)
   endif()
 endfunction()
 
+# ------------------------------------------------------------------------------------------------ #
+# Helper functions for header-only ports-of-call
+# ------------------------------------------------------------------------------------------------ #
+function(setupPortsofCall)
+
+  message(STATUS "Looking for Ports-of-Call...")
+  find_package(ports-of-call QUIET)
+  mark_as_advanced(ports-of-call_FOUND)
+  if(ports-of-call_FOUND)
+    set(ports-of-call_FOUND
+        ${ports-of-call_FOUND}
+        CACHE BOOL "Did we find the ports-of-call dependency?")
+    message(STATUS "Looking for Ports-of-Call.found ${ports-of-call_DIR}")
+  else()
+    message(STATUS "Looking for Ports-of-Call.not found")
+  endif()
+
+endfunction()
+
 # --------------------------------------------------------------------------------------------------
 # Setup GSL (any)
 # --------------------------------------------------------------------------------------------------
@@ -333,6 +352,7 @@ macro(setupVendorLibraries)
   setupparmetis()
   setuprandom123()
   setupjson()
+  setupportsofcall()
   setupeospac()
   setupndi()
   setupshaclphysics()
