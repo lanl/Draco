@@ -2,7 +2,6 @@
 /*!
  * \file   c4/C4_MPI.i.hh
  * \author Alex R Long
- * \date   Mon Aug 21 07:47:01 2017
  * \brief  C4 MPI standard implementations.
  * \note   Copyright (C) 2017-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

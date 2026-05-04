@@ -2,8 +2,7 @@
 /*!
  * \file   c4/Compare.cc
  * \author Mike Buksas
- * \date   Thu May  1 14:42:10 2008
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/Compare.hh"

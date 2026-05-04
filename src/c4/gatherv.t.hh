@@ -2,7 +2,6 @@
 /*!
  * \file   c4/gatherv.t.hh
  * \author Thomas M. Evans, Kent Budge
- * \date   Thu Mar 21 16:56:17 2002
  * \brief  C4 MPI template implementation.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

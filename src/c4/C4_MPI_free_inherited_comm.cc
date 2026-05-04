@@ -2,9 +2,8 @@
 /*!
  * \file   c4/C4_MPI_free_inherited_comm.cc
  * \author Thomas M. Evans
- * \date   Thu Mar 21 16:56:17 2002
  * \brief  C4 MPI implementation.
- * \note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "C4_Functions.hh"

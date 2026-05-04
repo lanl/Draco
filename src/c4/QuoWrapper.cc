@@ -2,9 +2,8 @@
 /*!
  * \file   c4/QuoWrapper.cc
  * \author Kelly Thompson
- * \date   Friday, Nov 29, 2019, 18:15 pm
  * \brief  Wrap libquo (github.com/lanl/libquo)
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/QuoWrapper.hh"

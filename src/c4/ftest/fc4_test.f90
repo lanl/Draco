@@ -2,9 +2,8 @@
 !
 ! \file   c4/fc4/fc4_test.f90
 ! \author Allan Wollaber, Kelly Thompson
-! \date   Mon Jul 30 07:06:24 MDT 2012
 ! \brief  Helper functions for the F90 Draco tests
-! \note   Copyright (c) 2016-2021 Triad National Security, LLC., All rights reserved.
+! \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 !
 ! This is a modified version of jayenne/src/api/ftest/API_Test.F90.
 !-------------------------------------------------------------------------------------------------!

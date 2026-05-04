@@ -2,7 +2,6 @@
 /*!
  * \file   c4/C4_Status.hh
  * \author Robert B. Lowrie
- * \date   Friday May 19 6:54:21 2017
  * \brief  C4_Status class definition.
  * \note   Copyright (C) 2017-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

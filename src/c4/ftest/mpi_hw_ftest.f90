@@ -2,10 +2,8 @@
 !!
 !* \file   c4/ftest/mpi_hw_ftest.f90
 !* \author Allan Wollaber, Tom Evans, Kelly Thompson
-!* \date   Fri Mar 15 11:25:00 2002
 !* \brief  Infinite medium Draco shunt.
-!* \note   Copyright (C) 2016-2020 Triad National Security, LLC.
-!*         All rights reserved.
+!* \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 !---------------------------------------------------------------------------//
 
 subroutine tst_mpi_hw_f(nf) bind(C, name="tst_mpi_hw")
@@ -31,10 +29,10 @@ subroutine tst_mpi_hw_f(nf) bind(C, name="tst_mpi_hw")
   ! ------------------------------------
 
   if (fc4_rank < fc4_num_ranks) then
-     call pass_msg(fc4_rank, "MPI rank index ok")
+    call pass_msg(fc4_rank, "MPI rank index ok")
   else
-     call it_fails(fc4_rank, "MPI rank > max")
-  endif
+    call it_fails(fc4_rank, "MPI rank > max")
+  end if
 
   call fc4_mpi_barrier(ierr)
   print *, "Hello from rank ", fc4_rank, "/", fc4_num_ranks

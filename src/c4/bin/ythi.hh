@@ -2,9 +2,8 @@
 /*!
  * \file   c4/bin/ythi.hh
  * \author Kelly Thompson <kgt@lanl.gov>, Tim Kelley <tkelley@lanl.gov.
- * \date   Tuesday, Jun 05, 2018, 17:12 pm
  * \brief  Print MPI rank, thread number and core affinity bindings.
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved.
  *
  * These functions are used by c4/bin/ythi.cc and c4/test/tstQuoWrapper.cc
  */

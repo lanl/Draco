@@ -2,7 +2,6 @@
 /*!
  * \file   c4/scatterv_pt.cc
  * \author Thomas M. Evans
- * \date   Mon Mar 25 14:44:54 2002
  * \brief  C4 MPI determinate and indeterminate scatterv instantiations.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

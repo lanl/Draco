@@ -2,9 +2,8 @@
 /*!
  * \file   c4/C4_Tags.hh
  * \author Thomas M. Evans
- * \date   Mon Mar 25 10:05:10 2002
  * \brief  Tags used by C4.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_C4_Tags_hh

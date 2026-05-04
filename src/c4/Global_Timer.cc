@@ -2,9 +2,8 @@
 /*!
  * \file   c4/Global_Timer.cc
  * \author Kent G. Budge
- * \date   Mon Mar 25 17:35:07 2002
  * \brief  Define methods of class Global_Timer, a POSIX standard timer.
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Global_Timer.hh"

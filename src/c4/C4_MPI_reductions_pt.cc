@@ -2,9 +2,8 @@
 /*!
  * \file   c4/C4_MPI_reductions_pt.cc
  * \author Thomas M. Evans
- * \date   Mon Mar 25 11:12:35 2002
  * \brief  C4 MPI global reduction instantiations.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/config.h"
