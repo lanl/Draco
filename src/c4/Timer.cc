@@ -2,7 +2,6 @@
 /*!
  * \file   c4/Timer.cc
  * \author Thomas M. Evans
- * \date   Mon Mar 25 17:56:11 2002
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 

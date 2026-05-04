@@ -2,7 +2,6 @@
 /*!
  * \file   c4/test/tstsend_is.cc
  * \author Kelly Thompson
- * \date   Friday, Dec 07, 2012, 14:02 pm
  * \brief  Unit tests for rtt_c4::send_is()
  * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

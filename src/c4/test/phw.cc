@@ -2,9 +2,8 @@
 /*!
  * \file   c4/test/phw.cc
  * \author Kelly Thompson
- * \date   Tue Jun  6 15:03:08 2006
  * \brief  Parallel application used by the unit test for tstApplicationUnitTest.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/C4_Functions.hh"

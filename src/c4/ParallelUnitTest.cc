@@ -2,9 +2,8 @@
 /*!
  * \file   c4/ParallelUnitTest.cc
  * \author Kelly Thompson
- * \date   Thu Jun  1 17:15:05 2006
  * \brief  Implementation file for encapsulation of Draco parallel unit tests.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ParallelUnitTest.hh"

@@ -2,7 +2,6 @@
 /*!
  * \file   c4/Termination_Detector.cc
  * \author Kent Budge
- * \date   Thu Jan 12 10:27:45 2006
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 

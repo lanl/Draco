@@ -2,9 +2,8 @@
 /*!
  * \file   c4/C4_MPI.t.hh
  * \author Thomas M. Evans
- * \date   Thu Mar 21 16:56:17 2002
  * \brief  C4 MPI template implementation for explicit instantiation.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_C4_MPI_t_hh

@@ -2,7 +2,6 @@
 /*!
  * \file   c4/C4_MPI.hh
  * \author Thomas M. Evans
- * \date   Thu Mar 21 16:56:16 2002
  * \brief  C4 MPI function declarations.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

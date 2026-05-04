@@ -2,7 +2,6 @@
 /*!
  * \file   c4/C4_Functions.hh
  * \author Thomas M. Evans
- * \date   Thu Mar 21 11:42:03 2002
  * \brief  C4 Communication Functions.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
  *

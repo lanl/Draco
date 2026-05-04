@@ -2,7 +2,6 @@
 /*!
  * \file   c4/C4_Serial.hh
  * \author Thomas M. Evans
- * \date   Mon Mar 25 17:06:25 2002
  * \brief  Serial implementation of C4.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

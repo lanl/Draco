@@ -2,9 +2,8 @@
 /*!
  * \file   c4/C4_Req.cc
  * \author Thomas M. Evans, Geoffrey Furnish
- * \date   Thu Jun  2 09:54:02 2005
  * \brief  C4_Req member definitions.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "C4_Req.hh"

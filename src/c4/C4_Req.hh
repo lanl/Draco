@@ -2,7 +2,6 @@
 /*!
  * \file   c4/C4_Req.hh
  * \author Thomas M. Evans, Geoffrey Furnish
- * \date   Thu Jun  2 09:54:02 2005
  * \brief  C4_Req class definition.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

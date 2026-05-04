@@ -3,7 +3,7 @@
  * \file   c4/opstream.hh
  * \author Kent G. Budge
  * \brief  Define class opstream
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_opstream_hh

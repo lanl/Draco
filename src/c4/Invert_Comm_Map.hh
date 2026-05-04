@@ -2,9 +2,8 @@
 /*!
  * \file   c4/Invert_Comm_Map.hh
  * \author Mike Buksas, Rob Lowrie
- * \date   Mon Nov 19 10:09:10 2007
  * \brief  Implementation of Invert_Comm_Map
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef c4_Invert_Comm_Map_hh

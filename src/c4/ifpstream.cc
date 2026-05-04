@@ -2,7 +2,6 @@
 /*!
  * \file   c4/ifpstream.cc
  * \author Mathew Cleveland
- * \date   Feb. 2020
  * \brief  ifpstream class to read processor decomposed data in parallel.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
  *

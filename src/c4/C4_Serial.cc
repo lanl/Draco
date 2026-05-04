@@ -2,9 +2,8 @@
 /*!
  * \file   c4/C4_Serial.cc
  * \author Thomas M. Evans
- * \date   Mon Mar 25 17:06:25 2002
  * \brief  Implementation of C4 serial option.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 // NOLINTBEGIN(misc-include-cleaner)

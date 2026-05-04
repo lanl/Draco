@@ -2,7 +2,6 @@
 /*!
  * \file   c4/global_containers_pt.cc
  * \author Kent Budge
- * \date   Mon Mar 24 10:17:40 2008
  * \brief  Explicit template instatiations for class global_containers.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

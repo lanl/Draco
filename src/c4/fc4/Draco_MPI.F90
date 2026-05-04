@@ -1,9 +1,8 @@
 !---------------------------------------------*-F90 *----------------------------------------------!
 ! \file   c4/fc4/Draco_MPI.F90
 ! \author Allan Wollaber
-! \date   Mon Jul 30 07:06:24 MDT 2012
 ! \brief  Helper functions to support scalar vs. distributed MPI tests.
-! \note   Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+! \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 !--------------------------------------------------------------------------------------------------!
 
 module draco_mpi

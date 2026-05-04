@@ -2,7 +2,7 @@
 /*!
  * \file   c4/Processor_Group.cc
  * \brief  Define non-template methods of class Processor_Group.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "c4/config.h"

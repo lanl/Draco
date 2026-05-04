@@ -2,9 +2,8 @@
 /*!
 * \file   c4/C4_Serial.t.hh
 * \author Thomas M. Evans, Kelly Thompson <kgt@lanl.gov>
-* \date   Mon Mar 25 17:06:25 2002
 * \brief  Implementation of C4 serial option.
-* \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+* \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_c4_serial_t_hh

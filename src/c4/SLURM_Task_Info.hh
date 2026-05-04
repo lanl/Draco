@@ -2,7 +2,6 @@
 /*!
  * \file   c4/SLURM_Task_Info.hh
  * \author Tim Kelley
- * \date   Fri Jun 7 08:06:53 2019
  * \brief  Functions for working with your environment
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
