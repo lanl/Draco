@@ -2,7 +2,7 @@
 # file   FortranChecks/test/CMakeLists.txt
 # author Kelly Thompson
 # brief  Demo of building a C++ main that links against an F90 library and uses ISO_C_BINDING.
-# note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 project(FortranChecks_test CXX)
 
