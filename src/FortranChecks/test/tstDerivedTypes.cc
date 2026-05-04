@@ -2,9 +2,8 @@
 /*!
  * \file   FortranChecks/test/tstDerivedTypes.cc
  * \author Kelly Thompson
- * \date   Tuesday, Jun 12, 2012, 16:03 pm
  * \brief  Test C++ main linking a Fortran library.
- * \note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 //------------------------------------------------------------------------------------------------//
