@@ -2,7 +2,6 @@
 /*!
  * \file   cdi/CDI.cc
  * \author Kelly Thompson
- * \date   Thu Jun 22 16:22:07 2000
  * \brief  CDI class implementation file.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -21,6 +20,8 @@
 #include <numeric>
 #include <utility>
 #include <vector>
+
+// cSpell:ingore eloss, odf, opac
 
 namespace rtt_cdi {
 
@@ -217,7 +218,7 @@ void CDI::integrate_Planckian_Spectrum(std::vector<double> const &bounds, double
                                        std::vector<double> &planck) {
   Require(bounds.size() > 1);
   Require(bounds[0] >= 0.0);
-  // Subsequent bounds must be monotonicallly increasing; checked in loop below
+  // Subsequent bounds must be monotonically increasing; checked in loop below
   Require(T >= 0.0);
 
   size_t const groups(bounds.size() - 1);
@@ -258,7 +259,7 @@ void CDI::integrate_Planckian_Spectrum(std::vector<double> const &bounds, double
     // bounds[0] == 0 as T -> 0. This is likely the least surprising behavior for clients. In
     // practice, it matters little, since the spectrum will almost always be multiplied by a scaling
     // factor that goes to zero as T -> 0.
-    fill(planck.begin(), planck.end(), 0.0);
+    std::ranges::fill(planck, 0.0);
     if (extend || bounds[0] <= 0.0) {
       planck[0] = 1.0;
     }
@@ -401,7 +402,7 @@ void CDI::integrate_Rosseland_Spectrum(std::vector<double> const &bounds, double
     //   bounds[0] == 0 as T -> 0. This is likely the least surprising behavior for clients. In
     //   practice, it matters little, since the spectrum will almost always be multiplied by a
     //   scaling factor that goes to zero as T -> 0.
-    fill(rosseland.begin(), rosseland.end(), 0.0);
+    std::ranges::fill(rosseland, 0.0);
     if (extend || bounds[0] <= 0.0)
       rosseland[0] = 1.0;
   }
@@ -416,7 +417,7 @@ void CDI::integrate_Rosseland_Spectrum(std::vector<double> const &bounds, double
  * \param bounds    The vector of group boundaries. Size n+1
  * \param T         The temperature
  * \param planck    Return argument containing the Planckian integrals. Size n
- * \param rosseland Return argumant containing the Rosseland integrals. Size n
+ * \param rosseland Return argument containing the Rosseland integrals. Size n
  */
 void CDI::integrate_Rosseland_Planckian_Spectrum(std::vector<double> const &bounds, double const T,
                                                  std::vector<double> &planck,
@@ -488,12 +489,12 @@ void CDI::integrate_Rosseland_Planckian_Spectrum(std::vector<double> const &boun
     }
   } else {
     // T==0
-    // For the somewhat ill-posed case of T == 0 and bounds[0] == 0, we have chosen
-    // to pretend bounds[0] == 0 as T -> 0. This is likely the least surprising behavior
-    // for clients. In practice, it matters little, since the spectrum will almost
-    // always be multiplied by a scaling factor that goes to zero as T -> 0.
-    fill(planck.begin(), planck.end(), 0.0);
-    fill(rosseland.begin(), rosseland.end(), 0.0);
+    // * For the somewhat ill-posed case of T == 0 and bounds[0] == 0, we have chosen to pretend
+    //   bounds[0] == 0 as T -> 0. This is likely the least surprising behavior for clients. In
+    //   practice, it matters little, since the spectrum will almost always be multiplied by a
+    //   scaling factor that goes to zero as T -> 0.
+    std::ranges::fill(planck, 0.0);
+    std::ranges::fill(rosseland, 0.0);
     if (extend || bounds[0] <= 0.0)
       planck[0] = rosseland[0] = 1.0;
   }

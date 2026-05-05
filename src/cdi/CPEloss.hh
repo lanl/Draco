@@ -2,7 +2,6 @@
 /*!
  * \file   cdi/CPEloss.hh
  * \author Kendra Long
- * \date   Fri Aug  2 14:28:08 2019
  * \brief  CPEloss class header file (an abstract class)
  * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

@@ -2,7 +2,6 @@
 /*!
  * \file   cdi/test/DummyEoS.hh
  * \author Kelly Thompson
- * \date   Mon Jan 8 15:29:17 2001
  * \brief  DummyEoS class header file (derived from ../EoS)
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

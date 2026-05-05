@@ -2,7 +2,6 @@
 /*!
  * \file   cdi/GrayOpacity.hh
  * \author Kelly Thompson
- * \date   Mon Jan 8 15:02:21 2001
  * \brief  GrayOpacity class header file (an abstract class)
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

@@ -2,7 +2,6 @@
 /*!
  * \file   cdi/MultigroupOpacity.hh
  * \author Kelly Thompson
- * \date   Mon Jan 8 14:58:55 2001
  * \brief  MultigroupOpacity class header file (an abstract class)
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

@@ -2,9 +2,8 @@
 /*!
  * \file   cdi/test/tDummyOpacity.cc
  * \author Thomas M. Evans
- * \date   Tue Oct  9 15:50:53 2001
  * \brief  GrayOpacity and Multigroup opacity test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "DummyGrayOpacity.hh"
@@ -20,6 +19,8 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+
+namespace {
 
 using namespace std;
 
@@ -51,17 +52,17 @@ void simple_tests(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(gray->getModelType() == rtt_cdi::ANALYTIC);
     FAIL_IF_NOT(gray->getOpacityModelType() == rtt_cdi::DUMMY_TYPE);
 
-    vector<double> Tgrid = {1.0, 2.0, 3.0};
-    vector<double> rhogrid = {0.1, 0.2};
+    vector<double> T_grid = {1.0, 2.0, 3.0};
+    vector<double> rho_grid = {0.1, 0.2};
 
     std::vector<double> const T(gray->getTemperatureGrid());
-    if (soft_equiv(T.begin(), T.end(), Tgrid.begin(), Tgrid.end()))
+    if (soft_equiv(T.begin(), T.end(), T_grid.begin(), T_grid.end()))
       PASSMSG("Gray temperature grid correct.");
     else
       FAILMSG("Gray temperature grid incorrect.");
 
     std::vector<double> const rho(gray->getDensityGrid());
-    if (soft_equiv(rho.begin(), rho.end(), rhogrid.begin(), rhogrid.end()))
+    if (soft_equiv(rho.begin(), rho.end(), rho_grid.begin(), rho_grid.end()))
       PASSMSG("Gray density grid correct.");
     else
       FAILMSG("Gray density grid incorrect.");
@@ -88,24 +89,24 @@ void simple_tests(rtt_dsxx::UnitTest &ut) {
     FAIL_IF(mg->getModelType() != rtt_cdi::ANALYTIC);
     FAIL_IF(mg->getOpacityModelType() != rtt_cdi::DUMMY_TYPE);
 
-    vector<double> Tgrid = {1.0, 2.0, 3.0};
-    vector<double> rhogrid = {0.1, 0.2};
-    vector<double> egroups = {0.05, 0.5, 5.0, 50.0};
+    vector<double> T_grid = {1.0, 2.0, 3.0};
+    vector<double> rho_grid = {0.1, 0.2};
+    vector<double> e_groups = {0.05, 0.5, 5.0, 50.0};
 
     std::vector<double> const T(mg->getTemperatureGrid());
-    if (soft_equiv(T.begin(), T.end(), Tgrid.begin(), Tgrid.end()))
+    if (soft_equiv(T.begin(), T.end(), T_grid.begin(), T_grid.end()))
       PASSMSG("Multigroup temperature grid correct.");
     else
       FAILMSG("Multigroup temperature grid incorrect.");
 
     std::vector<double> const rho(mg->getDensityGrid());
-    if (soft_equiv(rho.begin(), rho.end(), rhogrid.begin(), rhogrid.end()))
+    if (soft_equiv(rho.begin(), rho.end(), rho_grid.begin(), rho_grid.end()))
       PASSMSG("Multigroup density grid correct.");
     else
       FAILMSG("Multigroup density grid incorrect.");
 
     std::vector<double> const bounds(mg->getGroupBoundaries());
-    if (soft_equiv(bounds.begin(), bounds.end(), egroups.begin(), egroups.end()))
+    if (soft_equiv(bounds.begin(), bounds.end(), e_groups.begin(), e_groups.end()))
       PASSMSG("Multigroup energy boundaries correct.");
     else
       FAILMSG("Multigroup energy boundaries incorrect.");
@@ -115,7 +116,7 @@ void simple_tests(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(mg->getNumGroupBoundaries() == 4);
   }
 
-  // noew reassign and check multigroup opacities for absorption
+  // now reassign and check multigroup opacities for absorption
   {
     mg = mg_abs;
     FAIL_IF_NOT(mg->getReactionType() == rtt_cdi::ABSORPTION);
@@ -261,12 +262,12 @@ void multigroup_opacity_test(rtt_dsxx::UnitTest &ut) {
 
   // Reference values.
 
-  // The opacity container is a vector<vector<double>>.  Each nested vector contains all of the
+  // The opacity container is a `vector<vector<double>>`.  Each nested vector contains all of the
   // group opacity values for a single temperature.
 
   // a MG opacity set for a single temperature, density combination can be extracted from this
-  // container by using the following type of assignment.  std::vector< double > vec1 =
-  // vRefMgOpacity[0];
+  // container by using the following type of assignment.
+  // * `std::vector< double > vec1 = vRefMgOpacity[0];`
 
   // the size of this vector is the number of temperatures, ***not*** the number of groups!
   std::vector<std::vector<double>> vRefMgOpacity(2);
@@ -339,6 +340,8 @@ void multigroup_opacity_test(rtt_dsxx::UnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
