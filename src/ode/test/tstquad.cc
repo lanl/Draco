@@ -2,8 +2,7 @@
 /*!
  * \file   ode/test/tstquad.cc
  * \author Kent Budge
- * \date   Tue Sep 21 11:45:44 2004
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -14,6 +13,8 @@
 #include "ode/rkqs.hh"
 #include <cmath> // std::exp
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -38,6 +39,8 @@ void tstquad(UnitTest &ut) {
   double const integral = rtt_ode::quad<fpdd, Rule>(exp_fpdd, 0.0, 1.0, eps, &rkqs);
   UT_MSG(soft_equiv(integral, exp(1.0) - 1.0, eps), "quad accurate");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
