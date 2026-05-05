@@ -2,9 +2,8 @@
 /*!
  * \file   cdi/test/tDummyEICoupling.cc
  * \author Mathew Cleveland
- * \date   March 2019
  * \brief  EICoupling class test.
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "DummyEICoupling.hh"
@@ -17,6 +16,8 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+
+namespace {
 
 using namespace std;
 
@@ -35,7 +36,7 @@ void test_EICoupling(rtt_dsxx::UnitTest &ut) {
   // The smart pointer points to a generic EICoupling object.
   std::shared_ptr<EICoupling> spEICoupling;
 
-  // The actual instatniate is specific (dummyEoS).
+  // The actual instantiate is specific (dummyEoS).
   if ((spEICoupling = std::make_shared<rtt_cdi_test::DummyEICoupling>()), spEICoupling) {
     // If we get here then the object was successfully instantiated.
     PASSMSG("Smart Pointer to new EICoupling object created.");
@@ -91,6 +92,8 @@ void test_EICoupling(rtt_dsxx::UnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

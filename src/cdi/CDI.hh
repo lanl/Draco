@@ -2,7 +2,6 @@
 /*!
  * \file   cdi/CDI.hh
  * \author Kelly Thompson
- * \date   Thu Jun 22 16:22:06 2000
  * \brief  CDI class header file.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

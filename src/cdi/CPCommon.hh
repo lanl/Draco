@@ -2,7 +2,6 @@
 /*!
  * \file   cdi/CPCommon.hh
  * \author Kendra Long
- * \date   Mon Jan 19 13:41:01 2001
  * \brief  Datatypes needed in CPEloss classes
  * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -16,6 +15,8 @@
 #include <cstdint>
 #include <map>
 #include <vector>
+
+// cSpell:ingore eloss, odf, opac
 
 namespace rtt_cdi {
 
@@ -95,13 +96,13 @@ unsigned int const num_CPModels(3);
 constexpr double max_eloss = 1.e15;
 } // namespace constants
 
-enum class CPModelAngleCutoff {
+enum class CPModelAngleCutoff : uint8_t {
   NONE = 0,  /*!< no angle cutoff */
   TNBURN = 1 /*!< cutoff angle formula from "TN Burn Project: Minimum Impact parameter Scattering
                   Angle Cutoff/Nuclear Interactions */
 };
 
-enum class CPModelType {
+enum class CPModelType : uint8_t {
   UNASSIGNED_ETYPE = 0, /*!< unassigned type; used as a placeholder before deciding type */
   ANALYTIC_ETYPE = 1,   /*!< an Analytic eloss model */
   TABULAR_ETYPE = 2     /*!< a Tabular eloss model */

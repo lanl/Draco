@@ -2,9 +2,8 @@
 /*!
  * \file   cdi/test/tDummyEoS.cc
  * \author Thomas M. Evans
- * \date   Tue Oct  9 10:52:50 2001
  * \brief  EoS class test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "DummyEoS.hh"
@@ -17,6 +16,8 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+
+namespace {
 
 using namespace std;
 
@@ -35,7 +36,7 @@ void test_EoS(rtt_dsxx::UnitTest &ut) {
   // The smart pointer points to a generic EoS object.
   std::shared_ptr<EoS> spEoS;
 
-  // The actual instatniate is specific (dummyEoS).
+  // The actual instantiate is specific (dummyEoS).
   if ((spEoS = std::make_shared<rtt_cdi_test::DummyEoS>()), spEoS) {
     // If we get here then the object was successfully instantiated.
     PASSMSG("Smart Pointer to new EoS object created.");
@@ -75,7 +76,7 @@ void test_EoS(rtt_dsxx::UnitTest &ut) {
   std::vector<double> vdensity(3);
   vdensity[0] = 0.35; // g/cm^3
   vdensity[1] = 1.0;  // g/cm^3
-  vdensity[2] = 9.8;  // g/mcm^3
+  vdensity[2] = 9.8;  // g/cm^3
 
   // Retrieve electron based heat capacities.
   std::vector<double> vRefCve(vtemperature.size());
@@ -92,6 +93,8 @@ void test_EoS(rtt_dsxx::UnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

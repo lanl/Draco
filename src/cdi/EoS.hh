@@ -2,7 +2,6 @@
 /*!
  * \file   cdi/EoS.hh
  * \author Kelly Thompson
- * \date   Fri Apr 13 16:15:59 2001
  * \brief  EoS class header file (an abstract class)
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

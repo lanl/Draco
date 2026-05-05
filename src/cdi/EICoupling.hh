@@ -2,7 +2,6 @@
 /*!
  * \file   cdi/EICoupling.hh
  * \author Mathew Cleveland
- * \date   March 2019
  * \brief  EICoupling class header file (an abstract class)
  * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

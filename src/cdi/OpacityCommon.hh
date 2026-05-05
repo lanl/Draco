@@ -2,13 +2,16 @@
 /*!
  * \file   cdi/OpacityCommon.hh
  * \author Kelly Thompson
- * \date   Mon Jan 19 13:41:01 2001
  * \brief  Datatypes needed in GrayOpacity and MultigroupOpacity
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_OpacityCommon_hh
 #define rtt_cdi_OpacityCommon_hh
+
+#include <cstdint>
+
+// cSpell:ignore odfmg
 
 namespace rtt_cdi {
 
@@ -33,9 +36,9 @@ unsigned int constexpr num_Reactions(3);
  * This enumeration \b must be unnumbered, ie it spans the set [0,N).  The number of models is given
  * by rtt_cdi::constants::num_Models.
  */
-enum Model {
+enum Model : uint8_t {
   ROSSELAND, /*!< use Rosseland mean opacities. */
-  PLANCK,    /*!< use Plank mean opacities. */
+  PLANCK,    /*!< use Planck mean opacities. */
   ANALYTIC,  /*!< use Analytic model opacities. */
   ISOTROPIC, /*!< use Isotropic scattering opacities. */
   THOMSON,   /*!< use Thomson scattering opacities. */
@@ -47,10 +50,10 @@ enum Model {
 /*!
  * \brief Opacity reaction type stored in this opacity object.
  *
- * This enumeration \b must be unnumbered, ie it spans the set [0,N).  The number of readtion types
+ * This enumeration \b must be unnumbered, ie it spans the set [0,N).  The number of reaction types
  * is given by rtt_cdi::constants::num_Reactions.
  */
-enum Reaction {
+enum Reaction : uint8_t {
   TOTAL,      /*!< Total opacity value (scattering plus absorption). */
   ABSORPTION, /*!< Absorption cross sections only. */
   SCATTERING, /*!< Scattering cross sections only. */
@@ -62,17 +65,10 @@ enum Reaction {
  * \brief Type of opacity model: analytic, or gandolf.
  *
  * Used in Milagro Material_Data in packing the objects, returned by each opacity type. It was
- * previously defined as
- * \code
- *   typeid(rtt_cdi_analytic::Analytic_Odfmg_Opacity)
- * \endcode
- * mapping to 1, and
- * \code
- *   typeid(rtt_cdi_gandolf::GandolfOdfmgOpacity)
- * \endcode
- * mapping to 2.
+ * previously defined as `typeid(rtt_cdi_analytic::Analytic_Odfmg_Opacity)` mapping to 1, and
+ * `typeid(rtt_cdi_gandolf::GandolfOdfmgOpacity)` mapping to 2.
  */
-enum OpacityModelType {
+enum OpacityModelType : uint8_t {
   UNASSIGNED_TYPE = 0, /*!< unassigned type; used as a placeholder before deciding type */
   ANALYTIC_TYPE = 1,   /*!< an Analytic opacity model */
   GANDOLF_TYPE = 2,    /*!< a Gandolf opacity model */
