@@ -3,13 +3,42 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2010 Sep 24
 # brief  Generate build project files for dsxx.
-# note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
-project(dsxx CXX)
+project(dsxx CXX ${GPU_DBS_STRING})
 
 # ------------------------------------------------------------------------------------------------ #
-# Generate config.h (only occurs when cmake is run)
+# Generate config.h and device_config.h (only occurs when cmake is run)
+
+# ------------------------------------------------------------------------------------------------ #
+# GPU-specific configuration file
+# ------------------------------------------------------------------------------------------------ #
+if(DEFINED GPU_DBS_STRING)
+  if(GPU_DBS_STRING STREQUAL "HIP")
+    set(USE_HIP ON)
+  elseif(GPU_DBS_STRING STREQUAL "CUDA")
+    set(USE_CUDA ON)
+  endif()
+endif()
+set(TEST_KERNEL_BINDIR
+    ${PROJECT_BINARY_DIR}/test
+    CACHE PATH "GPU kernel binary install location")
+configure_file(device_config.h.in ${PROJECT_BINARY_DIR}/dsxx/device_config.h)
+
+# ------------------------------------------------------------------------------------------------ #
+# Build GPU_Device
+# ------------------------------------------------------------------------------------------------ #
+if(HAVE_GPU AND USE_GPU)
+  set(include_dirs PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>)
+  if(EXISTS "${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
+    string(APPEND include_dirs ";$<BUILD_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}>")
+    string(APPEND include_dirs ";$<INSTALL_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}>")
+  elseif(EXISTS "$ENV{ROCM_PATH}")
+    string(APPEND include_dirs ";$<BUILD_INTERFACE:$ENV{ROCM_PATH}/include>")
+    string(APPEND include_dirs ";$<INSTALL_INTERFACE:$ENV{ROCM_PATH}/include>")
+  endif()
+endif()
 # ------------------------------------------------------------------------------------------------ #
 
 # Review config/platform_checks.cmake for many of these settings.
@@ -138,7 +167,7 @@ file(GLOB sources *.cc)
 file(GLOB explicit_instantiations *_pt.cc)
 file(GLOB dsxx_headers *.hh)
 list(APPEND dsxx_headers ${PROJECT_BINARY_DIR}/dsxx/config.h
-     ${PROJECT_BINARY_DIR}/dsxx/dll_declspec.h)
+     ${PROJECT_BINARY_DIR}/dsxx/device_config.h ${PROJECT_BINARY_DIR}/dsxx/dll_declspec.h)
 set(dsxx_terminal_headers ${PROJECT_SOURCE_DIR}/terminal/terminal.h
                           ${PROJECT_SOURCE_DIR}/terminal/terminal_base.h)
 list(REMOVE_ITEM dsxx_headers ${template_implementations})
@@ -154,13 +183,13 @@ endif()
 # ------------------------------------------------------------------------------------------------ #
 # Build package library
 # ------------------------------------------------------------------------------------------------ #
-set(include_dirs
-    PUBLIC $<BUILD_INTERFACE:${Draco_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
-    $<INSTALL_INTERFACE:${DBSCFG_IMPORT_PREFIX}>)
-if(WIN32)
-  set(target_deps ${Lib_win_winsock})
-elseif(TARGET coverage_config)
-  set(target_deps coverage_config)
+list(APPEND include_dirs PUBLIC $<BUILD_INTERFACE:${Draco_SOURCE_DIR}/src>
+     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> $<INSTALL_INTERFACE:${DBSCFG_IMPORT_PREFIX}>)
+
+set(target_deps)
+
+if(TARGET coverage_config)
+  list(APPEND target_deps coverage_config)
 endif()
 
 add_component_library(

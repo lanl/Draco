@@ -10,7 +10,6 @@
 
 /* hostname */
 #include <limits.h>        // HOST_NAME_MAX, hostname
-
 /*------------------------------------------------------------------------------------------------*/
 /* Draco/CMake build system variables */
 /*------------------------------------------------------------------------------------------------*/
@@ -69,10 +68,6 @@
 #cmakedefine draco_is64bit
 #cmakedefine draco_isATS2_rhel7
 #cmakedefine DRACO_UNAME @DRACO_UNAME@
-#cmakedefine HAVE_GPU @HAVE_GPU@
-#cmakedefine USE_GPU @USE_GPU@
-/* Eg: project(foo CXX ${GPU_DBS_STRING}) */
-#cmakedefine GPU_DBS_STRING @GPU_DBS_STRING@
 #cmakedefine APPLE @APPLE@
 #cmakedefine SITENAME "@SITENAME@"
 #cmakedefine COMPILED_HOSTNAME "@COMPILED_HOSTNAME@"
@@ -267,11 +262,6 @@
 #cmakedefine CMAKE_HIP_FLAGS_RELWITHDEBINFO "@CMAKE_HIP_FLAGS_RELWITHDEBINFO@"
 #cmakedefine CMAKE_HIP_FLAGS_MINSIZEREL     "@CMAKE_HIP_FLAGS_MINSIZEREL@"
 #cmakedefine HIP_ARCHITECTURES "@HIP_ARCHITECTURES@"
-
-/* Used by Assert.hh to allow it to be used by C++ or cuda/hip */
-#if defined __NVCC__ || defined __HIPCC__
-#define __GPUCC__
-#endif
 
 #cmakedefine CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@"
 #cmakedefine CMAKE_COMPILER_IS_GNUCXX         @CMAKE_COMPILER_IS_GNUCXX@

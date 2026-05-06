@@ -22,7 +22,7 @@ namespace {
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
-  // Print the status of the test.
+// Print the status of the test.
 void printStatus(const std::string &name, bool passed) {
   std::string const stars(name.size(), '*');
   std::cout << "\n********" << stars << "********************\n**** " << name

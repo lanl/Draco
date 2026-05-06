@@ -11,6 +11,7 @@
 #define rtt_dsxx_Range_finder_hh
 
 #include "Assert.hh"
+#include "dsxx/device_config.h"
 #include <algorithm>
 #include <cstdint>
 #include <iterator>
@@ -24,11 +25,11 @@ namespace rtt_dsxx {
  * Range_finder
  *
  * These functions locate a value in intervals described by an increasing array.  E.g. Let `v[i]`
- * be an increasing array and `r` a value. These functions look for `i` such that: 
+ * be an increasing array and `r` a value. These functions look for `i` such that:
  * `v[i] < r < v[i+1]`. The different versions of the function have different behavior in the event
  * that `r = v[i]` for some `i`.
  *
- * The 'left' versions assume the intervals are closed on the left, so that `v[i] <= r < v[i+1]`. 
+ * The 'left' versions assume the intervals are closed on the left, so that `v[i] <= r < v[i+1]`.
  * Likewise, the 'right' versions assume closure on the right: `v[i] < r <= v[i+1]`.
  *
  * The 'catch end' versions will allow equality for values at the ends of the range when it would
@@ -37,7 +38,7 @@ namespace rtt_dsxx {
  * Likewise for `r=v[n-1]` (`v`'s last value) Range_finder_right_catch_end will return `n-1` instead
  * of considering the value to be out of range.
  *
- * The functions Range_funder and Range_finder_catch_end take an enumeration parameter 
+ * The functions Range_funder and Range_finder_catch_end take an enumeration parameter
  * `RANGE_DIRECTION` to determine the direction: `LEFT` or `RIGHT`.
  *
  * Values which are out of range will fail a DCB check, but pass silently if DBC is off. You have
@@ -48,13 +49,13 @@ namespace rtt_dsxx {
  * iterator will point to `v[i]` and the second to `v[i+1]`. This enables simple verification of out
  * of bound index detection and a simple computation for the index which works whether or not
  * equality is obtained.
- * 
+ *
  * \todo Replace signatures with range based versions...
  * \code
  * #include <ranges>
  * int Range_finder_left(std::ranges::input_range auto&& r,
  *                       std::ranges::range_value_t<decltype(r)> value);
- * \endcode                      
+ * \endcode
  */
 //================================================================================================//
 
@@ -99,8 +100,8 @@ int Range_finder_right(It const &begin, It const &end, std::iter_value_t<It> val
 
 //------------------------------------------------------------------------------------------------//
 template <typename It>
-int Range_finder_left_catch_end(It begin, It end, std::iter_value_t<It> value) {
-  auto it = std::equal_range(begin, end, value);
+GPU_HOST_DEVICE int Range_finder_left_catch_end(It begin, It end, std::iter_value_t<It> value) {
+  const auto it = std::equal_range(begin, end, value);
   Require(validate(it, begin, end));
 
   const int index = static_cast<int>(it.second - begin) - 1;

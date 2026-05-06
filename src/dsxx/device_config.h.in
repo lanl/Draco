@@ -1,6 +1,6 @@
 /*---------------------------------------------*-C-*----------------------------------------------*/
 /*!
- * \file   device/config.h
+ * \file   dsxx/device_config.h
  * \author Gabriel M. Rockefeller
  * \date   Mon Jun 13 16:48:32 2011
  * \brief  CPP defines necessary for the device package and necessary setup for draco and client
@@ -17,16 +17,32 @@
  */
 /*------------------------------------------------------------------------------------------------*/
 
-#ifndef rtt_device_config_h
-#define rtt_device_config_h
+#ifndef rtt_dsxx_device_config_h
+#define rtt_dsxx_device_config_h
 
-#include "dsxx/config.h"
 #include <string>
+
+#cmakedefine HAVE_GPU @HAVE_GPU@
+// Note: KPL: We used to define this variable here, but this ties consumers of draco to a
+// particular choice of USE_GPU. By delaying the definition of USE_GPU to the consumer code,
+// said code can toggle GPU support on/off without having to reconfigure draco.
+// #cmakedefine USE_GPU @USE_GPU@
+
+/* Used by Assert.hh to allow it to be used by C++ or cuda/hip */
+#if defined __NVCC__ || defined __HIPCC__
+#define __GPUCC__
+#endif
+
+/* GPU_DBS_STRING = {HIP, CUDA} or undefined */
+/* Eg: project(foo CXX ${GPU_DBS_STRING}) */
+#cmakedefine GPU_DBS_STRING @GPU_DBS_STRING@
+#cmakedefine USE_CUDA
+#cmakedefine USE_HIP
 
 /*------------------------------------------------------------------------------------------------*/
 /* Mark functions for compilation on host and device */
 
-#if (defined __NVCC__ || defined __HIPCC__) && defined USE_GPU
+#if (defined __NVCC__ || defined __HIPCC__) && defined(USE_GPU)
 
 #define HOST_AND_DEVICE_FUNCTION __host__ __device__
 #define GPU_HOST_DEVICE __host__ __device__
@@ -37,22 +53,15 @@
 #else
 #define CONSTANT constexpr
 #endif
-
 #else
-
 /* Mark code for CPU by defining these to be empty strings */
 #define HOST_AND_DEVICE_FUNCTION
 #define GPU_HOST_DEVICE
 #define GPU_DEVICE
 #define GPU_KERNEL
 #define CONSTANT constexpr
-
 #endif
 
-/* GPU_DBS_STRING = {HIP, CUDA} or undefined */
-#cmakedefine GPU_DBS_STRING @GPU_DBS_STRING@
-#cmakedefine USE_CUDA
-#cmakedefine USE_HIP
 
 #if defined(USE_CUDA) || defined(USE_HIP)
 
@@ -76,7 +85,7 @@
 /*------------------------------------------------------------------------------------------------*/
 /* HIP Support */
 
-#ifdef USE_HIP
+#if defined(USE_HIP) && defined(USE_GPU)
 #include <hip/hip_runtime.h>
 #include <hip/hip_runtime_api.h>
 #define cudaDevAttrClockRate hipDeviceAttributeClockRate
@@ -106,7 +115,7 @@
 
 /*------------------------------------------------------------------------------------------------*/
 /* Cuda Support */
-#ifdef USE_CUDA
+#if defined(USE_CUDA) && defined(USE_GPU)
 #include <cuda.h>
 #include <cuda_runtime.h>
 #endif
@@ -134,8 +143,8 @@ namespace rtt_device {
 std::string const test_kernel_bindir("@TEST_KERNEL_BINDIR@");
 }
 
-#endif /* rtt_device_config_h */
+#endif /* rtt_dsxx_device_config_h */
 
 /*------------------------------------------------------------------------------------------------*/
-/* end of device/config.h */
+/* end of dsxx/device_config.h */
 /*------------------------------------------------------------------------------------------------*/

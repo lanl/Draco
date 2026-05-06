@@ -58,8 +58,7 @@ set(Draco_MPI_LANG_LIST "@Draco_MPI_LANG_LIST@")
 set(USE_OPENMP "@USE_OPENMP@")
 
 # GPU build information
-option(HAVE_GPU "Should we build GPU (HIP or CUDA) parts of the project?" @HAVE_GPU@)
-set(USE_GPU "@USE_GPU@")
+option(HAVE_GPU "Did we find GPU hardware+HIP/CUDA support during draco configure?" @HAVE_GPU@)
 set(GPU_DBS_STRING "@GPU_DBS_STRING@")
 
 # Tell downstream projects to use shacl-physics (or not)

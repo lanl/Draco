@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for rng.
-# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(rng CXX)
@@ -51,16 +51,11 @@ list(APPEND headers_public "${pkg_config_h}")
 # Build package library
 # ------------------------------------------------------------------------------------------------ #
 set(deps Lib_dsxx)
-if(HAVE_GPU AND USE_GPU)
-  list(APPEND deps Lib_device)
-endif()
 if(TARGET GSL::gsl)
   list(APPEND deps GSL::gsl)
 endif()
 
-# remove 'src/device' when 'device/CMakeFiles.txt' is updated?
-set(include_dirs PUBLIC $<BUILD_INTERFACE:${draco_src_dir_BINARY_DIR}/device>
-                 $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> ${RANDOM123_INCLUDE_DIR})
+set(include_dirs PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> ${RANDOM123_INCLUDE_DIR})
 add_component_library(
   TARGET Lib_rng
   TARGET_DEPS "${deps}"

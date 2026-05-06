@@ -4,13 +4,14 @@
  * \author Mike Buksas
  * \date   Tue Jun 21 15:35:05 2005
  * \brief  Provide protected division functions.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_Save_Divide_hh
 #define dsxx_Save_Divide_hh
 
 #include "Soft_Equivalence.hh"
+#include "dsxx/device_config.h"
 #include <algorithm>
 #include <limits>
 
@@ -39,7 +40,8 @@ namespace rtt_dsxx {
  * including if-blocks around all problematic divisions.
  *
  */
-template <typename FT> inline FT safe_pos_divide(const FT &dividend, const FT &divisor) {
+template <typename FT>
+GPU_HOST_DEVICE inline FT safe_pos_divide(const FT &dividend, const FT &divisor) {
   const FT limit = std::numeric_limits<FT>::max();
   const FT dividend_bound = limit * std::min(1.0, divisor);
   return (dividend < dividend_bound) ? dividend / divisor : limit;
@@ -58,7 +60,8 @@ template <typename FT> inline FT safe_pos_divide(const FT &dividend, const FT &d
  * Also note that this code cannot make any guarantee about the sign of the result when the divisor
  * is exactly zero..
  */
-template <typename FT> inline FT safe_divide(const FT &dividend, const FT &divisor) {
+template <typename FT>
+GPU_HOST_DEVICE inline FT safe_divide(const FT &dividend, const FT &divisor) {
   const FT limit = std::numeric_limits<FT>::max();
   const int sign = 2 * static_cast<int>((dividend > 0) == (divisor > 0)) - 1;
   const FT dividend_bound = limit * std::min(1.0, std::abs(divisor));

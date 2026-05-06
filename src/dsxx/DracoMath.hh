@@ -16,6 +16,7 @@
 
 #include "Constexpr_Functions.hh"
 #include "Soft_Equivalence.hh"
+#include "dsxx/device_config.h"
 #include <algorithm>
 #include <complex>
 #include <concepts>
@@ -158,7 +159,7 @@ template <std::floating_point Real> constexpr double pythag(Real a, Real b) {
  * \param b Argument supplying sign of result.
  * \return Value |a| with the sign of b.
  */
-template <OrderedGroup T> constexpr T sign(T a, T b) {
+template <OrderedGroup T> GPU_HOST_DEVICE constexpr T sign(T a, T b) {
   return (b < 0) ? -std::abs(a) : std::abs(a);
 }
 

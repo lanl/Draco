@@ -16,7 +16,7 @@
 #include "MultigroupOpacity.hh"
 #include "dsxx/Constexpr_Functions.hh"
 #include "dsxx/Soft_Equivalence.hh"
-#include "device/config.h"
+#include "dsxx/device_config.h"
 #include <algorithm>
 #include <array>
 #include <limits>

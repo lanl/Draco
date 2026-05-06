@@ -8,9 +8,9 @@
 
 #include "DracoStrings.hh"
 #include "Assert.hh"
-#include <cctype>    // tolower
-#include <cstddef>   // size_t
-#include <cstdint>   // int64_t
+#include <cctype>  // tolower
+#include <cstddef> // size_t
+#include <cstdint> // int64_t
 #include <fstream>
 #include <iostream>
 #include <locale> // locale
