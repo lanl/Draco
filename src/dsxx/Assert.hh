@@ -11,6 +11,7 @@
 
 #include "DracoTerminal.hh"
 #include "dsxx/config.h"
+#include "dsxx/device_config.h"
 #include <stdexcept>
 #include <string>
 

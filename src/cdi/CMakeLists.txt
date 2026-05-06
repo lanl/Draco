@@ -15,21 +15,11 @@ file(GLOB sources *.cc)
 file(GLOB explicit_instantiations *_pt.cc)
 file(GLOB headers *.hh)
 
-set(include_dirs PUBLIC $<BUILD_INTERFACE:${draco_src_dir_BINARY_DIR}/device>)
+set(include_dirs PUBLIC $<BUILD_INTERFACE:${draco_src_dir_BINARY_DIR}/dsxx>)
 
 # ------------------------------------------------------------------------------------------------ #
 # Build package library
 # ------------------------------------------------------------------------------------------------ #
-if(HAVE_GPU AND USE_GPU)
-  if(EXISTS "${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
-    string(APPEND include_dirs ";$<BUILD_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}>")
-    string(APPEND include_dirs ";$<INSTALL_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}>")
-  elseif(EXISTS "$ENV{ROCM_PATH}")
-    string(APPEND include_dirs ";$<BUILD_INTERFACE:$ENV{ROCM_PATH}/include>")
-    string(APPEND include_dirs ";$<INSTALL_INTERFACE:$ENV{ROCM_PATH}/include>")
-  endif()
-endif()
-
 add_component_library(
   TARGET Lib_cdi
   TARGET_DEPS Lib_dsxx

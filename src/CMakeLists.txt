@@ -32,7 +32,6 @@ message(" ")
 message(STATUS "Configuring Level 2 packages --")
 add_subdirectory(c4) #< needs dsxx
 add_subdirectory(cdi) #< needs dsxx
-add_subdirectory(device) #< needs dsxx
 add_subdirectory(FortranChecks) #< needs dsxx
 add_subdirectory(linear) #< needs dsxx
 add_subdirectory(memory) #< needs dsxx
