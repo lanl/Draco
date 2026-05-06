@@ -123,9 +123,9 @@ private:
    *
    * Data struct for cpu information that will be captured.  The format for /proc/stat is something
    * like this example:
-   * <code>
+   * /code
    *    cpu  764699971 57752895 158644540 75321983666 67359813 0 736586 0 0 0
-   * </code>
+   * /endcode
    * A string followed by 10 size_t values.
    *
    * The 10 values represent cpu states:

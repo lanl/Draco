@@ -72,14 +72,14 @@ constexpr bool soft_equiv(const T &value, const T &reference,
  * \brief Object that allows multilevel STL containers of floating point values to be compared
  *        within a tolerance.
  *
- * \tparam Depth levels of containers for analysis (2 for vector<vector<T>>).
+ * \tparam Depth levels of containers for analysis (2 for `vector<vector<T>>`).
  *
  * This class provides a template recursion object that allows two STL containers to be compared
- * element-by-element no matter how many levels of containers exist.  The value and reference fields
- * must have STL-type iterators.  The value-types of both fields must be the same or a compile-time
+ * element-by-element no matter how many levels of containers exist. The value and reference fields
+ * must have STL-type iterators. The value-types of both fields must be the same or a compile-time
  * error will result.
  *
- * This class is specialized for Depth=1.  This is the lowest level of recursion and is the level
+ * This class is specialized for `Depth=1`.  This is the lowest level of recursion and is the level
  * where actual numeric comparison occurs.
  *
  * Typical use:
@@ -87,8 +87,7 @@ constexpr bool soft_equiv(const T &value, const T &reference,
  * \code
  * vector<double> const ref = { 0.1, 0.2 };
  * vector<double> val       = { 0.1, 0.19999999999};
- * if( soft_equiv_deep<1>().equiv( val.begin(), val.end(),
- *     ref.begin(), ref.end(), 0.000001 ) )
+ * if( soft_equiv_deep<1>().equiv( val.begin(), val.end(), ref.begin(), ref.end(), 0.000001 ) )
  *   cout << "arrays match" << endl;
  * \endcode
  */
@@ -133,8 +132,8 @@ template <typename FPT> class soft_equiv_deep<1, FPT> {
 public:
   // Constructor
   template <typename Value_Iterator, typename Ref_Iterator>
-  bool equiv(Value_Iterator value, Value_Iterator value_end, Ref_Iterator ref, Ref_Iterator ref_end,
-             FPT const precision = 1.0e-12) {
+  bool equiv(Value_Iterator value, Value_Iterator const &value_end, Ref_Iterator ref,
+             Ref_Iterator ref_end, FPT const precision = 1.0e-12) {
     // first check that the sizes are equivalent
     if (std::distance(value, value_end) != std::distance(ref, ref_end))
       return false;
@@ -170,9 +169,9 @@ public:
  * iterators.  The value-types of both fields must be the same or a compile-time error will result.
  */
 template <typename Value_Iterator, typename Ref_Iterator>
-inline bool
-soft_equiv(Value_Iterator value, Value_Iterator value_end, Ref_Iterator ref, Ref_Iterator ref_end,
-           typename std::iterator_traits<Value_Iterator>::value_type const precision = 1.0e-12) {
+inline bool soft_equiv(Value_Iterator const &value, Value_Iterator const &value_end,
+                       Ref_Iterator ref, Ref_Iterator ref_end,
+                       std::iter_value_t<Value_Iterator> const precision = 1.0e-12) {
   using FPT = typename std::iterator_traits<Value_Iterator>::value_type;
   return soft_equiv_deep<1, FPT>().equiv(value, value_end, ref, ref_end, precision);
 }
@@ -196,6 +195,8 @@ soft_equiv(Value_Iterator value, Value_Iterator value_end, Ref_Iterator ref, Ref
 // ~~~
 //
 // To get around the problem, I provided fully specified (no template parameters) overloads...
+//
+// \todo Try again now that we are on C++20?
 
 //------------------------------------------------------------------------------------------------//
 // Specialization for vector<double>

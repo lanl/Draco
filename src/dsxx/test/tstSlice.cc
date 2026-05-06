@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Thu Jul  8 08:02:51 2004
  * \brief  Test the Slice subset container class.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,6 +13,8 @@
 #include "dsxx/UnitTest.hh"
 #include <array>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -76,6 +78,8 @@ void tstSlice(UnitTest &ut) {
   FAIL_IF_NOT(!cs.empty());
   PASSMSG("Done with tests.");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

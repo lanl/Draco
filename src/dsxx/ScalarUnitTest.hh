@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/ScalarUnitTest.hh
  * \author Kelly Thompson
- * \date   Thu May 18 17:08:54 2006
  * \brief  Provide services for scalar unit tests
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_ScalarUnitTest_hh
@@ -37,7 +36,7 @@ namespace rtt_dsxx {
  * \endcode
  *
  * \test All of the member functions of this class are tested by dsxx/test/tstScalarUnitTest.cc,
- * including the early exit caused by \c --version on the command line.
+ *       including the early exit caused by \c --version on the command line.
  */
 /*!
  * \example dsxx/test/tstScalarUnitTest.cc
@@ -69,6 +68,18 @@ public:
 };
 
 //------------------------------------------------------------------------------------------------//
+template <typename Lambda> void implement_do_unit_test(UnitTest &ut, Lambda const &lambda) {
+  lambda(ut);
+}
+
+template <typename First_Lambda, typename... More_Lambdas>
+void implement_do_unit_test(UnitTest &ut, First_Lambda const &first_lambda,
+                            More_Lambdas const &...more_lambdas) {
+  first_lambda(ut);
+  implement_do_unit_test(ut, more_lambdas...);
+}
+
+//------------------------------------------------------------------------------------------------//
 /*!
  * \brief Run a scalar unit test.
  *
@@ -78,13 +89,16 @@ public:
  * \param[in] lambda Lambda function defining the test.
  * \return EXIT_SUCCESS or EXIT_FAILURE as appropriate.
  */
-
 template <typename... Lambda, typename Release>
-int do_scalar_unit_test(int argc, char **argv, Release release, Lambda const &...lambda);
+int do_scalar_unit_test(int argc, char **argv, Release release, Lambda const &...lambda) {
+  ScalarUnitTest ut(argc, argv, release);
+  try {
+    implement_do_unit_test(ut, lambda...);
+  }
+  UT_EPILOG(ut);
+}
 
 } // end namespace rtt_dsxx
-
-#include "ScalarUnitTest.i.hh"
 
 #endif // dsxx_ScalarUnitTest_hh
 

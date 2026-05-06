@@ -3,7 +3,7 @@
  * \file   dsxx/test/tstIndex_Set.cc
  * \author Mike Buksas
  * \date   Thu Feb  2 13:46:36 2006
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Index_Set.hh"
@@ -11,6 +11,8 @@
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/UnitTest.hh"
 #include <array>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -116,6 +118,8 @@ void test_index_set(rtt_dsxx::UnitTest &ut) {
     PASSMSG("done with test_index_set().");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

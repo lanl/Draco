@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstdbc.cc
  * \author Kent G. Budge
- * \date   Feb 18 2003
  * \brief  Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
@@ -16,21 +15,15 @@
 #include <limits>
 #include <string>
 #include <utility> // std::pair
+#include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
-//------------------------------------------------------------------------------------------------//
-
-class sum_predicate_Test_Predicate {
-public:
-  using Return_Type = double;
-
-  double operator()(const std::pair<double, char *> &p) { return p.first; }
-};
-
 //------------------------------------------------------------------------------------------------//
 void dbc_test(UnitTest &ut) {
   using std::pair;
@@ -91,8 +84,8 @@ void dbc_test(UnitTest &ut) {
     FAILMSG(string("is_strict_monotonic_decreasing function template incorrectly reported ") +
             string("length=1 container monotonic."));
 
-  if (std::find_if(sum_test_array.begin(), sum_test_array.end(),
-                   [](double x) { return x > 2.0; }) != sum_test_array.begin() + 1)
+  if (std::ranges::find_if(sum_test_array, [](double x) noexcept { return x > 2.0; }) !=
+      sum_test_array.begin() + 1)
     FAILMSG("std::bind2nd or std::greater function templates FAILED");
   else
     PASSMSG("std::bind2nd or std::greater function templates ok");
@@ -101,7 +94,7 @@ void dbc_test(UnitTest &ut) {
 // <functional> supersede the old rtt_utils::exceeds predicate.
 
 // Test badly formed numbers.
-// Note: VS2013 with Nov 2013 CTP will not compile an explicit division by zero.
+// * Note: VS2013 with Nov 2013 CTP will not compile an explicit division by zero.
 #ifndef _MSC_VER
   if (!ut.fpe_trap_active) {
     double const Zero = 0.0;
@@ -111,7 +104,7 @@ void dbc_test(UnitTest &ut) {
     else
       FAILMSG("isInfinity is problematic on this platform.");
     // This is optimized to double Nan(0.0) by Intel.
-    // double Nan = Zero*Infinity;
+    // * double Nan = Zero*Infinity;
     double const Nan = std::sqrt(-1.0);
     if (std::isnan(Nan))
       PASSMSG("isNaN works on this platform");
@@ -120,7 +113,7 @@ void dbc_test(UnitTest &ut) {
   }
 #endif
 
-  // Check on symmetricity of matrix.
+  // Check on symmetriccity of matrix.
   vector<double> A(2 * 2);
   A[0 + 2 * 0] = 2.5;
   A[0 + 2 * 1] = 3.8;
@@ -133,6 +126,8 @@ void dbc_test(UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

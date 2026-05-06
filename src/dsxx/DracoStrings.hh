@@ -2,16 +2,18 @@
 /*!
  * \file   dsxx/DracoStrings.hh
  * \author Kelly G. Thompson <kgt@lanl.gov
- * \date   Wednesday, Aug 23, 2017, 12:48 pm
  * \brief  Encapsulates common string manipulations.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_DracoStrings_hh
 #define rtt_dsxx_DracoStrings_hh
 
+#include "Assert.hh"
 #include "dsxx/config.h"
+#include <algorithm>
 #include <cstdint>
+#include <iostream>
 #include <locale>
 #include <map>
 #include <sstream>
@@ -88,6 +90,10 @@ std::string prune(std::string const &orig_str, std::string const &chars_to_remov
 std::vector<std::string> tokenize(std::string const &str, std::string const &delimiters = " ",
                                   bool keepEmptyStrings = false);
 
+//! Concept that represents simple numbers like floats or integers.
+template <typename T>
+concept arithmetic = std::integral<T> || std::floating_point<T>;
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Convert a string into a floating-point type or an integral type without error checking.
@@ -97,32 +103,7 @@ std::vector<std::string> tokenize(std::string const &str, std::string const &del
  *
  * \tparam T The template type will be deduced based on the return type ("-> T").
  */
-template <typename T> auto parse_number_impl(std::string const &str) -> T;
-
-// specializations for these types are defined in DracoStrings.cc
-template <> auto parse_number_impl<int32_t>(std::string const &str) -> int32_t;
-template <> auto parse_number_impl<int64_t>(std::string const &str) -> int64_t;
-template <> auto parse_number_impl<uint32_t>(std::string const &str) -> uint32_t;
-template <> auto parse_number_impl<uint64_t>(std::string const &str) -> uint64_t;
-
-// I'm having trouble finding a generic solution for an issue where some compilers require separate
-// specialization for 'long' and 'int64_t' (i.e. Visual Studio) while for other compilers these
-// types are identical.  So, I'm using some info pulled from <stdint.h> on Linux.
-//
-// On Linux, it appears that long == 'int64_t' if Linux is 64-bit (__WORDSIZE == 64).
-//
-// If we are using Visual Studio, we need these definitions. I expect that they will be needed for
-// 32-bit Linux as well, but I can't test that.  Might need to add "|| (defined(__GNUC__) &&
-// __WORDSIZE != 64)"
-#if defined(_MSC_VER) || defined(APPLE)
-
-template <> auto parse_number_impl<long>(std::string const &str) -> long;
-template <> auto parse_number_impl<unsigned long>(std::string const &str) -> unsigned long;
-
-#endif
-
-template <> auto parse_number_impl<float>(std::string const &str) -> float;
-template <> auto parse_number_impl<double>(std::string const &str) -> double;
+template <arithmetic T> auto parse_number_impl(std::string const &str) -> T;
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -163,7 +144,31 @@ template <> auto parse_number_impl<double>(std::string const &str) -> double;
   }
  * \endcode
  */
-template <typename T> auto parse_number(std::string const &str, bool verbose = true) -> T;
+template <arithmetic T> auto parse_number(std::string const &str, bool verbose = true) -> T {
+  T retval(0);
+  try {
+    retval = parse_number_impl<T>(str);
+  } catch (std::invalid_argument &e) {
+    // if no conversion could be performed
+    if (verbose)
+      std::cerr << "\n==ERROR==\nrtt_dsxx::parse_number:: "
+                << "No valid conversion from string to a numeric value could be found.\n"
+                << "\tstring = \"" << str << "\"\n\n";
+    throw e;
+  } catch (std::out_of_range & /*error*/) {
+    // if the converted value would fall out of the range of the result type or if the underlying
+    // function (std::strtol or std::strtoull) sets errno to ERANGE.
+    if (verbose)
+      std::cerr << "\n==ERROR==\nrtt_dsxx::parse_number:: Type conversion from string to a numeric"
+                << " value resulted in a value that is out of range.\n"
+                << "\tstring = \"" << str << "\"\n\n";
+    throw;
+  } catch (...) {
+    // everything else
+    Insist(false, "Unknown failures in call to std::sto[x] from parse_number.");
+  }
+  return retval;
+}
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -181,9 +186,30 @@ template <typename T> auto parse_number(std::string const &str, bool verbose = t
  * std::string foo = "{ 1.0, 2.0, 3.0 }" will be converted to
  * std::vector<double> bar = { 1.0, 2.0, 3.0 }
  */
-template <typename T>
+template <arithmetic T>
 std::vector<T> string_to_numvec(std::string const &str, std::string const &range_symbols = "{}",
-                                std::string const &delimiters = ",");
+                                std::string const &delimiters = ",") {
+
+  // for vector data, first and last char might be some delimiter character.  For example "[1,2,3)"
+  // or "{3.3, 4.4}"
+  Insist(range_symbols.length() == 0 ||
+             (range_symbols.length() == 2 && str[0] == range_symbols[0] &&
+              str[str.length() - 1] == range_symbols[range_symbols.length() - 1]),
+         "String data is malformed. It is missing { or }.");
+
+  // remove beginning and ending braces and any extra whitespace.
+  std::string const tstr = trim(str, range_symbols + " \t");
+
+  // Convert the string into a vector<string>
+  std::vector<std::string> vsdata = tokenize(tstr, delimiters);
+
+  // convert from vector<string> to vector<T>
+  std::vector<T> retval(vsdata.size());
+  std::transform(vsdata.begin(), vsdata.end(), retval.begin(),
+                 [](const std::string &val) { return parse_number<T>(val); });
+
+  return retval;
+}
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -242,9 +268,6 @@ std::string remove_color(std::string const &colored_string);
 std::string extract_version(std::string const &string_in, size_t digits = 3);
 
 } // namespace rtt_dsxx
-
-// Template functions
-#include "DracoStrings.i.hh"
 
 #endif // rtt_dsxx_DracoStrings_hh
 

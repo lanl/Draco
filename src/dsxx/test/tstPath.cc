@@ -17,6 +17,8 @@
 #include <iostream>
 #include <string>
 
+namespace {
+
 using namespace std;
 using namespace rtt_dsxx;
 
@@ -313,6 +315,8 @@ void test_draco_remove(rtt_dsxx::ScalarUnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

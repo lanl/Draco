@@ -16,6 +16,8 @@
 #include <sstream>
 #include <string>
 
+namespace {
+
 using namespace std;
 using namespace rtt_dsxx;
 
@@ -64,6 +66,8 @@ void maintest(UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

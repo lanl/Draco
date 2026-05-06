@@ -26,9 +26,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-using namespace rtt_dsxx;
-
 // Provide old style call to pass/fail macros.  Use object name unitTest for this unit test. (remove
 // the defines found in ScalarUnitTest.hh).
 #undef PASSMSG
@@ -43,6 +40,11 @@ using namespace rtt_dsxx;
 //------------------------------------------------------------------------------------------------//
 // Helper
 //------------------------------------------------------------------------------------------------//
+namespace {
+
+using namespace std;
+using namespace rtt_dsxx;
+
 char *convert_string_to_char_ptr(std::string const &s) {
   auto *pc = new char[s.length() + 1];
   std::strncpy(pc, s.c_str(), s.length() + 1);
@@ -237,8 +239,7 @@ void tstVersion(UnitTest &unitTest, char *test) {
 
   // Convert to 'char *' so we can then use &vc[0] as type char**
   std::vector<char *> vc;
-  std::transform(vs_arguments.begin(), vs_arguments.end(), std::back_inserter(vc),
-                 convert_string_to_char_ptr);
+  std::ranges::transform(vs_arguments, std::back_inserter(vc), convert_string_to_char_ptr);
 
   char **argv = &vc[0];
   try {
@@ -328,6 +329,8 @@ void tstPaths(UnitTest &unitTest, char *test) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

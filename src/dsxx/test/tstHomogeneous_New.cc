@@ -4,7 +4,7 @@
  * \author Kent Budge
  * \date   Tue Nov 28 09:17:23 2006
  * \brief  test the Homogeneous_New allocator class.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Homogeneous_New.hh"
@@ -12,6 +12,8 @@
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/UnitTest.hh"
 #include <iostream>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -42,6 +44,8 @@ void tstHomogeneous_New(UnitTest &ut) {
     allocator.reserve(7);
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

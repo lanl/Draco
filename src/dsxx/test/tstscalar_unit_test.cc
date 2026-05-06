@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/test/tstscalar_unit_test.cc
  * \author Kent Grimmett Budge
- * \date   Tue Nov  6 13:19:40 2018
  * \brief  Test the test function for scalar case.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -17,7 +16,9 @@ using namespace rtt_dsxx;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
+namespace {
 void test1(UnitTest &ut) { ut.passes("function test"); }
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

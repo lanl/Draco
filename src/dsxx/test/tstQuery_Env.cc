@@ -4,7 +4,7 @@
  * \author Kent G. Budge
  * \date   Wed Nov 10 09:35:09 2010
  * \brief  Test functions defined in dsxx/draco_math.hh.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Query_Env.hh"
@@ -13,6 +13,8 @@
 #include "dsxx/UnitTest.hh"
 #include <string>
 #include <tuple>
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -46,6 +48,8 @@ void tstgetfoobar(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

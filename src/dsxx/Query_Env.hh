@@ -30,11 +30,11 @@ namespace rtt_dsxx {
  * \param default_value a default value to return if key undefined.
  * \return: {whether key was defined, corresponding value}
  *
- * \note Calls POSIX getenv() function, which is not required to be re-entrant.  If the key was set
- *       in the environment, get_env_val() returns the value converted to type T, that was set in
- *       the environment. If the key was not set in the environment, it returns the default_value
- *       that the caller provides. The first argument of the pair describes whether the key was
- *       defined.
+ * \note Calls POSIX `getenv()` function, which is not required to be re-entrant.  If the key was
+ *       set in the environment, `get_env_val()` returns the value converted to type `T`, that was
+ *       set in the environment. If the key was not set in the environment, it returns the
+ *       default_value that the caller provides. The first argument of the pair describes whether
+ *       the key was defined.
  *
  * \example dsxx/test/tstQuery_Env.cc
  */
@@ -44,7 +44,7 @@ std::pair<bool, T> get_env_val(std::string const &key, T default_value = T{}) {
   static_assert(std::is_default_constructible_v<T>,
                 "get_env_val only usable with default constructible types");
 
-  T val{default_value};
+  T val{std::move(default_value)};
   char *s_val = getenv(key.c_str());
   bool is_defined(false);
   if (s_val) {
