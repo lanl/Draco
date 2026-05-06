@@ -165,7 +165,7 @@ void show_cookies(std::string const &cond, std::string const &file, int const li
 [[noreturn]] void insist_ptr(char const *const cond, char const *const msg, char const *const file,
                              int const line);
 
-#if defined __GPUCC__ && defined USE_GPU
+#if defined __GPUCC__ && defined DRACO_USE_GPU
 /*! \brief A special version of insist that does not throw.  Useful for GPU code. \sa
  *         device/config.h.in */
 __host__ __device__ inline void no_exception_insist(char const *const cond, char const *const msg,
@@ -241,7 +241,7 @@ std::string verbose_error(std::string const &message);
  *
  * Special code for CUDA.
  *
- * If __CUDA_ARCH__ || __HIPCC__ (processing with nvcc/hip) and USE_GPU=ON, then alter the behavior
+ * If __CUDA_ARCH__ || __HIPCC__ (processing with nvcc/hip) and DRACO_USE_GPU=ON, then alter the behavior
  * of the DbC macros because cuda code cannot throw.
  */
 /*!
@@ -291,16 +291,16 @@ std::string verbose_error(std::string const &message);
  * Eventually, we want the DBC to work in GPU/Cuda code, but for now just disable DBC.
  */
 //------------------------------------------------------------------------------------------------//
-#if ( DBC & 8 ) || ( defined __GPUCC__ && defined USE_GPU )
+#if ( DBC & 8 ) || ( defined __GPUCC__ && defined DRACO_USE_GPU )
 
-#if ( DBC & 1 ) && !( defined __GPUCC__ && defined USE_GPU )
+#if ( DBC & 1 ) && !( defined __GPUCC__ && defined DRACO_USE_GPU )
 #define REQUIRE_ON
 #define Require(c) if (!(c)) rtt_dsxx::show_cookies( #c, __FILE__, __LINE__ )
 #else
 #define Require(c)
 #endif
 
-#if ( DBC & 2 ) && !( defined __GPUCC__ && defined USE_GPU )
+#if ( DBC & 2 ) && !( defined __GPUCC__ && defined DRACO_USE_GPU )
 #define CHECK_ON
 #define Check(c) if (!(c)) rtt_dsxx::show_cookies( #c, __FILE__, __LINE__ )
 #define Assert(c) if (!(c)) rtt_dsxx::show_cookies( #c, __FILE__, __LINE__ )
@@ -309,7 +309,7 @@ std::string verbose_error(std::string const &message);
 #define Assert(c)
 #endif
 
-#if ( DBC & 4 ) && !( defined __GPUCC__ && defined USE_GPU )
+#if ( DBC & 4 ) && !( defined __GPUCC__ && defined DRACO_USE_GPU )
 #define ENSURE_ON
 #define Ensure(c) if (!(c)) rtt_dsxx::show_cookies( #c, __FILE__, __LINE__ )
 #else
@@ -320,7 +320,7 @@ std::string verbose_error(std::string const &message);
 // Always on
 //------------------------------------------------------------------------------------------------//
 
-#if ( defined __GPUCC__  && defined USE_GPU )
+#if ( defined __GPUCC__  && defined DRACO_USE_GPU )
 #define Insist_device(c, m) if(!(c)) rtt_dsxx::no_exception_insist( #c, m, __FILE__, __LINE__)
 #else
 #define Insist_device(c,m) if (!(c)) rtt_dsxx::insist( #c, m, __FILE__, __LINE__ )
@@ -415,7 +415,7 @@ std::string verbose_error(std::string const &message);
 //------------------------------------------------------------------------------------------------//
 // If any of DBC is on, then make the remember macro active and the NOEXCEPT inactive.
 //------------------------------------------------------------------------------------------------//
-#if DBC && !( defined USE_GPU && defined __GPUCC__ )
+#if DBC && !( defined DRACO_USE_GPU && defined __GPUCC__ )
 #define REMEMBER_ON
 #define Remember(c) c
 #define NOEXCEPT

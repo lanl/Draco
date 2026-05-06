@@ -838,14 +838,14 @@ macro(dbsSetupCuda)
     # We found Cuda or HIP, keep track of this information.
     set(HAVE_GPU ON)
     # User option to disable Cuda, even when it is available.
-    option(USE_GPU "Use Cuda|Hip?" ON)
+    option(DRACO_USE_GPU "Use Cuda|Hip?" ON)
   endif()
 
   # Save the results
   set(HAVE_GPU
       ${HAVE_GPU}
       CACHE BOOL "Can we build GPU Accelerated (CUDA|HIP) portions of this project?" FORCE)
-  if(HAVE_GPU AND USE_GPU)
+  if(HAVE_GPU AND DRACO_USE_GPU)
     # Use this string in 'project(foo ${GPU_DBS_STRING})' commands to enable cuda per project.
     if(_LANGUAGES_ MATCHES CUDA)
       set(GPU_DBS_STRING
@@ -872,8 +872,8 @@ macro(dbsSetupCuda)
   endif()
 
   # Sanity Check
-  if(USE_GPU AND NOT HAVE_GPU)
-    set(message "==> USE_GPU=TRUE but GPU hardware and/or runtimes not found.")
+  if(DRACO_USE_GPU AND NOT HAVE_GPU)
+    set(message "==> DRACO_USE_GPU=TRUE but GPU hardware and/or runtimes not found.")
     if(GPU_DBS_STRING MATCHES "CUDA")
       string(APPEND message
              "==> Ie. CUDA requested but nvcc was not found. Try loading a cuda module "

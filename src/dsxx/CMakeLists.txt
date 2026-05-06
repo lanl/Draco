@@ -29,7 +29,7 @@ configure_file(device_config.h.in ${PROJECT_BINARY_DIR}/dsxx/device_config.h)
 # ------------------------------------------------------------------------------------------------ #
 # Build GPU_Device
 # ------------------------------------------------------------------------------------------------ #
-if(HAVE_GPU AND USE_GPU)
+if(HAVE_GPU AND DRACO_USE_GPU)
   set(include_dirs PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>)
   if(EXISTS "${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
     string(APPEND include_dirs ";$<BUILD_INTERFACE:${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}>")

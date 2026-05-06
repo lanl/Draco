@@ -38,7 +38,7 @@
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=ON -DUSE_OPENMP=OFF
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
   script:
@@ -98,7 +98,7 @@ rzadams_rel_amdclang_mr:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: "lapse/3.0.1-amdclang"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=ON -DUSE_OPENMP=OFF
 
 rzadams_deb_amdclang_mr:
   stage: test
@@ -106,7 +106,7 @@ rzadams_deb_amdclang_mr:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: "lapse/3.0.1-amdclang"
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=ON -DUSE_OPENMP=OFF
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -118,7 +118,7 @@ rzadams_deb_amdclang_mr:
   variables:
     CTEST_MODE: Nightly
     CTEST_NPROC: 128
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=ON -DUSE_OPENMP=OFF
   artifacts:
     when: always
     paths:
@@ -151,7 +151,7 @@ rzadams_deb_amdclang_regress_gpuaware:
     CTEST_BUILD_NAME: "lapse301-amdclang-${CMAKE_BUILD_TYPE}-gpuaware"
     DRACO_ENV: "lapse/3.0.1-amdclang"
     CMAKE_BUILD_TYPE: Debug
-    EXTRA_CMAKE_ARGS: -GNinja -DUSE_GPU=ON -DUSE_OPENMP=OFF -DUSE_GPU_AWARE=ON
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=ON -DUSE_OPENMP=OFF -DUSE_GPU_AWARE=ON
     MPICH_GPU_SUPPORT_ENABLED: 1
 
 #--------------------------------------------------------------------------------------------------#
