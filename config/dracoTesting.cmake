@@ -173,12 +173,32 @@ function(provide_ctest_resources_spec)
   # If the platform file is not found, create a generic one from scratch.
   if(NOT EXISTS "${json_file}" OR (NOT DEFINED SITENAME_FAMILY))
     set(json_file "${PROJECT_BINARY_DIR}/ctest_resource_spec.json")
-    # fetch number of gpus and gpu memory by querying slurm.
-    slurm_extract_gpu_info(SLURM_GPU_COUNT SLURM_GPU_MEM_GB)
 
-    set(N "${SLURM_GPU_COUNT}")
+    # Are we running SLURM?
+    set(HAVE_SLURM OFF)
+    find_program(SLURM_SINFO sinfo)
+    if(SLURM_SINFO)
+      execute_process(
+        COMMAND ${SLURM_SINFO} -h
+        RESULT_VARIABLE res
+        OUTPUT_QUIET ERROR_QUIET)
+      if(res EQUAL 0)
+        set(HAVE_SLURM ON)
+      endif()
+    endif()
+
+    # fetch number of gpus and gpu memory by querying slurm.
+    if(HAVE_SLURM)
+      slurm_extract_gpu_info(SLURM_GPU_COUNT SLURM_GPU_MEM_GB)
+    else()
+      # For now limit to 1 GPU, maybe use `nvidia-smi --query-gpu=name --format=csv,noheader' to
+      # find more.
+      set(SLURM_GPU_COUNT "1")
+      set(SLURM_GPU_MEM_GB "32")
+    endif()
 
     # Build JSON fragments for the GPU arrays
+    set(N "${SLURM_GPU_COUNT}")
     set(_gpus_json "")
     set(_gpu_mem_json "")
 
