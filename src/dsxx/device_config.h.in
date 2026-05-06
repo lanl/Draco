@@ -24,9 +24,9 @@
 
 #cmakedefine HAVE_GPU @HAVE_GPU@
 // Note: KPL: We used to define this variable here, but this ties consumers of draco to a
-// particular choice of USE_GPU. By delaying the definition of USE_GPU to the consumer code,
+// particular choice of DRACO_USE_GPU. By delaying the definition of DRACO_USE_GPU to the consumer code,
 // said code can toggle GPU support on/off without having to reconfigure draco.
-// #cmakedefine USE_GPU @USE_GPU@
+// #cmakedefine DRACO_USE_GPU @DRACO_USE_GPU@
 
 /* Used by Assert.hh to allow it to be used by C++ or cuda/hip */
 #if defined __NVCC__ || defined __HIPCC__
@@ -42,7 +42,7 @@
 /*------------------------------------------------------------------------------------------------*/
 /* Mark functions for compilation on host and device */
 
-#if (defined __NVCC__ || defined __HIPCC__) && defined(USE_GPU)
+#if (defined __NVCC__ || defined __HIPCC__) && defined(DRACO_USE_GPU)
 
 #define HOST_AND_DEVICE_FUNCTION __host__ __device__
 #define GPU_HOST_DEVICE __host__ __device__
@@ -85,7 +85,7 @@
 /*------------------------------------------------------------------------------------------------*/
 /* HIP Support */
 
-#if defined(USE_HIP) && defined(USE_GPU)
+#if defined(USE_HIP) && defined(DRACO_USE_GPU)
 #include <hip/hip_runtime.h>
 #include <hip/hip_runtime_api.h>
 #define cudaDevAttrClockRate hipDeviceAttributeClockRate
@@ -115,7 +115,7 @@
 
 /*------------------------------------------------------------------------------------------------*/
 /* Cuda Support */
-#if defined(USE_CUDA) && defined(USE_GPU)
+#if defined(USE_CUDA) && defined(DRACO_USE_GPU)
 #include <cuda.h>
 #include <cuda_runtime.h>
 #endif
