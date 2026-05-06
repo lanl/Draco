@@ -4,8 +4,7 @@
  * \author Mike Buksas
  * \date   Thu Feb  6 12:10:56 2003
  * \brief  Header file for Range_finder
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_Range_finder_hh
@@ -13,7 +12,10 @@
 
 #include "Assert.hh"
 #include <algorithm>
+#include <cstdint>
 #include <iterator>
+#include <ranges>
+#include <utility>
 
 namespace rtt_dsxx {
 
@@ -21,50 +23,58 @@ namespace rtt_dsxx {
 /*!
  * Range_finder
  *
- * These functions locate a value in intervals described by an increasing array.  E.g. Let \c v[i]
- * be an increasing array and \c r a value. These functions look for \c i such that: \code v[i] < r
- * < v[i+1] \endcode. The different versions of the function have different behavior in the event
- * that \code r = v[i] \endcode for some \c i.
+ * These functions locate a value in intervals described by an increasing array.  E.g. Let `v[i]`
+ * be an increasing array and `r` a value. These functions look for `i` such that: 
+ * `v[i] < r < v[i+1]`. The different versions of the function have different behavior in the event
+ * that `r = v[i]` for some `i`.
  *
- * The 'left' versions assume the intervals are closed on the left, so that \code v[i] <= r < v[i+1]
- * \endcode. Likewise, the 'right' versions assume closure on the right: \code v[i] < r <= v[i+1]
- * \endcode.
+ * The 'left' versions assume the intervals are closed on the left, so that `v[i] <= r < v[i+1]`. 
+ * Likewise, the 'right' versions assume closure on the right: `v[i] < r <= v[i+1]`.
  *
  * The 'catch end' versions will allow equality for values at the ends of the range when it would
- * not normally be considered a part of the interval. For example if \c r=v[0], Range_finder_left
- * will consider \c r to be outside the range, but Range_finder_left_catch_end will return \c
- * i=0. Likewise for \c r=v[n-1] (v's last value) Range_finder_right_catch_end will return \c n-1
- * instead of considering the value to be out of range.
+ * not normally be considered a part of the interval. For example if `r=v[0]`, Range_finder_left
+ * will consider `r` to be outside the range, but Range_finder_left_catch_end will return `i=0`.
+ * Likewise for `r=v[n-1]` (`v`'s last value) Range_finder_right_catch_end will return `n-1` instead
+ * of considering the value to be out of range.
  *
- * The functions Range_funder and Range_finder_catch_end take an enumeration parameter \c
- * RANGE_DIRECTION to determine the direction: LEFT or RIGHT.
+ * The functions Range_funder and Range_finder_catch_end take an enumeration parameter 
+ * `RANGE_DIRECTION` to determine the direction: `LEFT` or `RIGHT`.
  *
  * Values which are out of range will fail a DCB check, but pass silently if DBC is off. You have
  * been warned!
  *
  * This function uses the equal_range algorithm, which returns an iterator pair.  Both iterators
- * will point to the first value _after_ \c r in \c v, unless \c v[i]==r for some \c i, then the
- * first iterator will point to \c v[i] and the second to \c v[i+1]. This enables simple
- * verification of out of bound index detection and a simple computation for the index which works
- * whether or not equality is obtained.
+ * will point to the first value _after_ `r` in `v`, unless `v[i]==r` for some `i`, then the first
+ * iterator will point to `v[i]` and the second to `v[i+1]`. This enables simple verification of out
+ * of bound index detection and a simple computation for the index which works whether or not
+ * equality is obtained.
+ * 
+ * \todo Replace signatures with range based versions...
+ * \code
+ * #include <ranges>
+ * int Range_finder_left(std::ranges::input_range auto&& r,
+ *                       std::ranges::range_value_t<decltype(r)> value);
+ * \endcode                      
  */
 //================================================================================================//
 
-enum class RANGE_DIRECTION { LEFT = 0, RIGHT = 1 };
+enum class RANGE_DIRECTION : uint8_t { LEFT = 0, RIGHT = 1 };
 
 namespace {
 
-// Return false if the iterator pair indicate an out of range result.
-template <typename IT> bool validate(const std::pair<IT, IT> &it, IT begin, IT end) {
+//! Return false if the iterator pair indicate an out of range result.
+template <std::forward_iterator It>
+bool validate(const std::pair<It, It> &it, const It &begin, const It &end) {
   return !(it.first == end ||   // v > *(end-1)
            it.second == begin); // v < *begin
 }
+
 } // namespace
 
 //------------------------------------------------------------------------------------------------//
-template <typename IT>
-int Range_finder_left(IT begin, IT end, typename std::iterator_traits<IT>::value_type value) {
-  const std::pair<IT, IT> it = std::equal_range(begin, end, value);
+template <typename It>
+int Range_finder_left(It const &begin, It const &end, std::iter_value_t<It> value) {
+  auto it = std::equal_range(begin, end, value);
   Require(validate(it, begin, end));
 
   const int index = static_cast<int>(it.second - begin) - 1;
@@ -75,9 +85,9 @@ int Range_finder_left(IT begin, IT end, typename std::iterator_traits<IT>::value
 }
 
 //------------------------------------------------------------------------------------------------//
-template <typename IT>
-int Range_finder_right(IT begin, IT end, typename std::iterator_traits<IT>::value_type value) {
-  const std::pair<IT, IT> it = std::equal_range(begin, end, value);
+template <typename It>
+int Range_finder_right(It const &begin, It const &end, std::iter_value_t<It> value) {
+  auto it = std::equal_range(begin, end, value);
   Require(validate(it, begin, end));
 
   const int index = static_cast<int>(it.first - begin) - 1;
@@ -88,10 +98,9 @@ int Range_finder_right(IT begin, IT end, typename std::iterator_traits<IT>::valu
 }
 
 //------------------------------------------------------------------------------------------------//
-template <typename IT>
-int Range_finder_left_catch_end(IT begin, IT end,
-                                typename std::iterator_traits<IT>::value_type value) {
-  const std::pair<IT, IT> it = std::equal_range(begin, end, value);
+template <typename It>
+int Range_finder_left_catch_end(It begin, It end, std::iter_value_t<It> value) {
+  auto it = std::equal_range(begin, end, value);
   Require(validate(it, begin, end));
 
   const int index = static_cast<int>(it.second - begin) - 1;
@@ -106,10 +115,9 @@ int Range_finder_left_catch_end(IT begin, IT end,
 }
 
 //------------------------------------------------------------------------------------------------//
-template <typename IT>
-int Range_finder_right_catch_end(IT begin, IT end,
-                                 typename std::iterator_traits<IT>::value_type value) {
-  const std::pair<IT, IT> it = std::equal_range(begin, end, value);
+template <typename It>
+int Range_finder_right_catch_end(It begin, It end, std::iter_value_t<It> value) {
+  auto it = std::equal_range(begin, end, value);
   Require(validate(it, begin, end));
 
   // Extract the coordinate index (0..n-1)
@@ -128,8 +136,8 @@ int Range_finder_right_catch_end(IT begin, IT end,
 //------------------------------------------------------------------------------------------------//
 
 //------------------------------------------------------------------------------------------------//
-template <typename IT>
-int Range_finder(IT begin, IT end, typename std::iterator_traits<IT>::value_type value,
+template <typename It>
+int Range_finder(It const &begin, It const &end, std::iter_value_t<It> value,
                  RANGE_DIRECTION direction_indicator) {
   Check(direction_indicator == RANGE_DIRECTION::LEFT ||
         direction_indicator == RANGE_DIRECTION::RIGHT);
@@ -145,8 +153,8 @@ int Range_finder(IT begin, IT end, typename std::iterator_traits<IT>::value_type
 }
 
 //------------------------------------------------------------------------------------------------//
-template <typename IT>
-int Range_finder_catch_end(IT begin, IT end, typename std::iterator_traits<IT>::value_type value,
+template <typename It>
+int Range_finder_catch_end(It begin, It end, std::iter_value_t<It> value,
                            RANGE_DIRECTION direction_indicator) {
   Check(direction_indicator == RANGE_DIRECTION::LEFT ||
         direction_indicator == RANGE_DIRECTION::RIGHT);

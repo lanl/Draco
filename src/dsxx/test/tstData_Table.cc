@@ -3,7 +3,7 @@
  * \file   dsxx/test/tstData_Table.cc
  * \author Paul Henning
  * \brief  DBC_Ptr tests.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -13,6 +13,8 @@
 #include "dsxx/UnitTest.hh"
 #include <array>
 #include <iostream>
+
+namespace {
 
 using namespace std;
 using rtt_dsxx::Data_Table;
@@ -148,6 +150,8 @@ void test_scalar(rtt_dsxx::UnitTest &ut) {
     FAILMSG("test_scalar FAILED!");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

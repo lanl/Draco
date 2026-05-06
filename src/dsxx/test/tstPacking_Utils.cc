@@ -4,7 +4,7 @@
  * \author Thomas M. Evans
  * \date   Wed Nov  7 15:58:08 2001
  * \brief  Test the routines used for serializing and de-serializing C++ objects
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -26,6 +26,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
+namespace {
 
 using namespace std;
 
@@ -460,11 +462,11 @@ void packing_functions_test(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(packed_vector.size() == 5 * sizeof(double) + sizeof(int));
   FAIL_IF_NOT(packed_string.size() == y.size() + sizeof(int));
 
-  /* We now pack the two packed datums (x and s) together by manually inserting the data, including
-   * the size of the already packed arrays, into a new array.
+  /*! \todo We now pack the two packed datums (x and s) together by manually inserting the data,
+   * including the size of the already packed arrays, into a new array.
    *
    * Honestly, I can't think of a better demonstration of how brain-dead the packing system is. The
-   * root cause is the inistance of only packing and unpacking into vector<char>. These manage their
+   * root cause is the instance of only packing and unpacking into vector<char>. These manage their
    * own memory, so any attempt to put non-trivial objects together in a data stream will require
    * copying data. We need the size of the packed data (which already contains size data) because we
    * have to reserve space in a vector<char> when we unpack.
@@ -476,10 +478,6 @@ void packing_functions_test(rtt_dsxx::UnitTest &ut) {
    * I was able to improve the unpacking step somewhat with the addition of the extract command in
    * the unpacker. At least we don't have to spoon the packed data between containers one character
    * at a time any more.
-   *
-   * Someday, I'll fix this mess. But right now, I've got work to do.
-   *
-   *                                   -MWB.
    */
 
   // A place the hold the packed sizes of already packed data.
@@ -494,13 +492,11 @@ void packing_functions_test(rtt_dsxx::UnitTest &ut) {
   // Pack the size of the packed vector into packed_int;
   p << static_cast<int>(packed_vector.size());
 
-  // Now, manually copy the packed size of the packed vector into the total
-  // data array.
-  copy(packed_int.begin(), packed_int.end(), back_inserter(total_packed));
+  // Now, manually copy the packed size of the packed vector into the total data array.
+  std::ranges::copy(packed_int, back_inserter(total_packed));
 
-  // Now, manually append the data of the packed vector into the total data
-  // array.
-  copy(packed_vector.begin(), packed_vector.end(), back_inserter(total_packed));
+  // Now, manually append the data of the packed vector into the total data array.
+  std::ranges::copy(packed_vector, back_inserter(total_packed));
 
   /* Now, we repeat the process for the string data */
 
@@ -510,13 +506,11 @@ void packing_functions_test(rtt_dsxx::UnitTest &ut) {
   // Pack the size of the packed string.
   p << static_cast<int>(packed_string.size());
 
-  // Manually copy the packed size of the packed string into the total data
-  // array.
-  copy(packed_int.begin(), packed_int.end(), back_inserter(total_packed));
+  // Manually copy the packed size of the packed string into the total data array.
+  std::ranges::copy(packed_int, back_inserter(total_packed));
 
-  // Manually append the data of the packed string into the total data
-  // array.
-  copy(packed_string.begin(), packed_string.end(), back_inserter(total_packed));
+  // Manually append the data of the packed string into the total data array.
+  std::ranges::copy(packed_string, back_inserter(total_packed));
 
   // Unpack the data
   // ---------------
@@ -671,6 +665,8 @@ void packing_map_test(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

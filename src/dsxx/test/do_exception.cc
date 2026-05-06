@@ -4,7 +4,7 @@
  * \author Rob Lowrie
  * \date   Thu Oct 13 14:33:59 2005
  * \brief  Does a floating-point exception.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -26,6 +26,8 @@
 // MSVC about this issue.
 #pragma warning(disable : 4723)
 #endif
+
+namespace {
 
 using namespace std;
 
@@ -51,8 +53,8 @@ using namespace std;
  * If \c 'DRACO_DIAGNOSTICS && 0100' is non-zero (e.g.: \c DRACO_DIAGNOSTICS=7), then Draco's
  * fpe_trap should convert the IEEE FPE into a C++ exception and print a stack trace.
  *
- * When run through via \c ctest, the output from these tests is captured in the files \c
- * do_exception_[0-9]+.out and \c do_exception_[0-9]+.err.
+ * When run through via \c ctest, the output from these tests is captured in the files
+ * `do_exception_[0-9]+.out` and `do_exception_[0-9]+.err`.
  */
 void run_test(int /*argc*/, char **argv) {
 
@@ -131,6 +133,8 @@ void run_test(int /*argc*/, char **argv) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

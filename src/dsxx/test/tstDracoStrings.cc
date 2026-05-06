@@ -4,7 +4,7 @@
  * \author Kelly G. Thompson <kgt@lanl.gov>
  * \date   Wednesday, Aug 23, 2017, 13:30 pm
  * \brief  Test functions defined in dsxx/DracoStrings.hh
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoStrings.hh"
@@ -20,6 +20,8 @@
 #include <stdexcept> // out_of_range, invalid_argument
 #include <string>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -110,6 +112,8 @@ void test_tokenize(UnitTest &ut) {
 
 //------------------------------------------------------------------------------------------------//
 void test_parse_number(UnitTest &ut) {
+
+  using namespace rtt_dsxx;
 
   cout << "\nBegin test_parse_number checks...\n";
   unsigned const nf = ut.numFails;
@@ -308,6 +312,8 @@ void test_extract_version(UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

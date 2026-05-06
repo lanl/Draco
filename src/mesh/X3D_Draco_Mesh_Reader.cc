@@ -369,7 +369,7 @@ void X3D_Draco_Mesh_Reader::read_bdy_files() {
       // try converting to integer
       unsigned side_node;
       try {
-        side_node = rtt_dsxx::parse_number_impl<int>(data_line);
+        side_node = rtt_dsxx::parse_number<int>(data_line);
       } catch (std::invalid_argument &err) {
         Insist(false, err.what()); // LCOV_EXCL_LINE
       }

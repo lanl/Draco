@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/Homogeneous_New.hh
  * \author Kent Budge
- * \date   Tue Nov 28 08:27:37 2006
  * \brief  Definition of class Homogeneous_New
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

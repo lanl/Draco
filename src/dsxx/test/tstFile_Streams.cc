@@ -4,7 +4,7 @@
  * \author Rob Lowrie
  * \date   Sun Nov 21 19:36:12 2004
  * \brief  Tests File_Input and File_Output.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/File_Streams.hh"
@@ -15,6 +15,8 @@
 #include <cstddef>
 #include <sstream>
 #include <string>
+
+namespace {
 
 using namespace std;
 using rtt_dsxx::File_Input;
@@ -121,6 +123,8 @@ void test_fileio(rtt_dsxx::UnitTest &ut, const bool is_fformat_binary) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

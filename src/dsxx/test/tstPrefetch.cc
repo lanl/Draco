@@ -2,7 +2,7 @@
 /*!
  * \file   dsxx/test/tstPrefetch.cc
  * \brief  Demonstrate/Test the prefetch function.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Prefetch.hh"
@@ -14,6 +14,8 @@
 #include <cstddef> // size_t
 #include <iostream>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -72,6 +74,8 @@ void runtest(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(soft_equiv(sum_noprefetch, sum));
   PASSMSG("run to completion"); // Nothing crashed
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

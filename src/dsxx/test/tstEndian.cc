@@ -3,7 +3,7 @@
  * \file   dsxx/test/tstEndian.cc
  * \author Mike Buksas
  * \date   Tue Oct 23 16:20:59 2007
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Endian.hh"
@@ -16,6 +16,8 @@
 #include <cstdlib> // std::abs
 #include <limits>
 #include <sstream>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -157,32 +159,31 @@ void test_ieee_float(ScalarUnitTest &ut) {
 void test_externc(ScalarUnitTest &ut) {
   int result(42);
   result = dsxx_is_big_endian();
-  if (result < 0 || result > 1)
-    ITFAILS;
+  FAIL_IF(result < 0 || result > 1);
 
   result = 0xDEADBEEF;
   dsxx_byte_swap_int(result);
-  if (result != static_cast<int>(0xEFBEADDE))
-    ITFAILS;
+  FAIL_IF(result != static_cast<int>(0xEFBEADDE)); // NOLINT(modernize-use-integer-sign-comparison)
 
   int64_t i64(0xFADEDDEADBEEFBAD);
   dsxx_byte_swap_int64_t(i64);
-  if (i64 != static_cast<int64_t>(0xADFBEEDBEADDDEFA))
-    ITFAILS;
+  // NOLINTNEXTLINE(modernize-use-integer-sign-comparison)
+  FAIL_IF(i64 != static_cast<int64_t>(0xADFBEEDBEADDDEFA));
 
-  // Hexedecimal floating-point
+  // Hexadecimal floating-point
   double d(42);
   dsxx_byte_swap_double(d);
   // should not be 42
-  if (rtt_dsxx::soft_equiv(d, 42.0, 1.0e-15))
-    ITFAILS;
+  FAIL_IF(rtt_dsxx::soft_equiv(d, 42.0, 1.0e-15));
   dsxx_byte_swap_double(d);
   // double swap should return 42
-  if (!rtt_dsxx::soft_equiv(d, 42.0, 1.0e-15))
-    ITFAILS;
+  FAIL_IF(!rtt_dsxx::soft_equiv(d, 42.0, 1.0e-15));
 
   return;
 }
+
+} // namespace
+
 //------------------------------------------------------------------------------------------------//
 
 int main(int argc, char *argv[]) {

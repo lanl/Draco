@@ -4,7 +4,7 @@
  * \author Tim M. Kelley <tkelley@lanl.gov>, Kelly G. Thompson <kgt@lanl.gov>
  * \date   Wednesday, May 24, 2017, 11:06 am
  * \brief  Demonstrate proper and improper use of std::move
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved.
  *
  * \sa http://blog.smartbear.com/c-plus-plus/c11-tutorial-introducing-the-move-constructor-and-the-move-assignment-operator/
  */
@@ -20,6 +20,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+namespace {
 
 // forward declaration
 void report_memory_locations(std::vector<double> const &v, std::string const &name);
@@ -144,7 +146,7 @@ void move_semantics_example(rtt_dsxx::UnitTest &ut) {
   if (v1.size() != 0)
     ITFAILS;
   else
-    PASSMSG("v1 no longer has a data store (transfered to Banana)");
+    PASSMSG("v1 no longer has a data store (transferred to Banana)");
   FAIL_IF(v1_loc == &b.v_);
   // v1_data_loc was set before Banana was constructed
   if (v1_data_loc == &b.v_[0] && b.v_.size() > 0)
@@ -176,6 +178,8 @@ void report_memory_locations(std::vector<double> const &v, std::string const &na
   cout << "}\n";
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

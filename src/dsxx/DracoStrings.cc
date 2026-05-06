@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/DracoStrings.cc
  * \author Kelly G. Thompson <kgt@lanl.gov>
- * \date   Wednesday, Aug 23, 2017, 12:48 pm
  * \brief  Encapsulates common string manipulations (implementation).
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

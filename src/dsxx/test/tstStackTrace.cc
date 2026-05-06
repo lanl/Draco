@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Thursday, Dec 19, 2013, 15:09 pm
  * \brief  Demonstrate/Test fpe_trap's print_stacktrace function.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoStrings.hh"
@@ -16,6 +16,8 @@
 #include <map>
 #include <sstream>
 #include <string>
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -68,6 +70,8 @@ void runtest(rtt_dsxx::UnitTest &ut) {
     PASSMSG("done with testing print_stacktrace.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

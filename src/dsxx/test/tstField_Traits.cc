@@ -3,7 +3,7 @@
  * \file   dsxx/test/tstField_Traits.cc
  * \author Kent Budge
  * \date   Tue Aug 26 12:18:55 2008
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Field_Traits.hh"
@@ -13,6 +13,8 @@
 #include "dsxx/UnitTest.hh"
 #include <complex>
 #include <limits>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -47,6 +49,8 @@ struct labeled {
   operator unlabeled &() { return s; } // NOLINT [hicpp-explicit-conversions]
 };
 
+} // namespace
+
 //------------------------------------------------------------------------------------------------//
 namespace rtt_dsxx {
 
@@ -56,6 +60,8 @@ public:
 };
 } // namespace rtt_dsxx
 
+namespace {
+
 bool operator==(unlabeled const &a, labeled const &b) { return a.i == b.s.i; }
 
 //------------------------------------------------------------------------------------------------//
@@ -63,11 +69,13 @@ void tstvalue(UnitTest &ut) {
   double x = 3;
   double const cx = 4;
   FAIL_IF_NOT(rtt_dsxx::soft_equiv(x, value(x)) && rtt_dsxx::soft_equiv(cx, value(cx)));
-  labeled s = {{1}, 2};
+  labeled s = {.s = {1}, .j = 2};
   FAIL_IF_NOT(value(s) == s);
   PASSMSG("Done with tstvalue");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

@@ -4,7 +4,7 @@
  * \author Ryan Wollaeger <wollaeger@lanl.gov>, Kendra Long
  * \date   Thursday, Jul 12, 2018, 08:46 am
  * \brief  X3D_Draco_Mesh_Reader class implementation header file.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoStrings.hh"
@@ -49,7 +49,7 @@ std::map<KT, std::vector<VT>> X3D_Draco_Mesh_Reader::map_x3d_block(const std::st
 
       // try to convert value type to VT, throw if impossible
       try {
-        tmp_vec[i] = rtt_dsxx::parse_number_impl<VT>(j);
+        tmp_vec[i] = rtt_dsxx::parse_number<VT>(j);
       } catch (std::invalid_argument &err) {
         Insist(false, err.what()); // LCOV_EXCL_LINE
       }
@@ -82,7 +82,7 @@ template <typename KT> KT X3D_Draco_Mesh_Reader::convert_key(const std::string &
   // try to convert to key type KT, throw assertion if impossible
   KT ret_key;
   try {
-    ret_key = rtt_dsxx::parse_number_impl<KT>(skey);
+    ret_key = rtt_dsxx::parse_number<KT>(skey);
   } catch (std::invalid_argument &err) {
     Insist(false, err.what()); // LCOV_EXCL_LINE
   }

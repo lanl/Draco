@@ -4,7 +4,7 @@
  * \author Kent G. Budge, Kendra P. Long
  * \date   Tues Nov 15 2022
  * \brief  Test functions defined in dsxx/Interpolate.hh.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Interpolate.hh"
@@ -14,6 +14,8 @@
 #include "dsxx/UnitTest.hh"
 #include <cstddef>
 #include <vector>
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -124,6 +126,8 @@ void tst1dlag(rtt_dsxx::UnitTest &ut) {
     FAILMSG("1D lagrange interpolation test fails.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

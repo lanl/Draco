@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/test/tstSoft_Equiv.cc
  * \author Thomas M. Evans
- * \date   Wed Nov  7 15:55:54 2001
  * \brief  Soft_Equiv header testing utilities.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -15,6 +14,8 @@
 #include <cstddef> // size_t
 #include <deque>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using rtt_dsxx::soft_equiv;
@@ -124,22 +125,6 @@ void test_soft_equiv_deep_container(rtt_dsxx::ScalarUnitTest &ut) {
   FAIL_IF(soft_equiv_deep<2>().equiv(values.begin(), values.end(), reference.begin(),
                                      reference.end(), 1.e-13));
 
-  // Compare C++ array to vector<vector<double>> data.
-  // This cannot work because the C++ array is fundamentally a 1-D container.
-
-  // double v[3];
-  // v[0] = 0.3247333291470;
-  // v[1] = 0.3224333221471;
-  // v[2] = 0.3324333522912;
-  // if (soft_equiv(&v[0], &v[3],
-  //             reference.begin(), reference.end()))
-  //     PASSMSG("Passed vector-pointer equivalence test.");
-  // else
-  //     ITFAILS;
-
-  // if (!soft_equiv(reference.begin(), reference.end(), &v[0], &v[3]))
-  //     ITFAILS;
-
   // Test 3-D array
   vector<vector<vector<double>>> const ref = {
       {{0.1, 0.2}, {0.3, 0.4}}, {{1.1, 1.2}, {1.3, 1.4}}, {{2.1, 2.2}, {2.3, 2.4}}};
@@ -209,6 +194,8 @@ void test_vector_specialization(rtt_dsxx::ScalarUnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/test/tstIndex_Counter.cc
  * \author Mike Buksas
- * \date   Wed Feb  1 08:58:48 2006
  * \brief  Unit test for Index_Counter
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Index_Converter.hh"
@@ -14,6 +13,8 @@
 #include "dsxx/UnitTest.hh"
 #include <array>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -93,6 +94,8 @@ void test_next_index(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(box.get_next_index(it, 6) == 13);
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

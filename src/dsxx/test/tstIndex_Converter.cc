@@ -3,7 +3,7 @@
  * \file   dsxx/test/tstIndex_Converter.cc
  * \author Mike Buksas
  * \date   Fri Jan 20 15:53:51 2006
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Index_Converter.hh"
@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <array>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -98,6 +100,8 @@ void test_index_converter(rtt_dsxx::UnitTest &ut) {
     PASSMSG("done with test_index_converter()");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

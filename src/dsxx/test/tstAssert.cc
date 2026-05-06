@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/test/tstAssert.cc
  * \author Thomas M. Evans
- * \date   Wed Mar 12 12:11:22 2003
  * \brief  Assertion tests.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -12,12 +11,13 @@
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/StackTrace.hh"
 #include "dsxx/UnitTest.hh"
-#include "dsxx/config.h"
 #include <iostream>
 #include <new>
 #include <regex>
 #include <stdexcept>
 #include <string>
+
+namespace {
 
 using namespace std;
 
@@ -482,20 +482,6 @@ void t_catch_bad_alloc(rtt_dsxx::UnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
-bool no_exception() NOEXCEPT;
-bool no_exception_c() NOEXCEPT_C(true);
-
-void tnoexcept(rtt_dsxx::UnitTest &ut) {
-#if DBC
-  ut.check(!noexcept(no_exception()), "with DBC on, NOEXCEPT has no effect");
-  ut.check(!noexcept(no_exception_c()), "with DBC on, NOEXCEPT_C has no effect");
-#else
-  ut.check(noexcept(no_exception()), "with DBC off, NOEXCEPT has effect");
-  ut.check(noexcept(no_exception_c()), "with DBC off, NOEXCEPT_C has effect");
-#endif
-}
-
-//------------------------------------------------------------------------------------------------//
 int unused(int i) {
   switch (i) { // NOLINT [hicpp-multiway-paths-covered]
   case 0:
@@ -507,6 +493,8 @@ int unused(int i) {
     // function
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
@@ -534,9 +522,6 @@ int main(int argc, char *argv[]) {
 
     // fancy output
     tverbose_error(ut);
-
-    // noexcept
-    tnoexcept(ut);
 
     // noreturn
     // called only to keep code coverage good

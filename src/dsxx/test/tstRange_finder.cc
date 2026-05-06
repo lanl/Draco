@@ -3,7 +3,7 @@
  * \file   dsxx/test/tstRange_finder.cc
  * \author Mike Buksas
  * \date   Thu Feb  6 12:43:22 2003
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Range_Finder.hh"
@@ -13,6 +13,8 @@
 #include <array>
 #include <utility>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -99,6 +101,8 @@ void test_range_finder_right(UnitTest &ut) {
   FAIL_IF_NOT(index == 0);
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

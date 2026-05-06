@@ -19,6 +19,8 @@
 #include <sstream>
 #include <string>
 
+namespace {
+
 //------------------------------------------------------------------------------------------------//
 // Test 1: shortopts, no arguments
 void tst_shortopts_noargs(rtt_dsxx::UnitTest &ut) {
@@ -780,6 +782,8 @@ void tst_lopts_args_helpstrings(rtt_dsxx::UnitTest &ut) {
   FAIL_IF_NOT(word_list[std::string("print")] == 1);
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
