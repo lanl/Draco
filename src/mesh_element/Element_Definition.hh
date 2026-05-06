@@ -2,7 +2,6 @@
 /*!
  * \file   mesh_element/Element_Definition.hh
  * \author John McGhee
- * \date   Fri Feb 25 10:03:18 2000
  * \brief  Header file for the RTT Element_Definition class.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -74,8 +73,6 @@ namespace rtt_mesh_element {
 
 class Element_Definition {
 
-  // NESTED CLASSES AND TYPEDEFS
-
 public:
   /*!
    * \brief Describes the location of a node within an element.
@@ -91,7 +88,7 @@ public:
    * in an element and all its sub-elements. i.e. the corner nodes of a quadrilateral are also
    * corner nodes in the line elements which form the edges of the quadrilateral.
    */
-  enum Node_Location {
+  enum Node_Location : uint8_t {
     CORNER, /*!< Terminates one or more edges of an element. */
     EDGE,   /*!< Located in the interior of a 1D element. */
     FACE,   /*!< Located in the interior of a 2D element. */
@@ -106,7 +103,7 @@ public:
    * href="http://www.CGNS.org/documents/Elements.pdf"> Element-Descriptions </a> (Adobe PDF format)
    * are are available at the CGNS www site.
    */
-  enum Element_Type {
+  enum Element_Type : uint8_t {
     NODE,       //!< A dimensionless point in space.
     BAR_2,      //!< The basic one-D, two-node "line" element.
     BAR_3,      //!< Same as "BAR_2" except that a node is added in the center.
@@ -198,44 +195,43 @@ public:
    * \param side_type_ Index into \c elem_defs_ of the element definition appropriate for each side.
    *
    * \param side_nodes_ A vector of vectors specifying the nodes associated with each side. For
-   *        example, <code>side_nodes_[2]</code> is a vector specifying the nodes associated with
-   *        the third side of the element.  Note that the node numbering is 0 based.
+   *        example, `side_nodes_[2]` is a vector specifying the nodes associated with the third
+   *        side of the element.  Note that the node numbering is 0 based.
    *
-   * \pre <code>dimension_>=0</code>
+   * \pre `dimension_>=0`
    *
-   * \pre <code>number_of_nodes_>0</code>
+   * \pre `number_of_nodes_>0`
    *
-   * \pre <code>number_of_sides_>=0</code>
+   * \pre `number_of_sides_>=0`
    *
-   * \pre All elements of \c elem_defs_ must satisfy
-   *        <code>elem_defs_[i].get_dimension()+1==dimension_</code>
+   * \pre All elements of \c elem_defs_ must satisfy `elem_defs_[i].get_dimension()+1==dimension_`
    *
-   * \pre <code>side_type_.size()==number_of_sides_</code>
+   * \pre `side_type_.size()==number_of_sides_`
    *
    * \pre All elements of \c side_type_ must satisfy
-   *        <code>static_cast<unsigned>(side_type_[i])<elem_defs_.size()</code>
+   *        `static_cast<unsigned>(side_type_[i])<elem_defs_.size()`
    *
-   * \pre <code>side_nodes_.size()==number_of_sides_</code>
+   * \pre `side_nodes_.size()==number_of_sides_`
+   *
+   * \pre All elements of \c side_nodes_ must satisfy `side_nodes_[i].size() ==
+   *        elem_defs_[side_type_[i]].get_number_of_nodes() `
    *
    * \pre All elements of \c side_nodes_ must satisfy
-   *        <code>side_nodes_[i].size() == elem_defs_[side_type_[i]].get_number_of_nodes() </code>
+   *        `static_cast<unsigned>(side_nodes_[i][j])<number_of_nodes_`
    *
-   * \pre All elements of \c side_nodes_ must satisfy
-   *        <code>static_cast<unsigned>(side_nodes_[i][j])<number_of_nodes_</code>
+   * \post `get_type()==Element_Definition::POLYGON `
    *
-   * \post <code> get_type()==Element_Definition::POLYGON </code>
+   * \post `get_name()==name_`
    *
-   * \post <code> get_name()==name_  </code>
+   * \post `get_dimension()==dimension_`
    *
-   * \post <code> get_dimension()==dimension_  </code>
+   * \post `get_number_of_nodes()==number_of_nodes_`
    *
-   * \post <code> get_number_of_nodes()==number_of_nodes_  </code>
+   * \post `get_number_of_sides()==number_of_sides_`
    *
-   * \post <code> get_number_of_sides()==number_of_sides_  </code>
+   * \post `get_side_type(i)==elem_defs_[side_type_[i]]`
    *
-   * \post <code> get_side_type(i)==elem_defs_[side_type_[i]]  </code>
-   *
-   * \post <code> get_side_nodes(i)==side_nodes_[i]  </code>
+   * \post `get_side_nodes(i)==side_nodes_[i]`
    */
   Element_Definition(std::string const &name_, unsigned dimension_, unsigned number_of_nodes_,
                      unsigned number_of_sides_, std::vector<Element_Definition> const &elem_defs_,

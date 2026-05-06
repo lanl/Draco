@@ -2,9 +2,8 @@
 /*!
  * \file   mesh_element/Element_Definition.cc
  * \author John McGhee
- * \date   Fri Feb 25 10:03:18 2000
  * \brief  Provides some descriptive information for the standard mesh elements.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Element_Definition.hh"

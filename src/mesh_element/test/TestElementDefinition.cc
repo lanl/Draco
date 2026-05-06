@@ -2,9 +2,8 @@
 /*!
  * \file   mesh_element/test/TestElementDefinition.cc
  * \author Thomas M. Evans
- * \date   Tue Mar 26 16:06:55 2002
  * \brief  Test Element Definitions.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -19,13 +18,15 @@
 #include <string>
 #include <vector>
 
-using namespace std;
+// cSpell:ignore penta, polyg, pyra
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
-namespace rtt_mesh_element_test {
+namespace {
+
+using namespace std;
 
 bool test_node(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
 bool test_bar_2(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
@@ -35,8 +36,6 @@ bool test_tri_6(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definiti
 bool test_quad_4(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
 bool test_quad_5(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
 bool test_quad_6(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
-bool test_quad_6a(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
-bool test_quad_6o(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
 bool test_quad_7(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
 bool test_quad_8(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
 bool test_quad_9(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
@@ -51,10 +50,8 @@ bool test_hexa_8(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definit
 bool test_hexa_20(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
 bool test_hexa_27(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def);
 
-} // end namespace rtt_mesh_element_test
-
 //------------------------------------------------------------------------------------------------//
-template <std::size_t N> std::vector<unsigned> makeuv(std::array<int, N> s) {
+template <std::size_t N> std::vector<unsigned> make_unsigned_vector(std::array<int, N> s) {
   return std::vector<unsigned>(s.begin(), s.end());
 }
 
@@ -105,52 +102,51 @@ void runTest(rtt_dsxx::UnitTest &ut) {
   cout << "\nChecking Elements ---\n\n";
 
   // CAREFUL HERE -- the order of the function calls must match the type_list order
-  rtt_mesh_element_test::test_node(ut, elem_defs.front());
+  test_node(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_bar_2(ut, elem_defs.front());
+  test_bar_2(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_bar_3(ut, elem_defs.front());
+  test_bar_3(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_tri_3(ut, elem_defs.front());
+  test_tri_3(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_tri_6(ut, elem_defs.front());
+  test_tri_6(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_quad_4(ut, elem_defs.front());
+  test_quad_4(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_quad_5(ut, elem_defs.front());
+  test_quad_5(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_quad_6(
-      ut, elem_defs.front()); // Call all three QUAD_6 elements in a single test
+  test_quad_6(ut, elem_defs.front()); // Call all three QUAD_6 elements in a single test
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_quad_6(ut, elem_defs.front());
+  test_quad_6(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_quad_6(ut, elem_defs.front());
+  test_quad_6(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_quad_7(ut, elem_defs.front());
+  test_quad_7(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_quad_8(ut, elem_defs.front());
+  test_quad_8(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_quad_9(ut, elem_defs.front());
+  test_quad_9(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_tetra_4(ut, elem_defs.front());
+  test_tetra_4(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_tetra_10(ut, elem_defs.front());
+  test_tetra_10(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_pyra_5(ut, elem_defs.front());
+  test_pyra_5(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_pyra_14(ut, elem_defs.front());
+  test_pyra_14(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_penta_6(ut, elem_defs.front());
+  test_penta_6(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_penta_15(ut, elem_defs.front());
+  test_penta_15(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_penta_18(ut, elem_defs.front());
+  test_penta_18(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_hexa_8(ut, elem_defs.front());
+  test_hexa_8(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_hexa_20(ut, elem_defs.front());
+  test_hexa_20(ut, elem_defs.front());
   elem_defs.pop_front();
-  rtt_mesh_element_test::test_hexa_27(ut, elem_defs.front());
+  test_hexa_27(ut, elem_defs.front());
   elem_defs.pop_front();
 
   //----------------------------------------------------------------------------------------------//
@@ -236,231 +232,227 @@ void runTest(rtt_dsxx::UnitTest &ut) {
 }
 
 //------------------------------------------------------------------------------------------------//
-
-namespace rtt_mesh_element_test {
-
-//------------------------------------------------------------------------------------------------//
 bool test_node(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the NODE element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "NODE";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::NODE;
-  ldum = ldum && elem_def.get_number_of_nodes() == 1;
-  ldum = ldum && elem_def.get_dimension() == 0;
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 0;
-  if (ldum) {
+  string const elem_name = "NODE";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::NODE;
+  okay = okay && elem_def.get_number_of_nodes() == 1;
+  okay = okay && elem_def.get_dimension() == 0;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 0;
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_bar_2(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the BAR_2 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "BAR_2";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::BAR_2;
-  ldum = ldum && elem_def.get_number_of_nodes() == 2;
-  ldum = ldum && elem_def.get_dimension() == 1;
-  ldum = ldum && elem_def.get_number_of_sides() == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 1;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 1;
+  string const elem_name = "BAR_2";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::BAR_2;
+  okay = okay && elem_def.get_number_of_nodes() == 2;
+  okay = okay && elem_def.get_dimension() == 1;
+  okay = okay && elem_def.get_number_of_sides() == 2;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 2;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 1;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 1;
   constexpr int size = 1;
   std::array<int, size> const s0 = {0};
   std::array<int, size> const s1 = {1};
-  ldum = ldum && (elem_def.get_side_nodes(0) == makeuv(s0));
-  ldum = ldum && (elem_def.get_side_nodes(1) == makeuv(s1));
-  if (ldum) {
+  okay = okay && (elem_def.get_side_nodes(0) == make_unsigned_vector(s0));
+  okay = okay && (elem_def.get_side_nodes(1) == make_unsigned_vector(s1));
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_bar_3(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the BAR_3 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "BAR_3";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::BAR_3;
-  ldum = ldum && elem_def.get_number_of_nodes() == 3;
-  ldum = ldum && elem_def.get_dimension() == 1;
-  ldum = ldum && elem_def.get_number_of_sides() == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 1;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 1;
+  string const elem_name = "BAR_3";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::BAR_3;
+  okay = okay && elem_def.get_number_of_nodes() == 3;
+  okay = okay && elem_def.get_dimension() == 1;
+  okay = okay && elem_def.get_number_of_sides() == 2;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 2;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 1;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 1;
   constexpr int size = 1;
   std::array<int, size> const s0 = {0};
   std::array<int, size> const s1 = {1};
-  ldum = ldum && (elem_def.get_side_nodes(0) == makeuv(s0));
-  ldum = ldum && (elem_def.get_side_nodes(1) == makeuv(s1));
-  if (ldum) {
+  okay = okay && (elem_def.get_side_nodes(0) == make_unsigned_vector(s0));
+  okay = okay && (elem_def.get_side_nodes(1) == make_unsigned_vector(s1));
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_tri_3(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the TRI_3 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "TRI_3";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::TRI_3;
-  ldum = ldum && elem_def.get_number_of_nodes() == 3;
-  ldum = ldum && elem_def.get_dimension() == 2;
-  ldum = ldum && elem_def.get_number_of_sides() == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 2;
+  string const elem_name = "TRI_3";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::TRI_3;
+  okay = okay && elem_def.get_number_of_nodes() == 3;
+  okay = okay && elem_def.get_dimension() == 2;
+  okay = okay && elem_def.get_number_of_sides() == 3;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 2;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 2;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 2;
   constexpr int size = 2;
   std::array<int, size> const s0 = {0, 1};
   std::array<int, size> const s1 = {1, 2};
   std::array<int, size> const s2 = {2, 0};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  if (ldum) {
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_tri_6(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "TRI_6";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::TRI_6;
-  ldum = ldum && elem_def.get_number_of_nodes() == 6;
-  ldum = ldum && elem_def.get_dimension() == 2;
-  ldum = ldum && elem_def.get_number_of_sides() == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 3;
+  string const elem_name = "TRI_6";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::TRI_6;
+  okay = okay && elem_def.get_number_of_nodes() == 6;
+  okay = okay && elem_def.get_dimension() == 2;
+  okay = okay && elem_def.get_number_of_sides() == 3;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 3;
   constexpr int size = 3;
   std::array<int, size> const s0 = {0, 1, 3};
   std::array<int, size> const s1 = {1, 2, 4};
   std::array<int, size> const s2 = {2, 0, 5};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  if (ldum) {
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_quad_4(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the QUAD_4 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "QUAD_4";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::QUAD_4;
-  ldum = ldum && elem_def.get_number_of_nodes() == 4;
-  ldum = ldum && elem_def.get_dimension() == 2;
-  ldum = ldum && elem_def.get_number_of_sides() == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 2;
+  string const elem_name = "QUAD_4";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::QUAD_4;
+  okay = okay && elem_def.get_number_of_nodes() == 4;
+  okay = okay && elem_def.get_dimension() == 2;
+  okay = okay && elem_def.get_number_of_sides() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 2;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 2;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 2;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 2;
   constexpr int size = 2;
   std::array<int, size> const s0 = {0, 1};
   std::array<int, size> const s1 = {1, 2};
   std::array<int, size> const s2 = {2, 3};
   std::array<int, size> const s3 = {3, 0};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  if (ldum) {
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_quad_5(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the QUAD_5 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "QUAD_5";
-  bool ldum = elem_def.get_name() == ename;
+  string const elem_name = "QUAD_5";
+  bool okay = elem_def.get_name() == elem_name;
 
-  ldum = ldum && elem_def.get_type() == Element_Definition::QUAD_5;
-  ldum = ldum && elem_def.get_number_of_nodes() == 5;
-  ldum = ldum && elem_def.get_dimension() == 2;
-  ldum = ldum && elem_def.get_number_of_sides() == 4;
+  okay = okay && elem_def.get_type() == Element_Definition::QUAD_5;
+  okay = okay && elem_def.get_number_of_nodes() == 5;
+  okay = okay && elem_def.get_dimension() == 2;
+  okay = okay && elem_def.get_number_of_sides() == 4;
 
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 4;
 
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 2;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 2;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 2;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 3;
 
   std::array<int, 2> const s0 = {0, 1};
   std::array<int, 2> const s1 = {1, 2};
   std::array<int, 2> const s2 = {2, 3};
   std::array<int, 3> const s3 = {3, 0, 4};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
 
-  if (ldum) {
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -468,60 +460,60 @@ bool test_quad_6(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definit
   // Test the QUAD_6 element.
   using rtt_mesh_element::Element_Definition;
 
-  bool ldum = (elem_def.get_type() == Element_Definition::QUAD_6 ||
+  bool okay = (elem_def.get_type() == Element_Definition::QUAD_6 ||
                elem_def.get_type() == Element_Definition::QUAD_6a ||
                elem_def.get_type() == Element_Definition::QUAD_6o);
 
   if (elem_def.get_type() == Element_Definition::QUAD_6 ||
       elem_def.get_type() == Element_Definition::QUAD_6a) {
-    string const ename = "QUAD_6";
-    ldum = ldum && elem_def.get_name() == ename;
+    string const elem_name = "QUAD_6";
+    okay = okay && elem_def.get_name() == elem_name;
 
-    ldum = ldum && elem_def.get_number_of_nodes() == 6;
-    ldum = ldum && elem_def.get_dimension() == 2;
-    ldum = ldum && elem_def.get_number_of_sides() == 4;
+    okay = okay && elem_def.get_number_of_nodes() == 6;
+    okay = okay && elem_def.get_dimension() == 2;
+    okay = okay && elem_def.get_number_of_sides() == 4;
 
-    ldum = ldum && elem_def.get_number_of_face_nodes().size() == 4;
+    okay = okay && elem_def.get_number_of_face_nodes().size() == 4;
 
-    ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 2;
-    ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 2;
-    ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 3;
-    ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 3;
+    okay = okay && elem_def.get_number_of_face_nodes()[0] == 2;
+    okay = okay && elem_def.get_number_of_face_nodes()[1] == 2;
+    okay = okay && elem_def.get_number_of_face_nodes()[2] == 3;
+    okay = okay && elem_def.get_number_of_face_nodes()[3] == 3;
 
     std::array<int, 2> const s0 = {0, 1};
     std::array<int, 2> const s1 = {1, 2};
     std::array<int, 3> const s2 = {2, 3, 4};
     std::array<int, 3> const s3 = {3, 0, 5};
-    ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-    ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-    ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-    ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
+    okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+    okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+    okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+    okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
   } else {
-    string const ename = "QUAD_6o";
-    ldum = ldum && elem_def.get_name() == ename;
+    string const elem_name = "QUAD_6o";
+    okay = okay && elem_def.get_name() == elem_name;
 
-    ldum = ldum && elem_def.get_number_of_nodes() == 6;
-    ldum = ldum && elem_def.get_dimension() == 2;
-    ldum = ldum && elem_def.get_number_of_sides() == 4;
+    okay = okay && elem_def.get_number_of_nodes() == 6;
+    okay = okay && elem_def.get_dimension() == 2;
+    okay = okay && elem_def.get_number_of_sides() == 4;
 
-    ldum = ldum && elem_def.get_number_of_face_nodes().size() == 4;
+    okay = okay && elem_def.get_number_of_face_nodes().size() == 4;
 
-    ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 2;
-    ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 3;
-    ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 2;
-    ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 3;
+    okay = okay && elem_def.get_number_of_face_nodes()[0] == 2;
+    okay = okay && elem_def.get_number_of_face_nodes()[1] == 3;
+    okay = okay && elem_def.get_number_of_face_nodes()[2] == 2;
+    okay = okay && elem_def.get_number_of_face_nodes()[3] == 3;
 
     std::array<int, 2> const s0 = {0, 1};
     std::array<int, 3> const s1 = {1, 2, 4};
     std::array<int, 2> const s2 = {2, 3};
     std::array<int, 3> const s3 = {3, 0, 5};
-    ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-    ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-    ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-    ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
+    okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+    okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+    okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+    okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
   }
 
-  if (ldum) {
+  if (okay) {
     ostringstream message;
     message << " QUAD_6 element OK.\n";
     PASSMSG(message.str());
@@ -530,420 +522,420 @@ bool test_quad_6(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definit
     message << "Error in QUAD_6 element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_quad_7(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the QUAD_7 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "QUAD_7";
-  bool ldum = elem_def.get_name() == ename;
+  string const elem_name = "QUAD_7";
+  bool okay = elem_def.get_name() == elem_name;
 
-  ldum = ldum && elem_def.get_type() == Element_Definition::QUAD_7;
-  ldum = ldum && elem_def.get_number_of_nodes() == 7;
-  ldum = ldum && elem_def.get_dimension() == 2;
-  ldum = ldum && elem_def.get_number_of_sides() == 4;
+  okay = okay && elem_def.get_type() == Element_Definition::QUAD_7;
+  okay = okay && elem_def.get_number_of_nodes() == 7;
+  okay = okay && elem_def.get_dimension() == 2;
+  okay = okay && elem_def.get_number_of_sides() == 4;
 
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 4;
 
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 2;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 2;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 3;
 
   std::array<int, 2> const s0 = {0, 1};
   std::array<int, 3> const s1 = {1, 2, 4};
   std::array<int, 3> const s2 = {2, 3, 5};
   std::array<int, 3> const s3 = {3, 0, 6};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
 
-  if (ldum) {
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_quad_8(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the QUAD_8 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "QUAD_8";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::QUAD_8;
-  ldum = ldum && elem_def.get_number_of_nodes() == 8;
-  ldum = ldum && elem_def.get_dimension() == 2;
-  ldum = ldum && elem_def.get_number_of_sides() == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 3;
+  string const elem_name = "QUAD_8";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::QUAD_8;
+  okay = okay && elem_def.get_number_of_nodes() == 8;
+  okay = okay && elem_def.get_dimension() == 2;
+  okay = okay && elem_def.get_number_of_sides() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 3;
   constexpr int size = 3;
   std::array<int, size> const s0 = {0, 1, 4};
   std::array<int, size> const s1 = {1, 2, 5};
   std::array<int, size> const s2 = {2, 3, 6};
   std::array<int, size> const s3 = {3, 0, 7};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  if (ldum) {
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_quad_9(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the QUAD_9 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "QUAD_9";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::QUAD_9;
-  ldum = ldum && elem_def.get_number_of_nodes() == 9;
-  ldum = ldum && elem_def.get_dimension() == 2;
-  ldum = ldum && elem_def.get_number_of_sides() == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 3;
+  string const elem_name = "QUAD_9";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::QUAD_9;
+  okay = okay && elem_def.get_number_of_nodes() == 9;
+  okay = okay && elem_def.get_dimension() == 2;
+  okay = okay && elem_def.get_number_of_sides() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 3;
   constexpr int size = 3;
   std::array<int, size> const s0 = {0, 1, 4};
   std::array<int, size> const s1 = {1, 2, 5};
   std::array<int, size> const s2 = {2, 3, 6};
   std::array<int, size> const s3 = {3, 0, 7};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  if (ldum) {
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_tetra_4(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the TETRA_4 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "TETRA_4";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::TETRA_4;
-  ldum = ldum && elem_def.get_number_of_nodes() == 4;
-  ldum = ldum && elem_def.get_dimension() == 3;
-  ldum = ldum && elem_def.get_number_of_sides() == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 3;
+  string const elem_name = "TETRA_4";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::TETRA_4;
+  okay = okay && elem_def.get_number_of_nodes() == 4;
+  okay = okay && elem_def.get_dimension() == 3;
+  okay = okay && elem_def.get_number_of_sides() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 3;
   constexpr int size = 3;
   std::array<int, size> const s0 = {0, 2, 1};
   std::array<int, size> const s1 = {0, 1, 3};
   std::array<int, size> const s2 = {1, 2, 3};
   std::array<int, size> const s3 = {2, 0, 3};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  if (ldum) {
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_tetra_10(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the TETRA_10 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "TETRA_10";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::TETRA_10;
-  ldum = ldum && elem_def.get_number_of_nodes() == 10;
-  ldum = ldum && elem_def.get_dimension() == 3;
-  ldum = ldum && elem_def.get_number_of_sides() == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 6;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 6;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 6;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 6;
+  string const elem_name = "TETRA_10";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::TETRA_10;
+  okay = okay && elem_def.get_number_of_nodes() == 10;
+  okay = okay && elem_def.get_dimension() == 3;
+  okay = okay && elem_def.get_number_of_sides() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 6;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 6;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 6;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 6;
   constexpr int size = 6;
   std::array<int, size> const s0 = {0, 2, 1, 6, 5, 4};
   std::array<int, size> const s1 = {0, 1, 3, 4, 8, 7};
   std::array<int, size> const s2 = {1, 2, 3, 5, 9, 8};
   std::array<int, size> const s3 = {2, 0, 3, 6, 7, 9};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  if (ldum) {
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_pyra_5(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the PYRA_5 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "PYRA_5";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::PYRA_5;
-  ldum = ldum && elem_def.get_number_of_nodes() == 5;
-  ldum = ldum && elem_def.get_dimension() == 3;
-  ldum = ldum && elem_def.get_number_of_sides() == 5;
-  ldum = ldum && elem_def.get_side_type(0).get_type() == Element_Definition::QUAD_4;
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 5;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[4] == 3;
-  constexpr int sizeq = 4;
-  array<int, sizeq> const s0 = {0, 3, 2, 1};
-  constexpr int sizet = 3;
-  array<int, sizet> const s1 = {0, 1, 4};
-  array<int, sizet> const s2 = {1, 2, 4};
-  array<int, sizet> const s3 = {2, 3, 4};
-  array<int, sizet> const s4 = {3, 0, 4};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  ldum = ldum && elem_def.get_side_nodes(4) == makeuv(s4);
-  if (ldum) {
+  string const elem_name = "PYRA_5";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::PYRA_5;
+  okay = okay && elem_def.get_number_of_nodes() == 5;
+  okay = okay && elem_def.get_dimension() == 3;
+  okay = okay && elem_def.get_number_of_sides() == 5;
+  okay = okay && elem_def.get_side_type(0).get_type() == Element_Definition::QUAD_4;
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 5;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[4] == 3;
+  constexpr int size_q = 4;
+  array<int, size_q> const s0 = {0, 3, 2, 1};
+  constexpr int size_tri = 3;
+  array<int, size_tri> const s1 = {0, 1, 4};
+  array<int, size_tri> const s2 = {1, 2, 4};
+  array<int, size_tri> const s3 = {2, 3, 4};
+  array<int, size_tri> const s4 = {3, 0, 4};
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  okay = okay && elem_def.get_side_nodes(4) == make_unsigned_vector(s4);
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_pyra_14(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the PYRA_14 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "PYRA_14";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::PYRA_14;
-  ldum = ldum && elem_def.get_number_of_nodes() == 14;
-  ldum = ldum && elem_def.get_dimension() == 3;
-  ldum = ldum && elem_def.get_number_of_sides() == 5;
-  ldum = ldum && elem_def.get_side_type(0).get_type() == Element_Definition::QUAD_8;
-  constexpr int sizeq = 8;
-  array<int, sizeq> const s0 = {0, 3, 2, 1, 8, 7, 6, 5};
-  constexpr int sizet = 6;
-  array<int, sizet> const s1 = {0, 1, 4, 5, 10, 9};
-  array<int, sizet> const s2 = {1, 2, 4, 6, 11, 10};
-  array<int, sizet> const s3 = {2, 3, 4, 7, 12, 11};
-  array<int, sizet> const s4 = {3, 0, 4, 8, 9, 12};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  ldum = ldum && elem_def.get_side_nodes(4) == makeuv(s4);
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 5;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 8;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 6;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 6;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 6;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[4] == 6;
-  if (ldum) {
+  string const elem_name = "PYRA_14";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::PYRA_14;
+  okay = okay && elem_def.get_number_of_nodes() == 14;
+  okay = okay && elem_def.get_dimension() == 3;
+  okay = okay && elem_def.get_number_of_sides() == 5;
+  okay = okay && elem_def.get_side_type(0).get_type() == Element_Definition::QUAD_8;
+  constexpr int size_q = 8;
+  array<int, size_q> const s0 = {0, 3, 2, 1, 8, 7, 6, 5};
+  constexpr int size_tri = 6;
+  array<int, size_tri> const s1 = {0, 1, 4, 5, 10, 9};
+  array<int, size_tri> const s2 = {1, 2, 4, 6, 11, 10};
+  array<int, size_tri> const s3 = {2, 3, 4, 7, 12, 11};
+  array<int, size_tri> const s4 = {3, 0, 4, 8, 9, 12};
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  okay = okay && elem_def.get_side_nodes(4) == make_unsigned_vector(s4);
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 5;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 8;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 6;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 6;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 6;
+  okay = okay && elem_def.get_number_of_face_nodes()[4] == 6;
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_penta_6(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the PENTA_6 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "PENTA_6";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::PENTA_6;
-  ldum = ldum && elem_def.get_number_of_nodes() == 6;
-  ldum = ldum && elem_def.get_dimension() == 3;
-  ldum = ldum && elem_def.get_number_of_sides() == 5;
+  string const elem_name = "PENTA_6";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::PENTA_6;
+  okay = okay && elem_def.get_number_of_nodes() == 6;
+  okay = okay && elem_def.get_dimension() == 3;
+  okay = okay && elem_def.get_number_of_sides() == 5;
   for (int j = 0; j < 3; ++j)
-    ldum = ldum && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_4;
+    okay = okay && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_4;
   for (int j = 3; j < 5; ++j)
-    ldum = ldum && elem_def.get_side_type(j).get_type() == Element_Definition::TRI_3;
-  constexpr int sizeq = 4;
-  array<int, sizeq> const s0 = {0, 1, 4, 3};
-  array<int, sizeq> const s1 = {1, 2, 5, 4};
-  array<int, sizeq> const s2 = {2, 0, 3, 5};
-  constexpr int sizet = 3;
-  array<int, sizet> const s3 = {0, 2, 1};
-  array<int, sizet> const s4 = {3, 4, 5};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  ldum = ldum && elem_def.get_side_nodes(4) == makeuv(s4);
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 5;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 3;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[4] == 3;
-  if (ldum) {
+    okay = okay && elem_def.get_side_type(j).get_type() == Element_Definition::TRI_3;
+  constexpr int size_q = 4;
+  array<int, size_q> const s0 = {0, 1, 4, 3};
+  array<int, size_q> const s1 = {1, 2, 5, 4};
+  array<int, size_q> const s2 = {2, 0, 3, 5};
+  constexpr int size_tri = 3;
+  array<int, size_tri> const s3 = {0, 2, 1};
+  array<int, size_tri> const s4 = {3, 4, 5};
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  okay = okay && elem_def.get_side_nodes(4) == make_unsigned_vector(s4);
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 5;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 3;
+  okay = okay && elem_def.get_number_of_face_nodes()[4] == 3;
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_penta_15(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the PENTA_15 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "PENTA_15";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::PENTA_15;
-  ldum = ldum && elem_def.get_number_of_nodes() == 15;
-  ldum = ldum && elem_def.get_dimension() == 3;
-  ldum = ldum && elem_def.get_number_of_sides() == 5;
+  string const elem_name = "PENTA_15";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::PENTA_15;
+  okay = okay && elem_def.get_number_of_nodes() == 15;
+  okay = okay && elem_def.get_dimension() == 3;
+  okay = okay && elem_def.get_number_of_sides() == 5;
   for (int j = 0; j < 3; ++j)
-    ldum = ldum && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_8;
+    okay = okay && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_8;
   for (int j = 3; j < 5; ++j)
-    ldum = ldum && elem_def.get_side_type(j).get_type() == Element_Definition::TRI_6;
-  constexpr int sizeq = 8;
-  array<int, sizeq> const s0 = {0, 1, 4, 3, 6, 10, 12, 9};
-  array<int, sizeq> const s1 = {1, 2, 5, 4, 7, 11, 13, 10};
-  array<int, sizeq> const s2 = {2, 0, 3, 5, 8, 9, 14, 11};
-  constexpr int sizet = 6;
-  array<int, sizet> const s3 = {0, 2, 1, 8, 7, 6};
-  array<int, sizet> const s4 = {3, 4, 5, 12, 13, 14};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  ldum = ldum && elem_def.get_side_nodes(4) == makeuv(s4);
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 5;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 8;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 8;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 8;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 6;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[4] == 6;
-  if (ldum) {
+    okay = okay && elem_def.get_side_type(j).get_type() == Element_Definition::TRI_6;
+  constexpr int size_q = 8;
+  array<int, size_q> const s0 = {0, 1, 4, 3, 6, 10, 12, 9};
+  array<int, size_q> const s1 = {1, 2, 5, 4, 7, 11, 13, 10};
+  array<int, size_q> const s2 = {2, 0, 3, 5, 8, 9, 14, 11};
+  constexpr int size_tri = 6;
+  array<int, size_tri> const s3 = {0, 2, 1, 8, 7, 6};
+  array<int, size_tri> const s4 = {3, 4, 5, 12, 13, 14};
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  okay = okay && elem_def.get_side_nodes(4) == make_unsigned_vector(s4);
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 5;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 8;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 8;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 8;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 6;
+  okay = okay && elem_def.get_number_of_face_nodes()[4] == 6;
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_penta_18(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the PENTA_18 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "PENTA_18";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::PENTA_18;
-  ldum = ldum && elem_def.get_number_of_nodes() == 18;
-  ldum = ldum && elem_def.get_dimension() == 3;
-  ldum = ldum && elem_def.get_number_of_sides() == 5;
+  string const elem_name = "PENTA_18";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::PENTA_18;
+  okay = okay && elem_def.get_number_of_nodes() == 18;
+  okay = okay && elem_def.get_dimension() == 3;
+  okay = okay && elem_def.get_number_of_sides() == 5;
   for (int j = 0; j < 3; ++j)
-    ldum = ldum && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_9;
+    okay = okay && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_9;
   for (int j = 3; j < 5; ++j)
-    ldum = ldum && elem_def.get_side_type(j).get_type() == Element_Definition::TRI_6;
-  constexpr int sizeq = 9;
-  array<int, sizeq> const s0 = {0, 1, 4, 3, 6, 10, 12, 9, 15};
-  array<int, sizeq> const s1 = {1, 2, 5, 4, 7, 11, 13, 10, 16};
-  array<int, sizeq> const s2 = {2, 0, 3, 5, 8, 9, 14, 11, 17};
-  constexpr int sizet = 6;
-  array<int, sizet> const s3 = {0, 2, 1, 8, 7, 6};
-  array<int, sizet> const s4 = {3, 4, 5, 12, 13, 14};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  ldum = ldum && elem_def.get_side_nodes(4) == makeuv(s4);
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 5;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 9;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 9;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 9;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 6;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[4] == 6;
+    okay = okay && elem_def.get_side_type(j).get_type() == Element_Definition::TRI_6;
+  constexpr int size_q = 9;
+  array<int, size_q> const s0 = {0, 1, 4, 3, 6, 10, 12, 9, 15};
+  array<int, size_q> const s1 = {1, 2, 5, 4, 7, 11, 13, 10, 16};
+  array<int, size_q> const s2 = {2, 0, 3, 5, 8, 9, 14, 11, 17};
+  constexpr int size_tri = 6;
+  array<int, size_tri> const s3 = {0, 2, 1, 8, 7, 6};
+  array<int, size_tri> const s4 = {3, 4, 5, 12, 13, 14};
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  okay = okay && elem_def.get_side_nodes(4) == make_unsigned_vector(s4);
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 5;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 9;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 9;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 9;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 6;
+  okay = okay && elem_def.get_number_of_face_nodes()[4] == 6;
 
-  if (ldum) {
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_hexa_8(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the HEXA_8 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "HEXA_8";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::HEXA_8;
-  ldum = ldum && elem_def.get_number_of_nodes() == 8;
-  ldum = ldum && elem_def.get_dimension() == 3;
-  ldum = ldum && elem_def.get_number_of_sides() == 6;
+  string const elem_name = "HEXA_8";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::HEXA_8;
+  okay = okay && elem_def.get_number_of_nodes() == 8;
+  okay = okay && elem_def.get_dimension() == 3;
+  okay = okay && elem_def.get_number_of_sides() == 6;
   for (int j = 0; j < 6; ++j)
-    ldum = ldum && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_4;
+    okay = okay && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_4;
   constexpr int size = 4;
   std::array<int, size> const s0 = {0, 3, 2, 1};
   std::array<int, size> const s1 = {0, 4, 7, 3};
@@ -951,43 +943,43 @@ bool test_hexa_8(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definit
   std::array<int, size> const s3 = {1, 2, 6, 5};
   std::array<int, size> const s4 = {0, 1, 5, 4};
   std::array<int, size> const s5 = {4, 5, 6, 7};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  ldum = ldum && elem_def.get_side_nodes(4) == makeuv(s4);
-  ldum = ldum && elem_def.get_side_nodes(5) == makeuv(s5);
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 6;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[4] == 4;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[5] == 4;
-  if (ldum) {
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  okay = okay && elem_def.get_side_nodes(4) == make_unsigned_vector(s4);
+  okay = okay && elem_def.get_side_nodes(5) == make_unsigned_vector(s5);
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 6;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[4] == 4;
+  okay = okay && elem_def.get_number_of_face_nodes()[5] == 4;
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_hexa_20(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the HEXA_20 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "HEXA_20";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::HEXA_20;
-  ldum = ldum && elem_def.get_number_of_nodes() == 20;
-  ldum = ldum && elem_def.get_dimension() == 3;
-  ldum = ldum && elem_def.get_number_of_sides() == 6;
+  string const elem_name = "HEXA_20";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::HEXA_20;
+  okay = okay && elem_def.get_number_of_nodes() == 20;
+  okay = okay && elem_def.get_dimension() == 3;
+  okay = okay && elem_def.get_number_of_sides() == 6;
   for (int j = 0; j < 6; ++j)
-    ldum = ldum && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_8;
+    okay = okay && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_8;
   constexpr int size = 8;
   std::array<int, size> const s0 = {0, 3, 2, 1, 11, 10, 9, 8};
   std::array<int, size> const s1 = {0, 4, 7, 3, 12, 19, 15, 11};
@@ -995,44 +987,44 @@ bool test_hexa_20(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Defini
   std::array<int, size> const s3 = {1, 2, 6, 5, 9, 14, 17, 13};
   std::array<int, size> const s4 = {0, 1, 5, 4, 8, 13, 16, 12};
   std::array<int, size> const s5 = {4, 5, 6, 7, 16, 17, 18, 19};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  ldum = ldum && elem_def.get_side_nodes(4) == makeuv(s4);
-  ldum = ldum && elem_def.get_side_nodes(5) == makeuv(s5);
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 6;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 8;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 8;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 8;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 8;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[4] == 8;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[5] == 8;
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  okay = okay && elem_def.get_side_nodes(4) == make_unsigned_vector(s4);
+  okay = okay && elem_def.get_side_nodes(5) == make_unsigned_vector(s5);
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 6;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 8;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 8;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 8;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 8;
+  okay = okay && elem_def.get_number_of_face_nodes()[4] == 8;
+  okay = okay && elem_def.get_number_of_face_nodes()[5] == 8;
 
-  if (ldum) {
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
 
 //------------------------------------------------------------------------------------------------//
 bool test_hexa_27(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Definition &elem_def) {
   // Test the HEXA_27 element.
   using rtt_mesh_element::Element_Definition;
-  string const ename = "HEXA_27";
-  bool ldum = elem_def.get_name() == ename;
-  ldum = ldum && elem_def.get_type() == Element_Definition::HEXA_27;
-  ldum = ldum && elem_def.get_number_of_nodes() == 27;
-  ldum = ldum && elem_def.get_dimension() == 3;
-  ldum = ldum && elem_def.get_number_of_sides() == 6;
+  string const elem_name = "HEXA_27";
+  bool okay = elem_def.get_name() == elem_name;
+  okay = okay && elem_def.get_type() == Element_Definition::HEXA_27;
+  okay = okay && elem_def.get_number_of_nodes() == 27;
+  okay = okay && elem_def.get_dimension() == 3;
+  okay = okay && elem_def.get_number_of_sides() == 6;
   for (int j = 0; j < 6; ++j)
-    ldum = ldum && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_9;
+    okay = okay && elem_def.get_side_type(j).get_type() == Element_Definition::QUAD_9;
   constexpr int size = 9;
   std::array<int, size> const s0 = {0, 3, 2, 1, 11, 10, 9, 8, 20};
   std::array<int, size> const s1 = {0, 4, 7, 3, 12, 19, 15, 11, 21};
@@ -1040,50 +1032,50 @@ bool test_hexa_27(rtt_dsxx::UnitTest &ut, const rtt_mesh_element::Element_Defini
   std::array<int, size> const s3 = {1, 2, 6, 5, 9, 14, 17, 13, 23};
   std::array<int, size> const s4 = {0, 1, 5, 4, 8, 13, 16, 12, 24};
   std::array<int, size> const s5 = {4, 5, 6, 7, 16, 17, 18, 19, 25};
-  ldum = ldum && elem_def.get_side_nodes(0) == makeuv(s0);
-  ldum = ldum && elem_def.get_side_nodes(1) == makeuv(s1);
-  ldum = ldum && elem_def.get_side_nodes(2) == makeuv(s2);
-  ldum = ldum && elem_def.get_side_nodes(3) == makeuv(s3);
-  ldum = ldum && elem_def.get_side_nodes(4) == makeuv(s4);
-  ldum = ldum && elem_def.get_side_nodes(5) == makeuv(s5);
-  ldum = ldum && elem_def.get_number_of_face_nodes().size() == 6;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[0] == 9;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[1] == 9;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[2] == 9;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[3] == 9;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[4] == 9;
-  ldum = ldum && elem_def.get_number_of_face_nodes()[5] == 9;
-  FAIL_IF_NOT(ldum);
+  okay = okay && elem_def.get_side_nodes(0) == make_unsigned_vector(s0);
+  okay = okay && elem_def.get_side_nodes(1) == make_unsigned_vector(s1);
+  okay = okay && elem_def.get_side_nodes(2) == make_unsigned_vector(s2);
+  okay = okay && elem_def.get_side_nodes(3) == make_unsigned_vector(s3);
+  okay = okay && elem_def.get_side_nodes(4) == make_unsigned_vector(s4);
+  okay = okay && elem_def.get_side_nodes(5) == make_unsigned_vector(s5);
+  okay = okay && elem_def.get_number_of_face_nodes().size() == 6;
+  okay = okay && elem_def.get_number_of_face_nodes()[0] == 9;
+  okay = okay && elem_def.get_number_of_face_nodes()[1] == 9;
+  okay = okay && elem_def.get_number_of_face_nodes()[2] == 9;
+  okay = okay && elem_def.get_number_of_face_nodes()[3] == 9;
+  okay = okay && elem_def.get_number_of_face_nodes()[4] == 9;
+  okay = okay && elem_def.get_number_of_face_nodes()[5] == 9;
+  FAIL_IF_NOT(okay);
 
 #ifndef __clang_analyzer__
-  // clang-analyze sees the throw and warns that 'ldum=false' is 'deadcode'.
+  // clang-analyze sees the throw and warns that 'okay=false' is 'deadcode'.
   try {
     Element_Definition result = elem_def.get_side_type(6);
-    ldum = (result.get_type() == Element_Definition::HEXA_27); // should never get here
+    okay = (result.get_type() == Element_Definition::HEXA_27); // should never get here
   } catch (...) {
     // Do nothing - this path is the desired result.
   }
 
   try {
     auto result = elem_def.get_side_nodes(6);
-    ldum = (result == std::vector<unsigned>{0}); // should never get here
+    okay = (result == std::vector<unsigned>{0}); // should never get here
   } catch (...) {
     // Do nothing - this path is the desired result.
   }
 #endif
 
-  if (ldum) {
+  if (okay) {
     ostringstream message;
-    message << ename << " Element OK.\n";
+    message << elem_name << " Element OK.\n";
     PASSMSG(message.str());
   } else {
     ostringstream message;
-    message << "Error in " << ename << " Element.\n";
+    message << "Error in " << elem_name << " Element.\n";
     FAILMSG(message.str());
   }
-  return ldum;
+  return okay;
 }
-} // namespace rtt_mesh_element_test
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
