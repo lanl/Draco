@@ -2,9 +2,8 @@
 /*!
  * \file   mesh_element/Geometry.hh
  * \author Kent Budge
- * \date   Tue Dec 21 14:28:56 2004
  * \brief  Define an enumeration to specify supported geometric types.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef mesh_element_Geometry_hh
@@ -22,11 +21,11 @@ namespace rtt_mesh_element {
  *
  * We specify the base as int to guarantee better interoperability with FORTRAN codes.
  */
-enum class Geometry : int {
-  CARTESIAN,    //!< 1D (slab) or 2D (XY) Cartesian geometry
-  AXISYMMETRIC, //!< 2D (cylindrical) R-Z
-  SPHERICAL,    //!< 1D SPHERICAL
-  END_GEOMETRY  //!< Sentinel value
+enum class Geometry : int { // NOLINT(performance-enum-size)
+  CARTESIAN,                //!< 1D (slab) or 2D (XY) Cartesian geometry
+  AXISYMMETRIC,             //!< 2D (cylindrical) R-Z
+  SPHERICAL,                //!< 1D SPHERICAL
+  END_GEOMETRY              //!< Sentinel value
 };
 
 } // end namespace rtt_mesh_element
