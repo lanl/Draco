@@ -2,7 +2,6 @@
 /*!
  * \file   cpt_data/CPT_EnergeticTNReaction.cc
  * \author Kyle S. Beling
- * \date   Nov 19 2025
  * \brief  CPT_EnergeticTNReaction member definitions.
  * \note   Copyright (C) 2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
