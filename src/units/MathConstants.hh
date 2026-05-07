@@ -2,7 +2,6 @@
 /*! \file   units/MathConstants.hh
  *  \author Kelly Thompson
  *  \brief  Provide a single place where physical constants (pi, speed of light, etc) are defined.
- *  \date   Fri Nov 07 10:04:52 2003
  *  \note   Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 

@@ -16,7 +16,11 @@
 #include <sstream>
 #include <string>
 
-namespace rtt_units_test {
+// cSpell:ignore cgsh
+
+// NOLINTBEGIN(modernize-use-std-numbers)
+
+namespace {
 
 //! Helper function for comparing PhysicalConstexprs values to expectation
 void compare_constant(std::string const &name, double expected, double value_a, double value_b,
@@ -137,15 +141,17 @@ void test_cgsh(rtt_dsxx::UnitTest &ut) {
   compare_constant("Electron volt", 1.602176565e-28, pc.electronVolt(), pc.eV(), ut);
 }
 
-} // namespace rtt_units_test
+} // namespace
+
+// NOLINTEND(modernize-use-std-numbers)
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
-    rtt_units_test::test_si(ut);
-    rtt_units_test::test_cgs(ut);
-    rtt_units_test::test_cgsh(ut);
+    test_si(ut);
+    test_cgs(ut);
+    test_cgsh(ut);
   }
   UT_EPILOG(ut);
 }

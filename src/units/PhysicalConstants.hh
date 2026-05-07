@@ -2,14 +2,12 @@
 /*! \file   PhysicalConstants.hh
  *  \author Kelly Thompson
  *  \brief  Provide a single place where physical constants (pi, speed of light, etc) are defined.
- *  \date   Fri Nov 07 10:04:52 2003
  *  \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_units_PhysicalConstants_hh
 #define rtt_units_PhysicalConstants_hh
 
-#include "MathConstants.hh"
 #include "PhysicalConstantsSI.hh"
 #include "UnitSystem.hh"
 
@@ -32,7 +30,7 @@ namespace rtt_units {
  *
  * \verbatim
  * UnitSystem u( UnitSystem().getAstroUnits() );
- * PhyscialConstants pc( u );
+ * PhysicalConstants pc( u );
  * double mass   = 1.0; // grams (AstroPhysics mass units).
  * double energy = mass * pc.c() * pc.c();  // E = mc^2 where energy is in
  *                                          // AstroPhysics units.

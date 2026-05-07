@@ -2,8 +2,7 @@
 /*! \file   UnitSystemEnums.cc
  *  \author Kelly Thompson
  *  \brief  This file contains enums, conversion factors and labels that help define a UnitSystem.
- *  \date   Mon Nov 03 20:54:05 2003
- *  \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "UnitSystemEnums.hh"

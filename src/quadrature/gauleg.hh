@@ -14,6 +14,7 @@
 #include "units/PhysicalConstants.hh"
 #include <gsl/gsl_sf_legendre.h>
 #include <limits>
+#include <numbers>
 
 namespace rtt_quadrature {
 //------------------------------------------------------------------------------------------------//
@@ -54,7 +55,6 @@ void gauleg(double const x1, // expect FieldVector::value_type to be promoted to
             double const x2, // expect FieldVector::value_type to be promoted to double.
             FieldVector &x, FieldVector &w, unsigned const n) {
   using rtt_dsxx::soft_equiv;
-  using rtt_units::PI;
   using std::cos;
   using std::numeric_limits;
 
@@ -81,7 +81,8 @@ void gauleg(double const x1, // expect FieldVector::value_type to be promoted to
   // Loop over the desired roots.
   for (size_t iroot = 0; iroot < numHrGaussPoints; ++iroot) {
     // Approximate the i-th root.
-    Field z(cos(PI * (static_cast<double>(iroot) + 0.75) / (static_cast<double>(n) + 0.5)));
+    Field z(cos(std::numbers::pi * (static_cast<double>(iroot) + 0.75) /
+                (static_cast<double>(n) + 0.5)));
 
     // Temporary storage;
     Field z1, pp;
