@@ -4,7 +4,7 @@
  * \author Kelly Thompson
  * \date   Monday, Apr 22, 2013, 13:59 pm
  * \brief  Procmon test.
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoStrings.hh"
@@ -12,7 +12,7 @@
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/UnitTest.hh"
 #include "diagnostics/Procmon.hh"
-#include <cstdlib> // atof (XLC)
+#include <cstdlib>
 #include <iostream>
 #include <sstream>
 #include <string>

@@ -53,8 +53,6 @@ The Draco build system has the following highlighted features:
 Currently, the Draco Build System is supported on the following systems/operating systems:
 
 - Linux (x86_64-based platforms)
-- OSX via Makefiles or Xcode-projects
-- IBM (Power9)
 - Nvidia GPUs
 - AMD GPUs
 

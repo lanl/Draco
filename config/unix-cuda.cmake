@@ -46,7 +46,6 @@ endif()
 #
 # Compiler Flags
 #
-# -Xcudafe --diag_suppress=1427: suppress "warning: offsetof applied to non-POD"
 
 if(NOT CUDA_FLAGS_INITIALIZED)
 
@@ -56,32 +55,6 @@ if(NOT CUDA_FLAGS_INITIALIZED)
 
   string(APPEND CMAKE_CUDA_FLAGS " -g --expt-relaxed-constexpr --expt-extended-lambda -Xcompiler"
          " -Wno-psabi -Wno-deprecated-gpu-targets")
-  if(CMAKE_CXX_COMPILER_ID MATCHES "XL")
-    string(APPEND CMAKE_CUDA_FLAGS " -DCUB_IGNORE_DEPRECATED_CPP_DIALECT"
-           " -DTHRUST_IGNORE_DEPRECATED_CPP_DIALECT")
-    string(APPEND CMAKE_CUDA_FLAGS " -ccbin ${CMAKE_CXX_COMPILER} -Xcompiler -std=c++14"
-           " -Xcompiler -qxflag=disable__cplusplusOverride")
-
-    if(EXISTS /usr/gapps) # ATS-2
-      # The CUDA_FLAGS should use the same gcc-toolchain as the C_FLAGS.
-      if(NOT CMAKE_CUDA_FLAGS MATCHES "--gcc-toolchain=" AND CMAKE_C_FLAGS MATCHES
-                                                             "--gcc-toolchain=")
-        string(REGEX MATCH "\\--gcc-toolchain=[^ $]+" GCC_TOOLCHAIN_FLAG "${CMAKE_C_FLAGS}")
-        string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler ${GCC_TOOLCHAIN_FLAG}")
-
-        # ... or by SPACK_CFLAGS, if we are building this via Spack
-      elseif(NOT CMAKE_CUDA_FLAGS MATCHES "--gcc-toolchain=" AND "$ENV{SPACK_CFLAGS}" MATCHES
-                                                                 "--gcc-toolchain=")
-        string(REGEX MATCH "\\--gcc-toolchain=[^ $]+" GCC_TOOLCHAIN_FLAG "$ENV{SPACK_CFLAGS}")
-        string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler ${GCC_TOOLCHAIN_FLAG}")
-      endif()
-
-    elseif(DEFINED ENV{CMAKE_CXX_COMPILER_CONFIG_FILE} AND EXISTS
-                                                           "$ENV{CMAKE_CXX_COMPILER_CONFIG_FILE}")
-      # Darwin
-      string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler -F${CMAKE_CXX_COMPILER_CONFIG_FILE}")
-    endif()
-  endif()
   string(CONCAT CMAKE_CUDA_FLAGS_DEBUG " -O0 -Xcudafe --display_error_number"
                 " -Xcudafe --diag_suppress=1427")
   set(CMAKE_CUDA_FLAGS_RELEASE "-O2") # -dipo
