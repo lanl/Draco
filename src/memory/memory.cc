@@ -100,16 +100,16 @@ struct Unsigned {
  *      * Destruction order problems at shutdown
  *      * Undefined behavior during program teardown
  *      A safer pattern is a function-local static:
- * <code>
+ * /code
  * memory_diagnostics& diagnostics() {
  *   static memory_diagnostics instance;
  *   return instance;
  * }
- * </code>
+ * /endcode
  *      Then use
- * <code>
+ * /code
  * diagnostics().alloc_map[ptr] = ...;
- * </code>
+ * /endcode
  */
 //================================================================================================//
 static struct memory_diagnostics {
