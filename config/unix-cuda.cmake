@@ -32,7 +32,8 @@ if(NOT DEFINED CUDA_ARCHITECTURES)
     RESULT_VARIABLE CUDA_RETURN_CODE
     OUTPUT_VARIABLE CUDA_ARCHITECTURES)
   if(NOT ${CUDA_RETURN_CODE} EQUAL 0)
-    message(FATAL_ERROR "Unable to determine target Cuda arch.")
+    message(
+      FATAL_ERROR "Unable to determine target Cuda arch.\nThe error is: ${CUDA_ARCHITECTURES}")
   endif()
   unset(OUTPUTFILE)
   unset(CUDAFILE)
@@ -54,7 +55,7 @@ if(NOT CUDA_FLAGS_INITIALIZED)
       CACHE INTERNAL "using draco settings.")
 
   string(APPEND CMAKE_CUDA_FLAGS " -g --expt-relaxed-constexpr --expt-extended-lambda -Xcompiler"
-         " -Wno-psabi -Wno-deprecated-gpu-targets")
+         " -Wno-psabi -Wno-deprecated-gpu-targets -Wdeprecated-declarations -fpermissive")
   string(CONCAT CMAKE_CUDA_FLAGS_DEBUG " -O0 -Xcudafe --display_error_number"
                 " -Xcudafe --diag_suppress=1427")
   set(CMAKE_CUDA_FLAGS_RELEASE "-O2") # -dipo

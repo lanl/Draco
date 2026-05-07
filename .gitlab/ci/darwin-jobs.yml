@@ -4,7 +4,7 @@
 # Date:    Monday, Jun 01, 2020, 15:00 pm
 # Purpose: gitlab suid runner commands for Darwin (LANL). This script wil be run to test pull
 #          requests
-# Note:    Copyright (C) 2020-2022 Triad National Security, LLC., All rights reserved.
+# Note:    Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 #
 # * Use https://hardware-darwin.lanl.gov/ to discover darwin partition names, max cores, etc.
 # * Draco environments are at /projects/draco/Modules/draco.
@@ -28,6 +28,7 @@
                   cpu_family:haswell'"
     SP_x86_64: "--nodes=1 --partition=general --qos=debug --constraint='cpu_family:broadwell|\
                cpu_family:haswell|cpu_family:skylake|cpu_family:cascadelake'"
+    SP_ampere: "--nodes=1 --partition=shared-gpu-ampere --qos=debug"
     # CI_DEBUG_TRACE: "true"
 
 #--------------------------------------------------------------------------------------------------#
@@ -279,6 +280,15 @@ darwin_debug_gcc_volta_x86:
   extends: .darwin_nightly
   variables:
     ARCH: volta_x86
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/haswell-gcc1120
+    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
+
+darwin_debug_gcc_ampere:
+  stage: test
+  extends: .darwin_nightly
+  variables:
+    ARCH: ampere
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: draco/haswell-gcc1120
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}

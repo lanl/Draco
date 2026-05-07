@@ -120,6 +120,7 @@
         "string": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
         "list": [
           "darwin-general",
+          "darwin-shared-gpu-ampere",
           "darwin-sid-spr",
           "darwin-volta-x86",
           "rocinante-standard"
@@ -318,13 +319,13 @@
       "configurePreset": "linux-debug"
     },
     {
+      "name": "linux-release",
+      "configurePreset": "linux-release"
+    },
+    {
       "name": "linux-debug-install",
       "configurePreset": "linux-debug",
       "targets": ["install"]
-    },
-    {
-      "name": "linux-release",
-      "configurePreset": "linux-release"
     },
     {
       "name": "linux-release-install",
@@ -364,6 +365,16 @@
       "configurePreset": "slurm-cn-release"
     },
     {
+      "name": "slurm-cn-debug-install",
+      "configurePreset": "slurm-cn-debug",
+      "targets": ["install"]
+    },
+    {
+      "name": "slurm-cn-release-install",
+      "configurePreset": "slurm-cn-release",
+      "targets": ["install"]
+    },
+    {
       "name": "slurm-cn-debug-scalar",
       "configurePreset": "slurm-cn-debug-scalar"
     },
@@ -396,7 +407,8 @@
       },
       "execution": {
         "noTestsAction": "error",
-        "stopOnFailure": true
+        "stopOnFailure": true,
+        "jobs": 0
       }
     },
     {
@@ -480,6 +492,7 @@
         "string": "$env{SLURM_CLUSTER_NAME}-$env{SLURM_JOB_PARTITION}",
         "list": [
           "darwin-general",
+          "darwin-shared-gpu-ampere",
           "darwin-sid-spr",
           "darwin-volta-x86",
           "rocinante-standard"
@@ -490,7 +503,8 @@
       },
       "execution": {
         "noTestsAction": "error",
-        "stopOnFailure": true
+        "stopOnFailure": true,
+        "jobs": 0
       }
     },
     {
@@ -566,16 +580,36 @@
       "name": "linux-debug",
       "steps": [
         { "type": "configure", "name": "linux-debug" },
-        { "type": "build", "name": "linux-debug-install" },
-        { "type": "test", "name": "linux-debug" }
+        { "type": "build", "name": "linux-debug" },
+        { "type": "test", "name": "linux-debug" },
+        { "type": "build", "name": "linux-debug-install" }
       ]
     },
     {
       "name": "linux-release",
       "steps": [
         { "type": "configure", "name": "linux-release" },
-        { "type": "build", "name": "linux-release-install" },
-        { "type": "test", "name": "linux-release" }
+        { "type": "build", "name": "linux-release" },
+        { "type": "test", "name": "linux-release" },
+        { "type": "build", "name": "linux-release-install" }
+      ]
+    },
+    {
+      "name": "slurm-cn-debug",
+      "steps": [
+        { "type": "configure", "name": "slurm-cn-debug" },
+        { "type": "build", "name": "slurm-cn-debug" },
+        { "type": "test", "name": "slurm-cn-debug" },
+        { "type": "build", "name": "slurm-cn-debug-install" }
+      ]
+    },
+    {
+      "name": "slurm-cn-release",
+      "steps": [
+        { "type": "configure", "name": "slurm-cn-release" },
+        { "type": "build", "name": "slurm-cn-release" },
+        { "type": "test", "name": "slurm-cn-release" },
+        { "type": "build", "name": "slurm-cn-release-install" }
       ]
     }
   ]
