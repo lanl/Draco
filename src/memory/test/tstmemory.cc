@@ -3,7 +3,7 @@
  * \file   memory/test/tstmemory.cc
  * \author Kent G. Budge, Kelly G. Thompson
  * \brief  memory test.
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -16,6 +16,8 @@
 #include <limits>
 #include <new> // bad_alloc, set_new_handler
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_memory;
@@ -191,6 +193,8 @@ void tst_report(rtt_dsxx::UnitTest & /*unused*/) {
 // they will refuse to compile the code. We have to use a bit of indirection to get such compilers
 // to swallow the huge allocation meant to deliberately blow away memory.
 size_t get_really_big_size_t() { return numeric_limits<std::ptrdiff_t>::max() / sizeof(size_t); }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
