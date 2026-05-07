@@ -2,7 +2,6 @@
 /*!
  * \file   cpt_data/CPT_Collision.hh
  * \author Kyle S. Beling
- * \date   Nov 19 2025
  * \brief  Collision class definition.
  * \note   Copyright (C) 2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

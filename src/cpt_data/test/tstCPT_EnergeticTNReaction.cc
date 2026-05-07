@@ -2,7 +2,6 @@
 /*!
  * \file   cpt_data/test/tstCPT_EnergeticTNReaction.cc
  * \author Kyle S. Beling
- * \date   Jan 15 2026
  * \brief  energetic TN reaction test.
  * \note   Copyright (C) 2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
