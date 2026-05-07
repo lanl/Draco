@@ -37,7 +37,6 @@
  * __GNUC__
  * __clang__
  * __ICC
- * __ibmxl__
  * NVCC
  * APPLE
  * _MSC_FULL_VER, _MSC_VER

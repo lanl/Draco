@@ -4,19 +4,19 @@
  * \author Kelly Thompson
  * \date   Monday, Apr 22, 2013, 10:10 am
  * \brief  Procmon class for printing runtime system diagnostics (free memory per node, etc).
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved.
  *
- * A file with the same name lives in wedgehog_components and provided the macros \c PROCMON_START
- * and \c PROCMON_STOP.  These command would provide a one line system summary (including timing
+ * A file with the same name lives in wedgehog_components and provided the macros `PROCMON_START`
+ * and `PROCMON_STOP`.  These command would provide a one line system summary (including timing
  * information).  We don't need the timing information as that can be accessed using other tools
  * (\em Draco timers or system profilers like \em HPC \em Toolkit).  This file provides a similar
  * one line diagnostic output that provides a snapshot in time for system memory via the Linux
- * system command \c 'getrusage.'
+ * system command `getrusage`.
  *
  * Mike McKay provides a package in \em xRage that provides these memory instrumentation calls and
  * more for many systems.  It may be useful to review his coding when extending the feature set of
- * this package or when porting these capabilities to new architectures (i.e.: IBM BlueGene ).  His
- * files are: \c procmon_info.h, \c procmon_info.c, \c procmon_iface.h and \c resources.f90. */
+ * this package or when porting these capabilities to new architectures.  His files are:
+ * `procmon_info.h`, `procmon_info.c`, `procmon_iface.h` and `resources.f90`. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef diagnostics_Procmon_hh

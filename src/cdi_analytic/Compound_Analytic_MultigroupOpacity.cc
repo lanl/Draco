@@ -2,7 +2,7 @@
 /*!
  * \file   cdi_analytic/Compound_Analytic_MultigroupOpacity.cc
  * \brief  Compound_Analytic_MultigroupOpacity class member definitions.
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_analytic/Compound_Analytic_MultigroupOpacity.hh"
@@ -251,7 +251,7 @@ Compound_Analytic_MultigroupOpacity::getOpacity(double temperature,
  * \brief Pack an analytic multigroup opacity.
  *
  * This function will pack up the Analytic_Multigroup_Opacity into a char array (represented by a
- * \c vector<char>).  The Analytic_Opacity_Model derived class must have a pack function; this is
+ * `vector<char>)`.  The Analytic_Opacity_Model derived class must have a pack function; this is
  * enforced by the virtual Analytic_Opacity_Model base class.
  */
 Compound_Analytic_MultigroupOpacity::sf_char Compound_Analytic_MultigroupOpacity::pack() const {
@@ -269,13 +269,15 @@ Compound_Analytic_MultigroupOpacity::sf_char Compound_Analytic_MultigroupOpacity
   for (size_t i = 0; i < models.size(); ++i) {
     Check(group_models[i]);
 
-    // (KPL) The original logic in this loop was simply:
-    // ~~~
-    // models[i] = group_models[i]->pack();
-    // ~~~
-    // However, that code causes a link-time failure for xl-16.1.1+gcc-9.3 DEBUG builds. The
-    // following logic (create temporary, resize destination char vector, assign destination to
-    // temporary) appears to work for all supported systems+compilers as of October 2022.
+    // * 2022 October (KPL) The original logic in this loop was simply:
+    //   ~~~
+    //   models[i] = group_models[i]->pack();
+    //   ~~~
+    //   However, that code causes a link-time failure for xl-16.1.1+gcc-9.3 DEBUG builds. The
+    //   following logic (create temporary, resize destination char vector, assign destination to
+    //   temporary) appears to work for all supported systems+compilers as of October 2022.
+    // * 2026 May (KGT) I tried to revert to the old version shown above since we no longer support
+    //   XL. However, the packing tests did not run successfully, so I'll leave it as is.
     sf_char const this_pack = group_models[i]->pack();
     models[i].resize(this_pack.size());
     models[i] = this_pack;

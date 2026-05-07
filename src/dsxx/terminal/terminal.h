@@ -1,8 +1,6 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   dsxx/terminal/terminal.h
- * \author
- * \date
  * \brief  Terminal functions
  * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -35,10 +33,8 @@
 #pragma clang diagnostic ignored "-Wshadow-field-in-constructor"
 #pragma clang diagnostic ignored "-Wshorten-64-to-32"
 #pragma clang diagnostic ignored "-Wsign-conversion"
-#if defined(__clang_major__) && __clang_major__ >= 11
 #pragma clang diagnostic ignored "-Wsuggest-destructor-override"
 #pragma clang diagnostic ignored "-Wweak-vtables"
-#endif
 #endif
 
 #ifdef __CUDACC__
