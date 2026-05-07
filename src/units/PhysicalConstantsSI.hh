@@ -3,15 +3,14 @@
  *  \author Kelly Thompson, Kent G. Budge
  *  \brief  Provide a single place where physical constants (pi, speed of light, etc) are defined in
  *          SI units.
- *  \date   Fri Nov 07 10:04:52 2003
  *  \note   Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_units_PhysicalConstantsSI_hh
 #define rtt_units_PhysicalConstantsSI_hh
 
-#include "MathConstants.hh"
 #include "UnitSystem.hh"
+#include <numbers>
 
 //! \namespace rtt_units Namespace for units and physical constants
 namespace rtt_units {
@@ -57,7 +56,7 @@ static double constexpr gasConstantSI = 8.3144621; // J/mol/K
 /*!
  * \brief [k] BOLTZMANN'S CONSTANT == R/Na (JOULES/K)
  *
- * \note If this changes you msut update the Enumerated Temperature Type in UnitSystemEnusm.hh!
+ * \note If this changes you must update the Enumerated Temperature Type in UnitSystemEnums.hh!
  */
 static double constexpr boltzmannSI = 1.380648800E-23; // J K^-1
 
@@ -65,7 +64,7 @@ static double constexpr boltzmannSI = 1.380648800E-23; // J K^-1
  * \brief [e] ELECTRON CHARGE (COULOMBS)
  *
  * Wikipedia (2013-12-3) == NIST Codata 2010 (eps = 2.2e-8)
- * \note If this changes you must update the Enumerated Temperature Type in UnitSystemEnusm.hh!
+ * \note If this changes you must update the Enumerated Temperature Type in UnitSystemEnums.hh!
  */
 static double constexpr electronChargeSI = 1.602176565e-19; // Amp / sec
 
@@ -110,14 +109,15 @@ static double constexpr EV2K = electronChargeSI / boltzmannSI;
  * \f]
  */
 static double constexpr stefanBoltzmannSI =
-    2.0 * PI * PI * PI * PI * PI * boltzmannSI * boltzmannSI * boltzmannSI * boltzmannSI /
+    2.0 * std::numbers::pi * std::numbers::pi * std::numbers::pi * std::numbers::pi *
+    std::numbers::pi * boltzmannSI * boltzmannSI * boltzmannSI * boltzmannSI /
     (15.0 * planckSI * planckSI * planckSI * cLightSI * cLightSI);
 
 //! [F] Faraday constant == Na * e
 static double constexpr faradayConstantSI = AVOGADRO * electronChargeSI;
 
 //! [mu0] Permeability of vacuum (free space)
-static double constexpr permeabilityOfVacuumSI = 4.0 * PI * 1.0e-7; // Henry/m
+static double constexpr permeabilityOfVacuumSI = 4.0 * std::numbers::pi * 1.0e-7; // Henry/m
 
 //! [epsi0] PERMITTIVITY OF FREE SPACE (F/M)
 static double constexpr permittivityOfFreeSpaceSI =
@@ -126,7 +126,7 @@ static double constexpr permittivityOfFreeSpaceSI =
 //! [re] Classical electron radius (M)
 static double constexpr classicalElectronRadiusSI =
     electronChargeSI * electronChargeSI /
-    (4 * PI * permittivityOfFreeSpaceSI * electronMassSI * cLightSI * cLightSI);
+    (4 * std::numbers::pi * permittivityOfFreeSpaceSI * electronMassSI * cLightSI * cLightSI);
 
 //! [h_bar] Reduced Planck constant ( Energy seconds )
 static double constexpr h_barSI = planckSI / (2.0 * std::numbers::pi); // J s

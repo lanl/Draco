@@ -2,7 +2,7 @@
 /*!
  * \file   src/units/test/tstUnitSystem.cc
  * \brief  test the UnitSystem class.
- *\note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -17,6 +17,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -44,7 +46,7 @@ void test_ctor(rtt_dsxx::UnitTest &ut) {
       FAILMSG(msg.str());
     }
 
-    // Test the length lable for uX4
+    // Test the length label for uX4
     string const expValS("cm");
     if (uX4.Lname() == expValS) {
       PASSMSG("Unit label for X4 UnitSystem is correct.\n");
@@ -72,7 +74,7 @@ void test_ctor(rtt_dsxx::UnitTest &ut) {
       FAILMSG(msg.str());
     }
 
-    // Test the length lable for uSI
+    // Test the length label for uSI
     string const expValS("kg");
     if (uSI.Mname() == expValS) {
       PASSMSG("Unit label for SI UnitSystem is correct.\n");
@@ -112,7 +114,7 @@ void test_def_ctor(rtt_dsxx::UnitTest &ut) {
       FAILMSG(msg.str());
     }
 
-    // Test the time lable for uDef
+    // Test the time label for uDef
     string expValS(uSI.tname());
     if (uDef.tname() == expValS) {
       PASSMSG("Time Unit label for Default UnitSystem is correct.\n");
@@ -136,7 +138,7 @@ void test_def_ctor(rtt_dsxx::UnitTest &ut) {
       FAILMSG(msg.str());
     }
 
-    // Test the tetmperature lable for uDef
+    // Test the temperature label for uDef
     expValS = uSI.Tname();
     if (uDef.Tname() == expValS) {
       PASSMSG("Temperature Unit label for Default UnitSystem is correct.\n");
@@ -709,6 +711,8 @@ void test_valid_units(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

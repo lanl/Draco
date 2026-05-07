@@ -2,9 +2,8 @@
 /*!
  * \file   units/test/tstUnitSystemEnums.cc
  * \author Kelly Thompson
- * \date   Wed Oct  8 13:50:19 2003
  * \brief  Unit tests for units/UnitSystemEnum class
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -17,6 +16,8 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -186,6 +187,8 @@ void test_enumValues(rtt_dsxx::UnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

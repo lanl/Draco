@@ -16,6 +16,7 @@
 #include <array>
 #include <cmath>
 #include <map>
+#include <numbers>
 #include <vector>
 
 namespace rtt_kde {

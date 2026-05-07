@@ -3,8 +3,7 @@
  *  \author Kelly Thompson
  *  \brief  Provide a single place where physical constants (pi, speed of light, etc) are defined
  *          for the local UnitSystem.
- *  \date   Mon Nov 10 09:24:55 2003
- *  \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ *  \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "PhysicalConstants.hh"

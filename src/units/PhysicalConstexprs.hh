@@ -3,14 +3,13 @@
  *  \author Ben R. Ryan <brryan@lanl.gov>
  *  \brief  Provide a single place where mathematical and physical constants are defined in an
  *          entirely constexpr fashion.
- *  \date   2019 Nov 25
  *  \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_units_PhysicalConstexprs_hh
 #define rtt_units_PhysicalConstexprs_hh
 
-#include "MathConstants.hh"
+#include <numbers>
 
 namespace rtt_units {
 struct SI {
@@ -176,14 +175,14 @@ private:
   static constexpr double Power = Energy / Time;
 
   //! Dimensionless constants
-  //! Avogadro cosntant (CODATA 2010 value)
+  //! Avogadro constant (CODATA 2010 value)
   static constexpr double d_avogadro = 6.02214129e23;
 
   //! Fine structure constant (CODATA 2010 value)
   static constexpr double d_fineStructure = 7.2973525698e-3;
 
   //! Pi
-  static constexpr double d_pi = PI;
+  static constexpr double d_pi = std::numbers::pi;
 
   //! SI values of fundamental constants
   //! Planck constant (CODATA 2010 value)
@@ -215,15 +214,15 @@ private:
 
   //! Stefan-Boltzmann constant
   static constexpr double d_stefanBoltzmann_SI =
-      2.0 * PI * PI * PI * PI * PI * d_boltzmann_SI * d_boltzmann_SI * d_boltzmann_SI *
-      d_boltzmann_SI /
+      2.0 * std::numbers::pi * std::numbers::pi * std::numbers::pi * std::numbers::pi *
+      std::numbers::pi * d_boltzmann_SI * d_boltzmann_SI * d_boltzmann_SI * d_boltzmann_SI /
       (15.0 * d_planck_SI * d_planck_SI * d_planck_SI * d_speed_of_light_SI * d_speed_of_light_SI);
 
   //! Faraday constant
   static constexpr double d_faradayConstant_SI = d_avogadro * d_electronCharge_SI; // C mol^-1
 
   //! Permeability of free space
-  static constexpr double d_permeabilityOfVacuum_SI = 4.0 * PI * 1.0e-7; // N A^-2
+  static constexpr double d_permeabilityOfVacuum_SI = 4.0 * std::numbers::pi * 1.0e-7; // N A^-2
 
   //! Permittivity of free space
   static constexpr double d_permittivityOfVacuum_SI =
@@ -232,7 +231,7 @@ private:
   //! Classical electron radius
   static constexpr double d_classicalElectronRadius_SI =
       d_electronCharge_SI * d_electronCharge_SI /
-      (4 * PI * d_permittivityOfVacuum_SI * d_electronMass_SI * d_speed_of_light_SI *
+      (4 * std::numbers::pi * d_permittivityOfVacuum_SI * d_electronMass_SI * d_speed_of_light_SI *
        d_speed_of_light_SI); // m
 
   //! Electron volt

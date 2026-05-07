@@ -2,18 +2,22 @@
 /*!
  * \file   units/test/tstUnitSystemType.cc
  * \author Kelly Thompson
- * \date   Wed Oct  8 13:50:19 2003
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
+#include "units/FundUnit.hh"
 #include "units/UnitSystemEnums.hh"
 #include "units/UnitSystemType.hh"
 #include <sstream>
 #include <utility> // std::move
+
+// cSpell:ignore Ltest, Ltype, sust, ust
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -39,7 +43,7 @@ void test_copy_ctor(rtt_dsxx::UnitTest &ut) {
   }
 
   if (&si != &si2) {
-    PASSMSG("Orig and copied object are seperate. \n");
+    PASSMSG("Orig and copied object are separate. \n");
   } else {
     FAILMSG("Orig and copied object point to same memory. \n");
   }
@@ -129,7 +133,7 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
   } else {
     FAILMSG("UnitSystemType container does not have Q().label() == \"NA\").\n");
   }
-  //---------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   if (ust.A().enumVal() == rtt_units::A_null) {
     PASSMSG("UnitSystemType container has A().enumVal() == A_null).");
   } else {
@@ -144,7 +148,7 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
   } else {
     FAILMSG("UnitSystemType container does not have A().label() == \"NA\".\n");
   }
-  //---------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
 
   // Add more FundUnits to ust using a cascading set of manipulators...
   ust.Q(rtt_units::Q_mol)
@@ -152,7 +156,7 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
       .I(rtt_units::I_amp)
       .t(rtt_units::t_sh, rtt_units::t_cf.data(), rtt_units::t_long_labels);
 
-  //---------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
 
   // Ensure that the the updated values are in place...
   if (ust.Q().enumVal() == rtt_units::Q_mol) {
@@ -160,7 +164,7 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
   } else {
     ostringstream msg;
     msg << "UnitSystemType container does not have Q().enumVal() == Q_mol.  Instead the valued "
-        << "retuned was: " << ust.Q().enumVal() << '\n';
+        << "returned was: " << ust.Q().enumVal() << '\n';
     FAILMSG(msg.str());
   }
   if (soft_equiv(ust.Q().cf(), 1.0)) {
@@ -181,7 +185,7 @@ void test_default_ctor(rtt_dsxx::UnitTest &ut) {
     // " fix emacs font-lock issue with odd number of quotes.
     FAILMSG(msg.str());
   }
-  //---------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   if (ust.A().enumVal() == rtt_units::A_rad) {
     PASSMSG("UnitSystemType container has A().enumVal() == A_rad).");
   } else {
@@ -365,7 +369,7 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   using rtt_units::UnitSystemType;
   using std::ostringstream;
 
-  // Create the two "speical" unit system types.
+  // Create the two "special" unit system types.
 
   UnitSystemType const si(UnitSystemType().SI());
   UnitSystemType const x4(UnitSystemType().X4());
@@ -625,7 +629,9 @@ void test_sust_ctor(rtt_dsxx::UnitTest &ut) {
   return;
 }
 
-//------------------------------------------------------------------------//
+} // namespace
+
+//------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
   try {

@@ -2,7 +2,6 @@
 /*! \file   UnitSystemType.hh
  *  \author Kelly Thompson
  *  \brief  Aggregates a collection of FundUnits to create a complete UnitSystemType.
- *  \date   Fri Oct 24 15:04:41 2003
  *  \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
