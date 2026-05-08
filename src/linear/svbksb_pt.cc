@@ -2,9 +2,8 @@
 /*!
  * \file   linear/svbksb_pt.cc
  * \author Kent Budge
- * \date   Tue Aug 10 13:08:03 2004
  * \brief  Specializations of svbksb
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "svbksb.t.hh" // NOLINT(misc-include-cleaner)

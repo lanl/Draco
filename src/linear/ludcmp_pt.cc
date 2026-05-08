@@ -2,9 +2,8 @@
 /*!
  * \file   linear/ludcmp_pt.cc
  * \author Kent Budge
- * \date   Thu Jul  1 10:54:20 2004
  * \brief  LU decomposition
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Slice.hh" // NOLINT(misc-include-cleaner)

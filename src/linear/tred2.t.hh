@@ -2,9 +2,8 @@
 /*!
  * \file   linear/tred2.t.hh
  * \author Kent Budge
- * \date   Thu Sep  2 14:49:55 2004
  * \brief  Householder reduce a symmetric matrix.
- * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef linear_tred2_t_hh

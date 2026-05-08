@@ -2,9 +2,8 @@
 /*!
  * \file   linear/test/tsttred2.cc
  * \author Kent Budge
- * \date   Mon Aug  9 13:06:56 2004
  * \brief  Test the tred2 nonlinear equation solver.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,6 +12,8 @@
 #include "dsxx/UnitTest.hh"
 #include "linear/tred2.hh"
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -67,11 +68,13 @@ void tsttred2(UnitTest &ut) {
     }
   }
   if (err) {
-    ut.failure("tred2 is NOT correct");
+    FAILMSG("tred2 is NOT correct");
   } else {
-    ut.passes("tred2 is correct");
+    PASSMSG("tred2 is correct");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

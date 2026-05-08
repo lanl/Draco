@@ -2,9 +2,8 @@
 /*!
  * \file   linear/test/tsttqli.cc
  * \author Kent Budge
- * \date   Mon Aug  9 13:06:56 2004
  * \brief  Test the tqli eigenvector solver.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -14,6 +13,8 @@
 #include "linear/tred2.hh"
 #include <cmath> // fabs, sqrt
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -46,9 +47,9 @@ void tsttqli(UnitTest &ut) {
   double x1 = 2.2 * xx0 + (3.2 - e0) * xx1;
 
   if (fabs(x0) < 1.0e-12 && fabs(x1) < 1.0e-12) {
-    ut.passes("first eigenvector is correct");
+    PASSMSG("first eigenvector is correct");
   } else {
-    ut.failure("first eigenvector is NOT correct");
+    FAILMSG("first eigenvector is NOT correct");
   }
 
   double const e1 = d[1];
@@ -59,11 +60,13 @@ void tsttqli(UnitTest &ut) {
   x1 = 2.2 * xx0 + (3.2 - e1) * xx1;
 
   if (fabs(x0) < 1.0e-12 && fabs(x1) < 1.0e-12) {
-    ut.passes("second eigenvector is correct");
+    PASSMSG("second eigenvector is correct");
   } else {
-    ut.failure("second eigenvector is NOT correct");
+    FAILMSG("second eigenvector is NOT correct");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
