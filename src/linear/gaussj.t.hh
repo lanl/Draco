@@ -3,7 +3,7 @@
  * \file   linear/gaussj.t.hh
  * \author Kent Budge
  * \brief  Solve a linear system by Gaussian elimination.
- * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef linear_gaussj_t_hh

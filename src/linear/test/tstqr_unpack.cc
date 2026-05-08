@@ -2,8 +2,7 @@
 /*!
  * \file   linear/test/tstqr_unpack.cc
  * \author Kent Budge
- * \date   Mon Aug  9 13:39:20 2004
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,6 +12,8 @@
 #include "linear/qr_unpack.hh"
 #include "linear/qrdcmp.hh"
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -41,6 +42,8 @@ void tstqr_unpack(UnitTest &ut) {
   else
     FAILMSG("R[0+2*0] is NOT correct");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

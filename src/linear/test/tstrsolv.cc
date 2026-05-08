@@ -2,8 +2,7 @@
 /*!
  * \file   linear/test/tstrsolv.cc
  * \author Kent Budge
- * \date   Mon Aug  9 13:39:20 2004
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -12,6 +11,8 @@
 #include "dsxx/UnitTest.hh"
 #include "linear/rsolv.hh"
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -32,16 +33,18 @@ void tstrsolv(UnitTest &ut) {
   rsolv(R, 2, b);
 
   if (soft_equiv(b[1], 2.0)) {
-    ut.passes("b[1] is correct");
+    PASSMSG("b[1] is correct");
   } else {
-    ut.failure("b[1] is NOT correct");
+    FAILMSG("b[1] is NOT correct");
   }
   if (soft_equiv(5 * b[0] + 7 * b[1], 1.0)) {
-    ut.passes("b[0] is correct");
+    PASSMSG("b[0] is correct");
   } else {
-    ut.failure("b[0] is NOT correct");
+    FAILMSG("b[0] is NOT correct");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

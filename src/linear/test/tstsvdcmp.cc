@@ -2,8 +2,7 @@
 /*!
  * \file   linear/test/tstsvdcmp.cc
  * \author Kent Budge
- * \date   Mon Aug  9 13:39:20 2004
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,6 +12,8 @@
 #include "linear/svdcmp.hh"
 #include <array>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -125,6 +126,8 @@ void tstsvdcmp(UnitTest &ut) {
   else
     FAILMSG("1,2 is NOT correct");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

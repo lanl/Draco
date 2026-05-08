@@ -2,8 +2,7 @@
 /*!
  * \file   linear/test/tstgaussj.cc
  * \author Kent Budge
- * \date   Wed Sep 13 11:46:05 2006
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -12,6 +11,8 @@
 #include "dsxx/UnitTest.hh"
 #include "linear/gaussj.hh"
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -23,6 +24,7 @@ using namespace rtt_linear;
 
 void tstgaussj(UnitTest &ut) {
   {
+    PASSMSG("Starting the test.");
     unsigned const N = 4, M = 2;
     vector<double> a, ai(N * N), b(N * M);
     for (unsigned i = 0; i < N; i++) {
@@ -58,10 +60,7 @@ void tstgaussj(UnitTest &ut) {
         count = count || !soft_equiv(sum, static_cast<double>(k++));
       }
     }
-    if (count)
-      ut.failure("did NOT correctly solve equations");
-    else
-      ut.passes("correctly solved equations");
+    FAIL_IF(count);
   }
   {
     unsigned const N = 4;
@@ -97,10 +96,7 @@ void tstgaussj(UnitTest &ut) {
       }
       count = count || !soft_equiv(sum, static_cast<double>(k++));
     }
-    if (count)
-      ut.failure("did NOT correctly solve equations");
-    else
-      ut.passes("correctly solved equations");
+    FAIL_IF(count);
   }
   {
     unsigned const N = 4, M = 2;
@@ -138,12 +134,11 @@ void tstgaussj(UnitTest &ut) {
         count = count || !soft_equiv(sum, static_cast<double>(k++));
       }
     }
-    if (count)
-      ut.failure("did NOT correctly solve equations");
-    else
-      ut.passes("correctly solved equations");
+    FAIL_IF(count);
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

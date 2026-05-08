@@ -2,7 +2,7 @@
 /*!
  * \file   linear/test/tstbtridag.cc
  * \author Kent Budge
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -12,48 +12,20 @@
 #include "linear/btridag.hh"
 #include <vector>
 
-using namespace std;
-using namespace rtt_dsxx;
-using namespace rtt_linear;
-
-//------------------------------------------------------------------------------------------------//
-// TESTS
-//------------------------------------------------------------------------------------------------//
-void tstbtridag(UnitTest &ut) {
-  vector<double> a(2), b(2), c(2), r(2);
-  b[0] = 2.;
-  c[0] = 3.;
-  a[1] = 1.;
-  b[1] = 5.;
-
-  r[0] = 1.0;
-  r[1] = 2.0;
-
-  vector<double> u(2);
-
-  btridag(a, b, c, r, 2U, 1U, u);
-
-  if (soft_equiv(1.0, u[0] * 2 + u[1] * 3)) {
-    ut.passes("0 is correct");
-  } else {
-    ut.failure("0 is NOT correct");
-  }
-  if (soft_equiv(2.0, u[0] * 1 + u[1] * 5)) {
-    ut.passes("0 is correct");
-  } else {
-    ut.failure("0 is NOT correct");
-  }
-}
-
-//------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
-  ScalarUnitTest ut(argc, argv, release);
+  rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
-    tstbtridag(ut);
+    PASSMSG("Starting the test.");
+    std::vector<double> a(2), b = {2., 5.}, c(2), r = {1., 2.}, u(2);
+    c[0] = 3.;
+    a[1] = 1.;
+    rtt_linear::btridag(a, b, c, r, 2U, 1U, u);
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(1.0, u[0] * 2 + u[1] * 3));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(2.0, u[0] * 1 + u[1] * 5));
   }
   UT_EPILOG(ut);
 }
 
 //------------------------------------------------------------------------------------------------//
-// end of tstsvbksb.cc
+// end of tstbtridag.cc
 //------------------------------------------------------------------------------------------------//

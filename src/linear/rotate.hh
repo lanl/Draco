@@ -2,9 +2,8 @@
 /*!
  * \file   linear/rotate.hh
  * \author Kent Budge
- * \date   Tue Aug 10 12:37:43 2004
  * \brief  Perform a Jacobi rotation on a pair of matrices.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef linear_rotate_hh
