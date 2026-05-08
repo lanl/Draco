@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_CPEloss/test/tstAnalytic_CP_Eloss.cc
  * \author Kendra P. Long
- * \date   Fri Aug  2 14:28:08 2019
  * \brief  Analytic_CP_Eloss test.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -26,6 +25,8 @@
 #include <map>
 #include <memory>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using rtt_cdi_cpeloss::Analytic_CP_Eloss;
@@ -493,6 +494,8 @@ void Constant_test(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

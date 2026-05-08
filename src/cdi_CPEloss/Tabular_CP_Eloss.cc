@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_CPEloss/Tabular_CP_Eloss.cc
  * \author Ben R. Ryan
- * \date   2019 Nov 4
  * \brief  Tabular_CP_Eloss member definitions.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

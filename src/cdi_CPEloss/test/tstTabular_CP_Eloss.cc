@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_CPEloss/test/tstTabular_CP_Eloss.cc
  * \author Ben R. Ryan
- * \date   2019 Nov 18
  * \brief  Tabular_CP_Eloss test
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -14,6 +13,8 @@
 #include "cdi/CPCommon.hh"
 #include "cdi_CPEloss/Tabular_CP_Eloss.hh"
 #include <string>
+
+namespace {
 
 using rtt_cdi_cpeloss::Tabular_CP_Eloss;
 
@@ -87,6 +88,8 @@ void dedx_table_test(rtt_dsxx::UnitTest &ut) {
     FAILMSG("Tabular_CP_Eloss test fails.");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

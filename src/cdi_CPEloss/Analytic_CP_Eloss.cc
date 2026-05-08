@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_CPEloss/Analytic_CP_Eloss.cc
  * \author Kendra P. Long
- * \date   Fri Aug  2 14:28:08 2019
  * \brief  Analytic_CP_Eloss member definitions.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

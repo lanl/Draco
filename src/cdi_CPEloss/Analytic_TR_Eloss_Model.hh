@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_CPEloss/Analytic_TR_Eloss_Model.hh
  * \author Ben R. Ryan
- * \date   Feb 21 2020
  * \brief  Analytic_TR_Eloss_Model class definition.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

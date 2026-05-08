@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_CPEloss/Analytic_Spitzer_Eloss_Model.cc
  * \author Ben R. Ryan
- * \date   Feb 21 2020
  * \brief  Analytic_Spitzer_Eloss_Model implementation file.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -10,10 +9,10 @@
 #include "cdi_CPEloss/Analytic_Spitzer_Eloss_Model.hh"
 #include "dsxx/Assert.hh"
 #include "cdi/CPCommon.hh"
-#include "units/MathConstants.hh"
 #include "units/PhysicalConstantsSI.hh"
 #include <algorithm> // max
 #include <cmath>     // exp, log, sqrt
+#include <numbers>
 
 namespace rtt_cdi_cpeloss {
 
@@ -54,14 +53,14 @@ double Analytic_Spitzer_Eloss_Model::calculate_eloss(
   const double vrel = sqrt(vp * vp + vt * vt);
   const double mreduced = (mt * mp) / (mt + mp);
   const double bmin = qtabs * qpabs / (mreduced * vrel * vrel);
-  const double coulomb_log = log(std::max<double>(exp(1.), debye_length / bmin));
+  const double coulomb_log = log(std::max<double>(std::numbers::e, debye_length / bmin));
 
   // Rosenbluth potential term that results from a Maxwellian distribution of the targeet particles
   const double E_in =
       0.5 * (mp * 1.0e-3) * std::pow(vp * 1.0e-2, 2) / (rtt_units::electronChargeSI * 1.0e+6);
   const double x = std::sqrt((mt / mp) * (E_in / (T * 1.0e-3)));
   const double potential =
-      (std::erf(x) - (2.0 / std::sqrt(rtt_units::PI)) * x * std::exp(-1.0 * x * x));
+      (std::erf(x) - (2.0 / std::sqrt(std::numbers::pi)) * x * std::exp(-1.0 * x * x));
 
   // Compute dedx
   double const eloss = prefac * coulomb_log * potential;
