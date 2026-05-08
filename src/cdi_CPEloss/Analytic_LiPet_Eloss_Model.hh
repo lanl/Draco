@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_CPEloss/Analytic_LiPet_Eloss_Model.hh
  * \author Edward Norris and Kyle S. Beling
- * \date   May 21, 2025
  * \brief  Analytic_LiPet_Eloss_Model class definition.
  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

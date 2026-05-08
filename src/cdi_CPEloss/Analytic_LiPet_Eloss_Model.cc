@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_CPEloss/Analytic_LiPet_Eloss_Model.cc
  * \author Edward Norris and Kyle S. Beling
- * \date   May 21, 2025
  * \brief  Analytic_LiPet_Eloss_Model class definition.
  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -11,10 +10,9 @@
 #include "dsxx/Assert.hh"
 #include "cdi/CPCommon.hh"
 #include "cdi_CPEloss/config.h" // Defines GSL_FOUND
-#include "units/MathConstants.hh"
 #include "units/PhysicalConstantsSI.hh"
-
 #include <cmath>
+#include <numbers>
 #ifdef GSL_FOUND
 #include <gsl/gsl_sf_bessel.h>
 #include <gsl/gsl_sf_fermi_dirac.h>
@@ -93,7 +91,7 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss(const double temperature_in,
   double const t12 = std::pow(rtt_units::h_barSI / (2.0 * mr * u_rel), 2);
   double const p_perp = std::pow(
       incident_z * target_z * rtt_units::electronChargeSI * rtt_units::electronChargeSI /
-          (4.0 * rtt_units::PI * rtt_units::permittivityOfFreeSpaceSI * mr * u_rel * u_rel),
+          (4.0 * std::numbers::pi * rtt_units::permittivityOfFreeSpaceSI * mr * u_rel * u_rel),
       2);
   double const p_min = std::sqrt(p_perp + t12);
   double const lambda_D = debye_length / p_min;
@@ -107,8 +105,8 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss(const double temperature_in,
   double const xcol = 2.0 * x; // 2015 correction
 
   double const maxwell_integral =
-      std::erf(std::sqrt(x)) - 2.0 / std::sqrt(rtt_units::PI) * std::exp(-x) * std::sqrt(x);
-  double const maxwell_func = 2.0 / std::sqrt(rtt_units::PI) * std::exp(-x) * std::sqrt(x);
+      std::erf(std::sqrt(x)) - 2.0 / std::sqrt(std::numbers::pi) * std::exp(-x) * std::sqrt(x);
+  double const maxwell_func = 2.0 / std::sqrt(std::numbers::pi) * std::exp(-x) * std::sqrt(x);
 
   double const corrector = 1.0 / coulomb_log * (maxwell_integral + maxwell_func);
   double const G = maxwell_integral - target_mass / incident_mass * (maxwell_func - corrector);
@@ -120,7 +118,7 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss(const double temperature_in,
 
   double dedx = incident_z * incident_z * rtt_units::electronChargeSI *
                 rtt_units::electronChargeSI /
-                (4.0 * rtt_units::PI * rtt_units::permittivityOfFreeSpaceSI) * omega2 / speed2 *
+                (4.0 * std::numbers::pi * rtt_units::permittivityOfFreeSpaceSI) * omega2 / speed2 *
                 (G * coulomb_log + theta * log(1.123 * sqrt(xcol)));
 
   // Convert units J/m -> keV/cm
@@ -165,12 +163,12 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
 
   // Modified temperature for quantum degeneracy
   double const theta =
-      temperature * (std::pow(8.0 * rtt_units::PI / (3.0 * number_density), 2.0 / 3.0) * 2.0 *
+      temperature * (std::pow(8.0 * std::numbers::pi / (3.0 * number_density), 2.0 / 3.0) * 2.0 *
                      rtt_units::electronMassSI * rtt_units::boltzmannSI /
                      (rtt_units::planckSI * rtt_units::planckSI));
   double const param =
       rtt_units::boltzmannSI * temperature *
-      (-1.5 * std::log(theta) + std::log(4.0 / (3.0 * std::sqrt(rtt_units::PI))) +
+      (-1.5 * std::log(theta) + std::log(4.0 / (3.0 * std::sqrt(std::numbers::pi))) +
        (0.25054 * std::pow(theta, -1.858) +
         0.027 * std::pow(theta, -1.858 / 2.0) / (1.0 + 0.25054 * std::pow(theta, -0.868))));
   double const T_eff =
@@ -187,13 +185,13 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
   } else {
     u_rel = std::sqrt(
         speed2 +
-        std::pow(8.0 * rtt_units::boltzmannSI * temperature / (rtt_units::PI * target_mass), 2));
+        std::pow(8.0 * rtt_units::boltzmannSI * temperature / (std::numbers::pi * target_mass), 2));
   }
 
   double const t12 = std::pow(rtt_units::h_barSI / (2.0 * mr * u_rel), 2);
   double const p_perp = std::pow(
       incident_z * rtt_units::electronChargeSI * rtt_units::electronChargeSI /
-          (4.0 * rtt_units::PI * rtt_units::permittivityOfFreeSpaceSI * mr * u_rel * u_rel),
+          (4.0 * std::numbers::pi * rtt_units::permittivityOfFreeSpaceSI * mr * u_rel * u_rel),
       2);
   double const p_min = std::sqrt(p_perp + t12);
   double const lambda_D = debye_length / p_min;
@@ -206,8 +204,8 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
   double const x = speed2 * target_mass / (2.0 * rtt_units::boltzmannSI * T_eff);
 
   double const maxwell_integral =
-      std::erf(std::sqrt(x)) - 2.0 / std::sqrt(rtt_units::PI) * std::exp(-x) * std::sqrt(x);
-  double const maxwell_func = 2.0 / std::sqrt(rtt_units::PI) * std::exp(-x) * std::sqrt(x);
+      std::erf(std::sqrt(x)) - 2.0 / std::sqrt(std::numbers::pi) * std::exp(-x) * std::sqrt(x);
+  double const maxwell_func = 2.0 / std::sqrt(std::numbers::pi) * std::exp(-x) * std::sqrt(x);
 
   double const corrector = 1.0 / coulomb_log * (maxwell_integral + maxwell_func);
   double const G = maxwell_integral - target_mass / incident_mass * (maxwell_func - corrector);
@@ -217,7 +215,7 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
 
   double dedx = incident_z * incident_z * rtt_units::electronChargeSI *
                 rtt_units::electronChargeSI /
-                (4.0 * rtt_units::PI * rtt_units::permittivityOfFreeSpaceSI) * omega2 / speed2 *
+                (4.0 * std::numbers::pi * rtt_units::permittivityOfFreeSpaceSI) * omega2 / speed2 *
                 (G * coulomb_log + parameterization);
 
   // Convert units J/m -> keV/cm
