@@ -1,8 +1,8 @@
 #--------------------------------------------------------------------------------------------------#
-# File:    .gitlab/ci/docker-jobs.yml
+# File:    .gitlab/ci/charm-jobs.yml
 # Author:  Kelly Thompson <kgt@lanl.gov>
 # Date:    Wednesday, Jan 13, 2021, 20:57 pm
-# Purpose: CI jobs that run in a docker container (superlinter, coverageCheck, post-cdash-results)
+# Purpose: CI jobs that run in a charm container (superlinter, coverageCheck, post-cdash-results)
 # Note:    Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 #
 # See also:
@@ -25,7 +25,7 @@ superlinter:
   #   paths:
   #     - $CI_PROJECT_DIR/super-linter.log
   rules:
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_charm/'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
@@ -108,7 +108,7 @@ checkCoverage_MR:
   rules:
     - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_ccsnet/'
       when: never
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_charm/'
       when: never
     - if: '$CI_MERGE_REQUEST_TITLE =~ /Draft:/ || $CI_MERGE_REQUEST_TITLE =~ /WIP:/'
       when: never
@@ -159,8 +159,10 @@ titlechange:
         echo "==> Skip webhook. WIP/Draft not removed from title.";
       fi;
   rules:
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_charm/'
+      when: never
     - if: '$CI_PIPELINE_SOURCE == "trigger"'
 
 #--------------------------------------------------------------------------------------------------#
-# end .gitlab/ci/docker-jobs.yml
+# end .gitlab/ci/charm-jobs.yml
 #--------------------------------------------------------------------------------------------------#

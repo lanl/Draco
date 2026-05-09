@@ -2,8 +2,7 @@
 /*!
  * \file   fit/test/tstsvdfit.cc
  * \author Kent Budge
- * \date   Tue Aug 26 12:02:36 2008
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -12,6 +11,8 @@
 #include "dsxx/UnitTest.hh"
 #include "fit/svdfit.hh"
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -62,6 +63,8 @@ void tstsvdfit(UnitTest &ut) {
     FAILMSG("fit is NOT good");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 
