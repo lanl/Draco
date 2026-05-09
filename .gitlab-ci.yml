@@ -30,9 +30,9 @@ stages:
   - deploy-downstream
 
 include:
+  - local: /.gitlab/ci/charm-jobs.yml
   - local: /.gitlab/ci/ccscs-jobs.yml
   - local: /.gitlab/ci/darwin-jobs.yml
-  - local: /.gitlab/ci/docker-jobs.yml
   - local: /.gitlab/ci/ro-jobs.yml
   - local: /.gitlab/ci/rzadams-jobs.yml
 
