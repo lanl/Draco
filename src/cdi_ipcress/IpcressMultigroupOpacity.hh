@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_ipcress/IpcressMultigroupOpacity.hh
  * \author Kelly Thompson
- * \date   Tue Nov 15 15:51:27 2011
  * \brief  IpcressMultigroupOpacity class header file (derived from cdi/MultigroupOpacity)
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_ipcress_IpcressMultigroupOpacity_hh

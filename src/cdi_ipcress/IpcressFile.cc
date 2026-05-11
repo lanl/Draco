@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ipcress/IpcressFile.cc
  * \author Kelly Thompson
- * \date   Tue Aug 22 15:15:49 2000
  * \brief  Implementation file for IpcressFile class.
  * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -141,7 +140,7 @@ IpcressFile::IpcressFile(const std::string &ipcressDataFilename)
  * \param[in] matid unsigned integer that specifies the material to be queried.
  */
 bool IpcressFile::materialFound(size_t matid) const {
-  return std::find(matIDs.begin(), matIDs.end(), matid) != matIDs.end();
+  return std::ranges::find(matIDs, matid) != matIDs.end();
 }
 
 //------------------------------------------------------------------------------------------------//

@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_ipcress/IpcressMultigroupOpacity.cc
  * \author Kelly Thompson
- * \date   Tue Nov 15 15:51:27 2011
  * \brief  IpcressMultigroupOpacity templated class implementation file.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ipcress/IpcressMultigroupOpacity.hh"
@@ -16,6 +15,7 @@
 #include <cstddef> // size_t
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 // cSpell:ignore ipcress, itmp, Opac
@@ -69,7 +69,7 @@ IpcressMultigroupOpacity::IpcressMultigroupOpacity(std::vector<char> const &pack
 
   // unpack it
   std::string descriptor;
-  for (size_t i = 0; i < static_cast<size_t>(packed_descriptor_size); i++)
+  for (size_t i = 0; std::cmp_less(i, packed_descriptor_size); i++)
     unpacker >> packed_descriptor[i];
   rtt_dsxx::unpack_data(descriptor, packed_descriptor);
 
@@ -84,7 +84,7 @@ IpcressMultigroupOpacity::IpcressMultigroupOpacity(std::vector<char> const &pack
   std::vector<char> packed_filename(packed_filename_size);
 
   // unpack it
-  for (size_t i = 0; i < static_cast<size_t>(packed_filename_size); i++)
+  for (size_t i = 0; std::cmp_less(i, packed_filename_size); i++)
     unpacker >> packed_filename[i];
   rtt_dsxx::unpack_data(ipcressFilename, packed_filename);
 

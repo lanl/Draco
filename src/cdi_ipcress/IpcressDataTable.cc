@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_ipcress/IpcressDataTable.cc
  * \author Kelly Thompson
- * \date   Wednesday, Nov 16, 2011, 17:04 pm
  * \brief  Implementation file for IpcressDataTable objects.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ipcress/IpcressDataTable.hh"
@@ -27,9 +26,6 @@
 // ------------------------- //
 
 namespace rtt_cdi_ipcress {
-
-// helper functions: local to file scope
-double unary_log(double x) { return std::log(x); }
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -182,19 +178,21 @@ void IpcressDataTable::setIpcressDataTypeKey() const {
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Load the temperature, density, energy boundary and opacity opacity tables from the IPCRESS
- *     file.  Convert all tables (except energy boundaries) to log values.
- */
+ *     file.  Convert all tables (except energy boundaries) to log values. */
 void IpcressDataTable::loadDataTable(std::shared_ptr<const IpcressFile> const &spIpcressFile) {
   // The interpolation routines expect everything to be in log form so we only store the logarithmic
   // temperature, density and opacity data.
   logTemperatures.resize(temperatures.size());
-  std::transform(temperatures.begin(), temperatures.end(), logTemperatures.begin(), unary_log);
+  std::ranges::transform(temperatures, logTemperatures.begin(),
+                         [](double x) noexcept { return std::log(x); });
   logDensities.resize(densities.size());
-  std::transform(densities.begin(), densities.end(), logDensities.begin(), unary_log);
+  std::ranges::transform(densities, logDensities.begin(),
+                         [](double x) noexcept { return std::log(x); });
 
   std::vector<double> opacities = spIpcressFile->getData(matID, ipcressDataTypeKey);
   logOpacities.resize(opacities.size());
-  std::transform(opacities.begin(), opacities.end(), logOpacities.begin(), unary_log);
+  std::ranges::transform(opacities, logOpacities.begin(),
+                         [](double x) noexcept { return std::log(x); });
 }
 
 //------------------------------------------------------------------------------------------------//

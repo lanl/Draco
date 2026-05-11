@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ipcress/IpcressMaterial.hh
  * \author Kelly Thompson
- * \date   Tue Aug 22 15:15:49 2000
  * \brief  Header file for IpcressMaterial class
  * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -104,12 +103,13 @@ public:
    */
   void add_field(std::string &in_fieldName, std::vector<double> const &in_values) {
     // Remove white space from in_fieldName before saving it.
+    auto new_end = std::ranges::remove_if(in_fieldName,
+                                          [](unsigned char c) noexcept { return std::isspace(c); });
     // NOTE: ::isspace forces the use of c namespace rather than std::isspace
-    in_fieldName.erase(std::remove_if(in_fieldName.begin(), in_fieldName.end(), ::isspace),
-                       in_fieldName.end());
+    in_fieldName.erase(new_end.begin(), in_fieldName.end());
 
     // Check if the field name is already registered.
-    auto itr = std::find(fieldNames.begin(), fieldNames.end(), in_fieldName);
+    auto itr = std::ranges::find(fieldNames, in_fieldName);
     if (fieldNames.size() == 0 || itr == fieldNames.end()) {
 
       // Save the material data field (description and associated values).
@@ -134,7 +134,7 @@ public:
   //! return the vector of data associated with a field name.
   [[nodiscard]] std::vector<double> data(std::string const &fieldName) const {
     Require(fieldName.size() > 0);
-    Require(find(fieldNames.begin(), fieldNames.end(), fieldName) != fieldNames.end());
+    Require(std::ranges::find(fieldNames, fieldName) != fieldNames.end());
     return fieldValues[getFieldIndex(fieldName)];
   }
 
@@ -144,10 +144,10 @@ private:
   //! Return the index of the provided string as stored in member data 'fieldNames'
   [[nodiscard]] size_t getFieldIndex(std::string const &fieldName) const {
     Require(fieldName.size() > 0);
-    Remember(auto pos = find(fieldNames.begin(), fieldNames.end(), fieldName));
+    Remember(auto pos = std::ranges::find(fieldNames, fieldName));
     Check(pos != fieldNames.end());
-    size_t const fieldIndex = std::distance(
-        fieldNames.begin(), std::find(fieldNames.begin(), fieldNames.end(), fieldName));
+    size_t const fieldIndex =
+        std::distance(fieldNames.begin(), std::ranges::find(fieldNames, fieldName));
     Ensure(fieldIndex < fieldNames.size());
     return fieldIndex;
   }

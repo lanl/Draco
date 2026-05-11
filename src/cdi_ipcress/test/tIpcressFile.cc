@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_ipcress/test/tIpcressFile.cc
  * \author Kelly Thompson
- * \date   Fri Oct 12 15:39:39 2001
  * \brief  Ipcress file test
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -19,6 +18,8 @@
 #include <vector>
 
 // cSpell:ignore IPCRESS, matid, tgrid
+
+namespace {
 
 using namespace std;
 using rtt_cdi_ipcress::IpcressFile;
@@ -103,6 +104,8 @@ void ipcress_file_test(rtt_dsxx::ScalarUnitTest &ut) {
       FAILMSG("tgrid for mat 10001 does not have the expected values.");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
