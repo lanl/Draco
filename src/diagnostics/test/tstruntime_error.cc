@@ -2,9 +2,8 @@
 /*!
  * \file   diagnostics/test/tstruntime_error.cc
  * \author Kent Budge
- * \date   Wed Apr 28 09:31:51 2010
  * \brief  Test runtime_error function.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,6 +12,8 @@
 #include "c4/ParallelUnitTest.hh"
 #include "diagnostics/runtime_check.hh"
 #include <stdexcept>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -46,6 +47,8 @@ void tstruntime_error(UnitTest &ut) {
     PASSMSG("check false on one processor throws on all as it should.");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

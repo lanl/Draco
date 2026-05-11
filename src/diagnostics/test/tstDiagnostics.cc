@@ -2,9 +2,8 @@
 /*!
  * \file   diagnostics/test/tstDiagnostics.cc
  * \author Thomas M. Evans
- * \date   Fri Dec  9 16:16:27 2005
  * \brief  Diagnostics test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -17,6 +16,8 @@
 #include <iostream>
 #include <limits>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_diagnostics;
@@ -66,10 +67,8 @@ void test_longints(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 
 void test_floats(rtt_dsxx::UnitTest &ut) {
-  if (Diagnostics::integers["A"] != 22)
-    ITFAILS;
-  if (Diagnostics::integers["B"] != 51)
-    ITFAILS;
+  FAIL_IF_NOT(Diagnostics::integers["A"] == 22);
+  FAIL_IF_NOT(Diagnostics::integers["B"] == 51);
 
   // make a fraction entry
   Diagnostics::doubles["A_of_B"] =
@@ -169,6 +168,8 @@ void test_macro(rtt_dsxx::UnitTest &ut) {
   if (ut.numFails == 0)
     PASSMSG("Diagnostics macro ok.");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

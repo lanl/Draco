@@ -2,7 +2,6 @@
 /*!
  * \file   diagnostics/config.h
  * \author Thomas M. Evans
- * \date   Fri Dec  9 11:05:13 2005
  * \brief  diagnostics defines.
  * \note   Copyright (C) 2010-2021 Triad National Security, LLC., All rights reserved. */
 /*------------------------------------------------------------------------------------------------*/

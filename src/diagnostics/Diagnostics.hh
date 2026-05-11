@@ -2,7 +2,6 @@
 /*!
  * \file   diagnostics/Diagnostics.hh
  * \author Thomas M. Evans, Aimee Hungerford
- * \date   Fri Dec  9 10:52:38 2005
  * \brief  Diagnostics class for runtime info.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

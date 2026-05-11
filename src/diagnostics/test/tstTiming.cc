@@ -2,9 +2,8 @@
 /*!
  * \file   diagnostics/test/tstTiming.cc
  * \author Thomas M. Evans
- * \date   Mon Dec 12 15:32:10 2005
  * \brief  Test the diagnostics/TIMER macros
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -15,6 +14,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using rtt_dsxx::soft_equiv;
@@ -234,6 +235,8 @@ void test_macros(rtt_dsxx::UnitTest &ut) {
   if (ut.numFails == 0)
     PASSMSG("Timer macros ok.");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
