@@ -2,14 +2,14 @@
 /*!
  * \file   meshReaders/Hex_Mesh_Reader.cc
  * \author John McGhee
- * \date   Tue Mar  7 08:38:04 2000
  * \brief  Implements a CIC-19 Hex Mesh Format mesh reader.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Hex_Mesh_Reader.hh"
 #include "dsxx/Assert.hh"
 #include "mesh_element/Element_Definition.hh"
+#include <algorithm>
 #include <climits> // UINT_MAX
 #include <cstddef> // size_t
 #include <fstream>
@@ -133,15 +133,13 @@ std::vector<std::vector<unsigned>> Hex_Mesh_Reader::get_element_nodes() const {
   // is important as we will rely on it later to output the element set data.
 
   // Alternatively, the private data of the class could be changed so that the work done here is
-  // done in the constructor.  This would be more efficient if this is going to be used
+  // done in the constructor. This would be more efficient if this is going to be used
   // repetitively.
   std::vector<std::vector<unsigned>> result;
-  for (unsigned i = 0; i < ncells; i++)
-    result.push_back(ipar[i]);
-  for (size_t i = 0; i < nvb_faces; i++)
-    result.push_back(ipar_vb[i]);
-  for (size_t i = 0; i < nrb_faces; i++)
-    result.push_back(ipar_rb[i]);
+  result.reserve(ipar.size() + ipar_vb.size() + ipar_rb.size());
+  result.insert(result.end(), ipar.begin(), ipar.end());
+  result.insert(result.end(), ipar_vb.begin(), ipar_vb.end());
+  result.insert(result.end(), ipar_rb.begin(), ipar_rb.end());
   return result;
 }
 
@@ -171,11 +169,10 @@ std::vector<Element_Definition::Element_Type> Hex_Mesh_Reader::get_element_types
   default:
     Insist(false, "Dimension index out of range!");
   }
-  std::vector<Element_Definition::Element_Type> tmp;
-  for (unsigned i = 0; i < ncells; i++)
-    tmp.push_back(d1);
-  for (size_t i = 0; i < nvb_faces + nrb_faces; i++)
-    tmp.push_back(d2);
+
+  std::vector<Element_Definition::Element_Type> tmp(ncells + nvb_faces + nrb_faces);
+  std::fill_n(tmp.begin(), ncells, d1);
+  std::fill(tmp.begin() + ncells, tmp.end(), d2);
   return tmp;
 }
 
