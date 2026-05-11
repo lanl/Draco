@@ -2,7 +2,6 @@
 /*!
  * \file   diagnostics/test/tstProcmon.cc
  * \author Kelly Thompson
- * \date   Monday, Apr 22, 2013, 13:59 pm
  * \brief  Procmon test.
  * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -14,9 +13,14 @@
 #include "diagnostics/Procmon.hh"
 #include <cstdlib>
 #include <iostream>
+#include <numbers>
 #include <sstream>
 #include <string>
 #include <vector>
+
+// cSpell:ignore vmrss, vdbl
+
+namespace {
 
 using namespace std;
 using namespace rtt_diagnostics;
@@ -45,12 +49,9 @@ void tst_procmon_basic(rtt_dsxx::UnitTest &ut) {
       std::cout << i << " : " << tokens[i] << '\n';
 
 #ifdef USE_PROCMON
-    if (tokens[4] != std::string("VmPeak"))
-      ITFAILS;
-    if (tokens[9] != std::string("VmRss"))
-      ITFAILS;
-    if (tokens[12] != std::string("kB"))
-      ITFAILS;
+    FAIL_IF_NOT(tokens[4] == std::string("VmPeak"));
+    FAIL_IF_NOT(tokens[9] == std::string("VmRss"));
+    FAIL_IF_NOT(tokens[12] == std::string("kB"));
 #endif
     // Save the VmRSS size
     vmrss_orig = atof(tokens[10].c_str());
@@ -60,7 +61,7 @@ void tst_procmon_basic(rtt_dsxx::UnitTest &ut) {
   size_t const N(100000000);
   auto *vdbl = new double[N];
   for (size_t i = 0; i < N; ++i)
-    vdbl[i] = 3.1415;
+    vdbl[i] = std::numbers::pi;
 
   {
     std::ostringstream msg;
@@ -74,8 +75,7 @@ void tst_procmon_basic(rtt_dsxx::UnitTest &ut) {
   }
 
   // We should be using more memory.
-  if (vmrss_bigger < vmrss_orig)
-    ITFAILS;
+  FAIL_IF(vmrss_bigger < vmrss_orig);
 
   for (size_t i = 0; i < N; ++i)
     vdbl[i] = 42.5150;
@@ -93,8 +93,7 @@ void tst_procmon_basic(rtt_dsxx::UnitTest &ut) {
     vmrss_end = atof(tokens[10].c_str());
   }
 
-  if (vmrss_bigger < vmrss_end)
-    ITFAILS;
+  FAIL_IF(vmrss_bigger < vmrss_end);
 
   if (ut.numFails == 0)
     PASSMSG("No failures in tst_procmon_basic.");
@@ -112,6 +111,8 @@ void tst_procmon_macro(rtt_dsxx::UnitTest &ut) {
     PASSMSG("No failures in tst_procmon_macro.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

@@ -2,7 +2,6 @@
 /*!
  * \file   diagnostics/draco_info.hh
  * \author Kelly Thompson
- * \date   Wednesday, Nov 07, 2012, 18:49 pm
  * \brief  Small executable that prints the version and copyright strings.
  * \note   Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

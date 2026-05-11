@@ -2,7 +2,6 @@
 /*!
  * \file   diagnostics/Procmon.hh
  * \author Kelly Thompson
- * \date   Monday, Apr 22, 2013, 10:10 am
  * \brief  Procmon class for printing runtime system diagnostics (free memory per node, etc).
  * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved.
  *
