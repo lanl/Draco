@@ -2,9 +2,8 @@
 /*!
  * \file   meshReaders/test/TestHexMeshReader.cc
  * \author Thomas M. Evans
- * \date   Tue Mar 26 16:37:01 2002
  * \brief  Hex Mesh Reader test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "TestHexMeshReader.hh"
@@ -24,10 +23,12 @@
 #include <string>
 #include <vector>
 
+// cSpell:ignore enodes, gdn, hexa, ndsets, invr, ndim, testid
+
+namespace {
+
 using namespace std;
 using namespace rtt_dsxx;
-
-// cSpell:ignore ndsets, testid, ndim,enodes, invr, HEXA
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -81,9 +82,11 @@ void runTest(UnitTest &ut) {
   return;
 }
 
-//------------------------------------------------------------------------------------------------//
+} // namespace
+
 namespace rtt_meshReaders_test {
 
+//------------------------------------------------------------------------------------------------//
 bool check_mesh(UnitTest &ut, const rtt_meshReaders::Hex_Mesh_Reader &mesh,
                 const std::string &testid) {
 

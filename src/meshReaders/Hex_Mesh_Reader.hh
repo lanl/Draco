@@ -2,7 +2,6 @@
 /*!
  * \file   meshReaders/Hex_Mesh_Reader.hh
  * \author John McGhee
- * \date   Tue Mar  7 08:38:04 2000
  * \brief  Header file for CIC-19 Hex format mesh reader.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
