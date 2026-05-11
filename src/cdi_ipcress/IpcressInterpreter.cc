@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_ipcress/IpcressInterpreter.cc
  * \author Allan Wollaber
- * \date   Fri Oct 12 15:39:39 2001
  * \brief  Basic reader to print info in IPCRESS files.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "IpcressFile.hh"
@@ -21,6 +20,8 @@
 #include <string>
 #include <vector>
 
+namespace {
+
 using rtt_cdi_ipcress::IpcressFile;
 using rtt_cdi_ipcress::IpcressGrayOpacity;
 using rtt_cdi_ipcress::IpcressMultigroupOpacity;
@@ -32,23 +33,21 @@ using std::string;
 /*!
  * \brief Basic reader to print info in IPCRESS files.
  *
- * Information about the IPCRESS IPCRESS Interface Library may be found on X-Division's Physical
- * Data Team web site:
+ * Information about the IPCRESS Interface Library may be found on X-Division's Physical Data Team
+ * web site: http://velvet.lanl.gov/PROJECTS/DATA/atomic/ipcress/intro.lasso
  *
- * http://velvet.lanl.gov/PROJECTS/DATA/atomic/ipcress/intro.lasso
- *
- * We have a slightly modified copy of the ipcress libraries (explicitly added compiler libraries)
+ * We have a slightly modified copy of the IPCRESS libraries (explicitly added compiler libraries)
  * located at:
  *
  * /radtran/vendors/ipcress
  *
- * To use this package Draco must be compiled with Ipcress
+ * To use this package Draco must be compiled with IPCRESS
  *
  * Modification of this executable to make it more useful is encouraged.
  */
 //------------------------------------------------------------------------------------------------//
 void ipcress_file_read(std::string const &op_data_file) {
-  // Ipcress data filename (IPCRESS format required)
+  // IPCRESS data filename (IPCRESS format required)
 
   std::shared_ptr<IpcressFile> spGF;
   try {
@@ -193,6 +192,8 @@ void ipcress_file_read(std::string const &op_data_file) {
 
   cout << "Ending session.\n";
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

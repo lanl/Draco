@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_ipcress/test/cdi_ipcress_test.hh
  * \author Thomas M. Evans
- * \date   Fri Oct 12 15:36:36 2001
  * \brief  cdi_ipcress test function headers.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_ipcress_test_hh
@@ -17,6 +16,8 @@
 // cSpell:ignore IPCRESS
 
 namespace rtt_cdi_ipcress_test {
+
+// NOLINTBEGIN(performance-unnecessary-value-param)
 
 //------------------------------------------------------------------------------------------------//
 // COMPARISON FUNCTIONS USED IN IPCRESS OPACITY TESTS
@@ -138,6 +139,8 @@ void testEnergyBoundaryAccessor(rtt_dsxx::ScalarUnitTest &ut, opacityClassType c
             "returned by\n\tgetGroupBoundaries().");
   }
 }
+
+// NOLINTEND(performance-unnecessary-value-param)
 
 } // end namespace rtt_cdi_ipcress_test
 

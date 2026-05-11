@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_ipcress/IpcressGrayOpacity.cc
  * \author Kelly Thompson
- * \date   Mon Jan 22 14:11:10 2001
  * \brief  IpcressGrayOpacity templated class implementation file.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ipcress/IpcressGrayOpacity.hh"

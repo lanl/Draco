@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_ipcress/IpcressFile.t.hh
  * \author Kelly Thompson
- * \date   Tue Aug 22 15:15:49 2000
  * \brief  Template Implementation file for IpcressFile class.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_ipcress_IpcressFile_t_hh

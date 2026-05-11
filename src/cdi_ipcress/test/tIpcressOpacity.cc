@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ipcress/test/tIpcressOpacity.cc
  * \author Thomas M. Evans
- * \date   Fri Oct 26 10:50:44 2001
  * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
@@ -28,6 +27,8 @@
 #include <vector>
 
 // cSpell:ignore ipcress, matid, rtmg, ramg, pgray, vtabulated
+
+namespace {
 
 using namespace std;
 
@@ -384,7 +385,7 @@ void file_check_analytic(rtt_dsxx::ScalarUnitTest &ut) {
 
   // If we get here then the object was successfully instantiated.
   PASSMSG(
-      "shared_ptr to new Gray Plank Total Opacity object created for analyticOpacities.ipcress.");
+      "shared_ptr to new Gray Planck Total Opacity object created for analyticOpacities.ipcress.");
 
   // Setup the test problem.
 
@@ -1128,6 +1129,8 @@ void mg_opacity_packing_test(rtt_dsxx::ScalarUnitTest &ut) {
     FAILMSG("Failed to catch an illegal packing assertion.");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

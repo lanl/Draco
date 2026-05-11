@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ipcress/IpcressFile.hh
  * \author Kelly Thompson
- * \date   Tue Aug 22 15:15:49 2000
  * \brief  Header file for IpcressFile class
  * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -143,7 +142,7 @@ public:
 
   //! Locate the index into the materialData array for provided material identifier.
   size_t getMatIndex(size_t const matid) const {
-    size_t const pos = std::find(matIDs.begin(), matIDs.end(), matid) - matIDs.begin();
+    size_t const pos = std::ranges::find(matIDs, matid) - matIDs.begin();
     Ensure(pos < matIDs.size());
     return pos;
   }

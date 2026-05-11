@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_ipcress/test/tIpcressWithCDI.cc
  * \author Thomas M. Evans
- * \date   Mon Oct 29 17:16:32 2001
  * \brief  Ipcress + CDI test.
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -27,6 +26,8 @@
 #include <vector>
 
 // cSpell:ignore ipcress, matid, ramg
+
+namespace {
 
 using namespace std;
 
@@ -260,6 +261,8 @@ void test_ipcress_CDI(rtt_dsxx::ScalarUnitTest &ut) {
   if (!caught)
     FAILMSG("Failed to catch illegal accessor to CDI-gray().");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

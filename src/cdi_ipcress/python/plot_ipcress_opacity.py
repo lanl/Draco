@@ -5,7 +5,7 @@
 # date   Monday, December 15, 2014, 5:44 pm
 # brief  This script uses the functions in ipcress_reader.py to generate an interactive plot for
 #        multigroup opacity data.
-# note   Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 # import block

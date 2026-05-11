@@ -6,7 +6,7 @@
 # brief This script has functions that parse an IPCRESS file and returns a dictionary that contains
 #        data for each property and each material present in the file. This script also contains
 #        interpolation functions for opacity data.
-# note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 # import block
