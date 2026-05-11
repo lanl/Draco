@@ -2,9 +2,8 @@
 /*!
  * \file   parser/test/tstParse_Table.cc
  * \author Kent G. Budge
- * \date   Feb 18 2003
  * \brief  Unit tests for the Parse_Table class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -22,6 +21,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+
+// cSpell:ignore bluee, casea, ltoken
 
 #ifdef _MSC_VER
 #undef ERROR
@@ -41,12 +42,12 @@ namespace { // Use unnamed namespace instead of marking these items `static`.
 
 static std::array<bool, 3> color_set;
 
-static void Parse_Color(Token_Stream & /*unused*/, int i) {
+static void Parse_Color(rtt_parser::Token_Stream & /*unused*/, int i) {
   cout << "You have requested " << color[i] << '\n';
   color_set[i] = true;
 }
 
-static void Parse_Any_Color(Token_Stream &tokens, int /*unused*/) {
+static void Parse_Any_Color(rtt_parser::Token_Stream &tokens, int /*unused*/) {
   Token const token = tokens.shift();
   for (unsigned i = 0; i < sizeof(color) / sizeof(const char *); i++)
     if (!strcmp(token.text().c_str(), color[i])) {
@@ -125,6 +126,8 @@ private:
 };
 
 //------------------------------------------------------------------------------------------------//
+namespace {
+
 void tstKeyword(UnitTest &ut) {
   Keyword const black = {"BLACK", Parse_Color, 0, "main"};
 
@@ -467,6 +470,8 @@ void tstParse_Table(UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

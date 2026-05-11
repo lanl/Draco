@@ -53,7 +53,7 @@ struct Keyword {
    * \param index An integer argument that optionally allows a single parse function to handle a set
    * of related keywords. The
    */
-  void (*func)(Token_Stream &stream, int index) = {nullptr};
+  void (*func)(rtt_parser::Token_Stream &stream, int index) = {nullptr};
 
   /*! \brief The index argument to the parse function.
    *
@@ -87,8 +87,9 @@ struct Keyword {
 
   Keyword() = default;
 
-  Keyword(char const *moniker_in, void (*func_in)(Token_Stream &, int), int const index_in,
-          char const *parse_table_module_in, char const *description_in = nullptr)
+  Keyword(char const *moniker_in, void (*func_in)(rtt_parser::Token_Stream &, int),
+          int const index_in, char const *parse_table_module_in,
+          char const *description_in = nullptr)
       : moniker(moniker_in), func(func_in), index(index_in),
         parse_table_module(parse_table_module_in), description(description_in) {}
 };
@@ -193,10 +194,10 @@ public:
   // SERVICES
 
   //! Parse a token stream.
-  Token parse(Token_Stream &tokens) const;
+  Token parse(rtt_parser::Token_Stream &tokens) const;
 
   //! Parse a token stream.
-  Token parseforkeyword(Token_Stream &tokens) const;
+  Token parseforkeyword(rtt_parser::Token_Stream &tokens) const;
 
   //! Check the class invariants
   [[nodiscard]] bool check_class_invariants() const;

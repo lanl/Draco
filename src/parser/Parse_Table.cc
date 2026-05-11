@@ -2,7 +2,6 @@
 /*!
  * \file   Parse_Table.cc
  * \author Kent G. Budge
- * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Definitions of member functions of class Parse_Table
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -176,7 +175,7 @@ void Parse_Table::sort_table_() noexcept(false) // apparently std::sort can thro
  *
  * \throw rtt_dsxx::assertion If the keyword table is ambiguous.
  */
-Token Parse_Table::parse(Token_Stream &tokens) const {
+Token Parse_Table::parse(rtt_parser::Token_Stream &tokens) const {
   // The is_recovering flag is used during error recovery to suppress additional error messages.
   // This reduces the likelihood that a single error in a token stream will generate a large number
   // of error messages.
@@ -321,7 +320,7 @@ Token Parse_Table::parse(Token_Stream &tokens) const {
  *
  * \throw rtt_dsxx::assertion If the keyword table is ambiguous.
  */
-Token Parse_Table::parseforkeyword(Token_Stream &tokens) const {
+Token Parse_Table::parseforkeyword(rtt_parser::Token_Stream &tokens) const {
   // Create a comparator object that will be used to attempt to match keywords in the Token_Stream
   // to keywords in the Parse_Table.  This comparator object incorporates the current settings of
   // the Parse_Table, such as case sensitivity and partial matching options.
@@ -356,7 +355,8 @@ Token Parse_Table::parseforkeyword(Token_Stream &tokens) const {
       // pointing to the first keyword in the table whose lexical ordering is greater than or equal
       // to the keyword token.  The lexical ordering is supplied by the comp object.
 
-      auto match = lower_bound(vec.begin(), vec.end(), token, comp);
+      // NOLINTNEXTLINE(modernize-use-ranges) // kt: vec[0] does not match type of token?
+      auto match = std::lower_bound(vec.begin(), vec.end(), token, comp);
 
       if (match == vec.end() || comp.kt_comparison(match->moniker, token.text().c_str()) != 0) {
         // The token was not lexically equal to anything in the keyword table.  In other words, the

@@ -2,9 +2,8 @@
 /*!
  * \file   parser/test/tstParallel_File_Token_Stream.cc
  * \author Kent Budge
- * \date   Fri Apr  4 09:34:28 2003
  * \brief  Unit tests for class Parallel_File_Token_Stream
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -21,6 +20,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+
+namespace {
 
 using namespace std;
 
@@ -89,19 +90,16 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
       PASSMSG("Keyword GENERATE ERROR read correctly.");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "GENERATE ERROR")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "GENERATE ERROR");
 
     token = tokens.shift();
-    if (token.type() != KEYWORD || token.text() != "GENERATE ANOTHER ERROR")
-      ITFAILS;
+    FAIL_IF(token.type() != KEYWORD || token.text() != "GENERATE ANOTHER ERROR");
 
     token = Token('$', "test_parser");
     tokens.pushback(token);
 
     token = tokens.shift();
-    if (token.type() != OTHER || token.text() != "$")
-      ITFAILS;
+    FAIL_IF(token.type() != OTHER || token.text() != "$");
 
     bool caught(false);
     try {
@@ -227,8 +225,6 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
              << "\tThe constructor should throw an exception if the requested\n"
              << "\tfile can not be opened.\n";
       FAILMSG(errmsg.str());
-      // Token token = tokens.shift();
-      // if (token.type()!=ERROR) ITFAILS;
     } catch (std::invalid_argument const & /*a*/) {
       std::ostringstream errmsg;
       errmsg << "Parallel_File_Token_Stream threw an expected exception.\n"
@@ -253,7 +249,7 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
       exception = true;
     }
     if (!exception)
-      ITFAILS;
+      FAILMSG("Failed to catch an exception");
 
     exception = false;
     try {
@@ -263,7 +259,7 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
       exception = true;
     }
     if (!exception)
-      ITFAILS;
+      FAILMSG("Failed to catch an exception");
 
     // Try reopening
     string const inputFile3(ut.getTestSourcePath() + std::string("scanner_test.inp"));
@@ -339,6 +335,8 @@ void tstParallel_File_Token_Stream(rtt_dsxx::UnitTest &ut) {
     ut.check(dummy.lookahead().type() == EXIT, "empty stream returns EXIT");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

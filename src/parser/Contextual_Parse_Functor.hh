@@ -2,9 +2,8 @@
 /*!
  * \file   parser/Contextual_Parse_Functor.hh
  * \author Kent Budge
- * \date   Thu Jul 17 14:08:42 2008
  * \brief  Member definitions of class Abstract_Class_Parser
- * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef parser_Contextual_Parse_Functor_hh
@@ -32,16 +31,16 @@ class Contextual_Parse_Functor {
 public:
   //! Primary constructor
   /*explicit*/ Contextual_Parse_Functor( // NOLINT [hicpp-explicit-conversions]
-      std::shared_ptr<Abstract_Class> parse_function(Token_Stream &, Context const &))
+      std::shared_ptr<Abstract_Class> parse_function(rtt_parser::Token_Stream &, Context const &))
       : f_(parse_function) {}
 
   //! Return handle to the parse function.
-  std::shared_ptr<Abstract_Class> operator()(Token_Stream &tokens) const {
+  std::shared_ptr<Abstract_Class> operator()(rtt_parser::Token_Stream &tokens) const {
     return f_(tokens, get_context());
   }
 
 private:
-  std::shared_ptr<Abstract_Class> (*f_)(Token_Stream &, Context const &);
+  std::shared_ptr<Abstract_Class> (*f_)(rtt_parser::Token_Stream &, Context const &);
 };
 
 } // end namespace rtt_parser

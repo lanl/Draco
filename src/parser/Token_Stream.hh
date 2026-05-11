@@ -83,12 +83,12 @@ public:
   virtual ~Token_Stream() = default;
 
   //! Copy constructor
-  Token_Stream(Token_Stream const &rhs) = default;
-  Token_Stream(Token_Stream &&rhs) noexcept = default;
+  Token_Stream(rtt_parser::Token_Stream const &rhs) = default;
+  Token_Stream(rtt_parser::Token_Stream &&rhs) noexcept = default;
 
   //! Copy assignment
-  Token_Stream &operator=(Token_Stream const &rhs) = default;
-  Token_Stream &operator=(Token_Stream &&rhs) = default;
+  Token_Stream &operator=(rtt_parser::Token_Stream const &rhs) = default;
+  Token_Stream &operator=(rtt_parser::Token_Stream &&rhs) = default;
 
   // MANIPULATORS
 

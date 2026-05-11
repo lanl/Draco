@@ -3,7 +3,7 @@
  * \file   parser/Abstract_Class_Parser.hh
  * \author Kent Budge
  * \brief  Define class Abstract_Class_Parser
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef parser_Abstract_Class_Parser_hh
@@ -57,15 +57,17 @@ namespace rtt_parser {
 //================================================================================================//
 template <typename Abstract_Class, Parse_Table &get_parse_table(),
           std::shared_ptr<Abstract_Class> &get_parsed_object(),
-          typename Parse_Function = std::function<std::shared_ptr<Abstract_Class>(Token_Stream &)>>
+          typename Parse_Function =
+              std::function<std::shared_ptr<Abstract_Class>(rtt_parser::Token_Stream &)>>
 class Abstract_Class_Parser {
 public:
   //! Register children of the abstract class
   static void register_child(std::string const &keyword, Parse_Function parse_function);
 
   //! Register children of the abstract class
-  static void register_child(std::string const &keyword,
-                             std::shared_ptr<Abstract_Class> parse_function(Token_Stream &));
+  static void
+  register_child(std::string const &keyword,
+                 std::shared_ptr<Abstract_Class> parse_function(rtt_parser::Token_Stream &));
 
   //! Check the class invariants
   static bool check_static_class_invariants();
@@ -74,7 +76,7 @@ private:
   // IMPLEMENTATION
 
   //! Parse the child type
-  static void parse_child_(Token_Stream &tokens, int child);
+  static void parse_child_(rtt_parser::Token_Stream &tokens, int child);
 
   // DATA
 

@@ -2,9 +2,8 @@
 /*!
  * \file   parser/Abstract_Class_Parser.i.hh
  * \author Kent Budge
- * \date   Thu Jul 17 14:08:42 2008
  * \brief  Member definitions of class Abstract_Class_Parser
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef utils_Abstract_Class_Parser_i_hh
@@ -49,7 +48,7 @@ DLL_PUBLIC_parser extern c_string_vector abstract_class_parser_keys;
  *
  * Remember:
  * \code
- * using Parse_Function(Token_Stream &) = std::shared_ptr<Abstract_Class>;
+ * using Parse_Function(rtt_parser::Token_Stream &) = std::shared_ptr<Abstract_Class>;
  * \endcode
  */
 template <typename Class, Parse_Table &get_parse_table(),

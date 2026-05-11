@@ -2,9 +2,8 @@
 /*!
  * \file   parser/test/tstExpression.cc
  * \author Kent Budge
- * \date   Wed Jul 26 08:15:18 2006
  * \brief  Test the Expression class and expression parsing.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoMath.hh"
@@ -26,6 +25,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -317,6 +318,8 @@ void tstExpression(UnitTest &ut) {
   // Clean up memory
   free_internal_unit_system();
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

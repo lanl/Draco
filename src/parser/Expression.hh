@@ -34,8 +34,8 @@ using std::vector;
  * function of radius.
  *
  * We provide the Expression class to represent the kind of simple mathematical expressions that
- * might describe such initalizations or drivers.  Such Expressions will typically be build based on
- * user input using the Expression::parse static function.
+ * might describe such initializations or drivers.  Such Expressions will typically be build based
+ * on user input using the Expression::parse static function.
  *
  * Expression itself is an abstract class representing all the kinds of expressions that might be
  * specified.  Concrete classes based on Expression include Constant_Expression,
@@ -53,7 +53,7 @@ using std::vector;
 
 class Expression {
 public:
-  enum Precedence {
+  enum Precedence : uint8_t {
     COMMA_PRECEDENCE,
 
     OR_PRECEDENCE,

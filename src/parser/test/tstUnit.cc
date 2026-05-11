@@ -2,8 +2,7 @@
 /*!
  * \file   parser/test/tstUnit.cc
  * \author Kent G. Budge
- * \date   Feb 18 2003
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -15,9 +14,13 @@
 #include <ostream>
 #include <sstream>
 
+namespace {
+
 using namespace std;
 using namespace rtt_parser;
 using namespace rtt_dsxx;
+
+// NOLINTBEGIN(modernize-use-designated-initializers)
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -133,9 +136,9 @@ void unit_test(UnitTest &ut) {
     Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
     Unit const t2 = {0, 0, 1, 1, 0, 0, 0.1, 0, 0, 1};
     if (t1 == t2)
-      FAILMSG("failed to detect luminence difference");
+      FAILMSG("failed to detect luminance difference");
     if (is_compatible(t1, t2))
-      FAILMSG("failed to detect luminence difference");
+      FAILMSG("failed to detect luminance difference");
   }
   {
     Unit const t1 = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};
@@ -166,6 +169,10 @@ void unit_test(UnitTest &ut) {
   else
     FAILMSG("Conversion to CGS NOT good");
 }
+
+// NOLINTEND(modernize-use-designated-initializers)
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

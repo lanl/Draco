@@ -2,9 +2,8 @@
 /*!
  * \file   parser/test/tstString_Token_Stream.cc
  * \author Kent G. Budge
- * \date   Feb 18 2003
  * \brief  Unit tests for String_Token_Stream class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -22,6 +21,8 @@
 #include <set>
 #include <sstream>
 #include <string>
+
+namespace {
 
 using namespace std;
 using namespace rtt_parser;
@@ -64,8 +65,7 @@ void tstString_Token_Stream(UnitTest &ut) {
     else
       PASSMSG("Dummy error counted properly");
 
-    if (!tokens.check_class_invariants())
-      ITFAILS;
+    FAIL_IF_NOT(tokens.check_class_invariants());
   }
 
   {
@@ -90,7 +90,7 @@ void tstString_Token_Stream(UnitTest &ut) {
 
     token = tokens.lookahead();
     if (token.type() != KEYWORD || token.text() != "GENERATE ERROR")
-      FAILMSG("Lookahed after first shift does NOT have correct value");
+      FAILMSG("Lookahead after first shift does NOT have correct value");
     else
       PASSMSG("Lookahead after first shift has correct value");
 
@@ -235,14 +235,14 @@ void tstString_Token_Stream(UnitTest &ut) {
     string const srInputFile(ut.getTestSourcePath() + std::string("scanner_recovery.inp"));
 
     ifstream linfile(srInputFile.c_str());
-    string lcontents;
+    string l_contents;
     while (true) {
       char const c = static_cast<char>(linfile.get());
       if (linfile.eof() || linfile.fail())
         break;
-      lcontents += c;
+      l_contents += c;
     }
-    String_Token_Stream tokens(lcontents);
+    String_Token_Stream tokens(l_contents);
     try {
       tokens.shift();
       ostringstream msg;
@@ -260,7 +260,7 @@ void tstString_Token_Stream(UnitTest &ut) {
                 << "\tfrom the input file, \"scanner_recover.inp\" (line 1).\n";
         PASSMSG(message.str());
       } else
-        ITFAILS;
+        FAILMSG("Exception caught, but errmsg value was not expected.");
     }
 
     try {
@@ -280,7 +280,7 @@ void tstString_Token_Stream(UnitTest &ut) {
                 << "\tfrom the input file, \"scanner_recover.inp\" (line 2).\n";
         PASSMSG(message.str());
       } else
-        ITFAILS;
+        FAILMSG("Exception caught, but errmsg value was not expected.");
     }
 
     // Now test assignment of new string and dipthong OTHER tokens
@@ -384,6 +384,8 @@ void tstString_Token_Stream(UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

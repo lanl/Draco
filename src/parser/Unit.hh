@@ -3,7 +3,7 @@
  * \file   parser/Unit.hh
  * \author Kent Budge
  * \brief  Definition the Unit struct
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_parser_Unit_hh
@@ -190,7 +190,7 @@ inline Unit pow(Unit const &b, double const a) {
  * \brief Test two units for equality
  *
  * Compare two Units for strict equality, in both dimensions and conversion factor.  To test only
- * the dimensions, ignoring the conversion factor, use the \c is_compatible function.
+ * the dimensions, ignoring the conversion factor, use the is_compatible function.
  *
  * \param a First factor
  * \param b Second factor
@@ -240,72 +240,414 @@ inline bool is_compatible(Unit const &a, Unit const &b) {
 
 std::ostream &operator<<(std::ostream &str, const Unit &u);
 
-// Some useful examples
+// Some useful examples --
 
-// No units
+// 1. No units
 
 //! dimensionless quantity (pure number)
-Unit const dimensionless = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+Unit constexpr dimensionless = {
+    .m = 0, .kg = 0, .s = 0, .A = 0, .K = 0, .mol = 0, .cd = 0, .rad = 0, .sr = 0, .conv = 1};
 
-// Fundamental SI units
+// 2. Fundamental SI units
 
-Unit const m = {1, 0, 0, 0, 0, 0, 0, 0, 0, 1};   //!< meter
-Unit const kg = {0, 1, 0, 0, 0, 0, 0, 0, 0, 1};  //!< kilogram
-Unit const s = {0, 0, 1, 0, 0, 0, 0, 0, 0, 1};   //!< second
-Unit const A = {0, 0, 0, 1, 0, 0, 0, 0, 0, 1};   //!< ampere
-Unit const K = {0, 0, 0, 0, 1, 0, 0, 0, 0, 1};   //!< Kelvin
-Unit const mol = {0, 0, 0, 0, 0, 1, 0, 0, 0, 1}; //!< mole
-Unit const cd = {0, 0, 0, 0, 0, 0, 1, 0, 0, 1};  //!< candela
-Unit const rad = {0, 0, 0, 0, 0, 0, 0, 1, 0, 1}; //!< radian
-Unit const sr = {0, 0, 0, 0, 0, 0, 0, 0, 1, 1};  //!< steradian
+Unit constexpr m = {.m = 1,
+                    .kg = 0,
+                    .s = 0,
+                    .A = 0,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< meter
+Unit constexpr kg = {.m = 0,
+                     .kg = 1,
+                     .s = 0,
+                     .A = 0,
+                     .K = 0,
+                     .mol = 0,
+                     .cd = 0,
+                     .rad = 0,
+                     .sr = 0,
+                     .conv = 1}; //!< kilogram
+Unit constexpr s = {.m = 0,
+                    .kg = 0,
+                    .s = 1,
+                    .A = 0,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< second
+Unit constexpr A = {.m = 0,
+                    .kg = 0,
+                    .s = 0,
+                    .A = 1,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< ampere
+Unit constexpr K = {.m = 0,
+                    .kg = 0,
+                    .s = 0,
+                    .A = 0,
+                    .K = 1,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< Kelvin
+Unit constexpr mol = {.m = 0,
+                      .kg = 0,
+                      .s = 0,
+                      .A = 0,
+                      .K = 0,
+                      .mol = 1,
+                      .cd = 0,
+                      .rad = 0,
+                      .sr = 0,
+                      .conv = 1}; //!< mole
+Unit constexpr cd = {.m = 0,
+                     .kg = 0,
+                     .s = 0,
+                     .A = 0,
+                     .K = 0,
+                     .mol = 0,
+                     .cd = 1,
+                     .rad = 0,
+                     .sr = 0,
+                     .conv = 1}; //!< candela
+Unit constexpr rad = {.m = 0,
+                      .kg = 0,
+                      .s = 0,
+                      .A = 0,
+                      .K = 0,
+                      .mol = 0,
+                      .cd = 0,
+                      .rad = 1,
+                      .sr = 0,
+                      .conv = 1}; //!< radian
+Unit constexpr sr = {.m = 0,
+                     .kg = 0,
+                     .s = 0,
+                     .A = 0,
+                     .K = 0,
+                     .mol = 0,
+                     .cd = 0,
+                     .rad = 0,
+                     .sr = 1,
+                     .conv = 1}; //!< steradian
 
-// Derived SI units
+// 3 - Derived SI units
 
-Unit const C = {0, 0, 1, 1, 0, 0, 0, 0, 0, 1};     //!< coulomb
-Unit const Hz = {0, 0, -1, 0, 0, 0, 0, 0, 0, 1};   //!< hertz
-Unit const N = {1, 1, -2, 0, 0, 0, 0, 0, 0, 1};    //!< newton
-Unit const J = {2, 1, -2, 0, 0, 0, 0, 0, 0, 1};    //!< joule
-Unit const Pa = {-1, 1, -2, 0, 0, 0, 0, 0, 0, 1};  //!< pascal
-Unit const W = {2, 1, -3, 0, 0, 0, 0, 0, 0, 1};    //!< watt
-Unit const V = {2, 1, -3, -1, 0, 0, 0, 0, 0, 1};   //!< volt
-Unit const F = {-2, -1, 4, 2, 0, 0, 0, 0, 0, 1};   //!< farad
-Unit const ohm = {2, 1, -3, -2, 0, 0, 0, 0, 0, 1}; //!< ohm
-Unit const S = {-2, -1, 3, 2, 0, 0, 0, 0, 0, 1};   //!< siemens
-Unit const Wb = {2, 1, -2, -1, 0, 0, 0, 0, 0, 1};  //!< weber
-Unit const T = {0, 1, -2, -1, 0, 0, 0, 0, 0, 1};   //!< tesla
-Unit const H = {2, 1, -2, -2, 0, 0, 0, 0, 0, 1};   //!< henry
-Unit const lm = {0, 0, 0, 0, 0, 0, 1, 0, 1, 1};    //!< lumen
-Unit const lx = {-2, 0, 0, 0, 0, 0, 1, 0, 1, 1};   //!< lux
+Unit constexpr C = {.m = 0,
+                    .kg = 0,
+                    .s = 1,
+                    .A = 1,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< coulomb
+Unit constexpr Hz = {.m = 0,
+                     .kg = 0,
+                     .s = -1,
+                     .A = 0,
+                     .K = 0,
+                     .mol = 0,
+                     .cd = 0,
+                     .rad = 0,
+                     .sr = 0,
+                     .conv = 1}; //!< hertz
+Unit constexpr N = {.m = 1,
+                    .kg = 1,
+                    .s = -2,
+                    .A = 0,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< newton
+Unit constexpr J = {.m = 2,
+                    .kg = 1,
+                    .s = -2,
+                    .A = 0,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< joule
+Unit constexpr Pa = {.m = -1,
+                     .kg = 1,
+                     .s = -2,
+                     .A = 0,
+                     .K = 0,
+                     .mol = 0,
+                     .cd = 0,
+                     .rad = 0,
+                     .sr = 0,
+                     .conv = 1}; //!< pascal
+Unit constexpr W = {.m = 2,
+                    .kg = 1,
+                    .s = -3,
+                    .A = 0,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< watt
+Unit constexpr V = {.m = 2,
+                    .kg = 1,
+                    .s = -3,
+                    .A = -1,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< volt
+Unit constexpr F = {.m = -2,
+                    .kg = -1,
+                    .s = 4,
+                    .A = 2,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< farad
+Unit constexpr ohm = {.m = 2,
+                      .kg = 1,
+                      .s = -3,
+                      .A = -2,
+                      .K = 0,
+                      .mol = 0,
+                      .cd = 0,
+                      .rad = 0,
+                      .sr = 0,
+                      .conv = 1}; //!< ohm
+Unit constexpr S = {.m = -2,
+                    .kg = -1,
+                    .s = 3,
+                    .A = 2,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< siemens
+Unit constexpr Wb = {.m = 2,
+                     .kg = 1,
+                     .s = -2,
+                     .A = -1,
+                     .K = 0,
+                     .mol = 0,
+                     .cd = 0,
+                     .rad = 0,
+                     .sr = 0,
+                     .conv = 1}; //!< weber
+Unit constexpr T = {.m = 0,
+                    .kg = 1,
+                    .s = -2,
+                    .A = -1,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< tesla
+Unit constexpr H = {.m = 2,
+                    .kg = 1,
+                    .s = -2,
+                    .A = -2,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1}; //!< henry
+Unit constexpr lm = {.m = 0,
+                     .kg = 0,
+                     .s = 0,
+                     .A = 0,
+                     .K = 0,
+                     .mol = 0,
+                     .cd = 1,
+                     .rad = 0,
+                     .sr = 1,
+                     .conv = 1}; //!< lumen
+Unit constexpr lx = {.m = -2,
+                     .kg = 0,
+                     .s = 0,
+                     .A = 0,
+                     .K = 0,
+                     .mol = 0,
+                     .cd = 1,
+                     .rad = 0,
+                     .sr = 1,
+                     .conv = 1}; //!< lux
 
-// CGS units
+// 4 - CGS units
 
-Unit const cm = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0.01}; //!< centimeter
-Unit const g = {0, 1, 0, 0, 0, 0, 0, 0, 0, 1e-3};  //!< gram
+Unit constexpr cm = {.m = 1,
+                     .kg = 0,
+                     .s = 0,
+                     .A = 0,
+                     .K = 0,
+                     .mol = 0,
+                     .cd = 0,
+                     .rad = 0,
+                     .sr = 0,
+                     .conv = 0.01}; //!< centimeter
+Unit constexpr g = {.m = 0,
+                    .kg = 1,
+                    .s = 0,
+                    .A = 0,
+                    .K = 0,
+                    .mol = 0,
+                    .cd = 0,
+                    .rad = 0,
+                    .sr = 0,
+                    .conv = 1e-3}; //!< gram
 
-Unit const dyne = {1, 1, -2, 0, 0, 0, 0, 0, 0, 1e-5}; //!< dyne
-Unit const erg = {2, 1, -2, 0, 0, 0, 0, 0, 0, 1e-7};  //!< erg
+Unit constexpr dyne = {.m = 1,
+                       .kg = 1,
+                       .s = -2,
+                       .A = 0,
+                       .K = 0,
+                       .mol = 0,
+                       .cd = 0,
+                       .rad = 0,
+                       .sr = 0,
+                       .conv = 1e-5}; //!< dyne
+Unit constexpr erg = {.m = 2,
+                      .kg = 1,
+                      .s = -2,
+                      .A = 0,
+                      .K = 0,
+                      .mol = 0,
+                      .cd = 0,
+                      .rad = 0,
+                      .sr = 0,
+                      .conv = 1e-7}; //!< erg
 
-// English units
+// 5 - English units
 
-Unit const inch = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0.0254};        //!< inch
-Unit const foot = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0.3048};        //!< foot
-Unit const lbm = {0, 1, 0, 0, 0, 0, 0, 0, 0, 0.45359237};     //!< pound mass
-Unit const pound = {1, 1, -2, 0, 0, 0, 0, 0, 0, 4.448221615}; //!< pound force
+Unit constexpr inch = {.m = 1,
+                       .kg = 0,
+                       .s = 0,
+                       .A = 0,
+                       .K = 0,
+                       .mol = 0,
+                       .cd = 0,
+                       .rad = 0,
+                       .sr = 0,
+                       .conv = 0.0254}; //!< inch
+Unit constexpr foot = {.m = 1,
+                       .kg = 0,
+                       .s = 0,
+                       .A = 0,
+                       .K = 0,
+                       .mol = 0,
+                       .cd = 0,
+                       .rad = 0,
+                       .sr = 0,
+                       .conv = 0.3048}; //!< foot
+Unit constexpr lbm = {.m = 0,
+                      .kg = 1,
+                      .s = 0,
+                      .A = 0,
+                      .K = 0,
+                      .mol = 0,
+                      .cd = 0,
+                      .rad = 0,
+                      .sr = 0,
+                      .conv = 0.45359237}; //!< pound mass
+Unit constexpr pound = {.m = 1,
+                        .kg = 1,
+                        .s = -2,
+                        .A = 0,
+                        .K = 0,
+                        .mol = 0,
+                        .cd = 0,
+                        .rad = 0,
+                        .sr = 0,
+                        .conv = 4.448221615}; //!< pound force
 
-// Miscellaneous units
+// 6 - Miscellaneous units
 
 //! Electron volts
-Unit const eV = {2, 1, -2, 0, 0, 0, 0, 0, 0, rtt_units::electronChargeSI};
+Unit constexpr eV = {.m = 2,
+                     .kg = 1,
+                     .s = -2,
+                     .A = 0,
+                     .K = 0,
+                     .mol = 0,
+                     .cd = 0,
+                     .rad = 0,
+                     .sr = 0,
+                     .conv = rtt_units::electronChargeSI};
 //! Thousands of electron volts
-Unit const keV = {2, 1, -2, 0, 0, 0, 0, 0, 0, 1e3 * rtt_units::electronChargeSI};
+Unit constexpr keV = {.m = 2,
+                      .kg = 1,
+                      .s = -2,
+                      .A = 0,
+                      .K = 0,
+                      .mol = 0,
+                      .cd = 0,
+                      .rad = 0,
+                      .sr = 0,
+                      .conv = 1e3 * rtt_units::electronChargeSI};
 
-Unit const sh = {0, 0, 1, 0, 0, 0, 0, 0, 0, 1e-8};   //!< shake
-Unit const jerk = {2, 1, -2, 0, 0, 0, 0, 0, 0, 1e9}; //!< jerk
+Unit constexpr sh = {.m = 0,
+                     .kg = 0,
+                     .s = 1,
+                     .A = 0,
+                     .K = 0,
+                     .mol = 0,
+                     .cd = 0,
+                     .rad = 0,
+                     .sr = 0,
+                     .conv = 1e-8}; //!< shake
+Unit constexpr jerk = {.m = 2,
+                       .kg = 1,
+                       .s = -2,
+                       .A = 0,
+                       .K = 0,
+                       .mol = 0,
+                       .cd = 0,
+                       .rad = 0,
+                       .sr = 0,
+                       .conv = 1e9}; //!< jerk
 
 // Numbers for which no conversion is requested
-Unit const constant = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0}; //!< used for numbers with no units
-Unit const raw = {0, 0, 0, 0, 0,
-                  0, 0, 0, 0, 1.0}; //!< another name for numbers with no units, i.e.,
+Unit constexpr constant = {.m = 0,
+                           .kg = 0,
+                           .s = 0,
+                           .A = 0,
+                           .K = 0,
+                           .mol = 0,
+                           .cd = 0,
+                           .rad = 0,
+                           .sr = 0,
+                           .conv = 1.0}; //!< used for numbers with no units
+Unit constexpr raw = {.m = 0,
+                      .kg = 0,
+                      .s = 0,
+                      .A = 0,
+                      .K = 0,
+                      .mol = 0,
+                      .cd = 0,
+                      .rad = 0,
+                      .sr = 0,
+                      .conv = 1.0}; //!< another name for numbers with no units, i.e.,
 
 //------------------------------------------------------------------------------------------------//
 /*! Systems of units
@@ -323,10 +665,46 @@ Unit const raw = {0, 0, 0, 0, 0,
  * double sr;           //!< Solid angle dimension
  */
 
-Unit const MKS = {1., 1., 1., 1., 1., 1., 1., 1., 1., 0.};
-Unit const CGS = {0.01, 0.001, 1., 1., 1., 1., 1., 1., 1., 0.};
-Unit const CGMU = {0.01, 0.001, 1e-6, 1., 1., 1., 1., 1., 1., 0.};
-Unit const CGSH = {0.01, 0.001, 1e-8, 1., 1e3 * rtt_units::EV2K, 1., 1., 1., 1., 0.};
+Unit constexpr MKS = {.m = 1.,
+                      .kg = 1.,
+                      .s = 1.,
+                      .A = 1.,
+                      .K = 1.,
+                      .mol = 1.,
+                      .cd = 1.,
+                      .rad = 1.,
+                      .sr = 1.,
+                      .conv = 0.};
+Unit constexpr CGS = {.m = 0.01,
+                      .kg = 0.001,
+                      .s = 1.,
+                      .A = 1.,
+                      .K = 1.,
+                      .mol = 1.,
+                      .cd = 1.,
+                      .rad = 1.,
+                      .sr = 1.,
+                      .conv = 0.};
+Unit constexpr CGMU = {.m = 0.01,
+                       .kg = 0.001,
+                       .s = 1e-6,
+                       .A = 1.,
+                       .K = 1.,
+                       .mol = 1.,
+                       .cd = 1.,
+                       .rad = 1.,
+                       .sr = 1.,
+                       .conv = 0.};
+Unit constexpr CGSH = {.m = 0.01,
+                       .kg = 0.001,
+                       .s = 1e-8,
+                       .A = 1.,
+                       .K = 1e3 * rtt_units::EV2K,
+                       .mol = 1.,
+                       .cd = 1.,
+                       .rad = 1.,
+                       .sr = 1.,
+                       .conv = 0.};
 
 //------------------------------------------------------------------------------------------------//
 //! Calculate conversion factor to a system of units. Assumes the units are initially MKS.

@@ -2,8 +2,7 @@
 /*!
  * \file   parser/test/tstutilities.cc
  * \author Kent G. Budge
- * \date   Feb 18 2003
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -30,6 +29,12 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+// cSpell:ignore
+
+namespace {
+
+// NOLINTBEGIN(modernize-use-designated-initializers)
 
 using namespace std;
 using namespace rtt_parser;
@@ -134,7 +139,8 @@ void tstutilities(UnitTest &ut) {
 
   // Try to read some unit expressions
 
-  Unit const one = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+  Unit const one = {
+      .m = 0, .kg = 0, .s = 0, .A = 0, .K = 0, .mol = 0, .cd = 0, .rad = 0, .sr = 0, .conv = 1};
 
   Unit left = parse_unit(tokens);
   FAIL_IF(left != J);
@@ -275,18 +281,18 @@ void tstutilities(UnitTest &ut) {
     PASSMSG("temperature successfully parsed");
 
   {
-    String_Token_Stream ltokens("3.0 m");
-    parse_temperature(ltokens);
-    if (ltokens.error_count() == 0)
+    String_Token_Stream l_tokens("3.0 m");
+    parse_temperature(l_tokens);
+    if (l_tokens.error_count() == 0)
       FAILMSG("did NOT detect bad temperature units");
     else
       PASSMSG("correctly detected bad temperature units");
   }
 
   {
-    String_Token_Stream ltokens("-3.0 K");
-    double const lTemp = parse_temperature(ltokens);
-    if (ltokens.error_count() == 0 || (!rtt_dsxx::soft_equiv(lTemp, 0.0, eps)))
+    String_Token_Stream l_tokens("-3.0 K");
+    double const lTemp = parse_temperature(l_tokens);
+    if (l_tokens.error_count() == 0 || (!rtt_dsxx::soft_equiv(lTemp, 0.0, eps)))
       FAILMSG("did NOT detect negative temperature");
     else
       PASSMSG("correctly detected negative temperature");
@@ -308,9 +314,9 @@ void tstutilities(UnitTest &ut) {
     PASSMSG("manifest string successfully parsed");
 
   {
-    String_Token_Stream ltokens("bad");
+    String_Token_Stream l_tokens("bad");
     try {
-      parse_manifest_string(ltokens);
+      parse_manifest_string(l_tokens);
       FAILMSG("did NOT detect bad manifest string");
     } catch (...) {
       PASSMSG("correctly detected bad manifest string");
@@ -348,25 +354,25 @@ void tstutilities(UnitTest &ut) {
   }
 
   {
-    String_Token_Stream ltokens("cylindrical, cartesian, xy, bad");
+    String_Token_Stream l_tokens("cylindrical, cartesian, xy, bad");
     rtt_mesh_element::Geometry parsed_geometry = rtt_mesh_element::Geometry::AXISYMMETRIC;
-    parse_geometry(ltokens, parsed_geometry);
-    if (ltokens.error_count() == 0) {
+    parse_geometry(l_tokens, parsed_geometry);
+    if (l_tokens.error_count() == 0) {
       FAILMSG("did NOT detect duplicate geometry definition");
     }
     if (parsed_geometry != rtt_mesh_element::Geometry::AXISYMMETRIC) {
       FAILMSG("did NOT parse cylindrical geometry correctly");
     }
-    parse_geometry(ltokens, parsed_geometry);
+    parse_geometry(l_tokens, parsed_geometry);
     if (parsed_geometry != rtt_mesh_element::Geometry::CARTESIAN) {
       FAILMSG("did NOT parse cartesian geometry correctly");
     }
-    parse_geometry(ltokens, parsed_geometry);
+    parse_geometry(l_tokens, parsed_geometry);
     if (parsed_geometry != rtt_mesh_element::Geometry::CARTESIAN) {
       FAILMSG("did NOT parse xy geometry correctly");
     }
     try {
-      parse_geometry(ltokens, parsed_geometry);
+      parse_geometry(l_tokens, parsed_geometry);
       FAILMSG("did NOT catch bad geometry");
     } catch (...) {
     }
@@ -911,6 +917,10 @@ void tstutilities(UnitTest &ut) {
   }
   return;
 }
+
+// NOLINTEND(modernize-use-designated-initializers)
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

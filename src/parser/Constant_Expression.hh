@@ -2,7 +2,6 @@
 /*!
  * \file   parser/Constant_Expression.hh
  * \author Kent Budge
- * \date   Wed Jul 26 07:53:32 2006
  * \brief  Definition of class Constant_Expression
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
