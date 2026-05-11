@@ -46,7 +46,7 @@ public:
   explicit Class_Parse_Table(Context_Type debug_context);
 
   //! Check completeness and consistency of parsed specification.
-  void check_completeness(Token_Stream &tokens);
+  void check_completeness(rtt_parser::Token_Stream &tokens);
 
   //! Create an object from the parsed specification.
   shared_ptr<Sweeper_Creator> create_object();
@@ -61,8 +61,8 @@ protected:
 private:
   // Parse functions
 
-  static void parse_flag(Token_Stream &, int);
-  static void parse_constant(Token_Stream &, double);
+  static void parse_flag(rtt_parser::Token_Stream &, int);
+  static void parse_constant(rtt_parser::Token_Stream &, double);
 };
 
 } // end namespace rtt_parser

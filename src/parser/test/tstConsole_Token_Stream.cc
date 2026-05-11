@@ -2,9 +2,8 @@
 /*!
  * \file   parser/test/tstConsole_Token_Stream.cc
  * \author Kent G. Budge
- * \date   Wed May 19 11:26:15 MDT 2004
  * \brief  Unit tests for Console_Token_Stream class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -15,6 +14,8 @@
 #include "parser/Token.hh"
 #include "parser/Token_Stream.hh"
 #include <set>
+
+namespace {
 
 using namespace std;
 using namespace rtt_parser;
@@ -69,7 +70,7 @@ void tstConsole_Token_Stream(rtt_dsxx::UnitTest &ut) {
 
     token = tokens.lookahead();
     if (token.type() != KEYWORD || token.text() != "GENERATE ERROR")
-      FAILMSG("Lookahed after first shift does NOT have correct value");
+      FAILMSG("Lookahead after first shift does NOT have correct value");
     else
       PASSMSG("Lookahead after first shift has correct value");
 
@@ -199,6 +200,8 @@ void tstConsole_Token_Stream(rtt_dsxx::UnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

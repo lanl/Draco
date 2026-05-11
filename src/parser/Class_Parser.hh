@@ -2,7 +2,7 @@
 /*!
  * \file   parser/Class_Parser.hh
  * \brief  Definition of Class_Parser_Keyword and Class_Parser.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Class_Parser_HH
@@ -67,7 +67,7 @@ namespace rtt_parser {
  * The constructor may optionally have a context argument to provide any contextual information
  * required to know how to parse the "deck".
  *
- *   void check_completeness(Token_Stream &);
+ *   void check_completeness(rtt_parser::Token_Stream &);
  *
  * This function is called to check that all required specifications were found in the parsed token
  * stream.  This function must call \c Token_Stream::report_semantic_error at least once if a
@@ -85,7 +85,7 @@ namespace rtt_parser {
  * In addition to these mandatory members, any nontrivial Class_Parser will also define data members
  * to hold the parsed specifications, and parse functions of the form
  *
- * void parse_parameter(Token_Stream &, int);
+ * void parse_parameter(rtt_parser::Token_Stream &, int);
  *
  * A nontrivial Class_Parser should define a member
  *
@@ -107,7 +107,7 @@ namespace rtt_parser {
  *    public:
  *      explicit Class_Parser(Context_Type debug_context); // context argument is optional
  *
- *      void check_completeness(Token_Stream &tokens);
+ *      void check_completeness(rtt_parser::Token_Stream &tokens);
  *
  *      Class *create_object();
  *
@@ -123,8 +123,8 @@ namespace rtt_parser {
  *    private:
  *      // Parse functions
  *      friend Class_Parser_Base<Class>;
- *      void parse_flag(Token_Stream &, int);
- *      void parse_constant(Token_Stream &, int);
+ *      void parse_flag(rtt_parser::Token_Stream &, int);
+ *      void parse_constant(rtt_parser::Token_Stream &, int);
  *
  *      // The raw keyword table.
  *      Class_Parser_Keyword<Class> const raw_table[];
@@ -137,11 +137,11 @@ namespace rtt_parser {
  * \code
  * include "Class__parser.hh"
  *
- * void Class_Parser<Class>::parse_flag(Token_Stream &tokens, int) {
+ * void Class_Parser<Class>::parse_flag(rtt_parser::Token_Stream &tokens, int) {
  *    flag = parse_bool(tokens);
  * }
  *
- * void Class_Parser<Class>::parse_constant(Token_Stream &tokens, int) {
+ * void Class_Parser<Class>::parse_constant(rtt_parser::Token_Stream &tokens, int) {
  *    constant = parse_real(tokens);
  * }
  *
@@ -158,7 +158,7 @@ namespace rtt_parser {
  *   debug_context(debug_word), flag(false), constant(0.0) {
  * }
  *
- * void Class_Parse_Table<Class>::check_completeness(Token_Stream &tokens) {
+ * void Class_Parse_Table<Class>::check_completeness(rtt_parser::Token_Stream &tokens) {
  *   ... check the parsed data ...
  * }
  *
@@ -167,7 +167,7 @@ namespace rtt_parser {
  * }
  *
  * template <>
- * shared_ptr<Class> parse_class<Class>(Token_Stream &tokens, Debug_Context debug_context) {
+ * shared_ptr<Class> parse_class<Class>(rtt_parser::Token_Stream &tokens, Debug_Context debug_context) {
  *    Class_Parser<Class> parser(debug_context);
  *
  *    return parser.parse(tokens);
@@ -225,7 +225,7 @@ template <typename Class> struct Class_Parser_Keyword {
    * \param index An integer argument that optionally allows a single parse function to handle a
    * set of related keywords. The
    */
-  void (Class_Parser<Class>::*func)(Token_Stream &stream, int index);
+  void (Class_Parser<Class>::*func)(rtt_parser::Token_Stream &stream, int index);
 
   /*! \brief The index argument to the parse function.
    *
@@ -256,7 +256,8 @@ template <typename Class> struct Class_Parser_Keyword {
    */
   char const *description;
 
-  Class_Parser_Keyword(char const *moniker, void (Class_Parser<Class>::*func)(Token_Stream &, int),
+  Class_Parser_Keyword(char const *moniker,
+                       void (Class_Parser<Class>::*func)(rtt_parser::Token_Stream &, int),
                        int const index, char const *class_parser_module,
                        char const *description = nullptr)
       : moniker(moniker), func(func), index(index), class_parser_module(class_parser_module),
@@ -277,7 +278,7 @@ public:
 
   typedef Class_Parser<Class> Child;
   typedef Class_Parser_Keyword<Class> Keyword;
-  typedef void (Child::*Parse_Function)(Token_Stream &, int);
+  typedef void (Child::*Parse_Function)(rtt_parser::Token_Stream &, int);
 
   // CREATORS
 
@@ -314,7 +315,7 @@ public:
   // SERVICES
 
   //! Parse a token stream.
-  std::shared_ptr<Class> parse(Token_Stream &tokens);
+  std::shared_ptr<Class> parse(rtt_parser::Token_Stream &tokens);
 
   //! Check the class invariants
   bool check_class_invariants() const;
@@ -326,7 +327,7 @@ public:
 protected:
   // IMPLEMENTATION
 
-  virtual void check_completeness(Token_Stream &) = 0;
+  virtual void check_completeness(rtt_parser::Token_Stream &) = 0;
   virtual Class *create_object() = 0;
 
 private:

@@ -2,9 +2,8 @@
 /*!
  * \file   parser/test/tstFile_Token_Stream.cc
  * \author Kent G. Budge
- * \date   Feb 18 2003
  * \brief  Unit tests for File_Token_Stream class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -23,6 +22,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+
+namespace {
 
 using namespace std;
 using namespace rtt_parser;
@@ -100,7 +101,7 @@ void tstFile_Token_Stream(rtt_dsxx::UnitTest &ut) {
 
     token = tokens.lookahead();
     if (token.type() != KEYWORD || token.text() != "GENERATE ERROR")
-      FAILMSG("Lookahed after first shift does NOT have correct value");
+      FAILMSG("Lookahead after first shift does NOT have correct value");
     else
       PASSMSG("Lookahead after first shift has correct value");
 
@@ -332,7 +333,7 @@ void tstFile_Token_Stream(rtt_dsxx::UnitTest &ut) {
                 << "from the input\n\tfile, \"scanner_recover.inp\" (line 1).\n";
         PASSMSG(message.str());
       } else
-        ITFAILS;
+        FAILMSG("Exception caught but with unexpected values.");
     }
 
     try {
@@ -352,7 +353,7 @@ void tstFile_Token_Stream(rtt_dsxx::UnitTest &ut) {
                 << "from the input\n\tfile, \"scanner_recover.inp\" (line 2).\n";
         PASSMSG(message.str());
       } else
-        ITFAILS;
+        FAILMSG("Exception caught but with unexpected values.");
     }
   }
 
@@ -402,6 +403,8 @@ void tstFile_Token_Stream(rtt_dsxx::UnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

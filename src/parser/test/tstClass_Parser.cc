@@ -2,7 +2,6 @@
 /*!
  * \file   parser/test/tstClass_Parser.cc
  * \author Kent Budge
- * \date   Mon Aug 28 07:36:50 2006
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
@@ -42,7 +41,7 @@ public:
   explicit Class_Parse_Table(bool context = false);
 
   // SERVICES
-  void check_completeness(Token_Stream &tokens);
+  void check_completeness(rtt_parser::Token_Stream &tokens);
 
   std::shared_ptr<DummyClass> create_object();
 
@@ -53,22 +52,24 @@ protected:
 
 private:
   // IMPLEMENTATION
-  static void parse_insouciance_(Token_Stream &tokens, int /*unused*/);
+  static void parse_insouciance_(rtt_parser::Token_Stream &tokens, int /*unused*/);
 };
 
 //------------------------------------------------------------------------------------------------//
 template <>
-std::shared_ptr<DummyClass> parse_class<DummyClass>(Token_Stream &tokens, bool const &context) {
+std::shared_ptr<DummyClass> parse_class<DummyClass>(rtt_parser::Token_Stream &tokens,
+                                                    bool const &context) {
   return parse_class_from_table<Class_Parse_Table<DummyClass>>(tokens, context);
 }
 
 //------------------------------------------------------------------------------------------------//
-template <> std::shared_ptr<DummyClass> parse_class<DummyClass>(Token_Stream &tokens) {
+template <> std::shared_ptr<DummyClass> parse_class<DummyClass>(rtt_parser::Token_Stream &tokens) {
   return parse_class_from_table<Class_Parse_Table<DummyClass>>(tokens, false);
 }
 
 //------------------------------------------------------------------------------------------------//
-void Class_Parse_Table<DummyClass>::parse_insouciance_(Token_Stream &tokens, int /*unused*/) {
+void Class_Parse_Table<DummyClass>::parse_insouciance_(rtt_parser::Token_Stream &tokens,
+                                                       int /*unused*/) {
   tokens.check_semantics(current_->parsed_insouciance < 0.0,
                          "duplicate specification of insouciance");
 
@@ -92,7 +93,7 @@ Class_Parse_Table<DummyClass>::Class_Parse_Table(bool const context_in)
 }
 
 //------------------------------------------------------------------------------------------------//
-void Class_Parse_Table<DummyClass>::check_completeness(Token_Stream &tokens) {
+void Class_Parse_Table<DummyClass>::check_completeness(rtt_parser::Token_Stream &tokens) {
   tokens.check_semantics(context || parsed_insouciance >= 0, "insouciance was not specified");
 }
 
@@ -107,6 +108,8 @@ std::shared_ptr<DummyClass> Class_Parse_Table<DummyClass>::create_object() {
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
+
+namespace {
 
 void tstClass_Parser(UnitTest &ut) {
   double const eps = std::numeric_limits<double>::epsilon();
@@ -129,11 +132,11 @@ void tstClass_Parser(UnitTest &ut) {
   // Test that missing end is caught.
 
   text = "insouciance = 3.3\n";
-  String_Token_Stream etokens(text);
+  String_Token_Stream e_tokens(text);
 
   bool good = false;
   try {
-    std::shared_ptr<DummyClass> const dum = parse_class<DummyClass>(etokens);
+    std::shared_ptr<DummyClass> const du = parse_class<DummyClass>(e_tokens);
   } catch (Syntax_Error &) {
     good = true;
   }
@@ -142,12 +145,14 @@ void tstClass_Parser(UnitTest &ut) {
   tokens.rewind();
   good = false;
   try {
-    std::shared_ptr<DummyClass> const dum = parse_class<DummyClass>(etokens, true);
+    std::shared_ptr<DummyClass> const du = parse_class<DummyClass>(e_tokens, true);
   } catch (Syntax_Error &) {
     good = true;
   }
   ut.check(good, "indolent catches missing end");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

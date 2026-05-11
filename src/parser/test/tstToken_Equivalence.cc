@@ -2,9 +2,8 @@
 /*!
  * \file   parser/test/tstToken_Equivalence.cc
  * \author Kelly Thompson
- * \date   Fri Jul 21 09:10:49 2006
  * \brief  Unit test for functions in Token_Equivalence.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -14,6 +13,10 @@
 #include "parser/Token_Equivalence.hh"
 #include <sstream>
 #include <string>
+
+// cSpell:ignore spr
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -46,7 +49,7 @@ void tstOne(UnitTest &ut) {
   // look for an int associated with a keyword
   check_token_keyword_value(tokens, "Cycle", 0, ut);
 
-  // look for a double associated with a keyword (4th occurance).
+  // look for a double associated with a keyword (4th occurrence).
   check_token_keyword_value(tokens, "spr", 0.00298892, ut, 4);
 
   // look for a keyword.
@@ -54,6 +57,8 @@ void tstOne(UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

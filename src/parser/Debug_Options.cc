@@ -3,7 +3,7 @@
  * \file   parser/Debug_Options.cc
  * \author Kent Grimmett Budge
  * \brief  Define Debug_Options parse functions.
- * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved. */
 /*------------------------------------------------------------------------------------------------*/
 
 #include "parser/Debug_Options.hh"
@@ -90,7 +90,7 @@ unsigned get_debug_option(string const &option_name) {
  *      parent mask, with selected bits added or masked out.
  * \return A debug options mask.
  */
-unsigned parse_debug_options(Token_Stream &tokens, unsigned const parent) {
+unsigned parse_debug_options(rtt_parser::Token_Stream &tokens, unsigned const parent) {
   using namespace rtt_parser;
 
   unsigned Result = parent;

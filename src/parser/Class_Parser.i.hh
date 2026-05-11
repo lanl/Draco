@@ -2,7 +2,7 @@
 /*!
  * \file   Class_Parser.i.hh
  * \brief  Definitions of member functions of template Class_Parser
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_Class_Parser_i_hh
@@ -165,7 +165,8 @@ void Class_Parser_Base<Class, once, allow_exit>::sort_table_() noexcept(
  * \throw rtt_dsxx::assertion If the keyword table is ambiguous.
  */
 template <typename Class, bool once, bool allow_exit>
-std::shared_ptr<Class> Class_Parser_Base<Class, once, allow_exit>::parse(Token_Stream &tokens) {
+std::shared_ptr<Class>
+Class_Parser_Base<Class, once, allow_exit>::parse(rtt_parser::Token_Stream &tokens) {
 
   using std::vector;
 

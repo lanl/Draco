@@ -2,8 +2,7 @@
 /*!
  * \file   parser/test/tstDebug_Options.cc
  * \author Kent G. Budge
- * \date   Feb 18 2003
- * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -14,6 +13,8 @@
 #include "parser/Token_Stream.hh"
 #include <stdexcept>
 #include <string>
+
+namespace {
 
 using namespace std;
 using namespace rtt_parser;
@@ -77,6 +78,8 @@ void debug_options_test(UnitTest &ut) {
     ut.check(!done, "catches illegal argument error for inconsistent duplicate");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

@@ -2,7 +2,6 @@
 /*!
  * \file   parser/Expression.cc
  * \author Kent Budge
- * \date   Wed Jul 26 07:53:32 2006
  * \brief  Implementation of class Expression
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -835,7 +834,7 @@ pE parse_primary(unsigned const number_of_variables, Variable_Map const &variabl
     if (tokens.lookahead().text() == "(")
     // a function call
     {
-      string name = variable.text();
+      std::string const &name = variable.text();
       pE const argument = parse_primary(number_of_variables, variable_map, tokens);
       switch (name[0]) {
       case 'e':

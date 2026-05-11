@@ -2,9 +2,8 @@
 /*!
  * \file   parser/utilities.cc
  * \author Kent G. Budge
- * \date   18 Feb 2003
  * \brief  Definitions of parsing utility functions.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "parser/utilities.hh"
@@ -127,7 +126,7 @@ bool unit_expressions_are_required() { return require_unit_expressions; }
  *
  * \return The parsed quantity.
  */
-unsigned parse_unsigned_integer(Token_Stream &tokens) {
+unsigned parse_unsigned_integer(rtt_parser::Token_Stream &tokens) {
   Token const token = tokens.shift();
   tokens.check_syntax(token.type() == INTEGER, "expected an unsigned integer");
   errno = 0;
@@ -147,7 +146,7 @@ unsigned parse_unsigned_integer(Token_Stream &tokens) {
  * \param[in,out] tokens Token stream from which to parse the quantity.
  * \return The parsed quantity.
  */
-unsigned parse_positive_integer(Token_Stream &tokens) {
+unsigned parse_positive_integer(rtt_parser::Token_Stream &tokens) {
   unsigned Result = parse_unsigned_integer(tokens);
   if (Result == 0) {
     tokens.report_semantic_error("expected a positive integer");
@@ -163,7 +162,7 @@ unsigned parse_positive_integer(Token_Stream &tokens) {
  * \param[in,out] tokens Token stream from which to parse the quantity.
  * \return The parsed quantity.
  */
-int parse_integer(Token_Stream &tokens) {
+int parse_integer(rtt_parser::Token_Stream &tokens) {
   Token token = tokens.shift();
   string text;
   if (token.text() == "+") {
@@ -196,7 +195,7 @@ int parse_integer(Token_Stream &tokens) {
  * \param tokens Token stream from which to parse the quantity.
  * \return \c true if the next token is REAL or INTEGER; \c false otherwise.
  */
-bool at_real(Token_Stream &tokens) {
+bool at_real(rtt_parser::Token_Stream &tokens) {
   Token const &token = tokens.lookahead();
   if (token.text() == "-" || token.text() == "+") {
     Token const &token2 = tokens.lookahead(1);
@@ -215,7 +214,7 @@ bool at_real(Token_Stream &tokens) {
  * \param[in,out] tokens Token stream from which to parse the quantity.
  * \return The parsed quantity.
  */
-double parse_real(Token_Stream &tokens) {
+double parse_real(rtt_parser::Token_Stream &tokens) {
   Token token = tokens.shift();
   double sign = 1.0;
   if (token.text() == "+") {
@@ -249,7 +248,7 @@ double parse_real(Token_Stream &tokens) {
  * \param tokens Token stream from which to parse the quantity.
  * \return The parsed quantity.
  */
-double parse_positive_real(Token_Stream &tokens) {
+double parse_positive_real(rtt_parser::Token_Stream &tokens) {
   double Result = parse_real(tokens);
   if (Result <= 0.0) {
     tokens.report_semantic_error("expected a positive quantity");
@@ -265,7 +264,7 @@ double parse_positive_real(Token_Stream &tokens) {
  * \param tokens Token stream from which to parse the quantity.
  * \return The parsed quantity.
  */
-double parse_nonnegative_real(Token_Stream &tokens) {
+double parse_nonnegative_real(rtt_parser::Token_Stream &tokens) {
   double Result = parse_real(tokens);
   if (Result < 0.0) {
     tokens.report_semantic_error("expected a nonnegative quantity");
@@ -282,7 +281,7 @@ double parse_nonnegative_real(Token_Stream &tokens) {
  * \param x On return, contains the parsed vector components.
  * \pre \c x!=nullptr
  */
-void parse_vector(Token_Stream &tokens, double *x) {
+void parse_vector(rtt_parser::Token_Stream &tokens, double *x) {
   Require(x != nullptr);
 
   // At least one component must be present.
@@ -309,7 +308,7 @@ void parse_vector(Token_Stream &tokens, double *x) {
  *
  * \pre \c x!=nullptr
  */
-void parse_unsigned_vector(Token_Stream &tokens, unsigned *x, unsigned size) {
+void parse_unsigned_vector(rtt_parser::Token_Stream &tokens, unsigned *x, unsigned size) {
   Require(x != nullptr);
 
   for (unsigned i = 0; i < size; ++i) {
@@ -337,7 +336,7 @@ void parse_unsigned_vector(Token_Stream &tokens, unsigned *x, unsigned size) {
  *
  * \return \c true if we are at the start of a unit term; \c false otherwise
  */
-bool at_unit_term(Token_Stream &tokens, unsigned position) {
+bool at_unit_term(rtt_parser::Token_Stream &tokens, unsigned position) {
   Token const &token = tokens.lookahead(position);
   if (token.type() == KEYWORD) {
     string const &u = token.text();
@@ -432,7 +431,7 @@ bool at_unit_term(Token_Stream &tokens, unsigned position) {
   }
 }
 
-Unit parse_unit(Token_Stream &tokens);
+Unit parse_unit(rtt_parser::Token_Stream &tokens);
 
 namespace {
 
@@ -445,7 +444,7 @@ namespace {
  * \param tokens Token_Stream from which to parse.
  * \return The unit.
  */
-Unit parse_unit_name(Token_Stream &tokens) {
+Unit parse_unit_name(rtt_parser::Token_Stream &tokens) {
   // Return value
   Unit retval{};
   Token token = tokens.shift();
@@ -678,7 +677,7 @@ Unit parse_unit_name(Token_Stream &tokens) {
  * \param tokens Token_Stream from which to parse.
  * \return The unit term.
  */
-Unit parse_unit_term(Token_Stream &tokens) {
+Unit parse_unit_term(rtt_parser::Token_Stream &tokens) {
   Unit const Result = parse_unit_name(tokens);
   Token const &token = tokens.lookahead();
   if (token.text() == "^") {
@@ -702,7 +701,7 @@ Unit parse_unit_term(Token_Stream &tokens) {
  * \param tokens Token_Stream from which to parse.
  * \return The unit expression.
  */
-Unit parse_unit(Token_Stream &tokens) {
+Unit parse_unit(rtt_parser::Token_Stream &tokens) {
   if (!at_unit_term(tokens))
     return dimensionless;
 
@@ -740,7 +739,8 @@ Unit parse_unit(Token_Stream &tokens) {
  *
  * \return The parsed value, converted to the desired unit system.
  */
-double parse_quantity(Token_Stream &tokens, Unit const &target_unit, char const *const name) {
+double parse_quantity(rtt_parser::Token_Stream &tokens, Unit const &target_unit,
+                      char const *const name) {
   double const value = parse_real(tokens);
   if (!unit_expressions_are_required() && !at_unit_term(tokens)) {
     return value;
@@ -768,7 +768,7 @@ double parse_quantity(Token_Stream &tokens, Unit const &target_unit, char const 
  *
  * \post \c Result>=0.0
  */
-double parse_temperature(Token_Stream &tokens) {
+double parse_temperature(rtt_parser::Token_Stream &tokens) {
   double Temp = parse_real(tokens);
 
   if (Temp < 0.0) {
@@ -814,7 +814,7 @@ double parse_temperature(Token_Stream &tokens) {
  * \post \c Result>=0.0
  */
 std::shared_ptr<Expression>
-parse_temperature(Token_Stream &tokens, unsigned const number_of_variables,
+parse_temperature(rtt_parser::Token_Stream &tokens, unsigned const number_of_variables,
                   std::map<string, pair<unsigned, Unit>> const &variable_map) {
   std::shared_ptr<Expression> Temp = Expression::parse(number_of_variables, variable_map, tokens);
 
@@ -846,7 +846,7 @@ parse_temperature(Token_Stream &tokens, unsigned const number_of_variables,
  * \param tokens Token_Stream from which to parse.
  * \return The stripped string.
  */
-std::string parse_manifest_string(Token_Stream &tokens) {
+std::string parse_manifest_string(rtt_parser::Token_Stream &tokens) {
   Token const token = tokens.shift();
   if (token.type() != STRING) {
     tokens.report_syntax_error("expected a string, but saw " + token.text());
@@ -869,7 +869,7 @@ std::string parse_manifest_string(Token_Stream &tokens) {
  * \post <code> parsed_geometry == rtt_mesh_element::AXISYMMETRIC || parsed_geometry ==
  *         rtt_mesh_element::CARTESIAN || parsed_geometry == rtt_mesh_element::SPHERICAL </code>
  */
-void parse_geometry(Token_Stream &tokens, rtt_mesh_element::Geometry &parsed_geometry) {
+void parse_geometry(rtt_parser::Token_Stream &tokens, rtt_mesh_element::Geometry &parsed_geometry) {
   tokens.check_semantics(parsed_geometry == rtt_mesh_element::Geometry::END_GEOMETRY,
                          "geometry specified twice");
 
@@ -894,7 +894,7 @@ void parse_geometry(Token_Stream &tokens, rtt_mesh_element::Geometry &parsed_geo
  * \param tokens Token stream from which to parse the quantity.
  * \return The parsed quantity.
  */
-bool parse_bool(Token_Stream &tokens) {
+bool parse_bool(rtt_parser::Token_Stream &tokens) {
   Token const token = tokens.shift();
   if (token.text() == "true") {
     return true;
@@ -921,7 +921,7 @@ bool parse_bool(Token_Stream &tokens) {
  * \return The parsed value, converted to the desired unit system.
  */
 std::shared_ptr<Expression>
-parse_quantity(Token_Stream &tokens, Unit const &target_unit, char const *const name,
+parse_quantity(rtt_parser::Token_Stream &tokens, Unit const &target_unit, char const *const name,
                unsigned const number_of_variables,
                std::map<string, pair<unsigned, Unit>> const &variable_map) {
   std::shared_ptr<Expression> value = Expression::parse(number_of_variables, variable_map, tokens);

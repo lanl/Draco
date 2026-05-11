@@ -2,7 +2,6 @@
 /*!
  * \file   parser/test/tstAbstract_Class_Contextual_Parser.cc
  * \author Kent G. Budge
- * \date   Tue Nov  9 14:34:11 2010
  * \brief  Test the Abstract_Class_Contextual_Parser template
  * \note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -81,7 +80,7 @@ public:
     current_ = this;
     // If there are any parsed parameters common to all children of Parent, they should be placed in
     // Class_Parse_Table<Parent> along with the associated parsing routines, which will populate the
-    // parameters through the current_ pointer. This is necessary becuase the parsing routines must
+    // parameters through the current_ pointer. This is necessary because the parsing routines must
     // be static functions. (At least until we get ambitious with closures.
   }
 
@@ -89,7 +88,7 @@ public:
 
   [[nodiscard]] bool allow_exit() const { return false; }
 
-  void check_completeness(Token_Stream &tokens) {
+  void check_completeness(rtt_parser::Token_Stream &tokens) {
     if (!child_) {
       tokens.report_semantic_error("no parent specified");
     }
@@ -102,7 +101,8 @@ public:
   [[nodiscard]] Parse_Table const &parse_table() const { return parse_table_; }
 
   static void register_model(string const &keyword,
-                             std::shared_ptr<Parent> parse_function(Token_Stream &, int const &)) {
+                             std::shared_ptr<Parent> parse_function(rtt_parser::Token_Stream &,
+                                                                    int const &)) {
     Abstract_Class_Parser<Parent, get_parse_table_, get_parsed_object_,
                           Contextual_Parse_Functor<Parent, int, get_context_>>::
         register_child(keyword,
@@ -141,7 +141,8 @@ Parse_Table Class_Parse_Table<Parent>::parse_table_;
 
 //------------------------------------------------------------------------------------------------//
 // Specialization of the parse_class template function for T=Parent
-template <> std::shared_ptr<Parent> parse_class(Token_Stream &tokens, int const &context) {
+template <>
+std::shared_ptr<Parent> parse_class(rtt_parser::Token_Stream &tokens, int const &context) {
   return parse_class_from_table<Class_Parse_Table<Parent>>(tokens, context);
 }
 
@@ -207,7 +208,7 @@ public:
 
   [[nodiscard]] Parse_Table const &parse_table() const { return parse_table_; }
 
-  void check_completeness(Token_Stream &tokens) {
+  void check_completeness(rtt_parser::Token_Stream &tokens) {
     if (rtt_dsxx::soft_equiv(snips_and_snails, -1.0, std::numeric_limits<double>::epsilon())) {
       tokens.report_semantic_error("no snips and snails specified");
     }
@@ -226,7 +227,7 @@ protected:
 private:
   // STATIC
 
-  static void parse_snips_and_snails(Token_Stream &tokens, int /*unused*/) {
+  static void parse_snips_and_snails(rtt_parser::Token_Stream &tokens, int /*unused*/) {
     if (current_->snips_and_snails >= 0.0) {
       tokens.report_semantic_error("snips and snails already specified");
     }
@@ -252,7 +253,8 @@ Parse_Table Class_Parse_Table<Son>::parse_table_;
 bool Class_Parse_Table<Son>::parse_table_is_initialized_ = false;
 
 //------------------------------------------------------------------------------------------------//
-template <> std::shared_ptr<Son> parse_class<Son>(Token_Stream &tokens, int const &context) {
+template <>
+std::shared_ptr<Son> parse_class<Son>(rtt_parser::Token_Stream &tokens, int const &context) {
   return parse_class_from_table<Class_Parse_Table<Son>>(tokens, context);
 }
 
@@ -304,7 +306,7 @@ public:
 
   [[nodiscard]] Parse_Table const &parse_table() const { return parse_table_; }
 
-  void check_completeness(Token_Stream &tokens) {
+  void check_completeness(rtt_parser::Token_Stream &tokens) {
     if (rtt_dsxx::soft_equiv(sugar_and_spice, -1.0, std::numeric_limits<double>::epsilon())) {
       tokens.report_semantic_error("no sugar and spice specified");
     }
@@ -321,7 +323,7 @@ protected:
 private:
   // STATIC
 
-  static void parse_sugar_and_spice(Token_Stream &tokens, int /*unused*/) {
+  static void parse_sugar_and_spice(rtt_parser::Token_Stream &tokens, int /*unused*/) {
     if (current_->sugar_and_spice >= 0.0) {
       tokens.report_semantic_error("sugar and spice already specified");
     }
@@ -344,20 +346,23 @@ Parse_Table Class_Parse_Table<Daughter>::parse_table_;
 bool Class_Parse_Table<Daughter>::parse_table_is_initialized_;
 
 //------------------------------------------------------------------------------------------------//
-template <> std::shared_ptr<Daughter> parse_class<Daughter>(Token_Stream &tokens) {
+template <> std::shared_ptr<Daughter> parse_class<Daughter>(rtt_parser::Token_Stream &tokens) {
   return parse_class_from_table<Class_Parse_Table<Daughter>>(tokens);
 }
 
 } // end namespace rtt_parser
 
+//------------------------------------------------------------------------------------------------//
+namespace {
+
 // The following are the kinds of parse functions that a downwind developer might write for his own
 // children of the Parent class.
 
-std::shared_ptr<Parent> parse_son(Token_Stream &tokens, int const &context) {
+std::shared_ptr<Parent> parse_son(rtt_parser::Token_Stream &tokens, int const &context) {
   return parse_class<Son>(tokens, context);
 }
 
-std::shared_ptr<Parent> parse_daughter(Token_Stream &tokens, int const & /*unused*/) {
+std::shared_ptr<Parent> parse_daughter(rtt_parser::Token_Stream &tokens, int const & /*unused*/) {
   return parse_class<Daughter>(tokens);
 }
 
@@ -376,7 +381,7 @@ void test(UnitTest &ut) {
   File_Token_Stream tokens(sadInputFile);
 
   std::shared_ptr<Parent> const parent = parse_class<Parent>(tokens, 42);
-  // We choose 42 as the magic value for our context, in honor of hitchikers across the Galaxy.
+  // We choose 42 as the magic value for our context, in honor of hitchhikers across the Galaxy.
 
   cout << parent->name() << '\n';
 
@@ -385,6 +390,8 @@ void test(UnitTest &ut) {
   ut.check(parent->name() == "son", "parent is son");
   ut.check(parent->magic() == 42, "context");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

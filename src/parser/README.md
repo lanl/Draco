@@ -218,24 +218,24 @@ table. The context determines now it is interpreted.
 
 I found it useful to define a number of classes like
 
-    unsigned parse_unsigned_integer(Token_Stream &);
+    unsigned parse_unsigned_integer(rtt_parser::Token_Stream &);
 
 that would expect a particular kind of construct (in this case, an integer) and automatically report
 an error if the next token was not an INTEGER or if its value was negative. Likewise
 
-    double parse_real(Token_Stream &);
+    double parse_real(rtt_parser::Token_Stream &);
 
 would accept either an INTEGER or a REAL token, casting the former to double if necessary.
 
 This led fairly naturally to functions like
 
-    bool at_real(Token_Stream &);
+    bool at_real(rtt_parser::Token_Stream &);
 
 to check whether the next token on the `Token_Stream` can be read as a real number.
 
 Another wrinkle was
 
-    double parse_quantity(Token_Stream &, Unit &);
+    double parse_quantity(rtt_parser::Token_Stream &, Unit &);
 
 which served two purposes. First, it allowed an input file to contain quantities with specified
 units, such as
@@ -258,7 +258,7 @@ a special expression parser for unit expressions, which also recognizes common u
 
 Finally,
 
-    real parse_temperature(Token_Stream &);
+    real parse_temperature(rtt_parser::Token_Stream &);
 
 allowed a temperature to be specified in _either_ conventional temperature units or in energy units,
 so

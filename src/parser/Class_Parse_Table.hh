@@ -12,7 +12,7 @@
  *
  * \code
  * template<>
- * std::shared_ptr<Class> parse_class(Token_Stream &tokens) {
+ * std::shared_ptr<Class> parse_class(rtt_parser::Token_Stream &tokens) {
  *   return parse_class_from_table<Class_Parse_Table<Class> >(tokens);
  * }
  * \endcode
@@ -78,7 +78,7 @@ namespace rtt_parser {
  * Is it acceptable for the input to the parser to terminate with an EXIT token, or is only an END
  * token acceptable?
  *
- *   void check_completeness(Token_Stream &);
+ *   void check_completeness(rtt_parser::Token_Stream &);
  *
  * This function is called to check that all required specifications were found in the parsed
  * stream.  This function must call \c Token_Stream::Report_Semantic_Error at least once if it
@@ -109,7 +109,7 @@ template <typename Class> class Class_Parse_Table;
  */
 template <typename Class_Parse_Table>
 std::shared_ptr<typename Class_Parse_Table::Return_Class>
-parse_class_from_table_impl(Token_Stream &tokens, Class_Parse_Table &parse_table) {
+parse_class_from_table_impl(rtt_parser::Token_Stream &tokens, Class_Parse_Table &parse_table) {
   // Save the old error count, so we can distinguish fresh errors within this class keyword block
   // from previous errors.
   unsigned const old_error_count = tokens.error_count();
@@ -145,7 +145,7 @@ parse_class_from_table_impl(Token_Stream &tokens, Class_Parse_Table &parse_table
  */
 template <typename Class_Parse_Table>
 std::shared_ptr<typename Class_Parse_Table::Return_Class>
-parse_class_from_table(Token_Stream &tokens) {
+parse_class_from_table(rtt_parser::Token_Stream &tokens) {
   // Construct the parse object as described above.
   Class_Parse_Table parse_table;
   return parse_class_from_table_impl(tokens, parse_table);
@@ -163,7 +163,7 @@ parse_class_from_table(Token_Stream &tokens) {
  */
 template <typename Class_Parse_Table, typename Context>
 std::shared_ptr<typename Class_Parse_Table::Return_Class>
-parse_class_from_table(Token_Stream &tokens, Context const &context) {
+parse_class_from_table(rtt_parser::Token_Stream &tokens, Context const &context) {
   // Construct the parse object as described above.
   Class_Parse_Table parse_table(context);
   return parse_class_from_table_impl(tokens, parse_table);
@@ -183,7 +183,7 @@ parse_class_from_table(Token_Stream &tokens, Context const &context) {
  *    public:
  *      explicit Class_Parse_Table(Context_Type debug_context);
  *
- *      void check_completeness(Token_Stream &tokens);
+ *      void check_completeness(rtt_parser::Token_Stream &tokens);
  *
  *      shared_ptr<Sweeper_Creator> create_object();
  *
@@ -197,20 +197,20 @@ parse_class_from_table(Token_Stream &tokens, Context const &context) {
  *    private:
  *      // Parse functions
  *
- *      static void parse_flag(Token_Stream &, int);
- *      static void parse_constant(Token_Stream &, double);
+ *      static void parse_flag(rtt_parser::Token_Stream &, int);
+ *      static void parse_constant(rtt_parser::Token_Stream &, double);
  * };
  *
  * Class__parser.cc:
  *
  * include "Class__parser.hh"
  *
- * void Class_Parse_Table<Class>::parse_flag(Token_Stream &tokens, int)
+ * void Class_Parse_Table<Class>::parse_flag(rtt_parser::Token_Stream &tokens, int)
  * {
  *    ...
  * }
  *
- * void Class_Parse_Table<Class>::parse_constant(Token_Stream &tokens, int)
+ * void Class_Parse_Table<Class>::parse_constant(rtt_parser::Token_Stream &tokens, int)
  * {
  *    ...
  * }
@@ -225,7 +225,7 @@ parse_class_from_table(Token_Stream &tokens, Context const &context) {
  *   initialize(keywords, sizeof(keywords));
  * }
  *
- * void Class_Parse_Table<Class>::check_completeness(Token_Stream &tokens)
+ * void Class_Parse_Table<Class>::check_completeness(rtt_parser::Token_Stream &tokens)
  * {
  *   ... check the parsed data ...
  * }
@@ -237,7 +237,7 @@ parse_class_from_table(Token_Stream &tokens, Context const &context) {
  *
  * template <>
  * shared_ptr<Class>
- * parse_class<Class>(Token_Stream &tokens,
+ * parse_class<Class>(rtt_parser::Token_Stream &tokens,
  *                    Debug_Context debug_context)
  * {
  *    return parse_class_from_table<Class_Parse_Table<Class>>(

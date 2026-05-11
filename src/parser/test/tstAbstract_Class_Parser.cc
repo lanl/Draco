@@ -2,7 +2,6 @@
 /*!
  * \file   parser/test/tstAbstract_Class_Parser.cc
  * \author Kent G. Budge
- * \date   Tue Nov  9 14:34:11 2010
  * \brief  Test the Abstract_Class_Parser template
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -66,7 +65,7 @@ public:
 
   [[nodiscard]] bool allow_exit() const { return false; }
 
-  void check_completeness(Token_Stream &tokens) {
+  void check_completeness(rtt_parser::Token_Stream &tokens) {
     if (child_ == std::shared_ptr<Parent>()) {
       tokens.report_semantic_error("no parent specified");
     }
@@ -77,7 +76,7 @@ public:
   // STATICS
 
   static void register_model(string const &keyword,
-                             std::shared_ptr<Parent> parse_function(Token_Stream &)) {
+                             std::shared_ptr<Parent> parse_function(rtt_parser::Token_Stream &)) {
     Abstract_Class_Parser<Parent, get_parse_table_, get_parsed_object_>::register_child(
         keyword, parse_function);
   }
@@ -102,7 +101,7 @@ Parse_Table Class_Parse_Table<Parent>::parse_table_;
 
 //------------------------------------------------------------------------------------------------//
 // Specialization of the parse_class function for T=Parent
-template <> std::shared_ptr<Parent> parse_class<Parent>(Token_Stream &tokens) {
+template <> std::shared_ptr<Parent> parse_class<Parent>(rtt_parser::Token_Stream &tokens) {
   return parse_class_from_table<Class_Parse_Table<Parent>>(tokens);
 }
 
@@ -119,9 +118,8 @@ public:
 
 namespace { // Place this variable in an unnamed namespace instead of using 'static'.
 double parsed_snips_and_snails;
-} // namespace
 
-void parse_snips_and_snails(Token_Stream &tokens, int /*unused*/) {
+void parse_snips_and_snails(rtt_parser::Token_Stream &tokens, int /*unused*/) {
   if (parsed_snips_and_snails >= 0.0) {
     tokens.report_semantic_error("snips and snails already specified");
   }
@@ -133,6 +131,8 @@ void parse_snips_and_snails(Token_Stream &tokens, int /*unused*/) {
     parsed_snips_and_snails = 2;
   }
 }
+
+} // namespace
 
 namespace rtt_parser {
 template <> class Class_Parse_Table<Son> {
@@ -161,7 +161,7 @@ public:
 
   [[nodiscard]] Parse_Table const &parse_table() const { return parse_table_; }
 
-  void check_completeness(Token_Stream &tokens) {
+  void check_completeness(rtt_parser::Token_Stream &tokens) {
     if (rtt_dsxx::soft_equiv(parsed_snips_and_snails, -1.0,
                              std::numeric_limits<double>::epsilon())) {
       tokens.report_semantic_error("no snips and snails specified");
@@ -187,7 +187,7 @@ Parse_Table Class_Parse_Table<Son>::parse_table_;
 bool Class_Parse_Table<Son>::parse_table_is_initialized_ = false;
 
 //------------------------------------------------------------------------------------------------//
-template <> std::shared_ptr<Son> parse_class<Son>(Token_Stream &tokens) {
+template <> std::shared_ptr<Son> parse_class<Son>(rtt_parser::Token_Stream &tokens) {
   return parse_class_from_table<Class_Parse_Table<Son>>(tokens);
 }
 
@@ -202,11 +202,11 @@ public:
   explicit Daughter(double /*sugar_and_spice*/) {}
 };
 
-namespace { // Place this variabl in an unnamed namespace instead of using 'static'.
-double parsed_sugar_and_spice;
-} // namespace
+namespace { // Place this variable in an unnamed namespace instead of using 'static'.
 
-void parse_sugar_and_spice(Token_Stream &tokens, int /*unused*/) {
+double parsed_sugar_and_spice;
+
+void parse_sugar_and_spice(rtt_parser::Token_Stream &tokens, int /*unused*/) {
   if (parsed_sugar_and_spice >= 0.0) {
     tokens.report_semantic_error("sugar and spice already specified");
   }
@@ -217,6 +217,8 @@ void parse_sugar_and_spice(Token_Stream &tokens, int /*unused*/) {
     parsed_sugar_and_spice = 2;
   }
 }
+
+} // namespace
 
 namespace rtt_parser {
 template <> class Class_Parse_Table<Daughter> {
@@ -245,7 +247,7 @@ public:
 
   [[nodiscard]] Parse_Table const &parse_table() const { return parse_table_; }
 
-  void check_completeness(Token_Stream &tokens) {
+  void check_completeness(rtt_parser::Token_Stream &tokens) {
     if (rtt_dsxx::soft_equiv(parsed_sugar_and_spice, -1.0,
                              std::numeric_limits<double>::epsilon())) {
       tokens.report_semantic_error("no sugar and spice specified");
@@ -270,30 +272,31 @@ Parse_Table Class_Parse_Table<Daughter>::parse_table_;
 bool Class_Parse_Table<Daughter>::parse_table_is_initialized_;
 
 //------------------------------------------------------------------------------------------------//
-template <> std::shared_ptr<Daughter> parse_class<Daughter>(Token_Stream &tokens) {
+template <> std::shared_ptr<Daughter> parse_class<Daughter>(rtt_parser::Token_Stream &tokens) {
   return parse_class_from_table<Class_Parse_Table<Daughter>>(tokens);
 }
 
 } // end namespace rtt_parser
 
-/* the followingn would typically live in some client file for Parent. */
+//------------------------------------------------------------------------------------------------//
+/* the following would typically live in some client file for Parent. */
 
 namespace { // Place this variable in an unnamed namespace instead of using 'static'.
-std::shared_ptr<Parent> parent;
-} // namespace
 
-//static
-void parse_parent(Token_Stream &tokens, int /*unused*/) { parent = parse_class<Parent>(tokens); }
+std::shared_ptr<Parent> parent;
+
+void parse_parent(rtt_parser::Token_Stream &tokens, int /*unused*/) {
+  parent = parse_class<Parent>(tokens);
+}
 
 std::array<Keyword, 1> const top_keywords{Keyword{"parent", parse_parent, 0, ""}};
-
-namespace { // Place this variable in an unnamed namespace instead of using 'static'.
 Parse_Table top_parse_table(top_keywords.data(), top_keywords.size());
-} // namespace
 
-std::shared_ptr<Parent> parse_son(Token_Stream &tokens) { return parse_class<Son>(tokens); }
+std::shared_ptr<Parent> parse_son(rtt_parser::Token_Stream &tokens) {
+  return parse_class<Son>(tokens);
+}
 
-std::shared_ptr<Parent> parse_daughter(Token_Stream &tokens) {
+std::shared_ptr<Parent> parse_daughter(rtt_parser::Token_Stream &tokens) {
   return parse_class<Daughter>(tokens);
 }
 
@@ -320,6 +323,8 @@ void test(UnitTest &ut) {
     FAILMSG("Did NOT parse son correctly");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

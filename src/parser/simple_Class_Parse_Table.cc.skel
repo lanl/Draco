@@ -28,7 +28,7 @@ using namespace MyNamespace;
  *
  * \throw std::system_error
  */
-void Class_Parse_Table<MyClass>::parse_flag(Token_Stream &tokens, int) {
+void Class_Parse_Table<MyClass>::parse_flag(rtt_parser::Token_Stream &tokens, int) {
   tokens.check_semantics(current->flag, "duplicate flag specification");
   current->flag = true;
 }
@@ -40,7 +40,7 @@ void Class_Parse_Table<MyClass>::parse_flag(Token_Stream &tokens, int) {
  *
  * \throw std::system_error
  */
-void Class_Parse_Table<MyClass>::parse_constant(Token_Stream &tokens, int) {
+void Class_Parse_Table<MyClass>::parse_constant(rtt_parser::Token_Stream &tokens, int) {
   tokens.check_semantics(current->constant, "duplicate constant specification");
   current->constant = parse_quantity(tokens, J, "energy");
   tokens.check_semantics(current->constant > 0.0, "constant must be positive");
@@ -82,7 +82,7 @@ Class_Parse_Table<MyClass>::Class_Parse_Table(Context_Type debug_word)
  * \throw std::system_error
  */
 
-void Class_Parse_Table<MyClass>::check_completeness(Token_Stream &tokens) {
+void Class_Parse_Table<MyClass>::check_completeness(rtt_parser::Token_Stream &tokens) {
   tokens.check_semantics(constant > 0.0, "constant not specified");
 }
 
@@ -99,7 +99,7 @@ shared_ptr<Sweeper_Creator> Class_Parse_Table<MyClass>::create_object() {
 //! Specialization of parse_class for MyClass.
 
 template <>
-shared_ptr<MyClass> parse_class<MyClass>(Token_Stream &tokens,
+shared_ptr<MyClass> parse_class<MyClass>(rtt_parser::Token_Stream &tokens,
                                          Debug_Context debug_context) {
   return parse_class_from_table<Class_Parse_Table<MyClass>>(tokens,
                                                             debug_context);
