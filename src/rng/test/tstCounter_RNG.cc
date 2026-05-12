@@ -2,9 +2,8 @@
 /*!
  * \file   rng/test/tstCounter_RNG.cc
  * \author Peter Ahrens
- * \date   Fri Aug 3 16:53:23 2012
  * \brief  Counter_RNG tests.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -20,11 +19,13 @@
 #include <set>
 #include <vector>
 
+// cSpell:ignore CBRNG
+
+namespace {
+
 using namespace std;
 using namespace rtt_dsxx;
 using namespace rtt_rng;
-
-// cSpell:ignore CBRNG
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -677,6 +678,8 @@ void test_unique(UnitTest &ut) {
   if (ut.numFails == 0)
     PASSMSG("test_unique passed");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

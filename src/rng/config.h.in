@@ -1,7 +1,6 @@
 /*---------------------------------------------*-C-*----------------------------------------------*/
 /*! \file   config.h
  *  \author Thomas M. Evans
- *  \date   Mon Jan 11 10:20:29 1999
  *  \brief  rng package defines
  *  \note   Copyright (C) 2016-2020 Triad National Security, LLC.,  All rights reserved. */
 /*------------------------------------------------------------------------------------------------*/

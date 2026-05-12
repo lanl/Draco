@@ -3,7 +3,7 @@
  * \file   rng/test/tstRnd_Control_Inline.cc
  * \author Paul Henning
  * \brief  Rnd_Control test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -17,11 +17,13 @@
 #include <iostream>
 #include <limits>
 
+// cSpell:ignore rngs
+
+namespace {
+
 using namespace std;
 using namespace rtt_dsxx;
 using namespace rtt_rng;
-
-// cSpell:ignore rngs
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -205,6 +207,8 @@ void test_exceptions(UnitTest &ut) {
   if (ut.numFails == 0)
     PASSMSG("test_exceptions passed");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

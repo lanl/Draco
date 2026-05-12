@@ -2,10 +2,9 @@
 /*!
  * \file   rng/test/time_serial.h
  * \author Gabriel M. Rockefeller
- * \date   Mon Nov 19 10:35:04 2012
  * \brief  time_serial header file.
- * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
- *         All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved.
+ */
 /*------------------------------------------------------------------------------------------------*/
 
 #ifndef rng_time_serial_h

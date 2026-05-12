@@ -3,7 +3,7 @@
  * \file   rng/test/ut_Engine.hh
  * \author Gabriel M. Rockefeller
  * \brief  ut_Engine header file.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 #ifndef rng_test_ut_Engine_hh
 #define rng_test_ut_Engine_hh
