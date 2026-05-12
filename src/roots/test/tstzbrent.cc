@@ -2,9 +2,8 @@
 /*!
  * \file   roots/test/tstzbrent.cc
  * \author Kent Budge
- * \date   Tue Aug 17 15:24:48 2004
  * \brief  Test the zbrent function template
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -17,6 +16,10 @@
 #include <exception>
 #include <iostream>
 #include <limits>
+
+// cSpell:ignore fpdd, tstzbrent, zbrac, zbrent
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -48,10 +51,10 @@ void tstzbrent(UnitTest &ut) {
   fpdd log_fpdd = &foo;
   zbrac<fpdd>(log_fpdd, x1, x2);
 
-  double xtol = numeric_limits<double>::epsilon();
-  double ftol = numeric_limits<double>::epsilon();
+  double x_tol = numeric_limits<double>::epsilon();
+  double f_tol = numeric_limits<double>::epsilon();
 
-  if (soft_equiv(zbrent<fpdd>(log_fpdd, x1, x2, 100, xtol, ftol), 1.0)) {
+  if (soft_equiv(zbrent<fpdd>(log_fpdd, x1, x2, 100, x_tol, f_tol), 1.0)) {
     ut.passes("zbrent found the zero of the log function");
   } else {
     ut.failure("zbrent did NOT find the zero of the log function");
@@ -61,9 +64,9 @@ void tstzbrent(UnitTest &ut) {
   x2 = 10.0;
   zbrac(zbrac_test_function, x1, x2);
 
-  xtol = numeric_limits<double>::epsilon();
-  ftol = numeric_limits<double>::epsilon();
-  if (soft_equiv(zbrent(zbrac_test_function, x1, x2, 100, xtol, ftol), 1.0)) {
+  x_tol = numeric_limits<double>::epsilon();
+  f_tol = numeric_limits<double>::epsilon();
+  if (soft_equiv(zbrent(zbrac_test_function, x1, x2, 100, x_tol, f_tol), 1.0)) {
     ut.passes("zbrent found the zero of zbrac_test_function");
   } else {
     ut.failure("zbrent did NOT find the zero of zbrac_test_function");
@@ -75,14 +78,16 @@ void tstzbrent(UnitTest &ut) {
   fpdd expm1_fpdd = &foo_expm1;
   zbrac<fpdd>(expm1_fpdd, x1, x2);
 
-  xtol = numeric_limits<double>::epsilon();
-  ftol = numeric_limits<double>::epsilon();
-  if (soft_equiv(zbrent<fpdd>(expm1_fpdd, x1, x2, 100, xtol, ftol), 0.0)) {
+  x_tol = numeric_limits<double>::epsilon();
+  f_tol = numeric_limits<double>::epsilon();
+  if (soft_equiv(zbrent<fpdd>(expm1_fpdd, x1, x2, 100, x_tol, f_tol), 0.0)) {
     ut.passes("zbrent found the zero of expm1");
   } else {
     ut.failure("zbrent did NOT find the zero of expm1");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

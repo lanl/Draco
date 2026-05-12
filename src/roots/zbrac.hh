@@ -2,7 +2,6 @@
 /*!
  * \file   roots/zbrac.hh
  * \author Kent Budge
- * \date   Tue Aug 17 15:30:23 2004
  * \brief  Bracket a root of a function.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

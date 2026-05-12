@@ -2,8 +2,7 @@
 /*!
  * \file   roots/test/tstcubic1.cc
  * \author Kent G. Budge
- * \date   Wed Sep 15 10:12:52 2010
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -11,6 +10,8 @@
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
 #include "roots/cubic1.hh"
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -32,8 +33,9 @@ void tstcubic1(UnitTest &ut) {
   }
 }
 
-//------------------------------------------------------------------------------------------------//
+} // namespace
 
+//------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_dsxx::ScalarUnitTest ut(argc, argv, release);
   try {

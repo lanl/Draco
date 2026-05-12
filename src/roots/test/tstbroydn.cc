@@ -2,9 +2,8 @@
 /*!
  * \file   roots/test/tstbroydn.cc
  * \author Kent Budge
- * \date   Mon Aug  9 13:06:56 2004
  * \brief  Test the broydn nonlinear equation solver.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,6 +12,10 @@
 #include "roots/broydn.hh"
 #include <cmath>
 #include <vector>
+
+// cSpell:ignore broydn, dfvec, tstbroydn
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -84,6 +87,8 @@ void tstbroydn(UnitTest &ut) {
     PASSMSG("broydn: passed");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

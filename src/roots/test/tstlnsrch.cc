@@ -2,8 +2,7 @@
 /*!
  * \file   roots/test/tstlnsrch.cc
  * \author Kent Budge
- * \date   Mon Aug  9 13:39:20 2004
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -14,6 +13,10 @@
 #include <exception>
 #include <iostream>
 #include <vector>
+
+// cSpell:ignore lnsrch, tstlnsrch
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -35,7 +38,7 @@ void tstlnsrch(UnitTest &ut) {
   /*! \todo Can't mark this next line as 'const' because the functor signature won't match. Probably
    *        should update 'func' to be a lambda. */
   vector<double> x = {0.0, 0.0}; // NOLINT(misc-const-correctness)
-  vector<double> xold = x;       // NOLINT(misc-const-correctness)
+  vector<double> x_old = x;      // NOLINT(misc-const-correctness)
   vector<double> fvec;
   double const fold = fnorm(x, fvec, &func);
 
@@ -43,11 +46,11 @@ void tstlnsrch(UnitTest &ut) {
   g[0] = 7.2 * fvec[0] - 2.2 * fvec[1];
   g[1] = 3.5 * fvec[0] + 2.7 * fvec[1];
 
-  vector<double> p = {-0.4675753, 1.6190125};
+  vector<double> p = {-0.4675753, 1.6190125}; // NOLINT(modernize-use-std-numbers)
 
   double f;
   bool check;
-  lnsrch(xold, fold, g, p, x, f, check, fvec, &func, 0.01, 0.0);
+  lnsrch(x_old, fold, g, p, x, f, check, fvec, &func, 0.01, 0.0);
 
   if (!check) {
     FAILMSG("lnsrch did NOT bomb gracefully");
@@ -57,7 +60,7 @@ void tstlnsrch(UnitTest &ut) {
 
   for (double &pvalue : p)
     pvalue = -pvalue;
-  lnsrch(xold, fold, g, p, x, f, check, fvec, &func, 0.01, 0.0);
+  lnsrch(x_old, fold, g, p, x, f, check, fvec, &func, 0.01, 0.0);
 
   if (check || f > 1.0e-10) {
     FAILMSG("lnsrch did NOT succeed");
@@ -65,6 +68,8 @@ void tstlnsrch(UnitTest &ut) {
     PASSMSG("lnsrch successful");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

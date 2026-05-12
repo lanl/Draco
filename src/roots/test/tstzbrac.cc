@@ -2,9 +2,8 @@
 /*!
  * \file   roots/test/tstzbrac.cc
  * \author Kent Budge
- * \date   Tue Aug 17 15:24:48 2004
  * \brief  Test the zbrac function template
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,6 +12,10 @@
 #include "dsxx/fpe_trap.hh"
 #include "roots/zbrac.hh"
 #include <cmath> // log
+
+// cSpell:ignore fpdd, zbrac, zbrack, zbrent, tstzbrac
+
+namespace {
 
 using namespace std;
 using namespace rtt_roots;
@@ -26,8 +29,6 @@ double foo(double x) { return log(x); }
 
 //------------------------------------------------------------------------------------------------//
 //! Functor class representation of log function for testing zbrent and zbrac.
-
-namespace {
 class Zbrac_Test_Function {
 public:
   double operator()(double x) const { return log(x); }
@@ -40,7 +41,6 @@ double cubic(double const x) {
          (x + 1) * x * (x - 2) / ((1 + 1) * 1 * (1 - 2)) +
          (x + 1) * x * (x - 1) / ((2 + 1) * 2 * (2 - 1));
 }
-} // namespace
 
 //------------------------------------------------------------------------------------------------//
 
@@ -88,6 +88,8 @@ void tstzbrac(UnitTest &ut) {
     ut.failure("zbrack did NOT bracket the zero of the cubic function");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

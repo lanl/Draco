@@ -2,9 +2,8 @@
 /*!
  * \file   roots/broydn.hh
  * \author Kent Budge
- * \date   Wed Jul  7 09:14:09 2004
  * \brief  Find a solution of a set of nonlinear equations.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef roots_broydn_hh

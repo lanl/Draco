@@ -2,9 +2,8 @@
 /*!
  * \file   roots/fdjac.hh
  * \author Kent Budge
- * \date   Wed Aug 11 08:07:04 2004
  * \brief  Compute the Jacobian of a nonlinear system of equations
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef roots_fdjac_hh
