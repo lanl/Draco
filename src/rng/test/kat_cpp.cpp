@@ -86,6 +86,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdexcept>
 #include <utility>
 
+// NOLINTBEGIN(misc-use-internal-linkage)
+
 using namespace std;
 
 using genmap_t = map<pair<method_e, unsigned int>, void (*)(kat_instance *)>;
@@ -251,6 +253,8 @@ void host_execute_tests(kat_instance *tests, unsigned ntests) {
 
   dev_execute_tests(tests, ntests);
 }
+
+// NOLINTEND(misc-use-internal-linkage)
 
 #if defined(__clang__) && !defined(__ibmxl__)
 // Restore clang diagnostics to previous state.
