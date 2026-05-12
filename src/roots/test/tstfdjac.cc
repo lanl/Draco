@@ -2,8 +2,7 @@
 /*!
  * \file   roots/test/tstfdjac.cc
  * \author Kent Budge
- * \date   Mon Aug  9 13:39:20 2004
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,6 +12,10 @@
 #include "linear/fnorm.hh"
 #include "roots/fdjac.hh"
 #include <vector>
+
+// cSpell:ignore fdjac, tstfdjac
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -39,11 +42,13 @@ void tstfdjac(UnitTest &ut) {
   fdjac(x, fvec, df, &func);
 
   if (!soft_equiv(df[0 + 2 * 0], 7.2, 1.0e-8)) {
-    ut.failure("fdjac did NOT succeed");
+    FAILMSG("fdjac did NOT succeed");
   } else {
-    ut.passes("fdjac successful");
+    PASSMSG("fdjac successful");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

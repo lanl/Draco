@@ -2,7 +2,6 @@
 /*!
  * \file   roots/zbrent.hh
  * \author Kent Budge
- * \date   Tue Aug 17 15:57:06 2004
  * \brief  Find a bracketed root of a function.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
