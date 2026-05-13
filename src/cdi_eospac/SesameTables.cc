@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_eospac/SesameTables.cc
  * \author Kelly Thompson
- * \date   Fri Apr  6 08:57:48 2001
  * \brief  Implementation file for SesameTables (mapping material IDs to Sesame table indexes).
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_eospac/SesameTables.hh"

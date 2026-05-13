@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_eospac/test/tEospac.cc
  * \author Kelly Thompson
- * \date   Mon Apr 2 14:20:14 2001
  * \brief  Implementation file for tEospac
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoStrings.hh"

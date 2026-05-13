@@ -2,8 +2,7 @@
 /*!
  * \file   cdi_eospac/Eospac.hh
  * \author Kelly Thompson
- * \date   Mon Apr  2 14:14:29 2001
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_eospac_Eospac_hh
@@ -11,6 +10,7 @@
 
 #include "cdi/EoS.hh"
 #include "cdi_eospac/SesameTables.hh"
+#include <cstdint>
 #include <iostream>
 
 namespace rtt_cdi_eospac {
@@ -39,11 +39,13 @@ namespace rtt_cdi_eospac {
  *
  * The equation of state data files live in specific locations on the X-Div LAN and ACL.  If you are
  * not working on one of these LANs you must set the following two system environment variables
- * (SESPATHU and SESPATHC) so that the EOSPAC libraries can find the data tables.  On the CCS Linux
- * LAN you can use the following values:
+ * (`SESPATHU` and `SESPATHC`) so that the EOSPAC libraries can find the data tables.  On the CCS
+ * Linux LAN you can use the following values:
  *
+ * /code
  * export SESPATHU=/ccs/codes/radtran/physical_data/eos
  * export SESPATHC=/ccs/codes/radtran/physical_data/eos
+ * /endcode
  *
  * Because of the way this object hooks into EOSPAC, we have chosen to implement it as a Meyers
  * singleton.  This ensures that the loaded EOS data remains available until program termination.
@@ -61,7 +63,7 @@ class Eospac : public rtt_cdi::EoS {
 
   // NESTED CLASSES AND TYPEDEFS
 
-  enum EosTableDataDerivative {
+  enum EosTableDataDerivative : uint8_t {
     ETDD_VALUE, //!< Return the table value.
     ETDD_DFDX,  //!< Return the first derivative wrt temperature.
     ETDD_DFDY,  //!< Return the first derivative wrt density.
@@ -77,8 +79,8 @@ class Eospac : public rtt_cdi::EoS {
   /*!
    * \brief The SesameTables object uniquely defines a material.
    *
-   * The SesameTables object uniquely defines a material by linking specific lookup tables (sesame,
-   * sesou) to material identifiers.
+   * The SesameTables object uniquely defines a material by linking specific lookup tables
+   * (`sesame`, `sesou`) to material identifiers.
    *
    * \sa rtt_cdi_eospac::SesameTables class definition.
    *
