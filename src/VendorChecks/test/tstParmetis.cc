@@ -1,9 +1,8 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   VendorChecks/test/tstParmetis.cc
- * \date   Monday, May 16, 2016, 16:30 pm
  * \brief  Attempt to link to libparmetis and run a simple problem.
- * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -17,6 +16,10 @@
 #include <parmetis.h>
 #include <sstream>
 #include <vector>
+
+// cSpell:ignore adjwgt, kway, nparts, vwgt, tpwgts, ubvec, vtxdist, wgtflag, xadj
+
+namespace {
 
 // Example borrowed from the Parmetis manual.
 
@@ -132,6 +135,8 @@ void test_parmetis(rtt_c4::ParallelUnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

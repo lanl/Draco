@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2016 May 11
 # brief  Small test of Vendors libraries (if found)
-# note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(VendorsChecks CXX)
