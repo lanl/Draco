@@ -2,7 +2,6 @@
 /*!
   \file   Norms_Base.hh
   \author Rob Lowrie
-  \date   Fri Jan 14 13:01:19 2005
   \brief  Header file for Norms_Base.
   \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

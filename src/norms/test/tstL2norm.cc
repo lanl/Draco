@@ -2,9 +2,8 @@
 /*!
  * \file   norms/test/tstL2norm.cc
  * \author Kent Budge
- * \date   Tue Sep 18 09:06:26 2007
  * \brief  Test the L2norm function template.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -15,6 +14,8 @@
 #include "norms/L2norm.hh"
 #include <cmath>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -42,6 +43,8 @@ void tstL2norm(UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

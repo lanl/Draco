@@ -2,9 +2,8 @@
 /*!
  * \file   Norms_Index_pt.cc
  * \author Rob Lowrie
- * \date   Fri Jan 14 13:00:47 2005
  * \brief  Instantiates Norms_Index for some types.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "norms/Index_Labeled.hh"

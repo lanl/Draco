@@ -2,9 +2,8 @@
 /*!
  * \file   norms/Index_Labeled.hh
  * \author Rob Lowrie
- * \date   Fri Jan 14 13:57:58 2005
  * \brief  Header for Index_Labeled.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_norms_Index_Labeled_hh

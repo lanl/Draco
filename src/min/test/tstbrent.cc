@@ -2,8 +2,7 @@
 /*!
  * \file   min/test/tstbrent.cc
  * \author Kent G. Budge
- * \date   Tue Nov 16 17:26:03 2010
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -15,6 +14,10 @@
 #include <iomanip>
 #include <iostream>
 
+// cSpell:ignore tstbrent
+
+namespace {
+
 using namespace std;
 using namespace rtt_dsxx;
 using namespace rtt_min;
@@ -25,7 +28,7 @@ using namespace rtt_min;
 
 double f(double x) { return cos(x); }
 
-void tstbrent(UnitTest &ut) {
+void test_brent(UnitTest &ut) {
   double xmin(0.0);
   double constexpr tol(1.0e-12);
   double const root = brent(0.0, 6.28, 2.0, f, tol, xmin);
@@ -37,15 +40,17 @@ void tstbrent(UnitTest &ut) {
     cout << "\nFound    xmin = " << setprecision(16) << xmin << ", root = "
          << root
          // NOLINTNEXTLINE(misc-include-cleaner)
-         << "\nExpected xmin = " << M_PI << ", rdiff = " << std::abs(xmin - M_PI) / M_PI << '\n';
+         << "\nExpected xmin = " << M_PI << ", rel diff = " << std::abs(xmin - M_PI) / M_PI << '\n';
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   ScalarUnitTest ut(argc, argv, release);
   try {
-    tstbrent(ut);
+    test_brent(ut);
   }
   UT_EPILOG(ut);
 }
