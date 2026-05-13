@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_analytic/Analytic_MultigroupOpacity.hh
  * \author Thomas M. Evans
- * \date   Tue Nov 13 11:19:59 2001
  * \brief  Analytic_MultigroupOpacity class definition.
  * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

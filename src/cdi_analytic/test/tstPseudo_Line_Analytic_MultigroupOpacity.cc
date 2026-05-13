@@ -2,8 +2,7 @@
 /*!
  * \file   cdi_analytic/test/tstPseudo_Line_Analytic_MultigroupOpacity.cc
  * \author Kent G. Budge
- * \date   Tue Apr  5 09:01:03 2011
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -20,6 +19,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -143,6 +144,8 @@ void tstPLAMO(UnitTest &ut) {
     PASSMSG("Calculated Pseudo_Line_Analytic_MultigroupOpacity opacity");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

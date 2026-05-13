@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_analytic/test/tstAnalytic_EoS.cc
  * \author Thomas M. Evans
- * \date   Thu Oct  4 11:45:19 2001
  * \brief  Analytic_EoS test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -18,6 +17,8 @@
 #include <algorithm>
 #include <memory>
 #include <vector>
+
+namespace {
 
 using namespace std;
 
@@ -38,14 +39,14 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
 
   // make an analytic model (polynomial specific heats)
   //
-  // * elec specific heat = a + bT^c
+  // * electron specific heat = a + bT^c
   // * ion specific heat  = d + eT^f
   shared_ptr<Polynomial_Model> const model(new Polynomial_Model(0.0, 1.0, 3.0, 0.2, 0.0, 0.0));
 
   if (!model)
     FAILMSG("Failed to build an Analytic EoS Model!");
 
-  // make an analtyic eos
+  // make an analytic eos
   Analytic_EoS const analytic(model);
 
   // checks
@@ -76,12 +77,12 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
   {
     double const rho = 3.0; // not currently used by getElectronTemperature().
     double const Ue = 4.0;
-    double const Tguess = 2.0;
+    double const T_guess = 2.0;
 
-    double T_new = analytic.getElectronTemperature(rho, Ue, Tguess);
+    double T_new = analytic.getElectronTemperature(rho, Ue, T_guess);
     FAIL_IF_NOT(soft_equiv(T_new, 2.0));
 
-    T_new = analytic.getIonTemperature(rho, Ue, Tguess);
+    T_new = analytic.getIonTemperature(rho, Ue, T_guess);
     FAIL_IF_NOT(soft_equiv(T_new, 20.0));
   }
 
@@ -89,7 +90,7 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
   {
     vector<double> T = {0.993, 0.882, 0.590, 0.112, 0.051, 0.001};
     vector<double> rho(6);
-    std::fill(rho.begin(), rho.end(), 3.0);
+    std::ranges::fill(rho, 3.0);
     rho[3] = 2.5;
 
     vector<double> Cve = analytic.getElectronHeatCapacity(T, rho);
@@ -146,8 +147,7 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
 
     double const tol(1.0e-12);
 
-    if (params.size() != expectedValue.size())
-      ITFAILS;
+    FAIL_IF_NOT(params.size() == expectedValue.size());
 
     if (soft_equiv(params.begin(), params.end(), expectedValue.begin(), expectedValue.end(), tol))
       PASSMSG("get_parameters() returned the analytic expression coefficients.");
@@ -157,11 +157,11 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
 
   // make an analytic model like Su-Olson (polynomial specific heats)
   //
-  // * elec specific heat = a + bT^c
+  // * electron specific heat = a + bT^c
   // * ion specific heat  = d + eT^f
   shared_ptr<Polynomial_Model> const so_model(
       new Polynomial_Model(0.0, 54880.0, 3.0, 0.2, 0.0, 0.0));
-  // make an analtyic eos
+  // make an analytic eos
   Analytic_EoS const so_analytic(so_model);
 
   // do a sanity check on the table lookups.
@@ -200,8 +200,7 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
     double const Te = 0.0;
 
     double const T_new = so_analytic.getElectronTemperature(rho, Ue, Te);
-    if (T_new <= 0.0)
-      ITFAILS;
+    FAIL_IF(T_new <= 0.0);
     FAIL_IF_NOT(soft_equiv(T_new, 1.0e-16, 1e-14));
   }
 
@@ -249,7 +248,7 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
   // make temperature and density fields
   vector<double> T = {0.993, 0.882, 0.590, 0.112, 0.051, 0.001};
   vector<double> rho(6);
-  std::fill(rho.begin(), rho.end(), 3.0);
+  std::ranges::fill(rho, 3.0);
   rho[3] = 2.5;
 
   vector<double> Cve;
@@ -362,7 +361,7 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
   // make an analytic model (polynomial specific heats)
   shared_ptr<Polynomial_Model> const model(new Polynomial_Model(0.0, 1.0, 3.0, 0.2, 0.0, 0.0));
 
-  // make an analtyic eos
+  // make an analytic eos
   shared_ptr<EoS> const eos(new Analytic_EoS(model));
 
   vector<char> const packed = eos->pack();
@@ -398,6 +397,8 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

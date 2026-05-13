@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_analytic/Pseudo_Line_Base.hh
  * \author Kent G. Budge
- * \date   Tue Apr  5 08:36:13 MDT 2011
  * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
@@ -10,12 +9,11 @@
 #define rtt_cdi_analytic_Pseudo_Line_Base_hh
 
 #include "parser/Expression.hh"
+#include <cstdint>
 #include <cstdio>
 
 namespace rtt_cdi_analytic {
 using rtt_parser::Expression;
-using std::string;
-using std::vector;
 
 #ifdef _MSC_VER
 double expm1(double const &x);
@@ -34,7 +32,7 @@ double expm1(double const &x);
  */
 class Pseudo_Line_Base {
 public:
-  enum Averaging {
+  enum Averaging : uint8_t {
     NONE,      //!< evaluate opacity at band center
     ROSSELAND, //!< form a Rosseland (transparency) mean
     PLANCK,    //!< form a Planck (extinction) mean
@@ -45,7 +43,7 @@ public:
 private:
   // Coefficients
   std::shared_ptr<Expression const> continuum_; //!< continuum opacity [cm^2/g]
-  vector<double> continuum_table_;
+  std::vector<double> continuum_table_;
   double emax_;
 
   double nu0_;
@@ -64,9 +62,9 @@ private:
   double Tref_; //!< reference temperature for temperature dependence
   double Tpow_; //!< temperature dependence exponent
 
-  vector<double> center_;      //!< line centers for this realization
-  vector<double> edge_;        //!< edges for this realization
-  vector<double> edge_factor_; //!< opacity at threshold
+  std::vector<double> center_;      //!< line centers for this realization
+  std::vector<double> edge_;        //!< edges for this realization
+  std::vector<double> edge_factor_; //!< opacity at threshold
 
   void setup_(double emin, double emax);
 
@@ -81,7 +79,7 @@ public:
    * \bug No unit test, but needed by Capsaicin thermal_data/microphysics_parser.cc ->
    *      cdi_analytic/Pseudo_Line_Analytic_Odfmg_Opacity.cc -> Pseudo_Line_Base
    */
-  Pseudo_Line_Base(string const &cont_file, int number_of_lines, double line_peak,
+  Pseudo_Line_Base(std::string const &cont_file, int number_of_lines, double line_peak,
                    double line_width, int number_of_edges, double edge_ratio, double Tref,
                    double Tpow, double emin, double emax, unsigned seed);
 
@@ -96,7 +94,7 @@ public:
 #endif
 
   //! Constructor for packed state.
-  explicit Pseudo_Line_Base(vector<char> const &packed);
+  explicit Pseudo_Line_Base(std::vector<char> const &packed);
 
   virtual ~Pseudo_Line_Base() = default;
   Pseudo_Line_Base(Pseudo_Line_Base const &rhs) = delete;
@@ -109,7 +107,7 @@ public:
   [[nodiscard]] double Tpow() const { return Tpow_; }
 
   //! Pack up the class for persistence.
-  [[nodiscard]] vector<char> pack() const;
+  [[nodiscard]] std::vector<char> pack() const;
 
   //! Compute a monochromatic opacity
   [[nodiscard]] double monoOpacity(double nu, double T) const;

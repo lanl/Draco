@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_analytic/Analytic_EoS.cc
  * \author Thomas M. Evans
- * \date   Tue Oct  2 16:22:32 2001
  * \brief  Analytic_EoS member definitions.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_analytic/Analytic_EoS.hh"
@@ -59,7 +58,7 @@ Analytic_EoS::Analytic_EoS(const sf_char &packed) : analytic_model() {
 
   // unpack the packed analytic model
   std::vector<char> packed_analytic(size_analytic);
-  for (size_t i = 0; i < static_cast<size_t>(size_analytic); ++i)
+  for (size_t i = 0; std::cmp_less(i, size_analytic); ++i)
     unpacker >> packed_analytic[i];
 
   Check(unpacker.get_ptr() == &packed[0] + packed.size());
@@ -356,12 +355,10 @@ Analytic_EoS::sf_double Analytic_EoS::getNumFreeElectronsPerIon(const sf_double 
 //------------------------------------------------------------------------------------------------//
 /*!
  *
- * \brief Return a scalar electron thermal conductivity given a scalar
- * temperature and density.
+ * \brief Return a scalar electron thermal conductivity given a scalar temperature and density.
  *
- * Given a scalar temperature and density, return the electron themal
- * conductivity.  The electron thermal conductivity is defined by the
- * analytic model given to the constructor (Analytic_EoS()).
+ * Given a scalar temperature and density, return the electron themal conductivity.  The electron
+ * thermal conductivity is defined by the analytic model given to the constructor (Analytic_EoS()).
  *
  * \param T material temperature in keV
  * \param rho density in g/cm^3

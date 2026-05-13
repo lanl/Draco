@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_analytic/Analytic_Models.cc
  * \author Thomas M. Evans
- * \date   Wed Nov 21 14:36:15 2001
  * \brief  Analytic_Models implementation file.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_analytic/Analytic_Models.hh"
@@ -31,7 +30,7 @@ namespace rtt_cdi_analytic {
  *
  * Where we assume \f$ U_e(0) \equiv 0 \f$.
  *
- * We have chosen to use absolute electron energy instead of dUe to mimik the behavior of EOSPAC.
+ * We have chosen to use absolute electron energy instead of dUe to mimic the behavior of EOSPAC.
  *
  * \todo Consider using GSL root finding with Newton-Raphson for improved efficiency.
  */

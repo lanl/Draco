@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_analytic/Analytic_EoS.hh
  * \author Thomas M. Evans
- * \date   Tue Oct  2 16:22:32 2001
  * \brief  Analytic_EoS class definition.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

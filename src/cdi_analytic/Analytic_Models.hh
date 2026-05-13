@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_analytic/Analytic_Models.hh
  * \author Thomas M. Evans
- * \date   Wed Aug 29 16:46:52 2001
  * \brief  Analytic_Model definitions
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -13,6 +12,7 @@
 #include "dsxx/Assert.hh"
 #include "cdi/OpacityCommon.hh"
 #include <cmath>
+#include <cstdint>
 #include <vector>
 
 namespace rtt_cdi_analytic {
@@ -28,14 +28,14 @@ namespace rtt_cdi_analytic {
  * and Analytic_Multigroup_Opacity classes.  The enumeration names should be the same as the derived
  * class names.
  */
-enum Opacity_Models {
+enum Opacity_Models : uint8_t {
   CONSTANT_ANALYTIC_OPACITY_MODEL,
   POLYNOMIAL_ANALYTIC_OPACITY_MODEL,
 };
 
 //------------------------------------------------------------------------------------------------//
 //! Enumeration describing the charged particle eloss models available.
-enum CP_Models { ANALYTIC_KP_ALPHA_ELOSS_MODEL };
+enum CP_Models : uint8_t { ANALYTIC_KP_ALPHA_ELOSS_MODEL };
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -44,7 +44,7 @@ enum CP_Models { ANALYTIC_KP_ALPHA_ELOSS_MODEL };
  * Only EoS models that have been registered here can be unpacked by the Analytic_EoS classes. The
  * enumeration names should be the same as the derived class names.
  */
-enum EoS_Models { POLYNOMIAL_SPECIFIC_HEAT_ANALYTIC_EOS_MODEL };
+enum EoS_Models : uint8_t { POLYNOMIAL_SPECIFIC_HEAT_ANALYTIC_EOS_MODEL };
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -53,7 +53,7 @@ enum EoS_Models { POLYNOMIAL_SPECIFIC_HEAT_ANALYTIC_EOS_MODEL };
  * Only three temperature coupling models that can be regesterd here and unpacked by the
  * Analytic_ieCoupling classes. The enumeration name should be the same as the derived class names.
  */
-enum EICoupling_Models { CONSTANT_ANALYTIC_EICOUPLING_MODEL };
+enum EICoupling_Models : uint8_t { CONSTANT_ANALYTIC_EICOUPLING_MODEL };
 
 //================================================================================================//
 /*!
@@ -62,7 +62,7 @@ enum EICoupling_Models { CONSTANT_ANALYTIC_EICOUPLING_MODEL };
  *
  * This is a base class that defines the interface given to Analytic_Gray_Opacity or
  * Analytic_MultiGroup_Opacity constructors.  The user can define any derived model class that will
- * work with these analtyic opacity generation classes as long as it contains the following
+ * work with these analytic opacity generation classes as long as it contains the following
  * function: (declared pure virtual in this class).
  *
  * \arg double calculate_opacity(double T, double rho)
@@ -552,7 +552,7 @@ struct find_elec_temperature_functor {
  * \brief Analytic_EICoupling_Model base class.
  *
  * This is a base class that defines the interface give to Constant_Analytic_EICoupling_Model.  The
- * user can define any derived model class that will work with these analtyic electron-ion coupling
+ * user can define any derived model class that will work with these analytic electron-ion coupling
  * classes as long as it contains the following function: (declared pure virtual in this class).
  *
  * \arg double (double T, double rho)
