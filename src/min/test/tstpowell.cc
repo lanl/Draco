@@ -2,8 +2,7 @@
 /*!
  * \file   min/test/tstpowell.cc
  * \author Kent Budge
- * \date   Tue Jul  6 10:00:38 2004
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoMath.hh"
@@ -17,6 +16,8 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using namespace rtt_min;
@@ -66,12 +67,14 @@ void tstpowell(UnitTest &ut) {
   vector<double> expectedSolution(tmp.begin(), tmp.end());
   if (rtt_dsxx::soft_equiv(p.begin(), p.end(), expectedSolution.begin(), expectedSolution.end(),
                            tolerance)) {
-    ut.passes("Found expected solution.");
+    PASSMSG("Found expected solution.");
   } else {
-    ut.failure("Did not find expected solution.");
+    FAILMSG("Did not find expected solution.");
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

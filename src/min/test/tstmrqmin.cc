@@ -2,8 +2,7 @@
 /*!
  * \file   min/test/tstmrqmin.cc
  * \author Kent Budge
- * \date   Mon Aug  9 13:39:20 2004
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -18,6 +17,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+// cSpell:ignore alamda, chisq, covar, dyda, mrqmin, tstmrqmin, yerr, yfit
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -466,6 +469,8 @@ void tstmrqmin(UnitTest &ut) {
     FAILMSG("fit is NOT correct");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

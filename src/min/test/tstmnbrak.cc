@@ -19,6 +19,10 @@
 #include <cmath>
 #include <iostream>
 
+// cSpell:ignore mnbrak, tstmnbrak
+
+namespace {
+
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
@@ -44,14 +48,14 @@ void tstmnbrak(rtt_dsxx::UnitTest &ut) {
   { // Test the branch "u is between bx and cx" and "Minimum lies between bx and cx"
     std::cout << "Examine func(x) = x^2, for x in [1.0, 2.0]\n";
     rtt_min::mnbrak(ax, bx, cx, fa, fb, fc, func);
-    if (std::min(ax, std::min(bx, cx)) < 0.0 && std::max(ax, std::max(bx, cx)) > 0.0) {
+    if (std::min({ax, bx, cx}) < 0.0 && std::max({ax, bx, cx}) > 0.0) {
       // minimum should be at x=0,
       PASSMSG("minimum bracketed (func)");
     } else {
       FAILMSG("minimum NOT bracketed (func)");
     }
   }
-  { // Test the branch "u is between cx and ulim"
+  { // Test the branch "u is between cx and upper limit"
     std::cout << "\nExamine func2(x) = x*(x-1), for x in [0.0, 0.1]\n";
     ax = 0.0;
     bx = 0.1;
@@ -109,6 +113,8 @@ void tstmnbrak(rtt_dsxx::UnitTest &ut) {
     }
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

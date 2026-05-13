@@ -2,9 +2,8 @@
 /*!
  * \file   min/mrqmin.hh
  * \author Kent Budge
- * \date   Fri Aug 7 11:11:31 MDT 2009
  * \brief  Levenberg-Marquardt method for nonlinear data fitting
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef min_mrqmin_hh

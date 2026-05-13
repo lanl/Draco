@@ -54,7 +54,7 @@ void mnbrak(double &ax, double &bx, double &cx, double &fa, double &fb, double &
   using namespace std;
   using namespace rtt_dsxx;
 
-  constexpr double GOLD = 1.618034; // default magnification
+  constexpr double GOLD = 1.618034; // default magnification // NOLINT(modernize-use-std-numbers)
   constexpr double GLIMIT = 100.0;  // max magnification for parabolic step
   constexpr double TINY = 1.0e-20;
 

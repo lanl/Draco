@@ -2,9 +2,8 @@
 /*!
  * \file   Norms_Base.cc
  * \author Rob Lowrie
- * \date   Fri Jan 14 13:01:37 2005
  * \brief  Implemention for Norms_Base class.
- * \note   Copyright (C) 2005-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2005-2026 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

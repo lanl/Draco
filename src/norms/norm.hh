@@ -2,26 +2,47 @@
 /*!
  * \file   norms/norm.hh
  * \author Kent Budge
- * \date   Tue Sep 18 08:53:41 2007
  * \brief  Declare template class norm
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef norms_norm_hh
 #define norms_norm_hh
 
 #include "dsxx/DracoMath.hh"
+#include <cmath>
+#include <concepts>
 
 namespace rtt_norms {
 
 //------------------------------------------------------------------------------------------------//
-//! Compute the norm of a scalar.
-template <typename Field> double norm(Field const &x) { return x * x; }
+//! Compute the norm of a scalar. This is a name alias for rtt_dsxx:square.
+constexpr auto norm = [](const auto &x) noexcept(noexcept(rtt_dsxx::square(x))) {
+  return rtt_dsxx::square(x);
+};
 
 //------------------------------------------------------------------------------------------------//
-//! Compute the norm of the difference of two scalars.
-template <typename Field1, typename Field2> double norm_diff(Field1 const &x, Field2 const &y) {
-  return rtt_dsxx::square(x - y);
+/*!
+ * \brief Compute the norm of the difference of two scalars.
+ *
+ * \tparam T A floating point type
+ *
+ * \param[in] x The difference between x and y will be squared.
+ * \param[in] y The difference between x and y will be squared.
+ * \return `(x-y)^2`
+ *
+ * \sa square
+ */
+template <std::floating_point T>
+constexpr auto norm_diff(const T &x, const T &y) noexcept(noexcept((x - y) * (x - y))) {
+  const T d = x - y;
+#ifdef DRACO_DIAGNOSTICS_LEVEL_2
+  T r = d * d;
+  Check(std::isfinite(r));
+  return r;
+#else
+  return d * d;
+#endif
 }
 
 } // end namespace rtt_norms

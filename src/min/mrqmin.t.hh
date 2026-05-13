@@ -2,9 +2,8 @@
 /*!
  * \file   min/mrqmin.t.hh
  * \author Kent Budge
- * \date   Fri Aug 7 11:11:31 MDT 2009
  * \brief  Implementation of mrqmin
- * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef min_mrqmin_t_hh
@@ -109,12 +108,12 @@ void mrqcof(RandomContainer const &x, RandomContainer const &y, RandomContainer 
  * \tparam RandomBoolContainer A random access bool container
  * \tparam ModelFunction A model function with effective signature:
  *
- * <code>
+ * /code
  * void funcs(const double,
  *            vector<double> const &,
  *            double &,
  *            vector<double> &)
- * </code>
+ * /endcode
  *
  * \param x Ordinates of the data points.
  * \param y Values of the data points.

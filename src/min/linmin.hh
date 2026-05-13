@@ -2,9 +2,8 @@
 /*!
  * \file   min/linmin.hh
  * \author Kent Budge
- * \date   Tue Aug 17 15:30:23 2004
  * \brief  Find minimum of a multivariate function on a specified line.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef min_linmin_hh

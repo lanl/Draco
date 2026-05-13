@@ -2,9 +2,8 @@
 /*!
  * \file   norms/test/tst_Norms.cc
  * \author Rob Lowrie
- * \date   Fri Jan 14 09:12:16 2005
  * \brief  Tests Norms.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -20,6 +19,8 @@
 #include <sstream>
 
 // cSpell:ignore Linf
+
+namespace {
 
 using namespace std;
 
@@ -229,6 +230,8 @@ void test_Norms_Proc(rtt_dsxx::UnitTest &ut) {
     PASSMSG("test_Norms_Proc() ok.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
