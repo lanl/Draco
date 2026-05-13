@@ -1,9 +1,8 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   VendorChecks/test/tstMetis.cc
- * \date   Wednesday, May 11, 2016, 12:01 pm
  * \brief  Attempt to link to libmetis and run a simple problem.
- * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifdef _MSC_FULL_VER
@@ -26,7 +25,11 @@
 #include <iostream>
 #include <vector>
 
+// cSpell:ignore kway, xadj
+
 // Original provided by Erik Zenker, https://gist.github.com/erikzenker/c4dc42c8d5a8c1cd3e5a
+
+namespace {
 
 void test_metis(rtt_dsxx::UnitTest &ut) {
   idx_t nVertices = 10;
@@ -37,7 +40,7 @@ void test_metis(rtt_dsxx::UnitTest &ut) {
   std::vector<idx_t> part(nVertices, 0);
 
   // here's the mesh, there is only one valid cut so the expected result (or a mirror of it) should
-  // alays be obtained
+  // always be obtained
   //
   //  0 \       / 6
   //  1 \       / 7
@@ -81,6 +84,8 @@ void test_metis(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
