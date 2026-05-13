@@ -39,7 +39,7 @@ inline void level_symmetric(int polar_order, std::vector<double> &omega_x,
   switch (polar_order) {
   case 2: // S2 quadrature
     pts_.resize(1);
-    pts_[0] = 0.577350269189625764509149;
+    pts_[0] = std::numbers::inv_sqrt3;
     wts[0] = 1.000000000000000000000000;
     break;
 
@@ -73,7 +73,7 @@ inline void level_symmetric(int polar_order, std::vector<double> &omega_x,
     pts_.resize(4);
     wts_.resize(3);
     pts_[0] = 0.218217890235992381266097;
-    pts_[1] = 0.577350269189625764509149;
+    pts_[1] = std::numbers::inv_sqrt3;
     pts_[2] = 0.786795792469443145800830;
     pts_[3] = 0.951189731211341853132399;
     wts_[0] = 0.120987654320987654320988;
@@ -128,7 +128,7 @@ inline void level_symmetric(int polar_order, std::vector<double> &omega_x,
     wts_.resize(7);
     pts_[0] = 0.151985861461031912404799;
     pts_[1] = 0.422156982304796966896263;
-    pts_[2] = 0.577350269189625764509149;
+    pts_[2] = std::numbers::inv_sqrt3;
     pts_[3] = 0.698892086775901338963210;
     pts_[4] = 0.802226255231412057244328;
     pts_[5] = 0.893691098874356784901111;
@@ -208,7 +208,7 @@ inline void level_symmetric(int polar_order, std::vector<double> &omega_x,
     pts_[0] = 0.120603343036693597409418;
     pts_[1] = 0.347574292315847257336779;
     pts_[2] = 0.476519266143665680817278;
-    pts_[3] = 0.577350269189625764509149;
+    pts_[3] = std::numbers::inv_sqrt3;
     pts_[4] = 0.663020403653288019308783;
     pts_[5] = 0.738822561910371432904974;
     pts_[6] = 0.807540401661143067193530;

@@ -1,8 +1,7 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \brief  Test 1D and 2D quadratures
- * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 //------------------------------------------------------------------------------------------------//
@@ -25,23 +24,24 @@
 //          triangle          //
 //------------------------------------------------------------------------------------------------//
 
-#include <cmath>
-#include <cstdio>
-#include <ctime>
-#include <iostream>
-#include <string>
-#include <vector>
-
-#include <gsl/gsl_sf_gamma.h>
-#include <gsl/gsl_sf_hyperg.h>
-
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-
 #include "lightweight_quadrature/quad_1D.hh"
 #include "lightweight_quadrature/quad_2D.hh"
+#include <cmath>
+#include <cstdio>
+#include <ctime>
+#include <gsl/gsl_sf_gamma.h>
+#include <gsl/gsl_sf_hyperg.h>
+#include <iostream>
+#include <string>
+#include <vector>
+
+// cSpell:ignore doubleradau, qra, qrs, sph, sqi, sumwt
+
+namespace {
 
 using namespace rtt_lightweight_quadrature;
 
@@ -177,21 +177,6 @@ void test_az_cos_half(int N, std::vector<std::vector<double>> &quad, rtt_dsxx::U
 
   for (int j = 0; j < num + 1; ++j) {
     const double v = sqi(static_cast<double>(j) / 2) * std::sqrt(cPI);
-    printf("integral %d %.10e, should be %.10e\n", j, ints[j], v);
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(ints[j], v, tol));
-  }
-}
-
-void test_az_cos_third(int N, std::vector<std::vector<double>> &quad, rtt_dsxx::UnitTest &ut) {
-  printf("azimuthal half-range [0,pi/2]\n");
-
-  // calculate integrals
-  auto ints = cos_powers(N / 3, quad);
-
-  auto sqi = [](double &&n) { return gsl_sf_gamma(n + 0.5) / gsl_sf_gamma(n + 1) / 2.0; };
-
-  for (int j = 0; j < num + 1; ++j) {
-    const double v = sqi(static_cast<double>(j) / 2) * std::sqrt(cPI) / 3;
     printf("integral %d %.10e, should be %.10e\n", j, ints[j], v);
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(ints[j], v, tol));
   }
@@ -437,7 +422,7 @@ void test_sph(quad_2D const &quad, bool const prod_type, rtt_dsxx::UnitTest &ut)
   printf("integral 4 %.10e, should be %.10e\n", sum4, 4 * cPI / 15);
   FAIL_IF_NOT(rtt_dsxx::soft_equiv(sum4, 4 * cPI / 15, tol));
 
-  if (prod_type) // triangular sets can't integrate this funciton exactly
+  if (prod_type) // triangular sets can't integrate this function exactly
   {
     printf("integral 5 %.10e, should be %.10e\n", sum5, 4 * cPI / 105);
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(sum5, 4 * cPI / 105, tol));
@@ -454,7 +439,7 @@ void quad_test_2D(int const polar_order, int const azimuthal_order, rtt_dsxx::Un
   {
     for (int j = 0; j < 7; ++j) // azimuthal types
     {
-      std::cout << "\nProduct qudrature type (" << i << ", " << j << ")\n";
+      std::cout << "\nProduct quadrature type (" << i << ", " << j << ")\n";
       auto qp = quad_2D(polar_order, azimuthal_order, i, j, quad_type);
       test_sph(qp, true, ut);
     }
@@ -463,11 +448,11 @@ void quad_test_2D(int const polar_order, int const azimuthal_order, rtt_dsxx::Un
   // triangular quadratures
   quad_type = 1;
 
-  // spence quadratures are accurate only for certain combinations of polynomials of varying
-  // degree in sin and cos so they are not tested here
+  // spence quadratures are accurate only for certain combinations of polynomials of varying degree
+  // in sin and cos so they are not tested here
 
-  // a triangular set can be created with az_qrs30 and az_qra30 because the first level
-  // requires and N=2 and N must be evenly divisble by 3 for those sets
+  // a triangular set can be created with az_qrs30 and az_qra30 because the first level requires and
+  // N=2 and N must be evenly divisible by 3 for those sets
 
   const std::vector<int> az_types = {0, 2, 5};
 
@@ -521,6 +506,8 @@ void quad_test_2D(int const polar_order, int const azimuthal_order, rtt_dsxx::Un
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(sum3, 4 * cPI / 3, tol));
   }
 }
+
+} // namespace
 
 //-------------------------------------------------------------------------------------------------//
 

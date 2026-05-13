@@ -1,11 +1,10 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   lightweight_quadrature/quad_2D.cc
- * \brief  two-dimensional quadratures for integration over the unit sphere combining various 
- * polar and azimuthal quadratures into product or triangular arrangements, as well as good ol'
- * level-symmetric quadrature.
- * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved.
- */
+ * \brief  two-dimensional quadratures for integration over the unit sphere combining various polar
+ *         and azimuthal quadratures into product or triangular arrangements, as well as good ol'
+ *         level-symmetric quadrature.
+ * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 //------------------------------------------------------------------------------------------------//
@@ -70,13 +69,13 @@ auto quad_2D::product(P &polar, A &azimuthal, std::vector<double> &omega_x,
                       std::vector<double> &weights) const {
   // polar quadrature
   auto pol = polar(polar_order_);
-  std::vector<double> z = pol[0];
-  std::vector<double> w_z = pol[1];
+  std::vector<double> const &z = pol[0];
+  std::vector<double> const &w_z = pol[1];
 
   // azimuthal quadrature
   auto az = azimuthal(azimuthal_order_);
-  std::vector<double> x = az[0];
-  std::vector<double> w_x = az[1];
+  std::vector<double> const &x = az[0];
+  std::vector<double> const &w_x = az[1];
 
   int const num = 2 * polar_order_ * azimuthal_order_;
   omega_x.reserve(num);
@@ -112,8 +111,8 @@ auto quad_2D::triangular(P &polar, A &azimuthal, std::vector<double> &omega_x,
                          std::vector<double> &weights) const {
   // polar quadrature
   auto pol = polar(polar_order_);
-  std::vector<double> z = pol[0];
-  std::vector<double> w_z = pol[1];
+  std::vector<double> const &z = pol[0];
+  std::vector<double> const &w_z = pol[1];
 
   int const num = (polar_order_ + 2) * polar_order_;
 
@@ -126,8 +125,8 @@ auto quad_2D::triangular(P &polar, A &azimuthal, std::vector<double> &omega_x,
   for (int m = 0; m < polar_order_ / 2; m++) {
     // azimuthal quadrature
     auto az = azimuthal(2 * (m + 1));
-    std::vector<double> x = az[0];
-    std::vector<double> w_x = az[1];
+    std::vector<double> const &x = az[0];
+    std::vector<double> const &w_x = az[1];
 
     for (int n = 0; n < 2 * (m + 1); n++) {
       const double mu = std::sqrt(1 - z[m] * z[m]) * x[n];

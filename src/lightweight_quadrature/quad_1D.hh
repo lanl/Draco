@@ -2,8 +2,7 @@
 /*!
  * \file   lightweight_quadrature/quad_1D.hh
  * \brief  one-dimensional quadratures, including both classical and non-classical quadruple range
- * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef QUAD_1D_HH
@@ -11,18 +10,17 @@
 
 #define GSL_RANGE_CHECK_OFF
 
+#include "units/PhysicalConstexprs.hh"
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_math.h>
-
-#include "units/PhysicalConstexprs.hh"
 
 namespace rtt_lightweight_quadrature {
 
 constexpr rtt_units::PhysicalConstexprs<rtt_units::CGS> pc;
 auto constexpr cPI = pc.pi();
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
 // Gauss-Chebyshev
 inline auto chebyshev(int N) {
@@ -79,8 +77,8 @@ inline auto gauss(int N) {
 inline auto doublegauss(int N) {
   // Gauss-Legendre
   auto leg = gauss(N / 2);
-  std::vector<double> xx = leg[0];
-  std::vector<double> wx = leg[1];
+  std::vector<double> const &xx = leg[0];
+  std::vector<double> const &wx = leg[1];
 
   // remap points and weights
   std::vector<double> x(N, 0), w(N, 0);
@@ -98,8 +96,7 @@ inline auto doublegauss(int N) {
   return quad;
 }
 
-// see https://gerard-meurant.fr/p_feb29_2008.pdf
-// for Radau and Lobatto with Stieltjes' algorithm
+// see https://gerard-meurant.fr/p_feb29_2008.pdf for Radau and Lobatto with Stieltjes' algorithm
 
 // Gauss-Radau
 inline auto radau(int N) {
@@ -175,8 +172,8 @@ inline auto radau(int N) {
 inline auto doubleradau(int N) {
   // Gauss-Legendre
   auto rad = radau(N / 2);
-  std::vector<double> x = rad[0];
-  std::vector<double> w_x = rad[1];
+  std::vector<double> const &x = rad[0];
+  std::vector<double> const &w_x = rad[1];
 
   // remap points and weights
   std::vector<double> mu(N, 0), w(N, 0);
@@ -291,7 +288,7 @@ inline auto lobatto(int N) {
   return quad;
 }
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // quadratures for orthogonal polynomial generation
 
 /* 
@@ -372,9 +369,9 @@ inline auto err_func(double h, double tol, double a, double b) {
   return quad;
 }
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // general quadrature with weight function W
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
 template <typename F> auto quadruplerange(int N, F W, double a, double b, bool mapped = false) {
   // tanh-sinh quadrature
@@ -484,11 +481,11 @@ template <typename F> auto quadruplerange(int N, F W, double a, double b, bool m
   return qr;
 }
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // quadruple range
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // azimuthal quadruple range (Spence, symmetric about 90 degrees)
 inline auto az_qrs90(int N) {
   // quadruple range (remapped from [0,1] to [0,2*pi])
@@ -512,7 +509,7 @@ inline auto az_qrs90(int N) {
   return quad;
 }
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // azimuthal quadruple range (Abu-Shumays, symmetric about 90 degrees)
 // note that the points are (Pi/2 - beta_i) where beta_i are the az_qrs90 points
 inline auto az2D_qra90(int N) {
@@ -538,11 +535,11 @@ inline auto az2D_qra90(int N) {
   return quad;
 }
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // azimuthal quadruple range (Spence, symmetric about 45 degrees)
 inline auto az_qrs45(int N) {
   // quadruple range
-  const double b = 1 / std::sqrt(2);
+  constexpr double b = 1.0 / std::numbers::sqrt2;
   auto wf = [](auto x) { return 1.0 / std::sqrt(1 - x * x); };
   auto qr = quadruplerange(N / 2, wf, -b, b);
 
@@ -564,7 +561,7 @@ inline auto az_qrs45(int N) {
   return quad;
 }
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // azimuthal quadruple range (Abu-Shumays, symmetric about 45 degrees)
 inline auto az_qra45(int N) {
   // quadruple range
@@ -590,7 +587,7 @@ inline auto az_qra45(int N) {
   return quad;
 }
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // azimuthal hextuple range (Spence, symmetric about 30 degrees)
 inline auto az_qrs30(int N) {
   if (N % 3) {
@@ -622,7 +619,7 @@ inline auto az_qrs30(int N) {
   return quad;
 }
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // azimuthal hextuple range (Abu-Shumays, symmetric about 30 degrees)
 inline auto az_qra30(int N) {
   if (N % 3) {
@@ -654,14 +651,14 @@ inline auto az_qra30(int N) {
   return quad;
 }
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // polar quadruple range (Spence, symmetric about 45 degrees)
 // note that polar-QRA45 is identical to azimuthal-QRA45
 inline auto pol_qrs45(int N) {
   // quadruple range
-  const double b = 1 / std::sqrt(2);
+  const double b = 1 / std::numbers::sqrt2;
   auto wf = [](auto x) {
-    return (x + std::sqrt(1 - x * x)) / std::sqrt(2.0) / std::sqrt(1 - x * x);
+    return (x + std::sqrt(1 - x * x)) / std::numbers::sqrt2 / std::sqrt(1 - x * x);
   };
   auto qr = quadruplerange(N / 2, wf, -b, b);
 
@@ -682,7 +679,7 @@ inline auto pol_qrs45(int N) {
   return quad;
 }
 
-//-------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 // polar quadruple range (Spence, symmetric about 90 degrees)
 // note Spence calls this Polar-QRS90b, while Polar-QRS90a is double-Gauss
 // also note that this is also Polar2d_QRA90 (or Abu-Shumays' polar set suitable
