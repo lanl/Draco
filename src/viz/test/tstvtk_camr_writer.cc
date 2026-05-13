@@ -2,9 +2,8 @@
 /*!
  * \file   viz/test/tstvtk_camr_writer.cc
  * \author Ben R. Ryan
- * \date   2023/7/12
  * \brief  vtk_camr_writer_t test.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,6 +12,8 @@
 #include "viz/vtk_camr_writer.hh"
 #include <string>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using rtt_viz::vtk_camr_writer_t;
@@ -51,6 +52,8 @@ void test_vtk_camr_writer(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

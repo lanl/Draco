@@ -2,9 +2,8 @@
 /*!
  * \file   viz/test/tstEnsight_Translator_Unstructured.cc
  * \author Thomas M. Evans, Ryan T. Wollaeger
- * \date   Wednesday, Oct 03, 2018, 15:27 pm
  * \brief  Ensight_Translator unstructured mesh test.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -22,6 +21,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+namespace {
 
 using rtt_viz::Ensight_Translator;
 
@@ -249,6 +250,8 @@ void ensight_dump_test_unstr3d(rtt_dsxx::UnitTest &ut, std::string prefix, bool 
     FAILMSG("ensight_dump_test_unstr3d did not finish successfully.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

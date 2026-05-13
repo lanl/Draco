@@ -2,7 +2,6 @@
 /*!
  * \file   viz/Ensight_Translator.cc
  * \author Thomas M. Evans
- * \date   Fri Jan 21 16:36:10 2000
  * \brief  Ensight_Translator implementation file (non-templated code).
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -40,10 +39,15 @@ using std::string;
 //------------------------------------------------------------------------------------------------//
 // Local Helper Functions
 //------------------------------------------------------------------------------------------------//
+
+namespace {
+
 constexpr std::string_view forbidden_chars = R"()[]+-@!#*^$/ )";
 inline bool name_allowed(const std::string &input) noexcept {
   return std::ranges::find_first_of(input, forbidden_chars) == input.end();
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 // PUBLIC FUNCTIONS

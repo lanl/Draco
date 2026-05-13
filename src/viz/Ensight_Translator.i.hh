@@ -2,7 +2,6 @@
 /*!
  * \file   viz/Ensight_Translator.i.hh
  * \author Thomas M. Evans
- * \date   Fri Jan 21 16:36:10 2000
  * \brief  Ensight_Translator template definitions.
  * \note   Copyright (C) 2015-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -71,7 +70,7 @@ Ensight_Translator::Ensight_Translator(const std::string &prefix, std::string gd
       for (;;) {
         std::getline(casefile, line);
         Insist(casefile.good(), "Error getting number of steps from case file!");
-        if (line.find(key) == 0) {
+        if (line.find(key) == 0) { // NOLINT(modernize-use-starts-ends-with)
           std::istringstream ss(line.substr(key.size()));
           ss >> num_steps;
           //std::cout << "FOUND " << num_steps

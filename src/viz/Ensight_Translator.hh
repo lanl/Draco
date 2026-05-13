@@ -2,7 +2,6 @@
 /*!
  * \file   viz/Ensight_Translator.hh
  * \author Thomas M. Evans
- * \date   Fri Jan 21 16:36:10 2000
  * \brief  Ensight_Translator header file.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -13,6 +12,7 @@
 #include "c4/C4_Functions.hh"
 #include "viz/Ensight_Stream.hh"
 #include "viz/Viz_Traits.hh"
+#include <cstdint>
 #include <memory>
 #include <set>
 
@@ -25,15 +25,16 @@ namespace rtt_viz {
  * \brief Supported Ensight cell types.
  *
  * Values from this enumeration are assigned (by the user) to each cell in the mesh through the
- * rtt_viz::Ensight_Translator::ensight_dump() function input field argument iel_type.  See Section
- * 2.5 (Figure 2-22) in the Ensight 6.2 user manual for further information on Ensight cell types.
+ * rtt_viz::Ensight_Translator::ensight_dump() function input field argument `iel_type`.  See
+ * Section 2.5 (Figure 2-22) in the Ensight 6.2 user manual for further information on Ensight cell
+ * types.
  *
- * \sa Ensight example page for examples of how this enumeration is used to generate the iel_type
+ * \sa Ensight example page for examples of how this enumeration is used to generate the `iel_type`
  *     field.
  */
 //================================================================================================//
 
-enum Ensight_Cell_Types {
+enum Ensight_Cell_Types : uint8_t {
   point = 0,
   two_node_bar,
   three_node_bar,
@@ -95,7 +96,7 @@ enum Ensight_Cell_Types {
  *
  * Data dumped to Ensight will be stored in the directory prefix argument given to the constructor
  * (Ensight_Translator::Ensight_Translator()).  The directory created will have the name
- * "prefix"_ensight. The directory is placed in the path specified by the gd_wpath argument to the
+ * "prefix"_ensight. The directory is placed in the path specified by the `gd_wpath` argument to the
  * constructor.  This directory must exist.
  *
  * To launch Ensight: select the "prefix".case file that resides in the top-level ensight dump
@@ -133,7 +134,7 @@ private:
   //! if true, geometry is static
   bool d_static_geom;
 
-  //! if true, output geometry and varible data files in binary format.
+  //! if true, output geometry and variable data files in binary format.
   bool d_binary;
 
   //! Name of the directory where this will write files
