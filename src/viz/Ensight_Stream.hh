@@ -2,9 +2,8 @@
 /*!
  * \file   viz/Ensight_Stream.hh
  * \author Rob Lowrie
- * \date   Fri Nov 12 22:28:37 2004
  * \brief  Header for Ensight_Stream.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_viz_Ensight_Stream_hh

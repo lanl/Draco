@@ -2,9 +2,8 @@
 /*!
  * \file   viz/test/tstEnsight_Stream.cc
  * \author Rob Lowrie
- * \date   Fri Nov 12 22:52:46 2004
  * \brief  Test for Ensight_Stream.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Packing_Utils.hh"
@@ -20,6 +19,8 @@
 #include <ios>
 #include <iostream>
 #include <string>
+
+namespace {
 
 using namespace std;
 using rtt_viz::Ensight_Stream;
@@ -42,7 +43,7 @@ template <typename T> void binary_read(ifstream &stream, T &v) {
 
 // Various overloaded read functions.
 
-void readit(ifstream &stream, const bool binary, double &d) {
+void read_it(ifstream &stream, const bool binary, double &d) {
   if (binary) {
     float x;
     binary_read(stream, x);
@@ -51,14 +52,14 @@ void readit(ifstream &stream, const bool binary, double &d) {
     stream >> d;
 }
 
-void readit(ifstream &stream, const bool binary, int &d) {
+void read_it(ifstream &stream, const bool binary, int &d) {
   if (binary)
     binary_read(stream, d);
   else
     stream >> d;
 }
 
-void readit(ifstream &stream, const bool binary, string &s) {
+void read_it(ifstream &stream, const bool binary, string &s) {
   if (binary) {
     s.resize(80);
     for (int i = 0; i < 80; ++i)
@@ -109,16 +110,16 @@ void test_simple(rtt_dsxx::UnitTest &ut, bool const binary, bool const geom,
     }
 
     int i_in;
-    readit(in, binary, i_in);
+    read_it(in, binary, i_in);
     FAIL_IF_NOT(i == i_in);
 
     double d_in;
-    readit(in, binary, d_in);
+    read_it(in, binary, d_in);
     // floats are inaccurate
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(d, d_in, 0.01));
 
     string s_in;
-    readit(in, binary, s_in);
+    read_it(in, binary, s_in);
     for (size_t k = 0; k < s.size(); ++k)
       FAIL_IF_NOT(s[k] == s_in[k]);
   }
@@ -130,6 +131,8 @@ void test_simple(rtt_dsxx::UnitTest &ut, bool const binary, bool const geom,
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

@@ -2,9 +2,8 @@
 /*!
  * \file   viz/Ensight_Stream.cc
  * \author Rob Lowrie
- * \date   Mon Nov 15 10:03:51 2004
  * \brief  Ensight_Stream implementation file.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Ensight_Stream.hh"

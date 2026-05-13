@@ -2,9 +2,8 @@
 /*!
  * \file   viz/vtk_camr_writer.hh
  * \author H. Park
- * \date   Mon Jun 19 2023
  * \brief  vtk writer for CAMR file
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_viz_vtk_camr_writer_hh
@@ -14,6 +13,7 @@
 #include <sstream>
 #include <type_traits>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace rtt_viz {
@@ -85,7 +85,7 @@ public:
     file_ << "<Points>\n";
     file_ << R"(<DataArray type="Float64" NumberOfComponents="3">)" << '\n';
 
-    for (int i = 0; i < static_cast<int>(ncells); ++i) {
+    for (int i = 0; std::cmp_less(i, ncells); ++i) {
       double const width = dx / pow(2, levels[i]);
       double const x0 = vertex[i * num_dims];
       double const y0 = vertex[i * num_dims + 1];

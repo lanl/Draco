@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2012 Aug 1
 # brief  Generate build project files for viz/test.
-# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 project(viz_test CXX)
 

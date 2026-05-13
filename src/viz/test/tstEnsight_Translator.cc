@@ -2,9 +2,8 @@
 /*!
  * \file   viz/test/tstEnsight_Translator.cc
  * \author Thomas M. Evans
- * \date   Mon Jan 24 11:12:59 2000
  * \brief  Ensight_Translator test.
- * \note   Copyright (C) 2000-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2000-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -24,6 +23,8 @@
 #include <string>
 #include <vector>
 
+namespace {
+
 using namespace std;
 using rtt_viz::Ensight_Translator;
 
@@ -31,10 +32,8 @@ using rtt_viz::Ensight_Translator;
 template <typename IT>
 void ensight_dump_test(rtt_dsxx::UnitTest &ut, string prefix, bool const binary, bool const geom,
                        bool const decomposed) {
-  if (binary)
-    cout << "\nGenerating binary files...\n\n";
-  else
-    cout << "\nGenerating ascii files...\n\n";
+
+  cout << std::string("\nGenerating ") + (binary ? "binary" : "ascii") + " files...\n\n";
 
   // dimensions
   constexpr size_t ncells = 27;
@@ -180,10 +179,8 @@ void ensight_dump_test(rtt_dsxx::UnitTest &ut, string prefix, bool const binary,
                           cell_data, rgn_data, rgn_name);
 
   vec_d dump_times = translator.get_dump_times();
-  if (dump_times.size() != 1)
-    ITFAILS;
-  if (!rtt_dsxx::soft_equiv(dump_times[0], 0.01))
-    ITFAILS;
+  FAIL_IF_NOT(dump_times.size() == 1);
+  FAIL_IF_NOT(rtt_dsxx::soft_equiv(dump_times[0], 0.01));
 
   // build another ensight translator; this should overwrite the existing directories
   Ensight_Translator translator2(prefix, gd_wpath, vdata_names, cdata_names, false, geom, binary,
@@ -233,6 +230,8 @@ void ensight_dump_test(rtt_dsxx::UnitTest &ut, string prefix, bool const binary,
     FAILMSG("ensight_dump_test did not finish successfully.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

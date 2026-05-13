@@ -2,7 +2,6 @@
 /*!
  * \file   viz/test/tstViz_Traits.cc
  * \author Thomas M. Evans
- * \date   Fri Jan 21 17:51:52 2000
  * \brief  Viz_Traits test.
  * \note   Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -14,6 +13,8 @@
 #include "viz/Viz_Traits.hh"
 #include <cstddef>
 #include <vector>
+
+namespace {
 
 using namespace std;
 using rtt_viz::Viz_Traits;
@@ -98,6 +99,8 @@ template <typename T> void test_FT(rtt_dsxx::UnitTest &ut) {
     PASSMSG("test_FT passes.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
