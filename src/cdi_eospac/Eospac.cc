@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_eospac/Eospac.cc
  * \author Kelly Thompson
- * \date   Mon Apr  2 14:14:29 2001
  * \brief  Implementation for Eospac class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_eospac/Eospac.hh"
@@ -163,7 +162,7 @@ Eospac::getSpecificElectronInternalEnergy(std::vector<double> const &vtemperatur
   EOS_INTEGER const returnType = EOS_Ue_DT; // ES4enelc;
   // Convert temperatures from keV to degrees Kelvin.
   std::vector<double> vtempsKelvin = vtemperature;
-  std::transform(vtemperature.begin(), vtemperature.end(), vtempsKelvin.begin(), keV2K);
+  std::ranges::transform(vtemperature, vtempsKelvin.begin(), keV2K);
   return getF(vdensity, vtempsKelvin, returnType, ETDD_VALUE);
 }
 
@@ -178,7 +177,7 @@ double Eospac::getElectronHeatCapacity(double temperature, double density) const
   EOS_INTEGER const returnType = EOS_Ue_DT; // ES4enelc
   std::vector<double> Cve = getF(dbl_v1(density), dbl_v1(vtempsKelvin), returnType, ETDD_DFDY);
   // Convert back to Temperature units in keV
-  std::transform(Cve.begin(), Cve.end(), Cve.begin(), keV2K);
+  std::ranges::transform(Cve, Cve.begin(), keV2K);
   return Cve[0];
 }
 
@@ -191,11 +190,11 @@ std::vector<double> Eospac::getElectronHeatCapacity(std::vector<double> const &v
 
   // Convert temperatures from keV to degrees Kelvin.
   std::vector<double> vtempsKelvin = vtemperature;
-  std::transform(vtemperature.begin(), vtemperature.end(), vtempsKelvin.begin(), keV2K);
+  std::ranges::transform(vtemperature, vtempsKelvin.begin(), keV2K);
   EOS_INTEGER const returnType = EOS_Ue_DT; // ES4enelc;
   std::vector<double> Cve = getF(vdensity, vtempsKelvin, returnType, ETDD_DFDY);
   // Convert back to Temperature units in keV
-  std::transform(Cve.begin(), Cve.end(), Cve.begin(), keV2K);
+  std::ranges::transform(Cve, Cve.begin(), keV2K);
   return Cve;
 }
 
@@ -214,7 +213,7 @@ Eospac::getSpecificIonInternalEnergy(std::vector<double> const &vtemperature,
                                      std::vector<double> const &vdensity) const {
   // Convert temperatures from keV to degrees Kelvin.
   std::vector<double> vtempsKelvin = vtemperature;
-  std::transform(vtemperature.begin(), vtemperature.end(), vtempsKelvin.begin(), keV2K);
+  std::ranges::transform(vtemperature, vtempsKelvin.begin(), keV2K);
   EOS_INTEGER const returnType = EOS_Uic_DT; //ES4enion;
   return getF(vdensity, vtemperature, returnType, ETDD_VALUE);
 }
@@ -230,7 +229,7 @@ double Eospac::getIonHeatCapacity(double temperature, double density) const {
   EOS_INTEGER const returnType = EOS_Uic_DT; //ES4enion;
   std::vector<double> Cvi = getF(dbl_v1(density), dbl_v1(vtempsKelvin), returnType, ETDD_DFDY);
   // Convert back to Temperature units in keV
-  std::transform(Cvi.begin(), Cvi.end(), Cvi.begin(), keV2K);
+  std::ranges::transform(Cvi, Cvi.begin(), keV2K);
   return Cvi[0];
 }
 
@@ -243,11 +242,11 @@ std::vector<double> Eospac::getIonHeatCapacity(std::vector<double> const &vtempe
 
   // Convert temperatures from keV to degrees Kelvin.
   std::vector<double> vtempsKelvin = vtemperature;
-  std::transform(vtemperature.begin(), vtemperature.end(), vtempsKelvin.begin(), keV2K);
+  std::ranges::transform(vtemperature, vtempsKelvin.begin(), keV2K);
   EOS_INTEGER const returnType = EOS_Uic_DT; //ES4enion;
   std::vector<double> Cvi = getF(vdensity, vtempsKelvin, returnType, ETDD_DFDY);
   // Convert back to Temperature units in keV
-  std::transform(Cvi.begin(), Cvi.end(), Cvi.begin(), keV2K);
+  std::ranges::transform(Cvi, Cvi.begin(), keV2K);
   return Cvi;
 }
 
@@ -264,7 +263,7 @@ std::vector<double> Eospac::getNumFreeElectronsPerIon(std::vector<double> const 
                                                       std::vector<double> const &vdensity) const {
   // Convert temperatures from keV to degrees Kelvin.
   std::vector<double> vtempsKelvin = vtemperature;
-  std::transform(vtemperature.begin(), vtemperature.end(), vtempsKelvin.begin(), keV2K);
+  std::ranges::transform(vtemperature, vtempsKelvin.begin(), keV2K);
   EOS_INTEGER const returnType = EOS_Zfc_DT; //ES4zfree3; // (zfree3)
   return getF(vdensity, vtempsKelvin, returnType, ETDD_VALUE);
 }
@@ -283,7 +282,7 @@ Eospac::getElectronThermalConductivity(std::vector<double> const &vtemperature,
                                        std::vector<double> const &vdensity) const {
   // Convert temperatures from keV to degrees Kelvin.
   std::vector<double> vtempsKelvin = vtemperature;
-  std::transform(vtemperature.begin(), vtemperature.end(), vtempsKelvin.begin(), keV2K);
+  std::ranges::transform(vtemperature, vtempsKelvin.begin(), keV2K);
   EOS_INTEGER const returnType = EOS_Ktc_DT; //ES4tconde; // (tconde)
   return getF(vdensity, vtempsKelvin, returnType, ETDD_VALUE);
 }
@@ -521,7 +520,7 @@ void Eospac::expandEosTable() const {
 //------------------------------------------------------------------------------------------------//
 //! Returns true if the EoS data associated with "returnType" has been loaded.
 bool Eospac::typeFound(EOS_INTEGER returnType) const {
-  return std::find(returnTypes.begin(), returnTypes.end(), returnType) != returnTypes.end();
+  return std::ranges::find(returnTypes, returnType) != returnTypes.end();
 }
 
 //------------------------------------------------------------------------------------------------//

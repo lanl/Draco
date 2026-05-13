@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_eospac/SesameTables.hh
  * \author Kelly Thompson
- * \date   Fri Apr  6 08:57:48 2001
  * \brief  Header file for SesameTables (mapping material IDs to Sesame table indexes).
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -178,8 +177,8 @@ public:
   [[nodiscard]] std::vector<unsigned> matList() const {
     std::vector<unsigned> mlist;
     mlist.reserve(rtMap.size()); // preallocate the vector storage for
-    std::transform(rtMap.begin(), rtMap.end(), std::back_inserter(mlist),
-                   [](auto const &pair) { return pair.first; });
+    std::ranges::transform(rtMap, std::back_inserter(mlist),
+                           [](auto const &pair) noexcept { return pair.first; });
     return mlist;
   }
 

@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_eospac/QueryEospac.cc
  * \author Kelly Thompson
- * \date   Friday, Nov 09, 2012, 13:02 pm
  * \brief  An interactive program for querying data from EOSPAC.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Eospac.hh"
@@ -18,6 +17,8 @@
 #include <map>
 #include <memory>
 #include <string>
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 void query_eospac() {
@@ -96,6 +97,8 @@ void query_eospac() {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

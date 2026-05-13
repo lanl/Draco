@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_eospac/EospacException.hh
  * \author Kelly Thompson
- * \date   Fri Apr  6 13:59:06 2001
  * \brief  Header file for the cdi_eospac exception handler class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_cdi_eospac_EospacException_hh
