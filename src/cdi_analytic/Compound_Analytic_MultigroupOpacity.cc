@@ -55,7 +55,7 @@ Compound_Analytic_MultigroupOpacity::Compound_Analytic_MultigroupOpacity(
 /*!
  * \brief Unpacking constructor.
  *
- * This constructor rebuilds and Compound_Analytic_MultigroupOpacity from a vector<char> that was
+ * This constructor rebuilds and Compound_Analytic_MultigroupOpacity from a `vector<char>` that was
  * created by a call to pack().  It can only rebuild Analytic_Model types that have been registered
  * in the rtt_cdi_analytic::Opacity_Models enumeration.
  */

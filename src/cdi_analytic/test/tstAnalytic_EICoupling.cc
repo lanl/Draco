@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_analytic/test/tstAnalytic_EICoupling.cc
  * \author Mathew Cleveland
- * \date   March 2019
  * \brief  Analytic_EICoupling test.
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -17,6 +16,8 @@
 #include "cdi_analytic/Analytic_Models.hh"
 #include <memory>
 #include <vector>
+
+namespace {
 
 using namespace std;
 
@@ -41,7 +42,7 @@ void analytic_ei_coupling_test(rtt_dsxx::UnitTest &ut) {
   if (!model)
     FAILMSG("Failed to build an Analytic EICoupling Model!");
 
-  // make an analtyic electron-ion coupling
+  // make an analytic electron-ion coupling
   Analytic_EICoupling const analytic(model);
 
   // checks
@@ -55,8 +56,7 @@ void analytic_ei_coupling_test(rtt_dsxx::UnitTest &ut) {
     double const ei_coupling = 1.1;
 
     // specific heats
-    if (!soft_equiv(analytic.getElectronIonCoupling(Te, Ti, rho, w_e, w_i), ei_coupling))
-      ITFAILS;
+    FAIL_IF(!soft_equiv(analytic.getElectronIonCoupling(Te, Ti, rho, w_e, w_i), ei_coupling));
   }
 
   // field check
@@ -70,12 +70,10 @@ void analytic_ei_coupling_test(rtt_dsxx::UnitTest &ut) {
 
     vector<double> ei_coupling = analytic.getElectronIonCoupling(Te, Ti, rho, w_e, w_i);
 
-    if (ei_coupling.size() != 6)
-      ITFAILS;
+    FAIL_IF(ei_coupling.size() != 6);
 
     for (int i = 0; i < 6; i++) {
-      if (!soft_equiv(ei_coupling[i], ei_coupling_ref))
-        ITFAILS;
+      FAIL_IF(!soft_equiv(ei_coupling[i], ei_coupling_ref));
     }
   }
 
@@ -99,8 +97,7 @@ void analytic_ei_coupling_test(rtt_dsxx::UnitTest &ut) {
 
     double const tol(1.0e-12);
 
-    if (params.size() != expectedValue.size())
-      ITFAILS;
+    FAIL_IF_NOT(params.size() == expectedValue.size());
 
     if (soft_equiv(params.begin(), params.end(), expectedValue.begin(), expectedValue.end(), tol))
       PASSMSG("get_parameters() returned the analytic expression coefficients.");
@@ -214,7 +211,7 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
     // make an analytic model (polynomial specific heats)
     shared_ptr<Constant_Model> const model(new Constant_Model(1.1));
 
-    // make an analtyic electron-ion coupling
+    // make an analytic electron-ion coupling
     shared_ptr<EICoupling> const ei_coupling(new Analytic_EICoupling(model));
 
     vector<char> const internal_pack = ei_coupling->pack();
@@ -235,8 +232,8 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
     double const ei_coupling_ref = 1.1;
 
     // specific heats
-    if (!soft_equiv(n_ei_coupling.getElectronIonCoupling(Te, Ti, rho, w_e, w_i), ei_coupling_ref))
-      ITFAILS;
+    FAIL_IF_NOT(
+        soft_equiv(n_ei_coupling.getElectronIonCoupling(Te, Ti, rho, w_e, w_i), ei_coupling_ref));
   }
 
   if (ut.numFails == 0)
@@ -244,6 +241,8 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

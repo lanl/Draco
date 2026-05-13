@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_analytic/test/cdi_analytic_test.hh
  * \author Thomas M. Evans
- * \date   Mon Sep 24 12:04:00 2001
  * \brief  Dummy model used for testing cdi_analytic software.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

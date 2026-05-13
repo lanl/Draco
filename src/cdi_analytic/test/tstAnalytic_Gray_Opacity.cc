@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_analytic/test/tstAnalytic_Gray_Opacity.cc
  * \author Thomas M. Evans
- * \date   Mon Sep 24 12:08:55 2001
  * \brief  Analytic_Gray_Opacity test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_analytic_test.hh"
@@ -26,6 +25,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
+namespace {
 
 using namespace std;
 
@@ -138,7 +139,7 @@ void user_defined_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 
 void CDI_test(rtt_dsxx::UnitTest &ut) {
-  // lets make a marshak model gray opacity for scattering and absorption
+  // lets make a Marshak model gray opacity for scattering and absorption
   shared_ptr<const GrayOpacity> absorption;
   shared_ptr<const GrayOpacity> scattering;
 
@@ -175,7 +176,7 @@ void CDI_test(rtt_dsxx::UnitTest &ut) {
   // now check some data
   vector<double> T = {0.993, 0.882, 0.590, 0.112, 0.051, 0.001};
   vector<double> rho(6, 3.0);
-  std::fill(rho.begin(), rho.end(), 3.0);
+  std::ranges::fill(rho, 3.0);
 
   for (size_t i = 0; i < T.size(); i++) {
     double const ref = 100.0 / (T[i] * T[i] * T[i]);
@@ -225,7 +226,7 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
   // now check some data
   vector<double> T = {0.993, 0.882, 0.590, 0.112, 0.051, 0.001};
   vector<double> rho(6, 3.0);
-  std::fill(rho.begin(), rho.end(), 3.0);
+  std::ranges::fill(rho, 3.0);
 
   for (size_t i = 0; i < T.size(); i++) {
     double const ref = 100.0 / (T[i] * T[i] * T[i]);
@@ -346,6 +347,8 @@ void default_behavior_tests(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

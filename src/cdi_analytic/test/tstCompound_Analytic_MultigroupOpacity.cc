@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_analytic/test/tstCompound_Analytic_MultigroupOpacity.cc
  * \author Thomas M. Evans
- * \date   Tue Nov 13 17:24:12 2001
  * \brief  Compound_Analytic_MultigroupOpacity test.
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_analytic_test.hh"
@@ -21,6 +20,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
+namespace {
 
 using namespace std;
 
@@ -326,9 +327,11 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
     PASSMSG(message.str());
   }
   if (!caught) {
-    FAILMSG("Failed to catch unregistered analyic model assertion");
+    FAILMSG("Failed to catch unregistered analytic model assertion");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

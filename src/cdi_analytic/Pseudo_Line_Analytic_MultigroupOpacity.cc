@@ -2,8 +2,7 @@
 /*!
  * \file   cdi_analytic/Pseudo_Line_Analytic_MultigroupOpacity.cc
  * \author Kent G. Budge
- * \date   Tue Apr  5 08:42:25 MDT 2011
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_analytic/Pseudo_Line_Analytic_MultigroupOpacity.hh"

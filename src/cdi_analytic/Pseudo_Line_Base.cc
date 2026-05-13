@@ -2,8 +2,7 @@
 /*!
  * \file   cdi_analytic/Pseudo_Line_Base.cc
  * \author Kent G. Budge
- * \date   Tue Apr  5 08:42:25 MDT 2011
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_analytic/Pseudo_Line_Base.hh"
@@ -48,7 +47,7 @@ void Pseudo_Line_Base::setup_(double emin, double emax) {
     }
 
     // Sort line centers
-    sort(center_.begin(), center_.end());
+    std::ranges::sort(center_);
   }
   // else fuzz model: Instead of lines, we add a random opacity to each opacity bin to simulate very
   // fine, unresolvable line structure.
@@ -80,7 +79,7 @@ void Pseudo_Line_Base::setup_(double emin, double emax) {
   }
 
   // Sort edges
-  sort(edge_.begin(), edge_.end());
+  std::ranges::sort(edge_);
 }
 
 //------------------------------------------------------------------------------------------------//

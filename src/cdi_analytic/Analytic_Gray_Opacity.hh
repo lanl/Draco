@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_analytic/Analytic_Gray_Opacity.hh
  * \author Thomas M. Evans
- * \date   Fri Aug 24 13:13:46 2001
  * \brief  Analytic_Gray_Opacity class definition.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

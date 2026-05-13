@@ -2,9 +2,8 @@
 /*!
  * \file   cdi_analytic/Analytic_EICoupling.cc
  * \author Mathew Cleveland
- * \date   March 2019
  * \brief  Analytic_EICoupling member definitions.
- * \note   Copyright (C) 2019-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2019-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_analytic/Analytic_EICoupling.hh"
@@ -60,7 +59,7 @@ Analytic_EICoupling::Analytic_EICoupling(const sf_char &packed) : analytic_model
 
   // unpack the packed analytic model
   std::vector<char> packed_analytic(size_analytic);
-  for (size_t i = 0; i < static_cast<size_t>(size_analytic); ++i)
+  for (size_t i = 0; std::cmp_less(i, size_analytic); ++i)
     unpacker >> packed_analytic[i];
 
   Check(unpacker.get_ptr() == &packed[0] + packed.size());
