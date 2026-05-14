@@ -2,9 +2,8 @@
 /*!
  * \file   special_functions/ExpInt.cc
  * \author Paul Talbot
- * \date   Tue July 26 13:39:00 2011
  * \brief  Iterative methods to calculate Ei(x), E_n(x)
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "ExpInt.hh"
@@ -14,6 +13,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <limits>
+#include <numbers>
 
 namespace rtt_sf {
 
@@ -36,10 +36,10 @@ double En(unsigned const n, double const x) {
   Insist(!(x < 0.0 || (std::abs(x) < std::numeric_limits<double>::min() && (n == 0 || n == 1))),
          "bad arguments in En");
 
-  const int MAXIT = 100;
-  const double EULER = 0.577215664901533;
-  const double EPS = numeric_limits<double>::epsilon();
-  const double BIG = numeric_limits<double>::max() * EPS;
+  constexpr int MAXIT = 100;
+  constexpr double EULER = std::numbers::egamma;
+  constexpr double EPS = numeric_limits<double>::epsilon();
+  constexpr double BIG = numeric_limits<double>::max() * EPS;
 
   double a, b, c, d, del, fact, h, psi, ans(0.0);
 
@@ -122,10 +122,10 @@ double Ei(double const x) {
   // Check(x) // x can be any real value.
 
   using std::numeric_limits;
-  const size_t MAXIT = 100;
-  const double EULER = 0.57721564901533;
-  const double EPS = numeric_limits<double>::epsilon();
-  const double FPMIN = numeric_limits<double>::min() / EPS;
+  constexpr size_t MAXIT = 100;
+  constexpr double EULER = std::numbers::egamma;
+  constexpr double EPS = numeric_limits<double>::epsilon();
+  constexpr double FPMIN = numeric_limits<double>::min() / EPS;
 
   double fact, prev, sum, term;
 

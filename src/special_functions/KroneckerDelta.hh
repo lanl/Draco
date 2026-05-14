@@ -2,7 +2,6 @@
 /*!
  * \file   special_functions/KroneckerDelta.hh
  * \author Kelly Thompson
- * \date   Mon Nov 8 11:17:12 2004
  * \brief  Provide declaration of templatized KroneckerDelta function.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

@@ -2,9 +2,8 @@
 /*!
  * \file   special_functions/FM12.t.hh
  * \author Kent Budge
- * \date   Tue Sep 21 12:06:09 2004
  * \brief  Implementation of FM12
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef sf_FM12_t_hh

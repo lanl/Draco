@@ -2,9 +2,8 @@
 /*!
  * \file   special_functions/Ylm.cc
  * \author Kent Budge
- * \date   Tue Sep 21 09:20:10 2004
  * \brief  Implementation of Ylm
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Ylm.hh"
@@ -14,6 +13,7 @@
 #include <cstdlib>
 #include <gsl/gsl_sf_gamma.h>
 #include <gsl/gsl_sf_legendre.h>
+#include <numbers>
 
 namespace rtt_sf {
 
@@ -105,7 +105,7 @@ double cPlkGalerkin(unsigned const l, unsigned const k, double const mu, double 
  *
  * \param k Used to specify the order \f$ k \f$ of \f$ Y_{\ell,k}(\theta,\phi) \f$.
  *
- * \param theta The polar (colatitudinal) coordinate in (0,\f$\pi\f$).
+ * \param theta The polar (co-latitudinal) coordinate in (0,\f$\pi\f$).
  *
  * \param phi The azimuthal (longitudinal) coordinate in (0,\f$ 2\pi\f$).
  *
@@ -141,11 +141,11 @@ double normalizedYlk(unsigned const l, int const k, double const theta, double c
   double result(-9999.0);
 
   if (k > 0)
-    result = cP * std::sqrt(2.0) * std::sin(k * phi);
+    result = cP * std::numbers::sqrt2 * std::sin(k * phi);
   else if (k == 0)
     result = cP;
   else /* if k<0 */
-    result = sign * cP * std::sqrt(2.0) * std::cos(absk * phi);
+    result = sign * cP * std::numbers::sqrt2 * std::cos(absk * phi);
   return result;
 }
 
@@ -242,7 +242,7 @@ double complexYlk(unsigned const l, int const k, double const theta, double cons
  *
  * \param l Used to specify the degree \f$ \ell \f$ of \f$ Y_{\ell,k}(\theta,\phi) \f$.
  * \param k Used to specify the order \f$ k \f$ of \f$ Y_{\ell,k}(\theta,\phi) \f$.
- * \param mu The cosine of the polar (colatitudinal) coordinate in (-1,1).
+ * \param mu The cosine of the polar (co-latitudinal) coordinate in (-1,1).
  * \param phi The azimuthal (longitudinal) coordinate in (0,\f$ 2\pi\f$).
  * \param sumwt normalizing coefficient
  * \return The spherical harmonic value as specified in the detailed documentation.
@@ -282,9 +282,9 @@ double galerkinYlk(unsigned const l, int const k, double const mu, double const 
   // Adjust the sign.
   if (k < 0) {
     //        Ylk*=std::pow( -1.0, absk );
-    Ylk *= std::sqrt(2.0) * std::sin(absk * phi);
+    Ylk *= std::numbers::sqrt2 * std::sin(absk * phi);
   } else if (k > 0)
-    Ylk *= std::sqrt(2.0) * std::cos(absk * phi);
+    Ylk *= std::numbers::sqrt2 * std::cos(absk * phi);
 
   return Ylk;
 }

@@ -2,9 +2,8 @@
 /*!
  * \file   special_functions/Factorial_pt.cc
  * \author Kelly Thompson
- * \date   Mon Nov 8 11:17:12 2004
  * \brief  Provide explicit instantiations of templatized factorial function.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Factorial.t.hh" // NOLINT(misc-include-cleaner)

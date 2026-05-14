@@ -2,9 +2,8 @@
 /*!
  * \file   special_functions/F2inv.cc
  * \author Kent Budge
- * \date   Tue Sep 21 09:20:10 2004
  * \brief  Implementation of F2inv
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "F2inv.hh"
