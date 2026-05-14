@@ -2,9 +2,8 @@
 /*!
  * \file   special_functions/FM12.hh
  * \author Kent Budge
- * \date   Tue Sep 21 12:06:09 2004
  * \brief  Compute Fermi-Dirac function of 1/2 order
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef sf_FM12_hh

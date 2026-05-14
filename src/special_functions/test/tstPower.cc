@@ -2,8 +2,7 @@
 /*!
  * \file   special_functions/test/tstPower.cc
  * \author Mike Buksas
- * \date   Mon Jul 24 13:47:58 2006
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -11,6 +10,8 @@
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
 #include "special_functions/Power.hh"
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -42,6 +43,8 @@ void test(rtt_dsxx::UnitTest &ut) {
   if (!soft_equiv(Power<0>(1.0), 1.0))
     FAILMSG("1.0^0 in float failed.");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

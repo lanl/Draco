@@ -2,9 +2,8 @@
 /*!
  * \file   special_functions/F32.cc
  * \author Kent Budge
- * \date   Tue Sep 21 12:06:09 2004
  * \brief  Implementation of F32
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "F32.t.hh" // NOLINT(misc-include-cleaner)

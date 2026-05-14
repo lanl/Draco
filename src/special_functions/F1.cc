@@ -3,7 +3,7 @@
  * \file   special_functions/F1.cc
  * \author Kent Budge
  * \brief  Implementation of F1
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "F1.hh"

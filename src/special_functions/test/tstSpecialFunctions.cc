@@ -2,9 +2,8 @@
 /*!
  * \file   special_functions/test/tstSpecialFunctions.cc
  * \author Kelly Thompson
- * \date   Tue Sep 27 12:49:39 2005
  * \brief  Unit tests for kronecker_delta and factorial.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -14,6 +13,8 @@
 #include "special_functions/Factorial.hh"
 #include "special_functions/KroneckerDelta.hh"
 #include <stdexcept>
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -169,6 +170,8 @@ void tstFF(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

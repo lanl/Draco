@@ -2,8 +2,7 @@
 /*!
  * \file   special_functions/test/tstYlm.cc
  * \author Kent Budge
- * \date   Tue Jul  6 10:00:38 2004
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -12,10 +11,14 @@
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
 #include "special_functions/Ylm.hh"
-#include "units/MathConstants.hh"
 #include <cmath> // cos, sin, sqrt
 #include <iostream>
+#include <numbers>
 #include <sstream>
+
+// cSpell:ignore comparec, Plk, Ylk, Ylm
+
+namespace {
 
 using namespace std;
 using namespace rtt_sf;
@@ -42,36 +45,36 @@ void comparecPlk(unsigned const l, int const k, double const x, double const exp
 }
 
 //------------------------------------------------------------------------------------------------//
-void tstcPlk(rtt_dsxx::UnitTest &ut) {
+void tst_cPlk(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
-  using rtt_units::PI;
+  ;
 
   cout << "\nTesting cPlk function.\n\n";
 
   double x(0.3568);
 
   // cPlk(0,0)
-  double expVal(sqrt(1.0 / 4.0 / PI));
+  double expVal(sqrt(1.0 / 4.0 / std::numbers::pi));
   comparecPlk(0, 0, x, expVal, ut);
 
   // cPlk(1,0)
-  expVal = sqrt(3.0 / 4.0 / PI) * x;
+  expVal = sqrt(3.0 / 4.0 / std::numbers::pi) * x;
   comparecPlk(1, 0, x, expVal, ut);
 
   // cPlk(1,1)
-  expVal = -1.0 * sqrt(3.0 / 8.0 / PI) * sqrt(1.0 - x * x);
+  expVal = -1.0 * sqrt(3.0 / 8.0 / std::numbers::pi) * sqrt(1.0 - x * x);
   comparecPlk(1, 1, x, expVal, ut);
 
   // cPlk(2,0)
-  expVal = sqrt(5.0 / 4.0 / PI) / 2.0 * (3.0 * x * x - 1.0);
+  expVal = sqrt(5.0 / 4.0 / std::numbers::pi) / 2.0 * (3.0 * x * x - 1.0);
   comparecPlk(2, 0, x, expVal, ut);
 
   // cPlk(2,1)
-  expVal = sqrt(5.0 / 24.0 / PI) * (-3.0 * x) * sqrt(1.0 - x * x);
+  expVal = sqrt(5.0 / 24.0 / std::numbers::pi) * (-3.0 * x) * sqrt(1.0 - x * x);
   comparecPlk(2, 1, x, expVal, ut);
 
   // cPlk(2,2)
-  expVal = sqrt(5.0 / 96.0 / PI) * 3.0 * (1.0 - x * x);
+  expVal = sqrt(5.0 / 96.0 / std::numbers::pi) * 3.0 * (1.0 - x * x);
   comparecPlk(2, 2, x, expVal, ut);
 
   if (ut.dbcOn() && !ut.dbcNothrow()) {
@@ -148,7 +151,7 @@ void compareGalerkinYlk(unsigned const l, int const k, double const theta, doubl
   using rtt_dsxx::soft_equiv;
   std::ostringstream msg;
 
-  double const Ylk(galerkinYlk(l, k, cos(theta), phi, (4.0 * rtt_units::PI)));
+  double const Ylk(galerkinYlk(l, k, cos(theta), phi, (4.0 * std::numbers::pi)));
 
   if (soft_equiv(Ylk, expVal)) {
     msg << "galerkinYlk(" << l << "," << k << ") function returned the expected value = " << expVal
@@ -183,52 +186,54 @@ void compareComplexYlk(unsigned const l, int const k, double const theta, double
 //------------------------------------------------------------------------------------------------//
 void tstNormalizedYlk(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
-  using rtt_units::PI;
+  ;
 
   cout << "\nTesting normalizedYlk function.\n\n";
 
   double const theta = 0.4, phi = 0.21;
 
   // y(0,0)
-  double expVal = sqrt(1.0 / (4.0 * PI));
+  double expVal = sqrt(1.0 / (4.0 * std::numbers::pi));
   compareNormYlk(0, 0, theta, phi, expVal, ut);
 
   // y(1,0)
-  expVal = sqrt(3.0 / (4.0 * PI)) * cos(theta);
+  expVal = sqrt(3.0 / (4.0 * std::numbers::pi)) * cos(theta);
   compareNormYlk(1, 0, theta, phi, expVal, ut);
   // y(1,-1)
-  expVal = sqrt(3.0 / (4.0 * PI)) * sin(theta) * cos(phi);
+  expVal = sqrt(3.0 / (4.0 * std::numbers::pi)) * sin(theta) * cos(phi);
   compareNormYlk(1, -1, theta, phi, expVal, ut);
   // y(1,1)
-  expVal = -1.0 * sqrt(3.0 / (4.0 * PI)) * sin(theta) * sin(phi);
+  expVal = -1.0 * sqrt(3.0 / (4.0 * std::numbers::pi)) * sin(theta) * sin(phi);
   compareNormYlk(1, 1, theta, phi, expVal, ut);
 
   // y(2,-2)
-  expVal = sqrt(15 / (16 * PI)) * sin(theta) * sin(theta) * cos(2 * phi);
+  expVal = sqrt(15 / (16 * std::numbers::pi)) * sin(theta) * sin(theta) * cos(2 * phi);
   compareNormYlk(2, -2, theta, phi, expVal, ut);
 
   // y(2,-1)
-  expVal = sqrt(15 / (4 * PI)) * sin(theta) * cos(theta) * cos(phi);
+  expVal = sqrt(15 / (4 * std::numbers::pi)) * sin(theta) * cos(theta) * cos(phi);
   compareNormYlk(2, -1, theta, phi, expVal, ut);
 
   // y(2,0)
-  expVal = sqrt(5 / (16 * PI)) * (3 * cos(theta) * cos(theta) - 1);
+  expVal = sqrt(5 / (16 * std::numbers::pi)) * (3 * cos(theta) * cos(theta) - 1);
   compareNormYlk(2, 0, theta, phi, expVal, ut);
 
   // y(2,1)
-  expVal = -1.0 * sqrt(15 / (4 * PI)) * sin(theta) * cos(theta) * sin(phi);
+  expVal = -1.0 * sqrt(15 / (4 * std::numbers::pi)) * sin(theta) * cos(theta) * sin(phi);
   compareNormYlk(2, 1, theta, phi, expVal, ut);
 
   // y(2,2)
-  expVal = sqrt(15 / (16 * PI)) * sin(theta) * sin(theta) * sin(2 * phi);
+  expVal = sqrt(15 / (16 * std::numbers::pi)) * sin(theta) * sin(theta) * sin(2 * phi);
   compareNormYlk(2, 2, theta, phi, expVal, ut);
 
   // Test rotational invariance
-  if (soft_equiv(normalizedYlk(3, 2, theta, phi), normalizedYlk(3, 2, theta + 2 * PI, phi)))
+  if (soft_equiv(normalizedYlk(3, 2, theta, phi),
+                 normalizedYlk(3, 2, theta + 2 * std::numbers::pi, phi)))
     ut.passes("Azimuthal invariance looks okay.");
   else
     ut.failure("Failed azimuthal invariance test.");
-  if (soft_equiv(normalizedYlk(3, 2, theta, phi), normalizedYlk(3, 2, theta, phi + PI)))
+  if (soft_equiv(normalizedYlk(3, 2, theta, phi),
+                 normalizedYlk(3, 2, theta, phi + std::numbers::pi)))
     ut.passes("Polar invariance looks okay.");
   else
     ut.failure("Failed polar invariance test.");
@@ -238,24 +243,24 @@ void tstNormalizedYlk(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void tstRealYlk(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
-  using rtt_units::PI;
+  ;
 
   cout << "\nTesting realYlk function.\n\n";
 
   double const theta = 0.9, phi = 0.06;
 
   // Y(0,0)
-  double expVal = sqrt(1.0 / (4.0 * PI));
+  double expVal = sqrt(1.0 / (4.0 * std::numbers::pi));
   compareRealYlk(0, 0, theta, phi, expVal, ut);
 
   // y(1,0)
-  expVal = sqrt(3.0 / (4.0 * PI)) * cos(theta);
+  expVal = sqrt(3.0 / (4.0 * std::numbers::pi)) * cos(theta);
   compareRealYlk(1, 0, theta, phi, expVal, ut);
   // y(1,-1)
-  double const expVal_1_m1 = sqrt(3.0 / (8.0 * PI)) * sin(theta) * cos(phi);
+  double const expVal_1_m1 = sqrt(3.0 / (8.0 * std::numbers::pi)) * sin(theta) * cos(phi);
   compareRealYlk(1, -1, theta, phi, expVal_1_m1, ut);
   // y(1,1)
-  double const expVal_1_1 = -1.0 * sqrt(3.0 / (8.0 * PI)) * sin(theta) * cos(phi);
+  double const expVal_1_1 = -1.0 * sqrt(3.0 / (8.0 * std::numbers::pi)) * sin(theta) * cos(phi);
   compareRealYlk(1, 1, theta, phi, expVal_1_1, ut);
 
   return;
@@ -264,7 +269,7 @@ void tstRealYlk(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void tstComplexYlk(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
-  using rtt_units::PI;
+  ;
 
   cout << "\nTesting complexYlk function.\n\n";
 
@@ -279,50 +284,52 @@ void tstComplexYlk(rtt_dsxx::UnitTest &ut) {
   expVal = 0.0;
   compareComplexYlk(1, 0, theta, phi, expVal, ut);
   // y(1,-1)
-  double const expVal_1_m1 = sqrt(3.0 / (8.0 * PI)) * sin(theta) * sin(phi);
+  double const expVal_1_m1 = sqrt(3.0 / (8.0 * std::numbers::pi)) * sin(theta) * sin(phi);
   compareComplexYlk(1, -1, theta, phi, expVal_1_m1, ut);
   // y(1,1)
-  double const expVal_1_1 = -1.0 * sqrt(3.0 / (8.0 * PI)) * sin(theta) * sin(phi);
+  double const expVal_1_1 = -1.0 * sqrt(3.0 / (8.0 * std::numbers::pi)) * sin(theta) * sin(phi);
   compareComplexYlk(1, 1, theta, phi, expVal_1_1, ut);
 
   return;
 }
 
 //------------------------------------------------------------------------------------------------//
-void tstgalerkinYlk(rtt_dsxx::UnitTest &ut) {
+void test_galerkin_Ylk(rtt_dsxx::UnitTest &ut) {
   using rtt_dsxx::soft_equiv;
-  using rtt_units::PI;
+  ;
 
   cout << "\nTesting realYlk function.\n\n";
 
   double const theta = 0.9, phi = 0.06;
 
   // Y(0,0)
-  double const expVal = (1.0 / (4.0 * PI));
+  double const expVal = (1.0 / (4.0 * std::numbers::pi));
   compareGalerkinYlk(0, 0, theta, phi, expVal, ut);
 
   // y(1,0)
-  //     expVal = sqrt(3.0/(4.0*PI))*cos(theta);
+  //     expVal = sqrt(3.0/(4.0*std::numbers::pi))*cos(theta);
   //     compareGalerkinYlk(1,0,theta,phi,expVal,ut);
   // y(1,-1)
-  double const expVal_1_m1 = -(3.0 / (4.0 * PI)) * sin(theta) * sin(phi);
+  double const expVal_1_m1 = -(3.0 / (4.0 * std::numbers::pi)) * sin(theta) * sin(phi);
   compareGalerkinYlk(1, -1, theta, phi, expVal_1_m1, ut);
   // y(1,1)
-  double const expVal_1_1 = -(3.0 / (4.0 * PI)) * sin(theta) * cos(phi);
+  double const expVal_1_1 = -(3.0 / (4.0 * std::numbers::pi)) * sin(theta) * cos(phi);
   compareGalerkinYlk(1, 1, theta, phi, expVal_1_1, ut);
 
   return;
 }
 
+} // namespace
+
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
-    tstcPlk(ut);
+    tst_cPlk(ut);
     tstNormalizedYlk(ut);
     tstRealYlk(ut);
     tstComplexYlk(ut);
-    tstgalerkinYlk(ut);
+    test_galerkin_Ylk(ut);
   }
   UT_EPILOG(ut);
 }

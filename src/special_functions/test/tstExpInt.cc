@@ -2,9 +2,8 @@
 /*!
  * \file   special_functions/test/tstExpInt.cc
  * \author Paul Talbot
- * \date   Thu Jul 28 09:20:34 2011
  * \brief  Tests the ExpInt for correct solutions in each routine
- * \note   Copyright (C) 2011-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2011-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -13,7 +12,10 @@
 #include "dsxx/UnitTest.hh"
 #include "special_functions/ExpInt.hh"
 #include <cmath>
+#include <iomanip>
 #include <sstream>
+
+namespace {
 
 using rtt_dsxx::soft_equiv;
 using namespace rtt_sf;
@@ -30,16 +32,16 @@ using namespace rtt_sf;
 void tstEi_low(rtt_dsxx::UnitTest &ut) {
   double const x = 0.1;
   double const val = Ei(x);
-  double const expVal = -1.6228128298555;
-
+  double const expVal = -1.6228128139692766;
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
     msg << "Ei(" << x << ") returned the expected value, " << expVal << ".";
-    ut.passes(msg.str());
+    PASSMSG(msg.str());
   } else {
-    msg << "Ei(" << x << ") did NOT return the expected value.\n"
-        << "\tExpected " << expVal << ", but got " << val;
-    ut.failure(msg.str());
+    msg << "Ei(" << x << ") did NOT return the expected value.\n\tExpected " << expVal
+        << ", but got " << std::fixed // NOLINT(misc-include-cleaner)
+        << std::setprecision(16) << val;
+    FAILMSG(msg.str());
   }
   return;
 }
@@ -54,11 +56,11 @@ void tstEi_high(rtt_dsxx::UnitTest &ut) {
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
     msg << "Ei(" << x << ") returned the expected value, " << expVal << ".";
-    ut.passes(msg.str());
+    PASSMSG(msg.str());
   } else {
-    msg << "Ei(" << x << ") did NOT return the expected value.\n"
-        << "\tExpected " << expVal << ", but got " << val;
-    ut.failure(msg.str());
+    msg << "Ei(" << x << ") did NOT return the expected value.\n\tExpected " << expVal
+        << ", but got " << val;
+    FAILMSG(msg.str());
   }
   return;
 }
@@ -72,11 +74,11 @@ void tstEi_neg(rtt_dsxx::UnitTest &ut) {
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
     msg << "Ei(" << x << ") returned the expected value, " << expVal << ".";
-    ut.passes(msg.str());
+    PASSMSG(msg.str());
   } else {
-    msg << "Ei(" << x << ") did NOT return the expected value.\n"
-        << "\tExpected " << expVal << ", but got " << val;
-    ut.failure(msg.str());
+    msg << "Ei(" << x << ") did NOT return the expected value.\n\tExpected " << expVal
+        << ", but got " << val;
+    FAILMSG(msg.str());
   }
   return;
 }
@@ -91,11 +93,11 @@ void tstE0(rtt_dsxx::UnitTest &ut) {
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
     msg << "E_" << n << "(" << x << ") returned the expected value, " << expVal << ".";
-    ut.passes(msg.str());
+    PASSMSG(msg.str());
   } else {
-    msg << "E_" << n << "(" << x << ") did NOT return the expected value.\n"
-        << "\tExpected " << expVal << ", but got " << val;
-    ut.failure(msg.str());
+    msg << "E_" << n << "(" << x << ") did NOT return the expected value.\n\tExpected " << expVal
+        << ", but got " << val;
+    FAILMSG(msg.str());
   }
   return;
 }
@@ -110,11 +112,11 @@ void tstE3_0(rtt_dsxx::UnitTest &ut) {
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
     msg << "E_" << n << "(" << x << ") returned the expected value, " << expVal << ".";
-    ut.passes(msg.str());
+    PASSMSG(msg.str());
   } else {
-    msg << "E_" << n << "(" << x << ") did NOT return the expected value.\n"
-        << "\tExpected " << expVal << ", but got " << val;
-    ut.failure(msg.str());
+    msg << "E_" << n << "(" << x << ") did NOT return the expected value.\n\tExpected " << expVal
+        << ", but got " << val;
+    FAILMSG(msg.str());
   }
   return;
 }
@@ -129,11 +131,11 @@ void tstE4_low(rtt_dsxx::UnitTest &ut) {
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
     msg << "E_" << n << "(" << x << ") returned the expected value, " << expVal << ".";
-    ut.passes(msg.str());
+    PASSMSG(msg.str());
   } else {
-    msg << "E_" << n << "(" << x << ") did NOT return the expected value.\n"
-        << "\tExpected " << expVal << ", but got " << val;
-    ut.failure(msg.str());
+    msg << "E_" << n << "(" << x << ") did NOT return the expected value.\n\tExpected " << expVal
+        << ", but got " << val;
+    FAILMSG(msg.str());
   }
   return;
 }
@@ -148,14 +150,16 @@ void tstE1_high(rtt_dsxx::UnitTest &ut) {
   std::ostringstream msg;
   if (soft_equiv(val, expVal)) {
     msg << "E_" << n << "(" << x << ") returned the expected value, " << expVal << ".";
-    ut.passes(msg.str());
+    PASSMSG(msg.str());
   } else {
-    msg << "E_" << n << "(" << x << ") did NOT return the expected value.\n"
-        << "\tExpected " << expVal << ", but got " << val;
-    ut.failure(msg.str());
+    msg << "E_" << n << "(" << x << ") did NOT return the expected value.\n\tExpected " << expVal
+        << ", but got " << val;
+    FAILMSG(msg.str());
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 // RUN TESTS

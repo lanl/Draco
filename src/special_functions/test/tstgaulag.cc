@@ -2,8 +2,7 @@
 /*!
  * \file   special_functions/test/tstgaulag.cc
  * \author Kent Budge
- * \date   Tue Sep 27 12:49:39 2005
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/DracoMath.hh"
@@ -13,6 +12,10 @@
 #include "dsxx/UnitTest.hh"
 #include "special_functions/gaulag.hh"
 #include <vector>
+
+// cSpell:ignore gaulag, tstgaulag
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -36,8 +39,9 @@ void tstgaulag(UnitTest &ut) {
   return;
 }
 
-//------------------------------------------------------------------------------------------------//
+} // namespace
 
+//------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
