@@ -2,9 +2,8 @@
 /*!
  * \file   RTT_Format_Reader/test/TestRTTMeshReader.cc
  * \author Thomas M. Evans
- * \date   Wed Mar 27 10:41:12 2002
  * \brief  RTT_Mesh_Reader test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -14,6 +13,7 @@
 #include "RTT_Format_Reader/RTT_Mesh_Reader.hh"
 #include "mesh_element/Element_Definition.hh"
 #include <array>
+#include <cstdint>
 #include <exception>
 #include <iostream>
 #include <map>
@@ -22,6 +22,8 @@
 #include <string>
 #include <utility> // make_pair
 #include <vector>
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // Enum definitions and forward declarations
@@ -32,7 +34,7 @@ using namespace rtt_dsxx;
 using rtt_mesh_element::Element_Definition;
 using rtt_RTT_Format_Reader::RTT_Mesh_Reader;
 
-enum Meshes { DEFINED, MESHES_LASTENTRY };
+enum Meshes : uint8_t { DEFINED, MESHES_LASTENTRY };
 
 bool check_virtual(rtt_dsxx::UnitTest &ut, RTT_Mesh_Reader const &mesh, Meshes const &meshtype);
 
@@ -71,7 +73,7 @@ void runTest(rtt_dsxx::UnitTest &ut) {
     }
     if (!all_passed) {
       ostringstream m;
-      m << "Errors occured testing mesh number " << mesh_type << '\n';
+      m << "Errors occurred testing mesh number " << mesh_type << '\n';
       FAILMSG(m.str());
     }
   }
@@ -267,6 +269,8 @@ bool check_virtual(rtt_dsxx::UnitTest &ut, RTT_Mesh_Reader const &mesh, Meshes c
   FAILMSG("Errors in some virtual accessors.");
   return false;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 // Main

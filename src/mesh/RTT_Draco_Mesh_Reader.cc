@@ -2,9 +2,8 @@
 /*!
  * \file   mesh/RTT_Draco_Mesh_Reader.cc
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Friday, Jul 13, 2018, 08:38 am
  * \brief  RTT_Draco_Mesh_Reader header file.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "mesh/RTT_Draco_Mesh_Reader.hh"

@@ -2,9 +2,8 @@
 /*!
  * \file   RTT_Format_Reader/test/TestRTTPolyhedron.cc
  * \author James S. Warsa
- * \date   Fri Aug 19 12:31:47 2016
  * \brief  Testing the POLYHEDRON Element_Definition
- * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -23,7 +22,12 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
+
+// cSpell:ignore mcells, ncells, ndim, ncorner, rttpolyhedron
+
+namespace {
 
 using rtt_mesh_element::Element_Definition;
 using rtt_RTT_Format_Reader::RTT_Mesh_Reader;
@@ -120,7 +124,7 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
       size_t const mcells = mesh->get_dims_ncells();
       Check(ncells >= 0);
       Check(mcells < INT_MAX);
-      if (static_cast<size_t>(ncells) != mcells) {
+      if (std::cmp_not_equal(ncells, mcells)) {
         FAILMSG("Unexpected number of cells.");
       } else {
         PASSMSG("Correct number of cells.");
@@ -179,6 +183,8 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
     } // End polyhedron mesh tests
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

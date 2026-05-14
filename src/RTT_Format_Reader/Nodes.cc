@@ -2,9 +2,8 @@
 /*!
  * \file   RTT_Format_Reader/Nodes.cc
  * \author B.T. Adams
- * \date   Wed Jun 7 10:33:26 2000
  * \brief  Implementation file for RTT_Format_Reader/Nodes class.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "RTT_Format_Reader/Nodes.hh"
