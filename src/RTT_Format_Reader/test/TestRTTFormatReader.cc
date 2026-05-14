@@ -2,9 +2,8 @@
 /*!
  * \file   RTT_Format_Reader/test/TestRTTFormatReader.cc
  * \author Thomas M. Evans
- * \date   Wed Mar 27 10:26:42 2002
  * \brief  RTT_Format_Reader test.
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "TestRTTFormatReader.hh"
@@ -23,6 +22,10 @@
 #include <utility> // make_pair
 #include <vector>
 
+// cSpell:ignore bndry, coor, dudded, ncell, matl, ncells, ndim, topo, Trease
+
+namespace test_rtt_format_reader {
+
 using namespace std;
 using namespace rtt_dsxx;
 
@@ -32,6 +35,8 @@ map<Meshes, bool> Dims_validated;
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
+
+namespace {
 
 void runTest(UnitTest &ut) {
   // Find the mesh file
@@ -76,7 +81,7 @@ void runTest(UnitTest &ut) {
 
     if (!all_passed) {
       ostringstream m;
-      m << "Errors occured testing mesh number " << mesh_type << '\n';
+      m << "Errors occurred testing mesh number " << mesh_type << '\n';
       FAILMSG(m.str());
     }
   }
@@ -104,6 +109,8 @@ bool verify_Dims(RTT_Format_Reader const &mesh, Meshes const &meshtype, UnitTest
   // Return the integrity state of the Dims data.
   return Dims_validated.find(meshtype)->second;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 bool check_header(RTT_Format_Reader const &mesh, Meshes const &meshtype, UnitTest &ut) {
@@ -1641,11 +1648,13 @@ bool check_cell_data(RTT_Format_Reader const &mesh, Meshes const &meshtype, Unit
   return all_passed;
 }
 
+} // namespace test_rtt_format_reader
+
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
-  ScalarUnitTest ut(argc, argv, release);
+  rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
-    runTest(ut);
+    test_rtt_format_reader::runTest(ut);
   }
   UT_EPILOG(ut);
 }
