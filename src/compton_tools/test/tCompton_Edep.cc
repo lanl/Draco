@@ -2,9 +2,8 @@
 /*!
  * \file   compton_tools/test/tCompton_Edep.cc
  * \author Kendra P. Long
- * \date   2022 Oct 7
  * \brief  Implementation file for tCompton_Edep
- * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"
@@ -21,7 +20,9 @@
 #include <utility>
 #include <vector>
 
-namespace rtt_compton_edep_test {
+// cSpell:ignore edep, erec, sigc
+
+namespace {
 
 using rtt_dsxx::soft_equiv;
 
@@ -45,7 +46,7 @@ void compton_edep_data_test(rtt_dsxx::UnitTest &ut) {
   try {
     edep_sp =
         std::make_shared<compton_edep::Edep_Container>(compton_edep::read_edep_file(filename));
-  } catch (int /*asrt*/) {
+  } catch (int /*error*/) {
     FAILMSG("Failed to construct an Edep_Container object!");
     // if construction fails, there is no reason to continue testing...
     return;
@@ -107,9 +108,8 @@ void compton_edep_data_test(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 //!  Tests CSK_Interface's error-handling on a non-existent file.
 void compton_fail_test(rtt_dsxx::UnitTest &ut) {
-  std::cout << "\n---------------------------------------------------------\n"
-            << "    Test Compton_Edep bad file handling    \n"
-            << "---------------------------------------------------------\n";
+  std::string const da('-', 58);
+  std::cout << "\n" << da << "\n    Test Compton_Edep bad file handling    \n" << da << '\n';
   // open a small mg opacity file:
   std::string const filename = ut.getTestSourcePath() + "non_existent.compton";
   std::cout << "Testing with a non-existent file...\n\n";
@@ -117,14 +117,13 @@ void compton_fail_test(rtt_dsxx::UnitTest &ut) {
   bool caught = false;
   try {
     compton_edep::Edep_Container const mycontainer = compton_edep::read_edep_file(filename);
-  } catch (rtt_dsxx::assertion &asrt) {
-    std::cout << "Draco exception thrown: " << asrt.what() << '\n';
+  } catch (rtt_dsxx::assertion &error) {
+    std::cout << "Draco exception thrown: " << error.what() << '\n';
     // We successfully caught the bad file!
     caught = true;
   }
 
-  if (!caught)
-    ITFAILS;
+  FAIL_IF_NOT(caught);
 
   if (ut.numFails == 0) {
     PASSMSG("Successfully caught a bad library file.");
@@ -133,15 +132,15 @@ void compton_fail_test(rtt_dsxx::UnitTest &ut) {
   }
 }
 
-} // namespace rtt_compton_edep_test
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
     // >>> UNIT TESTS
-    rtt_compton_edep_test::compton_edep_data_test(ut);
-    rtt_compton_edep_test::compton_fail_test(ut);
+    compton_edep_data_test(ut);
+    compton_fail_test(ut);
   }
   UT_EPILOG(ut);
 }
