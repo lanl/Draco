@@ -2,9 +2,8 @@
 /*!
  * \file   compton_tools/Sparse_Compton_Matrix.cc
  * \author Andrew Till
- * \date   11 May 2020
  * \brief  Implementation file for compton interface
- * \note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

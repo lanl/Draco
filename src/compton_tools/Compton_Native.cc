@@ -2,7 +2,6 @@
 /*!
  * \file   compton_tools/Compton_Native.cc
  * \author Andrew Till
- * \date   11 May 2020
  * \brief  Implementation file for native Compton binary-read and temperature interpolation
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

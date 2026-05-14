@@ -2,7 +2,6 @@
 /*!
  * \file   compton_tools/cskrw.cc
  * \author Andrew Till
- * \date   11 May 2020
  * \brief  Converter of ASCII to binary CSK Compton files. Intended for internal use.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -32,9 +31,9 @@ using std::string;
 using UINT64 = uint64_t;
 using FP = double;
 
-// cSpell:ignore cskrw, gfrom, Evals, Bdrs, isnonlin, Tbreakpoints, mtocm, Zbar, opac, cspeed,
-// cSpell:ignore renorm, Ncutoff, Elow, Ehigh, Efrom, bgsum, bgfrom, bgto, hplanck, pchip, iuse
-// cSpell:ignore nlbase, scipy, IPCRESS, csmap, avogadrosnumber
+// cSpell::ignore avogadrosnumber, Bdrs, bgfrom, bgsum, bgto, cskrw, csmap, cspeed, dsz,Efrom,
+// cSpell::ignore Ehigh, Elow, eto, Evals, fxn, gfrom, gto, hplanck, ify, isnonlin, isz, iuse, mec,
+// cSpell::ignore mtocm, Ncutoff, nlbase, opac, pchip, renorm, scipy, Tbreakpoints, tsz, wgt, Zbar
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -362,7 +361,7 @@ void Dense_Compton_Data::compute_nonlinear_difference() {
 void Dense_Compton_Data::compute_temperature_derivatives() {
   // Check that temperature grid is valid (part 1/2)
   if (numTs < 2) {
-    std::fill(derivatives.begin(), derivatives.end(), 0.0);
+    std::ranges::fill(derivatives, 0.0);
     std::cerr << "WARNING: Cannot construct derivatives with only one temperature. Aborting "
                  "routine.\n";
     return;
@@ -383,7 +382,7 @@ void Dense_Compton_Data::compute_temperature_derivatives() {
 
   for (UINT64 eval = 0; eval < numEvals; ++eval) {
     for (UINT64 iL = 0; iL < numLegMoments; ++iL) {
-      std::fill(finite_diffs.begin(), finite_diffs.end(), 0.0);
+      std::ranges::fill(finite_diffs, 0.0);
 
       // Step 1: Compute finite difference in each temperature interval
       for (UINT64 iT = 0; iT < (numTs - 1U); ++iT) {
@@ -832,6 +831,8 @@ void Dense_Compton_Data::print_contents(int verbosity, int precision) {
   }
 }
 
+namespace {
+
 //------------------------------------------------------------------------------------------------//
 //! Basic reader of the csk ASCII file format
 void read_csk_files(std::string const &basename, int verbosity) {
@@ -991,6 +992,8 @@ void read_csk_files(std::string const &basename, int verbosity) {
     std::cout << "...detailed balance check done\n";
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

@@ -2,7 +2,6 @@
 /*!
  * \file   compton_tools/test/tCompton_Native.cc
  * \author Andrew Till
- * \date   14 Oct 2020
  * \brief  Implementation file for tCompton_Native
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -23,9 +22,9 @@
 #include <string>
 #include <vector>
 
-// cSpell:ignore evals
+// cSpell:ignore bds, evals, mec
 
-namespace rtt_compton_tools_test {
+namespace {
 
 using rtt_dsxx::soft_equiv;
 
@@ -41,7 +40,7 @@ void test(rtt_dsxx::UnitTest &ut) {
     auto print = [](double a) { std::cout << a << ", "; };
     std::cout << std::setprecision(14);
     std::cout << "\n" << variable_name << "\n";
-    std::for_each(variable.begin(), variable.end(), print);
+    std::ranges::for_each(variable, print);
     std::cout << '\n';
   };
   auto print_diff_lambda = [](const std::vector<double> &val, const std::vector<double> &ref,
@@ -154,7 +153,7 @@ void test(rtt_dsxx::UnitTest &ut) {
     compton_test->interp_linear_compton_amplification(amp_matrix, interp_T_keV);
 
     // Use dummy flux for nonlinear component
-    const double phival = 1.732984; // random
+    const double phival = 1.732984; // random // NOLINT(modernize-use-std-numbers)
     const double phiscale = phival * double(G);
     std::vector<double> const phi(compton_test->get_num_groups(), phival);
     // Returns 1D nonlinear difference array [group_from] (performs matrix multiplication with phi)
@@ -348,7 +347,7 @@ void test(rtt_dsxx::UnitTest &ut) {
     compton_test->interp_nonlin_diff_and_add(nl_diff, interp_T_keV, phi, phiscale);
 
     // Updates the outscattering matrix to include induced effects (accumulate to a zero array to
-    // see just the induced contrubution, typically we would pass in the linear outscat_matrix and
+    // see just the induced contribution, typically we would pass in the linear outscat_matrix and
     // this would append the difference to that).
     compton_test->interp_nonlin_diff_for_outscat_matrix(outscat_matrix_diff, interp_T_keV, phi,
                                                         phiscale);
@@ -492,15 +491,16 @@ void bad_file_test(rtt_dsxx::UnitTest &ut) {
     FAILMSG("Did not successfully catch a bad file exception.");
   }
 }
-} // namespace rtt_compton_tools_test
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_c4::ParallelUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
     // >>> UNIT TESTS
-    rtt_compton_tools_test::test(ut);
-    rtt_compton_tools_test::bad_file_test(ut);
+    test(ut);
+    bad_file_test(ut);
   }
   UT_EPILOG(ut);
 }
