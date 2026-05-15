@@ -3,7 +3,7 @@
 # author Kelly Thompson
 # date   2008 May 30
 # brief  Establish flags for Unix - Intel Fortran
-# note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 #

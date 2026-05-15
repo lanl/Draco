@@ -2,7 +2,7 @@
 # \file   .cmake-format.py
 # \author Kelly Thompson <kgt@lanl.gov>
 # \brief  Options affecting listfile parsing
-# \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
+# \note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved.
 #
 # https://cmake-format.readthedocs.io/en/latest/configuration.html
 # ------------------------------------------------------------------------------------------------ #

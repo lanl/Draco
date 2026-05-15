@@ -4,7 +4,7 @@
 # date   2010 June 5
 # brief  Establish flags for Visual Studio on Windows. These settings are shared by cl.exe and
 #        clang-cl.exe.
-# note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)

@@ -45,7 +45,7 @@
 # This is a heavily modified version of CMakeAddFortranSubdirectory.cmake that is distributed with
 # CMake
 
-# Copyright (C) 2014-2024 Triad National Security, LLC., All rights reserved.
+# Copyright (C) 2014-2026 Triad National Security, LLC., All rights reserved.
 
 # cmake-lint: disable=R0912,R0915,W0106
 

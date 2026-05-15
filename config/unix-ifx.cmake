@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   Wednesday, May 26, 2021, 14:12 pm
 # brief  Establish flags for Unix - Intel OneAPI Fortran (ifx)
-# note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved.
 # ------------------------------------------------------------------------------------------------ #
 
 #

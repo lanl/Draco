@@ -3,7 +3,6 @@
  * \file   config/query_gpu.cu
  * \author Alex Long
  * \brief  Small CUDA code that prints the architecture version, used by CMake
- * \date   Thu Mat 21 15:53:51 2019
  * \note   Copyright (C) 2019-2023 Triad National Security, LLC., All rights reserved.
  *
  * This code is from wagonhelm.github.io/articles/2018-03/detecting-cuda-capability-with-cmake */

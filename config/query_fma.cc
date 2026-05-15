@@ -2,9 +2,8 @@
 /*!
  * \file   config/query_fma.cc
  * \author Kelly Thompson <kgt@lanl.gov>
- * \date   Thursday, Feb 09, 2017, 08:11 am
  * \brief  FMA features test.
- * \note   Copyright (C) 2017-2022 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2017-2026 Triad National Security, LLC., All rights reserved.
  *
  * Supporting functions:
  *
