@@ -2,28 +2,29 @@
 /*!
  * \file   cdi_ndi/NDI_TNReaction.cc
  * \author Ben R. Ryan
- * \date   2020 Feb 4
  * \brief  NDI_TNReaction member definitions.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ndi/NDI_TNReaction.hh"
 #include "dsxx/Assert.hh"
+#include "cdi_ndi/NDI_Base.hh"
+#include <string>
+#include <utility> // move
+#include <vector>
+#ifdef NDI_FOUND
 #include "dsxx/Query_Env.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/dbc.hh"
-#include "cdi_ndi/NDI_Base.hh"
 #include <algorithm> // upper_bound, count
 #include <array>
 #include <cstddef> // size_t
 #include <cstdint> // uint32_t
 #include <limits>
 #include <sstream>
-#include <string>
-#include <utility> // move
-#include <vector>
+#endif
 
-// cSpell:ignore einbar, sigvbars, rprods, reac, edist
+// cSpell:ignore edist, einbar, mlt, reac, rprods, sigvbars
 
 namespace rtt_cdi_ndi {
 

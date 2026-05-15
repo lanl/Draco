@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ndi/test/tstNDI_AtomicMass.cc
  * \author Ben R. Ryan
- * \date   2020 Mar 6
  * \brief  NDI_AtomicMass test
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

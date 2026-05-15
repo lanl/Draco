@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_cpt/Collision_Source.hh
  * \author Ben R. Ryan
- * \date   2024 Oct 9
  * \brief  Collision_Source class definition.
  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

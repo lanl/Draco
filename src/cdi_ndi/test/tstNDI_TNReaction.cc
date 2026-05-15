@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ndi/test/tstNDI_TNReaction.cc
  * \author Ben R. Ryan
- * \date   2019 Nov 18
  * \brief  NDI_TNReaction test
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

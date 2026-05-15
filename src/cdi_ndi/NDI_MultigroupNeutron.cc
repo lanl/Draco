@@ -2,21 +2,24 @@
 /*!
  * \file   cdi_ndi/NDI_MultigroupNeutron.cc
  * \author Kyle S. Beling
- * \date   2025 March 18
  * \brief  NDI_MultigroupNeutron member definitions.
  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ndi/NDI_MultigroupNeutron.hh"
 #include "dsxx/Assert.hh"
-#include "dsxx/dbc.hh"
 #include "cdi_ndi/NDI_Base.hh"
-#include "cdi_ndi/config.h"
+#include "cdi_ndi/config.h" // NOLINT(misc-include-cleaner)
+#include <string>
+#include <vector>
+#ifdef NDI_FOUND
+#include "dsxx/dbc.hh"
 #include <array>
 #include <limits>
 #include <numeric>
-#include <string>
-#include <vector>
+#endif
+
+// cSpell:ignore mlt, mts, reac, rprod
 
 namespace rtt_cdi_ndi {
 
@@ -211,7 +214,7 @@ void NDI_MultigroupNeutron::load_ndi() {
         NDI2_get_float64_val_n(dataset_handle, NDI_REAC_Q, reaction_mts[r], &reaction_q_val[r]);
     ndi_throw_rt_error(ndi_error);
 
-    // Get products and their multiplicites
+    // Get products and their multiplicities
     const int prod_size =
         NDI2_get_size_n(dataset_handle, NDI_RPROD_ID_ALL, reaction_mts[r], &ndi_error);
     ndi_throw_rt_error(ndi_error);
@@ -375,7 +378,7 @@ double NDI_MultigroupNeutron::totalCrossSection(const int mt_number,
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Return normalized probability distribution function of a reaction product for an incident 
+ * \brief Return normalized probability distribution function of a reaction product for an incident
  *        neutron energy.
  * \param[in] product_zaid ZAID of reaction product to sample
  * \param[in] incident_energy of neutron (MeV)

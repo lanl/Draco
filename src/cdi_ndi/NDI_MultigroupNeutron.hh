@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ndi/NDI_MultigroupNeutron.hh
  * \author Kyle S. Beling
- * \date   2025 March 18
  * \brief  NDI_MultigroupNeutron class definition.
  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -17,7 +16,10 @@
 #include <algorithm>
 #include <memory>
 #include <numeric>
+#include <ranges>
 #include <string>
+
+// cSpell:ignore mts
 
 namespace rtt_cdi_ndi {
 
@@ -25,8 +27,9 @@ namespace rtt_cdi_ndi {
 /*!
  * \class NDI_MultigroupNeutron
  *
- * \brief Class for wrapping NDI calls to NDI MultigroupNeutron data. Reads data, constructs internal storage
- *        amenable to radiation calculations, and provides accessors.
+ * \brief Class for wrapping NDI calls to NDI MultigroupNeutron data. Reads data, constructs
+ *        internal storage amenable to radiation calculations, and provides accessors.
+ * 
  * \example cdi_ndi/test/tstNDI_MultigroupNeutron.cc
  */
 //================================================================================================//
@@ -85,7 +88,7 @@ public:
     return this->reaction_products[find_reaction_index(mt_number)];
   }
 
-  //! List of product multiplicites for a specific reaction
+  //! List of product multiplicities for a specific reaction
   [[nodiscard]] std::vector<int> productMultiplicities(const int mt_number) const {
     return this->reaction_multiplicities[find_reaction_index(mt_number)];
   }
@@ -175,14 +178,14 @@ private:
   //! Find reaction index
   [[nodiscard]] int find_reaction_index(const int mt_number) const {
     Require(std::count(this->reaction_mts.begin(), this->reaction_mts.end(), mt_number) == 1);
-    auto it = std::find(this->reaction_mts.begin(), this->reaction_mts.end(), mt_number);
+    auto it = std::ranges::find(this->reaction_mts, mt_number);
     return static_cast<int>(std::distance(this->reaction_mts.begin(), it));
   }
 
   //! Find product index
   [[nodiscard]] int find_product_index(const int product_zaid) const {
     Require(std::count(this->product_list.begin(), this->product_list.end(), product_zaid) == 1);
-    auto it = std::find(this->product_list.begin(), this->product_list.end(), product_zaid);
+    auto it = std::ranges::find(this->product_list, product_zaid);
     return static_cast<int>(std::distance(this->product_list.begin(), it));
   }
 
@@ -190,8 +193,8 @@ private:
   [[nodiscard]] int find_bin(const std::vector<double> &grid, const double value) const {
     Require(value < grid.front());
     Require(value > grid.back());
-    const int bin =
-        static_cast<int>(std::upper_bound(grid.rbegin(), grid.rend(), value) - grid.rbegin());
+    const int bin = static_cast<int>(std::ranges::upper_bound(grid | std::views::reverse, value) -
+                                     (grid | std::views::reverse).begin());
     return static_cast<int>(grid.size()) - 1 - bin;
   }
 
@@ -212,8 +215,8 @@ private:
     // Find closest fine group value and index
     for (size_t g = 0; g < coarse_bounds.size(); ++g) {
       new_energy_grid[g] =
-          *std::min_element(fine_bounds.begin(), fine_bounds.end(), [&](double a, double b) {
-            return std::abs(a - coarse_bounds[g]) < std::abs(b - coarse_bounds[g]);
+          *std::ranges::min_element(fine_bounds, std::ranges::less{}, [&](double x) noexcept {
+            return std::abs(x - coarse_bounds[g]);
           });
     }
     return new_energy_grid;

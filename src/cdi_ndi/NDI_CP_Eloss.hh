@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ndi/NDI_CP_Eloss.hh
  * \author Ben R. Ryan
- * \date   2020 Jun 3
  * \brief  NDI_CP_Eloss class definition.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

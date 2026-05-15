@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_cpt/test/tstCPT_Collision_Source.cc
  * \author Ben R. Ryan
- * \date   2024 Oct 9
  * \brief  CPT_Collision_Source test
  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
