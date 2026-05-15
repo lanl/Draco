@@ -2,9 +2,8 @@
 /*!
  * \file   kde/kde.i.hh
  * \author Mathew Cleveland
- * \date   Nov. 10th 2020
  * \brief  Member definitions of class kde
- * \note   Copyright (C) 2021-2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved.
  */
 //------------------------------------------------------------------------------------------------//
 

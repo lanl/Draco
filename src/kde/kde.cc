@@ -2,7 +2,6 @@
 /*!
  * \file   kde/kde.cc
  * \author Mathew Cleveland
- * \date   November 10th 2020
  * \brief  Explicitly defined KDE functions for various dimensions and coordinate KDE or Kernel
  *         Density Estimators are unbiased statical based reconstruction.  They can significantly
  *         increase the convergence rate of statical distributions. The KDE performs a

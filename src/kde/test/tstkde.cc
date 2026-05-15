@@ -2,7 +2,6 @@
 /*!
  * \file   kde/test/tstkde.cc
  * \author Mathew Cleveland
- * \date   Nov. 10th 2020
  * \brief  KDE function tests
  * \note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -19,6 +18,8 @@
 #include <cstddef>
 #include <numeric>
 #include <vector>
+
+namespace {
 
 using namespace rtt_dsxx;
 using namespace rtt_c4;
@@ -1070,7 +1071,7 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // lets make the array a little bit more complicated
     one_over_bandwidth_array[9] = {1.0 / 0.5, 1.0 / 4.0, 0.0};
-    one_over_bandwidth_array[3] = {1.0 / 1.0, 1.0 / 0.1, 0.0};
+    one_over_bandwidth_array[3] = {1.0, 10.0, 0.0}; // {1.0 / 1.0, 1.0 / 0.1, 0.0};
     one_over_bandwidth_array[4] = {1.0 / 0.5, 1.0 / 4.0, 0.0};
     one_over_bandwidth_array[2] = {1.0 / 0.1, 1.0 / 4.0, 0.0};
     const bool dd = false;
@@ -1215,7 +1216,7 @@ void test_replication(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // lets make the array a little bit more complicated
     one_over_bandwidth_array[9] = {1.0 / 0.5, 1.0 / 4.0, 0.0};
-    one_over_bandwidth_array[3] = {1.0 / 1.0, 1.0 / 0.1, 0.0};
+    one_over_bandwidth_array[3] = {1.0, 10.0, 0.0}; // {1.0 / 1.0, 1.0 / 0.1, 0.0};
     one_over_bandwidth_array[4] = {1.0 / 0.5, 1.0 / 4.0, 0.0};
     one_over_bandwidth_array[2] = {1.0 / 0.1, 1.0 / 4.0, 0.0};
 
@@ -2819,7 +2820,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // lets make the array a little bit more complicated
     one_over_bandwidth_array[9] = {1.0 / 0.5, 1.0 / 4.0, 0.0};
-    one_over_bandwidth_array[3] = {1.0 / 1.0, 1.0 / 0.1, 0.0};
+    one_over_bandwidth_array[3] = {1.0, 10.0, 0.0}; // {1.0 / 1.0, 1.0 / 0.1, 0.0};
     one_over_bandwidth_array[4] = {1.0 / 0.5, 1.0 / 4.0, 0.0};
     one_over_bandwidth_array[2] = {1.0 / 0.1, 1.0 / 4.0, 0.0};
 
@@ -2883,7 +2884,7 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
 
     // lets make the array a little bit more complicated
     one_over_bandwidth_array[9] = {1.0 / 0.5, 1.0 / 4.0, 0.0};
-    one_over_bandwidth_array[3] = {1.0 / 1.0, 1.0 / 0.1, 0.0};
+    one_over_bandwidth_array[3] = {1.0, 10.0, 0.0}; // {1.0 / 1.0, 1.0 / 0.1, 0.0};
     one_over_bandwidth_array[4] = {1.0 / 0.5, 1.0 / 4.0, 0.0};
     one_over_bandwidth_array[2] = {1.0 / 0.1, 1.0 / 4.0, 0.0};
 
@@ -3072,6 +3073,8 @@ void test_decomposition(ParallelUnitTest &ut) { // NOLINT [hicpp-function-size]
     FAILMSG("KDE DD checks failed");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

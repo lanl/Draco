@@ -2,7 +2,6 @@
 /*!
  * \file   kde/test/tstquick_index.cc
  * \author Mathew Cleveland
- * \date   Aug. 10th 2021
  * \brief  quick_index testing function
  * \note   Copyright (C) 2021-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -20,6 +19,8 @@
 #include <numbers>
 #include <string>
 #include <vector>
+
+// cSpell:ignore dtheta
 
 namespace {
 
@@ -1948,9 +1949,9 @@ void test_decomposition_sphere(ParallelUnitTest &ut) { // NOLINT [hicpp-function
       }
     }
 
-    // The value 3.14159 used below does not need to be std::numbers::pi.
-    // Define it here to make it easier to suppress lint warnings.
-    constexpr double pi6dig = 3.14159;
+    // The value 3.14159 used below does not need to be std::numbers::pi. Define it here to make it
+    // easier to suppress lint warnings.
+    constexpr double pi6dig = 3.14159; // NOLINT(modernize-use-std-numbers)
 
     // Check the local ghost locations (this tangentially checks the private put_window_map which is
     // used to build this local data).
