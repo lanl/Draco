@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/Product_Chebyshev_Legendre.cc
  * \author Kelly Thompson
- * \date   Tue Feb 22 10:21:50 2000
  * \brief  A class representing an product Gauss-Legendre quadrature set.
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "parser/Token.hh"

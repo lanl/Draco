@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/Ordinate_Space.cc
  * \author Kent Budge
- * \date   Mon Mar 26 16:11:19 2007
  * \brief  Define methods of class Ordinate_Space
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Ordinate_Space.hh"
@@ -16,16 +15,13 @@
 #include "quadrature/Ordinate.hh"
 #include "quadrature/Ordinate_Set.hh"
 #include "quadrature/Quadrature_Class.hh"
-#include "units/MathConstants.hh"
 #include <array>
 #include <climits> // UINT_MAX
 #include <cmath>
 #include <cstddef> // size_t
+#include <numbers>
+#include <utility>
 #include <vector>
-
-using namespace rtt_units;
-using rtt_dsxx::soft_equiv;
-using std::vector;
 
 namespace rtt_quadrature {
 //------------------------------------------------------------------------------------------------//
@@ -36,13 +32,13 @@ double Ordinate_Space::compute_azimuthalAngle(double const mu, double const eta)
   Require(std::abs(eta) <= 1.0);
 
   if (rtt_dsxx::soft_equiv(eta, 0.0))
-    return rtt_units::PI;
+    return std::numbers::pi;
 
   double azimuthalAngle(std::atan2(eta, mu));
 
-  // For axisymmetric coordinates only, the azimuthal angle is on [0, 2\pi] It is important to
-  // remember that the positive mu axis points to the left and the positive eta axis points up, when
-  // the unit sphere is projected on the plane of the mu- and eta-axis. In this case, phi is
+  // For axisymmetric coordinates only, the azimuthal angle is on \f$ [0, 2\pi] \f$ It is important
+  // to remember that the positive mu axis points to the left and the positive eta axis points up,
+  // when the unit sphere is projected on the plane of the mu- and eta-axis. In this case, phi is
   // measured from the mu-axis counterclockwise.
   //
   // This accounts for the fact that the azimuthal angle is discretized on levels of the xi-axis,
@@ -50,7 +46,7 @@ double Ordinate_Space::compute_azimuthalAngle(double const mu, double const eta)
   // the eta and mu ordinates to define phi.
 
   if (this->geometry() == rtt_mesh_element::Geometry::AXISYMMETRIC && azimuthalAngle < 0.0)
-    azimuthalAngle += 2 * rtt_units::PI;
+    azimuthalAngle += 2 * std::numbers::pi;
 
   return azimuthalAngle;
 }
@@ -63,7 +59,7 @@ double Ordinate_Space::compute_azimuthalAngle(double const mu, double const eta)
  * [private]
  */
 void Ordinate_Space::compute_angle_operator_coefficients_() {
-  vector<Ordinate> const &ordinates = this->ordinates();
+  std::vector<Ordinate> const &ordinates = this->ordinates();
   size_t const number_of_ordinates = ordinates.size();
   rtt_mesh_element::Geometry const geometry = this->geometry();
 
@@ -80,7 +76,7 @@ void Ordinate_Space::compute_angle_operator_coefficients_() {
 
   levels_.resize(number_of_ordinates);
   if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
-    vector<double> C;
+    std::vector<double> C;
 
     double Csum = 0;
     int level = -1;
@@ -111,7 +107,7 @@ void Ordinate_Space::compute_angle_operator_coefficients_() {
         if (mu < 0.0) {
           // Save the normalization sum for the previous level, if any.
           if (level >= 0) {
-            Check(static_cast<int>(C.size()) == level);
+            Check(std::cmp_equal(C.size(), level));
             C.push_back(1.0 / Csum);
           }
           level++;
@@ -126,7 +122,7 @@ void Ordinate_Space::compute_angle_operator_coefficients_() {
       }
     }
     // Save the normalization sum for the final level.
-    Check(static_cast<int>(C.size()) == level);
+    Check(std::cmp_equal(C.size(), level));
     C.push_back(1.0 / Csum);
     Check(number_of_ordinates - 1 < UINT_MAX);
     first_angles_.push_back(static_cast<unsigned>(number_of_ordinates - 1));
@@ -141,7 +137,7 @@ void Ordinate_Space::compute_angle_operator_coefficients_() {
       for (unsigned n = 0; n < number_of_levels_ / 2; n++) {
         Check(C[n] > 0.0);
         Check(C[number_of_levels_ - 1 - n] > 0.0);
-        Check(soft_equiv(C[n], C[number_of_levels_ - 1 - n]));
+        Check(rtt_dsxx::soft_equiv(C[n], C[number_of_levels_ - 1 - n]));
       }
     }
 #endif
@@ -160,14 +156,14 @@ void Ordinate_Space::compute_angle_operator_coefficients_() {
       if (!rtt_dsxx::soft_equiv(wt, 0.0))
       // Not a new level.  Apply Morel's recurrence relation.
       {
-        omp = omm - rtt_units::PI * C[level] * wt;
-        if (soft_equiv(omp, 0.0)) {
+        omp = omm - std::numbers::pi * C[level] * wt;
+        if (rtt_dsxx::soft_equiv(omp, 0.0)) {
           omp = 0.0;
         }
       } else if (mu < 0.0)
       // New level.  Reinitialize the recurrence relation.
       {
-        omp = rtt_units::PI;
+        omp = std::numbers::pi;
         Check(1 - eta * eta >= 0.0);
         sinth = std::sqrt(1 - eta * eta);
         level++;
@@ -240,7 +236,7 @@ void Ordinate_Space::compute_angle_operator_coefficients_() {
         levels_[a] = level;
 
         if (a > 0) {
-          if (!soft_equiv(eta, etap)) {
+          if (!rtt_dsxx::soft_equiv(eta, etap)) {
             // New level
             level++;
             first_angles_.push_back(a - 1);
@@ -270,8 +266,8 @@ void Ordinate_Space::compute_angle_operator_coefficients_() {
 }
 
 //------------------------------------------------------------------------------------------------//
-vector<Moment> Ordinate_Space::compute_n2lk_(Quadrature_Class const quadrature_class,
-                                             unsigned const sn_order) {
+std::vector<Moment> Ordinate_Space::compute_n2lk_(Quadrature_Class const quadrature_class,
+                                                  unsigned const sn_order) {
   unsigned const dim = dimension();
   rtt_mesh_element::Geometry const geometry = this->geometry();
 
@@ -312,7 +308,7 @@ void Ordinate_Space::compute_moments_(Quadrature_Class const quadrature_class, i
           Lmax = l;
           moments_per_order_.resize(Lmax + 1, 0U);
         }
-        Check(l < static_cast<int>(moments_per_order_.size()));
+        Check(std::cmp_less(l, moments_per_order_.size()));
         moments_per_order_[l] += 1;
         number_of_moments_++;
       }
@@ -340,14 +336,14 @@ void Ordinate_Space::compute_moments_(Quadrature_Class const quadrature_class, i
  * \param[in] extra_starting_directions Add extra directions to each level set. In most geometries,
  *        an additional ordinate is added that is opposite in direction to the starting direction.
  *        This is used to implement reflection exactly in curvilinear coordinates. In 1D spherical,
- *        that means an additional angle is added at mu=1. In axisymmetric, that means additional
+ *        that means an additional angle is added at `mu=1`. In axisymmetric, that means additional
  *        angles are added that are oriented opposite to the incoming starting direction on each
  *        level.
  *
  * \param ordering Ordering into which to sort the ordinates.
  */
 Ordinate_Space::Ordinate_Space(unsigned const dimension, rtt_mesh_element::Geometry const geometry,
-                               vector<Ordinate> const &ordinates, int const expansion_order,
+                               std::vector<Ordinate> const &ordinates, int const expansion_order,
                                bool const extra_starting_directions, Ordering const ordering)
     : Ordinate_Set(dimension, geometry, ordinates,
                    geometry != rtt_mesh_element::Geometry::CARTESIAN,
@@ -398,9 +394,7 @@ double Ordinate_Space::source_coefficient(unsigned const a) const {
   return Result;
 }
 //------------------------------------------------------------------------------------------------//
-/*!
- * The bookkeeping coefficient is used to compute the next midpoint angle specific intensity.
- */
+//! The bookkeeping coefficient is used to compute the next midpoint angle specific intensity.
 double Ordinate_Space::bookkeeping_coefficient(unsigned const a) const {
   Require(is_dependent(a));
 
@@ -417,7 +411,7 @@ bool Ordinate_Space::check_class_invariants() const {
     return ((this->dimension() != 2 || this->ordering() != LEVEL_ORDERED) ||
             (first_angles_.size() == number_of_levels_));
   } else {
-    vector<Ordinate> const &ordinates = this->ordinates();
+    std::vector<Ordinate> const &ordinates = this->ordinates();
     size_t const number_of_ordinates = ordinates.size();
 
     // Check that the number of levels is correct.
@@ -438,7 +432,7 @@ bool Ordinate_Space::check_class_invariants() const {
 
 //------------------------------------------------------------------------------------------------//
 void Ordinate_Space::compute_reflection_maps_() {
-  vector<Ordinate> const &ordinates = this->ordinates();
+  std::vector<Ordinate> const &ordinates = this->ordinates();
   size_t const number_of_ordinates = ordinates.size();
 
   reflect_mu_.resize(number_of_ordinates);
@@ -450,19 +444,19 @@ void Ordinate_Space::compute_reflection_maps_() {
 
   for (unsigned a = 0; a + 1 < number_of_ordinates; ++a) {
     for (unsigned ap = a + 1; ap < number_of_ordinates; ++ap) {
-      if (soft_equiv(ordinates[a].mu(), -ordinates[ap].mu()) &&
-          soft_equiv(ordinates[a].eta(), ordinates[ap].eta()) &&
-          soft_equiv(ordinates[a].xi(), ordinates[ap].xi())) {
+      if (rtt_dsxx::soft_equiv(ordinates[a].mu(), -ordinates[ap].mu()) &&
+          rtt_dsxx::soft_equiv(ordinates[a].eta(), ordinates[ap].eta()) &&
+          rtt_dsxx::soft_equiv(ordinates[a].xi(), ordinates[ap].xi())) {
         reflect_mu_[a] = ap;
         reflect_mu_[ap] = a;
-      } else if (soft_equiv(ordinates[a].mu(), ordinates[ap].mu()) &&
-                 soft_equiv(ordinates[a].eta(), -ordinates[ap].eta()) &&
-                 soft_equiv(ordinates[a].xi(), ordinates[ap].xi())) {
+      } else if (rtt_dsxx::soft_equiv(ordinates[a].mu(), ordinates[ap].mu()) &&
+                 rtt_dsxx::soft_equiv(ordinates[a].eta(), -ordinates[ap].eta()) &&
+                 rtt_dsxx::soft_equiv(ordinates[a].xi(), ordinates[ap].xi())) {
         reflect_eta_[a] = ap;
         reflect_eta_[ap] = a;
-      } else if (soft_equiv(ordinates[a].mu(), ordinates[ap].mu()) &&
-                 soft_equiv(ordinates[a].eta(), ordinates[ap].eta()) &&
-                 soft_equiv(ordinates[a].xi(), -ordinates[ap].xi())) {
+      } else if (rtt_dsxx::soft_equiv(ordinates[a].mu(), ordinates[ap].mu()) &&
+                 rtt_dsxx::soft_equiv(ordinates[a].eta(), ordinates[ap].eta()) &&
+                 rtt_dsxx::soft_equiv(ordinates[a].xi(), -ordinates[ap].xi())) {
         reflect_xi_[a] = ap;
         reflect_xi_[ap] = a;
       }
@@ -488,32 +482,30 @@ void Ordinate_Space::compute_reflection_maps_() {
  *
  * Thus, if you are in 2-D Cartesian geometry, and phi contains the moments at a particular point
  * for a particular group, then the x-component of the astrophysical flux is equal to
- * flux_fact[0]*phi[1+flux_map[0]] and the y-component of the astrophysical flux is equal to
- * flux_fact[1]*phi[1+flux_map[1]].
+ * `flux_fact[0]*phi[1+flux_map[0]]` and the y-component of the astrophysical flux is equal to
+ * `flux_fact[1]*phi[1+flux_map[1]]`.
  */
 void Ordinate_Space::moment_to_flux(std::array<unsigned, 3> &flux_map,
                                     std::array<double, 3> &flux_fact) const {
-  double const RROOT3 = 1.0 / sqrt(3.0);
-
   if (dimension() == 1) {
     flux_map[0] = 0;
     if (geometry() != rtt_mesh_element::Geometry::AXISYMMETRIC)
-      flux_fact[0] = RROOT3;
+      flux_fact[0] = std::numbers::inv_sqrt3;
     else
-      flux_fact[0] = -RROOT3;
+      flux_fact[0] = -std::numbers::inv_sqrt3;
   } else if (dimension() == 2) {
     flux_map[0] = 1;
-    flux_fact[0] = RROOT3;
+    flux_fact[0] = std::numbers::inv_sqrt3;
     flux_map[1] = 0;
-    flux_fact[1] = -RROOT3;
+    flux_fact[1] = -std::numbers::inv_sqrt3;
   } else {
     Check(dimension() == 3);
     flux_map[0] = 2;
-    flux_fact[0] = -RROOT3;
+    flux_fact[0] = -std::numbers::inv_sqrt3;
     flux_map[1] = 1;
-    flux_fact[1] = RROOT3;
+    flux_fact[1] = std::numbers::inv_sqrt3;
     flux_map[2] = 0;
-    flux_fact[2] = -RROOT3;
+    flux_fact[2] = -std::numbers::inv_sqrt3;
   }
 }
 
@@ -538,7 +530,6 @@ void Ordinate_Space::moment_to_flux(std::array<unsigned, 3> &flux_map,
  */
 void Ordinate_Space::flux_to_moment(std::array<unsigned, 3> &flux_map,
                                     std::array<double, 3> &flux_fact) const {
-  double const ROOT3 = sqrt(3.0);
 
   // We hardwire these on the optimistic assumption that the moment basis used by
   // rtt_quadrature::Ordinate_Space will not often change.
@@ -550,26 +541,26 @@ void Ordinate_Space::flux_to_moment(std::array<unsigned, 3> &flux_map,
     // the flux is the -Y(1,1) harmonic (times the normalization).
     flux_map[0] = 0;
     if (geometry() != rtt_mesh_element::Geometry::AXISYMMETRIC)
-      flux_fact[0] = ROOT3;
+      flux_fact[0] = std::numbers::sqrt3;
     else
-      flux_fact[0] = -ROOT3;
+      flux_fact[0] = -std::numbers::sqrt3;
   }
   // In 2-D and 3-D the polar axis is aligned with the second coordinate axis and the mu axis is
   // aligned with the first coordinate. Thus the x flux corresponds to the -Y(1,1) harmonic, the y
   // flux to the Y(1,0) harmonic, and the z flux to the -Y(1,-1) harmonic.
   else if (dimension() == 2) {
     flux_map[0] = 1;
-    flux_fact[0] = -ROOT3;
+    flux_fact[0] = -std::numbers::sqrt3;
     flux_map[1] = 0;
-    flux_fact[1] = ROOT3;
+    flux_fact[1] = std::numbers::sqrt3;
   } else {
     Check(dimension() == 3);
     flux_map[0] = 2;
-    flux_fact[0] = -ROOT3;
+    flux_fact[0] = -std::numbers::sqrt3;
     flux_map[1] = 1;
-    flux_fact[1] = ROOT3;
+    flux_fact[1] = std::numbers::sqrt3;
     flux_map[2] = 0;
-    flux_fact[2] = -ROOT3;
+    flux_fact[2] = -std::numbers::sqrt3;
   }
 }
 

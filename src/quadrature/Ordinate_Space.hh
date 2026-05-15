@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/Ordinate_Space.hh
  * \author Kent Budge
- * \date   Mon Mar 26 16:11:19 2007
  * \brief  Definition of class Ordinate_Space
  * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

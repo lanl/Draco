@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/Product_Chebyshev_Legendre.cc
  * \author James S. Warsa
- * \date   Wed Sep  1 10:19:52 2004
  * \brief  A class for Product Chebyshev-Gauss-Legendre quadrature sets.
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Product_Chebyshev_Legendre.hh"
@@ -12,10 +11,10 @@
 #include "quadrature/Gauss_Legendre.hh"
 #include "quadrature/Octant_Quadrature.hh"
 #include "quadrature/Quadrature_Class.hh"
-#include "units/MathConstants.hh"
 #include <cmath>   // sin
 #include <cstddef> // size_t
 #include <memory>  // shared_ptr
+#include <numbers>
 #include <string>
 #include <vector>
 
@@ -75,8 +74,8 @@ void Product_Chebyshev_Legendre::create_octant_ordinates_(std::vector<double> &m
     for (unsigned j = 0; j < azimuthal_order_ / 2; ++j) {
       unsigned const ordinate = icount;
 
-      mu[ordinate] = xsr * cos(rtt_units::PI * (2.0 * j + 1.0) / azimuthal_order_ / 2.0);
-      eta[ordinate] = xsr * sin(rtt_units::PI * (2.0 * j + 1.0) / azimuthal_order_ / 2.0);
+      mu[ordinate] = xsr * cos(std::numbers::pi * (2.0 * j + 1.0) / azimuthal_order_ / 2.0);
+      eta[ordinate] = xsr * sin(std::numbers::pi * (2.0 * j + 1.0) / azimuthal_order_ / 2.0);
       wt[ordinate] = xwt / azimuthal_order_;
 
       ++icount;

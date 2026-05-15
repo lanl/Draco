@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/Ordinate_Set.hh
  * \author Kent Budge
- * \date   Tue Dec 21 14:20:03 2004
  * \brief  Declaration file for the class rtt_quadrature::Ordinate.
  * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -12,16 +11,15 @@
 
 #include "Ordinate.hh"
 #include "mesh_element/Geometry.hh"
+#include <cstdint>
 
 namespace rtt_quadrature {
 
 //================================================================================================//
 /*!
  * \class Ordinate_Set
- *
  * \brief An ordered collection of Ordinates that make up a complete quadrature set for a specified
- *        geometry.
- */
+ *        geometry. */
 //================================================================================================//
 
 class Ordinate_Set {
@@ -29,7 +27,7 @@ public:
   // ENUMERATIONS
 
   //! Ordering of ordinates.
-  enum Ordering {
+  enum Ordering : uint8_t {
     LEVEL_ORDERED, //!< Ordered xi, then mu, then eta
 
     OCTANT_ORDERED //!< Ordered by xi halfsphere, then eta halfsphere, then mu halfsphere, then

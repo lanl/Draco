@@ -2,7 +2,6 @@
 !
 ! \file   quadrature/quadrature_interfaces.f90
 ! \author Allan Wollaber, Jae Chang
-! \date   Tue May 17 13:24:38 MDT 2016
 ! \brief  Provides F90 quadrature interfaces
 ! \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 !-------------------------------------------------------------------------------------------------!

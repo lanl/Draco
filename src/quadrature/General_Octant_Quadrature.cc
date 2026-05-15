@@ -2,8 +2,7 @@
 /*!
  * \file   quadrature/General_Octant_Quadrature.cc
  * \author Kelly Thompson
- * \date   Wed Sep  1 10:19:52 2004
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/General_Octant_Quadrature.hh"
@@ -27,7 +26,7 @@ General_Octant_Quadrature::General_Octant_Quadrature(
     Quadrature_Class const quadrature_class)
     : Octant_Quadrature(sn_order), mu_(mu), eta_(eta), xi_(xi), wt_(wt),
       number_of_levels_(number_of_levels), quadrature_class_(quadrature_class),
-      is_open_interval_(soft_equiv(*std::min_element(xi.begin(), xi.end()), -1.0)) {
+      is_open_interval_(soft_equiv(*std::ranges::min_element(xi), -1.0)) {
   Require(mu.size() > 0 && eta.size() == mu.size() && xi.size() == mu.size() &&
           wt.size() == mu.size());
 

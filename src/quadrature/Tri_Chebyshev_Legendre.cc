@@ -2,20 +2,18 @@
 /*!
  * \file   quadrature/Tri_Chebyshev_Legendre.cc
  * \author Kelly Thompson
- * \date   Wed Sep  1 10:19:52 2004
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
+#include "quadrature/Tri_Chebyshev_Legendre.hh"
 #include "dsxx/DracoStrings.hh"
-// #include "parser/Token_Stream.hh"
 #include "quadrature/Gauss_Legendre.hh"
 #include "quadrature/Octant_Quadrature.hh"
 #include "quadrature/Quadrature_Class.hh"
-#include "quadrature/Tri_Chebyshev_Legendre.hh"
-#include "units/MathConstants.hh"
 #include <cmath>   // sin, cos, sqrt
 #include <cstddef> // size_t
 #include <memory>  // shared_ptr
+#include <numbers>
 #include <string>
 #include <vector>
 
@@ -71,8 +69,8 @@ void Tri_Chebyshev_Legendre::create_octant_ordinates_(std::vector<double> &mu,
     for (unsigned j = 0; j < k / 2; ++j) {
       unsigned const ordinate = icount;
 
-      mu[ordinate] = xsr * cos(rtt_units::PI * (2.0 * j + 1.0) / k / 2.0);
-      eta[ordinate] = xsr * sin(rtt_units::PI * (2.0 * j + 1.0) / k / 2.0);
+      mu[ordinate] = xsr * cos(std::numbers::pi * (2.0 * j + 1.0) / k / 2.0);
+      eta[ordinate] = xsr * sin(std::numbers::pi * (2.0 * j + 1.0) / k / 2.0);
       wt[ordinate] = xwt / k;
 
       ++icount;

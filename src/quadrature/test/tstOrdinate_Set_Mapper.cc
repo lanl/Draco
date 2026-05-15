@@ -24,8 +24,13 @@
 #include <functional>
 #include <iterator>
 #include <memory>
+#include <numbers>
 #include <sstream>
 #include <vector>
+
+// cSpell:ignore dpf, osm, sph, wts
+
+namespace {
 
 using namespace std;
 using namespace rtt_dsxx;
@@ -48,7 +53,7 @@ struct dot_product_functor_3D {
   explicit dot_product_functor_3D(const Ordinate &o_in) : o1(o_in) {}
 
   // Returns the dot product of the ordinate passed into the functor with the local ordinate
-  double operator()(const Ordinate &o2) const {
+  double operator()(const Ordinate &o2) const noexcept {
     return o1.mu() * o2.mu() + o1.eta() * o2.eta() + o1.xi() * o2.xi();
   }
 
@@ -63,7 +68,7 @@ struct dot_product_functor_1D {
   explicit dot_product_functor_1D(const Ordinate &o_in) : o1(o_in) {}
 
   // Returns the dot product of the ordinate passed into the functor with the local ordinate
-  double operator()(const Ordinate &o2) const {
+  double operator()(const Ordinate &o2) const noexcept {
     // This uses a different approach, nominally slower than
     double const phi1 = acos(o1.mu());
     double const phi2 = acos(o2.mu());
@@ -81,11 +86,11 @@ double zeroth_moment(const vector<double> &weights, const Ordinate_Set &os) {
   Require(weights.size() == os.ordinates().size());
 
   // Vector of all ordinates in the ordinate set
-  const vector<Ordinate> &ords(os.ordinates());
+  const vector<Ordinate> &ordinates(os.ordinates());
 
   double phi(0.0);
-  for (size_t i = 0; i < ords.size(); ++i) {
-    phi += ords[i].wt() * weights[i];
+  for (size_t i = 0; i < ordinates.size(); ++i) {
+    phi += ordinates[i].wt() * weights[i];
   }
 
   return phi;
@@ -120,16 +125,16 @@ void nearest_neighbor_test(rtt_dsxx::UnitTest &ut, const Ordinate &ord, const Or
   vector<double> dps(wts.size(), 0.0);
   if (os.dimension() >= 2) {
     dot_product_functor_3D const dpf(ord);
-    std::transform(ordinates.begin(), ordinates.end(), dps.begin(), dpf);
+    std::ranges::transform(ordinates, dps.begin(), dpf);
   } else {
     dot_product_functor_1D const dpf(ord);
-    std::transform(ordinates.begin(), ordinates.end(), dps.begin(), dpf);
+    std::ranges::transform(ordinates, dps.begin(), dpf);
   }
   // Find the maximum dot product that we just calculated
-  size_t const max_e = std::max_element(dps.begin(), dps.end()) - dps.begin();
+  size_t const max_e = std::ranges::max_element(dps) - dps.begin();
 
   // Does it correspond to the same location in the weight vector?
-  size_t const nz_e = std::max_element(wts.begin(), wts.end()) - wts.begin();
+  size_t const nz_e = std::ranges::max_element(wts) - wts.begin();
   if (max_e != nz_e)
     FAILMSG("Nearest ordinate mismatch");
 
@@ -168,25 +173,25 @@ void nearest_three_test(rtt_dsxx::UnitTest &ut, const Ordinate &ord, const Ordin
   vector<double> dps(wts.size(), 0.0);
   if (os.dimension() >= 2) {
     dot_product_functor_3D const dpf(ord);
-    std::transform(ordinates.begin(), ordinates.end(), dps.begin(), dpf);
+    std::ranges::transform(ordinates, dps.begin(), dpf);
   } else {
     dot_product_functor_1D const dpf(ord);
-    std::transform(ordinates.begin(), ordinates.end(), dps.begin(), dpf);
+    std::ranges::transform(ordinates, dps.begin(), dpf);
   }
 
   // Find the maximum 3 dot products and their locations
-  vector<double> dpcopy(dps);
+  vector<double> dp_copy(dps);
   std::partial_sort(dps.begin(), dps.begin() + 3, dps.end(), std::greater<>());
-  size_t const i1 = std::distance(dpcopy.begin(), std::find(dpcopy.begin(), dpcopy.end(), dps[0]));
-  size_t const i2 = std::distance(dpcopy.begin(), std::find(dpcopy.begin(), dpcopy.end(), dps[1]));
-  size_t const i3 = std::distance(dpcopy.begin(), std::find(dpcopy.begin(), dpcopy.end(), dps[2]));
+  size_t const i1 = std::distance(dp_copy.begin(), std::ranges::find(dp_copy, dps[0]));
+  size_t const i2 = std::distance(dp_copy.begin(), std::ranges::find(dp_copy, dps[1]));
+  size_t const i3 = std::distance(dp_copy.begin(), std::ranges::find(dp_copy, dps[2]));
 
   // These 3 indices should provide the ordered weight values in the test weight vector
   if (wts[i1] < wts[i2])
     FAILMSG("Max weight is smaller than 2nd weight");
   if (wts[i1] < wts[i3])
     FAILMSG("Max weight is smaller than 3rd weight");
-  if (dpcopy[i2] > 0.0 && dpcopy[i3] > 0.0) {
+  if (dp_copy[i2] > 0.0 && dp_copy[i3] > 0.0) {
     if (wts[i2] < wts[i3])
       FAILMSG("Second and third weights are out of order");
   }
@@ -213,7 +218,8 @@ void ordinate_set_2D_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
   {
     // Create a (1,1,1) angle in octant one
     double const w(2.2);
-    Ordinate const o1(sqrt(3.0) / 3.0, sqrt(3.0) / 3.0, sqrt(3.0) / 3.0, w);
+    Ordinate const o1(std::numbers::sqrt3 / 3.0, std::numbers::sqrt3 / 3.0,
+                      std::numbers::sqrt3 / 3.0, w);
     vector<double> wt_distribute(ordinates.size(), 0.0);
 
     osm.map_angle_into_ordinates(o1, Ordinate_Set_Mapper::NEAREST_NEIGHBOR, wt_distribute);
@@ -229,7 +235,8 @@ void ordinate_set_2D_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
   {
     // Create a (1,-1,1) angle in octant two
     double const w(1.8);
-    Ordinate const o1(sqrt(3.0) / 3.0, -sqrt(3.0) / 3.0, sqrt(3.0) / 3.0, w);
+    Ordinate const o1(std::numbers::sqrt3 / 3.0, -std::numbers::sqrt3 / 3.0,
+                      std::numbers::sqrt3 / 3.0, w);
     vector<double> wt_distribute(ordinates.size(), 0.0);
 
     osm.map_angle_into_ordinates(o1, Ordinate_Set_Mapper::NEAREST_NEIGHBOR, wt_distribute);
@@ -260,7 +267,8 @@ void ordinate_set_2D_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
   // Test angle in octant 5; this should fail in 2-D!
   if (ut.dbcOn() && !ut.dbcNothrow()) {
     double const w(0.1);
-    Ordinate const o1(sqrt(3.0) / 3.0, sqrt(3.0) / 3.0, -sqrt(3.0) / 3.0, w);
+    Ordinate const o1(std::numbers::sqrt3 / 3.0, std::numbers::sqrt3 / 3.0,
+                      -std::numbers::sqrt3 / 3.0, w);
     vector<double> wt_distribute(ordinates.size(), 0.0);
 
     bool caught(false);
@@ -311,7 +319,7 @@ void ordinate_set_1D_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
   {
     // Create an angle in octant one
     double const w(2.2);
-    Ordinate const o1(sqrt(3.0) / 3.0, w);
+    Ordinate const o1(std::numbers::sqrt3 / 3.0, w);
     vector<double> wt_distribute(ordinates.size(), 0.0);
 
     osm.map_angle_into_ordinates(o1, Ordinate_Set_Mapper::NEAREST_NEIGHBOR, wt_distribute);
@@ -356,7 +364,8 @@ void ordinate_set_1D_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
   if (ut.dbcOn() && !ut.dbcNothrow()) {
     // Create a (-1,-1,1) angle in octant three
     double const w(2.2);
-    Ordinate const o1(-sqrt(3.0) / 3.0, -sqrt(3.0) / 3.0, sqrt(3.0) / 3.0, w);
+    Ordinate const o1(-std::numbers::sqrt3 / 3.0, -std::numbers::sqrt3 / 3.0,
+                      std::numbers::sqrt3 / 3.0, w);
     vector<double> wt_distribute(ordinates.size(), 0.0);
 
     // perform some sanity checks
@@ -495,7 +504,7 @@ void ordinate_set_1D_sph_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
 
   // Note that this test uses "starting directions" in the Ordinate_Set These are necessary for SN
   // in curvilinear geometries, but these starting directions have zero weight and do not actually
-  // contribute to the quadrature integration -- they should not be incluced as valid ordinates
+  // contribute to the quadrature integration -- they should not be included as valid ordinates
   // during the remapping!
   std::shared_ptr<Ordinate_Set> const os_LS2 =
       quadrature.create_ordinate_set(1, //1-D
@@ -531,7 +540,7 @@ void ordinate_set_1D_sph_nn_mapper_test(rtt_dsxx::UnitTest &ut) {
       FAILMSG("Weight summation mismatch");
 
     // Does it correspond to the same location in the weight vector?
-    size_t const nz_e = std::max_element(wts.begin(), wts.end()) - wts.begin();
+    size_t const nz_e = std::ranges::max_element(wts) - wts.begin();
     if (nz_e != 2)
       FAILMSG("Nearest ordinate mismatch");
 
@@ -620,7 +629,7 @@ void ordinate_set_1D_nt_mapper_test(rtt_dsxx::UnitTest &ut) {
   }
 
   {
-    // Create an angle verrrrrry close to an ordinate
+    // Create an angle very close to an ordinate
     double const w(2.2);
     Ordinate const o1(0.53, w);
     vector<double> wt_distribute(ordinates.size(), 0.0);
@@ -637,7 +646,8 @@ void ordinate_set_1D_nt_mapper_test(rtt_dsxx::UnitTest &ut) {
   if (ut.dbcOn() && !ut.dbcNothrow()) {
     // Create a (-1,-1,1) angle in octant three
     double const w(2.2);
-    Ordinate const o1(-sqrt(3.0) / 3.0, -sqrt(3.0) / 3.0, sqrt(3.0) / 3.0, w);
+    Ordinate const o1(-std::numbers::sqrt3 / 3.0, -std::numbers::sqrt3 / 3.0,
+                      std::numbers::sqrt3 / 3.0, w);
     vector<double> wt_distribute(ordinates.size(), 0.0);
 
     // perform some sanity checks
@@ -685,7 +695,8 @@ void ordinate_set_2D_nt_mapper_test(rtt_dsxx::UnitTest &ut) {
   {
     // Create a (1,1,1) angle in octant one
     double const w(2.2);
-    Ordinate const o1(sqrt(3.0) / 3.0, sqrt(3.0) / 3.0, sqrt(3.0) / 3.0, w);
+    Ordinate const o1(std::numbers::sqrt3 / 3.0, std::numbers::sqrt3 / 3.0,
+                      std::numbers::sqrt3 / 3.0, w);
     vector<double> wt_distribute(ordinates.size(), 0.0);
 
     osm.map_angle_into_ordinates(o1, Ordinate_Set_Mapper::NEAREST_THREE, wt_distribute);
@@ -701,7 +712,8 @@ void ordinate_set_2D_nt_mapper_test(rtt_dsxx::UnitTest &ut) {
   {
     // Create a (1,-1,1) angle in octant two
     double const w(1.8);
-    Ordinate const o1(sqrt(3.0) / 3.0, -sqrt(3.0) / 3.0, sqrt(3.0) / 3.0, w);
+    Ordinate const o1(std::numbers::sqrt3 / 3.0, -std::numbers::sqrt3 / 3.0,
+                      std::numbers::sqrt3 / 3.0, w);
     vector<double> wt_distribute(ordinates.size(), 0.0);
 
     osm.map_angle_into_ordinates(o1, Ordinate_Set_Mapper::NEAREST_THREE, wt_distribute);
@@ -732,7 +744,8 @@ void ordinate_set_2D_nt_mapper_test(rtt_dsxx::UnitTest &ut) {
   // Test angle in octant 5; this should fail in 2-D!
   if (ut.dbcOn() && !ut.dbcNothrow()) {
     double const w(0.1);
-    Ordinate const o1(sqrt(3.0) / 3.0, sqrt(3.0) / 3.0, -sqrt(3.0) / 3.0, w);
+    Ordinate const o1(std::numbers::sqrt3 / 3.0, std::numbers::sqrt3 / 3.0,
+                      -std::numbers::sqrt3 / 3.0, w);
     vector<double> wt_distribute(ordinates.size(), 0.0);
 
     bool caught(false);
@@ -862,6 +875,8 @@ void ordinate_set_3D_nt_mapper_test(rtt_dsxx::UnitTest &ut) {
   if (ut.numFails == 0)
     PASSMSG("3-D nearest-three remapping tests all passed");
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

@@ -2,8 +2,7 @@
 /*!
  * \file   quadrature/Square_Chebyshev_Legendre.cc
  * \author Kelly Thompson
- * \date   Wed Sep  1 10:19:52 2004
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Square_Chebyshev_Legendre.hh"
@@ -11,10 +10,10 @@
 #include "quadrature/Gauss_Legendre.hh"
 #include "quadrature/Octant_Quadrature.hh"
 #include "quadrature/Quadrature_Class.hh"
-#include "units/MathConstants.hh"
 #include <cmath>   // sin, cos, sqrt, fabs
 #include <cstddef> // size_t
 #include <memory>  // shared_ptr
+#include <numbers>
 #include <string>
 #include <vector>
 
@@ -72,9 +71,9 @@ void Square_Chebyshev_Legendre::create_octant_ordinates_(std::vector<double> &mu
     for (unsigned j = 0; j < levels / 2; ++j) {
       size_t const ordinate = j + i * levels / 2;
 
-      mu[ordinate] = xsr * cos(rtt_units::PI * static_cast<double>(2 * j + 1) /
+      mu[ordinate] = xsr * cos(std::numbers::pi * static_cast<double>(2 * j + 1) /
                                static_cast<double>(levels) / 2.0);
-      eta[ordinate] = xsr * sin(rtt_units::PI * static_cast<double>(2 * j + 1) /
+      eta[ordinate] = xsr * sin(std::numbers::pi * static_cast<double>(2 * j + 1) /
                                 static_cast<double>(levels) / 2.0);
       wt[ordinate] = xwt / static_cast<double>(levels);
     }

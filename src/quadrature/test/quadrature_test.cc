@@ -3,7 +3,7 @@
  * \file   quadrature/test/quadrature_test.cc
  * \author Kent G. Budge
  * \brief  Define class quadrature_test
- * \note   Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature_test.hh"
@@ -28,15 +28,18 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
+#include <numbers>
 #include <string>
 #include <vector>
 
 namespace rtt_quadrature {
 using namespace std;
 using namespace rtt_parser;
-using rtt_dsxx::soft_equiv;
 
 //------------------------------------------------------------------------------------------------//
+
+namespace { // anonymous namespace for file local functions.
+
 void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_space,
                  Quadrature &quadrature, unsigned const expansion_order) {
   vector<Ordinate> const &ordinates = ordinate_space->ordinates();
@@ -198,16 +201,16 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
       Fz2 += MAGIC * ords[i].xi() * ords[i].xi() * ords[i].wt();
     }
 
-    FAIL_IF_NOT(soft_equiv(JJ, MAGIC));
-    FAIL_IF_NOT(soft_equiv(Fx, 0.0));
-    FAIL_IF_NOT(soft_equiv(Fx2, MAGIC / 3.0));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(JJ, MAGIC));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(Fx, 0.0));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(Fx2, MAGIC / 3.0));
     if (dimension > 1) {
-      FAIL_IF_NOT(soft_equiv(Fy, 0.0));
-      FAIL_IF_NOT(soft_equiv(Fy2, MAGIC / 3.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(Fy, 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(Fy2, MAGIC / 3.0));
     }
     if (dimension > 2) {
-      FAIL_IF_NOT(soft_equiv(Fz, 0.0));
-      FAIL_IF_NOT(soft_equiv(Fz2, MAGIC / 3.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(Fz, 0.0));
+      FAIL_IF_NOT(rtt_dsxx::soft_equiv(Fz2, MAGIC / 3.0));
     }
 
     // Look at the moment to discrete and discrete to moment operator
@@ -229,12 +232,12 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
             sum += D[a + number_of_ordinates * mm] * M[n + a * number_of_moments];
           }
           if (mm == n) {
-            if (!soft_equiv(sum, 1.0)) {
+            if (!rtt_dsxx::soft_equiv(sum, 1.0)) {
               FAILMSG("diagonal element of M*D NOT 1");
               return;
             }
           } else {
-            if (!soft_equiv(sum, 0.0)) {
+            if (!rtt_dsxx::soft_equiv(sum, 0.0)) {
               FAILMSG("off-diagonal element of M*D NOT 0");
               return;
             }
@@ -259,7 +262,8 @@ void test_either(UnitTest &ut, std::shared_ptr<Ordinate_Space> const &ordinate_s
     for (unsigned d = 0; d < dimension; ++d) {
       ut.check(MtF_map[d] < 3, "flux map in range", true);
       ut.check(FtM_map[MtF_map[d]] == d, "inversion index of flux map");
-      ut.check(soft_equiv(FtM_fact[MtF_map[d]] * MtF_fact[d], 1.0), "inversion factor of flux map");
+      ut.check(rtt_dsxx::soft_equiv(FtM_fact[MtF_map[d]] * MtF_fact[d], 1.0),
+               "inversion factor of flux map");
     }
   }
 }
@@ -303,6 +307,8 @@ void test_axis(UnitTest &ut, Quadrature &quadrature, unsigned const dimension,
   test_either(ut, ordinate_space, quadrature, expansion_order);
 }
 
+} // end anonymous namespace
+
 //------------------------------------------------------------------------------------------------//
 void quadrature_integration_test(UnitTest & /*ut*/, Quadrature &quadrature) {
 
@@ -326,7 +332,7 @@ void quadrature_integration_test(UnitTest & /*ut*/, Quadrature &quadrature) {
 
     std::cout << "Testing S-" << quadrature.sn_order() << " quadrature integration\n";
 
-    for (unsigned i = 0; i < Num; ++i) {
+    for (size_t i = 0; i < Num; ++i) {
 
       if (ordinates[i].xi() > 0) {
         test_int2 += ordinates[i].mu() * ordinates[i].mu() * ordinates[i].eta() *
@@ -345,14 +351,11 @@ void quadrature_integration_test(UnitTest & /*ut*/, Quadrature &quadrature) {
                      ordinates[i].eta() * ordinates[i].eta() * ordinates[i].wt();
       }
     }
-    std::cout << " test int (2) = " << test_int2 << "( " << test_int2 * 4 * 3.1415926535897932384
-              << " )\n";
-    std::cout << " test int (4) = " << test_int4 << "( " << test_int4 * 4 * 3.1415926535897932384
-              << " )\n";
-    std::cout << " test int (6) = " << test_int6 << "( " << test_int6 * 4 * 3.1415926535897932384
-              << " )\n";
-    std::cout << " test int (8) = " << test_int8 << "( " << test_int8 * 4 * 3.1415926535897932384
-              << " )\n";
+    constexpr double fourpi = 4.0 * std::numbers::pi;
+    std::cout << " test int (2) = " << test_int2 << "( " << test_int2 * fourpi << " )\n";
+    std::cout << " test int (4) = " << test_int4 << "( " << test_int4 * fourpi << " )\n";
+    std::cout << " test int (6) = " << test_int6 << "( " << test_int6 * fourpi << " )\n";
+    std::cout << " test int (8) = " << test_int8 << "( " << test_int8 * fourpi << " )\n";
   }
 }
 
@@ -465,7 +468,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
               to_string(ordinate_set->ordinates().size()));
     }
 
-    if (soft_equiv(ordinate_set->norm(), 1.0)) {
+    if (rtt_dsxx::soft_equiv(ordinate_set->norm(), 1.0)) {
       PASSMSG("Ordinate norm is correct");
     } else {
       FAILMSG(string("Ordinate norm is NOT correct.  Found norm = ") +
@@ -536,7 +539,7 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
                                        Ordinate_Set::LEVEL_ORDERED);
 
     FAIL_IF_NOT(ordinate_set->ordinates().size() >= 2);
-    FAIL_IF_NOT(soft_equiv(ordinate_set->norm(), 1.0));
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(ordinate_set->norm(), 1.0));
     ordinate_set->display();
 
     test_no_axis(ut, quadrature,
@@ -613,20 +616,14 @@ void quadrature_test(UnitTest &ut, Quadrature &quadrature, bool const cartesian_
 //------------------------------------------------------------------------------------------------//
 
 extern "C" void rtt_test_quadrature_interfaces(const quadrature_data &quad, int &error_code) {
-  using rtt_dsxx::soft_equiv;
-  using std::cout;
-
-  cout << "In C++, checking validity of quadrature_data...\n";
+  std::cout << "In C++, checking validity of quadrature_data...\n";
   check_quadrature_validity(quad);
-  cout << "If we got here, it should be valid.\n\n";
+  std::cout << "If we got here, it should be valid.\n\n";
 
-  cout << "The quadrature_data type has dimension " << quad.dimension << '\n'
-       << "The type is \t" << quad.type << '\n'
-       << "The order is \t" << quad.order << '\n'
-       << "The geometry is\t" << quad.geometry << '\n'
-       << "The first ordinate is " << quad.mu[0] << "\t" << quad.eta[0] << "\t" << quad.xi[0]
-       << "\t" << quad.weights[0] << '\n'
-       << '\n';
+  std::cout << "The quadrature_data type has dimension " << quad.dimension << "\nThe type is \t"
+            << quad.type << "\nThe order is \t" << quad.order << "\nThe geometry is\t"
+            << quad.geometry << "\nThe first ordinate is " << quad.mu[0] << "\t" << quad.eta[0]
+            << "\t" << quad.xi[0] << "\t" << quad.weights[0] << "\n\n";
 
   // Error checking
   error_code = 0;
@@ -656,11 +653,11 @@ extern "C" void rtt_test_quadrature_interfaces(const quadrature_data &quad, int 
                              0.08151814436, 0.08151814436, 0.08151814436, 0.08151814436};
 
   for (size_t i = 0; i < 12; ++i) {
-    if (!soft_equiv(tcl_mu[i], quad.mu[i], 1e-8))
+    if (!rtt_dsxx::soft_equiv(tcl_mu[i], quad.mu[i], 1e-8))
       error_code = 5;
-    if (!soft_equiv(tcl_eta[i], quad.eta[i], 1e-8))
+    if (!rtt_dsxx::soft_equiv(tcl_eta[i], quad.eta[i], 1e-8))
       error_code = 6;
-    if (!soft_equiv(tcl_wt[i], quad.weights[i], 1e-8))
+    if (!rtt_dsxx::soft_equiv(tcl_wt[i], quad.weights[i], 1e-8))
       error_code = 7;
   }
 

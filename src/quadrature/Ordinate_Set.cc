@@ -2,13 +2,13 @@
 /*!
  * \file   quadrature/Ordinate_Set.cc
  * \author Kent Budge
- * \date   Tue Dec 21 14:20:03 2004
  * \brief  Declaration file for the class rtt_quadrature::Ordinate.
  * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Ordinate_Set.hh"
 #include "dsxx/Assert.hh"
+#include "dsxx/Soft_Equivalence.hh"
 #include "mesh_element/Geometry.hh"
 #include "quadrature/Ordinate.hh"
 #include <algorithm>
@@ -21,7 +21,6 @@
 namespace {
 using namespace std;
 using namespace rtt_quadrature;
-using rtt_dsxx::soft_equiv;
 
 // convenience functions to check ordinates
 
@@ -58,9 +57,9 @@ namespace rtt_quadrature {
 bool Ordinate_Set::level_compare(Ordinate const &a, Ordinate const &b) {
   // Note that x==r==mu, z==xi
 
-  if (soft_equiv(a.eta(), b.eta())) {
-    if (soft_equiv(a.mu(), b.mu())) {
-      if (soft_equiv(a.xi(), b.xi())) {
+  if (rtt_dsxx::soft_equiv(a.eta(), b.eta())) {
+    if (rtt_dsxx::soft_equiv(a.mu(), b.mu())) {
+      if (rtt_dsxx::soft_equiv(a.xi(), b.xi())) {
         return false;
       } else {
         return a.xi() < b.xi();
@@ -93,12 +92,13 @@ bool Ordinate_Set::octant_compare(Ordinate const &a, Ordinate const &b) {
   }
   // Within an octant, we sort by decreasing absolute xi, then increasing absolute eta, to be
   // consistent with PARTISN.
-  else if (!soft_equiv(fabs(a.xi()), fabs(b.xi()), 1.0e-14)) {
+  else if (!rtt_dsxx::soft_equiv(fabs(a.xi()), fabs(b.xi()), 1.0e-14)) {
     return (fabs(a.xi()) > fabs(b.xi()));
-  } else if (!soft_equiv(fabs(a.eta()), fabs(b.eta()), 1.0e-14)) {
+  } else if (!rtt_dsxx::soft_equiv(fabs(a.eta()), fabs(b.eta()), 1.0e-14)) {
     return (fabs(a.eta()) < fabs(b.eta()));
   } else {
-    return (!soft_equiv(fabs(a.mu()), fabs(b.mu()), 1.0e-14) && fabs(a.mu()) > fabs(b.mu()));
+    return (!rtt_dsxx::soft_equiv(fabs(a.mu()), fabs(b.mu()), 1.0e-14) &&
+            fabs(a.mu()) > fabs(b.mu()));
   }
 }
 
@@ -106,17 +106,17 @@ bool Ordinate_Set::octant_compare(Ordinate const &a, Ordinate const &b) {
 /*!
  * Construct an Ordinate_Set.
  *
- * \param dimension Dimension of the problem. Must be consistent with the geometry.
- * \param geometry Geometry of the problem.
+ * \param[in] dimension Dimension of the problem. Must be consistent with the geometry.
+ * \param[in] geometry Geometry of the problem.
  * \param ordinates Ordinate set for this problem.
- * \param has_starting_directions Has starting directions on each level set.
- * \param has_extra_starting_directions Has extra directions on each level set. In most geometries,
- *          an additional ordinate is added that is opposite in direction to the starting
- *          direction. This is used to implement reflection exactly in curvilinear coordinates. In
- *          1D spherical, that means an additional angle is added at mu=1. In axisymmetric, that
- *          means additional angles are added that are oriented opposite to the incoming starting
- *          direction on each level.
- * \param ordering Ordering into which to sort the ordinates.
+ * \param[in] has_starting_directions Has starting directions on each level set.
+ * \param[in] has_extra_starting_directions Has extra directions on each level set. In most
+ *          geometries, an additional ordinate is added that is opposite in direction to the
+ *          starting direction. This is used to implement reflection exactly in curvilinear
+ *          coordinates. In 1D spherical, that means an additional angle is added at mu=1. In
+ *          axisymmetric, that means additional angles are added that are oriented opposite to the
+ *          incoming starting direction on each level.
+ * \param[in] ordering Ordering into which to sort the ordinates.
 */
 Ordinate_Set::Ordinate_Set(unsigned const dimension, rtt_mesh_element::Geometry const geometry,
                            std::vector<Ordinate> const &ordinates,
@@ -148,11 +148,11 @@ Ordinate_Set::Ordinate_Set(unsigned const dimension, rtt_mesh_element::Geometry 
 #endif
   switch (ordering) {
   case LEVEL_ORDERED:
-    sort(ordinates_.begin(), ordinates_.end(), level_compare);
+    std::ranges::sort(ordinates_, level_compare);
     break;
 
   case OCTANT_ORDERED:
-    sort(ordinates_.begin(), ordinates_.end(), octant_compare);
+    std::ranges::sort(ordinates_, octant_compare);
     break;
   }
 #if defined(__clang__)

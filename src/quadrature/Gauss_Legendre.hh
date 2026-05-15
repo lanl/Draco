@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/Gauss_Legendre.hh
  * \author Kelly Thompson
- * \date   Tue Feb 22 10:21:50 2000
  * \brief  A class representing an interval Gauss-Legendre quadrature set.
  * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -39,7 +38,7 @@ public:
 
   // STATICS
 
-  static std::shared_ptr<Quadrature> parse(Token_Stream &tokens);
+  static std::shared_ptr<Quadrature> parse(rtt_parser::Token_Stream &tokens);
 
 protected:
   [[nodiscard]] std::vector<Ordinate> create_level_ordinates_(double norm) const override;

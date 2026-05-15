@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/Quadrature__parser.cc
  * \author Kelly Thompson
- * \date   Tue Feb 22 10:21:50 2000
  * \brief  Parsers for various quadrature classes.
  * \note   Copyright (C) 2015-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -104,7 +103,8 @@ Class_Parse_Table<rtt_quadrature::Quadrature>::Class_Parse_Table() {
 }
 
 //------------------------------------------------------------------------------------------------//
-void Class_Parse_Table<rtt_quadrature::Quadrature>::check_completeness(Token_Stream &tokens) {
+void Class_Parse_Table<rtt_quadrature::Quadrature>::check_completeness(
+    rtt_parser::Token_Stream &tokens) {
   tokens.check_semantics(child_ != nullptr, "no quadrature specified");
 }
 
@@ -123,7 +123,7 @@ Class_Parse_Table<rtt_quadrature::Quadrature>::get_parsed_object() {
 //------------------------------------------------------------------------------------------------//
 template <>
 std::shared_ptr<rtt_quadrature::Quadrature>
-parse_class<rtt_quadrature::Quadrature>(Token_Stream &tokens) {
+parse_class<rtt_quadrature::Quadrature>(rtt_parser::Token_Stream &tokens) {
   Token const token = tokens.shift();
   tokens.check_syntax(token.text() == "type", "expected type keyword");
 

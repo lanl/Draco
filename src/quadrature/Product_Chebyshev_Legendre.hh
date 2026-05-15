@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/Product_Chebyshev_Legendre.hh
  * \author James S. Warsa
- * \date   Wed Sep  1 10:19:52 2004
  * \brief  A class for Product Chebyshev-Gauss-Legendre quadrature sets.
  * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -63,7 +62,7 @@ public:
 
   // STATICS
 
-  static std::shared_ptr<Quadrature> parse(Token_Stream &tokens);
+  static std::shared_ptr<Quadrature> parse(rtt_parser::Token_Stream &tokens);
 
 private:
   // IMPLEMENTATION

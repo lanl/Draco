@@ -2,8 +2,7 @@
 /*!
  * \file   quadrature/test/tstProduct_Chebyshev_Legendre.cc
  * \author James S. Warsa
- * \date   Tue Nov  6 13:08:49 2012
- * \note   Copyright (C) 2013-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2013-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"

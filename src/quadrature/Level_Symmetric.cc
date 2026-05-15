@@ -2,8 +2,7 @@
 /*!
  * \file   quadrature/Level_Symmetric.cc
  * \author Kelly Thompson
- * \date   Wed Sep  1 10:19:52 2004
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Level_Symmetric.hh"
@@ -12,6 +11,7 @@
 #include "quadrature/Quadrature_Class.hh"
 #include <array>
 #include <cstddef> // size_t
+#include <numbers>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -62,7 +62,7 @@ void Level_Symmetric::create_octant_ordinates_(std::vector<double> &mu, std::vec
   switch (levels) {
   case 2: // LQn S-2 Quadrature Set.
     att.resize(1);
-    att[0] = 0.577350269189625764509149;
+    att[0] = std::numbers::inv_sqrt3;
     wt[0] = 1.000000000000000000000000;
     break;
 
@@ -96,7 +96,7 @@ void Level_Symmetric::create_octant_ordinates_(std::vector<double> &mu, std::vec
     att.resize(4);
     wtt.resize(3);
     att[0] = 0.218217890235992381266097;
-    att[1] = 0.577350269189625764509149;
+    att[1] = std::numbers::inv_sqrt3;
     att[2] = 0.786795792469443145800830;
     att[3] = 0.951189731211341853132399;
     wtt[0] = 0.120987654320987654320988;
@@ -151,7 +151,7 @@ void Level_Symmetric::create_octant_ordinates_(std::vector<double> &mu, std::vec
     wtt.resize(7);
     att[0] = 0.151985861461031912404799;
     att[1] = 0.422156982304796966896263;
-    att[2] = 0.577350269189625764509149;
+    att[2] = std::numbers::inv_sqrt3;
     att[3] = 0.698892086775901338963210;
     att[4] = 0.802226255231412057244328;
     att[5] = 0.893691098874356784901111;
@@ -232,7 +232,7 @@ void Level_Symmetric::create_octant_ordinates_(std::vector<double> &mu, std::vec
     att[0] = 0.120603343036693597409418;
     att[1] = 0.347574292315847257336779;
     att[2] = 0.476519266143665680817278;
-    att[3] = 0.577350269189625764509149;
+    att[3] = std::numbers::inv_sqrt3;
     att[4] = 0.663020403653288019308783;
     att[5] = 0.738822561910371432904974;
     att[6] = 0.807540401661143067193530;

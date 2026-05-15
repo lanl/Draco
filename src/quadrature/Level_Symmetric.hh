@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/Level_Symmetric.hh
  * \author Kelly Thompson
- * \date   Wed Sep  1 10:19:52 2004
  * \brief  A class to encapsulate a 3D Level Symmetric quadrature set.
  * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -47,7 +46,7 @@ public:
 
   // STATICS
 
-  static std::shared_ptr<Quadrature> parse(Token_Stream &tokens);
+  static std::shared_ptr<Quadrature> parse(rtt_parser::Token_Stream &tokens);
 
 private:
   // IMPLEMENTATION

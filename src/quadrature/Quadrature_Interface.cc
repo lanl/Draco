@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/Quadrature_Interface.cc
  * \author Jae Chang
- * \date   Tue Jan 27 08:51:19 2004
  * \brief  Quadrature interface definitions
- * \note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2015-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Quadrature_Interface.hh"

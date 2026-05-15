@@ -3,7 +3,7 @@
 # author Kelly Thompson <kgt@lanl.gov>
 # date   2020 October 13
 # brief  Generate build project files for Fortran.
-# note   Copyright (C) 2020-2024 Triad National Security, LLC., All rights reserved.
+# note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
 cmake_minimum_required(VERSION 3.21.0)
 project(fquadrature C Fortran)

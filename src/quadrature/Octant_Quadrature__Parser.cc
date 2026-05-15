@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/Octant_Quadrature.cc
  * \author Kelly Thompson
- * \date   Wed Sep  1 10:19:52 2004
  * \brief
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "parser/Token.hh"

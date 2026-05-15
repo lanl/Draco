@@ -10,6 +10,7 @@
 #define quadrature_Moment_hh
 
 #include "dsxx/DracoMath.hh"
+#include <utility>
 
 namespace rtt_quadrature {
 
@@ -22,8 +23,7 @@ namespace rtt_quadrature {
  * spherical harmonic. We could represent this as a simple std::pair<unsigned, int>, but these must
  * satisfy certain constraints that are protected by the class representation. We use uppercase L
  * and M for these numbers to avoid the unpleasantness of l (which is nearly indistinguishable from
- * 1) as a symbol name.
- */
+ * 1) as a symbol name. */
 //================================================================================================//
 
 class Moment {
@@ -35,8 +35,7 @@ public:
 
   //! Construct a Moment with specified degree and order.
   Moment(unsigned const L, int const M) : L_(L), M_(M) {
-    // Chief constraint satisfied by the Moment.
-    Require(static_cast<unsigned>(std::abs(M)) <= L);
+    Require(std::cmp_less_equal(std::abs(M), L)); // Chief constraint satisfied by the Moment.
   }
 
   // Accessors
@@ -46,9 +45,6 @@ public:
 
 private:
   // DATA
-
-  // The data must be kept private in order to protect the invariant.
-
   unsigned L_{0};
   int M_{0};
 };
