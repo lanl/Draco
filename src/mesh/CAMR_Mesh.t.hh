@@ -2,9 +2,8 @@
 /*!
  * \file   mesh/CAMR_Mesh.t.hh
  * \author H. Park
- * \date   May 16 2023
  * \brief  Member definitions of class CAMR_Mesh
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_mesh_CAMR_Mesh_t_hh
@@ -43,7 +42,7 @@ template <int D> double CAMR_Mesh<D>::get_cell_width(size_t cell) const {
 //------------------------------------------------------------------------------------------------//
 //! Set values for the data members related to the widths of the various levels of the mesh.
 template <int D> void CAMR_Mesh<D>::build_widths() {
-  maximum_level = *std::max_element(levels.begin(), levels.end());
+  maximum_level = *std::ranges::max_element(levels);
   number_of_levels = maximum_level + 1;
 
   // Require (maximum_level >= 0);
@@ -120,8 +119,8 @@ template <int D> typename CAMR_Mesh<D>::sf_double CAMR_Mesh<D>::get_vertex(size_
  * \param cell cell index [1,N]
  */
 template <int D> double CAMR_Mesh<D>::min(size_t d, size_t cell) const {
-  Require(d > 0 && d <= D);
-  Require(cell > 0 && static_cast<uint32_t>(cell) <= layout->get_num_total_cells());
+  Require(d > 0 && std::cmp_less_equal(d, D));
+  Require(cell > 0 && std::cmp_less_equal(cell, layout->get_num_total_cells()));
 
   Check(cell < INT32_MAX);
   sf_double const cell_vertex = get_vertex(static_cast<int>(cell));
@@ -139,8 +138,8 @@ template <int D> double CAMR_Mesh<D>::min(size_t d, size_t cell) const {
  * \param cell cell index [1,N]
  */
 template <int D> double CAMR_Mesh<D>::max(size_t d, size_t cell) const {
-  Require(d > 0 && d <= D);
-  Require(cell > 0 && static_cast<uint32_t>(cell) <= layout->get_num_total_cells());
+  Require(d > 0 && std::cmp_less_equal(d, D));
+  Require(cell > 0 && std::cmp_less_equal(cell, layout->get_num_total_cells()));
   Check(cell < INT32_MAX);
   sf_double const cell_vertex = get_vertex(static_cast<int>(cell));
   double const delta = get_cell_width(static_cast<int>(cell));
@@ -198,7 +197,7 @@ template <int D> bool CAMR_Mesh<D>::hard_in_cell(size_t const cell, const U3 &po
   sf_double const cell_vertex = get_vertex(cell);
   double const delta = get_cell_width(cell);
 
-  for (uint32_t dimension = 1; dimension <= D; ++dimension) {
+  for (uint32_t dimension = 1; std::cmp_less_equal(dimension, D); ++dimension) {
     uint32_t const dimension_index = dimension - 1;
     if (position[dimension_index] < cell_vertex[dimension_index] ||
         position[dimension_index] > cell_vertex[dimension_index] + delta)
@@ -316,7 +315,7 @@ template <int D> int CAMR_Mesh<D>::get_cell(U3 const &position) const {
     sf_double const cell_coords = get_vertex(cell);
 
     bool passed = true;
-    for (uint32_t dimension = 1; (dimension <= D && passed); ++dimension) {
+    for (uint32_t dimension = 1; (std::cmp_less_equal(dimension, D) && passed); ++dimension) {
       uint32_t const dimension_index = dimension - 1;
       if ((position[dimension_index] < cell_coords[dimension_index]) ||
           (position[dimension_index] >= cell_coords[dimension_index] + delta))
@@ -349,7 +348,7 @@ U3 CAMR_Mesh<D>::get_shared_face_center(const size_t cell, const uint32_t face,
   Require(cell > 0 && static_cast<uint32_t>(cell) <= layout->get_num_owned_cells());
   Require(face >= 1 && face <= layout->num_coarse_faces());
   Require(next_cell != 0);
-  Require(next_cell != static_cast<int>(cell));
+  Require(std::cmp_not_equal(next_cell, cell));
 
   // get the coarse face center (and just return it if the face is not refined)
   Check(cell < INT32_MAX && face < INT32_MAX);
@@ -362,8 +361,7 @@ U3 CAMR_Mesh<D>::get_shared_face_center(const size_t cell, const uint32_t face,
 
     // get the refined face index
     auto const refined_face =
-        std::distance(neighbors.begin(), std::find(neighbors.begin(), neighbors.end(), next_cell)) +
-        1;
+        std::distance(neighbors.begin(), std::ranges::find(neighbors, next_cell)) + 1;
 
     Check(static_cast<uint32_t>(refined_face) <= layout->num_amr_faces());
     Check(neighbors[refined_face - 1] == next_cell);
@@ -417,7 +415,7 @@ double CAMR_Mesh<D>::get_db(U3 const &position, U3 const &direction, int const c
   int positive_face;
 
   // Loop over the dimensions of the space
-  for (uint32_t dimension = 1; dimension <= D; ++dimension) {
+  for (uint32_t dimension = 1; std::cmp_less_equal(dimension, D); ++dimension) {
 
     uint32_t const dimension_index = dimension - 1;
     const double dir = direction[dimension_index];
@@ -466,7 +464,7 @@ double CAMR_Mesh<D>::get_orthogonal_dist_to_bnd(const U3 &position, const int ce
   double const delta = get_cell_width(cell);
 
   auto min_distance = static_cast<double>(std::numeric_limits<float>::max());
-  for (uint32_t dimension = 1; dimension <= D; ++dimension) {
+  for (uint32_t dimension = 1; std::cmp_less_equal(dimension, D); ++dimension) {
 
     uint32_t const dimension_index = dimension - 1;
     const double low_distance = position[dimension_index] - cell_coords[dimension_index];
@@ -717,7 +715,7 @@ typename CAMR_Mesh<D>::vf_double CAMR_Mesh<D>::get_vertices(const int cell,
       continue;
 
     // Loop over the dimensions.
-    for (size_t dimension = 1; dimension <= D; ++dimension) {
+    for (size_t dimension = 1; std::cmp_less_equal(dimension, D); ++dimension) {
       size_t const dimension_index = dimension - 1;
       bool const positive = vertex_bits[dimension_index];
       double const value = cell_vertex[dimension_index] + (positive ? delta : 0.0);
@@ -831,7 +829,7 @@ typename CAMR_Mesh<D>::sf_int CAMR_Mesh<D>::get_neighbors(uint32_t const cell) c
 
   for (uint32_t face = 1; face <= faces; ++face) {
     sf_int neighbor_data = (*layout)(cell, face);
-    std::copy(neighbor_data.begin(), neighbor_data.end(), std::back_inserter(neighbor_list));
+    std::ranges::copy(neighbor_data, std::back_inserter(neighbor_list));
   }
 
   Ensure(neighbor_list.size() <= max_neighbors);
@@ -870,7 +868,7 @@ template <int D> typename CAMR_Mesh<D>::vf_double CAMR_Mesh<D>::get_point_coord(
     Require(myvertices.size() == D);
     for (size_t vertex = 0; vertex < vertex_count; ++vertex) {
       size_t const result_vertex = (cell - 1) * vertex_count + vertex;
-      for (size_t dim = 1; dim <= D; ++dim) {
+      for (size_t dim = 1; std::cmp_less_equal(dim, D); ++dim) {
         size_t const dim_index = dim - 1;
         results[result_vertex][dim_index] = myvertices[dim_index][vertex];
       }
@@ -894,7 +892,7 @@ template <int D> typename CAMR_Mesh<D>::vf_double CAMR_Mesh<D>::get_point_coord(
  * vertex.
  */
 template <int D> typename CAMR_Mesh<D>::vf_int CAMR_Mesh<D>::get_cell_pair() const {
-  int const vertex_count = (D == 2 ? 4 : 8);
+  size_t const vertex_count = (D == 2 ? 4 : 8);
   size_t const mesh_size = get_size();
 
   vf_int indices(mesh_size, sf_int(vertex_count));

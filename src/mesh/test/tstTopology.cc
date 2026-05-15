@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/test/tstTopology.cc
  * \author H. Park
- * \date   Aug 1 2023
  * \brief  Topology test.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -22,6 +21,8 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+
+namespace {
 
 using rtt_mesh::DD_Topology;
 using rtt_mesh::Rep_Topology;
@@ -232,8 +233,7 @@ void test_DD(rtt_dsxx::UnitTest &ut) {
 
   std::ostringstream test_oss;
   top->print(test_oss);
-  if (test_oss.str() != ref_oss.str())
-    ITFAILS;
+  FAIL_IF_NOT(test_oss.str() == ref_oss.str());
 
   std::ostringstream test2_oss;
   {
@@ -243,7 +243,7 @@ void test_DD(rtt_dsxx::UnitTest &ut) {
   if (test2_oss.str() != test_oss.str()) {
     std::cout << test_oss.str() << '\n';
     std::cout << test2_oss.str() << '\n';
-    ITFAILS;
+    FAILMSG("test2_oss.str() != test_oss.str().");
   }
 
   std::shared_ptr<rtt_mesh::Comm_Patterns> comm_pat;
@@ -280,6 +280,8 @@ void test_DD(rtt_dsxx::UnitTest &ut) {
   }
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

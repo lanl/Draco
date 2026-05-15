@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/CAMR_Layout.cc
  * \author H. Park
- * \date   May 10 2023
  * \brief  AMR_Layout member definitions.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -16,6 +15,7 @@
 #include <cstdint> // uint32_t
 #include <iomanip>
 #include <iostream>
+#include <utility>
 
 namespace rtt_mesh {
 
@@ -134,7 +134,7 @@ uint32_t CAMR_Layout::validate() const {
       sf_int const neighbors = (*this)(cell, face); // negative value indicates off-processor index.
       for (auto n : neighbors) {
         // don't check for edge cells or boundary cells
-        if (n != static_cast<int>(cell) && n >= 1) {
+        if (std::cmp_not_equal(n, cell) && n >= 1) {
           Check(static_cast<uint32_t>(n) < UINT32_MAX);
           sf_int opp_neighbors = (*this)(static_cast<uint32_t>(n), opposite_face);
           // count the number of times that the current cell shows up in the cell across a face's

@@ -2,8 +2,6 @@
 /*!
  * \file   mesh/test/tstCAMR_Mesh.cc
  * \author H. Park
- * \date   Mon Jul 10 2023
- * \brief  Unit test for CAMR_Mesh
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
@@ -16,11 +14,14 @@
 #include "viz/Ensight_Translator.hh"
 #include <algorithm>
 #include <array>
-#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
+#include <numbers>
+#include <utility>
 #include <vector>
+
+// cSpell:ignore bndface, clo, hix, hiy, hiz, loy,
 
 using namespace std;
 using namespace rtt_mesh;
@@ -63,6 +64,8 @@ struct CAMR_Mesh_Data {
   CAMR_Mesh_Data() = default;
   //! Checks for validity of pointers given the problem type
 };
+
+namespace {
 
 void test_2D_mesh(rtt_c4::ParallelUnitTest &ut) {
   /*
@@ -690,12 +693,13 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
 
     position[0] = 1.5;
     position[1] = 0.5;
-    direction[0] = sqrt(2.0) / 2.0;
-    direction[1] = sqrt(2.0) / 2;
+    direction[0] = std::numbers::sqrt2 / 2.0;
+    direction[1] = std::numbers::sqrt2 / 2;
     direction[2] = 0.0;
     cell = 7;
 
-    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), sqrt(2.0) / 2.0));
+    FAIL_IF_NOT(
+        soft_equiv(mesh.get_db(position, direction, cell, face), std::numbers::sqrt2 / 2.0));
     FAIL_IF(face != 2 && face != 4); // Allow both for a tie
 
     // Since the position is a corner. Try another cell.
@@ -707,12 +711,12 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     // of the capabilities which provides robustness in the presence of roundoff.
     position[0] = 1.0;
     position[1] = 0.0;
-    direction[0] = sqrt(2.0) / 2.0;
-    direction[1] = sqrt(2.0) / 2.0;
+    direction[0] = std::numbers::sqrt2 / 2.0;
+    direction[1] = std::numbers::sqrt2 / 2.0;
     direction[2] = 0.0;
     cell = 7;
 
-    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), sqrt(2.0)));
+    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), std::numbers::sqrt2));
     FAIL_IF(face != 2 && face != 4); // Allow both for a tie
 
     // Test the other direction.
@@ -900,7 +904,7 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[0] = 1;
     surface_cells_ref[1] = 2;
     surface_cells = mesh.get_surcells("lox");
-    std::sort(surface_cells.begin(), surface_cells.end());
+    std::ranges::sort(surface_cells);
     FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(0);
@@ -912,14 +916,14 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[1] = 4;
     surface_cells_ref[2] = 6;
     surface_cells = mesh.get_surcells("loy");
-    std::sort(surface_cells.begin(), surface_cells.end());
+    std::ranges::sort(surface_cells);
     FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(2);
     surface_cells_ref[0] = 2;
     surface_cells_ref[1] = 3;
     surface_cells = mesh.get_surcells("hiy");
-    std::sort(surface_cells.begin(), surface_cells.end());
+    std::ranges::sort(surface_cells);
     FAIL_IF(surface_cells != surface_cells_ref);
 
     // Checking surface cells:
@@ -944,14 +948,14 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
 
     cell = 1;
     neighbors = mesh.get_neighbors(cell);
-    std::sort(neighbors.begin(), neighbors.end());
+    std::ranges::sort(neighbors);
     std::array<int, 5> neighbors_of_one = {1, 1, 2, 4, 5};
     neighbors_ref.assign(neighbors_of_one.begin(), neighbors_of_one.end());
     FAIL_IF_NOT(neighbors == neighbors_ref);
 
     cell = 7;
     neighbors = mesh.get_neighbors(cell);
-    std::sort(neighbors.begin(), neighbors.end());
+    std::ranges::sort(neighbors);
     std::array<int, 4> neighbors_of_seven = {-2, 3, 5, 6};
     neighbors_ref.assign(neighbors_of_seven.begin(), neighbors_of_seven.end());
     FAIL_IF_NOT(neighbors == neighbors_ref);
@@ -965,7 +969,7 @@ void test_2D_mesh2(rtt_c4::ParallelUnitTest &ut) {
 
     FAIL_IF_NOT(cell_types.size() == mesh.get_size());
 
-    FAIL_IF(std::find_if(cell_types.begin(), cell_types.end(), [](const int i) {
+    FAIL_IF(std::ranges::find_if(cell_types, [](const int i) noexcept {
               return i != rtt_viz::four_node_quadrangle;
             }) != cell_types.end());
 
@@ -1096,7 +1100,7 @@ void test_3D_mesh(rtt_c4::ParallelUnitTest &ut) {
         soft_equiv(mesh.get_widths().begin(), mesh.get_widths().end(), dim.begin(), dim.end()));
 
     for (int cell = 1; cell <= 9; ++cell)
-      FAIL_IF_NOT(static_cast<int>(mesh.get_level(cell)) == level_values[cell - 1]);
+      FAIL_IF_NOT(std::cmp_equal(mesh.get_level(cell), level_values[cell - 1]));
 
     // Check the vertices of _all_ of the cells, because I can:
     for (int cell = 1; cell <= 9; ++cell) {
@@ -1983,12 +1987,13 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     position[0] = 1.5;
     position[1] = 0.5;
     position[2] = 0.0;
-    direction[0] = sqrt(2.0) / 2.0;
-    direction[1] = sqrt(2.0) / 2.0;
+    direction[0] = std::numbers::sqrt2 / 2.0;
+    direction[1] = std::numbers::sqrt2 / 2.0;
     direction[2] = 0.0;
     cell = 5;
 
-    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), sqrt(2.0) / 2.0));
+    FAIL_IF_NOT(
+        soft_equiv(mesh.get_db(position, direction, cell, face), std::numbers::sqrt2 / 2.0));
     FAIL_IF(face != 2 && face != 4); // Allow both for a tie.
 
     // Since the position is a corner. Try another cell.
@@ -2001,12 +2006,12 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     position[0] = 1.0;
     position[1] = 0.0;
     position[2] = 0.0;
-    direction[0] = sqrt(3.0) / 3.0;
-    direction[1] = sqrt(3.0) / 3.0;
-    direction[2] = sqrt(3.0) / 3.0;
+    direction[0] = std::numbers::sqrt3 / 3.0;
+    direction[1] = std::numbers::sqrt3 / 3.0;
+    direction[2] = std::numbers::sqrt3 / 3.0;
     cell = 9;
 
-    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), sqrt(3.0)));
+    FAIL_IF_NOT(soft_equiv(mesh.get_db(position, direction, cell, face), std::numbers::sqrt3));
     // Allow all three in a tie.
     FAIL_IF(face != 2 && face != 4 && face != 6);
 
@@ -2242,7 +2247,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref.resize(1);
     surface_cells_ref[0] = 1;
     surface_cells = mesh.get_surcells("lox");
-    std::sort(surface_cells.begin(), surface_cells.end());
+    std::ranges::sort(surface_cells);
     FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(0);
@@ -2256,7 +2261,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[3] = 6;
     surface_cells_ref[4] = 8;
     surface_cells = mesh.get_surcells("loy");
-    std::sort(surface_cells.begin(), surface_cells.end());
+    std::ranges::sort(surface_cells);
     FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(5);
@@ -2266,7 +2271,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[3] = 7;
     surface_cells_ref[4] = 9;
     surface_cells = mesh.get_surcells("hiy");
-    std::sort(surface_cells.begin(), surface_cells.end());
+    std::ranges::sort(surface_cells);
     FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(5);
@@ -2276,7 +2281,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[3] = 4;
     surface_cells_ref[4] = 5;
     surface_cells = mesh.get_surcells("loz");
-    std::sort(surface_cells.begin(), surface_cells.end());
+    std::ranges::sort(surface_cells);
     FAIL_IF(surface_cells != surface_cells_ref);
 
     surface_cells_ref.resize(5);
@@ -2286,7 +2291,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     surface_cells_ref[3] = 8;
     surface_cells_ref[4] = 9;
     surface_cells = mesh.get_surcells("hiz");
-    std::sort(surface_cells.begin(), surface_cells.end());
+    std::ranges::sort(surface_cells);
     FAIL_IF(surface_cells != surface_cells_ref);
 
     // Checking surface cells:
@@ -2313,14 +2318,14 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
 
     cell = 1;
     neighbors = mesh.get_neighbors(cell);
-    std::sort(neighbors.begin(), neighbors.end());
+    std::ranges::sort(neighbors);
     std::array<int, 9> neighbors_of_one = {0, 0, 1, 1, 1, 2, 3, 6, 7};
     neighbors_ref.assign(neighbors_of_one.begin(), neighbors_of_one.end());
     FAIL_IF_NOT(neighbors == neighbors_ref);
 
     cell = 9;
     neighbors = mesh.get_neighbors(cell);
-    std::sort(neighbors.begin(), neighbors.end());
+    std::ranges::sort(neighbors);
     std::array<int, 6> neighbors_of_nine = {-4, 0, 0, 5, 7, 8};
     neighbors_ref.assign(neighbors_of_nine.begin(), neighbors_of_nine.end());
     FAIL_IF_NOT(neighbors == neighbors_ref);
@@ -2334,7 +2339,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
 
     FAIL_IF_NOT(cell_types.size() == mesh.get_size());
 
-    FAIL_IF(std::find_if(cell_types.begin(), cell_types.end(), [](const int i) {
+    FAIL_IF(std::ranges::find_if(cell_types, [](const int i) noexcept {
               return i != rtt_viz::eight_node_hexahedron;
             }) != cell_types.end());
 
@@ -2344,7 +2349,7 @@ void test_3D_mesh3(rtt_c4::ParallelUnitTest &ut) {
     FAIL_IF(vertices.size() != mesh.get_size() * 8);
 
     // Cell 1, first vertex:
-    int index = indices[1 - 1][0] - 1;
+    int index = indices[1 - 1][0] - 1; // NOLINT(misc-redundant-expression)
     FAIL_IF(index != 0);
 
     FAIL_IF_NOT(soft_equiv(vertices[index][0], 0.0));
@@ -2454,6 +2459,8 @@ void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
     PASSMSG("2D CAMR_host test passed");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

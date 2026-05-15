@@ -2,9 +2,8 @@
 /*!
  * \file   mesh/test/Test_Topology.cc
  * \author Mathew Cleveland
- * \date   Nov. 2023
  * \brief  Build DD Meshes for testing
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Topology.hh"

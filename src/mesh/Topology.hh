@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/Topology.hh
  * \author H. Park
- * \date   Aug. 1 2023
  * \brief  Topology class header file.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -11,6 +10,7 @@
 #define rtt_mesh_Topology_hh
 
 #include "dsxx/config.h"
+#include <cstdint>
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -71,7 +71,7 @@ public:
    *
    * This type enumeration is not implemented yet by most code; however, we will be going to this
    * enumeration as a replacement for the string lookups. */
-  enum Decomposition {
+  enum Decomposition : uint8_t {
     DOMAIN_REPLICATION = 0,   //!< Each PE owns all (overlapping)
     DOMAIN_DECOMPOSITION = 1, //!< Each PE owns a non-overlapping section
     NUM_DECOMPOSITION = 2

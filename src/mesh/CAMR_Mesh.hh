@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/CAMR_Mesh.hh
  * \author H. Park
- * \date   May 10 2023
  * \brief  CAMR_Mesh class definition.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -23,6 +22,7 @@
 #include <cmath>
 #include <numeric>
 #include <sstream>
+#include <utility>
 // cSpell:ignore topo, nfine, LCOV
 
 namespace rtt_mesh {
@@ -393,7 +393,7 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
   std::vector<size_t> opposite_face{2, 1, 4, 3, 6, 5};
 
   // check and create list without duplicates.
-  for (int i = 0; i < static_cast<int>(ghost_size); ++i) {
+  for (int i = 0; std::cmp_less(i, ghost_size); ++i) {
 
     if (ghost_cell_center.find(std::make_pair(ghost_cells[i], ghost_procs[i])) !=
         ghost_cell_center.end()) {
@@ -445,7 +445,7 @@ CAMR_Mesh<D>::CAMR_Mesh(int64_t const num_global_cells_, size_t const active_siz
   }
   neighbor_count_in = neighbor_begin;
 
-  // do some communication, this fct fill levsls, vertex and neighbor_count for parallel.
+  // do some communication, this fct fill levels, vertex and neighbor_count for parallel.
   constructor_body(level_data, vertex_data, neighbor_count_in);
 
   layout =
@@ -776,7 +776,7 @@ typename CAMR_Mesh<D>::sf_double::const_iterator CAMR_Mesh<D>::vertex_data(size_
 template <int D>
 double CAMR_Mesh<D>::cell_width(size_t const Remember(coord), size_t const cell) const {
   Check(coord >= 1);
-  Check(coord <= D);
+  Check(std::cmp_less_equal(coord, D));
   return get_cell_width(cell);
 }
 

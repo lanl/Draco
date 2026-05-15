@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/test/tstOrdinate_Set_Mapper.cc
  * \author Allan Wollaber
- * \date   Mon Mar  7 16:21:45 EST 2016
  * \brief  Ordinate Set Mapper tests
- * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Assert.hh"

@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/Comm_Patterns.hh
  * \author H. Park
- * \date   Aug. 1 2023
  * \brief  Comm_Patterns header file.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

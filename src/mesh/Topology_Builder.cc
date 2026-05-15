@@ -2,9 +2,8 @@
 /*!
  * \file   mesh/Topology_Builder.cc
  * \author H. Park
- * \date   Aug. 1 2023
  * \brief  Member definitions of class Topology_Builder
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "mesh/Topology_Builder.hh"
@@ -19,6 +18,7 @@
 #include <map>
 #include <memory> // make_shared
 #include <numeric>
+#include <utility>
 #include <vector>
 
 namespace rtt_mesh {
@@ -92,7 +92,7 @@ void Topology_Builder::build_cell_numbers(Vec_Int &cells_per_pe) {
   // get the number of cells on each processor using a global reduction
   rtt_c4::global_sum(&cells_per_pe[0], nodes);
 
-  Ensure(static_cast<uint32_t>(cells_per_pe[node]) == num_active_cells_);
+  Ensure(std::cmp_equal(cells_per_pe[node], num_active_cells_));
   Ensure(accumulate(cells_per_pe.begin(), cells_per_pe.end(), 0LL) == num_global_cells_);
 }
 
@@ -254,11 +254,11 @@ void Topology_Builder::remap_bnd_data(Vec_Int &bcells, Vec_Int &bprocs) {
 
     // loop through the remote cells that live on this processor and remap them
     for (int cell = 0; cell < size; ++cell) {
-      Check(cells[cell] <= static_cast<int>(num_full_cells_));
+      Check(std::cmp_less_equal(cells[cell], num_full_cells_));
 
       // remap the cells
       cells[cell] = full2active_[cells[cell] - 1];
-      Check(cells[cell] <= static_cast<int>(num_active_cells_));
+      Check(std::cmp_less_equal(cells[cell], num_active_cells_));
     }
 
     // send the remapped cells back to the processor from which they came
@@ -297,7 +297,7 @@ void Topology_Builder::remap_bnd_data(Vec_Int &bcells, Vec_Int &bprocs) {
   for (size_t i = 0; i < comm_procs; ++i) {
     check += counters[ordered_procs[i]];
   }
-  Check(check == static_cast<int>(num_bnd_cells_));
+  Check(std::cmp_equal(check, num_bnd_cells_));
 
   for (size_t i = 0; i < comm_procs; ++i) {
     Check(!recvs[i].inuse());

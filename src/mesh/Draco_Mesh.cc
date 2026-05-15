@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/Draco_Mesh.cc
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Thursday, Jun 07, 2018, 15:38 pm
  * \brief  Draco_Mesh class implementation file.
  * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -25,11 +24,15 @@
 
 namespace rtt_mesh {
 
+namespace { // anonymous namespace for this file-local helper function.
+
 // helper function for safe conversion of types during initialization list processing.
 unsigned safe_convert_from_size_t(size_t const in_) {
   Check(in_ < UINT_MAX);
   return static_cast<unsigned>(in_);
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 // CONSTRUCTOR
@@ -129,7 +132,7 @@ const std::vector<unsigned> Draco_Mesh::get_cell_nodes(const unsigned cell) cons
     for (auto node : m_cell_to_node_linkage[cell][face]) {
 
       // this preserves counter-clockwise ordering in 2D
-      if (std::find(ret_cell_nodes.begin(), ret_cell_nodes.end(), node) == ret_cell_nodes.end())
+      if (std::ranges::find(ret_cell_nodes, node) == ret_cell_nodes.end())
         ret_cell_nodes.push_back(node);
     }
   }
@@ -207,7 +210,7 @@ int32_t Draco_Mesh::next_face(const int32_t cell, const int32_t face) const {
 
   // cast cell index to unsigned int
   const unsigned l_cell = static_cast<unsigned>(cell) - 1;
-  Require(face <= static_cast<int32_t>(m_num_faces_per_cell[l_cell]));
+  Require(std::cmp_less_equal(face, m_num_faces_per_cell[l_cell]));
 
   // short-cuts
   const auto num_cc_faces = static_cast<int32_t>(num_cellcell_faces_per_cell[l_cell]);
@@ -792,19 +795,16 @@ void Draco_Mesh::compute_node_to_cell_linkage(
     std::vector<unsigned> &v2 = global_node_per_serial_per_rank[rank];
 
     // sort the global node vectors
-    std::sort(v1.begin(), v1.end());
-    std::sort(v2.begin(), v2.end());
+    std::ranges::sort(v1);
+    std::ranges::sort(v2);
 
     // remove duplicates
-    auto last_v1 = std::unique(v1.begin(), v1.end());
-    v1.erase(last_v1, v1.end());
-    auto last_v2 = std::unique(v2.begin(), v2.end());
-    v2.erase(last_v2, v2.end());
+    v1.erase(std::ranges::unique(v1).end(), v1.end());
+    v2.erase(std::ranges::unique(v2).end(), v2.end());
 
     // perform set intersection of my rank global nodes with this rank's global nodes
     std::vector<unsigned> rank_my_rank_node_intersect;
-    std::set_intersection(v1.begin(), v1.end(), v2.begin(), v2.end(),
-                          std::back_inserter(rank_my_rank_node_intersect));
+    std::ranges::set_intersection(v1, v2, std::back_inserter(rank_my_rank_node_intersect));
 
     // map cell and rank from each common global node index to my rank's dual ghost layout
     for (auto gl_node : rank_my_rank_node_intersect) {
@@ -829,7 +829,7 @@ void Draco_Mesh::compute_node_to_cell_linkage(
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief extend ghost data to include ghost corner cells 
+ * \brief extend ghost data to include ghost corner cells
  *
  * We intentionally append to the existing array here because the mesh is passed with some assumed
  * ghost cell connectivity. Removing duplicates would break this assumption.
@@ -1102,7 +1102,7 @@ void Draco_Mesh::set_ghost_next_faces() {
         rcv_count += 2 + num_verts;
       }
       // a face should have been found from this rank prior to reading the end of the loop
-      Check(rcv_count < static_cast<int32_t>(rcv_next_face[rank].size()));
+      Check(std::cmp_less(rcv_count, rcv_next_face[rank].size()));
     }
   }
 

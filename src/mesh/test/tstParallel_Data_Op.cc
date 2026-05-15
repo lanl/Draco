@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/test/tstParallel_Data_Op.cc
  * \author Thomas M. Evans
- * \date   Tue Mar 15 13:15:10 2005
  * \brief  Parallel_Data_Op test.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -22,7 +21,10 @@
 #include <limits>
 #include <memory>
 #include <sstream>
+#include <utility>
 #include <vector>
+
+namespace {
 
 using rtt_mesh::Comm_Patterns;
 using rtt_mesh::DD_Topology;
@@ -37,7 +39,7 @@ using rtt_mesh::Topology;
 //------------------------------------------------------------------------------------------------//
 
 double const local_eps = std::numeric_limits<double>::epsilon();
-// ------------------------------------------------------------------------------------------------ //
+// -----------------------------------------------------------------------------------------------//
 // TEST LOCAL-GLOBAL MAPPING
 //------------------------------------------------------------------------------------------------//
 
@@ -264,7 +266,7 @@ void gather_vector_data(rtt_dsxx::UnitTest &ut) {
   std::vector<std::vector<bool>> bc_data(topology->num_ghost_cells(), std::vector<bool>(Ng, false));
   for (auto &loc : local_field)
     for (size_t g = 0; g < Ng; g++)
-      if (g < static_cast<size_t>(rtt_c4::node()))
+      if (std::cmp_less(g, rtt_c4::node()))
         loc[g] = true;
 
   pdop.gather_ghost_cell_data(pattern, local_field, bc_data.begin(), Ng);
@@ -527,6 +529,8 @@ void gather_variable_vector_data(rtt_dsxx::UnitTest &ut) {
     PASSMSG(m.str());
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

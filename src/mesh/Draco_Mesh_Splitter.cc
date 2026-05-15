@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/Draco_Mesh_Splitter.cc
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Thursday, Jul 31, 2025, 16:13 pm
  * \brief  Draco_Mesh class header file.
  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -18,6 +17,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <utility>
 #include <vector>
 
 namespace rtt_mesh {
@@ -62,10 +62,10 @@ Draco_Mesh_Splitter::split_mesh(const std::shared_ptr<Draco_Mesh> &global_mesh) 
   const int my_rank = rtt_c4::node();
   const auto &my_gcells = global_cells_per_rank[my_rank];
 
-  Remember(auto g_it = std::max_element(my_gcells.begin(), my_gcells.end()));
+  Remember(auto g_it = std::ranges::max_element(my_gcells));
   Remember(auto gcell_max = *g_it);
   Remember(rtt_c4::global_max(gcell_max));
-  Check(gcell_max == static_cast<int64_t>(global_mesh->get_num_cells() - 1));
+  Check(std::cmp_equal(gcell_max, global_mesh->get_num_cells() - 1));
 
   // ... set number of local cells
   const size_t num_lcells = my_gcells.size();

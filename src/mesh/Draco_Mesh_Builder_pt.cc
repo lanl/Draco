@@ -2,9 +2,8 @@
 /*!
  * \file   mesh/Draco_Mesh_Builder_pt.cc
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Tuesday, Jul 03, 2018, 11:52 am
  * \brief  Draco_Mesh_Builder class header file.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "mesh/Draco_Mesh_Builder.hh"

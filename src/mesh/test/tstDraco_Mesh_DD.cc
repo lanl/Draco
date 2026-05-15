@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/test/tstDraco_Mesh_DD.cc
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Sunday, Jun 24, 2018, 14:38 pm
  * \brief  Draco_Mesh class unit test.
  * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -20,6 +19,8 @@
 #include <cstddef>
 #include <memory>
 #include <vector>
+
+namespace {
 
 using rtt_mesh::Draco_Mesh;
 using rtt_mesh_test::Test_Mesh_Interface;
@@ -48,7 +49,7 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
   Insist(rtt_c4::nodes() == 2, "This test only uses 2 PE.");
 
   // use Cartesian geometry
-  const Draco_Mesh::Geometry geometry = Draco_Mesh::Geometry::CARTESIAN;
+  const Draco_Mesh::Geometry geometry = rtt_mesh_element::Geometry::CARTESIAN;
 
   //>>> SET UP CELL AND NODE DATA
 
@@ -99,7 +100,7 @@ void cartesian_mesh_2d_dd(rtt_c4::ParallelUnitTest &ut) {
 
   // check that the scalar data is correct
   FAIL_IF_NOT(mesh->get_dimension() == 2);
-  FAIL_IF_NOT(mesh->get_geometry() == Draco_Mesh::Geometry::CARTESIAN);
+  FAIL_IF_NOT(mesh->get_geometry() == rtt_mesh_element::Geometry::CARTESIAN);
   FAIL_IF_NOT(mesh->get_num_cells() == mesh_iface->num_cells);
   FAIL_IF_NOT(mesh->get_num_nodes() == mesh_iface->num_nodes);
 
@@ -287,7 +288,7 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
   Insist(rtt_c4::nodes() == 4, "This test only uses 4 PE.");
 
   // use Cartesian geometry
-  const Draco_Mesh::Geometry geometry = Draco_Mesh::Geometry::CARTESIAN;
+  const Draco_Mesh::Geometry geometry = rtt_mesh_element::Geometry::CARTESIAN;
 
   //>>> SET UP CELL AND NODE DATA
 
@@ -364,7 +365,7 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
 
   // check that the scalar data is correct
   FAIL_IF_NOT(mesh->get_dimension() == 2);
-  FAIL_IF_NOT(mesh->get_geometry() == Draco_Mesh::Geometry::CARTESIAN);
+  FAIL_IF_NOT(mesh->get_geometry() == rtt_mesh_element::Geometry::CARTESIAN);
   FAIL_IF_NOT(mesh->get_num_cells() == mesh_iface->num_cells);
   FAIL_IF_NOT(mesh->get_num_nodes() == mesh_iface->num_nodes);
 
@@ -734,6 +735,8 @@ void dual_layout_2d_dd_4pe(rtt_c4::ParallelUnitTest &ut) {
     PASSMSG("2D domain-decomposed Draco_Mesh tests ok.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

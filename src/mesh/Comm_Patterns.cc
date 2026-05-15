@@ -2,9 +2,8 @@
 /*!
  * \file   mesh/Comm_Patterns.cc
  * \author H. Park
- * \date   Aug. 1 2023
  * \brief  Comm_Patterns implementation file.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "mesh/Comm_Patterns.hh"
@@ -12,6 +11,8 @@
 #include "c4/C4_Functions.hh"
 #include <cstddef> // size_t
 #include <cstdint> // INT32_MAX
+#include <utility>
+#include <vector>
 
 namespace rtt_mesh {
 
@@ -159,7 +160,7 @@ void Comm_Patterns::calc_send_map_DD(SP_Topology const &topology) {
 
   // post receives to other processors for the number of cells that they require information about
   // and send out to those processors the number of cells that we need information from them about
-  int index = 0;
+  size_t index = 0;
   int processor = 0;
   //int query_size = 0;
   for (auto i = recv_begin; i != recv_end; ++i) {
@@ -178,7 +179,7 @@ void Comm_Patterns::calc_send_map_DD(SP_Topology const &topology) {
     // information about
     rtt_c4::send(&query_size, 1, processor, 600);
   }
-  Check(index == static_cast<int>(recv_query_map.size()));
+  Check(index == recv_query_map.size());
 
   // receive the size data from sent from other processors->we only receive one message from each of
   // those processors
@@ -225,7 +226,7 @@ void Comm_Patterns::calc_send_map_DD(SP_Topology const &topology) {
       // figure out the boundary cell that this data will be sent to
       ghost_cell = i->second[cell];
       Check(ghost_cell > 0);
-      Check(ghost_cell <= static_cast<int>(topology->num_ghost_cells()));
+      Check(std::cmp_less_equal(ghost_cell, topology->num_ghost_cells()));
 
       // add the remote local cell index to the list
       query_data[cell] = topology->remote_local_cell(ghost_cell);
@@ -237,7 +238,7 @@ void Comm_Patterns::calc_send_map_DD(SP_Topology const &topology) {
     rtt_c4::send(query_data, query_size, processor, 601);
     delete[] query_data;
   }
-  Check(index == static_cast<int>(recv_query_map.size()));
+  Check(index == recv_query_map.size());
 
   // information we will need to make the send_query_map
   const_iterator iter;

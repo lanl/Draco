@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/Rep_Topology.hh
  * \author H. Park
- * \date   Aug. 1 2023
  * \brief  Rep_Topology header file.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -13,6 +12,7 @@
 #include "dsxx/Assert.hh"
 #include "mesh/Topology.hh"
 #include <limits>
+#include <utility>
 
 namespace rtt_mesh {
 
@@ -109,7 +109,7 @@ private:
 
   // Validate a cell index.
   inline void validate(size_t Remember(cell)) const {
-    Require(static_cast<int64_t>(cell) <= Base::num_global_cells_d);
+    Require(std::cmp_less_equal(cell, Base::num_global_cells_d));
   }
 };
 

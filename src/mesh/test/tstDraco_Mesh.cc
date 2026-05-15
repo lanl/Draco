@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/test/tstDraco_Mesh.cc
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Thursday, Jun 07, 2018, 15:43 pm
  * \brief  Draco_Mesh class unit test.
  * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -22,9 +21,11 @@
 #include <memory>
 #include <vector>
 
-using rtt_mesh::Draco_Mesh;
-
 // cSpell:ignore xdir, ydir, nnpc, nobc
+
+namespace {
+
+using rtt_mesh::Draco_Mesh;
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -35,7 +36,7 @@ void spherical_mesh_1d(rtt_c4::ParallelUnitTest &ut) {
 
   // use Spherical geometry and 1D
   const unsigned dimension = 1;
-  const Draco_Mesh::Geometry geometry = Draco_Mesh::Geometry::SPHERICAL;
+  const Draco_Mesh::Geometry geometry = rtt_mesh_element::Geometry::SPHERICAL;
 
   //>>> SET UP CELL AND NODE DATA
 
@@ -144,7 +145,7 @@ void spherical_mesh_1d(rtt_c4::ParallelUnitTest &ut) {
 void cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
 
   // use Cartesian geometry
-  const Draco_Mesh::Geometry geometry = Draco_Mesh::Geometry::CARTESIAN;
+  const Draco_Mesh::Geometry geometry = rtt_mesh_element::Geometry::CARTESIAN;
 
   //>>> SET UP CELL AND NODE DATA
 
@@ -169,7 +170,7 @@ void cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
 
   // check that the scalar data is correct
   FAIL_IF_NOT(mesh->get_dimension() == 2);
-  FAIL_IF_NOT(mesh->get_geometry() == Draco_Mesh::Geometry::CARTESIAN);
+  FAIL_IF_NOT(mesh->get_geometry() == rtt_mesh_element::Geometry::CARTESIAN);
   FAIL_IF_NOT(mesh->get_num_cells() == mesh_iface.num_cells);
   FAIL_IF_NOT(mesh->get_num_nodes() == mesh_iface.num_nodes);
 
@@ -271,11 +272,11 @@ void cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
           std::is_permutation(test_cn_first, test_cn_first + nnpc, cn_first, cn_first + nnpc));
 
       // check that unique node entries from mesh are correct
-      std::sort(cell_nodes.begin(), cell_nodes.end());
+      std::ranges::sort(cell_nodes);
       std::vector<unsigned> cn_vec(cn_first, cn_first + nnpc);
-      std::sort(cn_vec.begin(), cn_vec.end());
-      auto last = std::unique(cn_vec.begin(), cn_vec.end());
-      cn_vec.erase(last, cn_vec.end());
+      std::ranges::sort(cn_vec);
+      auto result = std::ranges::unique(cn_vec);
+      cn_vec.erase(result.begin(), result.end());
       FAIL_IF_NOT(cell_nodes == cn_vec);
 
       // update the iterators
@@ -374,6 +375,8 @@ void cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
     PASSMSG("2D Draco_Mesh tests okay.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/test/tstDraco_Mesh_Splitter.cc
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Thursday, Jul 31, 2025, 11:30 am
  * \brief  Draco_Mesh_Splitter class unit test.
  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -22,6 +21,10 @@
 #include <memory>
 #include <string>
 #include <vector>
+
+// cSpell:ignore bdy
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -56,10 +59,10 @@ void split_1d_mesh_dd(rtt_c4::ParallelUnitTest &ut) {
       side_to_node_linkage, coordinates, global_node_number, num_nodes_per_face_per_cell));
 
   // set global cell partition with 1st cell on rank 0 and the others on rank 1
-  const std::vector<std::vector<int64_t>> gcell_part = {{0}, {1, 2}};
+  const std::vector<std::vector<int64_t>> global_cell_part = {{0}, {1, 2}};
 
   // create a mesh splitter object
-  rtt_mesh::Draco_Mesh_Splitter mesh_splitter(gcell_part);
+  rtt_mesh::Draco_Mesh_Splitter mesh_splitter(global_cell_part);
 
   // create local mesh
   std::shared_ptr<rtt_mesh::Draco_Mesh> local_mesh = mesh_splitter.split_mesh(global_mesh);
@@ -96,10 +99,10 @@ void split_1d_mesh_dd(rtt_c4::ParallelUnitTest &ut) {
   }
 
   // now apply a discontiguous global cell partition
-  const std::vector<std::vector<int64_t>> gcell_part2 = {{0, 2}, {1}};
+  const std::vector<std::vector<int64_t>> global_cell_part2 = {{0, 2}, {1}};
 
   // reset the partition in the current mesh_splitter object
-  mesh_splitter.reset_global_cells_per_rank(gcell_part2);
+  mesh_splitter.reset_global_cells_per_rank(global_cell_part2);
 
   // recreate local mesh
   local_mesh = mesh_splitter.split_mesh(global_mesh);
@@ -136,7 +139,8 @@ void split_1d_mesh_dd(rtt_c4::ParallelUnitTest &ut) {
   }
 
   // now split a vector over global cell index into rank-local vectors
-  const std::vector<double> global_scalars = {-2.0, 1.5, 3.1416};
+  const std::vector<double> global_scalars = {-2.0, 1.5,
+                                              3.1416}; // NOLINT(modernize-use-std-numbers)
 
   // create local vector
   const auto local_scalars = mesh_splitter.split_vector(global_scalars);
@@ -144,7 +148,8 @@ void split_1d_mesh_dd(rtt_c4::ParallelUnitTest &ut) {
   if (rtt_c4::node() == 0) {
     FAIL_IF_NOT(local_scalars.size() == 2);
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(local_scalars[0], -2.0));
-    FAIL_IF_NOT(rtt_dsxx::soft_equiv(local_scalars[1], 3.1416));
+    FAIL_IF_NOT(
+        rtt_dsxx::soft_equiv(local_scalars[1], 3.1416)); // NOLINT(modernize-use-std-numbers)
   } else {
     FAIL_IF_NOT(local_scalars.size() == 1);
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(local_scalars[0], 1.5));
@@ -160,17 +165,17 @@ void split_3d_mesh_dd(rtt_c4::ParallelUnitTest &ut) {
 
   const std::string inputpath = ut.getTestSourcePath();
   const std::string filename = inputpath + "/x3d.mesh3d_8cell.in";
-  const std::vector<std::string> bdy_filenames = {
+  const std::vector<std::string> boundary_filenames = {
       inputpath + "/x3d.mesh3d_8cell.bdy1.in", inputpath + "/x3d.mesh3d_8cell.bdy2.in",
       inputpath + "/x3d.mesh3d_8cell.bdy3.in", inputpath + "/x3d.mesh3d_8cell.bdy4.in",
       inputpath + "/x3d.mesh3d_8cell.bdy5.in", inputpath + "/x3d.mesh3d_8cell.bdy6.in"};
 
   // set some arbitrary boundary files
-  const std::vector<unsigned> bdy_flags = {3, 1, 0, 2, 5, 4};
+  const std::vector<unsigned> boundary_flags = {3, 1, 0, 2, 5, 4};
 
   // construct reader
   std::shared_ptr<rtt_mesh::X3D_Draco_Mesh_Reader> const x3d_reader(
-      new rtt_mesh::X3D_Draco_Mesh_Reader(filename, bdy_filenames, bdy_flags));
+      new rtt_mesh::X3D_Draco_Mesh_Reader(filename, boundary_filenames, boundary_flags));
 
   // read mesh
   x3d_reader->read_mesh();
@@ -183,10 +188,10 @@ void split_3d_mesh_dd(rtt_c4::ParallelUnitTest &ut) {
   std::shared_ptr<rtt_mesh::Draco_Mesh> const global_mesh = mesh_builder.build_mesh(geom);
 
   // set a partition into 4 2x1x1 cell domains
-  const std::vector<std::vector<int64_t>> gcell_part = {{0, 1}, {2, 3}, {4, 5}, {6, 7}};
+  const std::vector<std::vector<int64_t>> global_cell_part = {{0, 1}, {2, 3}, {4, 5}, {6, 7}};
 
   // create a mesh splitter object
-  rtt_mesh::Draco_Mesh_Splitter mesh_splitter(gcell_part);
+  rtt_mesh::Draco_Mesh_Splitter mesh_splitter(global_cell_part);
 
   // create local mesh
   std::shared_ptr<rtt_mesh::Draco_Mesh> local_mesh = mesh_splitter.split_mesh(global_mesh);
@@ -202,20 +207,20 @@ void split_3d_mesh_dd(rtt_c4::ParallelUnitTest &ut) {
 
   // check global node indices per rank
   if (rtt_c4::node() == 0) {
-    const std::vector<unsigned> gnode_ref = {0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14};
+    const std::vector<unsigned> global_node_ref = {0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14};
     for (int i = 0; i < 12; ++i)
-      FAIL_IF_NOT(local_mesh->get_global_node_index(i) == gnode_ref[i]);
+      FAIL_IF_NOT(local_mesh->get_global_node_index(i) == global_node_ref[i]);
   } else if (rtt_c4::node() == 3) {
-    const std::vector<unsigned> gnode_ref = {12, 13, 14, 15, 16, 17, 21, 22, 23, 24, 25, 26};
+    const std::vector<unsigned> global_node_ref = {12, 13, 14, 15, 16, 17, 21, 22, 23, 24, 25, 26};
     for (int i = 0; i < 12; ++i)
-      FAIL_IF_NOT(local_mesh->get_global_node_index(i) == gnode_ref[i]);
+      FAIL_IF_NOT(local_mesh->get_global_node_index(i) == global_node_ref[i]);
   }
 
   // now apply a discontiguous global cell partition
-  const std::vector<std::vector<int64_t>> gcell_part2 = {{0, 7}, {1, 6}, {2, 5}, {3, 4}};
+  const std::vector<std::vector<int64_t>> global_cell_part2 = {{0, 7}, {1, 6}, {2, 5}, {3, 4}};
 
   // reset the partition in the current mesh_splitter object
-  mesh_splitter.reset_global_cells_per_rank(gcell_part2);
+  mesh_splitter.reset_global_cells_per_rank(global_cell_part2);
 
   // recreate local mesh
   local_mesh = mesh_splitter.split_mesh(global_mesh);
@@ -266,6 +271,8 @@ void split_3d_mesh_dd(rtt_c4::ParallelUnitTest &ut) {
     PASSMSG("3D Draco_Mesh_Splitter tests ok.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 
