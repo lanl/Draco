@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/Parallel_Data_Operator.hh
  * \author H.Park
- * \date   Aug 1 2023
  * \brief  Parallel_Data_Operator header file.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

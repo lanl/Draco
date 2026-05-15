@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/Draco_Mesh_Builder.t.hh
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Tuesday, Jul 03, 2018, 11:26 am
  * \brief  Draco_Mesh_Builder class header file.
  * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -144,12 +143,10 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
     }
   }
 
-  Remember(auto cn_minmax =
-               std::minmax_element(cell_to_node_linkage.begin(), cell_to_node_linkage.end()));
-  Remember(auto sn_minmax =
-               std::minmax_element(side_to_node_linkage.begin(), side_to_node_linkage.end()));
-  Ensure(*cn_minmax.second < num_nodes);
-  Ensure(side_to_node_linkage.size() > 0 ? *sn_minmax.second < num_nodes : true);
+  Remember(auto cn_minmax = std::ranges::minmax_element(cell_to_node_linkage));
+  Remember(auto sn_minmax = std::ranges::minmax_element(side_to_node_linkage));
+  Ensure(*cn_minmax.max < num_nodes);
+  Ensure(side_to_node_linkage.size() > 0 ? *sn_minmax.max < num_nodes : true);
 
   // >>> CONSTRUCT THE MESH
 

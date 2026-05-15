@@ -2,9 +2,8 @@
 /*!
  * \file   mesh/DD_Topology.i.hh
  * \author H. Park
- * \date   Aug. 1 2023
  * \brief  Member definitions of class DD_Topology
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef mesh_DD_Topology_i_hh
@@ -12,6 +11,7 @@
 
 #include "c4/global.hh"
 #include <limits>
+#include <utility>
 
 namespace rtt_mesh {
 
@@ -56,7 +56,7 @@ int DD_Topology::local_cell(int64_t global_cell) const {
   auto local_cell = global_cell - global_offset_d[node];
 
   // check if it is in range and return
-  if (local_cell > 0 && local_cell < static_cast<int64_t>(num_local_d + 1)) {
+  if (local_cell > 0 && std::cmp_less(local_cell, num_local_d + 1)) {
     Check(local_cell < INT32_MAX);
     return static_cast<int>(local_cell);
   }

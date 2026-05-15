@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/Topology.cc
  * \author H.Park
- * \date   Aug. 1 2023
  * \brief  Topology class implementation file.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

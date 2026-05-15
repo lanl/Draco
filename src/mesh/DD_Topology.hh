@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/DD_Topology.hh
  * \author H. Park
- * \date   Aug. 1 2023
  * \brief  DD_Topology class definition.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -11,6 +10,7 @@
 #define mesh_DD_Topology_hh
 
 #include "Topology.hh"
+#include <utility>
 
 namespace rtt_mesh {
 
@@ -104,7 +104,7 @@ public:
   [[nodiscard]] int64_t num_local_cells() const override { return num_local_d; }
 
   [[nodiscard]] bool valid_local_cell(int cell) const override {
-    return (cell >= 1) && (cell <= static_cast<int>(num_local_d));
+    return (cell >= 1) && std::cmp_less_equal(cell, num_local_d);
   }
 
   // Get the global cell index.

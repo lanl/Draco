@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/X3D_Draco_Mesh_Reader.i.hh
  * \author Ryan Wollaeger <wollaeger@lanl.gov>, Kendra Long
- * \date   Thursday, Jul 12, 2018, 08:46 am
  * \brief  X3D_Draco_Mesh_Reader class implementation header file.
  * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

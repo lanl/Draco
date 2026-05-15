@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/test/Test_Mesh_Interface.hh
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Thursday, Jun 07, 2018, 15:43 pm
  * \brief  Helper class for generating test meshes.
  * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

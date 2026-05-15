@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/Draco_Mesh_Builder.hh
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Friday, Jun 29, 2018, 09:55 am
  * \brief  Draco_Mesh_Builder class header file.
  * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -26,12 +25,12 @@ class Draco_Mesh;
  *
  * \brief Draco_Mesh unstructured mesh builder from reader.
  *
- * Reader is a template parameter ("FRT" = "Format Reader Type") to the builder class. Hence all
- * readers that instantiate the template must have a common set of accessors.  In particular the
- * reader must supply some functions in the RTT_Format_Reader class. The mesh constructor arguments
- * are stored to permit rebuilding the mesh without re-reading it, if the user wants to make a
- * modification to the vertex coordinates (without changing topology) or geometry, for instance.
- */
+ * \tparam FRT Reader is a template parameter ("FRT" = "Format Reader Type") to the builder class.
+ * Hence all readers that instantiate the template must have a common set of accessors.  In
+ * particular the reader must supply some functions in the RTT_Format_Reader class. The mesh
+ * constructor arguments are stored to permit rebuilding the mesh without re-reading it, if the user
+ * wants to make a modification to the vertex coordinates (without changing topology) or geometry,
+ * for instance. */
 //================================================================================================//
 
 template <typename FRT> class Draco_Mesh_Builder {
@@ -55,13 +54,15 @@ private:
 
 public:
   //! Constructor
+  // NOLINTNEXTLINE(performance-unnecessary-value-param)
   explicit Draco_Mesh_Builder(std::shared_ptr<FRT> reader_);
 
   // >>> SERVICES
 
   std::shared_ptr<Draco_Mesh> build_mesh(rtt_mesh_element::Geometry geometry);
 
-  /*! \brief Rebuild mesh after resetting some of the mesh data (see reset functions below)
+  /*!
+   * \brief Rebuild mesh after resetting some of the mesh data (see reset functions below)
    * \param[in] geometry enumeration of mesh geometry
    * \return shared pointer to the Draco_Mesh object */
   std::shared_ptr<Draco_Mesh> rebuild_mesh(rtt_mesh_element::Geometry geometry);

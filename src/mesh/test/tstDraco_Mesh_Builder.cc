@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/test/tstDraco_Mesh_Builder.cc
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Sunday, Jul 01, 2018, 18:21 pm
  * \brief  Draco_Mesh_Builder class unit test.
  * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -23,6 +22,10 @@
 #include <string>
 #include <vector>
 
+// cSpell:ignore bcs, bcsp, scoords
+
+namespace {
+
 using rtt_mesh::Draco_Mesh;
 using rtt_mesh::Draco_Mesh_Builder;
 using rtt_mesh::RTT_Draco_Mesh_Reader;
@@ -37,7 +40,7 @@ using rtt_mesh::RTT_Draco_Mesh_Reader;
 void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
 
   // use Cartesian geometry
-  const Draco_Mesh::Geometry geometry = Draco_Mesh::Geometry::CARTESIAN;
+  const Draco_Mesh::Geometry geometry = rtt_mesh_element::Geometry::CARTESIAN;
 
   // >>> CREATE REFERENCE MESH
 
@@ -147,13 +150,13 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
 
   // build a modified mesh with new geometry, B.C.s, and coordinates
   {
-    const Draco_Mesh::Geometry new_geometry = Draco_Mesh::Geometry::AXISYMMETRIC;
+    const Draco_Mesh::Geometry new_geometry = rtt_mesh_element::Geometry::AXISYMMETRIC;
 
     // scale coordinates by constant scalar factor and reset them in mesh_builder
     constexpr double s = 3.0;
     const std::vector<double> coords = mesh_builder.get_coordinates();
     std::vector<double> scoords(coords.size());
-    std::transform(coords.begin(), coords.end(), scoords.begin(), [](double v) { return s * v; });
+    std::ranges::transform(coords, scoords.begin(), [](double v) noexcept { return s * v; });
     mesh_builder.reset_coordinates(scoords);
     FAIL_IF(rtt_dsxx::soft_equiv(coords, mesh_builder.get_coordinates()));
 
@@ -161,7 +164,7 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
     constexpr unsigned j = 1;
     const std::vector<unsigned> bcs = mesh_builder.get_side_set_flag();
     std::vector<unsigned> bcsp1(bcs.size());
-    std::transform(bcs.begin(), bcs.end(), bcsp1.begin(), [](unsigned v) { return v + j; });
+    std::ranges::transform(bcs, bcsp1.begin(), [](unsigned v) noexcept { return v + j; });
     mesh_builder.reset_side_set_flag(bcsp1);
     FAIL_IF(bcs == mesh_builder.get_side_set_flag());
 
@@ -182,6 +185,8 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
     PASSMSG("2D Cartesian Draco_Mesh_Builder tests okay.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

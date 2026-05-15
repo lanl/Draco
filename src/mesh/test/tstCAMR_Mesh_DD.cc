@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/test/tstCAMR_Mesh.cc
  * \author H. Park
- * \date   Mon Jul 10 2023
  * \brief  Unit test for CAMR_Mesh
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -60,6 +59,8 @@ struct CAMR_Mesh_Data {
   CAMR_Mesh_Data() = default;
   //! Checks for validity of pointers given the problem type
 };
+
+namespace {
 
 //--------------------------------------------------//
 void test_2D_host(rtt_c4::ParallelUnitTest &ut) {
@@ -855,6 +856,8 @@ void test_3D_amr_host2(rtt_c4::ParallelUnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

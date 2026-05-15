@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/X3D_Draco_Mesh_Reader.cc
  * \author Ryan Wollaeger <wollaeger@lanl.gov>, Kendra Long
- * \date   Thursday, Jul 12, 2018, 08:46 am
  * \brief  X3D_Draco_Mesh_Reader class implementation file.
  * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -395,21 +394,20 @@ void X3D_Draco_Mesh_Reader::read_bdy_files() {
     // calculate flag key and get reference to associated side node vector
     const unsigned flag_key = bdy < num_flag ? bdy_flags[bdy] : 0;
     std::vector<unsigned> &flag_node_vec = bc_node_map[bdy];
-    std::sort(flag_node_vec.begin(), flag_node_vec.end());
+    std::ranges::sort(flag_node_vec);
 
     // find the mesh faces that have nodes in this flags set
     for (auto const &face_nodes : x3d_facenode_map) {
 
       // sort vector of nodes associated with this face
       std::vector<unsigned> fnode_vec = get_facenodes(face_nodes.first);
-      std::sort(fnode_vec.begin(), fnode_vec.end());
+      std::ranges::sort(fnode_vec);
 
-      // \todo: check for node index duplicates
+      //! \todo: check for node index duplicates
 
       // find common nodes between side nodes and face
       std::vector<unsigned> nodes_in_common;
-      std::set_intersection(flag_node_vec.begin(), flag_node_vec.end(), fnode_vec.begin(),
-                            fnode_vec.end(), std::back_inserter(nodes_in_common));
+      std::ranges::set_intersection(flag_node_vec, fnode_vec, std::back_inserter(nodes_in_common));
 
       // if the face is entirely composed of side nodes, then it is a side
       if (nodes_in_common == fnode_vec) {

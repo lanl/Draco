@@ -2,9 +2,8 @@
 /*!
  * \file   mesh/test/tstTopology_Builder.cc
  * \author Thomas M. Evans
- * \date   Wed May 11 09:47:27 2005
  * \brief  Topology_Builder test.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Topology.hh"
@@ -17,6 +16,8 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+
+namespace {
 
 using rtt_mesh::Topology;
 
@@ -310,6 +311,8 @@ void test_4_proc(rtt_dsxx::UnitTest &ut) {
     PASSMSG(m.str());
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

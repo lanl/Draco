@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/Parallel_Data_Operator.i.hh
  * \author H. Park
- * \date   Aug 1 2023
  * \brief  Member definitions of class Parallel_Data_Operator
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -13,7 +12,7 @@
 #include <iterator>
 #include <limits>
 
-// cSpell:ignore LCOV, gsum, itor
+// cSpell:ignore LCOV, gsum, itor, itr
 
 namespace rtt_mesh {
 
@@ -718,6 +717,8 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
   rtt_c4::global_barrier();
 }
 
+// NOLINTBEGIN(performance-unnecessary-value-param)
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief Fill boundary cell data fields in a spatially decomposed topology.
@@ -1328,8 +1329,8 @@ std::vector<std::vector<std::vector<T>>> Parallel_Data_Operator::gather_ghost_ce
 
 ////////////////////////////////////////////////////////////
 // ghost cell data exchange
-// scalar case
-// local data will be resized and append the ghost values..
+// - scalar case
+// - local data will be resized and append the ghost values.
 template <typename T>
 void Parallel_Data_Operator::fill_ghost_cell_data(SP_Comm_Patterns pattern,
                                                   std::vector<T> &local_data,
@@ -1351,6 +1352,9 @@ void Parallel_Data_Operator::fill_ghost_cell_data(SP_Comm_Patterns pattern,
       local_data[i * vector_size + j] = ghost_data[index++];
   }
 }
+
+// NOLINTEND(performance-unnecessary-value-param)
+
 } // end namespace rtt_mesh
 
 #endif // mesh_Parallel_Data_Operator_i_hh

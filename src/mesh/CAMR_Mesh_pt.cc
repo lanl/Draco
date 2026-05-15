@@ -2,9 +2,8 @@
 /*!
  * \file   mesh/CAMR_Mesh_pt.cc
  * \author H. Park
- * \date   May 16 2023
  * \brief  Explicit template instantiations for class CAMR_Mesh.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "mesh/CAMR_Mesh.hh"

@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/Draco_Mesh_Splitter.hh
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Thursday, Jul 31, 2025, 15:00 pm
  * \brief  Draco_Mesh class header file.
  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -15,6 +14,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <utility>
 #include <vector>
 
 namespace rtt_mesh {
@@ -73,10 +73,10 @@ std::vector<T> Draco_Mesh_Splitter::split_vector(const std::vector<T> &global_ve
   const size_t num_lcells = my_gcells.size();
 
   // check global vector is correct size for partition
-  Remember(auto g_it = std::max_element(my_gcells.begin(), my_gcells.end()));
+  Remember(auto g_it = std::ranges::max_element(my_gcells));
   Remember(auto gcell_max = *g_it);
   Remember(rtt_c4::global_max(gcell_max));
-  Check(gcell_max == static_cast<int64_t>(global_vector.size() - 1));
+  Check(std::cmp_equal(gcell_max, global_vector.size() - 1));
 
   // intialized and populate local return vector
   std::vector<T> local_vector(my_gcells.size());

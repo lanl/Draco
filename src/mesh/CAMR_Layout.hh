@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/CAMR_Layout.hh
  * \author H. Park
- * \date   May 10 2023
  * \brief  CAMR_Layout class definition.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -16,6 +15,7 @@
 #include <iosfwd>
 #include <map>
 #include <memory>
+#include <utility>
 #include <vector>
 
 // cSpell:ignore nghosts, ndim
@@ -111,7 +111,7 @@ public:
     for (uint32_t cell = 1; cell <= get_num_owned_cells(); ++cell) {
       int const neighbor =
           cell_face[(static_cast<size_t>(cell) - 1) * n_faces_per_cell + n_fine_faces * (face - 1)];
-      if (neighbor == 0 || neighbor == static_cast<int>(cell)) {
+      if (neighbor == 0 || std::cmp_equal(neighbor, cell)) {
         boundary_cells.push_back(cell);
       }
     }

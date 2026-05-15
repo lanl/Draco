@@ -2,10 +2,8 @@
 /*!
  * \file   mesh/Topology_Builder.hh
  * \author H. Park
- * \date   Aug 1 2023
  * \brief  Topology_Builder class definition.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved.
- */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef mesh_Topology_Builder_hh
@@ -21,8 +19,7 @@ namespace rtt_mesh {
  * \class Topology_Builder
  * \brief Builds a Rep_Topology or DD_Topology instance.
  *
- * The Topology_Builder builds a Topology object.  The types of topologies
- * that can be built are:
+ * The Topology_Builder builds a Topology object.  The types of topologies that can be built are:
  * - rtt_mesh::Rep_Topology
  * - rtt_mesh::DD_Topology
  * .
@@ -30,36 +27,33 @@ namespace rtt_mesh {
  * \code
  *     int decomposition_scheme() const;
  * \endcode
- * This function returns an rtt_mesh::Topology::Decomposition enumeration.  Single
- * processor runs require rtt_mesh::Rep_Topology.  The interface has several
- * required functions.  These are documented in Topology_Builder().
+ * This function returns an rtt_mesh::Topology::Decomposition enumeration.  Single processor runs
+ * require rtt_mesh::Rep_Topology.  The interface has several required functions.  These are
+ * documented in Topology_Builder().
  *
- * The Topology_Builder can build topologies on meshes with ghost, or inactive,
- * cells.  When the mesh has inactive cells all of the boundary cell data fields
- * are defined on the full mesh (the mesh with the inactive cells).  A
- * full-to-active mesh map must be provided by the interface.  The builder does
- * the requisite communication to map the boundary fields to the active mesh.
- * The resulting topology classes are \b always defined on the active mesh.  See
- * Topology_Builder() for more details.  See the tests for examples.
+ * The Topology_Builder can build topologies on meshes with ghost, or inactive, cells.  When the
+ * mesh has inactive cells all of the boundary cell data fields are defined on the full mesh (the
+ * mesh with the inactive cells).  A full-to-active mesh map must be provided by the interface.  The
+ * builder does the requisite communication to map the boundary fields to the active mesh. The
+ * resulting topology classes are \b always defined on the active mesh.  See Topology_Builder() for
+ * more details.  See the tests for examples.
  *
- * The rtt_mesh::DD_Topology is processor-ordered. The constructed
- * global-processor ordering is for internal use only. It \b cannot be used to
- * map back to global ids used by the client; however, it will be consistent
- * within API.  The algorithm used to calculate the local-to-global cell ids is
- * based on a processor-dependent offset. The offset is calculated on each
- * processor \f$ p \f$ using:
+ * The rtt_mesh::DD_Topology is processor-ordered. The constructed global-processor ordering is for
+ * internal use only. It \b cannot be used to map back to global ids used by the client; however, it
+ * will be consistent within API.  The algorithm used to calculate the local-to-global cell ids is
+ * based on a processor-dependent offset. The offset is calculated on each processor \e p using:
  *
  * \f[
  * O_{p} = \sum_{i=0}^{p-1}N_{a}(i)
  * \f]
  *
- * Then, the global ids on processor \f$ p \f$ are calculated using:
+ * Then, the global ids on processor \e p are calculated using:
  *
  * \f[
  *  g_{p}(l) = O_{p} + l
  * \f]
  *
- * where \f$ l \f$ is the local cell index in the range \f$[1,N_{a}]\f$.
+ * where \e l is the local cell index in the range \f$[1,N_{a}]\f$.
  *
  * \sa rtt_mesh::DD_Topology
  */
@@ -117,11 +111,11 @@ public:
 #ifdef CHECK_ON
       uint32_t total_cells = num_active_cells;
       rtt_c4::global_sum(total_cells);
-      Check(total_cells == num_global_cells);
+      Check(std::cmp_equal(total_cells, num_global_cells));
 #endif
 
       Ensure(num_active_cells_);
-      Ensure(num_active_cells_ <= num_global_cells_);
+      Ensure(std::cmp_less_equal(num_active_cells_, num_global_cells_));
       Ensure(bnd_cells_ != nullptr);
       Ensure(bnd_procs_ != nullptr);
       Ensure(num_full_cells_ ? full2active_ != nullptr : true);

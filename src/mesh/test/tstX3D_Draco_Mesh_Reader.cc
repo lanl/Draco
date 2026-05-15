@@ -2,9 +2,8 @@
 /*!
  * \file   mesh/test/tstX3D_Draco_Mesh_Reader.cc
  * \author Ryan Wollaeger <wollaeger@lanl.gov>
- * \date   Tuesday, Jul 10, 2018, 10:23 am
  * \brief  X3D_Draco_Mesh_Reader class unit test.
- * \note   Copyright (C) 2018-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2018-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Mesh_Interface.hh"
@@ -24,11 +23,13 @@
 #include <string>
 #include <vector>
 
+// cSpell:ignore bdy, ibc, matid, xdir, ydir
+
+namespace {
+
 using rtt_mesh::Draco_Mesh;
 using rtt_mesh::Draco_Mesh_Builder;
 using rtt_mesh::X3D_Draco_Mesh_Reader;
-
-// cSpell:ignore xdir, ydir, matid
 
 //------------------------------------------------------------------------------------------------//
 // TESTS
@@ -117,7 +118,7 @@ void read_x3d_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
 void build_x3d_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
 
   // use Cartesian geometry
-  const Draco_Mesh::Geometry geometry = Draco_Mesh::Geometry::CARTESIAN;
+  const Draco_Mesh::Geometry geometry = rtt_mesh_element::Geometry::CARTESIAN;
 
   // >>> CREATE REFERENCE MESH
 
@@ -337,7 +338,7 @@ void read_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
 void build_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
 
   // use Cartesian geometry
-  const Draco_Mesh::Geometry geometry = Draco_Mesh::Geometry::CARTESIAN;
+  const Draco_Mesh::Geometry geometry = rtt_mesh_element::Geometry::CARTESIAN;
 
   // >>> PARSE MESH
 
@@ -362,7 +363,7 @@ void build_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
 
   // check that the scalar data is correct
   FAIL_IF(mesh->get_dimension() != 3);
-  FAIL_IF(mesh->get_geometry() != Draco_Mesh::Geometry::CARTESIAN);
+  FAIL_IF(mesh->get_geometry() != rtt_mesh_element::Geometry::CARTESIAN);
   FAIL_IF(mesh->get_num_cells() != 1);
   FAIL_IF(mesh->get_num_nodes() != 8);
 
@@ -381,7 +382,7 @@ void build_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
   std::vector<std::vector<unsigned>> ref_nodes = {{0, 2, 3, 1}, {5, 7, 6, 4}, {0, 1, 5, 4},
                                                   {6, 7, 3, 2}, {0, 4, 6, 2}, {3, 7, 5, 1}};
 
-  // test "side" index of face (side index ordered low-x, hig-x, low-y, hig-y, low-z, hig-z)
+  // test "side" index of face (side index ordered low-x, high-x, low-y, high-y, low-z, high-z)
   // side indices are in order of parsed file, not necessarily same as face ordering in layout
   std::vector<unsigned> ref_sides = {4, 5, 2, 3, 0, 1};
 
@@ -406,7 +407,7 @@ void build_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
 void build_x3d_rnd_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
 
   // use Cartesian geometry
-  const Draco_Mesh::Geometry geometry = Draco_Mesh::Geometry::CARTESIAN;
+  const Draco_Mesh::Geometry geometry = rtt_mesh_element::Geometry::CARTESIAN;
 
   // >>> PARSE MESH
 
@@ -431,7 +432,7 @@ void build_x3d_rnd_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
 
   // check that the scalar data is correct
   FAIL_IF(mesh->get_dimension() != 3);
-  FAIL_IF(mesh->get_geometry() != Draco_Mesh::Geometry::CARTESIAN);
+  FAIL_IF(mesh->get_geometry() != rtt_mesh_element::Geometry::CARTESIAN);
   FAIL_IF(mesh->get_num_cells() != 64);
   FAIL_IF(mesh->get_num_nodes() != 125);
 
@@ -447,6 +448,8 @@ void build_x3d_rnd_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
     PASSMSG("3D X3D_Draco_Mesh_Reader random mesh build tests ok.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

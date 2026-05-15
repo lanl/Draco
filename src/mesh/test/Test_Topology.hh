@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/test/Test_Topology.hh
  * \author Mathew Cleveland
- * \date   Nov. 2023
  * \brief  Build a DD Topology for testing.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

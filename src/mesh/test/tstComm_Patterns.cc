@@ -2,9 +2,8 @@
 /*!
  * \file   mesh/test/tstComm_Patterns.cc
  * \author Mathew Cleveland
- * \date   Nov. 2023
  * \brief  Comm_Patterns test.
- * \note   Copyright (C) 2023-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "Test_Topology.hh"
@@ -19,6 +18,10 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+
+// cSpell:ignore itr
+
+namespace {
 
 using namespace std;
 
@@ -839,6 +842,8 @@ void rep_Comm_Patterns(rtt_dsxx::UnitTest &ut) {
     PASSMSG(m.str());
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 

@@ -2,7 +2,6 @@
 /*!
  * \file   mesh/DD_Topology.cc
  * \author H Park
- * \date   Aug. 1 2023
  * \brief  DD_Topology member definitions.
  * \note   Copyright (C) 2023-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
