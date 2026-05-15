@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/Range_Finder.hh
  * \author Mike Buksas
- * \date   Thu Feb  6 12:10:56 2003
  * \brief  Header file for Range_finder
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

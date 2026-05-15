@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/Safe_Divide.hh
  * \author Mike Buksas
- * \date   Tue Jun 21 15:35:05 2005
  * \brief  Provide protected division functions.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

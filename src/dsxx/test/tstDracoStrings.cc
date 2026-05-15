@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstDracoStrings.cc
  * \author Kelly G. Thompson <kgt@lanl.gov>
- * \date   Wednesday, Aug 23, 2017, 13:30 pm
  * \brief  Test functions defined in dsxx/DracoStrings.hh
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

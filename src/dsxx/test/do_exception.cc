@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/do_exception.cc
  * \author Rob Lowrie
- * \date   Thu Oct 13 14:33:59 2005
  * \brief  Does a floating-point exception.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

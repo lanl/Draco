@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/File_Streams.hh
  * \author Rob Lowrie
- * \date   Fri Nov 19 12:42:18 2004
  * \brief  Header for File_Output and File_Input.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_File_Streams_hh

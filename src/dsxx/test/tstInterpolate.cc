@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstInterpolate.cc
  * \author Kent G. Budge, Kendra P. Long
- * \date   Tues Nov 15 2022
  * \brief  Test functions defined in dsxx/Interpolate.hh.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

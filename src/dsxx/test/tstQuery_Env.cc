@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstQuery_Env.cc
  * \author Kent G. Budge
- * \date   Wed Nov 10 09:35:09 2010
  * \brief  Test functions defined in dsxx/draco_math.hh.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/UnitTest.cc
  * \author Kelly Thompson
- * \date   Thu May 18 15:46:19 2006
  * \brief  Implementation file for UnitTest.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "UnitTest.hh"

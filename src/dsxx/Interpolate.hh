@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/Interpolate.hh
  * \author Kendra P. Long, Kent G. Budge
- * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Interpolation functions.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

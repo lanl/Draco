@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/Query_Env.hh
  * \author Tim Kelley
- * \date   Fri Jun 7 08:06:53 2019
  * \brief  Functions for working with your environment
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

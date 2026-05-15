@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/StackTrace.hh
  * \author Kelly Thompson
- * \date   Friday, Dec 20, 2013, 09:47 am
  * \brief  Contains function to generate a stack trace on Linux
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef StackTrace_hh

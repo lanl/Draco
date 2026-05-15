@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/cxx11example_move_semantics.cc
  * \author Tim M. Kelley <tkelley@lanl.gov>, Kelly G. Thompson <kgt@lanl.gov>
- * \date   Wednesday, May 24, 2017, 11:06 am
  * \brief  Demonstrate proper and improper use of std::move
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved.
  *

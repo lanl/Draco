@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/Release.hh
  * \author Thomas Evans
- * \date   Thu Jul 15 09:31:44 1999
  * \brief  Header file for dsxx library release function.
  * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

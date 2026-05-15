@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/DracoTerminal.cc
  * \author Kelly Thompson
- * \date   Sat Oct 05 2019
  * \brief  Wrapper for a Terminal class that provides colored output.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved.
  *
  * \sa https://github.com/certik/terminal/blob/master/terminal.h
  *

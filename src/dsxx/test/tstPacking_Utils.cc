@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstPacking_Utils.cc
  * \author Thomas M. Evans
- * \date   Wed Nov  7 15:58:08 2001
  * \brief  Test the routines used for serializing and de-serializing C++ objects
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstField_Traits.cc
  * \author Kent Budge
- * \date   Tue Aug 26 12:18:55 2008
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 

@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstRange_finder.cc
  * \author Mike Buksas
- * \date   Thu Feb  6 12:43:22 2003
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 

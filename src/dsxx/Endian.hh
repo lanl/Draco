@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/Endian.hh
  * \author Mike Buksas
- * \date   Tue Oct 23 14:15:55 2007
  * \brief  Function declarations for endian conversions
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef dsxx_Endian_hh

@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstSlice.cc
  * \author Kent Budge
- * \date   Thu Jul  8 08:02:51 2004
  * \brief  Test the Slice subset container class.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

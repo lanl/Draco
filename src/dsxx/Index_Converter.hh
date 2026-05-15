@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/Index_Converter.hh
  * \author Mike Buksas
- * \date   Fri Jan 20 14:51:51 2006
  * \brief  Decleration and Definition of Index_Converter
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

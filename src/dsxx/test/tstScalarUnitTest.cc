@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstScalarUnitTest.cc
  * \author Kelly Thompson
- * \date   Thu May 18 17:17:24 2006
  * \brief  Unit test for the dsxx classes UnitTest and ScalarUnitTest.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstPath.cc
  * \author Kelly Thompson
- * \date   Tue Jul 12 16:00:59 2011
  * \brief  Test functions found in dsxx/path.hh and path.cc
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

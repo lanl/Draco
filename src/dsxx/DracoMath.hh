@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/DracoMath.hh
  * \author Kent G. Budge
- * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  New or overloaded constexpr-friendly cmath or cmath-like functions.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved.
  *
@@ -89,7 +88,7 @@ constexpr auto cube(Semigroup const &x) noexcept(noexcept(x * x * x)) {
  *   since the code would no longer be `constexpr`.
  * - Overflow checks are performed when `DRACO_DIAGNOSTICS_LEVEL_2` is defined.
  *
- * \sa cube
+ * \sa cube, norm, norm_diff
  */
 template <Multipliable Semigroup>
 constexpr auto square(const Semigroup &x) noexcept(noexcept(x * x)) {

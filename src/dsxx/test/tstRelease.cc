@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstRelease.cc
  * \author Kelly Thompson <kgt@lanl.gov>
- * \date   Friday, Jul 29, 2016, 10:05 am
  * \brief  Check basic functionality of Release.hh/cc files.
  * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

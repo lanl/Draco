@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/Release.cc
  * \author Thomas Evans
- * \date   Thu Jul 15 09:31:44 1999
  * \brief  Provides the function definition for Release.
  * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

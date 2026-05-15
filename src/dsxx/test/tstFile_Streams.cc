@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstFile_Streams.cc
  * \author Rob Lowrie
- * \date   Sun Nov 21 19:36:12 2004
  * \brief  Tests File_Input and File_Output.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/Index_Counter.hh
  * \author Mike Buksas
- * \date   Tue Jan 31 16:45:39 2006
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 

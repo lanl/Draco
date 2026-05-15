@@ -2,10 +2,9 @@
 /*!
  * \file   dsxx/bin/testCrashHandler.cc
  * \author Kelly Thomposn
- * \date   Wed Nov 06 2013
  * \brief  Windows/x86 crash handler tests
  *
- * Copyright (C) 2024 Triad National Security, LLC., All rights reserved.
+ * Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved.
  *
  * See dsxx/COPYING file for more copyright information.  This code is based
  * substantially on http://www.codeproject.com/Articles/207464/Exception-Handling-in-Visual-Cplusplus
