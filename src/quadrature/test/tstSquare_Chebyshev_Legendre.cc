@@ -2,8 +2,7 @@
 /*!
  * \file   quadrature/test/tstTri_Chebyshev_Legendre.cc
  * \author Kent G. Budge
- * \date   Tue Nov  6 13:08:49 2012
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"

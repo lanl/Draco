@@ -8,11 +8,11 @@
 
 #include "dsxx/Assert.hh"
 #include "parser/Token.hh"
+#include "parser/Token_Stream.hh"
 #include "quadrature/QIM.hh"
 #include <string>
 
 namespace rtt_quadrature {
-using namespace rtt_parser;
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -20,14 +20,14 @@ using namespace rtt_parser;
  * \param[in,out] tokens Token stream from which to parse the specification.
  * \param[out] qim Reference to a QIM into which the specification should be stored.
  *
- * The routine checks that the \c QIM is set to \c END_QIM and reports a semantic error if it is
- * not. This simplifies checking for duplicate specifications, by allowing the client to set the
- * \c QIM to \c END_QIM before beginning his parse.
+ * The routine checks that the `QIM` is set to `END_QIM` and reports a semantic error if it is not.
+ * This simplifies checking for duplicate specifications, by allowing the client to set the `QIM` to
+ * `END_QIM` before beginning his parse.
  */
-void parse_quadrature_interpolation_model(Token_Stream &tokens, QIM &qim) {
+void parse_quadrature_interpolation_model(rtt_parser::Token_Stream &tokens, QIM &qim) {
   tokens.check_semantics(qim == END_QIM, "quadrature interpolation model already specified");
 
-  Token const token = tokens.shift();
+  rtt_parser::Token const token = tokens.shift();
 
   if (token.text() == "SN") {
     qim = SN;

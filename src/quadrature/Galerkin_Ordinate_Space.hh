@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/Galerkin_Ordinate_Space.hh
  * \author Kent Budge
- * \date   Mon Mar 26 16:11:19 2007
  * \brief  Definition of class Galerkin_Ordinate_Space
  * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

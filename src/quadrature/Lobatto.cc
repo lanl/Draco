@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/Lobatto.cc
  * \author Kelly Thompson
- * \date   Tue Feb 22 10:21:50 2000
  * \brief  A class representing an interval Gauss-Legendre quadrature set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Lobatto.hh"
@@ -12,11 +11,11 @@
 #include "dsxx/DracoStrings.hh"
 #include "quadrature/Interval_Quadrature.hh"
 #include "quadrature/Ordinate.hh"
-#include "units/MathConstants.hh"
 #include <cmath>   // cos
 #include <cstddef> // size_t
 #include <gsl/gsl_sf_legendre.h>
 #include <limits>
+#include <numbers>
 #include <string>
 #include <vector>
 
@@ -35,9 +34,9 @@ Lobatto::Lobatto(unsigned sn_order) : Interval_Quadrature(sn_order) {
   // Mus and weights are worth precomputing
 
   using rtt_dsxx::soft_equiv;
-  using rtt_units::PI;
   using std::cos;
   using std::numeric_limits;
+  ;
 
   double const tolerance(100 * std::numeric_limits<double>::epsilon());
 
@@ -58,7 +57,8 @@ Lobatto::Lobatto(unsigned sn_order) : Interval_Quadrature(sn_order) {
   // Loop over the desired roots.
   for (size_t iroot = 0; iroot < numHrGaussPoints - 1; ++iroot) {
     // Approximate the i-th root.
-    double z(cos(PI * (static_cast<double>(iroot) - 0.25) / (static_cast<double>(N - 2) + 0.5)));
+    double z(cos(std::numbers::pi * (static_cast<double>(iroot) - 0.25) /
+                 (static_cast<double>(N - 2) + 0.5)));
     double z1;
 
     do // Use Newton's method to refine the value for the i-th root.

@@ -3,15 +3,13 @@
  * \file   quadrature/Quadrature_Class.hh
  * \author Kent G. Budge
  * \brief  Define Quadrature_Class enumeration
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef rtt_quadrature_Quadrature_Class_hh
-#define rtt_quadrature_Quadrature_Class_hh
-
+#pragma once
 namespace rtt_quadrature {
 
-enum Quadrature_Class {
+enum Quadrature_Class : uint8_t {
   INTERVAL_QUADRATURE, //!< 1-D quadratures
 
   TRIANGLE_QUADRATURE, //!< 3-D triangular quadrature
@@ -22,8 +20,6 @@ enum Quadrature_Class {
 };
 
 } // end namespace rtt_quadrature
-
-#endif // rtt_quadrature_Quadrature_Class_hh
 
 //------------------------------------------------------------------------------------------------//
 // end of quadrature/Quadrature_Class.hh

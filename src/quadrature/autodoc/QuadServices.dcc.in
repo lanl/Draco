@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/autodoc/QuadServices.dcc
  * \author Kelly Thompson
- * \date   Mon Nov 8 11:17:12 2004
  * \brief  Provide doxygen documentation for QuadServices class
  * \note   Copyright (C) 2016-2020 Triad National Security, LLC.
  *         All rights reserved. */

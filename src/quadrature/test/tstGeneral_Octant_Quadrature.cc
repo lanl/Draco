@@ -2,8 +2,7 @@
 /*!
  * \file   quadrature/test/tstGeneral_Octant_Quadrature.cc
  * \author Kent G. Budge
- * \date   Tue Nov  6 13:08:49 2012
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -12,7 +11,7 @@
 #include "quadrature_test.hh"
 #include "quadrature/General_Octant_Quadrature.hh"
 #include "quadrature/Quadrature_Class.hh"
-#include <cmath>
+#include <numbers>
 #include <vector>
 
 using namespace std;
@@ -26,7 +25,7 @@ using namespace rtt_quadrature;
 int main(int argc, char *argv[]) {
   ScalarUnitTest ut(argc, argv, release);
   try {
-    double const V = 1 / sqrt(3.0);
+    double const V = std::numbers::inv_sqrt3;
     vector<double> const mu(1, V), eta(1, V), xi(1, V), wt(1, 1.0);
     General_Octant_Quadrature quadrature(2, mu, eta, xi, wt, 2, TRIANGLE_QUADRATURE);
 

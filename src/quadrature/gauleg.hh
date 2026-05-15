@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/gauleg.hh
  * \author Kent Budge
- * \date   Tue Sep 14 13:16:09 2004
  * \brief  Gauss-Legendre quadrature
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -57,7 +56,6 @@ void gauleg(double const x1, // expect FieldVector::value_type to be promoted to
   using rtt_dsxx::soft_equiv;
   using std::cos;
   using std::numeric_limits;
-
   using Field = typename FieldVector::value_type;
 
   Require(n > 0);

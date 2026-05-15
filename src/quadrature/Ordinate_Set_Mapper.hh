@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/Ordinate_Set_Mapper.hh
  * \author Allan Wollaber
- * \date   Mon Mar  7 10:42:56 EST 2016
  * \brief  Declarations for the class rtt_quadrature::Ordinate_Set_Mapper.
  * \note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -11,6 +10,7 @@
 #define quadrature_OrdinateSetMapper_hh
 
 #include "Ordinate_Set.hh"
+#include <cstdint>
 
 namespace rtt_quadrature {
 
@@ -27,7 +27,7 @@ public:
   // ENUMERATIONS
 
   //! Ordering of ordinates.
-  enum Interpolation_Type {
+  enum Interpolation_Type : uint8_t {
     //! Associates an angle with its nearest ordinate
     NEAREST_NEIGHBOR,
 
@@ -71,7 +71,7 @@ private:
     explicit dot_product_functor_3D(const Ordinate &o_in) : o1(o_in) {}
 
     // Returns the 3D dot product of the ordinate passed into the functor with the local ordinate
-    double operator()(const Ordinate &o2) const {
+    double operator()(const Ordinate &o2) const noexcept {
       return o1.mu() * o2.mu() + o1.eta() * o2.eta() + o1.xi() * o2.xi();
     }
     const Ordinate o1;

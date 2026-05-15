@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/Interval_Quadrature.cc
  * \author Kelly Thompson
- * \date   Tue Feb 22 10:21:50 2000
  * \brief  A class representing an interval Gauss-Legendre quadrature set.
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Interval_Quadrature.hh"

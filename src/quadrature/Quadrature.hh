@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/Quadrature.hh
  * \author Kelly Thompson
- * \date   Tue Feb 22 10:21:50 2000
  * \brief  Quadrature class header file.
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

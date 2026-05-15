@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/Octant_Quadrature.cc
  * \author Kent Budge
- * \date   Friday, Nov 30, 2012, 08:27 am
  * \brief  Implementation for Octant_Quadrature
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Octant_Quadrature.hh"
@@ -145,7 +144,7 @@ std::vector<Ordinate> Octant_Quadrature::create_ordinates_(
 
     // Sort
 
-    std::sort(Result.begin(), Result.end(), Ordinate_Set::level_compare);
+    std::ranges::sort(Result, Ordinate_Set::level_compare);
 
     // Now sum around the axis.
     m = 0;

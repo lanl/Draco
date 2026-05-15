@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/Sn_Ordinate_Space.cc
  * \author Kent Budge
- * \date   Mon Mar 26 16:11:19 2007
  * \brief  Define methods of class Sn_Ordinate_Space
- * \note   Copyright (C) 2012-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Sn_Ordinate_Space.hh"
@@ -20,6 +19,7 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_cblas.h>
 #include <gsl/gsl_matrix_double.h>
+#include <utility>
 #include <vector>
 
 namespace rtt_quadrature {
@@ -48,7 +48,7 @@ vector<Moment> Sn_Ordinate_Space::compute_n2lk_1Da_(Quadrature_Class /*unused*/,
   unsigned const L = expansion_order();
 
   // Choose: l= 0, ..., N, k = 0, ..., l
-  for (int ell = 0; ell <= static_cast<int>(L); ++ell)
+  for (int ell = 0; std::cmp_less_equal(ell, L); ++ell)
     for (int k = 0; k <= ell; ++k)
       if ((ell + k) % 2 == 0)
         result.emplace_back(ell, k);
@@ -63,7 +63,7 @@ vector<Moment> Sn_Ordinate_Space::compute_n2lk_2D_(Quadrature_Class /*unused*/, 
   unsigned const L = expansion_order();
 
   // Choose: l= 0, ..., N, k = 0, ..., l
-  for (int ell = 0; ell <= static_cast<int>(L); ++ell)
+  for (int ell = 0; std::cmp_less_equal(ell, L); ++ell)
     for (int k = 0; k <= ell; ++k)
       result.emplace_back(ell, k);
 
@@ -84,7 +84,7 @@ vector<Moment> Sn_Ordinate_Space::compute_n2lk_3D_(Quadrature_Class /*unused*/, 
   unsigned const L = expansion_order();
 
   // Choose: l= 0, ..., L, k = -l, ..., l
-  for (int ell = 0; ell <= static_cast<int>(L); ++ell)
+  for (int ell = 0; std::cmp_less_equal(ell, L); ++ell)
     for (int k(-ell); k <= ell; ++k)
       result.emplace_back(ell, k);
 

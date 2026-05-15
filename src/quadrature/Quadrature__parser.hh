@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/Quadrature__parser.hh
  * \author Kelly Thompson
- * \date   Tue Feb 22 10:21:50 2000
  * \brief  Parser for various quadrature classes.
  * \note   Copyright (C) 2015-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -42,7 +41,7 @@ public:
 
   [[nodiscard]] bool allow_exit() const { return true; }
 
-  void check_completeness(Token_Stream &tokens);
+  void check_completeness(rtt_parser::Token_Stream &tokens);
 
   std::shared_ptr<rtt_quadrature::Quadrature> create_object();
 
@@ -57,9 +56,9 @@ public:
    * \param parse_function Function to call to parse a specification for the new transport model.
    *        Must return an instance of the transport model class.
    */
-  static void
-  register_quadrature(std::string const &keyword,
-                      std::shared_ptr<rtt_quadrature::Quadrature> parse_function(Token_Stream &)) {
+  static void register_quadrature(
+      std::string const &keyword,
+      std::shared_ptr<rtt_quadrature::Quadrature> parse_function(rtt_parser::Token_Stream &)) {
     Abstract_Class_Parser<rtt_quadrature::Quadrature, get_parse_table,
                           get_parsed_object>::register_child(keyword, parse_function);
   }

@@ -2,8 +2,7 @@
 /*!
  * \file   quadrature/Quadrature.cc
  * \author Kelly Thompson
- * \date   Tue Feb 22 15:38:56 2000
- * \brief  Copyright (C) 2010-2024 Triad National Security, LLC., All rights reserved. */
+ * \brief  Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Quadrature.hh"
@@ -141,7 +140,7 @@ void Quadrature::add_1D_starting_directions_(Geometry const geometry,
   }
 }
 
-//---------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 /* protected */
 void Quadrature::add_2D_starting_directions_(Geometry const geometry,
                                              bool const add_starting_directions,
@@ -151,7 +150,7 @@ void Quadrature::add_2D_starting_directions_(Geometry const geometry,
 
   if (add_starting_directions) {
     if (geometry == rtt_mesh_element::Geometry::AXISYMMETRIC) {
-      std::sort(ordinates.begin(), ordinates.end(), Ordinate_Set::level_compare);
+      std::ranges::sort(ordinates, Ordinate_Set::level_compare);
 
       // Define an impossible value for a direction cosine.  We use this to simplify the logic of
       // determining when we are at the head of a new level set.

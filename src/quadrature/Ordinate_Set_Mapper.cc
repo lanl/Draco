@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/Ordinate_Set_Mapper.cc
  * \author Allan Wollaber
- * \date   Mon Mar  7 10:42:56 EST 2016
  * \brief  Implementation file for the class rtt_quadrature::Ordinate_Set_Mapper.
- * \note   Copyright (C) 2016-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2016-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "quadrature/Ordinate_Set_Mapper.hh"
@@ -88,10 +87,10 @@ void Ordinate_Set_Mapper::map_angle_into_ordinates(const Ordinate &ord_in,
   // Ordinate_Set
   if (os_.dimension() != 1) {
     dot_product_functor_3D const dpf(ord_in);
-    std::transform(ords.begin(), ords.end(), dps.begin(), dpf);
+    std::ranges::transform(ords, dps.begin(), dpf);
   } else {
     dot_product_functor_1D const dpf(ord_in);
-    std::transform(ords.begin(), ords.end(), dps.begin(), dpf);
+    std::ranges::transform(ords, dps.begin(), dpf);
   }
 
   // Remove the "starting directions" as valid ordinates in the quadrature, if they exist
@@ -108,7 +107,7 @@ void Ordinate_Set_Mapper::map_angle_into_ordinates(const Ordinate &ord_in,
   switch (interp_in) {
   case NEAREST_NEIGHBOR: {
     // Find the index with the largest dot product
-    size_t const max_e = std::max_element(dps.begin(), dps.end()) - dps.begin();
+    size_t const max_e = std::ranges::max_element(dps) - dps.begin();
 
     // Put all of the associated weight into that element
     weights[max_e] = ord_in.wt() / ords[max_e].wt();

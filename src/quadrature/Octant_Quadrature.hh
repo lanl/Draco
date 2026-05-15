@@ -2,7 +2,6 @@
 /*!
  * \file   quadrature/Octant_Quadrature.hh
  * \author Kent Budge
- * \date   Friday, Nov 30, 2012, 08:28 am
  * \brief  A class to encapsulate a 3D Level Symmetric quadrature set.
  * \note   Copyright (C) 2012-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -52,7 +51,7 @@ protected:
 
   // STATICS
 
-  static void parse(Token_Stream &tokens, bool &has_axis_assignments, unsigned &mu_axis,
+  static void parse(rtt_parser::Token_Stream &tokens, bool &has_axis_assignments, unsigned &mu_axis,
                     unsigned &eta_axis);
 
 private:

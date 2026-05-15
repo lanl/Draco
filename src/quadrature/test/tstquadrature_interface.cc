@@ -2,9 +2,8 @@
 /*!
  * \file   quadrature/test/tstquadrature_interface.cc
  * \author Jae Chang
- * \date   Tue Feb  3 13:08:49 2012
  * \brief  Quadrature Interface test
- * \note   Copyright (C) 2015-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2015-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -15,9 +14,12 @@
 #include <array>
 #include <vector>
 
+// cSpell:ignore pcl, scl, tstquadrature
+
+namespace {
+
 using namespace std;
 using namespace rtt_dsxx;
-// using namespace rtt_quadrature;
 
 //------------------------------------------------------------------------------------------------//
 // Unit tests
@@ -66,7 +68,7 @@ void quadrature_interface_test(rtt_dsxx::UnitTest &ut) {
   }
   PASSMSG("Gauss_Legendre passed");
 
-  // testing Lobato
+  // testing Lobatto
   init_quadrature(quad);
 
   quad.dimension = 1;
@@ -78,20 +80,20 @@ void quadrature_interface_test(rtt_dsxx::UnitTest &ut) {
 
   get_quadrature(quad);
 
-  std::array<double, 4> lobato_mu = {-1, -0.4472135955, 0.4472135955, 1};
-  std::array<double, 4> lobato_wt = {0.08333333333, 0.4166666667, 0.4166666667, 0.08333333333};
+  std::array<double, 4> Lobatto_mu = {-1, -0.4472135955, 0.4472135955, 1};
+  std::array<double, 4> Lobatto_wt = {0.08333333333, 0.4166666667, 0.4166666667, 0.08333333333};
 
   for (unsigned i = 0; i < 4; ++i) {
-    if (!soft_equiv(quad.mu[i], lobato_mu[i], 1e-8)) {
+    if (!soft_equiv(quad.mu[i], Lobatto_mu[i], 1e-8)) {
       FAILMSG("incorrect mu");
       return;
     }
-    if (!soft_equiv(quad.weights[i], lobato_wt[i], 1e-8)) {
+    if (!soft_equiv(quad.weights[i], Lobatto_wt[i], 1e-8)) {
       FAILMSG("incorrect wt");
       return;
     }
   }
-  PASSMSG("Lobato passed");
+  PASSMSG("Lobatto passed");
 
   // testing Level Symmetric
   init_quadrature(quad);
@@ -270,6 +272,8 @@ void quadrature_interface_test(rtt_dsxx::UnitTest &ut) {
 
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
