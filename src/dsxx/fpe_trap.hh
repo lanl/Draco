@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/fpe_trap.hh
  * \author Rob Lowrie, Kelly Thompson
- * \date   Thu Oct 13 16:36:09 2005
  * \brief  Contains functions in the fpe_trap namespace.
  * \note   Copyright (C) 2024 Triad National Security, LLC. All rights reserved.
  *

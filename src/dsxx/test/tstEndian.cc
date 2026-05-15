@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstEndian.cc
  * \author Mike Buksas
- * \date   Tue Oct 23 16:20:59 2007
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 

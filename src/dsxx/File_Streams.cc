@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/File_Streams.cc
  * \author Rob Lowrie
- * \date   Mon Nov 15 10:03:51 2004
  * \brief  File_Streams implementation file.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "File_Streams.hh"

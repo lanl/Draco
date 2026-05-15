@@ -70,11 +70,9 @@ void t2(rtt_dsxx::UnitTest &ut) {
   std::regex const rgx(std::string(".*") + compare_value + ".*");
   std::smatch match;
 
-  if (!std::regex_search(error_message, match, rgx)) {
-    ITFAILS;
-    std::cout << "compare_value = \"" << compare_value << "\"\nmatch = \"" << match[1] << "\n\n";
-  }
-
+  if (!std::regex_search(error_message, match, rgx))
+    FAILMSG(std::string("compare_value = \"") + compare_value + "\"\nmatch = \"" + match[1].str() +
+            "\n");
   return;
 }
 
@@ -99,9 +97,9 @@ void t3(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Check the toss_cookies function. This function builds an error message and throws an exception.
 //------------------------------------------------------------------------------------------------//
-void ttoss_cookies(rtt_dsxx::UnitTest &ut) {
+void test_toss_cookies(rtt_dsxx::UnitTest &ut) {
   {
-    std::cout << "ttoss_cookies test: ";
+    std::cout << "test_toss_cookies test: ";
     try {
       std::string const msg("testing toss_cookies()");
       std::string const file("DummyFile.ext");
@@ -111,11 +109,11 @@ void ttoss_cookies(rtt_dsxx::UnitTest &ut) {
     } catch (rtt_dsxx::assertion const & /* error */) {
       PASSMSG("Caught rtt_dsxx::assertion thrown by toss_cookies.");
     } catch (...) {
-      ITFAILS;
+      FAILMSG("Failed to catch rtt_dsxx::assertion thrown by toss_cookies.");
     }
   }
   {
-    std::cout << "ttoss_cookies_ptr test: ";
+    std::cout << "test_toss_cookies_ptr test: ";
     try {
       char const *const msg("testing toss_cookies_ptr()");
       char const *const file("DummyFile.ext");
@@ -125,7 +123,7 @@ void ttoss_cookies(rtt_dsxx::UnitTest &ut) {
     } catch (rtt_dsxx::assertion const & /* error */) {
       PASSMSG("Caught rtt_dsxx::assertion thrown by toss_cookies_ptr.");
     } catch (...) {
-      ITFAILS;
+      FAILMSG("Failed to catch rtt_dsxx::assertion thrown by toss_cookies_ptr.");
     }
   }
   return;
@@ -143,7 +141,7 @@ void tcheck_cookies(rtt_dsxx::UnitTest &ut) {
     } catch (rtt_dsxx::assertion const & /* error */) {
       PASSMSG("Caught assertion thrown by check_cookies with false condition.");
     } catch (...) {
-      ITFAILS;
+      FAILMSG("Failed to catch assertion thrown by check_cookies with false condition.");
     }
   }
   {
@@ -154,7 +152,7 @@ void tcheck_cookies(rtt_dsxx::UnitTest &ut) {
     } catch (rtt_dsxx::assertion const & /* error */) {
       PASSMSG("Bogus!");
     } catch (...) {
-      ITFAILS;
+      FAILMSG("Failed check_cookies with true condition.");
     }
   }
   return;
@@ -175,7 +173,7 @@ void tshow_cookies(rtt_dsxx::UnitTest &ut) {
       rtt_dsxx::show_cookies(msg, file, line);
       throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
     } catch (rtt_dsxx::assertion const & /* error */) {
-      ITFAILS;
+      FAILMSG("Did not expect to catch a rtt_dsxx::assertion when calling show_cookies.");
     } catch (...) {
       PASSMSG("show_cookies did not throw!");
     }
@@ -292,7 +290,7 @@ void tensure(rtt_dsxx::UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 // Check the operation of the Remember() macro.
 //------------------------------------------------------------------------------------------------//
-void tremember(rtt_dsxx::UnitTest &ut) {
+void test_remember(rtt_dsxx::UnitTest &ut) {
   std::cout << "t-Remember test: ";
   int x = 0;
   Remember(x = 5);
@@ -342,7 +340,7 @@ void tassert(rtt_dsxx::UnitTest &ut) {
 // Basic test of the Insist() macro.
 //------------------------------------------------------------------------------------------------//
 
-void tinsist(rtt_dsxx::UnitTest &ut) {
+void test_insist(rtt_dsxx::UnitTest &ut) {
   {
     std::cout << "t-Insist test: ";
     std::string const insist_message("You must be kidding!");
@@ -350,7 +348,7 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
       Insist(0, insist_message);
       throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
     } catch (rtt_dsxx::assertion const &a) {
-      PASSMSG("tinsist: caught rtt_dsxx::assertion");
+      PASSMSG("test_insist: caught rtt_dsxx::assertion");
       std::cout << "t-Insist message value test: ";
       {
         bool passed(true);
@@ -376,7 +374,7 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
       Insist_ptr(0, insist_message);
       throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
     } catch (rtt_dsxx::assertion const &a) {
-      PASSMSG("tinsist_ptr: caught rtt_dsxx::assertion");
+      PASSMSG("test_insist_ptr: caught rtt_dsxx::assertion");
       std::cout << "t-Insist ptr message value test: ";
       {
         bool passed(true);
@@ -403,7 +401,7 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
       Insist_device(0, insist_message);
       throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
     } catch (rtt_dsxx::assertion const &a) {
-      PASSMSG("tinsist_device: caught rtt_dsxx::assertion");
+      PASSMSG("test_insist_device: caught rtt_dsxx::assertion");
       std::cout << "t-Insist device message value test: ";
       {
         bool passed(true);
@@ -428,13 +426,13 @@ void tinsist(rtt_dsxx::UnitTest &ut) {
 // Basic test of the Insist_ptr() macro.
 //------------------------------------------------------------------------------------------------//
 
-void tinsist_ptr(rtt_dsxx::UnitTest &ut) {
+void test_insist_ptr(rtt_dsxx::UnitTest &ut) {
   std::cout << "t-Insist test: ";
   try {
     Insist(0, "You must be kidding!");
     throw "Bogus!"; // NOLINT [hicpp-exception-baseclass]
   } catch (rtt_dsxx::assertion const &a) {
-    PASSMSG("tinsist_ptr: caught  rtt_dsxx::assertion");
+    PASSMSG("test_insist_ptr: caught  rtt_dsxx::assertion");
     std::cout << "t-Insist_ptr message value test: ";
     {
       std::string const msg(a.what());
@@ -507,7 +505,7 @@ int main(int argc, char *argv[]) {
     t3(ut);
 
     // Test mechanics of Assert functions.
-    ttoss_cookies(ut);
+    test_toss_cookies(ut);
     tshow_cookies(ut);
     tcheck_cookies(ut);
 
@@ -515,16 +513,15 @@ int main(int argc, char *argv[]) {
     trequire(ut);
     tcheck(ut);
     tensure(ut);
-    tremember(ut);
+    test_remember(ut);
     tassert(ut);
-    tinsist(ut);
-    tinsist_ptr(ut);
+    test_insist(ut);
+    test_insist_ptr(ut);
 
     // fancy output
     tverbose_error(ut);
 
-    // noreturn
-    // called only to keep code coverage good
+    // noreturn - called only to keep code coverage good
     unused(0);
 
     // catch bad_alloc

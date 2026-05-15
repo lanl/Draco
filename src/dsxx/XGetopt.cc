@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/XGetopt.cc
  * \author Kelly Thompson, Katherine Wang
- * \date   Tuesday, Oct 27, 2016, 15:17 pm
  * \brief  Command line argument handling similar to getopt.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

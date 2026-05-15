@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/test/tstIndex_Set.cc
  * \author Mike Buksas
- * \date   Thu Feb  2 13:46:36 2006
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 

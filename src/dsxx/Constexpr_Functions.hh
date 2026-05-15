@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/Constexpr_Functions.hh
  * \author Alex R. Long
- * \date   Tue July 2 16:56:16 2019
  * \brief  Constexpr versions of math calls
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 #ifndef rtt_dsxx_Constexpr_Functions_hh
 #define rtt_dsxx_Constexpr_Functions_hh

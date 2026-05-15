@@ -2,8 +2,7 @@
 /*!
  * \file   dsxx/test/tstSafe_Divide.cc
  * \author Mike Buksas
- * \date   Tue Jun 21 16:02:52 2005
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"

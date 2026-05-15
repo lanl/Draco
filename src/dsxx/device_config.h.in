@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/device_config.h
  * \author Gabriel M. Rockefeller
- * \date   Mon Jun 13 16:48:32 2011
  * \brief  CPP defines necessary for the device package and necessary setup for draco and client
            builds that depend on CUDA or HIP runtimes.
  * \note   Copyright (C) 2016-2023 Triad National Security, LLC., All rights reserved.

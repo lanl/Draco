@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/isSorted.hh
  * \author Randy M. Roberts
- * \date   Wed Feb 16 09:27:40 2000
  * \brief  Functions that checks to see if a container is sorted.
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_isSorted_hh

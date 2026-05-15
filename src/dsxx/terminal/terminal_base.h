@@ -2,9 +2,8 @@
 /*!
  * \file   dsxx/terminal/terminal_base.h
  * \author 
- * \date   
  * \brief  Base (platform-specific) terminal code
- * \note   Copyright (C) 2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 // Draco suppressions
 //------------------------------------------------------------------------------------------------//

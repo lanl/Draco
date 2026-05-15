@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/Packing_Utils.hh
  * \author Thomas M. Evans, Tim Kelley <tkelley@lanl.gov>
- * \date   Thu Jul 19 11:27:46 2001
  * \brief  Packing Utilities, classes for packing stuff.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved.
  *

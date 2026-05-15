@@ -2,7 +2,6 @@
 /*!
  * \file   dsxx/dbc.hh
  * \author Kent G. Budge
- * \date   Wed Jan 22 15:18:23 MST 2003
  * \brief  Extensions to the STL algorithm library
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved.
  *
