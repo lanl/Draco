@@ -1156,6 +1156,8 @@ void quick_index::map_data_to_grid_window(
   }
 }
 
+namespace {
+
 //------------------------------------------------------------------------------------------------//
 // Lambda for mapping the vector data
 auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_data,
@@ -1196,6 +1198,8 @@ auto map_vector_data = [](auto &bias_cell_count, auto &data_count, auto &grid_da
     Insist(false, "Error: map_type=" + map_type + " is invalid. Must be max, min, or ave.");
   }
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 /*!

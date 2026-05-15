@@ -12,7 +12,6 @@
 #define rtt_kde_quick_index_hh
 
 #include "c4/global.hh"
-#include "units/MathConstants.hh"
 #include <array>
 #include <cmath>
 #include <map>
