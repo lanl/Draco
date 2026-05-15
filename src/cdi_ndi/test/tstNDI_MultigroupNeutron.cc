@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ndi/test/tstNDI_MultigroupNeutron.cc
  * \author Kyle S. Beling
- * \date   2025 March 18
  * \brief  NDI_MultigroupNeutron test
  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

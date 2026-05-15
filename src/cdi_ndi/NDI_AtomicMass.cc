@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ndi/NDI_AtomicMass.cc
  * \author Ben R. Ryan
- * \date   2020 Mar 6
  * \brief  NDI_AtomicMass class declaration.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -10,12 +9,14 @@
 #include "cdi_ndi/NDI_AtomicMass.hh"
 #include "dsxx/Assert.hh"
 #include "cdi_ndi/NDI_Base.hh"
-#include <array>
 #include <filesystem>
 #include <string>
 #include <utility>
+#ifdef NDI_FOUND
+#include <array>
+#endif
 
-// cSpell:ignore Saller, mendf
+// cSpell:ignore Saller, mendf, amw, WGT
 
 namespace rtt_cdi_ndi {
 

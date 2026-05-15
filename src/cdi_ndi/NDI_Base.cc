@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ndi/NDI_Base.cc
  * \author Ben R. Ryan
- * \date   2020 Feb 4
  * \brief  NDI_Base member definitions.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -10,12 +9,14 @@
 #include "cdi_ndi/NDI_Base.hh"
 #include "dsxx/Assert.hh"
 #include "dsxx/DracoStrings.cc"
+#include <string>
+#include <utility>
+#ifdef NDI_FOUND
 #include "dsxx/DracoTerminal.hh"
 #include "dsxx/Query_Env.hh"
 #include <filesystem>
 #include <iostream>
-#include <string>
-#include <utility>
+#endif
 
 // cSpell:ignore NOLINTNEXTLINE, ccolor
 
@@ -26,6 +27,7 @@ namespace rtt_cdi_ndi {
 //------------------------------------------------------------------------------------------------//
 
 #ifdef NDI_FOUND
+
 /*!
  * \brief Warn if NDI library version doesn't match GENDIR version to 2 digits.
  *

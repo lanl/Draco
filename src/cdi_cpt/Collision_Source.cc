@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_cpt/Collision_Source.cc
  * \author Ben R. Ryan
- * \date   2024 Oct 9
  * \brief  Collision_Source member definitions.
  * \note   Copyright (C) 2025-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//

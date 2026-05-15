@@ -2,23 +2,24 @@
 /*!
  * \file   cdi_ndi/NDI_CP_Eloss.cc
  * \author Ben R. Ryan
- * \date   2020 Jun 3
  * \brief  NDI_CP_Eloss member definitions.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "cdi_ndi/NDI_CP_Eloss.hh"
 #include "dsxx/Assert.hh"
-#include "dsxx/Interpolate.hh"
-#include "dsxx/Soft_Equivalence.hh"
 #include "cdi/CPCommon.hh"
 #include "cdi/CPEloss.hh"
 #include "cdi_ndi/NDI_Base.hh"
-#include <algorithm>
 #include <cmath>
 #include <string>
+#ifdef NDI_FOUND
+#include "dsxx/Interpolate.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include <algorithm>
+#endif
 
-// cSpell:ignore Eloss, dedx, zaids
+// cSpell:ignore debye, dedx, Eloss, shk, zaidp, zaids, zaidt
 
 namespace rtt_cdi_ndi {
 

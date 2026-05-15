@@ -2,7 +2,6 @@
 /*!
  * \file   cdi_ndi/test/tstNDI_CP_Eloss.cc
  * \author Ben R. Ryan
- * \date   2020 Jun 3
  * \brief  NDI_CP_Eloss test
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
