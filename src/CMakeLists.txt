@@ -1,7 +1,6 @@
 #--------------------------------------------*-cmake-*---------------------------------------------#
 # file   src/CMakeLists.txt
 # author Kelly Thompson <kgt@lanl.gov>
-# date   2010 April 28
 # brief  Instructions for building src level Makefile.
 # note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved.
 #--------------------------------------------------------------------------------------------------#
@@ -74,7 +73,7 @@ add_subdirectory(special_functions) #< needs roots, units, GSL
 # Level 5
 message(" ")
 message(STATUS "Configuring Level 5 packages --")
-add_subdirectory(compton_tools) #< needs dsxx, units, cdi_analtyic
+add_subdirectory(compton_tools) #< needs dsxx, units, cdi_analytic
 add_subdirectory(mesh) #< needs parser, RTT_Format_Reader, c4
 add_subdirectory(quadrature) #< needs mesh_element, parser, special_functions
 
@@ -100,74 +99,75 @@ Source dir  : ${Draco_SOURCE_DIR}
 Build dir   : ${Draco_BINARY_DIR}
 
 CXX Compiler: ${CMAKE_CXX_COMPILER}")
-include(string_manip)
-if(CMAKE_CONFIGURATION_TYPES)
-  hanging_indent(100 5 "CXX FLAGS: ${CMAKE_CXX_FLAGS} ")
-  hanging_indent(100 5 "CXX Debug FLAGS: ${CMAKE_CXX_FLAGS_DEBUG}")
-  hanging_indent(100 5 "CXX Release FLAGS: ${CMAKE_CXX_FLAGS_RELEASE}")
-  if(_LANGUAGES_ MATCHES Fortran)
-    hanging_indent(100 5 "Fortran: ${CMAKE_Fortran_COMPILER}")
-    hanging_indent(100 5 "FC FLAGS: ${CMAKE_Fortran_FLAGS}")
-    hanging_indent(100 5 "FC Debug FLAGS: ${CMAKE_Fortran_FLAGS_DEBUG}")
-    hanging_indent(100 5 "FC Release FLAGS: ${CMAKE_Fortran_FLAGS_RELEASE}")
-  endif()
-  if(_LANGUAGES_ MATCHES CUDA)
-    message("CUDA        : ${CMAKE_CUDA_COMPILER}")
-    message("Cuda FLAGS  : ${CMAKE_CUDA_FLAGS}")
-    message("Cuda Debug F: ${CMAKE_CUDA_FLAGS_DEBUG}")
-    message("Cuda Release: ${CMAKE_CUDA_FLAGS_RELEASE}")
-  endif()
-  if(_LANGUAGES_ MATCHES HIP)
-    message("HIP         : ${CMAKE_HIP_COMPILER}")
-    message("HIP FLAGS   : ${CMAKE_HIP_FLAGS}")
-    message("HIP Debug FL: ${CMAKE_HIP_FLAGS_DEBUG}")
-    message("HIP Release : ${CMAKE_HIP_FLAGS_RELEASE}")
-  endif()
-
-else()
-  hanging_indent(100 5 "C FLAGS: ${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_${Draco_BUILD_TYPE}}")
-  hanging_indent(100 5 "CXX FLAGS: ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_${Draco_BUILD_TYPE}}")
-  if(_LANGUAGES_ MATCHES Fortran)
-    message("Fortran: ${CMAKE_Fortran_COMPILER}")
-    hanging_indent(100 5
-                   "FC FLAGS: ${CMAKE_Fortran_FLAGS} ${CMAKE_Fortran_FLAGS_${Draco_BUILD_TYPE}}")
-  endif()
-  if(_LANGUAGES_ MATCHES CUDA)
-    message("CUDA        : ${CMAKE_CUDA_COMPILER} (${CMAKE_CUDA_COMPILER_ID})")
-    message("Cuda FLAGS  : ${CMAKE_CUDA_FLAGS} ${CMAKE_CUDA_FLAGS_${Draco_BUILD_TYPE}}")
-  endif()
-  if(_LANGUAGES_ MATCHES HIP)
-    message("HIP         : ${CMAKE_HIP_COMPILER} (${CMAKE_HIP_COMPILER_ID})")
-    message("HIP FLAGS   : ${CMAKE_HIP_FLAGS} ${CMAKE_HIP_FLAGS_${Draco_BUILD_TYPE}}")
-  endif()
-endif()
-if(CAFS_Fortran_COMPILER)
-  message("CAFS Fortran: ${CAFS_Fortran_COMPILER}")
-endif()
-if("${DRACO_C4}" STREQUAL "MPI")
-  hanging_indent(
-    100 5 "mpirun command: ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} N ${MPIEXEC_PREFLAGS}")
-endif()
-message("Library Type: ${DRACO_LIBRARY_TYPE}
-")
-
-if(CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
-  if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-    # The -craype-verbose flag isn't recognized for PrgEnv-gnu on adams.
-    message("Cray system detected.")
-  else()
-    message("Cray system detected: CC -craype-verbose -V|--version:
-  ")
-    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Cray" AND NOT DEFINED ENV{CRAY_PE_USE_CLANG})
-      set(ver_opt "-craype-verbose -V")
-    else()
-      set(ver_opt "--version")
+if(VERBOSE)
+  include(string_manip)
+  if(CMAKE_CONFIGURATION_TYPES)
+    hanging_indent(100 5 "CXX FLAGS: ${CMAKE_CXX_FLAGS} ")
+    hanging_indent(100 5 "CXX Debug FLAGS: ${CMAKE_CXX_FLAGS_DEBUG}")
+    hanging_indent(100 5 "CXX Release FLAGS: ${CMAKE_CXX_FLAGS_RELEASE}")
+    if(_LANGUAGES_ MATCHES Fortran)
+      hanging_indent(100 5 "Fortran: ${CMAKE_Fortran_COMPILER}")
+      hanging_indent(100 5 "FC FLAGS: ${CMAKE_Fortran_FLAGS}")
+      hanging_indent(100 5 "FC Debug FLAGS: ${CMAKE_Fortran_FLAGS_DEBUG}")
+      hanging_indent(100 5 "FC Release FLAGS: ${CMAKE_Fortran_FLAGS_RELEASE}")
     endif()
-    execute_process(COMMAND ${CMAKE_CXX_COMPILER} ${ver_opt} OUTPUT_VARIABLE tmp)
-    message("${tmp}")
+    if(_LANGUAGES_ MATCHES CUDA)
+      message("CUDA        : ${CMAKE_CUDA_COMPILER}")
+      message("Cuda FLAGS  : ${CMAKE_CUDA_FLAGS}")
+      message("Cuda Debug F: ${CMAKE_CUDA_FLAGS_DEBUG}")
+      message("Cuda Release: ${CMAKE_CUDA_FLAGS_RELEASE}")
+    endif()
+    if(_LANGUAGES_ MATCHES HIP)
+      message("HIP         : ${CMAKE_HIP_COMPILER}")
+      message("HIP FLAGS   : ${CMAKE_HIP_FLAGS}")
+      message("HIP Debug FL: ${CMAKE_HIP_FLAGS_DEBUG}")
+      message("HIP Release : ${CMAKE_HIP_FLAGS_RELEASE}")
+    endif()
+
+  else()
+    hanging_indent(100 5 "C FLAGS: ${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_${Draco_BUILD_TYPE}}")
+    hanging_indent(100 5 "CXX FLAGS: ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_${Draco_BUILD_TYPE}}")
+    if(_LANGUAGES_ MATCHES Fortran)
+      message("Fortran: ${CMAKE_Fortran_COMPILER}")
+      hanging_indent(100 5
+                     "FC FLAGS: ${CMAKE_Fortran_FLAGS} ${CMAKE_Fortran_FLAGS_${Draco_BUILD_TYPE}}")
+    endif()
+    if(_LANGUAGES_ MATCHES CUDA)
+      message("CUDA        : ${CMAKE_CUDA_COMPILER} (${CMAKE_CUDA_COMPILER_ID})")
+      message("Cuda FLAGS  : ${CMAKE_CUDA_FLAGS} ${CMAKE_CUDA_FLAGS_${Draco_BUILD_TYPE}}")
+    endif()
+    if(_LANGUAGES_ MATCHES HIP)
+      message("HIP         : ${CMAKE_HIP_COMPILER} (${CMAKE_HIP_COMPILER_ID})")
+      message("HIP FLAGS   : ${CMAKE_HIP_FLAGS} ${CMAKE_HIP_FLAGS_${Draco_BUILD_TYPE}}")
+    endif()
+  endif()
+  if(CAFS_Fortran_COMPILER)
+    message("CAFS Fortran: ${CAFS_Fortran_COMPILER}")
+  endif()
+  if("${DRACO_C4}" STREQUAL "MPI")
+    hanging_indent(
+      100 5 "mpirun command: ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} N ${MPIEXEC_PREFLAGS}")
+  endif()
+  message("Library Type: ${DRACO_LIBRARY_TYPE}
+  ")
+
+  if(CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+      # The -craype-verbose flag isn't recognized for PrgEnv-gnu on adams.
+      message("Cray system detected.")
+    else()
+      message("Cray system detected: CC -craype-verbose -V|--version:
+    ")
+      if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Cray" AND NOT DEFINED ENV{CRAY_PE_USE_CLANG})
+        set(ver_opt "-craype-verbose -V")
+      else()
+        set(ver_opt "--version")
+      endif()
+      execute_process(COMMAND ${CMAKE_CXX_COMPILER} ${ver_opt} OUTPUT_VARIABLE tmp)
+      message("${tmp}")
+    endif()
   endif()
 endif()
-
 # Push some variables up one level
 set(Draco_EXPORT_TARGET_PROPERTIES
     "${Draco_EXPORT_TARGET_PROPERTIES}"
