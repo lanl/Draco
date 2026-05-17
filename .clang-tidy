@@ -27,6 +27,12 @@
 # * next lines: -check-* disables whole groups of checks
 # * next lines: -check-full-name disables more specific checks from group previously enabled.
 # * next lines: check-full-name enables specific checks for groups that are disabled.
+#
+#       bugprone-inaccurate-erase,
+#       bugprone-raw-memory-call-on-non-trivial-type,
+#       bugprone-suspicious-memory-comparison,
+#       bugprone-suspicious-stringview-data-usage
+#       -bugprone-dangling-handle
 # ------------------------------------------------------------------------------------------------ #
 
 ---
@@ -43,6 +49,7 @@ Checks: "*,
         -llvm*,
         -readability-*,
         -zircon-*,
+        -boost-use-ranges,
         -hicpp-braces-around-statements,
         -hicpp-vararg,
         -misc-definitions-in-headers,
@@ -56,6 +63,7 @@ Checks: "*,
         bugprone-suspicious-memcpy,
         bugprone-suspicious-memset,
         bugprone-use-after-move,
+        bugprone-inaccurate-erase
 "
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*[.]hh'
