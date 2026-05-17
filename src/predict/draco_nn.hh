@@ -2,34 +2,31 @@
 /*!
  * \file   predict/draco_nn.hh
  * \author Mathew Cleveland
- * \brief  Simple draco neural network back end class
- * specific implementations.
- * \note   Copyright (C) 2022 Triad National Security, LLC., All rights reserved.
- */
+ * \brief  Simple draco neural network back end class specific implementations.
+ * \note   Copyright (C) 2022-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef predict_draco_nn_hh
 #define predict_draco_nn_hh
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
 namespace rtt_predict {
 
 //! Supported Activation Types
-enum class ACTIVATION_LAYER_TYPE { NONE, RELU, ACTIVATION_END };
+enum class ACTIVATION_LAYER_TYPE : uint8_t { NONE, RELU, ACTIVATION_END };
 //! Support NN Layers
-enum class NN_LAYER_TYPE { LINEAR, LAYER_END };
+enum class NN_LAYER_TYPE : uint8_t { LINEAR, LAYER_END };
 
 //================================================================================================//
 /*!
  * \brief draco_nn provides a simple neural network back end in place of more advanced backends like
- * py-torch. This class has limited support and is mostly intended to serve as a proof of concept.
- * This class reads a "hand-rolled" py_torch binary NN definition. There is a conversion tool
- * (tools/convert_nn_pt_to_nnb.py) to convert from the *.pt pytorch format to the draco format
- * *.nnb.
- *
- */
+ *   py-torch. This class has limited support and is mostly intended to serve as a proof of concept.
+ *   This class reads a "hand-rolled" py_torch binary NN definition. There is a conversion tool
+ *   (tools/convert_nn_pt_to_nnb.py) to convert from the `*.pt` pytorch format to the draco format
+ *   `*.nnb`. */
 //================================================================================================//
 
 class draco_nn {
@@ -45,7 +42,8 @@ public:
   bool valid() { return valid_; }
 
 private:
-  //! Private network data used for predictions
+  // Private network data used for predictions
+
   //! Valid network state
   bool valid_{false};
   //! Number of layers

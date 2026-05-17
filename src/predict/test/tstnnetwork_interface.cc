@@ -2,9 +2,8 @@
 /*!
  * \file   predict/test/tstnnetwork_interface.cc
  * \author Mathew Cleveland
- * \date   Nov. 10th 2020
  * \brief  KDE function tests
- * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #include "dsxx/Release.hh"
@@ -14,6 +13,10 @@
 #include "c4/ParallelUnitTest.hh"
 #include <string>
 #include <vector>
+
+// cSpell:ignore tstnnetwork
+
+namespace {
 
 using namespace rtt_dsxx;
 using namespace rtt_c4;
@@ -39,6 +42,8 @@ void test_replication(ParallelUnitTest &ut) {
     FAILMSG("KDE checks failed");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
