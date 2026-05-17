@@ -3,7 +3,7 @@
  * \file   predict/nnetwork_wrapper.hh
  * \author Mathew Cleveland
  * \brief  Definition of the neural network backend to enable build specific implementations.
- * \note   Copyright (C) 2022-2024 Triad National Security, LLC., All rights reserved. */
+ * \note   Copyright (C) 2022-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef predict_nnetwork_wrapper_hh

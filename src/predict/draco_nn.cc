@@ -2,7 +2,6 @@
 /*!
  * \file   predict/nnetwork_wrapper.hh
  * \author Mathew Cleveland
- * \date   Feb. 16th 2022
  * \brief  Simple draco neural network class implementation
  * \note   Copyright (C) 2022-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -22,7 +21,7 @@ namespace rtt_predict {
 
 //================================================================================================//
 /*!
- * \brief Load a draco neural network file (*.nnb)
+ * \brief Load a draco neural network file (`*.nnb`)
  *
  * \param[in] net_file draco NN binary file
  */
@@ -89,11 +88,10 @@ std::vector<float> draco_nn::predict(std::vector<float> &signal, const size_t Re
   for (size_t n = 0; n < n_layers; n++) {
     Insist(nn_layers[n].second == NN_LAYER_TYPE::LINEAR, "Currently only supporting Linear Layers");
     Insist(nn_layers[n].first < ACTIVATION_LAYER_TYPE::ACTIVATION_END,
-           "Specified unsported activation type");
+           "Specified unsupported activation type");
     // apply activation to input if necessary
     if (nn_layers[n].first == ACTIVATION_LAYER_TYPE::RELU)
-      std::transform(input.begin(), input.end(), input.begin(),
-                     [](auto i) { return std::max(i, 0.0F); });
+      std::ranges::transform(input, input.begin(), [](auto i) { return std::max(i, 0.0F); });
     // resize the result
     result.resize(layer_shape[n].second * output_size);
     // loop over all signals
