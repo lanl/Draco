@@ -10,7 +10,6 @@
 #define rtt_cdi_CPCommon_hh
 
 #include "dsxx/config.h" // defines [[nodiscard]]
-#include "units/MathConstants.hh"
 #include "units/PhysicalConstantsSI.hh"
 #include <cstdint>
 #include <map>
