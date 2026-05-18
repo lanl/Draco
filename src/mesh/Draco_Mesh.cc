@@ -18,6 +18,7 @@
 #include <iterator> // back_inserter
 #include <map>
 #include <numeric>
+#include <ranges>
 #include <set>
 #include <utility> // make_pair
 #include <vector>
@@ -799,8 +800,11 @@ void Draco_Mesh::compute_node_to_cell_linkage(
     std::ranges::sort(v2);
 
     // remove duplicates
-    v1.erase(std::ranges::unique(v1).end(), v1.end());
-    v2.erase(std::ranges::unique(v2).end(), v2.end());
+    // KPL: std::ranges::unique() returns two values - [new_end, old_end]. To correctly erase the
+    // extra elements at the end, you need to erase from std::ranges::begin (which, ironically,
+    // points to new_end). This differs from the behavior of std::unique.
+    v1.erase(std::ranges::begin(std::ranges::unique(v1)), v1.end());
+    v2.erase(std::ranges::begin(std::ranges::unique(v2)), v2.end());
 
     // perform set intersection of my rank global nodes with this rank's global nodes
     std::vector<unsigned> rank_my_rank_node_intersect;
