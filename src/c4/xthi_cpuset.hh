@@ -59,7 +59,7 @@ namespace rtt_c4 {
 #include <sys/types.h>
 
 /*
- * I think this is the mac equivelent of CPU_SETSIZE
+ * I think this is the mac equivalent of CPU_SETSIZE
  *
  * example - https://stackoverflow.com/questions/150355/programmatically-find-the-number-of-cores-on-a-machine
  * documentation - https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/sysconf.3.html
