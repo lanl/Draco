@@ -290,7 +290,7 @@ darwin_debug_gcc_ampere:
   variables:
     ARCH: ampere
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/rome-ampere
+    DRACO_ENV: draco/rome-gcc1320
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 darwin_clangtidy_llvm:
