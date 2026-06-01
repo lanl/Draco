@@ -29,10 +29,6 @@
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
-#ifndef _GLIBCXX_THROW
-#define _GLIBCXX_THROW(except) throw(except)
-#endif
-
 namespace rtt_memory {
 using namespace std;
 
@@ -199,7 +195,7 @@ using namespace rtt_memory;
  * being used while debugging. Since this introduces considerable overhead, it should not be used
  * for production builds.
  */
-void *operator new(std::size_t n) _GLIBCXX_THROW(std::bad_alloc) {
+void *operator new(std::size_t n) {
   void *Result = malloc(n);
 
   // if malloc failed, then we need to deal with it.
