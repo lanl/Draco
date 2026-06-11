@@ -8,6 +8,9 @@
 cmake_minimum_required(VERSION 3.21.0)
 project(dsxx CXX ${GPU_DBS_STRING})
 
+# AVX2 vectorization option
+option(ENABLE_AVX2_VECTORIZATION "Enable AVX2 SIMD vectorization" ON)
+
 # ------------------------------------------------------------------------------------------------ #
 # Generate config.h and device_config.h (only occurs when cmake is run)
 
@@ -203,6 +206,18 @@ add_component_library(
   HEADERS "${dsxx_headers};${dsxx_terminal_headers}"
   INCLUDE_DIRS "${include_dirs}"
   TARGET_DEPS "${target_deps}")
+
+# Add AVX2 compilation flags if enabled Use INTERFACE so libraries that use dsxx headers also get
+# AVX2 flags (this was generated all or in part with AI)
+if(ENABLE_AVX2_VECTORIZATION AND HAVE_HARDWARE_AVX2)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(Lib_dsxx INTERFACE -mavx2 -mfma)
+    message(STATUS "Enabled AVX2 vectorization with -mavx2 -mfma (INTERFACE)")
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+    target_compile_options(Lib_dsxx INTERFACE -xAVX2)
+    message(STATUS "Enabled AVX2 vectorization with -xAVX2 (INTERFACE)")
+  endif()
+endif()
 
 # ------------------------------------------------------------------------------------------------ #
 # Installation instructions
