@@ -178,10 +178,6 @@ void NDI_TNReaction::load_ndi() {
   ndi_error = NDI2_get_float64_vec(dataset_handle, NDI_SIGVBARS, sigvbar.data(),
                                    static_cast<int>(sigvbar.size()));
   Require(ndi_error == 0);
-  // cm^3 s^-1 -> cm^3 sh^-1
-  for (auto &sigma : sigvbar) {
-    sigma *= 1.e-8;
-  }
 
   //! Get the number of interp regions... for now just throw an exception if this is not equal to 1
   int const num_sigvbar_interp_regions =
@@ -224,23 +220,15 @@ void NDI_TNReaction::load_ndi() {
   group_bounds.resize(num_groups + 1);
   group_energies.resize(num_groups);
 
-  //! Get boundaries of energy groups
+  //! Get boundaries of energy groups (returned in MeV)
   ndi_error = NDI2_get_float64_vec(dataset_handle, NDI_E_BOUNDS, group_bounds.data(),
                                    static_cast<int>(group_bounds.size()));
   Require(ndi_error == 0);
-  // MeV -> keV
-  for (auto &bound : group_bounds) {
-    bound *= 1000;
-  }
 
-  //! Get average energies of energy groups
+  //! Get average energies of energy groups (returned in MeV)
   ndi_error = NDI2_get_float64_vec(dataset_handle, NDI_E_AVG, group_energies.data(),
                                    static_cast<int>(group_energies.size()));
   Require(ndi_error == 0);
-  // MeV -> keV
-  for (auto &energy : group_energies) {
-    energy *= 1000;
-  }
 
   //! Loop over reaction products
   for (int n = 0; n < num_products; n++) {
@@ -271,10 +259,6 @@ void NDI_TNReaction::load_ndi() {
     ndi_error = NDI2_get_float64_vec(dataset_handle, NDI_TEMPS, product_temperatures[n].data(),
                                      static_cast<int>(product_temperatures[n].size()));
     Require(ndi_error == 0);
-    // MeV -> keV
-    for (auto &temperature : product_temperatures[n]) {
-      temperature *= 1000.;
-    }
 
     //! Get the number of interp regions... for now just throw an exception if this is not equal to
     //! 1
@@ -286,7 +270,7 @@ void NDI_TNReaction::load_ndi() {
     // Loop over temperatures
     for (size_t m = 0; m < product_temperatures[n].size(); m++) {
       std::ostringstream temp_stream;
-      temp_stream << product_temperatures[n][m] / 1000; // keV -> MeV
+      temp_stream << product_temperatures[n][m];
       ndi_error = NDI2_set_option(dataset_handle, NDI_TEMP, temp_stream.str().c_str());
       Require(ndi_error == 0);
 
@@ -296,6 +280,24 @@ void NDI_TNReaction::load_ndi() {
                                static_cast<int>(product_distributions[n][m].size()));
       Require(ndi_error == 0);
     }
+
+    // After distributions are set for this temperature, convert temps from MeV -> keV
+    for (auto &temperature : product_temperatures[n]) {
+      temperature *= 1000.;
+    }
+  }
+
+  // Convert xs cm^3 s^-1 -> cm^3 sh^-1
+  for (auto &sigma : sigvbar) {
+    sigma *= 1.e-8;
+  }
+  // Convert group bounds MeV->keV
+  for (auto &bound : group_bounds) {
+    bound *= 1000.;
+  }
+  // Convert group energies MeV->keV
+  for (auto &energy : group_energies) {
+    energy *= 1000.;
   }
 
   //! Close datafile
