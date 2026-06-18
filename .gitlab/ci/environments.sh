@@ -12,7 +12,7 @@ echo "    SITE_ID = ${SITE_ID}"
 [[ -n "${SCHEDULER_PARAMETERS}" ]] && echo "    Using: salloc ${SCHEDULER_PARAMETERS}"
 
 case ${SITE_ID} in
-  ccs* | darwin | roci* | rz* ) ;;
+  ccs* | darwin | roci* | rz* | venadito ) ;;
   *) die ".gitlab/ci/environments.sh :: SITE_ID not recognized, SITE_ID = ${SITE_ID}" ;;
 esac
 
@@ -44,6 +44,7 @@ elif [[ "${SITE_ID}" =~ "ccscs" ]] || [[ "${SITE_ID}" =~ "ccsnet" ]] ; then
   fi
   run "module load draco/${DRACO_ENV}"
 
+  
 #------------------------------------------------------------------------------#
 # RZ systems (LLNL)
 #------------------------------------------------------------------------------#
@@ -63,6 +64,26 @@ elif [[ "${SITE_ID}" =~ "rzvernal" ]] || [[ "${SITE_ID}" =~ "rzadams" ]]; then
 #------------------------------------------------------------------------------#
 elif [[ "${SITE_ID}" =~ "rocinante" ]]; then
   run "module use --append /usr/projects/draco/Modules/ats3"
+  case ${DRACO_ENV} in
+    lapse* | draco* ) ;;
+    *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
+  esac
+  # Load correct Cray PrgEnv env first.  The default is PrgEnv-intel, so only do this for other
+  # PrgEnv's
+  case ${DRACO_ENV} in
+  lapse/*-gnu)
+    # If a PrgEnv is loaded, then unload it first.
+    [[ -n "${LMOD_FAMILY_PRGENV}" ]] && module unload "${LMOD_FAMILY_PRGENV}"
+    module load PrgEnv-gnu
+  ;;
+  esac
+  run "module load ${DRACO_ENV}"
+
+#------------------------------------------------------------------------------#
+# Venadito
+#------------------------------------------------------------------------------#
+elif [[ "${SITE_ID}" =~ "venadito" ]]; then
+  run "module use --append /usr/projects/draco/Modules/venado"
   case ${DRACO_ENV} in
     lapse* | draco* ) ;;
     *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
