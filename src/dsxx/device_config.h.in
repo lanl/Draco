@@ -19,8 +19,6 @@
 #ifndef rtt_dsxx_device_config_h
 #define rtt_dsxx_device_config_h
 
-#include <string>
-
 #cmakedefine HAVE_GPU @HAVE_GPU@
 // Note: KPL: We used to define this variable here, but this ties consumers of draco to a
 // particular choice of DRACO_USE_GPU. By delaying the definition of DRACO_USE_GPU to the consumer code,
@@ -28,7 +26,7 @@
 // #cmakedefine DRACO_USE_GPU @DRACO_USE_GPU@
 
 /* Used by Assert.hh to allow it to be used by C++ or cuda/hip */
-#if defined __NVCC__ || defined __HIPCC__
+#if defined __NVCC__ || defined __HIPCC__ || (defined __CUDA__ && defined __clang__)
 #define __GPUCC__
 #endif
 
@@ -41,7 +39,7 @@
 /*------------------------------------------------------------------------------------------------*/
 /* Mark functions for compilation on host and device */
 
-#if (defined __NVCC__ || defined __HIPCC__) && defined(DRACO_USE_GPU)
+#if (defined __NVCC__ || defined __HIPCC__ || (defined __CUDA__ && defined __clang__)) && defined(DRACO_USE_GPU)
 
 #define HOST_AND_DEVICE_FUNCTION __host__ __device__
 #define GPU_HOST_DEVICE __host__ __device__
@@ -52,6 +50,7 @@
 #else
 #define CONSTANT constexpr
 #endif
+
 #else
 /* Mark code for CPU by defining these to be empty strings */
 #define HOST_AND_DEVICE_FUNCTION
@@ -134,13 +133,6 @@
 #endif
 
 #endif /* defined(USE_CUDA) || defined(USE_HIP) */
-
-/*------------------------------------------------------------------------------------------------*/
-/* Misc - support for unit tests */
-
-namespace rtt_device {
-std::string const test_kernel_bindir("@TEST_KERNEL_BINDIR@");
-}
 
 #endif /* rtt_dsxx_device_config_h */
 

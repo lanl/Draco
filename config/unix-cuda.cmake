@@ -19,28 +19,11 @@ endif()
 # * https://devblogs.nvidia.com/tag/cuda/
 # * https://devblogs.nvidia.com/building-cuda-applications-cmake/
 
-# Discover CUDA compute capabilities.
+# Set CUDA compute capabilities to use host architecture (read: must configure on GPU node!)
 if(NOT DEFINED CUDA_ARCHITECTURES)
-  if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/config)
-    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/config)
-  endif()
-  set(OUTPUTFILE ${CMAKE_CURRENT_BINARY_DIR}/config/cuda_script)
-  set(CUDAFILE ${CMAKE_CURRENT_SOURCE_DIR}/config/query_gpu.cu)
-  execute_process(COMMAND ${CMAKE_CUDA_COMPILER} -lcuda ${CUDAFILE} -o ${OUTPUTFILE})
-  execute_process(
-    COMMAND ${OUTPUTFILE}
-    RESULT_VARIABLE CUDA_RETURN_CODE
-    OUTPUT_VARIABLE CUDA_ARCHITECTURES)
-  if(NOT ${CUDA_RETURN_CODE} EQUAL 0)
-    message(
-      FATAL_ERROR "Unable to determine target Cuda arch.\nThe error is: ${CUDA_ARCHITECTURES}")
-  endif()
-  unset(OUTPUTFILE)
-  unset(CUDAFILE)
-  unset(CUDA_RETURN_CODE)
   # This value is automatically added to all CUDA targets. See cmake/component_macros.cmake
   set(CUDA_ARCHITECTURES
-      ${CUDA_ARCHITECTURES}
+      "native"
       CACHE STRING "target architecture for gpu code.")
 endif()
 
