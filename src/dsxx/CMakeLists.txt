@@ -24,9 +24,6 @@ if(DEFINED GPU_DBS_STRING)
     set(USE_CUDA ON)
   endif()
 endif()
-set(TEST_KERNEL_BINDIR
-    ${PROJECT_BINARY_DIR}/test
-    CACHE PATH "GPU kernel binary install location")
 configure_file(device_config.h.in ${PROJECT_BINARY_DIR}/dsxx/device_config.h)
 
 # ------------------------------------------------------------------------------------------------ #

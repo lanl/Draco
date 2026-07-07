@@ -856,6 +856,8 @@ macro(dbsSetupCuda)
     # setup flags
     if("${CMAKE_CUDA_COMPILER_ID}" MATCHES "NVIDIA")
       include(unix-cuda)
+    elseif("${CMAKE_CUDA_COMPILER_ID}" MATCHES "Clang")
+      include(unix-cuda-clang)
     elseif("${CMAKE_HIP_COMPILER_ID}" MATCHES "Clang")
       include(unix-hip-clang)
     else()

@@ -27,8 +27,9 @@ if(TARGET GSL::gsl)
     *.hh)
 
 else()
-  set(sources "Quadrature_Interface.cc")
-  set(headers "Quadrature_Class.hh" "Quadrature_Interface.hh")
+  # build the subset of quadrature that doesn't require GSL:
+  set(sources "Quadrature_Interface.cc" "Ordinate_Set.cc")
+  set(headers "Quadrature_Class.hh" "Quadrature_Interface.hh" "Ordinate_Set.hh" "Ordinate.hh")
 endif()
 
 # prefix header files with appropriate paths (build vs install).

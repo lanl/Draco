@@ -53,7 +53,7 @@ add_subdirectory(min) #< needs linear
 add_subdirectory(norms) #< needs c4
 add_subdirectory(parser) #< needs units, c4, mesh_element
 if(RANDOM123_FOUND)
-  add_subdirectory(rng) #< needs dsxx, device
+  add_subdirectory(rng) #< needs dsxx
 endif()
 add_subdirectory(roots) #< needs linear
 add_subdirectory(VendorChecks) #< needs c4
