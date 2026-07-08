@@ -19,6 +19,8 @@
 #ifndef rtt_dsxx_device_config_h
 #define rtt_dsxx_device_config_h
 
+#include <string>
+
 #cmakedefine HAVE_GPU @HAVE_GPU@
 // Note: KPL: We used to define this variable here, but this ties consumers of draco to a
 // particular choice of DRACO_USE_GPU. By delaying the definition of DRACO_USE_GPU to the consumer code,
@@ -133,6 +135,11 @@
 #endif
 
 #endif /* defined(USE_CUDA) || defined(USE_HIP) */
+
+/*------------------------------------------------------------------------------------------------*/
+/* Misc - support for unit tests */
+
+std::string const test_kernel_bindir("@TEST_KERNEL_BINDIR@");
 
 #endif /* rtt_dsxx_device_config_h */
 

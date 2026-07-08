@@ -9,7 +9,6 @@
 #define rtt_rng_config_h
 
 #include "dsxx/config.h"
-#include "dsxx/device_config.h" // Defines DRACO_USE_GPU
 
 /* Enable Random123 C++11 support */
 #cmakedefine R123_USE_CXX11 @R123_USE_CXX11@
