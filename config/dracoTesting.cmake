@@ -144,7 +144,8 @@ function(slurm_extract_gpu_info out_gpu_count out_gpu_mem_gb)
       "${_gpu_mem_gb}"
       PARENT_SCOPE)
 
-  message(STATUS "Parsed SLURM node info: GPUs=${_gpu_count}, GPU_MEM_GB=${_gpu_mem_gb}")
+  message(
+    STATUS "Parsed SLURM node info ............ GPUs=${_gpu_count}, GPU_MEM_GB=${_gpu_mem_gb}")
 endfunction()
 
 # ------------------------------------------------------------------------------------------------ #
@@ -255,7 +256,7 @@ function(provide_ctest_resources_spec)
   # Copy the specification file to the build directory so it can be used for scheduling test
   # execution via ctest.
   configure_file("${json_file}" "${PROJECT_BINARY_DIR}/ctest_resource_spec.json" COPYONLY)
-  message(STATUS "CTest resource specifications written to "
+  message(STATUS "CTest resource specifications ..... "
                  "${PROJECT_BINARY_DIR}/ctest_resource_spec.json")
 
 endfunction(provide_ctest_resources_spec)

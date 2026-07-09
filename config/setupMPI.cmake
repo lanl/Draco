@@ -455,8 +455,6 @@ macro(setupMPILibrariesUnix)
   # MPI ---------------------------------------------------------------------
   if(NOT "${DRACO_C4}" STREQUAL "SCALAR")
 
-    message(STATUS "Looking for MPI...")
-
     # Preserve data that may already be set.
     if(DEFINED ENV{MPIRUN})
       set(MPIEXEC_EXECUTABLE
@@ -535,7 +533,7 @@ The Draco build system doesn't know how to configure the build for
     # up in the 'simple' ccmake view.
     mark_as_advanced(MPI_EXTRA_LIBRARY MPI_LIBRARY)
 
-    message(STATUS "Looking for MPI.......found ${MPIEXEC_EXECUTABLE}")
+    message(STATUS "Looking for MPI...........found ${MPIEXEC_EXECUTABLE}")
 
     # Sanity Checks for DRACO_C4==MPI
     if("${MPI_CORES_PER_CPU}x" STREQUAL "x")
@@ -568,7 +566,6 @@ macro(setupMPILibrariesWindows)
   # MPI ---------------------------------------------------------------------
   if(NOT "${DRACO_C4}" STREQUAL "SCALAR")
 
-    message(STATUS "Looking for MPI...")
     set(MPI_ASSUME_NO_BUILTIN_MPI TRUE)
     set(MPI_GUESS_LIBRARY_NAME "MSMPI")
     find_package(MPI QUIET)
@@ -816,9 +813,9 @@ macro(setupMPILibrariesWindows)
   endif()
 
   if(${MPI_C_FOUND})
-    message(STATUS "Looking for MPI.......found ${MPIEXEC_EXECUTABLE}")
+    message(STATUS "Looking for MPI...........found ${MPIEXEC_EXECUTABLE}")
   else()
-    message(STATUS "Looking for MPI.......not found")
+    message(STATUS "Looking for MPI...........not found")
   endif()
 
   mark_as_advanced(MPI_FLAVOR MPIEXEC_OMP_PREFLAGS MPI_LIBRARIES)

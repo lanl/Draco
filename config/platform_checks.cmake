@@ -5,6 +5,7 @@
 # ------------------------------------------------------------------------------------------------ #
 
 include_guard(GLOBAL)
+set(CMAKE_REQUIRED_QUIET TRUE)
 
 # cmake-lint: disable=R0912,R0915
 
@@ -210,7 +211,6 @@ macro(query_fma_on_hardware)
         TRUE
         CACHE BOOL "Is the check for hardware FMA done?")
     mark_as_advanced(PLATFORM_CHECK_FMA_DONE)
-    message(STATUS "Looking for hardware FMA support...")
 
     if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "ppc64le" OR "${CMAKE_SYSTEM_PROCESSOR}" STREQUAL
                                                          "aarch64")
@@ -230,15 +230,13 @@ macro(query_fma_on_hardware)
     if(HAVE_HARDWARE_FMA)
       # If we have explicitly toggled FMA off, say so here.
       if(FMA_NEVER_HARDWARE)
-        message(STATUS "Looking for hardware FMA support...found, but disabled for this build.")
+        message(STATUS "Looking for hardware FMA support....found, but disabled for this build.")
       else()
-        message(STATUS "Looking for hardware FMA support...found fma.")
+        message(STATUS "Looking for hardware FMA support....found fma.")
       endif()
     else()
-      message(STATUS "Looking for hardware FMA support...fma not found.")
+      message(STATUS "Looking for hardware FMA support....fma not found.")
     endif()
-
-    message(STATUS "Looking for hardware AVX2 support...")
 
     if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "ppc64le")
       # see comments above for FMA
