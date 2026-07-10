@@ -15,7 +15,17 @@
 /* Activate JSON calls found in cpt_data, otherwise, use code stubs. */
 #cmakedefine JSON_FOUND
 #ifdef JSON_FOUND
-  #include <nlohmann/json.hpp>
+#if defined(__clang__) && !defined(__ibmxl__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wcovered-switch-default"
+#endif
+
+#include <nlohmann/json.hpp>
+
+#if defined(__clang__) && !defined(__ibmxl__)
+#pragma clang diagnostic pop
+#endif
+
 #endif
 
 #endif /* __rtt_cpt_data_config_h__ */
