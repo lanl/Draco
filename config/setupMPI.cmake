@@ -287,14 +287,14 @@ macro(setupOpenMPI)
     # * Adding '--debug-daemons' is often requested by the OpenMPI dev team in conjunction with
     #   'export OMPI_MCA_btl_base_verbose=100' to obtain debug traces from openmpi.
     set(MPIEXEC_PREFLAGS_PERFBENCH "${MPIEXEC_PREFLAGS} --map-by socket:SPAN")
-    if(NOT MPIEXEC_PREFLAGS MATCHES " -bind-to none")
-      string(APPEND MPIEXEC_PREFLAGS " -bind-to none")
+    if(NOT MPIEXEC_PREFLAGS MATCHES " --bind-to none")
+      string(APPEND MPIEXEC_PREFLAGS " --bind-to none")
     endif()
     # Setup for OMP plus MPI
     if((NOT APPLE)
        AND (NOT MPIEXEC_OMP_PREFLAGS MATCHES "--map-by ppr")
        AND (MPI_VERSION VERSION_LESS 5.0))
-      # -bind-to fails on OSX, See #691 OpenMPI version 5.0+ doesn't use this ppr syntax.
+      # --bind-to fails on OSX, See #691 OpenMPI version 5.0+ doesn't use this ppr syntax.
       set(MPIEXEC_OMP_PREFLAGS
           "${MPIEXEC_PREFLAGS} --map-by ppr:${MPI_CORES_PER_CPU}:socket --report-bindings")
     endif()

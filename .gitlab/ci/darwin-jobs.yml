@@ -1,8 +1,5 @@
 #--------------------------------------------------------------------------------------------------#
-# File:    .gitlab/ci/darwin-jobs.yml
-# Author:  Kelly Thompson <kgt@lanl.gov>
-# Date:    Monday, Jun 01, 2020, 15:00 pm
-# Purpose: gitlab suid runner commands for Darwin (LANL). This script wil be run to test pull
+# Purpose: gitlab suid runner commands for Darwin (LANL). This script will be run to test pull
 #          requests
 # Note:    Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved.
 #
@@ -136,12 +133,12 @@ darwin_deploy_release_llvm:
     DRACO_ENV: draco/haswell-llvm1706-c
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
-darwin_deploy_debug_gcc_volta_x86:
+darwin_deploy_debug_gcc_ampere:
   extends: .darwin_deploy
   variables:
-    ARCH: volta_x86
+    ARCH: ampere
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/haswell-gcc1120
+    DRACO_ENV: dracose/2026-07-08-gcc
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-${ARCH}
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
@@ -190,12 +187,12 @@ darwin_dvr_release_llvm:
     DRACO_ENV: draco/haswell-llvm1706-c
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
-darwin_dvr_debug_gcc_volta_x86:
+darwin_dvr_debug_gcc_ampere:
   extends: .darwin_dvr
   variables:
-    ARCH: volta_x86
+    ARCH: ampere
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/haswell-gcc1120
+    DRACO_ENV: dracose/2026-07-08-gcc
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-${ARCH}
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
@@ -233,13 +230,13 @@ darwin_debug_llvm_mr:
     ARCH: x86_64
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
-darwin_debug_gcc_volta_x86_mr:
+darwin_debug_gcc_ampere_mr:
   stage: slowtest
   extends: .darwin_merge
   variables:
-    ARCH: volta_x86
+    ARCH: ampere
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/haswell-gcc1120
+    DRACO_ENV: dracose/2026-07-08-gcc
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 #--------------------------------------------------------------------------------------------------#
@@ -275,22 +272,13 @@ darwin_release_llvm:
     ARCH: x86_64
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
-darwin_debug_gcc_volta_x86:
-  stage: test
-  extends: .darwin_nightly
-  variables:
-    ARCH: volta_x86
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/haswell-gcc1120
-    SCHEDULER_PARAMETERS: ${SP_${ARCH}}
-
 darwin_debug_gcc_ampere:
   stage: test
   extends: .darwin_nightly
   variables:
     ARCH: ampere
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/rome-gcc1320
+    DRACO_ENV: dracose/2026-07-08-gcc
     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
 
 darwin_clangtidy_llvm:
