@@ -20,15 +20,9 @@ endif()
 force_compiler_flags_to_cache("C;CXX")
 
 # Level 1
-message(" ")
-message(STATUS "Configuring Level 1 packages --")
 add_subdirectory(dsxx)
 
-# Only test selected components if CI_CLANG_TIDY is running
-
 # Level 2
-message(" ")
-message(STATUS "Configuring Level 2 packages --")
 add_subdirectory(c4) #< needs dsxx
 add_subdirectory(cdi) #< needs dsxx
 add_subdirectory(FortranChecks) #< needs dsxx
@@ -40,8 +34,6 @@ add_subdirectory(units) #< needs dsxx
 add_subdirectory(cpt_data) #< needs dsxx
 
 # Level 3
-message(" ")
-message(STATUS "Configuring Level 3 packages --")
 add_subdirectory(cdi_CPEloss) #< needs cdi, units, experimental
 add_subdirectory(cdi_eospac) #< needs parser, ode, cdi
 add_subdirectory(cdi_ipcress) #< needs cdi
@@ -62,8 +54,6 @@ add_subdirectory(predict)
 add_subdirectory(lightweight_quadrature) #< needs c4
 
 # Level 4
-message(" ")
-message(STATUS "Configuring Level 4 packages --")
 add_subdirectory(cdi_analytic) #< needs parser, roots, ode, cdi
 add_subdirectory(cdi_ndi) #< needs dsxx, rng, cdi
 add_subdirectory(cdi_cpt) #< needs dsxx, c4, rng, cdi
@@ -71,8 +61,6 @@ add_subdirectory(RTT_Format_Reader) #< needs meshReaders
 add_subdirectory(special_functions) #< needs roots, units, GSL
 
 # Level 5
-message(" ")
-message(STATUS "Configuring Level 5 packages --")
 add_subdirectory(compton_tools) #< needs dsxx, units, cdi_analytic
 add_subdirectory(mesh) #< needs parser, RTT_Format_Reader, c4
 add_subdirectory(quadrature) #< needs mesh_element, parser, special_functions

@@ -115,7 +115,6 @@ if(NOT CXX_FLAGS_INITIALIZED)
   set(CXX_FLAGS_INITIALIZED
       "yes"
       CACHE INTERNAL "using draco settings.")
-  message(STATUS "Setting up clang/clang++ options ...")
   string(APPEND CMAKE_C_FLAGS " -g -Weverything")
   # now turn off some flags that produce too many warnings (we should work on these eventually!)
   string(

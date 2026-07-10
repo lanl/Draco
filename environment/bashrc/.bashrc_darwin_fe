@@ -29,7 +29,7 @@ if [[ -n "$MODULESHOME" ]]; then
     shared-gpu)
       module load draco/haswell-gcc1120 cuda ;;
     shared-gpu-ampere)
-      module load draco/haswell-gcc1120 cuda/13.2.1 ;;
+      module load dracose ;;
     volta*)
       module load draco/haswell-gcc1120 cuda ;;
     skylake-gold | general | x86_64)
