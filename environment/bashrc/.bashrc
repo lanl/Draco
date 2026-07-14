@@ -162,7 +162,7 @@ if [[ ${INTERACTIVE} == true ]]; then
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_rfta" ;;
 
-    ro-rfe* | ty-fe*)
+    ro* | ty-fe*)
       # shellcheck source=/dev/null
       source "${DRACO_ENV_DIR}/bashrc/.bashrc_ats3" ;;
 
