@@ -26,6 +26,8 @@ using rtt_dsxx::soft_equiv;
 
 // cSpell:ignore tndata, einbar
 
+namespace {
+
 void gendir_test(rtt_dsxx::UnitTest &ut) {
 
   // Write a custom gendir file to deal with NDI-required absolute path to data
@@ -134,6 +136,8 @@ void gendir_default_test(rtt_dsxx::UnitTest &ut) {
     FAILMSG("NDI_TNReaction (default gendir path) test fails.");
   }
 }
+
+} // unnamed namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

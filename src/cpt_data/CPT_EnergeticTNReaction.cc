@@ -8,11 +8,16 @@
 
 #include "cpt_data/CPT_EnergeticTNReaction.hh"
 #include "cpt_data/CPT_Base.hh"
-
 #include "dsxx/Assert.hh"
 #include <string>
 #include <utility>
 #include <vector>
+
+#ifdef JSON_FOUND
+#include "cpt_data/CPT_Collision.hh"
+#include <filesystem>
+#include <fstream>
+#endif
 
 // cSpell:ignore NOLINTNEXTLINE, ccolor
 
@@ -104,7 +109,7 @@ CPT_EnergeticTNReaction::CPT_EnergeticTNReaction(const std::string &dictionaryPa
 void CPT_EnergeticTNReaction::load_json() {
   // Open and read reaction network info into variable: reactionNetworkInfo
   std::ifstream reactionNetworkFile(this->reactionNetworkFileName_);
-  nlohmann::json reactionNetworkInfo;
+  nlohmann::json reactionNetworkInfo; // NOLINT(misc-include-cleaner)
   reactionNetworkFile >> reactionNetworkInfo;
   reactionNetworkFile.close();
 

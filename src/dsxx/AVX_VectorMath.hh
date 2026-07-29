@@ -4,12 +4,11 @@
  * \brief  Vectorized math functions for SIMD operations
  * \note   Copyright (C) 2026 Triad National Security, LLC., All rights reserved.
  *
- * This file provides vectorized implementations of common math functions (exp, log, etc.)
- * using AVX2 intrinsics. These are approximations optimized for performance while maintaining
- * reasonable accuracy for physics calculations.
+ * This file provides vectorized implementations of common math functions (exp, log, etc.) using
+ * AVX2 intrinsics. These are approximations optimized for performance while maintaining reasonable
+ * accuracy for physics calculations.
  *
- * This file was generated all or in part by AI.
- */
+ * This file was generated all or in part by AI. */
 //------------------------------------------------------------------------------------------------//
 
 #ifndef rtt_dsxx_AVX_VectorMath_hh
@@ -18,6 +17,7 @@
 #ifdef __AVX2__
 #include <cmath>
 #include <immintrin.h>
+#include <numbers>
 
 namespace rtt_dsxx {
 
@@ -41,8 +41,8 @@ inline __m256d exp_pd_avx2(__m256d xp) {
   const __m256d x = _mm256_sub_pd(z, xp);
 
   // Constants for range reduction
-  const __m256d ln2_inv = _mm256_set1_pd(1.4426950408889634074); // 1/ln(2)
-  const __m256d ln2_hi = _mm256_set1_pd(0.6931471805599453);     // ln(2) parts for precision
+  const __m256d ln2_inv = _mm256_set1_pd(std::numbers::log2e); // 1/ln(2)
+  const __m256d ln2_hi = _mm256_set1_pd(std::numbers::ln2);    // ln(2) parts for precision
   const __m256d ln2_lo = _mm256_set1_pd(2.319042899806505e-17);
 
   // Polynomial coefficients for e^f where f belongs to [-0.5, 0.5]

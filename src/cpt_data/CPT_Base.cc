@@ -11,6 +11,11 @@
 #include <string>
 #include <utility>
 
+#ifdef JSON_FOUND
+#include <filesystem>
+#include <fstream>
+#endif
+
 namespace rtt_cpt_data {
 
 //================================================================================================//
@@ -37,7 +42,7 @@ CPT_Base::CPT_Base(std::string dictionaryPathIn, std::string datasetIn, std::str
   Require(library_.length() > 0);
 
   // Open and read dictionary
-  std::string dictionary_file_name = this->dictionaryPath_ + "/dictionary.json";
+  std::string const dictionary_file_name = this->dictionaryPath_ + "/dictionary.json";
   std::ifstream dictionary_file(dictionary_file_name);
   dictionary_file >> dictionary_;
   dictionary_file.close();
@@ -69,7 +74,7 @@ CPT_Base::CPT_Base(std::string dictionaryPathIn, std::string libraryIn)
   Require(library_.length() > 0);
 
   // Open and read dictionary
-  std::string dictionary_file_name = this->dictionaryPath_ + "/dictionary.json";
+  std::string const dictionary_file_name = this->dictionaryPath_ + "/dictionary.json";
   std::ifstream dictionary_file(dictionary_file_name);
   dictionary_file >> dictionary_;
   dictionary_file.close();

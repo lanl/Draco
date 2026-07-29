@@ -8,11 +8,16 @@
 
 #include "cpt_data/CPT_ElasticScattering.hh"
 #include "cpt_data/CPT_Base.hh"
-
 #include "dsxx/Assert.hh"
 #include <string>
 #include <utility>
 #include <vector>
+
+#ifdef JSON_FOUND
+#include "cpt_data/CPT_Collision.hh"
+#include <filesystem>
+#include <fstream>
+#endif
 
 namespace rtt_cpt_data {
 
@@ -101,7 +106,7 @@ CPT_ElasticScattering::CPT_ElasticScattering(const std::string &dictionaryPathIn
 void CPT_ElasticScattering::load_json() {
   // Open and read reaction network info into variable: reactionNetworkInfo
   std::ifstream reactionNetworkFile(this->reactionNetworkFileName_);
-  nlohmann::json reactionNetworkInfo;
+  nlohmann::json reactionNetworkInfo; // NOLINT(misc-include-cleaner)
   reactionNetworkFile >> reactionNetworkInfo;
   reactionNetworkFile.close();
 
@@ -117,7 +122,7 @@ void CPT_ElasticScattering::load_json() {
   // Loop through reactions in the reaction network
   for (const auto &reactionName : tnReactions) {
     // Add collision to list_of_reactions
-    std::string collisionName = static_cast<std::string>(reactionName).substr(0, 3);
+    std::string const collisionName = static_cast<std::string>(reactionName).substr(0, 3);
     this->listOfCollisions_.emplace_back(collisionName);
 
     // Check if collision is in elasticScatteringInfo dictionary
@@ -176,12 +181,12 @@ void CPT_ElasticScattering::load_json(const std::vector<std::string> &listOfColl
   // Loop through reactions in the reaction network
   for (const auto &reactionName : listOfCollisions) {
     // Add collision to list_of_reactions
-    std::string collisionName = static_cast<std::string>(reactionName).substr(0, 3);
+    std::string const collisionName = static_cast<std::string>(reactionName).substr(0, 3);
 
     // Check if collision is in elasticScatteringInfo dictionary
     Require(elasticScatteringInfo.contains(collisionName));
 
-    // Check if the necessary keys exist in the elasticScatteringInfo dictinary exist
+    // Check if the necessary keys exist in the elasticScatteringInfo dictionary exist
     Require(elasticScatteringInfo[collisionName].contains("File"));
     Require(elasticScatteringInfo[collisionName].contains("MT"));
     Require(elasticScatteringInfo[collisionName].contains("Heavy"));

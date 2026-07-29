@@ -7,10 +7,18 @@
 //------------------------------------------------------------------------------------------------//
 
 #include "cpt_data/CPT_Collision.hh"
-
+#include "cpt_data/config.h" // Definition of JSON_FOUND // NOLINT(misc-include-cleaner)
 #include "dsxx/Assert.hh"
 #include <string>
 #include <vector>
+
+// Only implemented if JSON is found
+#ifdef JSON_FOUND
+#include "cpt_data/CPT_MultigroupCollapse.hh"
+#include <limits>
+#include <numeric>
+#include <utility>
+#endif
 
 namespace rtt_cpt_data {
 
@@ -26,16 +34,18 @@ namespace rtt_cpt_data {
  * \brief Constructor for JSON reader.
  *
  * \param[in] collisionName string of the collision name
- * \param[in] collisionDict nlohmann::json dictionary containing the multigroup data for the collision
+ * \param[in] collisionDict nlohmann::json dictionary containing the multigroup data for the
+ *                          collision
  * \param[in] mtNumberIn MT number of the collision
  * \param[in] isHeavyCollisionIn true if the incident particle is heavier than the target
  * \param[in] coarseBounds user defined bounds that the data will be collapsed too
  */
-CPT_Collision::CPT_Collision(const std::string &collisionName, const nlohmann::json &collisionDict,
+CPT_Collision::CPT_Collision(std::string collisionName,
+                             const nlohmann::json &collisionDict, // NOLINT(misc-include-cleaner)
                              const int mtNumberIn, const bool isHeavyCollisionIn,
                              const std::vector<double> &coarseBounds)
     : CPT_MultigroupCollapse{coarseBounds, collisionDict["Energy Grid"].get<std::vector<double>>()},
-      collisionName_{collisionName} {
+      collisionName_{std::move(collisionName)} {
   load_collision(collisionDict, mtNumberIn, isHeavyCollisionIn);
 }
 //------------------------------------------------------------------------------------------------//
@@ -48,14 +58,14 @@ CPT_Collision::CPT_Collision(const std::string &collisionName, const nlohmann::j
 /*!
  * \brief Load the collision data into memory
  *
- * \param[in] collisionIn nlohmann::json dictionary conatianing the multigroup data for the collision
+ * \param[in] collisionIn nlohmann::json dictionary containing the multigroup data for the collision
  * \param[in] mtNumberIn MT number of the collision
  * \param[in] isHeavyCollision true if the incident particle is heavier than the target
  */
 void CPT_Collision::load_collision(const nlohmann::json &collisionIn, const int mtNumberIn,
                                    const bool isHeavyCollisionIn) {
   // Build MT number string
-  std::string mtNumber = "MT = " + std::to_string(mtNumberIn);
+  std::string const mtNumber = "MT = " + std::to_string(mtNumberIn);
 
   // Determine if collision is light or heavy
   std::string heavyCollision;
@@ -71,7 +81,7 @@ void CPT_Collision::load_collision(const nlohmann::json &collisionIn, const int 
 
   // Get weights
   Insist(collisionIn.contains("Weights"), "Key: \"Weights\" not found in collision file.");
-  auto weights = collisionIn["Weights"];
+  auto const &weights = collisionIn["Weights"];
 
   // Get specific collision data
   nlohmann::json collision = collisionIn[mtNumber][heavyCollision];
@@ -106,7 +116,7 @@ void CPT_Collision::load_collision(const nlohmann::json &collisionIn, const int 
  * \brief Check collision data for all necessary Keys
  */
 void CPT_Collision::check_collision_data(const nlohmann::json &collision) {
-  // Check if scatterd and recoil particle exists
+  // Check if scattered and recoil particle exists
   Insist(collision.contains("Scattered Particle"),
          "Key: \"Scattered Particle\" missing from collision data.");
   Insist(collision.contains("Recoil Particle"),

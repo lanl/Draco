@@ -61,7 +61,7 @@ void test_horizontal_max_pd(rtt_dsxx::UnitTest &ut) {
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(mval, x[i]));
 
     // shift x
-    std::rotate(x.begin(), x.begin() + 3, x.end());
+    std::ranges::rotate(x.begin(), x.begin() + 3, x.end());
   }
 
   if (ut.numFails == 0)
