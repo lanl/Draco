@@ -26,6 +26,8 @@ using rtt_dsxx::soft_equiv;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
+namespace {
+
 void amw_test(rtt_dsxx::UnitTest &ut) {
 
   // Write a custom gendir file to deal with NDI-required absolute path to data
@@ -83,6 +85,8 @@ void amw_default_test(rtt_dsxx::UnitTest &ut) {
     FAILMSG("NDI_AtomicMass (default_gendir path) test fails.");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

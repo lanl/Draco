@@ -26,6 +26,8 @@ using rtt_cdi_ndi::NDI_CP_Eloss;
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
+namespace {
+
 void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
   int const proton_zaid = 1001;
   double const proton_mass = 1.6726219e-24;
@@ -103,6 +105,8 @@ void ndi_dedx_test(rtt_dsxx::UnitTest &ut) {
     FAILMSG("NDI_CP_Eloss test fails.");
   }
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

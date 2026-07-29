@@ -18,8 +18,14 @@
 #include <tuple>
 #include <vector>
 
+#ifdef NDI_CP2011_FOUND
+#include <iostream>
+#endif
+
 using rtt_cdi_ndi::NDI_MultigroupNeutron;
 using rtt_dsxx::soft_equiv;
+
+namespace {
 
 void gendir_test(rtt_dsxx::UnitTest &ut) {
 
@@ -262,13 +268,14 @@ void gendir_test(rtt_dsxx::UnitTest &ut) {
   }
 }
 
+//------------------------------------------------------------------------------------------------//
 // This test just checks that we can open the actual CP2011 data on systems where it is installed.
 // It doesn't attempt to exercise the full class interface (that is done in the mocked-up
 // gendir_test above)
 void gendir_default_test(rtt_dsxx::UnitTest &ut) {
 #ifdef NDI_CP2011_FOUND
   // Print the cmake-set data path:
-  std::cout << "Testing CP2011 neutron data at: " << NDI_CP2011_GENDIR << std::endl;
+  std::cout << "Testing CP2011 neutron data at: " << NDI_CP2011_GENDIR << '\n';
 
   std::string const library_in = "cp2011";
   const int target_in = 1002;
@@ -293,6 +300,8 @@ void gendir_default_test(rtt_dsxx::UnitTest &ut) {
   PASSMSG("NDI_MultigroupNeutron default CP2011 data not installed on system.");
 #endif
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

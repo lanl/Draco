@@ -12,11 +12,15 @@
 #ifdef JSON_FOUND
 
 #include "cpt_data/CPT_MultigroupCollapse.hh"
-
 #include "dsxx/Assert.hh"
 #include "dsxx/dbc.hh"
+#include <algorithm>
+#include <cmath>
+#include <cstddef>
+#include <iterator>
+#include <limits>
 #include <string>
-#include <utility>
+#include <vector>
 
 namespace rtt_cpt_data {
 
@@ -28,8 +32,8 @@ namespace rtt_cpt_data {
 /*!
  * \brief Constructor for JSON reader.
  *
- * \param[in] coarseBounds User defined energy group bounds that the fine bounds will be 
- *                         collapsed to in this class
+ * \param[in] coarseBounds User defined energy group bounds that the fine bounds will be collapsed
+ *                         to in this class.
  * \param[in] fineBounds Fine energy bounds that will be collapsed
  */
 CPT_MultigroupCollapse::CPT_MultigroupCollapse(const std::vector<double> &coarseBounds,
@@ -69,24 +73,24 @@ CPT_MultigroupCollapse::CPT_MultigroupCollapse(const std::vector<double> &coarse
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Check coarse and fine energy grids to enure that only one coarse grid point falls within 
+ * \brief Check coarse and fine energy grids to enure that only one coarse grid point falls within
  *        any single fine energy group.
  *
- * \param[in] coarseGrid User defined energy group bounds that the fine bounds will be 
- *                       collapsed to in this class
+ * \param[in] coarseGrid User defined energy group bounds that the fine bounds will be collapsed to
+ *                       in this class
  * \param[in] fineGrid Fine energy bounds of the multigroup data
  */
 void CPT_MultigroupCollapse::check_energy_bounds(const std::vector<double> &coarseGrid,
                                                  const std::vector<double> &fineGrid) {
   // Loop through coarse bounds to see if more than one falls within a fineGrid bin
-  for (int index = 0; index < static_cast<int>(coarseGrid.size() - 1); ++index) {
+  for (size_t index = 0; index < coarseGrid.size() - 1; ++index) {
     // Current energy bounds
-    double firstEnergyBound = coarseGrid[index];
-    double secondEnergyBound = coarseGrid[index + 1];
+    double const firstEnergyBound = coarseGrid[index];
+    double const secondEnergyBound = coarseGrid[index + 1];
 
     // Find locations of the closest bounds
-    auto firstIterator = std::lower_bound(fineGrid.begin(), fineGrid.end(), firstEnergyBound);
-    auto secondIterator = std::lower_bound(fineGrid.begin(), fineGrid.end(), secondEnergyBound);
+    auto firstIterator = std::ranges::lower_bound(fineGrid, firstEnergyBound);
+    auto secondIterator = std::ranges::lower_bound(fineGrid, secondEnergyBound);
 
     // If locations are the same we cannot collapse to the coarse group
     Insist(std::abs(*firstIterator - *secondIterator) > std::numeric_limits<double>::epsilon(),
@@ -98,12 +102,12 @@ void CPT_MultigroupCollapse::check_energy_bounds(const std::vector<double> &coar
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Here the coarseGrid is remapped onto the fineGrid by selecting the closest fineGrid 
- *        point for each coarseGrid point. Note: the coarseGrid is not necessarily preserved,  
+ * \brief Here the coarseGrid is remapped onto the fineGrid by selecting the closest fineGrid point
+ *        for each coarseGrid point. Note: the coarseGrid is not necessarily preserved,
  *        but is instead preserved to the best of the fineGrid's points.
  *
- * \param[in] coarseGrid User defined energy group bounds that the fine bounds will be 
- *                       collapsed to in this class
+ * \param[in] coarseGrid User defined energy group bounds that the fine bounds will be collapsed to
+ *                       in this class
  * \param[in] fineGrid Fine energy bounds of the multigroup data
  */
 void CPT_MultigroupCollapse::remap_coarse_onto_fine(const std::vector<double> &coarseGrid,
@@ -111,24 +115,21 @@ void CPT_MultigroupCollapse::remap_coarse_onto_fine(const std::vector<double> &c
   // Update number of energy groups
   this->numberEnergyGroups_ = static_cast<int>(coarseGrid.size() - 1);
 
-  // Remap coasre grid onto fine grid
-  for (size_t g = 0; g < coarseGrid.size(); ++g) {
-    auto value =
-        std::min_element(fineGrid.begin(), fineGrid.end(), [&coarseGrid, g](double a, double b) {
-          return std::abs(a - coarseGrid[g]) < std::abs(b - coarseGrid[g]);
-        });
+  // Remap coarse grid onto fine grid
+  for (double group_boundary : coarseGrid) {
+    auto value = std::ranges::min_element(fineGrid, [&group_boundary](double a, double b) noexcept {
+      return std::abs(a - group_boundary) < std::abs(b - group_boundary);
+    });
     this->mappedEnergyBounds_.emplace_back(*value);
 
-    int index = static_cast<int>(std::distance(fineGrid.begin(), value));
+    int const index = static_cast<int>(std::distance(fineGrid.begin(), value));
     this->mapCoarseToFine_.emplace_back(index);
   }
 }
 //------------------------------------------------------------------------------------------------//
 
 //------------------------------------------------------------------------------------------------//
-/*!
- * \brief Determine how well the requested and fit coarse energy bounds match by using an L2 norm
- */
+//! Determine how well the requested and fit coarse energy bounds match by using an L2 norm
 void CPT_MultigroupCollapse::compute_norm_between_requested_and_fit_bounds() {
   double result = 0.0;
   for (int g = 0; g < this->numberEnergyGroups_; ++g) {
@@ -141,8 +142,8 @@ void CPT_MultigroupCollapse::compute_norm_between_requested_and_fit_bounds() {
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Elimante last element in a nlohmann::json tensor (only isotropic scattering for now) 
- *        and recast as a std::vector<std::vector<double>> by evaluating the tensor as 
+ * \brief Eliminate last element in a nlohmann::json tensor (only isotropic scattering for now) and
+ *        recast as a std::vector<std::vector<double>> by evaluating the tensor as
  *        tensor[:][:][index].
  *
  * \param[in] tensor A nlohmann::json tensor object
@@ -150,8 +151,9 @@ void CPT_MultigroupCollapse::compute_norm_between_requested_and_fit_bounds() {
  *
  * \return A matrix consisting of tensor[:][:][index]
  */
-[[nodiscard]] std::vector<std::vector<double>>
-CPT_MultigroupCollapse::tensor_to_matrix(const nlohmann::json &tensor, int index) const {
+[[nodiscard]] std::vector<std::vector<double>> CPT_MultigroupCollapse::tensor_to_matrix(
+    const nlohmann::json &tensor, // NOLINT(misc-include-cleaner)
+    int index) const {
   std::vector<std::vector<double>> matrix(fineBounds_.size() - 1,
                                           std::vector<double>(fineBounds_.size() - 1, 0.0));
   for (size_t i = 0; i < fineBounds_.size() - 1; ++i) {
@@ -165,8 +167,8 @@ CPT_MultigroupCollapse::tensor_to_matrix(const nlohmann::json &tensor, int index
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Collapsed group averaged values on the fineBounds grid to the collapsed bounds 
- *        using the weights. The collapse algorithm is outlined in Reference:
+ * \brief Collapsed group averaged values on the fineBounds grid to the collapsed bounds using the
+ *        weights. The collapse algorithm is outlined in Reference:
  *        D. E. Cullen, “Nuclear data preparation,” in Handbook of Nuclear Engineering
  *
  * \param[in] unCollapsed Vector of un-collapsed values to be collapsed
@@ -204,8 +206,8 @@ CPT_MultigroupCollapse::collapse_group_average_values(const std::vector<double> 
 
 //------------------------------------------------------------------------------------------------//
 /*!
- * \brief Collapses a fine matrix of group averaged values to the coarse bounds 
- *        using the weights. The collapse algorithm is outlined in Reference:
+ * \brief Collapses a fine matrix of group averaged values to the coarse bounds using the weights.
+ *        The collapse algorithm is outlined in Reference:
  *        D. E. Cullen, “Nuclear data preparation,” in Handbook of Nuclear Engineering
  *
  * \param[in] unCollapsed Matrix of un-collapsed values to be collapsed
@@ -268,8 +270,7 @@ CPT_MultigroupCollapse::collapse_group_average_values(const std::vector<double> 
   Require(energyIn <= this->mappedEnergyBounds_.back());
 
   // Locate the energy bin that energyIn is in
-  auto it = std::lower_bound(this->mappedEnergyBounds_.begin(), this->mappedEnergyBounds_.end(),
-                             energyIn);
+  auto it = std::ranges::lower_bound(this->mappedEnergyBounds_, energyIn);
   return static_cast<int>(std::distance(this->mappedEnergyBounds_.begin(), it) - 1);
 }
 //------------------------------------------------------------------------------------------------//

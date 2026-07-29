@@ -8,12 +8,10 @@
 
 #include "cpt_data/CPT_Collision.hh"
 #include "cpt_data/CPT_ElasticScattering.hh"
-
 #include "dsxx/Release.hh"
 #include "dsxx/ScalarUnitTest.hh"
 #include "dsxx/Soft_Equivalence.hh"
 #include "dsxx/UnitTest.hh"
-
 #include <cstddef>
 #include <string>
 #include <vector>
@@ -23,6 +21,8 @@ using rtt_dsxx::soft_equiv;
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
+
+namespace {
 
 void elastic_scattering_test(rtt_dsxx::UnitTest &ut) {
   std::string const dictionary_path = ut.getTestSourcePath();
@@ -133,6 +133,8 @@ void custom_elastic_scattering_test(rtt_dsxx::UnitTest &ut) {
     FAILMSG("Custom elastic scattering test fails.");
   return;
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {

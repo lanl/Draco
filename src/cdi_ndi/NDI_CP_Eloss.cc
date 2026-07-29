@@ -13,18 +13,16 @@
 #include "cdi_ndi/NDI_Base.hh"
 #include <cmath>
 #include <string>
-#ifdef NDI_FOUND
-#include "dsxx/Interpolate.hh"
-#include "dsxx/Soft_Equivalence.hh"
-#include <algorithm>
-#endif
 
 // cSpell:ignore debye, dedx, Eloss, shk, zaidp, zaids, zaidt
 
-namespace rtt_cdi_ndi {
-
 // Protect actual NDI calls with NDI_FOUND macro:
 #ifdef NDI_FOUND
+#include "dsxx/Interpolate.hh"
+#include "dsxx/Soft_Equivalence.hh"
+#include <algorithm> // NOLINT(misc-include-cleaner)
+
+namespace rtt_cdi_ndi {
 
 //------------------------------------------------------------------------------------------------//
 // CONSTRUCTORS
@@ -225,17 +223,19 @@ double NDI_CP_Eloss::getEloss(const double temperature, const double density,
   }
 
   // Get grid indices
-  const int pt1_temperature =
-      static_cast<int>(std::lower_bound(temperatures.begin(), temperatures.end(), log_temperature) -
-                       temperatures.begin());
+  const int pt1_temperature = static_cast<int>(
+      std::ranges::lower_bound(temperatures, log_temperature) // NOLINT(misc-include-cleaner)
+      - temperatures.begin());
   const int pt0_temperature = pt1_temperature - 1;
 
   const int pt1_density = static_cast<int>(
-      std::lower_bound(densities.begin(), densities.end(), log_density) - densities.begin());
+      std::ranges::lower_bound(densities, log_density) // NOLINT(misc-include-cleaner)
+      - densities.begin());
   const int pt0_density = pt1_density - 1;
 
   const int pt1_energy = static_cast<int>(
-      std::lower_bound(energies.begin(), energies.end(), log_energy) - energies.begin());
+      std::ranges::lower_bound(energies, log_energy) // NOLINT(misc-include-cleaner)
+      - energies.begin());
   const int pt0_energy = pt1_energy - 1;
 
   // Get grid values
@@ -261,7 +261,11 @@ double NDI_CP_Eloss::getEloss(const double temperature, const double density,
   return dedx * 1000. * density * partSpeed; // MeV cm^2 -> keV shk^-1
 }
 
+} // namespace rtt_cdi_ndi
+
 #else
+
+namespace rtt_cdi_ndi {
 
 //------------------------------------------------------------------------------------------------//
 // CONSTRUCTORS
@@ -312,8 +316,9 @@ double NDI_CP_Eloss::getEloss([[maybe_unused]] const double temperature,
   Insist(0, "getEloss only defined if NDI_FOUND!");
 }
 
-#endif // NDI_FOUND
 } // namespace rtt_cdi_ndi
+
+#endif // NDI_FOUND
 
 //------------------------------------------------------------------------------------------------//
 // End cdi_ndi/NDI_CP_Eloss.cc

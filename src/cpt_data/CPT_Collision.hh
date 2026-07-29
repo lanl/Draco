@@ -20,12 +20,12 @@ namespace rtt_cpt_data {
  * \class CPT_Collision
  * \brief Collision class.
  *
- * The cross section data is stored in this class in the totalCrossSectionVector_, scatteringMatrix_,
- * and recoilMatrix_. Energies are in units of MeV and temperatures are in units of keV. Velocity-
- * averaged cross sections are in units of cm^3 sh^-1. Probability density functions sum to unity. 
- * Note: this data is only multigroup, the "equivalent" continuous energy and angle is availible 
- * through ACE; however, at the time of writing this class significant formatting and particle 
- * kinematic errors exist in the ACE data.
+ * The cross section data is stored in this class in the totalCrossSectionVector_,
+ * scatteringMatrix_, and recoilMatrix_. Energies are in units of MeV and temperatures are in units
+ * of keV. Velocity- averaged cross sections are in units of cm^3 sh^-1. Probability density
+ * functions sum to unity. Note: this data is only multigroup, the "equivalent" continuous energy
+ * and angle is available through ACE; however, at the time of writing this class significant
+ * formatting and particle kinematic errors exist in the ACE data.
  */
 //================================================================================================//
 
@@ -36,7 +36,7 @@ class CPT_Collision : public CPT_MultigroupCollapse {
 
 public:
   //! Constructor
-  CPT_Collision(const std::string &collisionName, const nlohmann::json &collisionDict,
+  CPT_Collision(std::string collisionName, const nlohmann::json &collisionDict,
                 const int mtNumberIn, const bool isHeavyCollisionIn,
                 const std::vector<double> &coarseBounds);
 
