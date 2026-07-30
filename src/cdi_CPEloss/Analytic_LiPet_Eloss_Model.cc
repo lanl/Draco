@@ -29,20 +29,17 @@ namespace rtt_cdi_cpeloss {
  * \param number_density_in number density of target in [cm^-3]
  * \param incident_speed_in incident speed in [cm/shk]
  * \param debye_length_in material Debye length in [cm]
- * \param edward_relative_velocity for more information, see Li-Petrasso write-up by E. Norris
  * \return stopping power in [keV/shk]
  */
 double Analytic_LiPet_Eloss_Model::getElossMod(const double temperature_in,
                                                const double number_density_in,
                                                const double incident_speed_in,
-                                               const double debye_length_in,
-                                               const bool edward_relative_velocity) const {
+                                               const double debye_length_in) const {
   Require(incident_speed_in >= 0.0);
 
   // define return eloss
-  double const eloss =
-      calculate_eloss_modified(temperature_in, number_density_in, incident_speed_in,
-                               debye_length_in, edward_relative_velocity);
+  double const eloss = calculate_eloss_modified(temperature_in, number_density_in,
+                                                incident_speed_in, debye_length_in);
 
   Ensure(eloss >= 0.0);
   return eloss;
@@ -61,10 +58,10 @@ double Analytic_LiPet_Eloss_Model::getElossMod(const double temperature_in,
  * \param debye_length_in material Debye length in [cm]
  * \return stopping power in [keV/shk]
  */
-double Analytic_LiPet_Eloss_Model::calculate_eloss(const double temperature_in,
-                                                   const double number_density_in,
-                                                   const double incident_speed_in,
-                                                   const double debye_length_in) const {
+double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(const double temperature_in,
+                                                            const double number_density_in,
+                                                            const double incident_speed_in,
+                                                            const double debye_length_in) const {
   // Convert number density, temperature, debye
   double const number_density = number_density_in * 1.0e+6;             // [cm^-3 -> m^-3]
   double const temperature = temperature_in * rtt_units::EV2K * 1.0e+3; // [keV -> K]
@@ -138,13 +135,14 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss(const double temperature_in,
  * \param number_density_in number density of target in [cm^-3]
  * \param incident_speed_in incident speed in [cm/shk]
  * \param debye_length_in material Debye length in [cm]
- * \param edward_relative_velocity for more information, see Li-Petrasso write-up by E. Norris
  * \return stopping power in [keV/shk]
  */
 #ifdef GSL_FOUND
-double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
-    const double temperature_in, const double number_density_in, const double incident_speed_in,
-    const double debye_length_in, const bool edward_relative_velocity) const {
+double Analytic_LiPet_Eloss_Model::calculate_eloss(const double temperature_in,
+                                                   const double number_density_in,
+                                                   const double incident_speed_in,
+                                                   const double debye_length_in) const {
+
   // Convert number density, temperature, debye
   double const number_density = number_density_in * 1.0e+6;             // [cm^-3 -> m^-3]
   double const temperature = temperature_in * rtt_units::EV2K * 1.0e+3; // [keV -> K]
@@ -225,10 +223,11 @@ double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
   return dedx * incident_speed_in;
 }
 #else
-double Analytic_LiPet_Eloss_Model::calculate_eloss_modified(
-    [[maybe_unused]] const double temperature_in, [[maybe_unused]] const double number_density_in,
-    [[maybe_unused]] const double incident_speed_in, [[maybe_unused]] const double debye_length_in,
-    [[maybe_unused]] const bool edward_relative_velocity) const {
+double
+Analytic_LiPet_Eloss_Model::calculate_eloss([[maybe_unused]] const double temperature_in,
+                                            [[maybe_unused]] const double number_density_in,
+                                            [[maybe_unused]] const double incident_speed_in,
+                                            [[maybe_unused]] const double debye_length_in) const {
   Insist(false, "Analytic_LiPet_Eloss_Model::calculate_eloss_modified requires GSL!");
 }
 #endif

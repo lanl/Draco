@@ -20,27 +20,30 @@ class Analytic_LiPet_Eloss_Model : public Analytic_Eloss_Model {
 public:
   //! Constructor
   Analytic_LiPet_Eloss_Model(const int tzaid, const double tmass, const int pzaid,
-                             const double pmass) noexcept
-      : Analytic_Eloss_Model(tzaid, tmass, pzaid, pmass) {}
+                             const double pmass, const bool edward_rel_vel = false) noexcept
+      : Analytic_Eloss_Model(tzaid, tmass, pzaid, pmass), edward_relative_velocity(edward_rel_vel) {
+  }
 
   //! This doesn't overload an Analytic_Eloss_Model function - it wraps an alternate version
   //! of Li-Petrasso for comparison.
-  [[nodiscard]] double
-  getElossMod(const double temperature_in, const double number_density_in,
-              const double incident_speed_in, const double debye_length_in,
-              [[maybe_unused]] const bool edward_relative_velocity = true) const;
+  [[nodiscard]] double getElossMod(const double temperature_in, const double number_density_in,
+                                   const double incident_speed_in,
+                                   const double debye_length_in) const;
 
 private:
+  //! Toggle to use Edward's relative velocity for standard LiPet dedt.
+  bool edward_relative_velocity{false};
+
   //! Calculate the stopping power for some target
+  [[nodiscard]] double calculate_eloss_modified(const double temperature_in,
+                                                const double number_density_in,
+                                                const double incident_speed_in,
+                                                const double debye_length_in) const;
+
+  //! Calculate the modified Li-Petrasso stopping power
   [[nodiscard]] double calculate_eloss(const double temperature_in, const double number_density_in,
                                        const double incident_speed_in,
                                        const double debye_length_in) const override;
-
-  //! Calculate the modified Li-Petrasso stopping power
-  [[nodiscard]] double
-  calculate_eloss_modified(const double temperature_in, const double number_density_in,
-                           const double incident_speed_in, const double debye_length_in,
-                           [[maybe_unused]] const bool edward_relative_velocity = true) const;
 };
 
 } // namespace rtt_cdi_cpeloss

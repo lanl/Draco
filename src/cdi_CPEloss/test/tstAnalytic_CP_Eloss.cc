@@ -325,13 +325,15 @@ void LiPetrasso_test(rtt_dsxx::UnitTest &ut) {
   double const number_dens_triton =
       dens_triton / (0.5 * (2.013553214 + 3.01550071913)) * rtt_units::AVOGADRO;
 
+  // ======================= Elosses with Edward's relative velocity ====================
   // Build cpeloss model
+  bool use_en_vel{true};
   auto const elec_model(std::make_shared<rtt_cdi_cpeloss::Analytic_LiPet_Eloss_Model>(
-      -1, mass_electron, 2004, mass_alpha));
+      -1, mass_electron, 2004, mass_alpha, use_en_vel));
   auto const deut_model(std::make_shared<rtt_cdi_cpeloss::Analytic_LiPet_Eloss_Model>(
-      1002, mass_deuteron, 2004, mass_alpha));
+      1002, mass_deuteron, 2004, mass_alpha, use_en_vel));
   auto const trit_model(std::make_shared<rtt_cdi_cpeloss::Analytic_LiPet_Eloss_Model>(
-      1003, mass_triton, 2004, mass_alpha));
+      1003, mass_triton, 2004, mass_alpha, use_en_vel));
 
   // Build CPEloss object using model:
   rtt_cdi_cpeloss::Analytic_CP_Eloss const eloss_elec(elec_model,
@@ -340,6 +342,25 @@ void LiPetrasso_test(rtt_dsxx::UnitTest &ut) {
                                                       rtt_cdi::CPModelAngleCutoff::NONE);
   rtt_cdi_cpeloss::Analytic_CP_Eloss const eloss_trit(trit_model,
                                                       rtt_cdi::CPModelAngleCutoff::NONE);
+
+  // ======================= Elosses without Edward's relative velocity ==================
+  // Build a second set of cpeloss models:
+  use_en_vel = false;
+  auto const elec_model_edoff(std::make_shared<rtt_cdi_cpeloss::Analytic_LiPet_Eloss_Model>(
+      -1, mass_electron, 2004, mass_alpha, use_en_vel));
+  auto const deut_model_edoff(std::make_shared<rtt_cdi_cpeloss::Analytic_LiPet_Eloss_Model>(
+      1002, mass_deuteron, 2004, mass_alpha, use_en_vel));
+  // Don't pass en_vel flag - test default (should be false)
+  auto const trit_model_edoff(std::make_shared<rtt_cdi_cpeloss::Analytic_LiPet_Eloss_Model>(
+      1003, mass_triton, 2004, mass_alpha));
+
+  // Build CPEloss object using model:
+  rtt_cdi_cpeloss::Analytic_CP_Eloss const eloss_elec_edoff(elec_model_edoff,
+                                                            rtt_cdi::CPModelAngleCutoff::NONE);
+  rtt_cdi_cpeloss::Analytic_CP_Eloss const eloss_deut_edoff(deut_model_edoff,
+                                                            rtt_cdi::CPModelAngleCutoff::NONE);
+  rtt_cdi_cpeloss::Analytic_CP_Eloss const eloss_trit_edoff(trit_model_edoff,
+                                                            rtt_cdi::CPModelAngleCutoff::NONE);
 
   // Build background
   const std::map<int, double> zaid_num_dens = {
@@ -361,105 +382,158 @@ void LiPetrasso_test(rtt_dsxx::UnitTest &ut) {
 
   FAIL_IF_NOT(rtt_cdi::get_z_number(eloss_elec.get_Analytic_Model()->proj_zaid()) == 2);
 
-  // Get dedt for 3.5 MeV alpha-particle
+  // Get modified dedt for 3.5 MeV alpha-particle
   {
     double const incident_energy = 3.5 * rtt_units::electronChargeSI * 1.0e+6; // J
     double const incident_speed =
         std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
     double dedt{0.0};
-    dedt += eloss_elec.getEloss(temp_electron, number_dens_electron, incident_speed, debye_length);
-    dedt += eloss_deut.getEloss(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
-    dedt += eloss_trit.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
+    dedt +=
+        elec_model->getElossMod(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt +=
+        deut_model->getElossMod(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += trit_model->getElossMod(temp_triton, number_dens_triton, incident_speed, debye_length);
 
     const double ref_dedt{2.56071981e+05 * incident_speed};
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
 
-  // Get dedt for 1.0 MeV alpha-particle
+  // Get modified dedt for 1.0 MeV alpha-particle
   {
     double const incident_energy = 1.0 * rtt_units::electronChargeSI * 1.0e+6; // J
     double const incident_speed =
         std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
     double dedt{0.0};
-    dedt += eloss_elec.getEloss(temp_electron, number_dens_electron, incident_speed, debye_length);
-    dedt += eloss_deut.getEloss(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
-    dedt += eloss_trit.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
+    dedt +=
+        elec_model->getElossMod(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt +=
+        deut_model->getElossMod(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += trit_model->getElossMod(temp_triton, number_dens_triton, incident_speed, debye_length);
 
     const double ref_dedt{1.61944659e+05 * incident_speed};
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
 
-  // Get dedt for E = 2kT
+  // Get modified dedt for E = 2kT
   {
     double const incident_energy = 2.0e-3 * rtt_units::electronChargeSI * 1.0e+6; // J
     double const incident_speed =
         std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
     double dedt{0.0};
-    dedt += eloss_elec.getEloss(temp_electron, number_dens_electron, incident_speed, debye_length);
-    dedt += eloss_deut.getEloss(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
-    dedt += eloss_trit.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
+    dedt +=
+        elec_model->getElossMod(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt +=
+        deut_model->getElossMod(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += trit_model->getElossMod(temp_triton, number_dens_triton, incident_speed, debye_length);
 
     const double ref_dedt{3.05252070e+05 * incident_speed};
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
 
 #ifdef GSL_FOUND // Modified dedt requires calls to GSL
-  std::cout << "[Running modified Li-Petrasso tests.]\n";
-  // Get modified dedt for 3.5 MeV alpha-particle
+  std::cout << "[Running GSL-enabled Li-Petrasso tests.]\n";
+  // Get dedt for 3.5 MeV alpha-particle
   {
     double const incident_energy = 3.5 * rtt_units::electronChargeSI * 1.0e+6;
     double const incident_speed =
         std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
     double dedt{0.0};
-    dedt +=
-        elec_model->getElossMod(temp_electron, number_dens_electron, incident_speed, debye_length);
-    dedt +=
-        deut_model->getElossMod(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
-    dedt += trit_model->getElossMod(temp_triton, number_dens_triton, incident_speed, debye_length);
+    dedt += eloss_elec.getEloss(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt += eloss_deut.getEloss(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += eloss_trit.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
 
     const double ref_dedt{3.39685179e+05 * incident_speed};
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
 
-  // Get modified dedt for 1.0 MeV alpha-particle
+  // Get dedt for 3.5 MeV alpha-particle (without Edward's relative velocity)
+  {
+    double const incident_energy = 3.5 * rtt_units::electronChargeSI * 1.0e+6;
+    double const incident_speed =
+        std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
+
+    double dedt{0.0};
+    dedt += eloss_elec_edoff.getEloss(temp_electron, number_dens_electron, incident_speed,
+                                      debye_length);
+    dedt += eloss_deut_edoff.getEloss(temp_deuteron, number_dens_deuteron, incident_speed,
+                                      debye_length);
+    dedt +=
+        eloss_trit_edoff.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
+
+    const double ref_dedt{1.03398898e+06 * incident_speed};
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
+  }
+  // Get dedt for 1.0 MeV alpha-particle
   {
     double const incident_energy = 1.0 * rtt_units::electronChargeSI * 1.0e+6;
     double const incident_speed =
         std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
     double dedt{0.0};
-    dedt +=
-        elec_model->getElossMod(temp_electron, number_dens_electron, incident_speed, debye_length);
-    dedt +=
-        deut_model->getElossMod(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
-    dedt += trit_model->getElossMod(temp_triton, number_dens_triton, incident_speed, debye_length);
+    dedt += eloss_elec.getEloss(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt += eloss_deut.getEloss(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += eloss_trit.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
 
     const double ref_dedt{2.46587420e+05 * incident_speed};
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
 
-  // Get modified dedt for E = 2kT
+  // Get dedt for 1.0 MeV alpha-particle (without Edward's relative velocity)
+  {
+    double const incident_energy = 1.0 * rtt_units::electronChargeSI * 1.0e+6;
+    double const incident_speed =
+        std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
+
+    double dedt{0.0};
+    dedt += eloss_elec_edoff.getEloss(temp_electron, number_dens_electron, incident_speed,
+                                      debye_length);
+    dedt += eloss_deut_edoff.getEloss(temp_deuteron, number_dens_deuteron, incident_speed,
+                                      debye_length);
+    dedt +=
+        eloss_trit_edoff.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
+
+    const double ref_dedt{6.96320349e+05 * incident_speed};
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
+  }
+
+  // Get dedt for E = 2kT
   {
     double const incident_energy = 2.0e-3 * rtt_units::electronChargeSI * 1.0e+6;
     double const incident_speed =
         std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
 
     double dedt{0.0};
-    dedt +=
-        elec_model->getElossMod(temp_electron, number_dens_electron, incident_speed, debye_length);
-    dedt +=
-        deut_model->getElossMod(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
-    dedt += trit_model->getElossMod(temp_triton, number_dens_triton, incident_speed, debye_length);
+    dedt += eloss_elec.getEloss(temp_electron, number_dens_electron, incident_speed, debye_length);
+    dedt += eloss_deut.getEloss(temp_deuteron, number_dens_deuteron, incident_speed, debye_length);
+    dedt += eloss_trit.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
 
     const double ref_dedt{3.20107656e+05 * incident_speed};
     FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
   }
+
+  // Get dedt for E = 2kT (without Edward's relative velocity)
+  {
+    double const incident_energy = 2.0e-3 * rtt_units::electronChargeSI * 1.0e+6;
+    double const incident_speed =
+        std::sqrt(2.0 * incident_energy / (mass_alpha * 1.0e-3)) * 1.0e-8 * 1.0e+2; // cm/shk
+
+    double dedt{0.0};
+    dedt += eloss_elec_edoff.getEloss(temp_electron, number_dens_electron, incident_speed,
+                                      debye_length);
+    dedt += eloss_deut_edoff.getEloss(temp_deuteron, number_dens_deuteron, incident_speed,
+                                      debye_length);
+    dedt +=
+        eloss_trit_edoff.getEloss(temp_triton, number_dens_triton, incident_speed, debye_length);
+
+    const double ref_dedt{6.48009458e+05 * incident_speed};
+    FAIL_IF_NOT(rtt_dsxx::soft_equiv(dedt, ref_dedt, 1.0e-8));
+  }
 #else
-  std::cout << "[Skipping modified Li-Petrasso tests - GSL not found.]\n";
+  std::cout << "[Skipping some Li-Petrasso tests - GSL not found.]\n";
 #endif
 
   if (ut.numFails == 0)
