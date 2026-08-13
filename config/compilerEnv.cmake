@@ -897,7 +897,7 @@ function(dbsSetupProfilerTools)
   if(ENABLE_MEMORYCHECK)
     find_program(CMAKE_MEMORYCHECK_COMMAND valgrind)
     if(NOT CMAKE_MEMORYCHECK_COMMAND)
-      message(WARNING "ENABLE_MEMPORYCHECK=ON, but valgrind not found. Disabling memorycheck "
+      message(WARNING "ENABLE_MEMORYCHECK=ON, but valgrind not found. Disabling memorycheck "
                       "features.")
     endif()
     if(EXISTS "$ENV{CTEST_MEMORYCHECK_SUPPRESSIONS_FILE}")
