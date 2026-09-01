@@ -221,29 +221,27 @@ void quad_2D::create_quadrature(std::vector<double> &omega_x, std::vector<double
   // product quadrature
   case 0:
     /*
-              printf("creating product quadrature order (%d, %d) type (%d, %d) \n",
-              polar_order_,
-              azimuthal_order_,
-              polar_type_,
-              azimuthal_type_);
-            */
+      printf("creating product quadrature order (%d, %d) type (%d, %d) \n",
+      polar_order_,
+      azimuthal_order_,
+      polar_type_,
+      azimuthal_type_);
+     */
     product(polar, azimuthal, omega_x, omega_y, omega_z, weights);
     break;
     // triangular quadrature
   case 1:
     /*
-              printf("creating triangular quadrature order (%d) type (%d, %d) \n",
-              polar_order_,
-              polar_type_,
-              azimuthal_type_);
-            */
+      printf("creating triangular quadrature order (%d) type (%d, %d) \n",
+      polar_order_,
+      polar_type_,
+      azimuthal_type_);
+     */
     triangular(polar, azimuthal, omega_x, omega_y, omega_z, weights);
     break;
     // level symmetric quadrature
   case 2:
-    /*
-              printf("creating level symmetric quadrature order (%d) \n", polar_order_);
-            */
+    // printf("creating level symmetric quadrature order (%d) \n", polar_order_);
     level_symmetric(polar_order_, omega_x, omega_y, omega_z, weights);
     break;
   default:

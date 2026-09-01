@@ -317,6 +317,9 @@ function(dbs_vscode_env_helper)
   if(EXISTS "${ParMETIS_INCLUDE_DIR}")
     file(CREATE_LINK "${ParMETIS_INCLUDE_DIR}" "${dep_binary_dir}/parmetis" SYMBOLIC)
   endif()
+  if(EXISTS "${ports-of-call_DIR}")
+    file(CREATE_LINK "${ports-of-call_DIR}" "${dep_binary_dir}/ports-of-call" SYMBOLIC)
+  endif()
 
 endfunction(dbs_vscode_env_helper)
 

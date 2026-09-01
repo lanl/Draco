@@ -17,8 +17,8 @@ if(NOT Fortran_FLAGS_INITIALIZED)
       "yes"
       CACHE INTERNAL "using draco settings.")
 
-  string(APPEND CMAKE_Fortran_FLAGS " -g -cpp")
-  set(CMAKE_Fortran_FLAGS_DEBUG "-DDEBUG") # -gdwarf-3
+  string(APPEND CMAKE_Fortran_FLAGS " -g -cpp -Qunused-arguments")
+  set(CMAKE_Fortran_FLAGS_DEBUG "-DDEBUG")
   set(CMAKE_Fortran_FLAGS_RELEASE "-O3 -DNDEBUG")
   set(CMAKE_Fortran_FLAGS_MINSIZEREL "${CMAKE_Fortran_FLAGS_RELEASE}")
   set(CMAKE_Fortran_FLAGS_RELWITHDEBINFO "${CMAKE_Fortran_FLAGS_RELEASE}")
