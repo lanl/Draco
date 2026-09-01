@@ -38,6 +38,10 @@ for wantfile in $wantfiles; do
     if [[ "${filename}" == "${wantfile}" ]]; then
       # -T makes filename matches less strict. (change.lanl.gov #192081)
       [[ ${CRAYPE_DIR} =~ cray ]] && scp_opt="-T"
+      scpvers=$(ssh -V 2>&1 | sed -n 's/.*OpenSSH_\([0-9]*\).*/\1/p')
+      if [[ scpvers -ge 9 ]]; then
+        scp_opt+="-O"
+      fi
       echo "scp ${scp_opt} red@transfer.lanl.gov:${fileid} ."
       # shellcheck disable=SC2086
       scp ${scp_opt} "red@transfer.lanl.gov:${fileid}" .
