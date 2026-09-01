@@ -56,10 +56,9 @@ void print_1D_quad(std::vector<std::vector<double>> const &quad) {
   printf("  normalization %19.10e\n\n", sumwt);
 }
 
-//-------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
 static constexpr double tol = 1.0e-12;
-
 static constexpr int num = 6;
 
 // integrate sin^m(x) cos^n(x) sin(x) functions
@@ -150,7 +149,7 @@ void test_pol_cos_half(int N, std::vector<std::vector<double>> &quad, rtt_dsxx::
   }
 }
 
-//-------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
 void test_az_cos(int N, std::vector<std::vector<double>> &quad, rtt_dsxx::UnitTest &ut) {
   printf("azimuthal full-range [0,pi]\n");
@@ -283,7 +282,7 @@ void test_pol_sin_cos_half(int N, std::vector<std::vector<double>> &quad, rtt_ds
   }
 }
 
-//-------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
 // 1D quadrature tests
 void quad_test_1D(int const N, rtt_dsxx::UnitTest &ut) {
@@ -382,7 +381,7 @@ void quad_test_1D(int const N, rtt_dsxx::UnitTest &ut) {
   test_pol_sin_cos_half(N, quad, ut);
 }
 
-//-------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
 // 2D quadrature tests
 void test_sph(quad_2D const &quad, bool const prod_type, rtt_dsxx::UnitTest &ut) {
@@ -429,6 +428,7 @@ void test_sph(quad_2D const &quad, bool const prod_type, rtt_dsxx::UnitTest &ut)
   }
 }
 
+//------------------------------------------------------------------------------------------------//
 void quad_test_2D(int const polar_order, int const azimuthal_order, rtt_dsxx::UnitTest &ut) {
   int quad_type;
 
@@ -468,7 +468,7 @@ void quad_test_2D(int const polar_order, int const azimuthal_order, rtt_dsxx::Un
 
   // level symmetric quadratures
   quad_type = 2;
-  for (int i = 6; i <= 24; ++i, ++i) // start at S6 to integrate exactly
+  for (int i = 6; i <= 24; i += 2) // start at S6 to integrate exactly
   {
     std::cout << "\nLevel Symmetric order " << i << "\n";
     auto ql = quad_2D(i, 0, 0, 0, quad_type); // level symmetric only uses polar order i
@@ -509,7 +509,7 @@ void quad_test_2D(int const polar_order, int const azimuthal_order, rtt_dsxx::Un
 
 } // namespace
 
-//-------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------//
 
 int main(int argc, char *argv[]) {
   rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
@@ -517,7 +517,8 @@ int main(int argc, char *argv[]) {
   ut.passes("lightweight_quadrature");
 
   try {
-    // some partial-range quadratures require high quadrature order to integrate high-degree polynomials accurately
+    // some partial-range quadratures require high quadrature order to integrate high-degree
+    // polynomials accurately
 
     quad_test_1D(36, ut);
 

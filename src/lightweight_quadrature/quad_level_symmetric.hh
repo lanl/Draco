@@ -28,8 +28,7 @@ inline void level_symmetric(int polar_order, std::vector<double> &omega_x,
 
   // octant points
   const int noct = (polar_order + 2) * polar_order / 8;
-  std::vector<double> wts;
-  wts.reserve(noct);
+  std::vector<double> wts(noct);
 
   // quadrature points and weights
   std::vector<double> pts_;
@@ -304,11 +303,15 @@ inline void level_symmetric(int polar_order, std::vector<double> &omega_x,
     wts_[13] = 0.00228403610697848813660369;
     wts_[14] = 0.0338971925236628645848112;
     wts_[15] = -0.00644725595698339499416262;
-    std::array<int, 78> wp24 = {0, 1,  2, 3,  4,  5,  5,  4,  3, 2,  1,  0,  1,  6,  7,  8,
-                                9, 10, 9, 8,  7,  6,  1,  2,  7, 11, 12, 13, 13, 12, 11, 7,
-                                2, 3,  8, 12, 14, 15, 14, 12, 8, 3,  4,  9,  13, 15, 15, 13,
-                                9, 4,  5, 10, 13, 14, 13, 10, 5, 5,  9,  12, 12, 9,  5,  4,
-                                8, 11, 8, 4,  3,  7,  7,  3,  2, 6,  2,  1,  1,  0};
+    std::array<int, 78> wp24 = {0,  1,  2,  3,  4,  5,  5,  4,  3,  2,  // 10
+                                1,  0,  1,  6,  7,  8,  9,  10, 9,  8,  // 20
+                                7,  6,  1,  2,  7,  11, 12, 13, 13, 12, // 30
+                                11, 7,  2,  3,  8,  12, 14, 15, 14, 12, // 40
+                                8,  3,  4,  9,  13, 15, 15, 13, 9,  4,  // 50
+                                5,  10, 13, 14, 13, 10, 5,  5,  9,  12, // 60
+                                12, 9,  5,  4,  8,  11, 8,  4,  3,  7,  // 70
+                                7,  3,  2,  6,  2,  1,  1,  0};         // 78
+
     for (int m = 0; m < noct; ++m)
       wts[m] = wts_[wp24[m]];
     break;

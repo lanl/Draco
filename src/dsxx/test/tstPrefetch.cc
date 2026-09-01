@@ -37,7 +37,7 @@ void runtest(rtt_dsxx::UnitTest &ut) {
 #else
   unsigned const N = 1000000;
 #endif
-  vector<double> huge(N);
+  vector<double> huge(N + CACHE_LINE_DOUBLE);
   double sum = 0.0;
   for (unsigned k = 0; k < R; ++k) {
     for (unsigned i = 0; i < N; i += CACHE_LINE_DOUBLE) {

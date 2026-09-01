@@ -340,6 +340,13 @@ deb_gcc_regress:
     DRACO_ENV: gcc1330
     CTEST_NPROC: 40
 
+deb_gcc16_regress:
+  extends: .ccscs_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1610
+    CTEST_NPROC: 40
+
 deb_gcc_cxx23_regress:
   extends: .ccscs_nightly
   variables:

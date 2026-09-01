@@ -1,8 +1,8 @@
 {
-  "version": 10,
+  "version": 11,
   "cmakeMinimumRequired": {
-    "major": 3,
-    "minor": 26,
+    "major": 4,
+    "minor": 3,
     "patch": 0
   },
   "configurePresets": [
@@ -408,7 +408,7 @@
       "execution": {
         "noTestsAction": "error",
         "stopOnFailure": true,
-        "jobs": 0
+        "jobs": ""
       }
     },
     {

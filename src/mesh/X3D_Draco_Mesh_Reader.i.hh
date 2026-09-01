@@ -33,12 +33,12 @@ std::map<KT, std::vector<VT>> X3D_Draco_Mesh_Reader::map_x3d_block(const std::st
   dist += std::distance(label_first, label_last);
 
   Check(dist > 0);
-  Check(label_first < label_last);
+  Check(label_first != label_last);
 
   // x3d map to return
   std::map<KT, std::vector<VT>> ret_x3d_map;
 
-  for (auto it = label_first + 1; it < label_last; ++it) {
+  for (auto it = label_first + 1; it != label_last; ++it) {
 
     std::vector<VT> tmp_vec((*it).second.size());
     size_t i = 0;

@@ -120,18 +120,20 @@ if(NOT CXX_FLAGS_INITIALIZED)
   string(
     APPEND
     CMAKE_C_FLAGS
-    " -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-documentation-unknown-command"
-    " -Wno-exit-time-destructors -Wno-global-constructors -Wno-weak-vtables -Wno-old-style-cast"
-    " -Wno-sign-conversion -Wno-padded -Wno-extra-semi-stmt -Wno-unreachable-code-break"
-    " -Wno-unreachable-code-return -Wno-missing-prototypes -Wno-disabled-macro-expansion"
-    " -Wno-switch-enum -Wno-deprecated-declarations -Wno-missing-noreturn -Wno-unreachable-code"
-    " -Wno-documentation-deprecated-sync -Wno-documentation -Wno-undefined-func-template"
-    " -Wno-weak-template-vtables -Wno-comma")
+    " -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-comma -Wno-deprecated-declarations"
+    " -Wno-disabled-macro-expansion -Wno-documentation -Wno-documentation-deprecated-sync"
+    " -Wno-documentation-unknown-command -Wno-exit-time-destructors -Wno-extra-semi-stmt"
+    " -Wno-global-constructors -Wno-missing-noreturn -Wno-missing-prototypes"
+    " -Wno-old-style-cast -Wno-padded -Wno-sign-conversion -Wno-switch-enum"
+    " -Wno-undefined-func-template -Wno-unreachable-code -Wno-unreachable-code-break"
+    " -Wno-unreachable-code-return -Wno-unsafe-buffer-usage -Wno-weak-template-vtables"
+    " -Wno-weak-vtables")
+
   if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0 AND NOT MSVC)
     string(APPEND CMAKE_C_FLAGS " -Wno-format-signedness")
   endif()
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 16.0 AND NOT MSVC)
-    string(APPEND CMAKE_C_FLAGS " -Wno-unsafe-buffer-usage")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 22.0 AND NOT MSVC)
+    string(APPEND CMAKE_C_FLAGS " -Wno-nrvo")
   endif()
 
   if((NOT CMAKE_CXX_COMPILER_WRAPPER STREQUAL CrayPrgEnv)
