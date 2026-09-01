@@ -20,8 +20,13 @@ if ! test -n "$1"; then
     echo "ERROR: You must profile a file for transfering: xfpush foo.txt"
     return
 fi
+scp_opt=""
+scpvers=$(ssh -V 2>&1 | sed -n 's/.*OpenSSH_\([0-9]*\).*/\1/p')
+if [[ scpvers -ge 9 ]]; then
+  scp_opt+="-O"
+fi
 for myfile in $myfiles; do
-    scp "${myfile}" red@transfer.lanl.gov:
-    echo "scp $myfile red@transfer.lanl.gov:"
+    scp ${scp_opt} "${myfile}" red@transfer.lanl.gov:
+    echo "scp ${scp_opt} $myfile red@transfer.lanl.gov:"
 done
 IFS=$saveifs
