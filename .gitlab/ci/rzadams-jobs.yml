@@ -38,7 +38,6 @@
   stage: deploy
   variables:
     DEPLOY: 'TRUE'
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=ON -DUSE_OPENMP=OFF
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}
     DRACO_INSTALL_DIR: /usr/gapps/jayenne/deploy/${SITE_ID}/${FLAVOR}/${PROJECT}
   script:
@@ -60,12 +59,22 @@ rzadams_deploy_rel_amdclang:
   variables:
     DRACO_ENV: "lapse/3.0.1-amdclang"
     CMAKE_BUILD_TYPE: Release
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=ON -DUSE_OPENMP=OFF
 
 rzadams_deploy_deb_amdclang:
   extends: .rzadams_deploy
   variables:
     DRACO_ENV: "lapse/3.0.1-amdclang"
     CMAKE_BUILD_TYPE: Debug
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=ON -DUSE_OPENMP=OFF
+
+rzadams_cpu_deploy_rel_amdclang:
+  extends: .rzadams_deploy
+  variables:
+    DRACO_ENV: "lapse/3.0.1-amdclang"
+    CMAKE_BUILD_TYPE: Release
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=OFF
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-cpu
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a versioned release (dvr)
