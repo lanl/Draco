@@ -73,7 +73,7 @@ rzadams_cpu_deploy_rel_amdclang:
   variables:
     DRACO_ENV: "lapse/3.0.1-amdclang"
     CMAKE_BUILD_TYPE: Release
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=OFF
+    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=OFF -DUSE_OPENMP=OFF
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-cpu
 
 #--------------------------------------------------------------------------------------------------#
