@@ -35,7 +35,7 @@ namespace rtt_c4 {
  */
 //================================================================================================//
 
-class ifpstream : public std::stringstream {
+class ifpstream : public std::stringstream { // NOLINT(misc-multiple-inheritance)
 public:
   //! Constructor -- default to standard output mode (ASCII)
   explicit ifpstream(std::string const &filename, ios_base::openmode const mode = ios_base::out);

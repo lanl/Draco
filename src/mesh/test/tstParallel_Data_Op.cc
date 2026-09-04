@@ -173,7 +173,7 @@ void gather(rtt_dsxx::UnitTest &ut) {
   std::shared_ptr<Topology> const topology = rtt_mesh_test::build_DD_Topology();
 
   // make a comm patterns
-  std::shared_ptr<Comm_Patterns> const pattern(new Comm_Patterns());
+  std::shared_ptr<Comm_Patterns> const pattern = std::make_shared<Comm_Patterns>();
   pattern->calc_patterns(topology);
 
   // make the parallel data operator class
@@ -252,7 +252,7 @@ void gather_vector_data(rtt_dsxx::UnitTest &ut) {
   std::shared_ptr<Topology> const topology = rtt_mesh_test::build_DD_Topology();
 
   // make a comm patterns
-  std::shared_ptr<Comm_Patterns> const pattern(new Comm_Patterns());
+  std::shared_ptr<Comm_Patterns> const pattern = std::make_shared<Comm_Patterns>();
   pattern->calc_patterns(topology);
 
   // make the parallel data operator class
@@ -381,7 +381,7 @@ void gather_variable_data(rtt_dsxx::UnitTest &ut) {
   std::shared_ptr<Topology> const topology = rtt_mesh_test::build_DD_Topology();
 
   // make a comm patterns
-  std::shared_ptr<Comm_Patterns> const pattern(new Comm_Patterns());
+  std::shared_ptr<Comm_Patterns> const pattern = std::make_shared<Comm_Patterns>();
   pattern->calc_patterns(topology);
 
   // make the parallel data operator class
@@ -475,7 +475,7 @@ void gather_variable_vector_data(rtt_dsxx::UnitTest &ut) {
   std::shared_ptr<Topology> const topology = rtt_mesh_test::build_DD_Topology();
 
   // make a comm patterns
-  std::shared_ptr<Comm_Patterns> const pattern(new Comm_Patterns());
+  std::shared_ptr<Comm_Patterns> const pattern = std::make_shared<Comm_Patterns>();
   pattern->calc_patterns(topology);
 
   // make the parallel data operator class

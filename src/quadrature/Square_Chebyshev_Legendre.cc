@@ -59,7 +59,7 @@ void Square_Chebyshev_Legendre::create_octant_ordinates_(std::vector<double> &mu
   eta.resize(numOrdinates);
   wt.resize(numOrdinates);
 
-  std::shared_ptr<Gauss_Legendre> const GL(new Gauss_Legendre(sn_order_));
+  std::shared_ptr<Gauss_Legendre> const GL = std::make_shared<Gauss_Legendre>(sn_order_);
 
   // NOTE: this aligns the gauss points with the x-axis (r-axis in cylindrical coords)
 

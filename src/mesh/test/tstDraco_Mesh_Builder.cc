@@ -70,7 +70,8 @@ void build_cartesian_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
   std::string const filename = inputpath + "rttquad_2cell.mesh.in";
 
   // create an rtt mesh reader and read the mesh
-  std::shared_ptr<RTT_Draco_Mesh_Reader> const rtt_mesh(new RTT_Draco_Mesh_Reader(filename));
+  std::shared_ptr<RTT_Draco_Mesh_Reader> const rtt_mesh =
+      std::make_shared<RTT_Draco_Mesh_Reader>(filename);
   rtt_mesh->read_mesh();
 
   // instantiate a mesh builder and build the mesh

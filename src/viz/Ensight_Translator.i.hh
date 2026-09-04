@@ -426,7 +426,7 @@ void Ensight_Translator::write_geom(const uint32_t part_num, const std::string &
     d_geom_out << part_num << endl;
     d_geom_out << part_name << endl;
     d_geom_out << "coordinates" << endl;
-    d_geom_out << int(g_nvertices) << endl; // #vertices in this part
+    d_geom_out << static_cast<int>(g_nvertices) << endl; // #vertices in this part
   }
   d_geom_out.flush();
 
@@ -479,7 +479,7 @@ void Ensight_Translator::write_geom(const uint32_t part_num, const std::string &
     if (g_num_elem > 0) {
       if (rtt_c4::node() == 0) {
         d_geom_out << d_cell_names[type] << endl;
-        d_geom_out << int(g_num_elem) << endl;
+        d_geom_out << static_cast<int>(g_num_elem) << endl;
       }
       d_geom_out.flush();
 

@@ -44,7 +44,7 @@ std::pair<bool, T> get_env_val(std::string const &key, T default_value = T{}) {
                 "get_env_val only usable with default constructible types");
 
   T val{std::move(default_value)};
-  char *s_val = getenv(key.c_str());
+  char const *s_val = getenv(key.c_str());
   bool is_defined(false);
   if (s_val) {
     std::stringstream val_str(s_val); // NOLINT(misc-const-correctness)

@@ -297,8 +297,9 @@ template <unsigned D, int OFFSET> void Index_Converter<D, OFFSET>::compute_sub_s
   sub_sizes[0] = 1;
 
   std::array<unsigned, D> const dimensions = Base::get_dimensions();
-  Remember(unsigned *end =) std::partial_sum(dimensions.begin(), dimensions.begin() + D - 1,
-                                             sub_sizes.data() + 1, std::multiplies<unsigned>());
+  Remember(unsigned const *end =)
+      std::partial_sum(dimensions.begin(), dimensions.begin() + D - 1, sub_sizes.data() + 1,
+                       std::multiplies<unsigned>());
 
   Ensure(end == sub_sizes.data() + D);
 }

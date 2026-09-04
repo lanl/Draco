@@ -36,7 +36,7 @@ Double_Gauss::Double_Gauss(unsigned sn_order) : Interval_Quadrature(sn_order) {
   {
     Check(sn_order == 2);
 
-    std::shared_ptr<Gauss_Legendre> const GL(new Gauss_Legendre(sn_order));
+    std::shared_ptr<Gauss_Legendre> const GL = std::make_shared<Gauss_Legendre>(sn_order);
     for (unsigned m = 0; m < sn_order; ++m) {
       mu_[m] = GL->mu(m);
       wt_[m] = GL->wt(m);
@@ -47,7 +47,7 @@ Double_Gauss::Double_Gauss(unsigned sn_order) : Interval_Quadrature(sn_order) {
     Check(n2 % 2 == 0);
     Check(n2 > 2);
 
-    std::shared_ptr<Gauss_Legendre> const GL(new Gauss_Legendre(n2));
+    std::shared_ptr<Gauss_Legendre> const GL = std::make_shared<Gauss_Legendre>(n2);
 
     // map the quadrature onto the two half-ranges
 

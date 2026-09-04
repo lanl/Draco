@@ -72,6 +72,7 @@ std::array<Keyword, 6> const raw_table{
 std::array<Keyword, 2> const raw_table_2{Keyword{"BLUE", Parse_Color, 1, "main"},
                                          Keyword{"BLACK", Parse_Color, 0, "main"}};
 
+namespace {
 class Error_Token_Stream : public Token_Stream {
 public:
   void rewind() override {}
@@ -81,10 +82,12 @@ public:
   }
 
 protected:
+  // NOLINTNEXTLINE(misc-override-with-different-visibility)
   void report(Token const & /*token*/, string const & /*err*/) override {
     cout << "error reported to Error_Token_Stream\n";
   }
 
+  // NOLINTNEXTLINE(misc-override-with-different-visibility)
   void report(string const & /*err*/) override { cout << "error reported to Error_Token_Stream\n"; }
 
   Token fill_() override { return {rtt_parser::ERROR, "error"}; }
@@ -101,10 +104,12 @@ public:
   }
 
 protected:
+  // NOLINTNEXTLINE(misc-override-with-different-visibility)
   void report(Token const & /*token*/, string const & /*err*/) override {
     cout << "error reported to Colon_Token_Stream\n";
   }
 
+  // NOLINTNEXTLINE(misc-override-with-different-visibility)
   void report(string const & /*err*/) override { cout << "error reported to Colon_Token_Stream\n"; }
 
   Token fill_() override {
@@ -124,6 +129,8 @@ protected:
 private:
   unsigned count_{0};
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 namespace {

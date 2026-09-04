@@ -96,7 +96,7 @@ void file_check_two_mats(rtt_dsxx::ScalarUnitTest &ut) {
   shared_ptr<GrayOpacity> spOp_twomat_rgt;
 
   try {
-    shared_ptr<IpcressFile> const spIF(new IpcressFile(op_data_file));
+    shared_ptr<IpcressFile> const spIF = std::make_shared<IpcressFile>(op_data_file);
     spOp_twomat_rgt =
         std::make_shared<IpcressGrayOpacity>(spIF, matid, rtt_cdi::ROSSELAND, rtt_cdi::TOTAL);
     // spIF goes out of scope
@@ -170,7 +170,7 @@ void file_check_two_mats(rtt_dsxx::ScalarUnitTest &ut) {
 
   // Try to instantiate the Opacity object.
   try {
-    shared_ptr<IpcressFile> const spIF(new IpcressFile(op_data_file));
+    shared_ptr<IpcressFile> const spIF = std::make_shared<IpcressFile>(op_data_file);
     spOp_twomat_rtmg =
         std::make_shared<IpcressMultigroupOpacity>(spIF, matid, rtt_cdi::ROSSELAND, rtt_cdi::TOTAL);
   } catch (rtt_dsxx::assertion const &excpt) {

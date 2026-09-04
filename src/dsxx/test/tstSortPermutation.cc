@@ -87,8 +87,6 @@ inline bool sp_test(const std::string & /*name*/, IT first, IT last, const CMP &
   return passed;
 }
 
-} // end unnamed namespace
-
 //------------------------------------------------------------------------------------------------//
 struct Foo {
   double d;
@@ -114,6 +112,8 @@ template <typename F> struct evenIsLess {
     return i1 % 2 == 0 ? ((i2 % 2 == 0 ? i1 < i2 : true)) : (i2 % 2 == 0 ? false : i1 < i2);
   }
 };
+
+} // end unnamed namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int /*argc*/, char * /*argv*/[]) {

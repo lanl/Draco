@@ -66,12 +66,12 @@ void test_range_finder_left(UnitTest &ut) {
   //     index = Range_finder_left(rvalues.rbegin(), rvalues.rend(), 10.12);
   //     if (index != -1) ut.failure("test FAILS");
   using iterator = array<double, 10>::iterator;
-  if (validate(pair<iterator, iterator>(rv.begin(), rv.begin()), rv.begin(), rv.end())) {
+  if (rf::validate(pair<iterator, iterator>(rv.begin(), rv.begin()), rv.begin(), rv.end())) {
     ut.failure("validate FAILED to catch out of range result");
   } else {
     ut.passes("validate caught out of range result");
   }
-  if (validate(pair<iterator, iterator>(rv.end(), rv.end()), rv.begin(), rv.end())) {
+  if (rf::validate(pair<iterator, iterator>(rv.end(), rv.end()), rv.begin(), rv.end())) {
     ut.failure("validate FAILED to catch out of range result");
   } else {
     ut.passes("validate caught out of range result");

@@ -60,7 +60,7 @@ namespace rtt_dsxx {
 
 enum class RANGE_DIRECTION : uint8_t { LEFT = 0, RIGHT = 1 };
 
-namespace {
+namespace rf {
 
 //! Return false if the iterator pair indicate an out of range result.
 template <std::forward_iterator It>
@@ -69,13 +69,13 @@ bool validate(const std::pair<It, It> &it, const It &begin, const It &end) {
            it.second == begin); // v < *begin
 }
 
-} // namespace
+} // namespace rf
 
 //------------------------------------------------------------------------------------------------//
 template <typename It>
 int Range_finder_left(It const &begin, It const &end, std::iter_value_t<It> value) {
   auto it = std::equal_range(begin, end, value);
-  Require(validate(it, begin, end));
+  Require(rf::validate(it, begin, end));
 
   const int index = static_cast<int>(it.second - begin) - 1;
   Ensure(index >= 0);
@@ -88,7 +88,7 @@ int Range_finder_left(It const &begin, It const &end, std::iter_value_t<It> valu
 template <typename It>
 int Range_finder_right(It const &begin, It const &end, std::iter_value_t<It> value) {
   auto it = std::equal_range(begin, end, value);
-  Require(validate(it, begin, end));
+  Require(rf::validate(it, begin, end));
 
   const int index = static_cast<int>(it.first - begin) - 1;
   Ensure(index >= 0);
@@ -101,7 +101,7 @@ int Range_finder_right(It const &begin, It const &end, std::iter_value_t<It> val
 template <typename It>
 GPU_HOST_DEVICE int Range_finder_left_catch_end(It begin, It end, std::iter_value_t<It> value) {
   const auto it = std::equal_range(begin, end, value);
-  Require(validate(it, begin, end));
+  Require(rf::validate(it, begin, end));
 
   const int index = static_cast<int>(it.second - begin) - 1;
   const int range_size = static_cast<int>(end - begin) - 1;
@@ -118,7 +118,7 @@ GPU_HOST_DEVICE int Range_finder_left_catch_end(It begin, It end, std::iter_valu
 template <typename It>
 int Range_finder_right_catch_end(It begin, It end, std::iter_value_t<It> value) {
   auto it = std::equal_range(begin, end, value);
-  Require(validate(it, begin, end));
+  Require(rf::validate(it, begin, end));
 
   // Extract the coordinate index (0..n-1)
   const int index = static_cast<int>(it.first - begin) - 1;

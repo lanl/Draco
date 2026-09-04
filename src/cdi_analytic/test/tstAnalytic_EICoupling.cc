@@ -37,7 +37,7 @@ void analytic_ei_coupling_test(rtt_dsxx::UnitTest &ut) {
   using Constant_Model = Constant_Analytic_EICoupling_Model;
 
   // make an analytic model (constant ei_coupling)
-  shared_ptr<Constant_Model> const model(new Constant_Model(1.1));
+  shared_ptr<Constant_Model> const model = std::make_shared<Constant_Model>(1.1);
 
   if (!model)
     FAILMSG("Failed to build an Analytic EICoupling Model!");
@@ -209,7 +209,7 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
   vector<char> packed;
   {
     // make an analytic model (polynomial specific heats)
-    shared_ptr<Constant_Model> const model(new Constant_Model(1.1));
+    shared_ptr<Constant_Model> const model = std::make_shared<Constant_Model>(1.1);
 
     // make an analytic electron-ion coupling
     shared_ptr<EICoupling> const ei_coupling(new Analytic_EICoupling(model));

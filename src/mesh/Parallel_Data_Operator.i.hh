@@ -420,7 +420,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
         finished++;
 
         // Write the data to the bc_data field
-        Recv_T *data = data_request->get_data();
+        Recv_T const *data = data_request->get_data();
         size_t k = 0;
         for (size_t c = 0; c < data_size; ++c) {
           // Determine the boundary cell and write the data
@@ -566,7 +566,7 @@ void Parallel_Data_Operator::gather_fv_ghost_cell_data(SP_Comm_Patterns const &p
         finished++;
 
         // Write the data to the bc_data field
-        Recv_T *data = data_request->get_data();
+        Recv_T const *data = data_request->get_data();
         size_t k = 0;
         for (size_t c = 0; c < data_size; ++c) {
           // Determine the boundary cell and write the data
@@ -698,7 +698,7 @@ void Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &patt
         finished++;
 
         // Write the data to the bc_data field
-        Recv_T *data = data_request->get_data();
+        Recv_T const *data = data_request->get_data();
         for (size_t c = 0; c < data_size; ++c) {
           // Determine the boundary cell and write the data
           int const boundary_cell = itor->second[c];
@@ -958,7 +958,7 @@ std::vector<std::vector<T>> Parallel_Data_Operator::gather_sparse_ghost_cell_dat
         finished++;
 
         // Write the data to the bc_data field
-        Recv_T *data = data_request->get_data();
+        Recv_T const *data = data_request->get_data();
         size_t k = 0;
         for (auto ghost_cell : itor->second) {
           // Determine the boundary cell and write the data
@@ -1132,7 +1132,7 @@ Parallel_Data_Operator::gather_ghost_cell_data(SP_Comm_Patterns const &pattern,
         finished++;
 
         // Write the data to the bc_data field
-        Recv_T *data = data_request->get_data();
+        Recv_T const *data = data_request->get_data();
         size_t k = 0;
         for (auto ghost_cell : itor->second) {
           // Determine the boundary cell and write the data
@@ -1302,7 +1302,7 @@ std::vector<std::vector<std::vector<T>>> Parallel_Data_Operator::gather_ghost_ce
         finished++;
 
         // Write the data to the bc_data field
-        Recv_T *data = data_request->get_data();
+        Recv_T const *data = data_request->get_data();
         size_t k = 0;
         for (auto ghost_cell : itor->second) {
           // Determine the boundary cell and write the data

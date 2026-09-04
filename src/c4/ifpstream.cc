@@ -18,6 +18,8 @@
 #include <ios> // ios_base::openmode
 #include <string>
 
+// cSpell: ignore bsi
+
 namespace rtt_c4 {
 using namespace std;
 
@@ -62,7 +64,7 @@ void ifpstream::fill_buffers(unsigned const buffer_size) {
   in_.read(&local_string[0], buffer_size);
   str(local_string);
   // Advance the current read pointer so all ranks match for the next read
-  in_.seekg(start + std::streamoff(total_buffer_size), std::ios::beg);
+  in_.seekg(start + static_cast<std::streamoff>(total_buffer_size), std::ios::beg);
 }
 
 } // end namespace rtt_c4

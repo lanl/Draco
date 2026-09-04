@@ -256,7 +256,7 @@ void test_DD(rtt_dsxx::UnitTest &ut) {
   par_op = std::make_shared<rtt_mesh::Parallel_Data_Operator>(top);
   std::vector<int> ids(top->num_local_cells(), 0);
   for (size_t i = 0; i < ids.size(); ++i)
-    ids[i] = int(i);
+    ids[i] = static_cast<int>(i);
 
   par_op->fill_ghost_cell_data(comm_pat, ids);
   if (rtt_c4::node() == 0) {

@@ -74,11 +74,16 @@ public:
 private:
   // IMPLEMENTATION
 
-  std::vector<Moment> compute_n2lk_1D_(Quadrature_Class /*unused*/, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_1Da_(Quadrature_Class /*unused*/, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_2D_(Quadrature_Class /*unused*/, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_2Da_(Quadrature_Class /*unused*/, unsigned sn_order) override;
-  std::vector<Moment> compute_n2lk_3D_(Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_1D_( // NOLINT(misc-override-with-different-visibility)
+      Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_1Da_( // NOLINT(misc-override-with-different-visibility)
+      Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_2D_( // NOLINT(misc-override-with-different-visibility)
+      Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_2Da_( // NOLINT(misc-override-with-different-visibility)
+      Quadrature_Class /*unused*/, unsigned sn_order) override;
+  std::vector<Moment> compute_n2lk_3D_( // NOLINT(misc-override-with-different-visibility)
+      Quadrature_Class /*unused*/, unsigned sn_order) override;
 
 private:
   // IMPLEMENTATION

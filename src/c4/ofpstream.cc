@@ -39,7 +39,7 @@ ofpstream::ofpstream(std::string const &filename, ios_base::openmode const mode)
  * Write all buffered data to the specified file by MPI rank. That is, all buffered data for rank 0
  * is written, followed by all buffered data for rank 1, and so on.
  */
-void ofpstream::mpibuf::send() {
+void ofpstream::mpi_buffer::send() {
   unsigned const pid = rtt_c4::node();
   if (pid == 0) {
     if (mode_ == ios_base::binary) {
@@ -98,7 +98,7 @@ void ofpstream::mpibuf::send() {
  *
  * \return Integer representation of the character just added to the buffer.
  */
-/*virtual*/ ofpstream::mpibuf::int_type ofpstream::mpibuf::overflow(int_type c) {
+/*virtual*/ ofpstream::mpi_buffer::int_type ofpstream::mpi_buffer::overflow(int_type c) {
   buffer_.push_back(static_cast<char>(c));
   return c;
 }
@@ -110,7 +110,7 @@ void ofpstream::mpibuf::send() {
  * byte of storage shrink the buffer of an ofpstream that has done some large writes, and which he
  * will be using again later, but which he does not want tying up any memory in the meanwhile.
  */
-void ofpstream::mpibuf::shrink_to_fit() { buffer_.shrink_to_fit(); }
+void ofpstream::mpi_buffer::shrink_to_fit() { buffer_.shrink_to_fit(); }
 
 } // end namespace rtt_c4
 

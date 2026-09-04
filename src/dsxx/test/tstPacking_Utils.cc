@@ -518,7 +518,7 @@ void packing_functions_test(rtt_dsxx::UnitTest &ut) {
   string y_new;
 
   // Holding place for the size data.
-  int size;
+  int size(0);
 
   Unpacker u;
   u.set_buffer(total_packed.size(), &total_packed[0]);

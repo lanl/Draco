@@ -254,7 +254,7 @@ template <typename IT> void Packer::accept(uint64_t bytes, IT data) {
  */
 void Packer::pad(uint64_t bytes) {
   while (bytes-- > 0)
-    pack(char(0));
+    pack(static_cast<char>(0));
   return;
 }
 
@@ -262,12 +262,19 @@ void Packer::pad(uint64_t bytes) {
 /*!
  * \brief Stream out (<<) operator for packing data.
  *
- * The overloaded stream out operator can be used to pack data into streams (Packer p;
- * p.set_buffer(i,b); p << data;).  It simply calls the Packer::pack function.  It returns a
- * reference to the Packer object so that stream out operations can be strung together.
+ * The overloaded stream out operator can be used to pack data into streams
  *
- * This function also works when compute_buffer_size_mode() is on, in which case the total required
- * stream size is incremented.
+ * \code{.cpp}
+ * Packer p;
+ * p.set_buffer(i,b);
+ * p << data
+ * \endcode
+ *
+ * It simply calls the `Packer::pack` function.  It returns a reference to the Packer object so that
+ * stream out operations can be strung together.
+ *
+ * This function also works when `compute_buffer_size_mode()` is `on`, in which case the total
+ * required stream size is incremented.
  */
 template <typename T> inline Packer &operator<<(Packer &p, const T &value) {
   // pack the value

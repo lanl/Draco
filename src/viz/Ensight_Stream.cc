@@ -199,28 +199,12 @@ Ensight_Stream &Ensight_Stream::operator<<(const unsigned i) {
  * Note that Ensight only supports "float" for binary mode.
  */
 Ensight_Stream &Ensight_Stream::operator<<(const double d) {
-
-#if defined(MSVC) && MSVC_VERSION < 1900
-  // [2015-02-06 KT]: By default, MSVC uses a 3-digit exponent (presumably because
-  // numeric_limits<double>::max() has a 3-digit exponent.)  Enable two-digit exponent format to
-  // stay consistent with GNU and Intel on Linux.(requires <stdio.h>).
-  unsigned old_exponent_format = _set_output_format(_TWO_DIGIT_EXPONENT);
-#endif
-
   Require(d_stream);
-
   if (d_binary)
-    binary_write(float(d));
+    binary_write(static_cast<float>(d));
   else
     *d_stream << std::setw(12) << d;
-
   Ensure(d_stream->good());
-
-#if defined(MSVC) && MSVC_VERSION < 1900
-  // Disable two-digit exponent format
-  _set_output_format(old_exponent_format);
-#endif
-
   return *this;
 }
 

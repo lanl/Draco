@@ -94,8 +94,7 @@ using key_type = CBRNG::key_type;
 
 #define CBRNG_DATA_SIZE 4
 
-namespace // anonymous
-{
+namespace crng {
 
 //------------------------------------------------------------------------------------------------//
 /*! \brief Generate a nearly-unique identifier.
@@ -148,7 +147,7 @@ GPU_HOST_DEVICE inline double _ran(ctr_type::value_type *const data) {
   return r123::u01fixedpt<double, ctr_type::value_type>(result[0]);
 }
 
-} // namespace
+} // namespace crng
 
 //================================================================================================//
 /*!
@@ -173,7 +172,7 @@ public:
 
   //! Return a random double in the open interval (0, 1).
   GPU_HOST_DEVICE
-  double ran() const { return _ran(data.access()); }
+  double ran() const { return crng::_ran(data.access()); }
 
   //! Spawn a new, independent generator from this reference.
   inline void spawn(Counter_RNG &new_gen) const;
@@ -184,7 +183,7 @@ public:
 
   //! Return a unique identifier for this generator.
   GPU_HOST_DEVICE
-  uint64_t get_unique_num() const { return _get_unique_num(data.access()); }
+  uint64_t get_unique_num() const { return crng::_get_unique_num(data.access()); }
 
   //! Is this Counter_RNG_Ref a reference to rng?
   GPU_HOST_DEVICE
@@ -255,7 +254,7 @@ public:
 
   //! Return a random double in the interval (0, 1).
   GPU_HOST_DEVICE
-  double ran() const { return _ran(&data[0]); }
+  double ran() const { return crng::_ran(&data[0]); }
 
   //! Spawn a new, independent generator from this one.
   void spawn(Counter_RNG &new_gen) const { new_gen._spawn(&data[0]); }
@@ -266,7 +265,7 @@ public:
 
   //! Return a unique identifier for this generator.
   GPU_HOST_DEVICE
-  uint64_t get_unique_num() const { return _get_unique_num(&data[0]); }
+  uint64_t get_unique_num() const { return crng::_get_unique_num(&data[0]); }
 
   //! Return an iterator to the beginning of the state block.
   GPU_HOST_DEVICE

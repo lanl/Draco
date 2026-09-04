@@ -35,6 +35,8 @@ using FP = double;
 // cSpell::ignore Ehigh, Elow, eto, Evals, fxn, gfrom, gto, hplanck, ify, isnonlin, isz, iuse, mec,
 // cSpell::ignore mtocm, Ncutoff, nlbase, opac, pchip, renorm, scipy, Tbreakpoints, tsz, wgt, Zbar
 
+namespace {
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \class Sparse_Compton_Data
@@ -87,6 +89,8 @@ private:
   void write_binary(std::string const &fileout, Sparse_Compton_Data &sd);
 };
 
+} // namespace
+
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief resize data and set sizes
@@ -131,18 +135,18 @@ void Dense_Compton_Data::read_from_file(UINT64 eval, std::string const &filename
   const FP classical_electron_radius = mtocm * rtt_units::classicalElectronRadiusSI; // cm
 
   // Normalization constants for raw CSK data:
-  // CSK to cross section: 2 * pi * classicalElectronRadius^2 / 4
-  // cross section to opacity: Zbar_over_A * avogadrosnumber
-  // opacity to micro xs: 1/avogadrosnumber
+  // * CSK to cross section: 2 * pi * classicalElectronRadius^2 / 4
+  // * cross section to opacity: Zbar_over_A * avogadrosnumber
+  // * opacity to micro xs: 1/avogadrosnumber
   //
   // convert from CSK data to opacity (cm^2/mole)
   const FP csk_opac_norm = 0.25 * 2 * std::numbers::pi * classical_electron_radius *
                            classical_electron_radius * rtt_units::AVOGADRO;
   Ensure(soft_equiv(csk_opac_norm, 2 * 0.037558, 1e-4));
-  //
+
   // convert from opacity (cm^2/mole) to micro xs (cm^2)
-  //const FP csk_xs_conv = 1. / rtt_units::AVOGADRO;
-  //Ensure(soft_equiv(2 * 0.2003102 * csk_xs_conv, 6.6524587e-25, 1e-4));
+  // * const FP csk_xs_conv = 1. / rtt_units::AVOGADRO;
+  // * Ensure(soft_equiv(2 * 0.2003102 * csk_xs_conv, 6.6524587e-25, 1e-4));
 
   // VALUES USED IN CSK'S PHYSICAL_CONSTANTS.HH
   // Normalization for energy and nonlinear terms
@@ -239,22 +243,22 @@ void Dense_Compton_Data::read_from_file(UINT64 eval, std::string const &filename
 void Dense_Compton_Data::compute_nonlinear_difference() {
   Require(numEvals == 5);
 
-  // Physically, ON - IN.T == IL.T B^-1 - B^-1 OL.
-  // Due to quadrature choice and finite-precision arithmetic,
-  // the above equality does NOT discretely hold.
-  // The LHS suffers from small differences of large numbers at low E/T.
-  // The RHS suffers from the same problem when E/T is large and so B is small.
-  // To mitigate numerical error and avoid dividing by a B of 0.,
-  // we use the RHS at low E/T and use the LHS at high E/T.
+  // * Physically, ON - IN.T == IL.T B^-1 - B^-1 OL.
+  // * Due to quadrature choice and finite-precision arithmetic, the above equality does NOT
+  //   discretely hold.
+  // * The LHS suffers from small differences of large numbers at low E/T.
+  // * The RHS suffers from the same problem when E/T is large and so B is small.
+  // * To mitigate numerical error and avoid dividing by a B of 0.,
+  // * we use the RHS at low E/T and use the LHS at high E/T.
 
   // Caveat Emptor: fN, ON, and IN are scaled to a bg that sums to unity! If a downstream data
   // consumer uses a phi or bg that sums to a T_r^4, then fN, ON, and/or IN should be rescaled by
   // 1/(a * T_e^4)
 
-  // Determine the cutoff between low and high energies (Ecutoff = N * T)
-  // Based on the wgt fxn CSK uses in its MG avg, N <= 25.0
-  // Using 25.0 is better for equilibrium stimulated scat
-  // Using N>=9.0 is better for non-equilibrium stimulated scat
+  // * Determine the cutoff between low and high energies (Ecutoff = N * T)
+  // * Based on the wgt fxn CSK uses in its MG avg, N <= 25.0
+  // * Using 25.0 is better for equilibrium stimulated scat
+  // * Using N>=9.0 is better for non-equilibrium stimulated scat
   const FP Ncutoff = 9.0;
 
   // Planck MG integral
@@ -454,12 +458,11 @@ void Dense_Compton_Data::compute_temperature_derivatives() {
             const FP fd_m = finite_diffs[loc_fd_m];
             const FP fd_p = finite_diffs[loc_fd_p];
 
-            // For more information on method, see
-            // scipy.interpolate.pchip and
+            // For more information on method, see scipy.interpolate.pchip and
             // http://dx.doi.org/10.1137/1.9780898717952
 
-            const int sign_m = int(0.0 < fd_m) - int(fd_m < 0.0);
-            const int sign_p = int(0.0 < fd_p) - int(fd_p < 0.0);
+            const int sign_m = static_cast<int>(0.0 < fd_m) - static_cast<int>(fd_m < 0.0);
+            const int sign_p = static_cast<int>(0.0 < fd_p) - static_cast<int>(fd_p < 0.0);
 
             const FP d = (sign_m * sign_p > 0) ? (fd_m * fd_p) / (f_m * fd_m + f_p * fd_p) : 0.0;
             const UINT64 loc = gto + numGroups * (gfrom + offset);

@@ -154,7 +154,7 @@ void test(rtt_dsxx::UnitTest &ut) {
 
     // Use dummy flux for nonlinear component
     const double phival = 1.732984; // random // NOLINT(modernize-use-std-numbers)
-    const double phiscale = phival * double(G);
+    const double phiscale = phival * static_cast<double>(G);
     std::vector<double> const phi(compton_test->get_num_groups(), phival);
     // Returns 1D nonlinear difference array [group_from] (performs matrix multiplication with phi)
     compton_test->interp_nonlin_diff_and_add(nl_diff, interp_T_keV, phi, phiscale);
@@ -341,7 +341,7 @@ void test(rtt_dsxx::UnitTest &ut) {
 
     // Use dummy flux for nonlinear component
     const double phival = 2.394559; // random
-    const double phiscale = phival * double(G);
+    const double phiscale = phival * static_cast<double>(G);
     std::vector<double> const phi(compton_test->get_num_groups(), phival);
     // Returns 1D nonlinear difference array [group_from] (performs matrix multiplication with phi)
     compton_test->interp_nonlin_diff_and_add(nl_diff, interp_T_keV, phi, phiscale);

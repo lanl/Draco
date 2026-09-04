@@ -41,9 +41,9 @@ private:
                                                 const double debye_length_in) const;
 
   //! Calculate the modified Li-Petrasso stopping power
-  [[nodiscard]] double calculate_eloss(const double temperature_in, const double number_density_in,
-                                       const double incident_speed_in,
-                                       const double debye_length_in) const override;
+  [[nodiscard]] double calculate_eloss( // NOLINT(misc-override-with-different-visibility)
+      const double temperature_in, const double number_density_in, const double incident_speed_in,
+      const double debye_length_in) const override;
 };
 
 } // namespace rtt_cdi_cpeloss

@@ -51,7 +51,7 @@ namespace rtt_c4 {
  */
 //================================================================================================//
 
-class ofpstream : public std::ostream {
+class ofpstream : public std::ostream { // NOLINT(misc-multiple-inheritance)
 public:
   //! Constructor -- default to standard output mode (ASCII)
   explicit ofpstream(std::string const &filename, ios_base::openmode const mode = ios_base::out);
@@ -65,19 +65,19 @@ public:
   ofpstream() = delete;
 
 private:
-  struct mpibuf : public std::streambuf {
+  struct mpi_buffer : public std::streambuf {
 
     void send();
     void shrink_to_fit();
 
-    int_type overflow(int_type c) override;
+    int_type overflow(int_type c) override; // NOLINT(misc-override-with-different-visibility)
 
     std::vector<char> buffer_;
     ios_base::openmode mode_{};
     std::ofstream out_;
   };
 
-  mpibuf sb_;
+  mpi_buffer sb_;
 };
 
 } // end namespace rtt_c4

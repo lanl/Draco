@@ -279,7 +279,7 @@ endmacro()
 function(dbs_vscode_env_helper)
 
   # Only run this function if the developer is using vscode on a Unix-like system.
-  if(NOT UNIX OR NOT IS_DIRECTORY "${${CMAKE_PROJECT_NAME}_SOURCE_DIR}/.vscode")
+  if(NOT UNIX) # OR NOT IS_DIRECTORY "${${CMAKE_PROJECT_NAME}_SOURCE_DIR}/.vscode")
     return()
   endif()
 

@@ -16,7 +16,6 @@
 #include <cmath> // abs, log, cos, exp
 #include <limits>
 #include <memory> // make_shared
-#include <ostream>
 #include <string>
 
 namespace rtt_parser {
@@ -24,6 +23,8 @@ using namespace rtt_dsxx;
 
 using pE = std::shared_ptr<Expression>;
 using Variable_Map = map<string, pair<unsigned, Unit>>;
+
+namespace {
 
 //------------------------------------------------------------------------------------------------//
 /*!
@@ -40,12 +41,14 @@ public:
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -80,16 +83,17 @@ public:
       : Expression(expression->number_of_variables(), dimensionless), expression_(expression) {
     Require(expression);
     Require(is_compatible(expression_->units(), dimensionless));
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            is_compatible(expression_->units(), dimensionless) &&
            expression_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -125,10 +129,10 @@ public:
     Require(e2);
     Require(is_compatible(e1->units(), e2->units()));
     Require(e1->number_of_variables() == e2->number_of_variables());
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
@@ -136,6 +140,7 @@ public:
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -169,16 +174,17 @@ public:
       : Expression(expression->number_of_variables(), dimensionless), expression_(expression) {
     Require(expression);
     Require(is_compatible(expression_->units(), dimensionless));
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            is_compatible(expression_->units(), dimensionless) &&
            expression_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -214,10 +220,10 @@ public:
     Require(e2);
     Require(is_compatible(e1->units(), e2->units()));
     Require(e1->number_of_variables() == e2->number_of_variables());
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
@@ -225,6 +231,7 @@ public:
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -260,10 +267,10 @@ public:
     Require(e2);
     Require(is_compatible(e1->units(), e2->units()));
     Require(e1->number_of_variables() == e2->number_of_variables());
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
@@ -271,6 +278,7 @@ public:
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -306,10 +314,10 @@ public:
     Require(e2);
     Require(is_compatible(e1->units(), e2->units()));
     Require(e1->number_of_variables() == e2->number_of_variables());
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
@@ -317,6 +325,7 @@ public:
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -352,10 +361,10 @@ public:
     Require(e2);
     Require(is_compatible(e1->units(), e2->units()));
     Require(e1->number_of_variables() == e2->number_of_variables());
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
@@ -363,6 +372,7 @@ public:
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -396,16 +406,17 @@ public:
       : Expression(expression->number_of_variables(), dimensionless), expression_(expression) {
     Require(expression);
     Require(is_compatible(expression_->units(), dimensionless));
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            is_compatible(expression_->units(), dimensionless) &&
            expression_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -439,15 +450,16 @@ public:
       : Expression(expression->number_of_variables(), expression->units()),
         expression_(expression) {
     Require(expression);
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            expression_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -482,11 +494,13 @@ public:
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            expression_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -521,16 +535,17 @@ public:
     Require(e1);
     Require(e2);
     Require(e1->number_of_variables() == e2->number_of_variables());
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -570,16 +585,17 @@ public:
     Require(is_compatible(dimensionless, e2->units()));
     Require(e2->is_constant() || is_compatible(dimensionless, e1->units()));
     Require(e1->number_of_variables() == e2->number_of_variables());
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -616,16 +632,17 @@ public:
     Require(e1);
     Require(e2);
     Require(e1->number_of_variables() == e2->number_of_variables());
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -660,16 +677,17 @@ public:
     Require(e1);
     Require(e2);
     Require(e1->number_of_variables() == e2->number_of_variables());
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -703,16 +721,17 @@ public:
       : Expression(expression->number_of_variables(), dimensionless), expression_(expression) {
     Require(expression);
     Require(is_compatible(expression_->units(), dimensionless));
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return expression_ != std::shared_ptr<Expression>() &&
            is_compatible(expression_->units(), dimensionless) &&
            expression_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -748,16 +767,17 @@ public:
     Require(e2);
     Require(is_compatible(e1->units(), e2->units()));
     Require(e1->number_of_variables() == e2->number_of_variables());
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const {
     return e1_ != std::shared_ptr<Expression>() && e2_ != std::shared_ptr<Expression>() &&
            e1_->number_of_variables() == number_of_variables() &&
            e2_->number_of_variables() == number_of_variables();
   }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override {
@@ -790,12 +810,13 @@ public:
   Variable_Expression(unsigned const index, unsigned const number_of_variables, Unit const &units)
       : Expression(number_of_variables, units), index_(index) {
     Require(index < number_of_variables);
-
     Ensure(check_class_invariant());
   }
 
+#ifdef ENSURE_ON
   //! Check the class invariant
   [[nodiscard]] bool check_class_invariant() const { return index_ < number_of_variables(); }
+#endif
 
 private:
   /*virtual*/ double evaluate_(double const *const x) const override { return x[index_]; }
@@ -810,8 +831,6 @@ private:
 
   unsigned index_;
 };
-
-namespace {
 
 //------------------------------------------------------------------------------------------------//
 pE parse_primary(unsigned const number_of_variables, Variable_Map const &variable_map,

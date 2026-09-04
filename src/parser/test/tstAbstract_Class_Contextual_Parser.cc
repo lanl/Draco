@@ -36,6 +36,7 @@ using namespace rtt_parser;
  * Declare an abstract class, Parent, for which we wish to write a constructor. The following would
  * typically be declared in a file named Parent.hh
  */
+namespace {
 class Parent {
 public:
   explicit Parent(int const magic) : magic_(magic) {}
@@ -58,6 +59,7 @@ public:
 private:
   int magic_;
 };
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 /*
@@ -153,15 +155,17 @@ std::shared_ptr<Parent> parse_class(rtt_parser::Token_Stream &tokens, int const 
  * We now declare a child class derived from Parent.  The following would normally be placed in the
  * file Son.hh
  */
+namespace {
 class Son : public Parent {
 public:
   string name() override { return "son"; }
 
-  Son(double /*snip_and_snails*/, int const context) : Parent(context) {}
+  Son(double /*snip_and_snails*/, int const context) noexcept : Parent(context) {}
   // "snips and snails" is provided by the parser based on the parsed specification, while context
   // is provided by the parser context provided by the client. Since this is a toy example, we don't
   // actually use the parameter, but we do want to check that the context is got right.
 };
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 /*
@@ -215,13 +219,12 @@ public:
   }
 
   std::shared_ptr<Son> create_object() {
-    std::shared_ptr<Son> Result(new Son(snips_and_snails, context));
+    std::shared_ptr<Son> Result = std::make_shared<Son>(snips_and_snails, context);
     return Result;
   }
 
 protected:
   // Parameter to be parsed
-
   double snips_and_snails;
 
 private:
@@ -260,6 +263,7 @@ std::shared_ptr<Son> parse_class<Son>(rtt_parser::Token_Stream &tokens, int cons
 
 } // end namespace rtt_parser
 
+namespace {
 //------------------------------------------------------------------------------------------------//
 /*
  * Now define a second child of Parent, which we will (whimsically) call Daughter. The following
@@ -269,9 +273,10 @@ class Daughter : public Parent {
 public:
   string name() override { return "daughter"; }
 
-  explicit Daughter(double /*sugar_and_spice*/) : Parent(0) {}
+  explicit Daughter(double /*sugar_and_spice*/) noexcept : Parent(0) {}
   // This child doesn't care about the context, which is perfectly acceptable (if it makes sense).
 };
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 /*
@@ -313,7 +318,7 @@ public:
   }
 
   std::shared_ptr<Daughter> create_object() {
-    std::shared_ptr<Daughter> Result(new Daughter(sugar_and_spice));
+    std::shared_ptr<Daughter> Result = std::make_shared<Daughter>(sugar_and_spice);
     return Result;
   }
 

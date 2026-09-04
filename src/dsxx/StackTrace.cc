@@ -97,10 +97,12 @@ std::string rtt_dsxx::print_stacktrace(std::string const &error_message) {
     }
 
     if (begin_name && begin_offset && end_offset && begin_name < begin_offset) {
-      *begin_name++ = '\0';
-      *begin_offset++ = '\0';
+      *begin_name = '\0';
+      ++begin_name;
+      *begin_offset = '\0';
+      begin_offset++;
       *end_offset = '\0';
-      char *location = end_offset + 1;
+      const char *location = end_offset + 1;
 
       // mangled name is now in [begin_name, begin_offset) and caller offset in [begin_offset,
       // end_offset). now apply __cxa_demangle():

@@ -41,7 +41,8 @@ public:
   [[nodiscard]] bool has_axis_assignments() const override;
 
 protected:
-  [[nodiscard]] std::string as_text(std::string const &indent) const override = 0;
+  [[nodiscard]] std::string as_text( // NOLINT(misc-override-with-different-visibility)
+      std::string const &indent) const override = 0;
 
   // IMPLEMENTATION
 
@@ -61,14 +62,15 @@ private:
 
   //! Virtual hook for create_ordinates
   [[nodiscard]] std::vector<Ordinate>
-  create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm,
-                    bool include_starting_directions, bool include_extra_directions) const override;
+  create_ordinates_( // NOLINT(misc-override-with-different-visibility)
+      unsigned dimension, Geometry /*unused*/, double norm, bool include_starting_directions,
+      bool include_extra_directions) const override;
 
   //! Virtual hook for create_ordinate_set
   [[nodiscard]] std::vector<Ordinate>
-  create_ordinates_(unsigned dimension, Geometry /*unused*/, double norm, unsigned mu_axis,
-                    unsigned eta_axis, bool include_starting_directions,
-                    bool include_extra_directions) const override;
+  create_ordinates_( // NOLINT(misc-override-with-different-visibility)
+      unsigned dimension, Geometry /*unused*/, double norm, unsigned mu_axis, unsigned eta_axis,
+      bool include_starting_directions, bool include_extra_directions) const override;
 
   // DATA
 

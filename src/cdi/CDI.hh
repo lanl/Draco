@@ -29,24 +29,24 @@
 // Nested unnamed namespace that holds data and services used by the Planckian integration routines.
 // The data in this namespace is accessible by the methods in this file only (internal linkage).
 
-namespace {
+namespace coeffs {
 
 // Constants used in the Taylor series expansion of the Planckian:
-double constexpr coeff_3 = 1.0 / 3.0;
-double constexpr coeff_4 = -1.0 / 8.0;
-double constexpr coeff_5 = 1.0 / 60.0;
-double constexpr coeff_7 = -1.0 / 5040.0;
-double constexpr coeff_9 = 1.0 / 272160.0;
-double constexpr coeff_11 = -1.0 / 13305600.0;
-double constexpr coeff_13 = 1.0 / 622702080.0;
-double constexpr coeff_15 = -6.91 / 196151155200.0;
-double constexpr coeff_17 = 1.0 / 1270312243200.0;
-double constexpr coeff_19 = -3.617 / 202741834014720.0;
-double constexpr coeff_21 = 43.867 / 107290978560589824.0;
+double constexpr const_3 = 1.0 / 3.0;
+double constexpr const_4 = -1.0 / 8.0;
+double constexpr const_5 = 1.0 / 60.0;
+double constexpr const_7 = -1.0 / 5040.0;
+double constexpr const_9 = 1.0 / 272160.0;
+double constexpr const_11 = -1.0 / 13305600.0;
+double constexpr const_13 = 1.0 / 622702080.0;
+double constexpr const_15 = -6.91 / 196151155200.0;
+double constexpr const_17 = 1.0 / 1270312243200.0;
+double constexpr const_19 = -3.617 / 202741834014720.0;
+double constexpr const_21 = 43.867 / 107290978560589824.0;
 
 double constexpr coeff = 0.1539897338202651; // 15/pi^4
 double constexpr NORM_FACTOR = 0.25 * coeff; // 15/(4*pi^4);
-} // namespace
+} // namespace coeffs
 
 namespace rtt_cdi {
 //------------------------------------------------------------------------------------------------//
@@ -82,17 +82,17 @@ GPU_HOST_DEVICE inline double taylor_series_planck(double x) {
 
   double const xsqrd = x * x;
 
-  double taylor = xsqrd * coeff_21 + coeff_19;
-  taylor = taylor * xsqrd + coeff_17;
-  taylor = taylor * xsqrd + coeff_15;
-  taylor = taylor * xsqrd + coeff_13;
-  taylor = taylor * xsqrd + coeff_11;
-  taylor = taylor * xsqrd + coeff_9;
-  taylor = taylor * xsqrd + coeff_7;
-  taylor = taylor * xsqrd + coeff_5;
-  taylor = taylor * x + coeff_4;
-  taylor = taylor * x + coeff_3;
-  taylor *= x * xsqrd * coeff;
+  double taylor = xsqrd * coeffs::const_21 + coeffs::const_19;
+  taylor = taylor * xsqrd + coeffs::const_17;
+  taylor = taylor * xsqrd + coeffs::const_15;
+  taylor = taylor * xsqrd + coeffs::const_13;
+  taylor = taylor * xsqrd + coeffs::const_11;
+  taylor = taylor * xsqrd + coeffs::const_9;
+  taylor = taylor * xsqrd + coeffs::const_7;
+  taylor = taylor * xsqrd + coeffs::const_5;
+  taylor = taylor * x + coeffs::const_4;
+  taylor = taylor * x + coeffs::const_3;
+  taylor *= x * xsqrd * coeffs::coeff;
 
   Ensure(taylor >= 0.0);
 
@@ -174,7 +174,7 @@ GPU_HOST_DEVICE inline double polylog_series_minus_one_planck(double const x, do
   }
 
   // calculate the lower polylogarithmic integral
-  double const poly = -coeff * (xsqrd * x * li1 + 3 * xsqrd * li2 + 6.0 * (x * li3 + li4));
+  double const poly = -coeffs::coeff * (xsqrd * x * li1 + 3 * xsqrd * li2 + 6.0 * (x * li3 + li4));
 
   Ensure(poly <= 0.0);
   return poly;
@@ -251,10 +251,10 @@ GPU_HOST_DEVICE inline double Planck2Rosseland(double const freq, double const e
 
   // Case 2: if nu/T < 1.0e-5, evaluate via Taylor expansion.
   if (freq < 1.0e-5)
-    return NORM_FACTOR * freq_3 * (1.0 - 0.5 * freq);
+    return coeffs::NORM_FACTOR * freq_3 * (1.0 - 0.5 * freq);
 
   // Case 3: All other cases
-  return NORM_FACTOR * exp_freq * freq_3 * freq / -std::expm1(-freq);
+  return coeffs::NORM_FACTOR * exp_freq * freq_3 * freq / -std::expm1(-freq);
 }
 
 //------------------------------------------------------------------------------------------------//

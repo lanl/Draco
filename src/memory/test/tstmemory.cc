@@ -93,7 +93,7 @@ void tst_memory(rtt_dsxx::UnitTest &ut) {
 #endif
 
   // Just to try to exercise the sized delete version.
-  int *scalar = new int;
+  int const *scalar = new int;
 
 #if DRACO_DIAGNOSTICS & 2
   if (total_allocation() == sizeof(int)) {

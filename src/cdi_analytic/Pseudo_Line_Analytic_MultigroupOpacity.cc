@@ -43,6 +43,7 @@ double PLP_Functor::operator()(double x) {
 }
 
 //------------------------------------------------------------------------------------------------//
+namespace {
 class PLPW_Functor {
 public:
   using return_type = double;
@@ -52,6 +53,7 @@ public:
 private:
   double T_;
 };
+} // namespace
 
 double PLPW_Functor::operator()(double x) { return Pseudo_Line_Base::BB(T_, x); }
 
@@ -72,6 +74,7 @@ double PLR_Functor::operator()(double x) {
 }
 
 //------------------------------------------------------------------------------------------------//
+namespace {
 class PLRW_Functor {
 public:
   using return_type = double;
@@ -81,6 +84,7 @@ public:
 private:
   double T_;
 };
+} // namespace
 
 double PLRW_Functor::operator()(double x) { return Pseudo_Line_Base::DBB(T_, x); }
 
