@@ -174,8 +174,9 @@ void split_3d_mesh_dd(rtt_c4::ParallelUnitTest &ut) {
   const std::vector<unsigned> boundary_flags = {3, 1, 0, 2, 5, 4};
 
   // construct reader
-  std::shared_ptr<rtt_mesh::X3D_Draco_Mesh_Reader> const x3d_reader(
-      new rtt_mesh::X3D_Draco_Mesh_Reader(filename, boundary_filenames, boundary_flags));
+  std::shared_ptr<rtt_mesh::X3D_Draco_Mesh_Reader> const x3d_reader =
+      std::make_shared<rtt_mesh::X3D_Draco_Mesh_Reader>(filename, boundary_filenames,
+                                                        boundary_flags);
 
   // read mesh
   x3d_reader->read_mesh();

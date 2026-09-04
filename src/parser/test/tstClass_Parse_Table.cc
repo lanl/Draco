@@ -24,6 +24,7 @@ using namespace rtt_dsxx;
 using namespace rtt_parser;
 
 //------------------------------------------------------------------------------------------------//
+namespace {
 class DummyClass {
 public:
   explicit DummyClass(double const insouciance_in) noexcept : insouciance(insouciance_in) {}
@@ -33,6 +34,7 @@ public:
 private:
   double insouciance;
 };
+} // namespace
 
 namespace rtt_parser {
 //------------------------------------------------------------------------------------------------//

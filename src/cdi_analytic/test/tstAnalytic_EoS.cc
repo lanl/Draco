@@ -41,7 +41,8 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
   //
   // * electron specific heat = a + bT^c
   // * ion specific heat  = d + eT^f
-  shared_ptr<Polynomial_Model> const model(new Polynomial_Model(0.0, 1.0, 3.0, 0.2, 0.0, 0.0));
+  shared_ptr<Polynomial_Model> const model =
+      std::make_shared<Polynomial_Model>(0.0, 1.0, 3.0, 0.2, 0.0, 0.0);
 
   if (!model)
     FAILMSG("Failed to build an Analytic EoS Model!");
@@ -159,8 +160,8 @@ void analytic_eos_test(rtt_dsxx::UnitTest &ut) {
   //
   // * electron specific heat = a + bT^c
   // * ion specific heat  = d + eT^f
-  shared_ptr<Polynomial_Model> const so_model(
-      new Polynomial_Model(0.0, 54880.0, 3.0, 0.2, 0.0, 0.0));
+  shared_ptr<Polynomial_Model> const so_model =
+      std::make_shared<Polynomial_Model>(0.0, 54880.0, 3.0, 0.2, 0.0, 0.0);
   // make an analytic eos
   Analytic_EoS const so_analytic(so_model);
 
@@ -359,7 +360,8 @@ void packing_test(rtt_dsxx::UnitTest &ut) {
   using Polynomial_Model = Polynomial_Specific_Heat_Analytic_EoS_Model;
 
   // make an analytic model (polynomial specific heats)
-  shared_ptr<Polynomial_Model> const model(new Polynomial_Model(0.0, 1.0, 3.0, 0.2, 0.0, 0.0));
+  shared_ptr<Polynomial_Model> const model =
+      std::make_shared<Polynomial_Model>(0.0, 1.0, 3.0, 0.2, 0.0, 0.0);
 
   // make an analytic eos
   shared_ptr<EoS> const eos(new Analytic_EoS(model));

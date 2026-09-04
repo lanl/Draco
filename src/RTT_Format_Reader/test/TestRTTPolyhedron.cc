@@ -63,7 +63,7 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
 
   for (auto const &filename : filenames) {
     string const fq_filename(inpPath + filename);
-    shared_ptr<RTT_Mesh_Reader> const mesh(new RTT_Mesh_Reader(fq_filename));
+    shared_ptr<RTT_Mesh_Reader> const mesh = std::make_shared<RTT_Mesh_Reader>(fq_filename);
 
     ostringstream m;
     m << "Read mesh file " << fq_filename << '\n';
@@ -89,7 +89,7 @@ void test_polyhedron(rtt_dsxx::UnitTest &ut) {
 
     for (unsigned i = 0; i < more_filenames.size(); ++i) {
       string const filename(inpPath + more_filenames[i]);
-      shared_ptr<RTT_Mesh_Reader> const mesh(new RTT_Mesh_Reader(filename));
+      shared_ptr<RTT_Mesh_Reader> const mesh = std::make_shared<RTT_Mesh_Reader>(filename);
 
       ostringstream m;
       m << "Read mesh file " << filename << '\n';

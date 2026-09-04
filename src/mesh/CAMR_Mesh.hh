@@ -321,7 +321,7 @@ void CAMR_Mesh<D>::constructor_body(I_IT level_data, D_IT vertex_data, I_IT neig
   if (topology_->get_parallel_scheme() == "DD")
     active_offset = topology_->get_global_offset(rtt_c4::node());
   global_active_id.resize(active_size);
-  std::iota(global_active_id.begin(), global_active_id.end(), int(active_offset) + 1);
+  std::iota(global_active_id.begin(), global_active_id.end(), static_cast<int>(active_offset) + 1);
 
   par_op_->fill_ghost_cell_data(comm_pat_, global_active_id);
 }

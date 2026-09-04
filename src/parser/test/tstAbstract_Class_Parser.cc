@@ -33,6 +33,7 @@ using namespace rtt_parser;
 //------------------------------------------------------------------------------------------------//
 
 // The following would typically be declared in a file associated with the Parent class.
+namespace {
 class Parent {
 public:
   virtual ~Parent() = default;
@@ -43,6 +44,7 @@ public:
   Parent &operator=(Parent &&rhs) noexcept = delete;
   virtual string name() = 0;
 };
+} // namespace
 
 //------------------------------------------------------------------------------------------------//
 namespace rtt_parser {
@@ -109,12 +111,14 @@ template <> std::shared_ptr<Parent> parse_class<Parent>(rtt_parser::Token_Stream
 
 //------------------------------------------------------------------------------------------------//
 // The following is what you would expect to find in a file associated with the Son class.
+namespace {
 class Son : public Parent {
 public:
   string name() override { return "son"; }
 
-  explicit Son(double /*snip_and_snails*/) {}
+  explicit Son(double /*snip_and_snails*/) noexcept {}
 };
+} // namespace
 
 namespace { // Place this variable in an unnamed namespace instead of using 'static'.
 double parsed_snips_and_snails;
@@ -169,7 +173,7 @@ public:
   }
 
   std::shared_ptr<Son> create_object() {
-    std::shared_ptr<Son> Result(new Son(parsed_snips_and_snails));
+    std::shared_ptr<Son> Result = std::make_shared<Son>(parsed_snips_and_snails);
     return Result;
   }
 
@@ -195,14 +199,15 @@ template <> std::shared_ptr<Son> parse_class<Son>(rtt_parser::Token_Stream &toke
 
 //------------------------------------------------------------------------------------------------//
 // The following is what you would expect to find in a file associated with the Daughter class.
+
+namespace {
+
 class Daughter : public Parent {
 public:
   string name() override { return "daughter"; }
 
-  explicit Daughter(double /*sugar_and_spice*/) {}
+  explicit Daughter(double /*sugar_and_spice*/) noexcept {}
 };
-
-namespace { // Place this variable in an unnamed namespace instead of using 'static'.
 
 double parsed_sugar_and_spice;
 
@@ -255,7 +260,7 @@ public:
   }
 
   std::shared_ptr<Daughter> create_object() {
-    std::shared_ptr<Daughter> Result(new Daughter(parsed_sugar_and_spice));
+    std::shared_ptr<Daughter> Result = std::make_shared<Daughter>(parsed_sugar_and_spice);
     return Result;
   }
 

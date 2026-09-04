@@ -29,12 +29,12 @@ void tstHomogeneous_New(UnitTest &ut) {
     Homogeneous_New allocator(56);
     void *first_object = allocator.allocate();
     cout << "First address: " << first_object << '\n';
-    void *second_object = allocator.allocate();
+    void const *second_object = allocator.allocate();
     cout << "Second address: " << second_object << '\n';
     allocator.deallocate(first_object);
     first_object = allocator.allocate();
     cout << "Reallocated first address: " << first_object << '\n';
-    void *third_object = allocator.allocate();
+    void const *third_object = allocator.allocate();
     cout << "Third address: " << third_object << '\n';
   }
 

@@ -48,8 +48,8 @@ void read_x3d_mesh_2d(rtt_c4::ParallelUnitTest &ut) {
   const std::vector<unsigned> bdy_flags = {3, 1, 0, 2};
 
   // construct reader
-  std::shared_ptr<X3D_Draco_Mesh_Reader> const x3d_reader(
-      new X3D_Draco_Mesh_Reader(filename, bdy_filenames, bdy_flags));
+  std::shared_ptr<X3D_Draco_Mesh_Reader> const x3d_reader =
+      std::make_shared<X3D_Draco_Mesh_Reader>(filename, bdy_filenames, bdy_flags);
 
   // read mesh
   x3d_reader->read_mesh();
@@ -219,8 +219,8 @@ void read_voronoi_mesh(rtt_c4::ParallelUnitTest &ut) {
   const std::vector<unsigned> bdy_flags;
 
   // construct reader
-  std::shared_ptr<X3D_Draco_Mesh_Reader> const x3d_reader(
-      new X3D_Draco_Mesh_Reader(filename, bdy_filenames, bdy_flags));
+  std::shared_ptr<X3D_Draco_Mesh_Reader> const x3d_reader =
+      std::make_shared<X3D_Draco_Mesh_Reader>(filename, bdy_filenames, bdy_flags);
 
   // read mesh
   x3d_reader->read_mesh();
@@ -263,8 +263,8 @@ void read_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
   const std::vector<unsigned> bdy_flags = {3, 1, 0, 2, 1, 5};
 
   // construct reader
-  std::shared_ptr<X3D_Draco_Mesh_Reader> const x3d_reader(
-      new X3D_Draco_Mesh_Reader(filename, bdy_filenames, bdy_flags));
+  std::shared_ptr<X3D_Draco_Mesh_Reader> const x3d_reader =
+      std::make_shared<X3D_Draco_Mesh_Reader>(filename, bdy_filenames, bdy_flags);
 
   // read mesh
   x3d_reader->read_mesh();
@@ -351,8 +351,8 @@ void build_x3d_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
   const std::vector<unsigned> bdy_flags = {3, 1, 0, 2, 1, 5};
 
   // construct reader
-  std::shared_ptr<X3D_Draco_Mesh_Reader> const x3d_reader(
-      new X3D_Draco_Mesh_Reader(filename, bdy_filenames, bdy_flags));
+  std::shared_ptr<X3D_Draco_Mesh_Reader> const x3d_reader =
+      std::make_shared<X3D_Draco_Mesh_Reader>(filename, bdy_filenames, bdy_flags);
 
   // read mesh
   x3d_reader->read_mesh();
@@ -420,8 +420,8 @@ void build_x3d_rnd_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
   const std::vector<unsigned> bdy_flags = {3, 1, 0, 2, 1, 5};
 
   // construct reader
-  std::shared_ptr<X3D_Draco_Mesh_Reader> const x3d_reader(
-      new X3D_Draco_Mesh_Reader(filename, bdy_filenames, bdy_flags));
+  std::shared_ptr<X3D_Draco_Mesh_Reader> const x3d_reader =
+      std::make_shared<X3D_Draco_Mesh_Reader>(filename, bdy_filenames, bdy_flags);
 
   // read mesh
   x3d_reader->read_mesh();

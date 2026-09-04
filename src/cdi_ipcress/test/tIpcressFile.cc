@@ -38,7 +38,7 @@ void ipcress_file_test(rtt_dsxx::ScalarUnitTest &ut) {
 
   // Create a IpcressFile Object
   cout << "Creating a Ipcress File object\n\n";
-  shared_ptr<IpcressFile> const spGF(new rtt_cdi_ipcress::IpcressFile(op_data_file));
+  shared_ptr<IpcressFile> const spGF = std::make_shared<rtt_cdi_ipcress::IpcressFile>(op_data_file);
 
   // Test the new object to verify the constructor and accessors.
 

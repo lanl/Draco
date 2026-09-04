@@ -104,7 +104,7 @@ public:
   }
 
   //! Expose is_open().
-  bool is_open() { return bool(d_stream); }
+  bool is_open() { return static_cast<bool>(d_stream); }
 
   // The supported output stream functions.
 

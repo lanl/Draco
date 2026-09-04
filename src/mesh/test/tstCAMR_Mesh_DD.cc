@@ -25,6 +25,8 @@ using namespace rtt_dsxx;
 //------------------------------------------------------------------------------------------------//
 // TESTS
 //------------------------------------------------------------------------------------------------//
+namespace {
+
 struct CAMR_Mesh_Data {
   //! RZ data and AMR connectivity
   int *num_across_face = nullptr;  //!< Num. cells across a coarse face. (RZ, XYZ)
@@ -59,8 +61,6 @@ struct CAMR_Mesh_Data {
   CAMR_Mesh_Data() = default;
   //! Checks for validity of pointers given the problem type
 };
-
-namespace {
 
 //--------------------------------------------------//
 void test_2D_host(rtt_c4::ParallelUnitTest &ut) {

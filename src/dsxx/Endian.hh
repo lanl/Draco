@@ -11,6 +11,8 @@
 
 #include "dsxx/config.h"
 #include <algorithm>
+#include <concepts>
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <iomanip>
@@ -20,11 +22,11 @@
 /*!
  * Endian conversion functions.
  *
- * The endian nature of a data representation describes the order in which the constitutent bytes of
+ * The endian nature of a data representation describes the order in which the constituent bytes of
  * a multi-byte data value are ordered. We are concerned with converting between big and little
  * endian orderings on platforms where the char data type is one byte in size.
  *
- * If there are other endians out there, I seriously do not want to know about them.
+ * If there are other Endian types out there, I seriously do not want to know about them.
  *
  * To convert between big and little endian data we intrepret the data to be converted as a
  * character array by casting a pointer to the data to (char*). We then manipulate the order, but
@@ -43,20 +45,25 @@
 namespace rtt_dsxx {
 
 //------------------------------------------------------------------------------------------------//
+//! This concept represents `char` or `unsigned char` and is used by `char_byte_swap`.
+template <typename T>
+concept SwappableChar = std::same_as<T, char> || std::same_as<T, unsigned char>;
+
 /*!
- * \brief Elemetary byte-swapping routine.
+ * \brief Elementary byte-swapping routine.
  *
- * \arg The data to byte-swap, represented as character data.
- * \arg The size of the data array.
+ * \param[in] data The data to byte-swap, represented as character data.
+ * \param[in] n    The size of the data array.
  *
- * This is a core routine used by other functions to convert data between endian representations.
+ * This is a core routine used by other functions to convert data between Endian representations.
  *
  * It swaps the elements of a character array of length n. Element 0 is swapped with element n, 1
  * with n-1 etc... The contents of the individual elements are not changed, only their order.
  *
- * For example, consider the unsigned integer value: \c 0xDEADBEEF.  (\c 0x means this is a
+ * For example, consider the unsigned integer value: `0xDEADBEEF`.  (`0x` means this is a
  * hexidecimal value) Two hexidecimal digits is a single byte (16^2 = 2^8) so the layout of the
  * value in big endian style is:
+ *
  * \verbatim
  *       0        1        2        3
  *     D  E     A  D     B  E     E  F
@@ -66,23 +73,14 @@ namespace rtt_dsxx {
  *       +--------------------------+
  *                 swapped
  * \endverbatim
- * The conversion to little endian involves the swap operations pictured in the diagram above. The
- * resulting value (if still interpreted as big-endian) is \c 0xEFBEADDE.
  *
- * We provide two versions for signed and unsigned character data. Internally, we use
- * unsigned. Certain applications use signed char data, and the second form is provided if they need
- * to manipulate the character data directly, instead of using one of the byte_swap functions.
+ * The conversion to little endian involves the swap operations pictured in the diagram above. The
+ * resulting value (if still interpreted as big-endian) is `0xEFBEADDE`.
+ *
+ * This templated helper function handles either `char` or `unsigned char` data.
  */
-inline void char_byte_swap(unsigned char *data, int n) {
-  unsigned char *end = data + n - 1;
-  while (data < end)
-    std::swap(*data++, *end--);
-}
-
-inline void char_byte_swap(char *data, int n) {
-  char *end = data + n - 1;
-  while (data < end)
-    std::swap(*data++, *end--);
+template <SwappableChar T> inline void char_byte_swap(T *data, std::size_t n) {
+  std::reverse(data, data + n);
 }
 
 //------------------------------------------------------------------------------------------------//
@@ -91,19 +89,9 @@ inline void char_byte_swap(char *data, int n) {
  *
  * This function operates in place on its argument.
  */
-
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#endif
-
 template <typename T> void byte_swap(T &value) {
-  char_byte_swap((unsigned char *)(&value), sizeof(T));
+  char_byte_swap(reinterpret_cast<unsigned char *>(&value), sizeof(T));
 }
-
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif
 
 //------------------------------------------------------------------------------------------------//
 /*!

@@ -22,6 +22,8 @@
 #include <utility>
 #include <vector>
 
+// cSpell: ignore csmap, mato
+
 namespace rtt_dsxx {
 
 //------------------------------------------------------------------------------------------------//
@@ -369,7 +371,8 @@ std::string XGetopt::display_help(std::string_view appName) const {
       auto const itHelp = helpstrings.find(s);
       std::string_view const help =
           (itHelp != helpstrings.end()) ? std::string_view{itHelp->second} : std::string_view{};
-      opts.push_back({s, std::string_view{l}, hasArg, help});
+      opts.push_back(
+          {.shortOpt = s, .longOpt = std::string_view{l}, .hasArg = hasArg, .help = help});
     }
   } else {
     for (char const s : vshortopts) {

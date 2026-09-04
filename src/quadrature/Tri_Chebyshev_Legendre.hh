@@ -45,14 +45,13 @@ public:
 
   // ACCESSORS
 
-  // SERVICES
-
   // These functions override the virtual member functions specifed in the parent class Quadrature.
 
   [[nodiscard]] std::string name() const override;
   [[nodiscard]] std::string parse_name() const override;
   [[nodiscard]] Quadrature_Class quadrature_class() const override;
   [[nodiscard]] unsigned number_of_levels() const override;
+  // NOLINTNEXTLINE(misc-override-with-different-visibility)
   [[nodiscard]] std::string as_text(std::string const &indent) const override;
 
   // STATICS
@@ -63,10 +62,8 @@ private:
   // IMPLEMENTATION
 
   //! Virtual hook for create_ordinate_set
-  void create_octant_ordinates_(std::vector<double> &mu, std::vector<double> &eta,
-                                std::vector<double> &wt) const override;
-
-  // DATA
+  void create_octant_ordinates_( // NOLINT(misc-override-with-different-visibility)
+      std::vector<double> &mu, std::vector<double> &eta, std::vector<double> &wt) const override;
 };
 
 } // end namespace rtt_quadrature

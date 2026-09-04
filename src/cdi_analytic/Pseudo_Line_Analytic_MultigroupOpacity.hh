@@ -26,6 +26,7 @@ using rtt_parser::Expression;
  * The mass opacity coefficient is assumed independent of temperature or density, which allows
  * precalculation of the opacity structure, an important time saver.
  */
+// NOLINTNEXTLINE(misc-multiple-inheritance)
 class Pseudo_Line_Analytic_MultigroupOpacity : public Analytic_MultigroupOpacity,
                                                public Pseudo_Line_Base {
 private:

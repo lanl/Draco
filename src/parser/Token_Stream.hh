@@ -6,8 +6,7 @@
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
 
-#ifndef rtt_Token_Stream_HH
-#define rtt_Token_Stream_HH
+#pragma once
 
 #include "Token.hh"
 #include <deque>
@@ -105,7 +104,7 @@ public:
   //! Insert a token into the stream at the cursor position.
   void pushback(Token const &token);
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   /*!
    * \brief Reset the stream
    *
@@ -129,7 +128,7 @@ public:
   //! Report a semantic error to the user.
   virtual void report_semantic_error(std::exception const &message);
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   /*!
    * \brief Report an error to the user.
    *
@@ -141,7 +140,7 @@ public:
    */
   virtual void report(Token const &token, std::string const &message) = 0;
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   /*!
    * \brief Report an error to the user.
    *
@@ -153,7 +152,7 @@ public:
    */
   virtual void report(std::string const &message) = 0;
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   /*!
    * \brief Send a comment, without location information, to the user.
    *
@@ -167,7 +166,7 @@ public:
    */
   virtual void comment(std::string const &message) = 0;
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   /*! Check a syntax condition.
    *
    * By putting the check branch here, we improve coverage statistics for branch coverage. Making
@@ -185,7 +184,7 @@ public:
       report_syntax_error(message);
   }
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   /*! Check a semantic condition.
    *
    * By putting the check branch here, we improve coverage statistics for branch coverage. Making
@@ -217,7 +216,7 @@ protected:
   //! Construct a Token_Stream.
   inline Token_Stream();
 
-  //------------------------------------------------------------------------------------------------//
+  //----------------------------------------------------------------------------------------------//
   /*!
    * \brief Add one or more tokens to the end of the lookahead buffer.
    *
@@ -251,7 +250,6 @@ inline Token_Stream::Token_Stream() : deq() {
 
 } // namespace rtt_parser
 
-#endif // rtt_Token_Stream_HH
 //------------------------------------------------------------------------------------------------//
 // end of Token_Stream.hh
 //------------------------------------------------------------------------------------------------//

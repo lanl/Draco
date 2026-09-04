@@ -51,11 +51,10 @@ namespace rtt_c4 {
  */
 //================================================================================================//
 
-class opstream : public std::ostream {
+class opstream : public std::ostream { // NOLINT(misc-multiple-inheritance)
 public:
   //! Create a synchronized stream tied to the console.
-  opstream() : std::ostream(&sb_) { /* empty */
-  }
+  opstream() : std::ostream(&sb_) {}
 
   //! Send all buffered data synchronously to the console.
   void send(std::ostream &myout = std::cout) { sb_.send(myout); }
@@ -64,17 +63,17 @@ public:
   void shrink_to_fit() { sb_.shrink_to_fit(); }
 
 private:
-  struct mpibuf : public std::streambuf {
+  struct mpi_buffer : public std::streambuf {
 
     void send(std::ostream &myout);
     void shrink_to_fit();
 
-    int_type overflow(int_type c) override;
+    int_type overflow(int_type c) override; // NOLINT(misc-override-with-different-visibility)
 
     std::vector<char> buffer_;
   };
 
-  mpibuf sb_;
+  mpi_buffer sb_;
 };
 
 } // end namespace rtt_c4

@@ -22,7 +22,7 @@ namespace rtt_c4 {
  *
  * /param[in,out] out ostream buffer to write data into. defaults to std::cout.
  */
-void opstream::mpibuf::send(std::ostream &myout) {
+void opstream::mpi_buffer::send(std::ostream &myout) {
   unsigned const pid = rtt_c4::node();
   if (pid == 0) {
     buffer_.push_back('\0'); // guarantees that buffer_.size() > 0
@@ -68,7 +68,7 @@ void opstream::mpibuf::send(std::ostream &myout) {
  *
  * \return Integer representation of the character just added to the buffer.
  */
-/*virtual*/ opstream::mpibuf::int_type opstream::mpibuf::overflow(int_type c) {
+/*virtual*/ opstream::mpi_buffer::int_type opstream::mpi_buffer::overflow(int_type c) {
   buffer_.push_back(static_cast<char>(c));
   return c;
 }
@@ -80,7 +80,7 @@ void opstream::mpibuf::send(std::ostream &myout) {
  * byte of storage shrink the buffer of an opstream that has done some large writes, and which he
  * will be using again later, but which he does not want tying up any memory in the meanwhile.
  */
-void opstream::mpibuf::shrink_to_fit() { buffer_.shrink_to_fit(); }
+void opstream::mpi_buffer::shrink_to_fit() { buffer_.shrink_to_fit(); }
 
 } // end namespace rtt_c4
 

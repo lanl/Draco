@@ -11,7 +11,7 @@
 #include "dsxx/UnitTest.hh"
 #include "parser/Unit.hh"
 #include <iostream>
-#include <ostream>
+// #include <ostream>
 #include <sstream>
 
 namespace {
