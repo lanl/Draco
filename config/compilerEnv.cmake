@@ -256,74 +256,113 @@ macro(dbsSetupCompilers)
       endif()
       if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 
-        list(APPEND CODE_COVERAGE_IGNORE_REGEX *test/* */opt/spack/* *terminal/* *FortranChecks/*)
-        list(REMOVE_DUPLICATES CODE_COVERAGE_IGNORE_REGEX)
-        set(CODE_COVERAGE_IGNORE_REGEX
-            ${CODE_COVERAGE_IGNORE_REGEX}
+        list(APPEND CODE_COVERAGE_IGNORE_GLOB "*test/*" "*/opt/spack/*" "*terminal/*"
+             "*FortranChecks/*")
+        list(REMOVE_DUPLICATES CODE_COVERAGE_IGNORE_GLOB)
+        set(CODE_COVERAGE_IGNORE_GLOB
+            ${CODE_COVERAGE_IGNORE_GLOB}
             CACHE STRING "List of regex that lcov will ignore" FORCE)
 
         if(CMAKE_BUILD_TYPE STREQUAL Debug OR CMAKE_BUILD_TYPE STREQUAL DEBUG)
           # Add required flags (GCC & LLVM/Clang)
-          target_compile_options(coverage_config INTERFACE --coverage -Wno-missing-profile)
-          target_link_options(coverage_config INTERFACE --coverage)
+          target_compile_options(coverage_config INTERFACE --coverage -fprofile-update=atomic
+                                                           -Wno-missing-profile)
+          target_link_options(coverage_config INTERFACE --coverage -fprofile-update=atomic)
 
           # If env variable is set use it, otherwise search for default name.
           find_program(LCOV NAMES "$ENV{LCOV}" lcov)
           find_program(GCOV NAMES "$ENV{GCOV}" gcov)
+          find_program(GENHTML NAMES "$ENV{GENHTML}" genhtml)
           if(EXISTS "${LCOV}" AND EXISTS "${GCOV}")
             # Add a custom target that prints the coverage report. --rc options documented at
             # https://man.archlinux.org/man/lcovrc.5.en
-            set(lcovopts1
-                -j
-                --keep-going
-                --ignore-errors
-                mismatch,mismatch
-                --ignore-errors
-                gcov,gcov,unused,unused
-                --rc
-                geninfo_unexecuted_blocks=1
-                --rc
-                branch_coverage=1
+            set(lcov_common_opts --quiet --branch-coverage)
+            set(lcov_ierr --ignore-errors
+                          mismatch,mismatch,gcov,gcov,unused,unused,inconsistent,inconsistent)
+            set(lcov_capture_opts
                 --gcov-tool
                 ${GCOV}
-                --quiet)
-            set(lcovopts2 ${lcovopts1} --output-file coverage.info)
+                --parallel
+                --filter
+                line,exception,branch
+                --rc
+                geninfo_unexecuted_blocks=1
+                ${lcov_ierr}
+                ${lcov_common_opts}) # --keep-going
+            set(lcov_remove_opts ${lcov_ierr} ${lcov_common_opts})
+            set(genhtml_opts
+                --legend
+                --demangle-cpp
+                --ignore-errors
+                inconsistent,inconsistent
+                --output-directory
+                cov-html
+                ${lcov_common_opts})
             unset(lcov_ignore)
-            foreach(myregex ${CODE_COVERAGE_IGNORE_REGEX})
-              list(APPEND lcov_ignore '${myregex}')
+            unset(lcov_ignore2)
+            foreach(entry IN LISTS CODE_COVERAGE_IGNORE_GLOB)
+              list(APPEND lcov_ignore ${entry})
+              list(APPEND lcov_ignore2 --exclude "${entry}")
             endforeach()
-            if(EXISTS "${PROJECT_SOURCE_DIR}/config/capture_lcov.sh")
-              set(captureLcov "${PROJECT_SOURCE_DIR}/config/capture_lcov.sh")
-            elseif(EXISTS "${DRACO_DIR}/cmake/capture_lcov.sh")
-              set(captureLcov "${DRACO_DIR}/cmake/capture_lcov.sh")
-            else()
-              message(
-                FATAL_ERROR
-                  "CODE_COVERAGE=ON, but required helper script capture_lcov.sh not found.  Looked "
-                  "at ${PROJECT_SOURCE_DIR}/config/capture_lcov.sh and "
-                  "${DRACO_DIR}/cmake/capture_lcov.sh")
-            endif()
+
+            # TARGET: covrep
             add_custom_command(
-              OUTPUT "${PROJECT_BINARY_DIR}/covrep_target_aways_out_of_date.txt"
-              BYPRODUCTS "${PROJECT_BINARY_DIR}/coverage.info" "${PROJECT_BINARY_DIR}/coverage.txt"
-              COMMAND ${LCOV} ${lcovopts2} --capture --directory .
-              COMMAND ${LCOV} ${lcovopts2} --remove coverage.info ${lcov_ignore}
-              COMMAND genhtml -q --legend coverage.info --demangle-cpp --output-directory cov-html
-              COMMAND "${captureLcov}" -g "${GCOV}" -l "${LCOV}" -b "${PROJECT_SOURCE_DIR}"
-              COMMENT "Lcov is processing gcov data files...")
-            unset(captureLcov)
+              OUTPUT "${PROJECT_BINARY_DIR}/covrep_target_always_out_of_date2.txt"
+                     "${PROJECT_BINARY_DIR}/coverage.info" "${PROJECT_BINARY_DIR}/coverage.txt"
+              BYPRODUCTS "${PROJECT_BINARY_DIR}/coverage.raw.info" "${PROJECT_BINARY_DIR}/cov-html"
+              COMMAND "${CMAKE_COMMAND}" -E echo
+                      "==> Generating ${PROJECT_BINARY_DIR}/coverage.raw.info via lcov..."
+              COMMAND
+                "${CMAKE_COMMAND}" -E echo
+                "==> ${LCOV} --capture --directory . --output-file coverage.raw.info"
+                " ${lcov_capture_opts} --output-file coverage.raw.info"
+              COMMAND ${LCOV} --capture --directory . --output-file coverage.raw.info
+                      ${lcov_capture_opts} --output-file coverage.raw.info
+              COMMAND "${CMAKE_COMMAND}" -E echo
+                      "==> Generating ${PROJECT_BINARY_DIR}/coverage.info via lcov..."
+              COMMAND
+                "${CMAKE_COMMAND}" -E echo
+                "==> ${LCOV} --remove coverage.raw.info ${lcov_ignore} ${lcov_remove_opts}"
+                " --output-file coverage.info"
+              COMMAND ${LCOV} --remove coverage.raw.info ${lcov_ignore} ${lcov_remove_opts}
+                      --output-file coverage.info
+              COMMAND "${CMAKE_COMMAND}" -E echo
+                      "==> Generating ${PROJECT_BINARY_DIR}/cov-html/ via genhtml..."
+              COMMAND "${CMAKE_COMMAND}" -E echo "==> ${GENHTML} coverage.info ${genhtml_opts}"
+              COMMAND ${GENHTML} coverage.info ${genhtml_opts}
+              COMMAND "${CMAKE_COMMAND}" -E echo
+                      "==> Generating ${PROJECT_BINARY_DIR}/coverage.txt via lcov..."
+              COMMAND
+                "${CMAKE_COMMAND}" "-DLCOV=${LCOV}"
+                "-DCOVERAGE_FILE=${PROJECT_BINARY_DIR}/coverage.info"
+                "-Doutput_file=${PROJECT_BINARY_DIR}/coverage.txt" "-DMODE=summary" -P
+                "${PROJECT_SOURCE_DIR}/config/lcov-summary.cmake"
+              COMMAND "${CMAKE_COMMAND}" -E echo "==> Generating"
+                      "${PROJECT_BINARY_DIR}/coverage-list.txt via lcov..."
+              COMMAND
+                "${CMAKE_COMMAND}" "-DLCOV=${LCOV}"
+                "-DCOVERAGE_FILE=${PROJECT_BINARY_DIR}/coverage.info"
+                "-Doutput_file=${PROJECT_BINARY_DIR}/coverage-list.txt" "-DMODE=list"
+                "-DPROJECT_SOURCE_DIR=${PROJECT_SOURCE_DIR}" "-DIGNORE_LIST:STRING=${lcov_ignore2}"
+                -P "${PROJECT_SOURCE_DIR}/config/lcov-summary.cmake"
+              COMMAND "${CMAKE_COMMAND}" -E echo ""
+              COMMAND
+                "${CMAKE_COMMAND}" -E echo
+                "==> View text coverage report in file ${PROJECT_BINARY_DIR}/coverage.txt"
+                "and ${PROJECT_BINARY_DIR}/coverage-list.txt"
+              COMMAND
+                "${CMAKE_COMMAND}" -E echo
+                "==> View HTML coverage report with command: firefox ${PROJECT_BINARY_DIR}/"
+                "cov-html/index.html"
+              COMMENT "Generating coverage reports..."
+              USES_TERMINAL VERBATIM)
             add_custom_target(
               covrep
-              DEPENDS "${PROJECT_BINARY_DIR}/covrep_target_aways_out_of_date.txt"
-              COMMENT
-                "
-  ==> View text coverage report in file coverage.txt.
-  ==> View HTML coverage report with command: firefox cov-html/index.html
-  ==> Repeat text coverage report with command: lcov --list coverage.info
-  ")
+              DEPENDS "${PROJECT_BINARY_DIR}/covrep_target_always_out_of_date2.txt"
+              COMMENT "Generating coverage reports")
             message(STATUS "Code coverage build ... enabled ('make covrep' to see a text and/or a"
                            " html report)")
-            block_indent(90 27 "CODE_COVERAGE_IGNORE_REGEX = ${CODE_COVERAGE_IGNORE_REGEX}")
+            block_indent(90 27 "CODE_COVERAGE_IGNORE_GLOB = ${CODE_COVERAGE_IGNORE_GLOB}")
           else() # EXISTS "${LCOV}" AND EXISTS "${GCOV}"
             message(STATUS "Code coverage build ... disabled (lcov and/or gcov not found)")
           endif() # EXISTS "${LCOV}" AND EXISTS "${GCOV}"
