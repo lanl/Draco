@@ -52,8 +52,8 @@ concept SwappableChar = std::same_as<T, char> || std::same_as<T, unsigned char>;
 /*!
  * \brief Elementary byte-swapping routine.
  *
- * \param[in] data The data to byte-swap, represented as character data.
- * \param[in] n    The size of the data array.
+ * \param[in,out] data The data to byte-swap, represented as character data.
+ * \param[in] n        The size of the data array.
  *
  * This is a core routine used by other functions to convert data between Endian representations.
  *

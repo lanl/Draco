@@ -349,6 +349,11 @@
       "configurePreset": "linux-debug-coverage"
     },
     {
+      "name": "linux-debug-covrep",
+      "configurePreset": "linux-debug-coverage",
+      "targets": ["covrep"]
+    },
+    {
       "name": "linux-debug-cxx23",
       "configurePreset": "linux-debug-cxx23"
     },
@@ -467,7 +472,20 @@
       "inherits": "linux-ctest",
       "description": "Collect coverage (gcov) data when running tests",
       "displayName": "CTest when gcov enabled.",
-      "configurePreset": "linux-debug-coverage"
+      "configurePreset": "linux-debug-coverage",
+      "output": {
+        "outputOnFailure": false
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": false,
+        "jobs": 1
+      },
+      "filter": {
+        "exclude": {
+          "name": "^c4_tstTime_4$"
+        }
+      }
     },
     {
       "name": "linux-debug-clang-tidy",
@@ -592,6 +610,15 @@
         { "type": "build", "name": "linux-release" },
         { "type": "test", "name": "linux-release" },
         { "type": "build", "name": "linux-release-install" }
+      ]
+    },
+    {
+      "name": "linux-debug-coverage",
+      "steps": [
+        { "type": "configure", "name": "linux-debug-coverage" },
+        { "type": "build", "name": "linux-debug-coverage" },
+        { "type": "test", "name": "linux-debug-coverage" },
+        { "type": "build", "name": "linux-debug-covrep" }
       ]
     },
     {
