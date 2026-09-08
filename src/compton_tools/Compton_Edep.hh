@@ -17,10 +17,10 @@ namespace compton_edep {
 //------------------------------------------------------------------------------------------------//
 /*!
  * \brief This is a simple container to hold pointwise sigma_c and EREC values read from a CSK-
- *        generated file. The data is designed to be interpolated with Lagrange polynomials in
- *        both temperature and frequency. It is most efficient to ``pre-interpolate'' the data in
- *        electron temperature at beginning of cycle; the resulting data can then be interpolated
- *        in frequency ``on the fly'' during the cycle.
+ *        generated file. The data is designed to be interpolated with Lagrange polynomials in both
+ *        temperature and frequency. It is most efficient to  *pre-interpolate* the data in electron
+ *        temperature at beginning of cycle; the resulting data can then be interpolated in
+ *        frequency *on the fly* during the cycle.
  */
 class Edep_Container {
 

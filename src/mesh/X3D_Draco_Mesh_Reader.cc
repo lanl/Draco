@@ -403,7 +403,7 @@ void X3D_Draco_Mesh_Reader::read_bdy_files() {
       std::vector<unsigned> fnode_vec = get_facenodes(face_nodes.first);
       std::ranges::sort(fnode_vec);
 
-      //! \todo: check for node index duplicates
+      //! \todo check for node index duplicates
 
       // find common nodes between side nodes and face
       std::vector<unsigned> nodes_in_common;

@@ -677,8 +677,8 @@ public:
  *
  * This is designed to return energy loss rates based on the range fit calculated in:
  *
- * Kirkpatrick, R. C. and Wheeler, J. A. (1981). ``The Physics of DT Ignition In Small Fusion
- * Targets.'' Nuclear Fusion, 21(3):389–401.
+ * Kirkpatrick, R. C. and Wheeler, J. A. (1981). "The Physics of DT Ignition In Small Fusion
+ * Targets." Nuclear Fusion, 21(3):389–401.
  *
  * Equation (2) gives the range formula. We then convert this to an energy loss rate per unit time
  * for ease of use in transport.

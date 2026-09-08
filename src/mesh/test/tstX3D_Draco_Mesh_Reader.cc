@@ -441,7 +441,7 @@ void build_x3d_rnd_mesh_3d(rtt_c4::ParallelUnitTest &ut) {
   FAIL_IF((mesh->get_cs_linkage()).size() != 56);
   FAIL_IF((mesh->get_cg_linkage()).size() > 0);
 
-  //! \todo: add more testing here
+  //! \todo add more testing here
 
   // successful test output
   if (ut.numFails == 0)

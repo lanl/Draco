@@ -78,8 +78,6 @@ double Polynomial_Specific_Heat_Analytic_EoS_Model::calculate_elec_temperature(
  * Where we assume \f$ U_ic(0) \equiv 0 \f$.
  *
  * We have chosen to use absolute electron energy instead of dUe to mimik the behavior of EOSPAC.
- *
- * \todo Consider using GSL root finding with Newton-Raphson for improved efficiency.
  */
 double Polynomial_Specific_Heat_Analytic_EoS_Model::calculate_ion_temperature(
     double const /*rho*/, double const Uic, double const Ti0) const {
@@ -424,7 +422,7 @@ Analytic_EICoupling_Model::sf_double Constant_Analytic_EICoupling_Model::get_par
 /*! \brief Calculate the eloss in units of shk^-1; T given in keV, rho in g/cc, v0 in cm/shk
  *
  * The constants in this formula come directly from the fit in Eq. (2) of Kirkpatrick, R. C. and
- * Wheeler, J. A. (1981).  ``The Physics of DT Ignition In Small Fusion Targets.''  Nuclear Fusion,
+ * Wheeler, J. A. (1981).  "The Physics of DT Ignition In Small Fusion Targets."  Nuclear Fusion,
  * 21(3):389–401.
  *
  * These constants are ONLY valid for alpha energy loss in DT gas.

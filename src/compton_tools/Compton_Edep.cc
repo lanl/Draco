@@ -211,7 +211,7 @@ std::pair<double, double> interpolate_sigc_erec(const size_t cell, const double 
   // NOLINTEND(misc-include-cleaner)
 
   // Collect all necessary data for this interpolation region.
-  // * TODO: Pass iterators directly?
+  // * \todo Pass iterators directly?
   const auto ffirst = data.freq_eval_pts.begin() + f_index * data.f_ppr;
   const auto flast = ffirst + data.f_ppr;
   const std::vector<double> local_gamma(ffirst, flast);

@@ -51,7 +51,7 @@ Parallel_File_Token_Stream::Parallel_File_Token_Stream()
  * \param[in] file_name Name of the file from which to extract tokens.
  * \throw std::invalid_argument If the file cannot be opened.
  *
- * \todo Make this constructor more failsafe.
+ * \todo Make this (1) constructor more failsafe.
  */
 Parallel_File_Token_Stream::Parallel_File_Token_Stream(string const &file_name)
     : Text_Token_Stream(), letters_(), letter_(make_shared<letter>(file_name)) {
@@ -69,7 +69,7 @@ Parallel_File_Token_Stream::Parallel_File_Token_Stream(string const &file_name)
  *
  * \throw std::bad_alloc If there is not enough memory to initialize the token and character queues.
  * \throw std::invalid_argument If the file cannot be opened.
- * \todo Make this constructor more failsafe.
+ * \todo Make this (2) constructor more failsafe.
  */
 Parallel_File_Token_Stream::Parallel_File_Token_Stream(string const &file_name, set<char> const &ws)
     : Text_Token_Stream(ws), letters_(), letter_(make_shared<letter>(file_name)) {
@@ -88,7 +88,7 @@ Parallel_File_Token_Stream::Parallel_File_Token_Stream(string const &file_name, 
  *
  * \throw std::invalid_argument If the file cannot be opened.
  *
- * \todo Make this constructor more failsafe.
+ * \todo Make this (3) constructor more failsafe.
  */
 void Parallel_File_Token_Stream::open(string const &file_name) {
   while (!letters_.empty()) {
@@ -106,7 +106,7 @@ void Parallel_File_Token_Stream::open(string const &file_name) {
  *
  * \throw std::invalid_argument If the file cannot be opened.
  *
- * \todo Make this function more failsafe.
+ * \todo Make this (4) function more failsafe.
  */
 /* private */
 void Parallel_File_Token_Stream::letter::open_() {

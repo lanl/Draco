@@ -31,10 +31,10 @@ namespace rtt_mesh {
  * For a description of the X3D mesh file layout, see:
  * https://xcp-confluence.lanl.gov/display/SIMC/Ingen->Flag+Data+Transfer
  *
- * \todo: Boundary condition data is evidently parsed separately in X3D, so meshes generated from
+ * \todo Boundary condition data is evidently parsed separately in X3D, so meshes generated from
  *        this reader will not have side flag data (which ids boundary conditions.
  *
- * \todo: Consider using the Class_Parse_Table formalism developed by Kent Budge as an alternative.
+ * \todo Consider using the Class_Parse_Table formalism developed by Kent Budge as an alternative.
  */
 //================================================================================================//
 

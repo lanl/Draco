@@ -81,12 +81,6 @@ ccs_deploy_rel_gcc:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1330
 
-ccs_deploy_deb_gcc:
-  extends: .ccscs_deploy
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
-
 ccs_deploy_rel_gcc:
   extends: .ccscs_deploy
   variables:
@@ -122,6 +116,18 @@ ccs_deploy_valgrind:
     EXTRA_CMAKE_ARGS: -DENABLE_MEMORYCHECK=ON
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
         -DCMAKE_C_FLAGS="-march=broadwell" -DCMAKE_Fortran_FLAGS="-march=broadwell"
+
+ccs_deploy_deb_gcc16:
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1610
+
+ccs_deploy_rel_gcc16:
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1610
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a versioned release (dvr)
@@ -170,6 +176,20 @@ ccs_dvr_rel_gcc:
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_ROUNDOFF_MODE=FAST -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
 
+ccs_dvr_deb_gcc16:
+  extends: .ccscs_dvr
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1610
+
+ccs_dvr_rel_gcc16:
+  extends: .ccscs_dvr
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1610
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_ROUNDOFF_MODE=FAST -DCMAKE_C_FLAGS="-march=broadwell"
+      -DCMAKE_Fortran_FLAGS="-march=broadwell"
+
 #--------------------------------------------------------------------------------------------------#
 # Merge Requests
 #--------------------------------------------------------------------------------------------------#
@@ -211,6 +231,13 @@ ccs_c4_scalar:
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
     CTEST_NPROC: 40
 
+ccs_deb_gcc16:
+  stage: fasttest
+  extends: .ccscs_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1610
+
 # ---------- lint TEST (only starts if all FASTTEST pass) ---------- #
 
 ccs_deb_no_tpl:
@@ -220,10 +247,9 @@ ccs_deb_no_tpl:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1330
   script:
-    - module use --append /ccs/codes/radtran/Modules
-    - module use /ccs/opt/modulefiles
-    - module load cmake gcc/13.3.0 ninja numdiff
-    - module use /ccs/opt/vendors/devops-2025.05.22/dracose/spack/share/spack/lmod/linux-rhel8-x86_64/gcc/13.3.0
+    - module use --append /ccs/opt/modulefiles
+    - module use /ccs/opt/vendors/dracose-2026.08.27/spack/share/spack/lmod/linux-rhel8-x86_64/Core
+    - module load cmake gcc/16.1.0 ninja numdiff
     - module load openmpi
     - mkdir build && touch ci-env.log
     - set &> build/ci-env.log
@@ -239,8 +265,51 @@ ccs_autodoc:
   allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: gcc1610
     AUTODOC: "ON"
+
+ccs_clangtidy:
+  extends: .ccscs_merge
+  stage: lint
+  allow_failure: true
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/llvm2215
+    EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
+    EXTRA_CTEST_ARGS: -R dsxx_tstRelease
+  script:
+    # Run everything under a bash shell.
+    # Echo output to the screen and capture output to a file.
+    # If the build command fails, report it and exit with an error code.
+    # If clang-tidy warnings are found, fail the pipeline and save the log as an artifact.
+    # Use grep -vE to ignore some warnings.
+    - /bin/bash -l -c '
+      LOG=clang-tidy-out.txt;
+      ${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh 2>&1 | tee ${LOG};
+      num_warnings=$(grep -nE "(^|[[:space:]])warning:" "$LOG"
+        | grep -cvE "j0 forced in submake|some_known_one");
+      if [[ $num_warnings -gt 0 ]]; then
+        echo "==> Found $num_warnings lint warnings from clang-tidy; Pipeline failed.";
+        echo "==> See attached artifact $LOG for more details.";
+        exit 1;
+      fi;
+      echo "==> Clang-tidy lint check was successful!"
+      '
+  artifacts:
+    paths: [clang-tidy-out.txt]
+    when: on_failure
+    expire_in: 7d
+
+ccs_style_cxx:
+  stage: lint
+  extends: .ccscs_merge
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: draco/gcc1610
+    CTEST_NPROC: 40
+    MAXLOAD: 40
+  script:
+    - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-style-checks.sh"
 
 # ---------- SLOW TEST (only starts if all regular TEST pass) ---------- #
 
@@ -250,7 +319,7 @@ ccs_rel_gcc:
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1330
-    CTEST_NPROC: 32
+    CTEST_NPROC: 40
 
 ccs_rwdi_gcc:
   stage: slowtest
@@ -258,7 +327,7 @@ ccs_rwdi_gcc:
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
     DRACO_ENV: gcc1330
-    CTEST_NPROC: 32
+    CTEST_NPROC: 40
 
 ccs_fulldiag:
   stage: slowtest
@@ -269,7 +338,7 @@ ccs_fulldiag:
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
-    CTEST_NPROC: 32
+    CTEST_NPROC: 40
 
 ccs_gcov:
   stage: slowtest
@@ -295,7 +364,7 @@ ccs_deb_gcc_cxx23:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1330
     EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=23
-    CTEST_NPROC: 32
+    CTEST_NPROC: 40
 
 # ccs_valgrind:
 #   stage: slowtest
@@ -309,6 +378,30 @@ ccs_deb_gcc_cxx23:
 #       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
 #     EXTRA_CTEST_ARGS: -L memcheck -LE nomemcheck
 #     CTEST_NPROC: 40
+
+ccs_rel_gcc16:
+  stage: slowtest
+  extends: .ccscs_merge
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1610
+    CTEST_NPROC: 40
+
+ccs_rwdi_gcc16:
+  stage: slowtest
+  extends: .ccscs_merge
+  variables:
+    CMAKE_BUILD_TYPE: RelWithDebInfo
+    DRACO_ENV: gcc1610
+    CTEST_NPROC: 40
+
+ccs_debug_llvm:
+  stage: slowtest
+  extends: .ccscs_merge
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: llvm2215
+    CTEST_NPROC: 49
 
 #--------------------------------------------------------------------------------------------------#
 # Nightly Regression
@@ -338,13 +431,6 @@ deb_gcc_regress:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1330
-    CTEST_NPROC: 40
-
-deb_gcc16_regress:
-  extends: .ccscs_nightly
-  variables:
-    CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1610
     CTEST_NPROC: 40
 
 deb_gcc_cxx23_regress:
@@ -417,6 +503,20 @@ pages:
   artifacts:
     paths:
       - public
+
+rel_gcc16_regress:
+  extends: .ccscs_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Release
+    DRACO_ENV: gcc1610
+    CTEST_NPROC: 40
+
+deb_gcc16_regress:
+  extends: .ccscs_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: gcc1610
+    CTEST_NPROC: 40
 
 #--------------------------------------------------------------------------------------------------#
 # Re-deploy dependent projects

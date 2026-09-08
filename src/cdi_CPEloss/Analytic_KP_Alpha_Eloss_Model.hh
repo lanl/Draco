@@ -1,7 +1,6 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   cdi_CPEloss/Analytic_KP_Alpha_Eloss_Model.hh
- * \author Kendra P. Long, Ben R. Ryan
  * \brief  Analytic_KP_Alpha_Eloss_Model class definition.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -20,11 +19,12 @@ namespace rtt_cdi_cpeloss {
  *
  * CP energy loss class using analytic Kirkpatrick model for alpha particles in DT. Energy loss
  * rates based on the range fit calculated in:
- * * Kirkpatrick, R. C. and Wheeler, J. A. (1981). ``The Physics of DT Ignition In Small Fusion
- *   Targets.'' Nuclear Fusion, 21(3):389–401.
  *
- * Equation (2) gives the range formula. We convert this to an energy loss rate
- * per unit time for ease of use in transport.
+ * * Kirkpatrick, R. C. and Wheeler, J. A. (1981). "The Physics of DT Ignition In Small Fusion
+ *   Targets."" Nuclear Fusion, 21(3):389–401.
+ *
+ * Equation (2) gives the range formula. We convert this to an energy loss rate per unit time for
+ * ease of use in transport.
  */
 //================================================================================================//
 
@@ -37,8 +37,8 @@ public:
     Require(zaidp_ == 2004);
   }
 
-  //! Calculate the eloss rate in units of keV shk^-1; T given in keV, ndens in a/cc, v0 in cm/shk,
-  //! debye in cm
+  /*! Calculate the eloss rate in units of keV shk^-1; T given in keV, ndens in a/cc, v0 in cm/shk,
+   * debye in cm */
   [[nodiscard]] double
   calculate_eloss(const double T, const double ndens, const double v0,
                   [[maybe_unused]] const double debye_length = 0.0) const override;

@@ -43,7 +43,7 @@ File_Token_Stream::File_Token_Stream() : letters_(), letter_(nullptr) {
  *
  * \throw invalid_argument If the input stream cannot be opened.
  *
- * \todo Make this constructor failsafe.
+ * \todo Make this (5) constructor failsafe.
  */
 File_Token_Stream::File_Token_Stream(string const &file_name)
     : letters_(), letter_(make_shared<letter>(file_name)) {
@@ -61,7 +61,7 @@ File_Token_Stream::File_Token_Stream(string const &file_name)
  *
  * \throw invalid_argument If the input stream cannot be opened.
  *
- * \todo Make this constructor failsafe.
+ * \todo Make this (6) constructor failsafe.
  */
 File_Token_Stream::letter::letter(string const &file_name)
     : filename_(file_name), infile_(file_name.c_str(), std::ios::in) {

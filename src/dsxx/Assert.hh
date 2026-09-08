@@ -83,13 +83,13 @@ namespace rtt_dsxx {
  * Total rewrite of the dsxx Assertion facility.  In the old formulation, Assert and Insist expanded
  * into inline if statements, for which the body were blocks which both contained output to cerr,
  * and which threw an exception.  This has proven problematic because it meant that `Assert.hh`
- * included `iostream.h, and also because throw was inlined (not a problem for Assert per se, since
+ * included `iostream.h`, and also because throw was inlined (not a problem for Assert per se, since
  * Assert was generally shut off for optimized codes, but still a problem for Insist).  These
  * effects combined to present problems both at compile time and, possibly, at run time.
  *
  * The new formulation, motivated by suggestions from Arch Robison and Dave Nystrom, uses a call to
  * an out-of-line function to do the actual logging and throwing of exceptions.  This permits
- * removing `iostream.h from the inclusion graph for translation units including `Assert.hh`, and
+ * removing `iostream.h` from the inclusion graph for translation units including `Assert.hh`, and
  * avoids inlining of exception throwing code.  Moreover, it also allows us to get `__FILE__` into
  * play, which we couldn't do before because there was no way to do string concatenation with it,
  * and you couldn't do free store management effectively in an inlined macro.  By going out to a
@@ -227,7 +227,7 @@ std::string verbose_error(std::string const &message);
  * enabled.  The fourth bit (3) can be toggled on to disable the C++ thrown exception while keeping
  * all of the DBC checks and messages active.
  *
- * The `Insist macro is akin to the `Assert` macro, but it provides the opportunity to specify an
+ * The `Insist` macro is akin to the `Assert` macro, but it provides the opportunity to specify an
  * instructive message.  The idea here is that you should use Insist for checking things which are
  * more or less under user control.  If the user makes a poor choice, we "insist" that it be
  * corrected, providing a corrective hint.
@@ -241,8 +241,8 @@ std::string verbose_error(std::string const &message);
  *
  * Special code for CUDA.
  *
- * If __CUDA_ARCH__ || __HIPCC__ (processing with nvcc/hip) and DRACO_USE_GPU=ON, then alter the behavior
- * of the DbC macros because cuda code cannot throw.
+ * If __CUDA_ARCH__ || __HIPCC__ (processing with nvcc/hip) and DRACO_USE_GPU=ON, then alter the
+ * behavior of the DbC macros because cuda code cannot throw.
  */
 /*!
  * \def Require(condition)

@@ -33,7 +33,7 @@ namespace rtt_linear {
  * \param n Number of columns in a
  * \param w On exit, contains \f$ W \f$.
  * \param v On exit, contains \f$ V \f$.
- * \todo Templatize on container element type
+ * \todo Templatize svdcmp on container element type
  */
 template <typename RandomContainer>
 void svdcmp(RandomContainer &a, const unsigned m, const unsigned n, RandomContainer &w,

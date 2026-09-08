@@ -37,6 +37,15 @@
       }
     },
     {
+      "name": "linux-rwdi",
+      "displayName": "Linux RWDI",
+      "description": "Target Linux for RWDI build.",
+      "inherits": "linux-ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
       "name": "linux-debug-scalar",
       "displayName": "Linux Debug (No MPI)",
       "description": "Target Linux for Debug build.",
@@ -323,6 +332,10 @@
       "configurePreset": "linux-release"
     },
     {
+      "name": "linux-rwdi",
+      "configurePreset": "linux-rwdi"
+    },
+    {
       "name": "linux-debug-install",
       "configurePreset": "linux-debug",
       "targets": ["install"]
@@ -429,6 +442,13 @@
       "description": "Run all tests",
       "displayName": "Ctest",
       "configurePreset": "linux-release"
+    },
+    {
+      "name": "linux-rwdi",
+      "inherits": "linux-ctest",
+      "description": "Run all tests",
+      "displayName": "Run all tests",
+      "configurePreset": "linux-rwdi"
     },
     {
       "name": "linux-debug-scalar",
@@ -610,6 +630,14 @@
         { "type": "build", "name": "linux-release" },
         { "type": "test", "name": "linux-release" },
         { "type": "build", "name": "linux-release-install" }
+      ]
+    },
+    {
+      "name": "linux-rwdi",
+      "steps": [
+        { "type": "configure", "name": "linux-rwdi" },
+        { "type": "build", "name": "linux-rwdi" },
+        { "type": "test", "name": "linux-rwdi" }
       ]
     },
     {

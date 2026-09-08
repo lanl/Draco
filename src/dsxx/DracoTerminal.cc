@@ -5,10 +5,7 @@
  * \brief  Wrapper for a Terminal class that provides colored output.
  * \note   Copyright (C) 2024-2026 Triad National Security, LLC., All rights reserved.
  *
- * \sa https://github.com/certik/terminal/blob/master/terminal.h
- *
- * \todo Consider an enum class for colors that derives from $LS_COLORS on Linux.  This would allow
- *       color selection based on users's terminal colors (e.g.: light vs dark scheme). */
+ * \sa https://github.com/certik/terminal/blob/master/terminal.h */
 //------------------------------------------------------------------------------------------------//
 
 #include "DracoTerminal.hh"

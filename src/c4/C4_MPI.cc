@@ -139,7 +139,7 @@ double wall_clock_resolution() { return MPI_Wtick(); }
 //------------------------------------------------------------------------------------------------//
 
 bool probe(int source, int tag, int &message_size) {
-  //! \todo Change message_size to C4_Status to allow source = any_source
+  //! \todo Change (1) message_size to C4_Status to allow source = any_source
   //Require(source == any_source || (source >= 0 && source < nodes()));
   Require(source >= 0 && source < nodes());
 
@@ -159,7 +159,7 @@ bool probe(int source, int tag, int &message_size) {
 
 //------------------------------------------------------------------------------------------------//
 void blocking_probe(int source, int tag, int &message_size) {
-  //! \todo Change message_size to C4_Status to allow source = any_source
+  //! \todo Change (2) message_size to C4_Status to allow source = any_source
   //Require(source == any_source || (source >= 0 && source < nodes()));
   Require(source >= 0 && source < nodes());
 

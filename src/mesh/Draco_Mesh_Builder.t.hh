@@ -64,7 +64,7 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
   for (size_t cell = 0; cell < num_cells; ++cell)
     num_faces_per_cell[cell] = reader->get_celltype(cell);
 
-  // \todo: Can the cell definitions past num_cells - 1 be checked as invalid?
+  // \todo Can the cell definitions past num_cells - 1 be checked as invalid?
 
   // generate the cell-to-node linkage
   for (size_t cell = 0; cell < num_cells; ++cell) {
@@ -91,14 +91,14 @@ Draco_Mesh_Builder<FRT>::build_mesh(rtt_mesh_element::Geometry geometry) {
     Check(dimension == 2 ? side_node_count[side] == 2 : true);
 
     // get the 1st side flag associated with this side
-    // \todo: What happens when side has no flags?
+    // \todo What happens when side has no flags?
     side_set_flag[side] = reader->get_sideflag(side);
 
     // increment size of cell-to-node linkage array
     sn_linkage_size += side_node_count[side];
   }
 
-  // \todo: Can the side definitions past num_sides - 1 be checked as invalid?
+  // \todo Can the side definitions past num_sides - 1 be checked as invalid?
 
   // generate the side-to-node linkage
   side_to_node_linkage.reserve(sn_linkage_size);

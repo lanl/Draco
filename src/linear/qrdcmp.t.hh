@@ -36,7 +36,7 @@ namespace rtt_linear {
  * \param d On exit, contains the diagonal part of the \f$R\f$ matrix.
  * \return \c true if the matrix is singular; \c false otherwise.
  *
- * \todo templatize on container element type
+ * \todo templatize qrdcmp on container element type
  */
 template <class RandomContainer>
 bool qrdcmp(RandomContainer &a, unsigned n, RandomContainer &c, RandomContainer &d) {

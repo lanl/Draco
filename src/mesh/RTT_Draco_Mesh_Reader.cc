@@ -30,7 +30,7 @@ RTT_Draco_Mesh_Reader::RTT_Draco_Mesh_Reader(const std::string &filename_) : fil
   // check for valid file name
   Insist(filename_.size() > 0, "No file name supplied.");
 
-  // \todo: remove read_mesh function and read in constructor(?)
+  // \todo remove read_mesh function and read in constructor(?)
   Require(rtt_reader == nullptr);
 }
 
