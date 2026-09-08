@@ -71,6 +71,17 @@ std::shared_ptr<DD_Topology> build_DD(int n) {
 // TESTS
 //------------------------------------------------------------------------------------------------//
 
+// [2026-09-04 kt]
+// * When compiling with gcc@16.1.0 in RWDI mode, a false positive is triggered. Debug and Release
+//   modes do not trigger this warning.
+// * GCC has had documented -Warray-bounds false positives involving inheritance and optimized
+//   object-layout analysis. Possible GCC bug 98266,
+//   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=98266
+#if defined(__GNUC__) && !defined(__clang__) && __GNUC__ >= 16
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
 void test_Replication(rtt_dsxx::UnitTest &ut) {
   // assume a 20 cell mesh
   std::shared_ptr<Topology> const top(new Rep_Topology(20));
@@ -116,6 +127,10 @@ void test_Replication(rtt_dsxx::UnitTest &ut) {
     PASSMSG("Topology replication tests pass.");
   return;
 }
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 //------------------------------------------------------------------------------------------------//
 void test_DD(rtt_dsxx::UnitTest &ut) {

@@ -39,11 +39,15 @@ if [[ "${SITE_ID}" == "darwin" ]]; then
 #------------------------------------------------------------------------------#
 elif [[ "${SITE_ID}" =~ "ccscs" ]] || [[ "${SITE_ID}" =~ "ccsnet" ]] ; then
   run "module use --append /ccs/codes/radtran/Modules"
-  if ! [[ -f "/ccs/codes/radtran/Modules/draco/${DRACO_ENV}.lua" ]]; then
+  if ! [[ -f "/ccs/codes/radtran/Modules/draco/${DRACO_ENV}.lua"  ||
+        -f "/ccs/codes/radtran/Modules/${DRACO_ENV}.lua" ]]; then
     die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}"
   fi
-  run "module load draco/${DRACO_ENV}"
-
+  if [[ -f "/ccs/codes/radtran/Modules/draco/${DRACO_ENV}.lua" ]]; then
+    run "module load draco/${DRACO_ENV}"
+  elif [[ -f "/ccs/codes/radtran/Modules/${DRACO_ENV}.lua" ]]; then
+    run "module load ${DRACO_ENV}"
+  fi
   
 #------------------------------------------------------------------------------#
 # RZ systems (LLNL)

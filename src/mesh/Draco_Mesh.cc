@@ -101,7 +101,7 @@ Draco_Mesh::Draco_Mesh(
       num_faces_per_cell_, cell_to_node_linkage_, num_nodes_per_face_per_cell_, side_node_count_,
       side_to_node_linkage_, ghost_cell_type_, ghost_cell_to_node_linkage_);
 
-  // build cell-to-corner-cell layout (\todo: extend to 3D)
+  // build cell-to-corner-cell layout (\todo extend to 3D)
   if (dimension_ == 2) {
     compute_node_to_cell_linkage(ghost_cell_type_, ghost_cell_to_node_linkage_);
   }
@@ -603,7 +603,7 @@ void Draco_Mesh::compute_node_to_cell_linkage(
     return;
 
   //----------------------------------------------------------------------------------------------//
-  // \todo: Can this ghost data all gather procedure be split into sensible member functions?
+  // \todo Can this ghost data all gather procedure be split into sensible member functions?
   //
   // When domain-decomposed, the following creates a map of local nodes to all ghost cells.
   // The procedure makes use of existing ghost data across cell faces, as follows:

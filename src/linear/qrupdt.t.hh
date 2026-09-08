@@ -33,7 +33,7 @@ namespace rtt_linear {
  * \param u Update vector \f$u\f$.  Destroyed on return.
  * \param v Update vector \f$v\f$.  Destroyed on return.
  *
- * \todo Templatize on container element type
+ * \todo Templatize qrupdt on container element type
  */
 template <class RandomContainer>
 void qrupdt(RandomContainer &r, RandomContainer &qt, const unsigned n, RandomContainer &u,

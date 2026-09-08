@@ -215,7 +215,7 @@ void ensight_dump_test_unstr3d(rtt_dsxx::UnitTest &ut, std::string prefix, bool 
   }
 
   // Build path for the input file "cell_data_unstr3d"
-  // \todo: create this input file
+  // \todo create this input file
   std::string const cdInputFile = ut.getTestSourcePath() + std::string("cell_data_unstr3d");
   std::ifstream input(cdInputFile.c_str());
   if (!input)

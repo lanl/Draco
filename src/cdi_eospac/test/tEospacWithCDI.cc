@@ -1,7 +1,6 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   cdi_eospac/test/tEospacWithCDI.cc
- * \author Kelly Thompson
  * \brief  Implementation file for tEospacWithCDI
  * \note   Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -21,7 +20,8 @@
 
 using namespace std;
 
-namespace rtt_cdi_eospac_test {
+namespace {
+
 using rtt_dsxx::soft_equiv;
 
 //------------------------------------------------------------------------------------------------//
@@ -255,13 +255,13 @@ void eospac_with_cdi_test(rtt_dsxx::UnitTest &ut) {
 
 } // end of tests
 
-} // end of namespace rtt_cdi_eospac_test
+} // end of namespace
 
 //------------------------------------------------------------------------------------------------//
 int main(int argc, char *argv[]) {
   rtt_dsxx::ScalarUnitTest ut(argc, argv, rtt_dsxx::release);
   try {
-    rtt_cdi_eospac_test::eospac_with_cdi_test(ut);
+    eospac_with_cdi_test(ut);
   }
   UT_EPILOG(ut);
 }

@@ -1,7 +1,6 @@
 //--------------------------------------------*-C++-*---------------------------------------------//
 /*!
  * \file   cdi_CPEloss/Analytic_KP_Alpha_Eloss_Model.cc
- * \author Kendra P. Long, Ben R. Ryan
  * \brief  Analytic_KP_Alpha_Eloss_Model implementation file.
  * \note   Copyright (C) 2020-2026 Triad National Security, LLC., All rights reserved. */
 //------------------------------------------------------------------------------------------------//
@@ -15,17 +14,17 @@ namespace rtt_cdi_cpeloss {
 /*! \brief Calculate the eloss in units of shk^-1; T given in keV, ndens in a/cc, v0 in cm/shk
  *
  * The constants in this formula come directly from the fit in  Eq. (2) of
- * * Kirkpatrick, R. C. and Wheeler, J. A. (1981). ``The Physics of DT Ignition In Small Fusion
- *   Targets.'' Nuclear Fusion, 21(3):389–401.
+ *
+ * * Kirkpatrick, R. C. and Wheeler, J. A. (1981). "The Physics of DT Ignition In Small Fusion
+ *   Targets." Nuclear Fusion, 21(3):389–401.
  *
  * These constants are ONLY valid for alpha energy loss in DT gas.
  *
  * \param T material temperature in keV
  * \param ndens number density in atoms/cm^3
  * \param v incident particle speed in cm/shk
- * \param debye_length plasma Debye length (cm, unused) 
+ * \param debye_length plasma Debye length (cm, unused)
  * \return eloss stopping power in keV shk^-1
- *
  */
 double
 Analytic_KP_Alpha_Eloss_Model::calculate_eloss(const double T, const double ndens, const double v,
