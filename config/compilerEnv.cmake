@@ -306,6 +306,13 @@ macro(dbsSetupCompilers)
             endforeach()
 
             # TARGET: covrep
+            if(EXISTS "${PROJECT_SOURCE_DIR}/config/lcov-summary.cmake")
+              set(LCOV_SUM "${PROJECT_SOURCE_DIR}/config/lcov-summary.cmake")
+            elseif(EXISTS "${DRACO_CONFIG_DIR}/lcov-summary.cmake")
+              set(LCOV_SUM "${DRACO_CONFIG_DIR}/lcov-summary.cmake")
+            else()
+              message(FATAL_ERROR "Unable to located required file lcov-summary.cmake. Aborting")
+            endif()
             add_custom_command(
               OUTPUT "${PROJECT_BINARY_DIR}/covrep_target_always_out_of_date2.txt"
                      "${PROJECT_BINARY_DIR}/coverage.info" "${PROJECT_BINARY_DIR}/coverage.txt"
@@ -335,8 +342,7 @@ macro(dbsSetupCompilers)
               COMMAND
                 "${CMAKE_COMMAND}" "-DLCOV=${LCOV}"
                 "-DCOVERAGE_FILE=${PROJECT_BINARY_DIR}/coverage.info"
-                "-Doutput_file=${PROJECT_BINARY_DIR}/coverage.txt" "-DMODE=summary" -P
-                "${PROJECT_SOURCE_DIR}/config/lcov-summary.cmake"
+                "-Doutput_file=${PROJECT_BINARY_DIR}/coverage.txt" "-DMODE=summary" -P "${LCOV_SUM}"
               COMMAND "${CMAKE_COMMAND}" -E echo "==> Generating"
                       "${PROJECT_BINARY_DIR}/coverage-list.txt via lcov..."
               COMMAND
@@ -344,7 +350,7 @@ macro(dbsSetupCompilers)
                 "-DCOVERAGE_FILE=${PROJECT_BINARY_DIR}/coverage.info"
                 "-Doutput_file=${PROJECT_BINARY_DIR}/coverage-list.txt" "-DMODE=list"
                 "-DPROJECT_SOURCE_DIR=${PROJECT_SOURCE_DIR}" "-DIGNORE_LIST:STRING=${lcov_ignore2}"
-                -P "${PROJECT_SOURCE_DIR}/config/lcov-summary.cmake"
+                -P "${LCOV_SUM}"
               COMMAND "${CMAKE_COMMAND}" -E echo ""
               COMMAND
                 "${CMAKE_COMMAND}" -E echo
