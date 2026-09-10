@@ -133,6 +133,16 @@ ccs_deploy_rel_gcc16:
     EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=OFF
 
+ccscs_deploy_clangtidy:
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/llvm2215
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
+    EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
+      -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=OFF
+      -DDRACO_STATIC_ANALYZER=clang-tidy
+
 #--------------------------------------------------------------------------------------------------#
 # Deploy a versioned release (dvr)
 #--------------------------------------------------------------------------------------------------#
@@ -521,6 +531,16 @@ deb_gcc16_regress:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1610
     CTEST_NPROC: 40
+
+ccs_clangtidy_llvm:
+  stage: test
+  extends: .ccscs_nightly
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/llvm2215
+    EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_STATIC_ANALYZER=clang-tidy
+    FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
+    CTEST_BUILD_NAME: clang-tidy
 
 #--------------------------------------------------------------------------------------------------#
 # Re-deploy dependent projects
