@@ -122,12 +122,16 @@ ccs_deploy_deb_gcc16:
   variables:
     CMAKE_BUILD_TYPE: Debug
     DRACO_ENV: gcc1610
+    EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
+      -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=OFF
 
 ccs_deploy_rel_gcc16:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
     DRACO_ENV: gcc1610
+    EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
+      -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=OFF
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a versioned release (dvr)
