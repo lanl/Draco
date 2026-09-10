@@ -29,65 +29,6 @@
     # CI_DEBUG_TRACE: "true"
 
 #--------------------------------------------------------------------------------------------------#
-# MRs - linters
-#--------------------------------------------------------------------------------------------------#
-
-# darwin_clangtidy:
-#   extends: .darwin
-#   stage: lint
-#   allow_failure: true
-#   variables:
-#     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: draco/haswell-llvm1706-c
-#     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
-#     EXTRA_CMAKE_ARGS: -DDRACO_STATIC_ANALYZER=clang-tidy
-#     EXTRA_CTEST_ARGS: -R dsxx_tstRelease
-#   script:
-#     # Run everything under a bash shell.
-#     # Echo output to the screen and capture output to a file.
-#     # If the build command fails, report it and exit with an error code.
-#     # If clang-tidy warnings are found, fail the pipeline and save the log as an artifact.
-#     # Use grep -vE to ignore some warnings.
-#     - /bin/bash -l -c '
-#       LOG=clang-tidy-out.txt;
-#       ${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-run-tests.sh 2>&1 | tee ${LOG};
-#       num_warnings=$(grep -nE "(^|[[:space:]])warning:" "$LOG"
-#         | grep -cvE "j0 forced in submake|some_known_one");
-#       if [[ $num_warnings -gt 0 ]]; then
-#         echo "==> Found $num_warnings lint warnings from clang-tidy; Pipeline failed.";
-#         echo "==> See attached artifact $LOG for more details.";
-#         exit 1;
-#       fi;
-#       echo "==> Clang-tidy lint check was successful!"
-#       '
-#   artifacts:
-#     paths: [clang-tidy-out.txt]
-#     when: on_failure
-#     expire_in: 7d
-#   rules:
-#     - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
-#       when: never
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-
-# darwin_style_cxx:
-#   stage: lint
-#   extends: .darwin
-#   variables:
-#     CMAKE_BUILD_TYPE: Release
-#     DRACO_ENV: draco/haswell-gcc850
-#     CTEST_NPROC: 32
-#     MAXLOAD: 32
-#     ARCH: x86_64
-#     SCHEDULER_PARAMETERS: ${SP_${ARCH}}
-#   script:
-#     - /bin/bash -l -c "${CI_PROJECT_DIR}/.gitlab/ci/gitlab-ci-style-checks.sh"
-#   rules:
-#     - if: '$CI_MERGE_REQUEST_LABELS =~ /exclude_darwin/'
-#       when: never
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-#     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
-
-#--------------------------------------------------------------------------------------------------#
 # Deployment Jobs (run on develop after MRs are merged)
 #--------------------------------------------------------------------------------------------------#
 
