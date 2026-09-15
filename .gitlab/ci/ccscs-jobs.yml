@@ -48,7 +48,7 @@ ccs_deb_gcc_cxx23_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=23 -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-cxx23
@@ -58,13 +58,13 @@ ccs_deploy_rwdi_gcc:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
 
 ccs_deploy_c4_scalar:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
       -DCMAKE_C_FLAGS="-march=broadwell" -DCMAKE_Fortran_FLAGS="-march=broadwell"
@@ -73,25 +73,25 @@ ccs_deploy_deb_gcc:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
 
 ccs_deploy_rel_gcc:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
 
 ccs_deploy_rel_gcc:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
 
 ccs_deploy_fulldiag:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
@@ -102,7 +102,7 @@ ccs_deploy_gcov:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
     EXTRA_CMAKE_ARGS: -DCODE_COVERAGE=ON -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
@@ -111,7 +111,7 @@ ccs_deploy_valgrind:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
     EXTRA_CMAKE_ARGS: -DENABLE_MEMORYCHECK=ON
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
@@ -121,7 +121,7 @@ ccs_deploy_deb_gcc16:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1610
+    DRACO_ENV: draco/gcc1610
     EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=OFF
 
@@ -129,7 +129,7 @@ ccs_deploy_rel_gcc16:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1610
+    DRACO_ENV: draco/gcc1610
     EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=OFF
 
@@ -180,13 +180,13 @@ ccs_dvr_deb_gcc:
   extends: .ccscs_dvr
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
 
 ccs_dvr_rel_gcc:
   extends: .ccscs_dvr
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_ROUNDOFF_MODE=FAST -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
 
@@ -194,13 +194,13 @@ ccs_dvr_deb_gcc16:
   extends: .ccscs_dvr
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1610
+    DRACO_ENV: draco/gcc1610
 
 ccs_dvr_rel_gcc16:
   extends: .ccscs_dvr
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1610
+    DRACO_ENV: draco/gcc1610
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_ROUNDOFF_MODE=FAST -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
 
@@ -234,14 +234,14 @@ ccs_deb_gcc:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
 
 ccs_c4_scalar:
   stage: fasttest
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
     CTEST_NPROC: 40
 
@@ -250,7 +250,7 @@ ccs_deb_gcc16:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1610
+    DRACO_ENV: draco/gcc1610
 
 # ---------- lint TEST (only starts if all FASTTEST pass) ---------- #
 
@@ -259,7 +259,7 @@ ccs_deb_no_tpl:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
   script:
     - module use --append /ccs/opt/modulefiles
     - module use /ccs/opt/vendors/dracose-2026.08.27/spack/share/spack/lmod/linux-rhel8-x86_64/Core
@@ -279,7 +279,7 @@ ccs_autodoc:
   allow_failure: true
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1610
+    DRACO_ENV: draco/gcc1610
     AUTODOC: "ON"
 
 ccs_clangtidy:
@@ -332,7 +332,7 @@ ccs_rel_gcc:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     CTEST_NPROC: 40
 
 ccs_rwdi_gcc:
@@ -340,7 +340,7 @@ ccs_rwdi_gcc:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     CTEST_NPROC: 40
 
 ccs_fulldiag:
@@ -348,7 +348,7 @@ ccs_fulldiag:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
@@ -366,7 +366,7 @@ ccs_gcov:
       - build/coverage.txt
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
     EXTRA_CMAKE_ARGS: -G Ninja -DCODE_COVERAGE=ON
     CTEST_NPROC: 20
@@ -376,7 +376,7 @@ ccs_deb_gcc_cxx23:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=23
     CTEST_NPROC: 40
 
@@ -385,7 +385,7 @@ ccs_deb_gcc_cxx23:
 #   extends: .ccscs_merge
 #   variables:
 #     CMAKE_BUILD_TYPE: Debug
-#     DRACO_ENV: gcc1330
+#     DRACO_ENV: draco/gcc1330
 #     EXTRA_CMAKE_ARGS: -GNinja -DENABLE_MEMORYCHECK=ON
 #       -DCMAKE_C_FLAGS="-march=broadwell"
 #       -DCMAKE_Fortran_FLAGS="-march=broadwell"
@@ -398,7 +398,7 @@ ccs_rel_gcc16:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1610
+    DRACO_ENV: draco/gcc1610
     CTEST_NPROC: 40
 
 ccs_rwdi_gcc16:
@@ -406,7 +406,7 @@ ccs_rwdi_gcc16:
   extends: .ccscs_merge
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: gcc1610
+    DRACO_ENV: draco/gcc1610
     CTEST_NPROC: 40
 
 ccs_debug_llvm:
@@ -437,21 +437,21 @@ rel_gcc_regress:
   extends: .ccscs_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     CTEST_NPROC: 40
 
 deb_gcc_regress:
   extends: .ccscs_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     CTEST_NPROC: 40
 
 deb_gcc_cxx23_regress:
   extends: .ccscs_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=23
     CTEST_NPROC: 40
 
@@ -459,7 +459,7 @@ deb_gcc_scalar_regress:
   extends: .ccscs_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_C4=SCALAR
     CTEST_NPROC: 40
@@ -469,7 +469,7 @@ fulldiag_regress:
   extends: .ccscs_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
@@ -482,7 +482,7 @@ gcov_regress:
   coverage: '/Coverage:\s\d+\.\d+%/'
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
     EXTRA_CMAKE_ARGS: -DCODE_COVERAGE=ON
     CTEST_NPROC: 40
@@ -492,7 +492,7 @@ valgrind_regress:
   extends: .ccscs_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
     MEMCHECK_CONFIGURATION: "ON"
     # Use broadwell arch flag to prevent use of avx512 instructions that break valgrind
@@ -509,7 +509,7 @@ pages:
   extends: .ccscs_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1330
+    DRACO_ENV: draco/gcc1330
     DEPLOY: "TRUE"
     AUTODOC: "ON"
     AUTODOCDIR: "${CI_PROJECT_DIR}/public"
@@ -522,14 +522,14 @@ rel_gcc16_regress:
   extends: .ccscs_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: gcc1610
+    DRACO_ENV: draco/gcc1610
     CTEST_NPROC: 40
 
 deb_gcc16_regress:
   extends: .ccscs_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: gcc1610
+    DRACO_ENV: draco/gcc1610
     CTEST_NPROC: 40
 
 ccs_clangtidy_llvm:
