@@ -192,6 +192,11 @@ echo " "
 [[ -n "${AUTODOCDIR:-}" && -d "$AUTODOCDIR" && "$AUTODOCDIR" == /scratch/jacamar-ci/* ]] && \
   echo "Deleting $AUTODOCDIR" && rm -rf -- "$AUTODOCDIR"
 
+# Ensure we are starting from a clean build directory.  Left over autodoc files can cause failures.
+[[ -n "${DRACO_BINARY_DIR:-}" && -d "$DRACO_BINARY_DIR/src" && \
+  "$DRACO_BINARY_DIR" == /scratch/jacamar-ci/* ]] && \
+  echo "Deleting $DRACO_BINARY_DIR/src" && rm -rf -- "$DRACO_BINARY_DIR/src"
+
 if [[ "${cdash_upload_auth_token}x" == "x" ]]; then
   # shellcheck disable=2154
   die "environment variable cdash_upload_auth_token was not set. Aborting"
