@@ -14,6 +14,8 @@ file(GLOB headers *.hh)
 list(APPEND headers ${PROJECT_BINARY_DIR}/cdi_ndi/config.h)
 set(deps Lib_cdi Lib_units)
 
+option(DUMP_DRACO_TN_DATA "Dump reference and multigroup TN sourcing data to file?" OFF)
+
 # If NDI is found, set the associated variables. Otherwise, the cdi_ndi lib will be built with
 # stubbed-out routines.
 if(TARGET NDI::ndi)

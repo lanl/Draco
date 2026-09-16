@@ -12,6 +12,7 @@
 #include "cdi_ndi/config.h" // Definition of NDI_FOUND
 
 #include "dsxx/Assert.hh"
+#include "dsxx/DracoStrings.hh"
 #include "dsxx/path.hh"
 #include <algorithm>
 #include <limits>
@@ -87,6 +88,15 @@ public:
 
   //! Helper function to format a warning message.
   static void warn_ndi_version_mismatch(std::string const &gendir);
+
+  //! Print out/throw an NDI error code if non-zero
+  void ndi_throw_rt_error(int const ndi_err) {
+    if (ndi_err != 0) {
+      std::string errmsg("NDI error code: ");
+      errmsg += rtt_dsxx::to_string(ndi_err);
+      throw std::runtime_error(errmsg);
+    }
+  }
 };
 
 } // namespace rtt_cdi_ndi

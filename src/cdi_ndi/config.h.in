@@ -30,6 +30,9 @@
 #cmakedefine NDI_MAJOR @NDI_MAJOR@
 #cmakedefine NDI_MINOR @NDI_MINOR@
 
+/* flag to dump TN sourcing data to file for plotting */
+#cmakedefine DRACO_DUMP_TN_DATA @DRACO_DUMP_TN_DATA@ 
+
 #endif // rtt_cdi_ndi_config_h
 
 /*------------------------------------------------------------------------------------------------*/

@@ -28,7 +28,7 @@ namespace rtt_predict {
 //================================================================================================//
 void draco_nn::load_network(const std::string &net_file) {
   std::ifstream in(net_file, std::ofstream::binary);
-  Insist(in.good(), "Draco NN file -> " + net_file + " dose not exist!!!");
+  Insist(in.good(), "Draco NN file -> " + net_file + " does not exist!!!");
   int test_int;
   in.read(reinterpret_cast<char *>(&test_int), sizeof(int));
   Insist(test_int == 1,
