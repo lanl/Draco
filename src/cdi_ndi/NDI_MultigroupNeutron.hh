@@ -198,15 +198,6 @@ private:
     return static_cast<int>(grid.size()) - 1 - bin;
   }
 
-  //! NDI
-  void ndi_throw_rt_error(int const ndi_err) {
-    if (ndi_err != 0) {
-      std::string errmsg("NDI error code: ");
-      errmsg += rtt_dsxx::to_string(ndi_err);
-      throw std::runtime_error(errmsg);
-    }
-  }
-
   //! Map course group onto fine group
   [[nodiscard]] std::vector<double> remapCoarseOntoFine(const std::vector<double> &coarse_bounds,
                                                         const std::vector<double> &fine_bounds) {
