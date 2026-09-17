@@ -208,9 +208,9 @@ void NDI_TNReaction::load_ndi(const std::vector<double> &input_kev_bounds) {
   if (bounds_passed) {
     Check(input_kev_bounds.size() > 0);
     // Make a copy of the input bounds so you can reverse/convert units.
-    input_mev_bounds = input_kev_bounds;
-    std::transform(input_kev_bounds.begin(), input_kev_bounds.end(), input_mev_bounds.begin(),
-                   [](double x) { return x / 1000.0; });
+    input_mev_bounds.resize(input_kev_bounds.size());
+    std::ranges::transform(input_kev_bounds, input_mev_bounds.begin(),
+                           [](double x) noexcept { return x / 1000.0; });
 
     // If passed, check that mg_e_bounds is monotonically decreasing (NDI requirement)
     Insist(
@@ -273,7 +273,7 @@ void NDI_TNReaction::load_ndi(const std::vector<double> &input_kev_bounds) {
     //! Check that number of groups is consistent
     int num_groups_int;
     ndi_error = NDI2_get_int_val(dataset_handle, NDI_NUM_GRPS, &num_groups_int);
-    Check(num_groups_int == static_cast<int>(prod_mg_e_bounds[n].size() - 1));
+    Check(std::cmp_equal(num_groups_int, prod_mg_e_bounds[n].size() - 1));
     ndi_throw_rt_error(ndi_error);
     Require(num_groups_int > 0);
     group_energies[n].resize(num_groups[n]);
@@ -392,7 +392,7 @@ std::vector<double> NDI_TNReaction::compute_mg_bounds_for_product(const int &ndi
   // E_1,N PDF_1,N E_2,N PDF_2,N E_3,N PDF_3,N ...
   const auto zaid = products[prod_idx];
   std::ofstream datafile;
-  datafile.open(std::string("full_tdep_bounds_reference_" + std::to_string(zaid)));
+  datafile.open("full_tdep_bounds_reference_" + std::to_string(zaid));
   // Write the temperature values
   datafile << std::scientific << std::setprecision(4);
   datafile << "# T(MeV): ";
@@ -457,7 +457,7 @@ std::vector<double> NDI_TNReaction::compute_mg_bounds_for_product(const int &ndi
         std::accumulate(cont_dist_pts[mid_t].begin(), cont_dist_pts[mid_t].end(), 0.0);
     const double low_cdf_val{cdf_norm * (0.5 - 0.5 * midT_CDF_fr)};
     const double hi_cdf_val{cdf_norm * (0.5 + 0.5 * midT_CDF_fr)};
-    const auto [minit, maxit] = std::minmax_element(final_bounds.begin(), final_bounds.end());
+    const auto [minit, maxit] = std::ranges::minmax_element(final_bounds);
     const double min{*minit};
     const double max{*maxit};
     while (!done) {
@@ -480,7 +480,7 @@ std::vector<double> NDI_TNReaction::compute_mg_bounds_for_product(const int &ndi
   // Finally, we consider the highest temperature point to build the higher/lower energy groups
   {
     const size_t last_t{cont_dist_pts.size() - 1};
-    const auto [minit, maxit] = std::minmax_element(final_bounds.begin(), final_bounds.end());
+    const auto [minit, maxit] = std::ranges::minmax_element(final_bounds);
     const double min{*minit};
     const double max{*maxit};
     // Push back the first (lowest) bound
@@ -494,7 +494,7 @@ std::vector<double> NDI_TNReaction::compute_mg_bounds_for_product(const int &ndi
     // Push back the last (highest) bound
     final_bounds.push_back(2.0 * cont_energy_pts[last_t][cont_energy_pts[last_t].size() - 1]);
     // Sort these into descending order:
-    std::sort(final_bounds.begin(), final_bounds.end(), std::greater<>());
+    std::ranges::sort(final_bounds, std::greater<>());
   }
   Insist(rtt_dsxx::is_strict_monotonic_decreasing(final_bounds.begin(), final_bounds.end()),
          "Product multigroup bounds not strictly monotonic decreasing!");
