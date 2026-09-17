@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <memory>
 #include <string>
+#include <utility>
 
 namespace rtt_cdi_ndi {
 
@@ -101,7 +102,7 @@ public:
   [[nodiscard]] inline int get_num_groups(const int pzaid) const {
     Require(product_zaid_to_index.count(pzaid) == 1);
     const int pidx = product_zaid_to_index.at(pzaid);
-    Check(pidx < static_cast<int>(prod_mg_e_bounds.size()));
+    Check(std::cmp_less(pidx, prod_mg_e_bounds.size()));
     return num_groups[pidx];
   }
 
@@ -109,7 +110,7 @@ public:
   [[nodiscard]] inline std::vector<double> get_mg_e_bounds(const int pzaid) const & {
     Require(product_zaid_to_index.count(pzaid) == 1);
     const int pidx = product_zaid_to_index.at(pzaid);
-    Check(pidx < static_cast<int>(prod_mg_e_bounds.size()));
+    Check(std::cmp_less(pidx, prod_mg_e_bounds.size()));
     return prod_mg_e_bounds[pidx];
   }
 
@@ -117,7 +118,7 @@ public:
   [[nodiscard]] inline std::vector<double> get_group_energies(const int pzaid) const & {
     Require(product_zaid_to_index.count(pzaid) == 1);
     const int pidx = product_zaid_to_index.at(pzaid);
-    Check(pidx < static_cast<int>(group_energies.size()));
+    Check(std::cmp_less(pidx, group_energies.size()));
     return group_energies[pidx];
   }
 
