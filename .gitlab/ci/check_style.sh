@@ -436,8 +436,9 @@ FILE_EXTS=".c .cc .cmake .h .hh .in .f90 .F90 .f .F .py .txt"
 #FILE_ENDINGS_INCLUDE="_f.h _f77.h _f90.h"
 FILE_ENDINGS_EXCLUDE=".in"
 FILE_ENDINGS_EXCLUDE+="ChangeLog check_style.sh fpe_trap.hh imc_info.cc kat_c.cc "
-FILE_ENDINGS_EXCLUDE+="kat_dev_execute.h kat_main.h Release.cc Release.hh rngNxW.h tDracoInfo.py "
-FILE_ENDINGS_EXCLUDE+="terminal.h time_initkeyctr.h util_cpu.h util_expandtpl.h util.h ut_gsl.c"
+FILE_ENDINGS_EXCLUDE+="kat_dev_execute.h kat_main.h mainpage.dcc.in Release.cc Release.hh rngNxW.h "
+FILE_ENDINGS_EXCLUDE+="tDracoInfo.py terminal.h time_initkeyctr.h util_cpu.h util_expandtpl.h "
+FILE_ENDINGS_EXCLUDE+="util.h ut_gsl.c"
 
 export FILE_EXTS FILE_ENDINGS_EXCLUDE
 
