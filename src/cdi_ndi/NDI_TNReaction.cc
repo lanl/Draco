@@ -53,6 +53,11 @@ NDI_TNReaction::NDI_TNReaction(const std::string &gendir_in, const std::string &
 
   if (mg_e_bounds_in.size() > 0) {
     bounds_passed = true;
+
+    // If passed, check that mg_e_bounds is monotonically decreasing (NDI requirement)
+    Insist(rtt_dsxx::is_strict_monotonic_decreasing(mg_e_bounds_in.begin(), mg_e_bounds_in.end()),
+           "Product multigroup bounds not strictly monotonic decreasing!");
+    Insist(mg_e_bounds_in.back() > 0.0, "Negative product multigroup bounds!");
   }
 
   load_ndi(mg_e_bounds_in);
@@ -211,13 +216,6 @@ void NDI_TNReaction::load_ndi(const std::vector<double> &input_kev_bounds) {
     input_mev_bounds.resize(input_kev_bounds.size());
     std::ranges::transform(input_kev_bounds, input_mev_bounds.begin(),
                            [](double x) noexcept { return x / 1000.0; });
-
-    // If passed, check that mg_e_bounds is monotonically decreasing (NDI requirement)
-    Insist(
-        rtt_dsxx::is_strict_monotonic_decreasing(input_mev_bounds.begin(), input_mev_bounds.end()),
-        "Product multigroup bounds not strictly monotonic decreasing!");
-    Insist(input_mev_bounds.back() > 0, "Negative product multigroup bounds!");
-
   } // else, bounds will be dynamically determined per-product later.
 
   //! Loop over reaction products
@@ -298,7 +296,6 @@ void NDI_TNReaction::load_ndi(const std::vector<double> &input_kev_bounds) {
     } // END OF TEMPERATURE LOOP
 
 #ifdef DRACO_DUMP_TN_DATA
-    std::cout << "!!! Hey! We made it in here! " << std::endl;
     // Option to print out the product-dependent dynamically determined bounds
     // This data shares a single set of MG bounds, so the format is:
     //      Temp_1  Temp_2    Temp_3  ...
