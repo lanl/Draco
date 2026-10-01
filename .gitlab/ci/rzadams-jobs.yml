@@ -27,6 +27,7 @@
     CTEST_SITE: ${SITE_ID}
     CTEST_NPROC: 64
     SCHEDULER_PARAMETERS: -N 1 --begin-time=+5s
+    LLNL_FLUX_SCHEDULER_PARAMETERS: -N 1 --begin-time=+5s
 
 #--------------------------------------------------------------------------------------------------#
 # Deployment Jobs (run on develop after MRs are merged)
