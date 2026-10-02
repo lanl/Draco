@@ -22,6 +22,7 @@
   tags:
     - rzadams
     - batch
+    - flux
   variables:
     SITE_ID: rzadams
     CTEST_SITE: ${SITE_ID}
