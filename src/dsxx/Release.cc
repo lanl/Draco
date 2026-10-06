@@ -98,52 +98,52 @@ const std::string author_list(bool const use_doxygen_formatting) {
   std::stringstream alist;
 
   mmdevs current_developers;
-  // not totally fair... KT got credit for LOC when svn repository was converted to git.
-  current_developers.insert(fomdev(167131, "Kelly G. Thompson"));
-  current_developers.insert(fomdev(19162, "Matt A. Cleveland"));
-  current_developers.insert(fomdev(9199, "Ryan T. Wollaeger"));
-  current_developers.insert(fomdev(7256, "HyeongKae Park"));
-  current_developers.insert(fomdev(4900, "Kendra P. Long"));
-  current_developers.insert(fomdev(3375, "James S. Warsa"));
-  current_developers.insert(fomdev(3316, "Alex R. Long"));
-  current_developers.insert(fomdev(1841, "Kyle S. Beling"));
-  current_developers.insert(fomdev(319, "Jae H. Chang"));
-  current_developers.insert(fomdev(221, "Jeff R. Haack"));
+  current_developers.insert(fomdev(12965, "Matt A. Cleveland"));
+  current_developers.insert(fomdev(7812, "HyeongKae Park"));
+  current_developers.insert(fomdev(6575, "Ryan T. Wollaeger"));
+  current_developers.insert(fomdev(4222, "Kyle S. Beling"));
+  current_developers.insert(fomdev(4177, "Kendra P. Long"));
+  current_developers.insert(fomdev(3096, "James S. Warsa"));
+  current_developers.insert(fomdev(1045, "Alex R. Long"));
+  current_developers.insert(fomdev(170, "Jae H. Chang"));
+  current_developers.insert(fomdev(76, "Jeff R. Haack"));
 
   mmdevs prior_developers;
 
-  prior_developers.insert(fomdev(21561, "Kent G. Budge"));
-  prior_developers.insert(fomdev(5013, "Ben R. Ryan"));
-  prior_developers.insert(fomdev(3477, "Gabriel M. Rockefeller"));
-  prior_developers.insert(fomdev(1426, "Allan B. Wollaber"));
-  prior_developers.insert(fomdev(554, "Tim Kelley"));
-  prior_developers.insert(fomdev(338, "Rob B. Lowrie"));
-  prior_developers.insert(fomdev(252, "Paul W. Talbot"));
-  prior_developers.insert(fomdev(155, "Katherine J. Wang"));
-  prior_developers.insert(fomdev(133, "Andrew T. Till"));
+  // not totally fair... KT got credit for LOC when svn repository was converted to git.
+  prior_developers.insert(fomdev(113268, "Kelly G. Thompson"));
+  prior_developers.insert(fomdev(20626, "Kent G. Budge"));
+  prior_developers.insert(fomdev(3264, "Gabriel M. Rockefeller"));
+  prior_developers.insert(fomdev(3059, "Ben R. Ryan"));
+  prior_developers.insert(fomdev(1096, "Allan B. Wollaber"));
+  prior_developers.insert(fomdev(495, "Tim Kelley"));
+  prior_developers.insert(fomdev(383, "Rob B. Lowrie"));
+  prior_developers.insert(fomdev(213, "Paul W. Talbot"));
+  prior_developers.insert(fomdev(150, "Katherine J. Wang"));
+  prior_developers.insert(fomdev(113, "Andrew T. Till"));
   prior_developers.insert(fomdev(90, "Ondrej Certik"));
-  prior_developers.insert(fomdev(62, "Peter Ahrens"));
+  prior_developers.insert(fomdev(61, "Peter Ahrens"));
 
   // Previous authors with no current LOC attribution (less than 10):
   prior_developers.insert(fomdev(9, "Massimiliano Rosa"));
-  prior_developers.insert(fomdev(9, "Joseph Coale"));
-  prior_developers.insert(fomdev(7, "David A. Dixon"));
-  prior_developers.insert(fomdev(6, "Daniel Holladay"));
-  prior_developers.insert(fomdev(1, "Howard Pritchard"));
-  prior_developers.insert(fomdev(1, "Todd J. Urbatsch"));
-  prior_developers.insert(fomdev(1, "Jeff D. Densmore"));
-  prior_developers.insert(fomdev(1, "Jeff Furnish"));
-  prior_developers.insert(fomdev(1, "John McGhee"));
-  prior_developers.insert(fomdev(1, "Kris C. Garrett"));
-  prior_developers.insert(fomdev(1, "Mike Buksas"));
-  prior_developers.insert(fomdev(1, "Nick Myers"));
-  prior_developers.insert(fomdev(1, "Paul Henning"));
-  prior_developers.insert(fomdev(1, "Randy Roberts"));
-  prior_developers.insert(fomdev(1, "Seth Johnson"));
-  prior_developers.insert(fomdev(1, "Todd Adams"));
+  prior_developers.insert(fomdev(8, "David A. Dixon"));
+  prior_developers.insert(fomdev(7, "Joseph Coale"));
+  prior_developers.insert(fomdev(7, "Daniel Holladay"));
   prior_developers.insert(fomdev(1, "Tom Evans"));
-  prior_developers.insert(fomdev(1, "Lori Pritchett-Sheats"));
+  prior_developers.insert(fomdev(1, "Todd J. Urbatsch"));
+  prior_developers.insert(fomdev(1, "Todd Adams"));
+  prior_developers.insert(fomdev(1, "Seth Johnson"));
   prior_developers.insert(fomdev(1, "Seth D. Cook"));
+  prior_developers.insert(fomdev(1, "Randy Roberts"));
+  prior_developers.insert(fomdev(1, "Paul Henning"));
+  prior_developers.insert(fomdev(1, "Nick Myers"));
+  prior_developers.insert(fomdev(1, "Mike Buksas"));
+  prior_developers.insert(fomdev(1, "Lori Pritchett-Sheats"));
+  prior_developers.insert(fomdev(1, "Kris C. Garrett"));
+  prior_developers.insert(fomdev(1, "John McGhee"));
+  prior_developers.insert(fomdev(1, "Jeff Furnish"));
+  prior_developers.insert(fomdev(1, "Jeff D. Densmore"));
+  prior_developers.insert(fomdev(1, "Howard Pritchard"));
 
   size_t maxlinelen(100);
   std::string line_name("CAI-2 Draco Team: ");
