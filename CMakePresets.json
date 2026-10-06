@@ -341,6 +341,11 @@
       "targets": ["install"]
     },
     {
+      "name": "linux-debug-clang-tidy-install",
+      "configurePreset": "linux-debug-clang-tidy",
+      "targets": ["install"]
+    },
+    {
       "name": "linux-release-install",
       "configurePreset": "linux-release",
       "targets": ["install"]
@@ -621,6 +626,15 @@
         { "type": "build", "name": "linux-debug" },
         { "type": "test", "name": "linux-debug" },
         { "type": "build", "name": "linux-debug-install" }
+      ]
+    },
+    {
+      "name": "linux-debug-clang-tidy",
+      "steps": [
+        { "type": "configure", "name": "linux-debug-clang-tidy" },
+        { "type": "build", "name": "linux-debug-clang-tidy" },
+        { "type": "test", "name": "linux-debug-clang-tidy" },
+        { "type": "build", "name": "linux-debug-clang-tidy-install" }
       ]
     },
     {
