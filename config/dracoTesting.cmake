@@ -10,6 +10,9 @@ include(FeatureSummary)
 option(BUILD_TESTING "Should we compile the tests?" ON)
 add_feature_info(BUILD_TESTING BUILD_TESTING
                  "Turn off to prevent the compilation of unit tests (ctest).")
+option(RUN_SLOW_TESTS "Should we compile slow/large tests?" OFF)
+add_feature_info(RUN_SLOW_TESTS RUN_SLOW_TESTS
+                 "Turn on to compile slow tests that may take significant time or memory.")
 
 # enable ctest funcitons and run ctest in parallel if we have multiple cores.
 if(BUILD_TESTING)
