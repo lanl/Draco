@@ -62,6 +62,8 @@ elif [[ "${SITE_ID}" =~ "rzvernal" ]] || [[ "${SITE_ID}" =~ "rzadams" ]]; then
     *) die ".gitlab/ci/environments.sh :: DRACO_ENV not recognized, DRACO_ENV = ${DRACO_ENV}" ;;
   esac
   run "module load ${DRACO_ENV}"
+  #disable gtl env var if we are doing a cpu build in an env that default sets the runtime variable
+  [[ "${EXTRA_CMAKE_ARGS}" =~ "DRACO_USE_GPU=OFF" && -v MPICH_GPU_SUPPORT_ENABLED && "$MPICH_GPU_SUPPORT_ENABLED" == "1" ]] && export MPICH_GPU_SUPPORT_ENABLED=0
 
 #------------------------------------------------------------------------------#
 # Rocinante

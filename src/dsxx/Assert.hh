@@ -271,7 +271,7 @@ std::string verbose_error(std::string const &message);
  * On when DBC & 4 is true.
  */
 /*!
- * \def Insist(condition, message)
+* \def Insist(condition, message)
  *
  * Inviolate check macro.  Insist is always on.
  */

@@ -19,6 +19,10 @@
 #include "c4/C4_sys_times.h"
 #include "c4/QuoWrapper.hh"
 
+#if defined(DRACO_USE_MPI_GPU_AWARE) and defined(HIP_ARCHITECTURES)
+#include <mutex>
+#endif
+
 namespace rtt_c4 {
 
 //------------------------------------------------------------------------------------------------//
@@ -42,12 +46,26 @@ const int any_source = MPI_ANY_SOURCE;
 
 const int proc_null = MPI_PROC_NULL;
 
+#if defined(DRACO_USE_MPI_GPU_AWARE) and defined(HIP_ARCHITECTURES)
+static std::once_flag check_for_gtl;
+#endif
 //------------------------------------------------------------------------------------------------//
 // SETUP FUNCTIONS
 //------------------------------------------------------------------------------------------------//
 
 int initialize(int &argc, char **&argv, int required) {
   int provided;
+  //check that gpu-aware is desired and whether we are on a hip system
+  //hopefully looking for HIP_ARCHITECTURES should be enough
+  //nvidia systems do not need to set this env var
+#if defined(DRACO_USE_MPI_GPU_AWARE) and defined(HIP_ARCHITECTURES)
+  std::call_once(check_for_gtl, []() {
+    const char *gtl_env_value = std::getenv("MPICH_GPU_SUPPORT_ENABLED");
+    bool gpu_support_enabled = (gtl_env_value != nullptr) && std::string(gtl_env_value) == "1";
+    Insist(gpu_support_enabled, "TRT codes were configured with GPU-aware MPI, please set the "
+                                "environment variable MPICH_GPU_SUPPORT_ENABLED=1");
+  });
+#endif
   int const result = MPI_Init_thread(&argc, &argv, required, &provided);
   initialized = (result == MPI_SUCCESS);
   Check(initialized);

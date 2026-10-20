@@ -29,6 +29,7 @@
     CTEST_NPROC: 64
     SCHEDULER_PARAMETERS: -N 1 --begin-time=+5s
     LLNL_FLUX_SCHEDULER_PARAMETERS: -N 1 --begin-time=+5s
+    MPICH_GPU_SUPPORT_ENABLED: 1
 
 #--------------------------------------------------------------------------------------------------#
 # Deployment Jobs (run on develop after MRs are merged)
@@ -153,16 +154,6 @@ rzadams_deb_amdclang_regress:
     CTEST_BUILD_NAME: "lapse301-amdclang-${CMAKE_BUILD_TYPE}"
     DRACO_ENV: "lapse/3.0.1-amdclang"
     CMAKE_BUILD_TYPE: Debug
-
-rzadams_deb_amdclang_regress_gpuaware:
-  stage: test
-  extends: .rzadams_nightly
-  variables:
-    CTEST_BUILD_NAME: "lapse301-amdclang-${CMAKE_BUILD_TYPE}-gpuaware"
-    DRACO_ENV: "lapse/3.0.1-amdclang"
-    CMAKE_BUILD_TYPE: Debug
-    EXTRA_CMAKE_ARGS: -GNinja -DDRACO_USE_GPU=ON -DUSE_OPENMP=OFF -DUSE_GPU_AWARE=ON
-    MPICH_GPU_SUPPORT_ENABLED: 1
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/rzadams-jobs.yml

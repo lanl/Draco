@@ -877,6 +877,10 @@ macro(dbsSetupCuda)
     set(HAVE_GPU ON)
     # User option to disable Cuda, even when it is available.
     option(DRACO_USE_GPU "Use Cuda|Hip?" ON)
+    # for now just do this on amd systems
+    if(_LANGUAGES_ MATCHES HIP)
+      option(DRACO_USE_MPI_GPU_AWARE "Use GTL Libraries for GPU-aware MPI" ON)
+    endif()
   endif()
 
   # Save the results

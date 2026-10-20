@@ -46,6 +46,8 @@ if((${CMAKE_GENERATOR} MATCHES "Unix Makefiles" OR ${CMAKE_GENERATOR} MATCHES "N
     "$ENV{LOADEDMODULES}" MATCHES "rocm"
     OR DEFINED ENV{HIPCXX}
     OR DEFINED CMAKE_HIP_COMPILER)
+    # this pulls in hip stuff if it sees it, even if you don't eventuall end up building hip
+    # features
     if((DEFINED DRACO_USE_GPU AND DRACO_USE_GPU) OR NOT DEFINED DRACO_USE_GPU)
       enable_language(HIP OPTIONAL)
       if(CMAKE_HIP_COMPILER MATCHES "CC")
@@ -103,11 +105,6 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.30.0")
   cmake_policy(SET CMP0167 OLD)
 endif()
 
-# Find any globally required libraries
-include(FeatureSummary)
-include(vendor_libraries)
-setupvendorlibraries()
-
 # Set compiler options
 include(compilerEnv)
 dbssetupcompilers()
@@ -118,6 +115,10 @@ dbssetupprofilertools()
 dbssetupstaticanalyzers()
 dbssetupstdtargetprops()
 
+# Find any globally required libraries
+include(FeatureSummary)
+include(vendor_libraries)
+setupvendorlibraries()
 #
 # Build Draco components:
 #

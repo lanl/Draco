@@ -391,9 +391,6 @@ Looking for Draco...\")
   #   when using flags '-Werror -Weverything'.
   # include(vendor_libraries)
 
-  # Provide targets for MPI, Metis, etc.
-  setupVendorLibraries()
-
   # Set compiler options
   include(compilerEnv)
   dbsSetupCxx()
@@ -401,6 +398,10 @@ Looking for Draco...\")
   dbsSetupCuda()
   dbsSetupProfilerTools()
   dbssetupstdtargetprops()
+
+  # Provide targets for MPI, Metis, etc.
+  setupVendorLibraries()
+
 
   # CMake macros like 'add_component_library' and 'add_component_executable'
   include(component_macros)
