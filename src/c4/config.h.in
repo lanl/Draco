@@ -3,7 +3,7 @@
  * Thomas M. Evans
  * Fri Jan  8 14:54:44 1999
  * Defines necessary for the C4 package
- * Copyright (C) 2016-2020 Triad National Security, all rights reserved. */
+ * Copyright (C) 2010-2026 Triad National Security, LLC., All rights reserved. */
 /*------------------------------------------------------------------------------------------------*/
 
 #ifndef rtt_c4_config_h
@@ -19,6 +19,8 @@
 #cmakedefine C4_SCALAR
 /* C4_MPI */
 #cmakedefine C4_MPI
+
+#cmakedefine DRACO_USE_MPI_GPU_AWARE
 
 /* CMake binary directory */
 #define CMAKE_C4_BINARY_DIR "@PROJECT_BINARY_DIR@"

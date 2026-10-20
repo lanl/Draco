@@ -364,11 +364,21 @@ macro(setupCrayMPI)
   #   with other parallel steps.
   # * --hint=nomultithread Disable use of hyperthreads (use only physical cores)
 
-  # If you want to enable GPU-aware MPI in draco, use the cmake option -DUSE_GPU_AWARE on configure.
-  # To use it at runtime, you will also need to set the env variable MPICH_GPU_SUPPORT_ENABLED=1.
-  # For CI jobs that aren't grabbing these settings from the host we'll need to set both, but this
-  # also allows for the situation where we can build with it but not use it. This soup of settings
-  # and env vars is confusing, but the most important cases are
+  # Draco will automatically look for the gtl libraries on hip systems with cray-mpich. To disable
+  # this check, configure with DRACO_USE_MPI_GPU_AWARE=0.
+
+  # If gpu-aware is enabled, set the runtime environment variable MPICH_GPU_SUPPORT_ENABLED=1 LAP
+  # sets this as part of loading their environment. EAP will check if it linked in gtl at its own
+  # configure and automaticall set this env var before initializing MPI if it is not already set.
+  # For CI jobs that aren't grabbing these settings from the host we will need to set it ourselves
+
+  # ---------------------------------------------------------------------------------------------
+  # Note that if you are using a gpu build of tpetra trilinos on MI300 this env var HAS to be set
+  # annoyingly it assumes that gtl is linked into your binary but does not link it itself
+  # ---------------------------------------------------------------------------------------------
+
+  # Depending on what combination of linking and env vars you can end up in several situations that
+  # can give cryptic errors, the most important cases are:
 
   # If something in the binary links in -lmpi_gtl_hsa , i.e. GPU-aware MPI
 
@@ -391,11 +401,14 @@ macro(setupCrayMPI)
   # * MPI can only touch buffers on the CPU in this case
 
   if("${MPI_FLAVOR}" MATCHES "cray")
-    if(DEFINED USE_GPU_AWARE AND USE_GPU_AWARE)
+    if(DEFINED DRACO_USE_MPI_GPU_AWARE
+       AND DRACO_USE_MPI_GPU_AWARE
+       AND DEFINED CMAKE_HIP_COMPILER_ID)
       message(STATUS "    Using GPU-enabled MPICH:")
       set(GTL_LIB_DIR "/opt/cray/pe/mpich/${MPI_VERSION}/gtl/lib")
       if(EXISTS "${GTL_LIB_DIR}")
         message(STATUS "      Successfully set GTL link lib for GPU-enabled MPICH.")
+        message(STATUS "      You may need to set MPICH_GPU_SUPPORT_ENABLED=1 at runtime")
         # cmake-format: off
         # cmake-format wants this on one line, but that leads to unwanted double quotes on the
         # link line - so disable format check.
