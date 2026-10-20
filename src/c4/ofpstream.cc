@@ -9,6 +9,7 @@
 #include "c4/ofpstream.hh"
 #include "dsxx/Assert.hh"
 #include "c4/C4_Functions.hh"
+#include <algorithm>
 #include <climits> // UINT_MAX
 #include <ios>     // ios_base::openmode
 #include <ostream>
@@ -57,7 +58,14 @@ void ofpstream::mpi_buffer::send() {
       receive(&N, 1, i);
       buffer_.resize(N);
       if (N > 0) {
-        rtt_c4::receive(&buffer_[0], N, i);
+        // Must chunk buffer sends larger than INT_MAX
+        const unsigned max_send_receive{INT_MAX};
+        unsigned count{0};
+        while (count < N) {
+          const unsigned mysize = std::min(max_send_receive, N - count);
+          rtt_c4::receive(&buffer_[count], mysize, i);
+          count += mysize;
+        }
       }
       if (mode_ == ios_base::binary) {
         if (N > 0) {
@@ -74,8 +82,16 @@ void ofpstream::mpi_buffer::send() {
     Check(buffer_.size() < UINT_MAX);
     auto N = static_cast<unsigned>(buffer_.size());
     rtt_c4::send(&N, 1, 0);
-    if (N > 0)
-      rtt_c4::send(&buffer_[0], N, 0);
+    if (N > 0) {
+      // Must chunk buffer sends larger than INT_MAX
+      const unsigned max_send_receive{INT_MAX};
+      unsigned count{0};
+      while (count < N) {
+        const unsigned mysize = std::min(max_send_receive, N - count);
+        rtt_c4::send(&buffer_[count], mysize, 0);
+        count += mysize;
+      }
+    }
   }
   buffer_.clear();
   out_.flush();

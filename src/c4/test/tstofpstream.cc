@@ -78,7 +78,7 @@ void tstofpstream(UnitTest &ut) {
 //------------------------------------------------------------------------------------------------//
 void tstofpstream_bin(UnitTest &ut) {
 
-  int pid = rtt_c4::node();
+  int const pid = rtt_c4::node();
 
   std::string const filename("tstofpstream_" + std::to_string(rtt_c4::nodes()) + ".bin");
 
