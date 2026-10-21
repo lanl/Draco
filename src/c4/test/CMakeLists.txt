@@ -118,16 +118,17 @@ add_parallel_tests(
 # Large buffer test - runs on 1;2 ranks by default, adds 4 rank test when RUN_SLOW_TESTS=ON
 set(large_buffer_test ${PROJECT_SOURCE_DIR}/tstofpstream_large_buffer.cc)
 list(REMOVE_ITEM test_sources ${large_buffer_test})
-add_parallel_tests(
-  SOURCES "${large_buffer_test}"
-  DEPS Lib_c4
-  PE_LIST "1;2")
 if(RUN_SLOW_TESTS)
   add_parallel_tests(
     SOURCES "${large_buffer_test}"
     DEPS Lib_c4
-    PE_LIST "4"
+    PE_LIST "1;2;4"
     LABEL "slow")
+else()
+  add_parallel_tests(
+    SOURCES "${large_buffer_test}"
+    DEPS Lib_c4
+    PE_LIST "1;2")
 endif()
 
 # The remainder of the tests
