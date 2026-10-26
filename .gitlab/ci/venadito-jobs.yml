@@ -13,7 +13,6 @@
   tags:
     - venadito
     - batch
-    - grace-hopper
   variables:
     SITE_ID: venadito
     CTEST_SITE: ${SITE_ID}
