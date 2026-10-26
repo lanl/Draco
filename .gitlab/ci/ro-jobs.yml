@@ -52,20 +52,20 @@ ro_deploy_rel_oneapi:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
     EXTRA_CMAKE_ARGS: -G Ninja
 
 ro_deploy_deb_oneapi:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
 
 ro_deploy_deb_fulldiag:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     FLAVOR: intel-fulldiag-static
 
@@ -73,13 +73,13 @@ ro_deploy_rel_gnu:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/3.0.1-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-tpetra"
 
 ro_deploy_deb_gnu:
   extends: .ro_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.1-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-tpetra"
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a versioned release (dvr)
@@ -116,40 +116,40 @@ ro_dvr_rel_oneapi:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
 
 ro_dvr_deb_oneapi:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
 
 ro_dvr_rwdi_oneapi:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
 ro_dvr_rel_gnu:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/3.0.1-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-tpetra"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
 
 ro_dvr_deb_gnu:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.1-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-tpetra"
 
 ro_dvr_rwdi_gnu:
   extends: .ro_dvr
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/3.0.1-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-tpetra"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
 #--------------------------------------------------------------------------------------------------#
@@ -186,7 +186,7 @@ ro_deb_gnu_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.1-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-tpetra"
 
 # ----- slow -----
 
@@ -195,14 +195,14 @@ ro_deb_oneapi_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
 
 ro_rel_oneapi_mr:
   stage: slowtest
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
     EXTRA_CMAKE_ARGS: -G Ninja
 
 ro_deb_fulldiag_mr:
@@ -210,7 +210,7 @@ ro_deb_fulldiag_mr:
   extends: .ro_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
 
 #--------------------------------------------------------------------------------------------------#
@@ -236,20 +236,20 @@ ro_rel_oneapi_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
     EXTRA_CMAKE_ARGS: -G Ninja
 
 ro_deb_oneapi_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
 
 ro_deb_fulldiag_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.1-oneapi"
+    DRACO_ENV: "lapse/3.1.0-oneapi-tpetra"
     FLAVOR: intel-fulldiag-static
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DIAGNOSTICS=7 -DDRACO_TIMING=1 -DDRACO_LIBRARY_TYPE=STATIC
     CTEST_BUILD_NAME: intel-fulldiag-static
@@ -258,13 +258,13 @@ ro_deb_gnu_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.1-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-tpetra"
 
 ro_rel_gnu_regress:
   extends: .ro_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/3.0.1-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-tpetra"
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/ro-jobs.yml
