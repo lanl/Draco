@@ -49,13 +49,13 @@ vt_deploy_rel_gnu:
   extends: .vt_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/3.0.2-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-cpu"
 
 vt_deploy_deb_gnu:
   extends: .vt_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.2-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-cpu"
 
 #--------------------------------------------------------------------------------------------------#
 # Deploy a versioned release (dvr)
@@ -92,20 +92,20 @@ vt_dvr_rel_gnu:
   extends: .vt_dvr
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/3.0.2-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-cpu"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_ROUNDOFF_MODE=FAST
 
 vt_dvr_deb_gnu:
   extends: .vt_dvr
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.2-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-cpu"
 
 vt_dvr_rwdi_gnu:
   extends: .vt_dvr
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: "lapse/3.0.2-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-cpu"
     EXTRA_CMAKE_ARGS: -GNinja -DDRACO_DBC_LEVEL=15
 
 #--------------------------------------------------------------------------------------------------#
@@ -138,7 +138,7 @@ vt_deb_gnu_mr:
   extends: .vt_merge
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.2-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-cpu"
 
 # ----- slow -----
 
@@ -165,13 +165,13 @@ vt_deb_gnu_regress:
   extends: .vt_nightly
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: "lapse/3.0.2-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-cpu"
 
 vt_rel_gnu_regress:
   extends: .vt_nightly
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: "lapse/3.0.2-gnu"
+    DRACO_ENV: "lapse/3.1.0-gnu-cpu"
 
 #--------------------------------------------------------------------------------------------------#
 # end .gitlab/ci/vt-jobs.yml

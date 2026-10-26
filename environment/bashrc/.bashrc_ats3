@@ -31,7 +31,7 @@ if [[ ! ${modcmd} ]]; then
 else
   module use --append /usr/projects/draco/Modules/ats3
   module load PrgEnv-gnu
-  module load lapse/3.0.1-gnu
+  module load lapse/3.1.0-gnu-tpetra
 fi
 
 # Do not escape $ for bash completion
