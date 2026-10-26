@@ -48,7 +48,7 @@ ccs_deb_gcc_cxx23_deploy:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/gcc1330
+    DRACO_ENV: draco/gcc1610
     EXTRA_CMAKE_ARGS: -GNinja -DDraco_CXX_LANGUAGE_STANDARD=23 -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-cxx23
@@ -58,13 +58,13 @@ ccs_deploy_rwdi_gcc:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: RelWithDebInfo
-    DRACO_ENV: draco/gcc1330
+    DRACO_ENV: draco/gcc1610
 
 ccs_deploy_c4_scalar:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/gcc1330
+    DRACO_ENV: draco/gcc1610
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-scalar
     EXTRA_CMAKE_ARGS: -G Ninja -DDRACO_C4=SCALAR -DDRACO_DIAGNOSTICS=2
       -DCMAKE_C_FLAGS="-march=broadwell" -DCMAKE_Fortran_FLAGS="-march=broadwell"
@@ -73,25 +73,31 @@ ccs_deploy_deb_gcc:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/gcc1330
+    DRACO_ENV: draco/gcc1610
 
 ccs_deploy_rel_gcc:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/gcc1330
+    DRACO_ENV: draco/gcc1610
 
-ccs_deploy_rel_gcc:
+ccs_deploy_deb_llvm:
+  extends: .ccscs_deploy
+  variables:
+    CMAKE_BUILD_TYPE: Debug
+    DRACO_ENV: draco/llvm2215
+
+ccs_deploy_rel_llvm:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/gcc1330
+    DRACO_ENV: draco/llvm2215
 
 ccs_deploy_fulldiag:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/gcc1330
+    DRACO_ENV: draco/gcc1610
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-fulldiag
     # DRACO_TIMING=1 enables caliper timers.
     # DRACO_DIAGNOSTICS=7 enables FPE traps.
@@ -102,7 +108,7 @@ ccs_deploy_gcov:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/gcc1330
+    DRACO_ENV: draco/gcc1610
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-gcov
     EXTRA_CMAKE_ARGS: -DCODE_COVERAGE=ON -DCMAKE_C_FLAGS="-march=broadwell"
       -DCMAKE_Fortran_FLAGS="-march=broadwell"
@@ -111,27 +117,27 @@ ccs_deploy_valgrind:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/gcc1330
+    DRACO_ENV: draco/gcc1610
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-valgrind
     EXTRA_CMAKE_ARGS: -DENABLE_MEMORYCHECK=ON
       -DCTEST_MEMORYCHECK_SUPPRESSIONS_FILE="${CI_PROJECT_DIR}/.gitlab/ci/valgrind_suppress.txt"
         -DCMAKE_C_FLAGS="-march=broadwell" -DCMAKE_Fortran_FLAGS="-march=broadwell"
 
-ccs_deploy_deb_gcc16:
+ccs_deploy_deb_gcc13:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Debug
-    DRACO_ENV: draco/gcc1610
+    DRACO_ENV: draco/gcc1330
     EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
-      -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=OFF
+      -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=ON
 
-ccs_deploy_rel_gcc16:
+ccs_deploy_rel_gcc13:
   extends: .ccscs_deploy
   variables:
     CMAKE_BUILD_TYPE: Release
-    DRACO_ENV: draco/gcc1610
+    DRACO_ENV: draco/gcc1330
     EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
-      -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=OFF
+      -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=ON
 
 ccscs_deploy_clangtidy:
   extends: .ccscs_deploy
@@ -140,7 +146,7 @@ ccscs_deploy_clangtidy:
     DRACO_ENV: draco/llvm2215
     FLAVOR: ${DRACO_ENV}-${CMAKE_BUILD_TYPE}-clang-tidy
     EXTRA_CMAKE_ARGS: -G Ninja -DCMAKE_C_FLAGS="-march=broadwell"
-      -DCMAKE_Fortran_FLAGS="-march=broadwell" -DUSE_SHACL_PHYSICS=OFF
+      -DCMAKE_Fortran_FLAGS="-march=broadwell"
       -DDRACO_STATIC_ANALYZER=clang-tidy
 
 #--------------------------------------------------------------------------------------------------#
