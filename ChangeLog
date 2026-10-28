@@ -1,4 +1,23 @@
-2025-10-01 Kendra Long <keadyk@lanl.gov>
+2026-10-28 Kendra Long <keadyk@lanl.gov>
+	* Draco has been updated to version 7_23_0 and is tied to the release
+	  of Jayenne-8_22_0 and capsaicin/dert-1_6_0
+        - https://re-git.lanl.gov/draco/draco/-/milestones/14
+        - https://re-git.lanl.gov/jayenne/jayenne/-/milestones/34
+        - https://re-git.lanl.gov/capsaicin/dert/-/milestones/
+
+Draco-7_23_0, build date 2026 Oct 28, build type: Release, DBC: 0, DRACO_DIAGNOSTICS: 0
+
+CAI-2 Draco Team: Matt A. Cleveland, HyeongKae Park, Ryan T. Wollaeger, Kyle S. Beling, 
+     Kendra P. Long, James S. Warsa, Alex R. Long, Jae H. Chang, and Jeff R. Haack.
+
+Prior Contributors: Kelly G. Thompson, Kent G. Budge, Gabriel M. Rockefeller, Ben R. Ryan, 
+     Allan B. Wollaber, Tim Kelley, Rob B. Lowrie, Paul W. Talbot, Katherine J. Wang, 
+     Andrew T. Till, Ondrej Certik, Peter Ahrens, Massimiliano Rosa, David A. Dixon, Joseph Coale, 
+     Daniel Holladay, Tom Evans, Todd J. Urbatsch, Todd Adams, Seth Johnson, Seth D. Cook, 
+     Randy Roberts, Paul Henning, Nick Myers, Mike Buksas, Lori Pritchett-Sheats, Kris C. Garrett, 
+     John McGhee, Jeff Furnish, Jeff D. Densmore, and Howard Pritchard.
+
+2026-02-02 Kendra Long <keadyk@lanl.gov>
 	* Draco has been updated to version 7_22_0 and is tied to the release
 	  of Jayenne-8_21_0 and capsaicin/dert-1_5_0
         - https://re-git.lanl.gov/draco/draco/-/milestones/13
